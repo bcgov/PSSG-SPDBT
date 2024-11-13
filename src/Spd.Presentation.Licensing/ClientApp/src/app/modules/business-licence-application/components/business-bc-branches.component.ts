@@ -158,7 +158,10 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 	@Input() form!: FormGroup;
 	@Input() isReadonly!: boolean;
 
-	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private dialog: MatDialog
+	) {}
 
 	ngOnInit(): void {
 		this.dataSource = new MatTableDataSource(this.branchesArray.value);
@@ -193,7 +196,7 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this branch?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

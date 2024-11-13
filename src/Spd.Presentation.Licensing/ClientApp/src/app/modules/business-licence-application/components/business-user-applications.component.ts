@@ -21,7 +21,7 @@ import {
 import { ConfigService } from '@app/core/services/config.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
@@ -57,7 +57,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="row mb-4" *ngIf="showManageMembersAndEmployees">
+					<div class="row" *ngIf="showManageMembersAndEmployees">
 						<div class="col-12 text-end">
 							<a
 								class="large"
@@ -65,39 +65,41 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								(click)="onManageMembersAndEmployees()"
 								(keydown)="onKeydownManageMembersAndEmployees($event)"
 							>
-								Manage Controlling Members and Employees
+								Manage Controlling Members & Employees
 							</a>
 						</div>
 					</div>
 
-					<ng-container *ngFor="let msg of errorMessages; let i = index">
-						<app-alert type="danger" icon="error">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
+					<div class="mt-4" *ngIf="isAlertsExist()">
+						<ng-container *ngFor="let msg of errorMessages; let i = index">
+							<app-alert type="danger" icon="error">
+								<div [innerHTML]="msg"></div>
+							</app-alert>
+						</ng-container>
 
-					<ng-container *ngIf="isControllingMemberWarning">
-						<app-alert type="warning" icon="warning">
-							<div>Your Business Licence application has outstanding controlling member invitations.</div>
-							<div class="mt-2">
-								Click on <strong>'Manage Controlling Members and Employees'</strong> to see the invitation status of
-								each of the members.
-							</div>
-						</app-alert>
-					</ng-container>
+						<ng-container *ngIf="isControllingMemberWarning">
+							<app-alert type="warning" icon="warning">
+								<div>Your Business Licence application has outstanding controlling member invitations.</div>
+								<div class="mt-2">
+									Click on <strong>'Manage Controlling Members & Employees'</strong> to see the invitation status of
+									each of the members.
+								</div>
+							</app-alert>
+						</ng-container>
 
-					<ng-container *ngFor="let msg of warningMessages; let i = index">
-						<app-alert type="warning" icon="warning">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
+						<ng-container *ngFor="let msg of warningMessages; let i = index">
+							<app-alert type="warning" icon="warning">
+								<div [innerHTML]="msg"></div>
+							</app-alert>
+						</ng-container>
+					</div>
 
 					<app-applications-list-current
 						[applicationsDataSource]="applicationsDataSource"
 						[isControllingMemberWarning]="isControllingMemberWarning"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPayNow($event)"
-						(cancelApplication)="onCancel($event)"
+						(cancelApplication)="onDelete($event)"
 					></app-applications-list-current>
 
 					<app-business-licence-list-current
@@ -137,9 +139,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
+	// these are calculated when the data is loaded
 	showManageMembersAndEmployees = false;
 	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
+	getApplicationIsDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
 	lostLicenceDaysText = 'TBD';
 
@@ -161,7 +165,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private configService: ConfigService,
-		private optionsPipe: OptionsPipe,
+		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -176,7 +180,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees(this.applicationIsInProgress)
+			.getMembersAndEmployees(this.getApplicationIsDraftOrWaitingForPayment)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -196,7 +200,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		this.onManageMembersAndEmployees();
 	}
 
-	onCancel(appl: MainApplicationResponse): void {
+	onDelete(appl: MainApplicationResponse): void {
 		if (
 			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft ||
 			appl.applicationTypeCode === ApplicationTypeCode.New
@@ -207,8 +211,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to cancel this application.',
-			actionText: 'Yes',
+			message: 'Are you sure you want to permanently remove this application.',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 
@@ -217,6 +221,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.hotToastService.success('The application has been successfully removed');
+
 					this.commonApplicationService
 						.cancelDraftApplication(appl.licenceAppId!)
 						.pipe(
@@ -377,7 +383,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.isSoleProprietorAppSimultaneousFlow =
 							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
 
-						// Only show the manage members and employees when an application or licence exist.
+						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
 						this.showManageMembersAndEmployees = this.isSoleProprietor
 							? false
 							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
@@ -395,6 +401,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
 						this.applicationIsInProgress =
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
+						this.getApplicationIsDraftOrWaitingForPayment =
+							this.commonApplicationService.getApplicationIsDraftOrWaitingForPayment(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created
 						let activeLicenceExist = activeBusinessLicencesList.length > 0;
@@ -417,5 +425,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				);
 			})
 		);
+	}
+
+	isAlertsExist(): boolean {
+		return this.isControllingMemberWarning || this.warningMessages.length > 0 || this.errorMessages.length > 0;
 	}
 }

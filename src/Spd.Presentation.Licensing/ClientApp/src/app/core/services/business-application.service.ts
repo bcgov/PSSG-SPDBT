@@ -946,14 +946,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(applicationIsInProgress: boolean): Observable<any> {
+	getMembersAndEmployees(applicationIsInDraftOrWaitingForPayment: boolean): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
 			switchMap((members: Members) => {
-				return this.applyLicenceProfileMembersIntoModel(members, applicationIsInProgress).pipe(
+				return this.applyLicenceProfileMembersIntoModel(members, applicationIsInDraftOrWaitingForPayment).pipe(
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
@@ -1197,7 +1197,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyLicenceProfileMembersIntoModel(members: Members, applicationIsInProgress: boolean) {
+	private applyLicenceProfileMembersIntoModel(members: Members, applicationIsInDraftOrWaitingForPayment: boolean) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -1216,7 +1216,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const modelFormValue = this.businessModelFormGroup.value;
 		const controllingMembersData = modelFormValue.controllingMembersData;
-		controllingMembersData.applicationIsInProgress = applicationIsInProgress;
+		controllingMembersData.applicationIsInDraftOrWaitingForPayment = applicationIsInDraftOrWaitingForPayment;
 
 		this.businessModelFormGroup.patchValue({ controllingMembersData }, { emitEvent: false });
 
