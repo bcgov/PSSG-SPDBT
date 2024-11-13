@@ -85,12 +85,12 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									mat-stroked-button
 									color="primary"
 									class="large my-2"
-									aria-label="Cancel the application"
-									matTooltip="Cancel the application"
+									aria-label="Remove the application"
+									matTooltip="Remove the application"
 									(click)="onCancel(application)"
 									*ngIf="isDraftCancelable(application)"
 								>
-									<mat-icon>delete_outline</mat-icon>Cancel
+									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
 
 								<button

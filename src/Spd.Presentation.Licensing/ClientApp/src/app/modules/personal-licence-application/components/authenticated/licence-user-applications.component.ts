@@ -16,7 +16,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
@@ -59,7 +59,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
-						(cancelApplication)="onCancel($event)"
+						(cancelApplication)="onDelete($event)"
 					></app-applications-list-current>
 
 					<app-licence-active-swl-permit-licences
@@ -194,7 +194,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private configService: ConfigService,
-		private optionsPipe: OptionsPipe,
+		private hotToastService: HotToastService,
 		private dialog: MatDialog,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
@@ -320,7 +320,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		}
 	}
 
-	onCancel(appl: MainApplicationResponse): void {
+	onDelete(appl: MainApplicationResponse): void {
 		if (
 			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft ||
 			appl.applicationTypeCode === ApplicationTypeCode.New
@@ -331,9 +331,9 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to cancel this application.',
-			actionText: 'Yes, cancel',
-			cancelText: 'No',
+			message: 'Are you sure you want to remove this application.',
+			actionText: 'Remove',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog
@@ -341,6 +341,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.hotToastService.success('The application has been successfully removed');
+
 					this.commonApplicationService
 						.cancelDraftApplication(appl.licenceAppId!)
 						.pipe(

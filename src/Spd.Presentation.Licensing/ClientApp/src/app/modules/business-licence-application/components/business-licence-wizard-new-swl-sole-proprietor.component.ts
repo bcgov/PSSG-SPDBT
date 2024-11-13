@@ -261,8 +261,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Yes, cancel this application',
-			cancelText: 'No, continue application',
+			actionText: 'Cancel application',
+			cancelText: 'Continue application',
 			wideButtons: true,
 		};
 

@@ -16,7 +16,7 @@ import { StepControllingMemberSummaryReviewComponent } from './step-controlling-
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_REVIEW)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
@@ -29,7 +29,7 @@ import { StepControllingMemberSummaryReviewComponent } from './step-controlling-
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					nextButtonLabel="Submit"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -46,7 +46,7 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	readonly STEP_CONSENT = 1;
 
 	@Input() isFormValid!: boolean;
-	@Input() isLoggedIn!: boolean;
+	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();

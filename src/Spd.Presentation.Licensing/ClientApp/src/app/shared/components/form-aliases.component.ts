@@ -169,7 +169,7 @@ export class FormAliasesComponent {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

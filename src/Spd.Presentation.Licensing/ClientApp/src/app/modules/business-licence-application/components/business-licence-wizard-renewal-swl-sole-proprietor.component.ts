@@ -244,8 +244,8 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 			title: 'Confirmation',
 			message:
 				'<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence renewal application.',
-			actionText: 'Yes, cancel this application',
-			cancelText: 'No, continue application',
+			actionText: 'Cancel application',
+			cancelText: 'Continue application',
 			wideButtons: true,
 		};
 

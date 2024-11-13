@@ -33,11 +33,9 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 								</ng-container>
 								<ng-template #IsEditable>
 									<button mat-stroked-button color="primary" class="large mx-3 mb-3" (click)="onCancel()">
-										<mat-icon>arrow_back</mat-icon>Cancel
+										Cancel
 									</button>
-									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">
-										<mat-icon>save</mat-icon>Save
-									</button>
+									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">Save</button>
 								</ng-template>
 							</div>
 						</div>

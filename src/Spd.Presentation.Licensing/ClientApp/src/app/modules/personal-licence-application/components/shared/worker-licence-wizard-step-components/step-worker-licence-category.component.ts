@@ -97,7 +97,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											aria-label="Remove category"
 											(click)="onDeselect(workerCategoryTypeCodes.ArmouredCarGuard)"
 										>
-											onDeselect <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
 									</div>
 								</div>
@@ -826,7 +826,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			icon: 'warning',
 			title: 'Confirmation',
 			message: `Are you sure you want to remove the ${codeDesc} category?`,
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

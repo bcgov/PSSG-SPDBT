@@ -406,7 +406,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this member?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 
@@ -512,7 +512,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Yes, send',
+			actionText: 'Send',
 			cancelText: 'Cancel',
 		};
 

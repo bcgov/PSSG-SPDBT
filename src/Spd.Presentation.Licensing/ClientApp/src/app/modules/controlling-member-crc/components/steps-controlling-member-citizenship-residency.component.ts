@@ -14,7 +14,7 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
@@ -28,7 +28,7 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onFingerprintsPreviousStep()"
@@ -42,7 +42,7 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_DRIVERS_LICENCE)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -61,7 +61,7 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 	readonly STEP_DRIVERS_LICENCE = 2;
 
 	@Input() isFormValid!: boolean;
-	@Input() isLoggedIn!: boolean;
+	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberCitizenshipComponent) stepCitizenship!: StepControllingMemberCitizenshipComponent;
