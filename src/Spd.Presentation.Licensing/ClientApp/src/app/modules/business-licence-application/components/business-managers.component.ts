@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { BizPortalUserListResponse, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngxpert/hot-toast';
-import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 
 import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
@@ -98,7 +98,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Authorization Type</mat-header-cell>
 									<mat-cell *matCellDef="let user">
 										<span class="mobile-label">Authorization Type:</span>
-										{{ user.contactAuthorizationTypeCode | options : 'ContactAuthorizationTypes' }}
+										{{ user.contactAuthorizationTypeCode | options: 'ContactAuthorizationTypes' }}
 									</mat-cell>
 								</ng-container>
 
@@ -163,8 +163,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 													mat-flat-button
 													class="table-button"
 													style="color: var(--color-primary-light);"
-													aria-label="Cancel invitation"
-													(click)="onCancelInvitation(user)"
+													aria-label="Remove invitation"
+													(click)="onDeleteInvitation(user)"
 												>
 													<mat-icon>cancel</mat-icon>Cancel
 												</button>
@@ -286,18 +286,20 @@ export class BusinessManagersComponent implements OnInit {
 			user,
 			title: 'Confirmation',
 			message: `Are you sure you want to permanently remove '${user.firstName} ${user.lastName}'?`,
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
+			cancelText: 'Cancel',
 			success: 'Business Manager was successfully removed',
 		});
 	}
 
-	onCancelInvitation(user: BizPortalUserResponse) {
+	onDeleteInvitation(user: BizPortalUserResponse) {
 		this.deleteUser({
 			user,
 			title: 'Confirmation',
-			message: 'Are you sure you want to cancel this invitation?',
-			actionText: 'Yes, cancel',
-			success: 'Invitation was successfully cancelled',
+			message: 'Are you sure you want to permanently remove this invitation?',
+			actionText: 'Remove',
+			cancelText: 'Cancel',
+			success: 'Invitation was successfully removed',
 		});
 	}
 
@@ -395,6 +397,7 @@ export class BusinessManagersComponent implements OnInit {
 		title: string;
 		message: string;
 		actionText: string;
+		cancelText: string;
 		success: string;
 	}) {
 		const data: DialogOptions = {
@@ -402,7 +405,7 @@ export class BusinessManagersComponent implements OnInit {
 			title: params.title,
 			message: params.message,
 			actionText: params.actionText,
-			cancelText: 'Cancel',
+			cancelText: params.cancelText,
 		};
 
 		this.dialog

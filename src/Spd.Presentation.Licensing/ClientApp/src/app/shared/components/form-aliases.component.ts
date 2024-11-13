@@ -5,8 +5,8 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
-import { DialogComponent, DialogOptions } from './dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { DialogComponent, DialogOptions } from './dialog.component';
 
 @Component({
 	selector: 'app-form-aliases',
@@ -128,7 +128,10 @@ export class FormAliasesComponent {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 
-	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private dialog: MatDialog
+	) {}
 
 	onPreviousNameFlagChange(): void {
 		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
@@ -166,7 +169,7 @@ export class FormAliasesComponent {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, remove name',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

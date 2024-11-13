@@ -20,7 +20,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						</button>
 					</ng-container>
 					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Exit</button>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -94,7 +94,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						(click)="onCancelAndExit()"
 						*ngIf="isCancelAndExitObserved"
 					>
-						Cancel
+						Exit
 					</button>
 				</div>
 			</ng-container>

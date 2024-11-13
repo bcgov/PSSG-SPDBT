@@ -914,12 +914,10 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 
-		let reprint = false;
-		if (
-			applicationTypeCode === ApplicationTypeCode.Update &&
-			(updatePhoto || personalInformationData.hasLegalNameChanged)
-		) {
-			reprint = true;
+		let reprint = true; // New, Renewal, Replacement all require reprint
+		if (applicationTypeCode === ApplicationTypeCode.Update) {
+			reprint =
+				updatePhoto || personalInformationData.hasLegalNameChanged || personalInformationData.hasBcscNameChanged;
 		}
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =

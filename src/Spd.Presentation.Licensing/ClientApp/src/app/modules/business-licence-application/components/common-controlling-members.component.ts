@@ -361,6 +361,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
+		// When in the wizard, the user cannot view the status or send / resend invitations.
+		// This should occur automatically when saving the application.
 		if (this.isWizard) {
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
 		} else {
@@ -404,7 +406,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this member?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 
@@ -499,17 +501,18 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		const inviteTypeCode = this.getSendInvitationType(member.inviteStatusCode);
 		if (!inviteTypeCode) return;
 
-		let message = `Are you sure you send an invitation to ${member.emailAddress}?`;
+		let message = '';
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
-			message =
-				'Does this controlling member need to report an update to their criminal record check?<br><br>Send them a link so they can submit their information directly to the Security Programs Division.';
+			message = `Does this controlling member need to report an update to their criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
+		} else {
+			message = `Does this controlling member need to be sent a criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
 		}
 
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Yes',
+			actionText: 'Send',
 			cancelText: 'Cancel',
 		};
 
@@ -586,9 +589,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			return ControllingMemberAppInviteTypeCode.Update;
 		}
 
-		// User cannot send/resend new invitation when there is not an application progress
+		// User cannot send/resend new invitation when there is not an application in draft or waiting for payment
 		const formValue = this.form.value;
-		if (!formValue.applicationIsInProgress) {
+		if (!formValue.applicationIsInDraftOrWaitingForPayment) {
 			return null;
 		}
 
