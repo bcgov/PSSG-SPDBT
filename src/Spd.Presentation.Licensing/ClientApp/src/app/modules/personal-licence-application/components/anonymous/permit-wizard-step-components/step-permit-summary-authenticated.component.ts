@@ -165,37 +165,12 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Business's Primary Address</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 1</div>
-												<div class="summary-text-data">{{ businessAddressLine1 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 2</div>
-												<div class="summary-text-data">{{ businessAddressLine2 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">City</div>
-												<div class="summary-text-data">{{ businessCity | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Postal Code</div>
-												<div class="summary-text-data">{{ businessPostalCode | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Province</div>
-												<div class="summary-text-data">
-													{{ businessProvince | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Country</div>
-												<div class="summary-text-data">
-													{{ businessCountry | default }}
-												</div>
-											</div>
-										</div>
+
+										<app-form-address-summary
+											[formData]="permitModelData.employerData"
+											headingLabel="Business's Primary Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
 									</div>
 								</mat-expansion-panel>
 
@@ -526,23 +501,5 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	}
 	get supervisorPhoneNumber(): string {
 		return this.permitApplicationService.getSummarysupervisorPhoneNumber(this.permitModelData);
-	}
-	get businessAddressLine1(): string {
-		return this.permitApplicationService.getSummarybusinessAddressLine1(this.permitModelData);
-	}
-	get businessAddressLine2(): string {
-		return this.permitApplicationService.getSummarybusinessAddressLine2(this.permitModelData);
-	}
-	get businessCity(): string {
-		return this.permitApplicationService.getSummarybusinessCity(this.permitModelData);
-	}
-	get businessPostalCode(): string {
-		return this.permitApplicationService.getSummarybusinessPostalCode(this.permitModelData);
-	}
-	get businessProvince(): string {
-		return this.permitApplicationService.getSummarybusinessProvince(this.permitModelData);
-	}
-	get businessCountry(): string {
-		return this.permitApplicationService.getSummarybusinessCountry(this.permitModelData);
 	}
 }

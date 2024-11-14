@@ -230,7 +230,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step + this.STEP_BUSINESS_INFORMATION; // add offset
 	}
 
 	onChildNextStep() {

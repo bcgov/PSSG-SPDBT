@@ -10,11 +10,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-address-and-is-same-flag
+					<app-form-address-and-is-same-flag
 						[form]="form"
 						isAddressTheSameLabel="My residential address and mailing address are the same"
 						[isWideView]="true"
-					></app-address-and-is-same-flag>
+					></app-form-address-and-is-same-flag>
 				</div>
 			</div>
 		</app-step-section>

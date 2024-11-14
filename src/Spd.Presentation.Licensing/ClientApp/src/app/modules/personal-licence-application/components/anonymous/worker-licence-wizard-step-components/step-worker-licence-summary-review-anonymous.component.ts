@@ -597,75 +597,20 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Residential Address</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 1</div>
-												<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 2</div>
-												<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">City</div>
-												<div class="summary-text-data">{{ residentialCity | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Postal Code</div>
-												<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Province</div>
-												<div class="summary-text-data">
-													{{ residentialProvince | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Country</div>
-												<div class="summary-text-data">
-													{{ residentialCountry | default }}
-												</div>
-											</div>
-										</div>
+										<app-form-address-summary
+											[formData]="licenceModelData.residentialAddressData"
+											headingLabel="Residential Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
+
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Mailing Address</div>
-										<ng-container *ngIf="isAddressTheSame; else mailingIsDifferentThanResidential">
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="summary-text-data">Mailing address is the same as the residential address</div>
-												</div>
-											</div>
-										</ng-container>
-										<ng-template #mailingIsDifferentThanResidential>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ mailingCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">{{ mailingProvince | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
-													<div class="summary-text-data">{{ mailingCountry | default }}</div>
-												</div>
-											</div>
-										</ng-template>
+										<app-form-address-summary
+											[formData]="licenceModelData.mailingAddressData"
+											headingLabel="Mailing Address"
+											[isAddressTheSame]="isAddressTheSame"
+											isAddressTheSameLabel="Mailing address is the same as the residential address"
+										></app-form-address-summary>
 									</div>
 								</mat-expansion-panel>
 							</mat-accordion>
@@ -1030,45 +975,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.workerApplicationService.getSummaryphoneNumber(this.licenceModelData);
 	}
 
-	get residentialAddressLine1(): string {
-		return this.workerApplicationService.getSummaryresidentialAddressLine1(this.licenceModelData);
-	}
-	get residentialAddressLine2(): string {
-		return this.workerApplicationService.getSummaryresidentialAddressLine2(this.licenceModelData);
-	}
-	get residentialCity(): string {
-		return this.workerApplicationService.getSummaryresidentialCity(this.licenceModelData);
-	}
-	get residentialPostalCode(): string {
-		return this.workerApplicationService.getSummaryresidentialPostalCode(this.licenceModelData);
-	}
-	get residentialProvince(): string {
-		return this.workerApplicationService.getSummaryresidentialProvince(this.licenceModelData);
-	}
-	get residentialCountry(): string {
-		return this.workerApplicationService.getSummaryresidentialCountry(this.licenceModelData);
-	}
-	get isAddressTheSame(): string {
+	get isAddressTheSame(): boolean {
 		return this.workerApplicationService.getSummaryisAddressTheSame(this.licenceModelData);
-	}
-
-	get mailingAddressLine1(): string {
-		return this.workerApplicationService.getSummarymailingAddressLine1(this.licenceModelData);
-	}
-	get mailingAddressLine2(): string {
-		return this.workerApplicationService.getSummarymailingAddressLine2(this.licenceModelData);
-	}
-	get mailingCity(): string {
-		return this.workerApplicationService.getSummarymailingCity(this.licenceModelData);
-	}
-	get mailingPostalCode(): string {
-		return this.workerApplicationService.getSummarymailingPostalCode(this.licenceModelData);
-	}
-	get mailingProvince(): string {
-		return this.workerApplicationService.getSummarymailingProvince(this.licenceModelData);
-	}
-	get mailingCountry(): string {
-		return this.workerApplicationService.getSummarymailingCountry(this.licenceModelData);
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {

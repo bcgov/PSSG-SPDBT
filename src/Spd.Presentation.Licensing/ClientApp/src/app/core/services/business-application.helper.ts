@@ -767,6 +767,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
 		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	getSummarysoleProprietorSwlEmailAddress(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlEmailAddress ?? '';
+	}
+	getSummarysoleProprietorSwlPhoneNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlPhoneNumber ?? '';
+	}
 
 	getSummarycategoryList(businessLicenceModelData: any): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];
@@ -849,6 +855,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
 		return businessLicenceModelData.employeesData.employees ?? [];
+	}
+
+	getSummaryisAddressTheSame(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.businessAddressData?.isAddressTheSame ?? false;
+	}
+
+	getSummaryisBcBusinessAddress(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.isBcBusinessAddress ?? false;
 	}
 
 	private clearPrivateInvestigatorModelData(): void {

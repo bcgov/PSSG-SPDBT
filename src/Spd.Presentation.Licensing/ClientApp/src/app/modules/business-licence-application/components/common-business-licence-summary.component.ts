@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
@@ -59,6 +59,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												{{ bizTypeCode | options: 'BizTypes' }}
 											</div>
 										</div>
+
 										<ng-container *ngIf="isUpdate">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Print Licence</div>
@@ -72,6 +73,51 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</ng-container>
 									</div>
+
+									<ng-container *ngIf="isBusinessLicenceSoleProprietor">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading">Sole Proprietor</div>
+										<div class="row mt-0">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Email Address</div>
+												<div class="summary-text-data">
+													{{ soleProprietorSwlEmailAddress }}
+												</div>
+											</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Phone Number</div>
+												<div class="summary-text-data">
+													{{ soleProprietorSwlPhoneNumber }}
+												</div>
+											</div>
+										</div>
+									</ng-container>
+
+									<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-form-address-summary
+											[formData]="businessModelData.businessMailingAddressData"
+											headingLabel="Mailing Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
+
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-form-address-summary
+											[formData]="businessModelData.businessAddressData"
+											headingLabel="Business Address"
+											[isAddressTheSame]="isAddressTheSame"
+											isAddressTheSameLabel="Business address is the same as the mailing address"
+										></app-form-address-summary>
+
+										<ng-container *ngIf="!isBcBusinessAddress">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<app-form-address-summary
+												[formData]="businessModelData.bcBusinessAddressData"
+												headingLabel="B.C. Business Address"
+												[isAddressTheSame]="false"
+											></app-form-address-summary>
+										</ng-container>
+									</ng-container>
 
 									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -131,7 +177,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								<mat-expansion-panel-header>
 									<mat-panel-title class="review-panel-title">
 										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Licence Selection</div>
+											<div class="panel-header">Business Selection</div>
 											<button
 												*ngIf="showEditButton"
 												mat-mini-fab
@@ -405,6 +451,8 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isSoleProprietorSimultaneousFlow!: boolean;
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
@@ -426,10 +474,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
-	}
-
-	get isBusinessLicenceSoleProprietor(): string {
-		return this.businessApplicationService.getSummaryisBusinessLicenceSoleProprietor(this.businessModelData);
 	}
 
 	get hasExpiredLicence(): string {
@@ -462,6 +506,14 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	get bizTypeCode(): BizTypeCode | null {
 		return this.businessApplicationService.getSummarybizTypeCode(this.businessModelData);
 	}
+
+	get soleProprietorSwlEmailAddress(): string {
+		return this.businessApplicationService.getSummarysoleProprietorSwlEmailAddress(this.businessModelData);
+	}
+	get soleProprietorSwlPhoneNumber(): string {
+		return this.businessApplicationService.getSummarysoleProprietorSwlPhoneNumber(this.businessModelData);
+	}
+
 	get licenceTermCode(): LicenceTermCode | null {
 		return this.businessApplicationService.getSummarylicenceTermCode(this.businessModelData);
 	}
@@ -496,6 +548,14 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 	get categorySecurityGuardAttachments(): File[] {
 		return this.businessApplicationService.getSummarycategorySecurityGuardAttachments(this.businessModelData);
+	}
+
+	get isAddressTheSame(): boolean {
+		return this.businessApplicationService.getSummaryisAddressTheSame(this.businessModelData);
+	}
+
+	get isBcBusinessAddress(): boolean {
+		return this.businessApplicationService.getSummaryisBcBusinessAddress(this.businessModelData);
 	}
 
 	get businessManagerGivenName(): string {

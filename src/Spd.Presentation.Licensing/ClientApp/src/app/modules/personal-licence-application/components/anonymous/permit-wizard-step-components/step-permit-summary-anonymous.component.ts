@@ -165,37 +165,12 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Business's Primary Address</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 1</div>
-												<div class="summary-text-data">{{ businessAddressLine1 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 2</div>
-												<div class="summary-text-data">{{ businessAddressLine2 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">City</div>
-												<div class="summary-text-data">{{ businessCity | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Postal Code</div>
-												<div class="summary-text-data">{{ businessPostalCode | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Province</div>
-												<div class="summary-text-data">
-													{{ businessProvince | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Country</div>
-												<div class="summary-text-data">
-													{{ businessCountry | default }}
-												</div>
-											</div>
-										</div>
+
+										<app-form-address-summary
+											[formData]="permitModelData.employerData"
+											headingLabel="Business's Primary Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
 									</div>
 								</mat-expansion-panel>
 
@@ -432,75 +407,20 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Residential Address</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 1</div>
-												<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 2</div>
-												<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">City</div>
-												<div class="summary-text-data">{{ residentialCity | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Postal Code</div>
-												<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Province</div>
-												<div class="summary-text-data">
-													{{ residentialProvince | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Country</div>
-												<div class="summary-text-data">
-													{{ residentialCountry | default }}
-												</div>
-											</div>
-										</div>
+										<app-form-address-summary
+											[formData]="permitModelData.residentialAddressData"
+											headingLabel="Residential Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
+
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Mailing Address</div>
-										<ng-container *ngIf="isAddressTheSame; else mailingIsDifferentThanResidential">
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="summary-text-data">Mailing address is the same as the residential address</div>
-												</div>
-											</div>
-										</ng-container>
-										<ng-template #mailingIsDifferentThanResidential>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ mailingCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">{{ mailingProvince | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
-													<div class="summary-text-data">{{ mailingCountry | default }}</div>
-												</div>
-											</div>
-										</ng-template>
+										<app-form-address-summary
+											[formData]="permitModelData.mailingAddressData"
+											headingLabel="Mailing Address"
+											[isAddressTheSame]="isAddressTheSame"
+											isAddressTheSameLabel="Mailing address is the same as the residential address"
+										></app-form-address-summary>
 									</div>
 								</mat-expansion-panel>
 							</mat-accordion>
@@ -760,63 +680,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	get supervisorPhoneNumber(): string {
 		return this.permitApplicationService.getSummarysupervisorPhoneNumber(this.permitModelData);
 	}
-	get businessAddressLine1(): string {
-		return this.permitApplicationService.getSummarybusinessAddressLine1(this.permitModelData);
-	}
-	get businessAddressLine2(): string {
-		return this.permitApplicationService.getSummarybusinessAddressLine2(this.permitModelData);
-	}
-	get businessCity(): string {
-		return this.permitApplicationService.getSummarybusinessCity(this.permitModelData);
-	}
-	get businessPostalCode(): string {
-		return this.permitApplicationService.getSummarybusinessPostalCode(this.permitModelData);
-	}
-	get businessProvince(): string {
-		return this.permitApplicationService.getSummarybusinessProvince(this.permitModelData);
-	}
-	get businessCountry(): string {
-		return this.permitApplicationService.getSummarybusinessCountry(this.permitModelData);
-	}
 
-	get residentialAddressLine1(): string {
-		return this.permitApplicationService.getSummaryresidentialAddressLine1(this.permitModelData);
-	}
-	get residentialAddressLine2(): string {
-		return this.permitApplicationService.getSummaryresidentialAddressLine2(this.permitModelData);
-	}
-	get residentialCity(): string {
-		return this.permitApplicationService.getSummaryresidentialCity(this.permitModelData);
-	}
-	get residentialPostalCode(): string {
-		return this.permitApplicationService.getSummaryresidentialPostalCode(this.permitModelData);
-	}
-	get residentialProvince(): string {
-		return this.permitApplicationService.getSummaryresidentialProvince(this.permitModelData);
-	}
-	get residentialCountry(): string {
-		return this.permitApplicationService.getSummaryresidentialCountry(this.permitModelData);
-	}
-	get isAddressTheSame(): string {
+	get isAddressTheSame(): boolean {
 		return this.permitApplicationService.getSummaryisAddressTheSame(this.permitModelData);
-	}
-
-	get mailingAddressLine1(): string {
-		return this.permitApplicationService.getSummarymailingAddressLine1(this.permitModelData);
-	}
-	get mailingAddressLine2(): string {
-		return this.permitApplicationService.getSummarymailingAddressLine2(this.permitModelData);
-	}
-	get mailingCity(): string {
-		return this.permitApplicationService.getSummarymailingCity(this.permitModelData);
-	}
-	get mailingPostalCode(): string {
-		return this.permitApplicationService.getSummarymailingPostalCode(this.permitModelData);
-	}
-	get mailingProvince(): string {
-		return this.permitApplicationService.getSummarymailingProvince(this.permitModelData);
-	}
-	get mailingCountry(): string {
-		return this.permitApplicationService.getSummarymailingCountry(this.permitModelData);
 	}
 }
