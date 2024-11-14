@@ -6,6 +6,7 @@ import { CommonAliasListComponent } from '@app/modules/personal-licence-applicat
 import { AddressComponent } from '@app/shared/components/address.component';
 import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 import { FormPersonalInformationComponent } from '@app/shared/components/form-personal-information.component';
+import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/form-physical-characteristics.component';
 
 @Component({
 	selector: 'app-common-user-profile',
@@ -121,6 +122,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
 	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
 	@ViewChild(AddressComponent) mailingAddressComponent!: AddressComponent;
+	@ViewChild(FormPhysicalCharacteristicsComponent) characteristicsComponent!: FormPhysicalCharacteristicsComponent;
 
 	@Input() isReadonlyPersonalInfo!: boolean;
 	@Input() isReadonlyMailingAddress!: boolean;
@@ -137,7 +139,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 		const isValid1 = this.personalComponent.isFormValid();
 		const isValid2 = this.isAliasesFormGroupFormValid();
 		const isValid3 = this.isMailingAddressFormGroupValid();
-		const isValid4 = this.isCharacteristicsFormGroupValid();
+		const isValid4 = this.characteristicsComponent.isFormValid();
 
 		console.debug('[CommonUserProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4);
 
