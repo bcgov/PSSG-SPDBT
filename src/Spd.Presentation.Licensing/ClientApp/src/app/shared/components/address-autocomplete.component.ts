@@ -45,7 +45,7 @@ export class Address {
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
-				<div [ngClass]="isWizardStep ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
+				<div [ngClass]="isWideView ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
 					<mat-form-field>
 						<mat-label>Address by Canada Post</mat-label>
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
@@ -76,7 +76,7 @@ export class Address {
 					</button>
 				</div>
 
-				<div [ngClass]="isWizardStep ? 'col-xl-5 col-lg-5 col-md-12' : 'col-12'">
+				<div [ngClass]="isWideView ? 'col-xl-5 col-lg-5 col-md-12' : 'col-12'">
 					<mat-form-field>
 						<mat-label>Country</mat-label>
 						<mat-select formControlName="country">
@@ -106,7 +106,8 @@ export class Address {
 export class AddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
 	@Output() enterAddressManually: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Input() isWizardStep = true;
+	// @Input() isWizardStep = true;
+	@Input() isWideView = false;
 
 	form!: FormGroup;
 	addressAutocompleteFields!: AddressFindResponse[];

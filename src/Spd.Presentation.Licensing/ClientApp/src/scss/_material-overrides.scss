@@ -377,7 +377,12 @@ button.mat-red-button {
 // MAT ERROR
 .mat-option-error {
 	color: var(--mat-form-field-error-text-color);
-	font-size: 1em; //var(--mat-form-field-subscript-text-size);
+	font-size: 1em;
+}
+
+.mat-option-error-small {
+	color: var(--mat-form-field-error-text-color);
+	font-size: var(--mat-form-field-subscript-text-size);
 }
 
 .mat-option-hint {

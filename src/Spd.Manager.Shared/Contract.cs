@@ -129,6 +129,17 @@ namespace Spd.Manager.Shared
         MDRA,
         SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
     }
+
+    public enum ApplicationInviteStatusCode
+    {
+        Draft,
+        Sent,
+        Failed,
+        Completed, //inactive Status code
+        Cancelled,//inactive Status code
+        Expired //inactive Status code
+    }
+
     public record FileResponse
     {
         public string ContentType { get; set; } = null!;
@@ -165,6 +176,55 @@ namespace Spd.Manager.Shared
         Active,
         Inactive,
         Expired,
-        Suspended
+        Suspended,
+        Preview
+    }
+
+    public enum PortalUserServiceCategoryCode
+    {
+        Screening,
+        Licensing
+    }
+
+    public enum ContactAuthorizationTypeCode
+    {
+        [Description("Primary Authorized Contact")]
+        Primary,
+
+        [Description("Authorized Contact")]
+        Contact,
+
+        [Description("Primary Authorized Business Manager Contact")]
+        PrimaryBusinessManager,
+
+        [Description("Authorized Business Manager Contact")]
+        BusinessManager
+    }
+
+    public enum ApplicationOriginTypeCode
+    {
+        //applicant authenticated with bcsc submit app
+        [Description("Portal")]
+        Portal,
+
+        [Description("Email")]
+        Email,
+
+        //applicant anonymous submit app
+        [Description("Web Form")]
+        WebForm,
+
+        [Description("Mail")]
+        Mail,
+
+        [Description("Fax")]
+        Fax,
+
+        [Description("Generic Upload")]
+        GenericUpload,
+
+        //organization submit app manually
+        [Description("Organization Submitted")]
+        OrganizationSubmitted
     }
 }

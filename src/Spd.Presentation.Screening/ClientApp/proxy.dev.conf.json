@@ -1,5 +1,5 @@
 {
-  "/api": {
+  "/api/**": {
     "target": "https://spd-screening-portal-dev.apps.emerald.devops.gov.bc.ca",
     "secure": false,
     "changeOrigin": true,

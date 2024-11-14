@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { DelegateListResponse, DelegateResponse, PssoUserRoleEnum } from 'src/app/api/models';
 import { DelegateService } from 'src/app/api/services';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';

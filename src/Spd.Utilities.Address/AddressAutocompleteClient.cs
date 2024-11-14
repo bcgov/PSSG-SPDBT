@@ -25,18 +25,17 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
 
     public async Task<IEnumerable<AddressQueryResponse>> Query(AddressQuery query, CancellationToken cancellationToken)
     {
-
         if (query is AddressSearchQuery searchQuery)
         {
             return await Find(searchQuery.SearchTerm, searchQuery.Country, searchQuery.LastId, cancellationToken);
         }
-        
-        if(query is AddressRetrieveQuery retrieveQuery)
-        { 
+
+        if (query is AddressRetrieveQuery retrieveQuery)
+        {
             return await Retrieve(retrieveQuery.Id, cancellationToken);
         }
 
-        return null;
+        return [];
     }
 
     ///// Returns addresses matching the search term.
@@ -63,7 +62,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
                     ? await response.Content.ReadAsStringAsync(cancellationToken)
                     : "";
 
-                _logger.LogWarning($"Did not receive a successful status code. {response.StatusCode}, {responseMessage}");
+                _logger.LogWarning("Did not receive a successful status code. {StatusCode}, {Message}", response.StatusCode, responseMessage);
                 return Enumerable.Empty<AddressAutocompleteFindResponse>();
             }
 
@@ -78,7 +77,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception.Message);
+            _logger.LogError(exception, "Error in Find: {Message}", exception.Message);
             throw;
         }
     }
@@ -105,7 +104,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
                     ? await response.Content.ReadAsStringAsync(cancellationToken)
                     : "";
 
-                _logger.LogWarning($"Did not receive a successful status code. {response.StatusCode}, {responseMessage}");
+                _logger.LogWarning("Did not receive a successful status code. {StatusCode}, {Message}", response.StatusCode, responseMessage);
                 return Enumerable.Empty<AddressAutocompleteRetrieveResponse>();
             }
 
@@ -120,8 +119,8 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception.Message);
-            throw; 
+            _logger.LogError(exception, "Error in Retrieve: {Message}", exception.Message);
+            throw;
         }
     }
 

@@ -3,8 +3,8 @@ import { IdentityProviderTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -21,10 +21,10 @@ import { Subscription } from 'rxjs';
 			</div>
 			<span style="flex: 1 1 auto;"></span>
 
-			<!-- <mat-chip-option class="me-3" *ngIf="env" disabled>{{ env }}</mat-chip-option> -->
-
+			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
+				>logout</mat-icon
+			>
 			<div *ngIf="loggedInUserDisplay">
-				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
 				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
 			</div>
 		</mat-toolbar>
@@ -88,9 +88,8 @@ import { Subscription } from 'rxjs';
 export class SpdHeaderComponent implements OnInit, OnDestroy {
 	fullTitle = '';
 	mobileTitle = '';
+	hasValidToken: boolean = false;
 	loggedInUserDisplay: string | null = null;
-
-	// env: string | null | undefined = null; // TODO add display of env
 
 	private applicationTitleSubscription!: Subscription;
 
@@ -99,13 +98,13 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private commonApplicationService: CommonApplicationService,
-		// private configService: ConfigService,
 		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			console.debug('[HeaderComponent] isLoggedIn', isLoggedIn);
+			console.debug('[SpdHeader] isLoggedIn', isLoggedIn);
+
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
@@ -114,7 +113,11 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 			this.getUserInfo();
 		});
 
-		// this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
+		this.authProcessService.hasValidToken$.subscribe((hasValidToken: boolean) => {
+			console.debug('[SpdHeader] hasValidToken', hasValidToken);
+
+			this.hasValidToken = hasValidToken;
+		});
 
 		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe(
 			(_resp: [string, string]) => {
@@ -150,7 +153,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 			name = this.utilService.getFullName(userData.firstName, userData.lastName);
 		}
 		if (!name) {
-			name = this.authProcessService.loggedInUserTokenData.display_name;
+			name = this.authProcessService.loggedInUserTokenData?.display_name;
 		}
 		this.loggedInUserDisplay = name ?? 'BCeID User';
 	}

@@ -1,5 +1,8 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Moq;
 using Spd.Manager.Common.Admin;
 using Spd.Resource.Repository.Config;
@@ -11,11 +14,12 @@ namespace Spd.Manager.Common.UnitTest;
 public class AdminManagerTest
 {
     private readonly IFixture fixture;
-    private Mock<IAddressAutocompleteClient> mockAddressClient = new();
-    private Mock<IConfigRepository> mockConfigRepo = new();
-    private Mock<IOrgRepository> mockOrgRepo = new();
-    private Mock<IMapper> mockMapper = new();
-    private AdminManager sut;
+    private readonly Mock<IAddressAutocompleteClient> mockAddressClient = new();
+    private readonly Mock<IConfigRepository> mockConfigRepo = new();
+    private readonly Mock<IOrgRepository> mockOrgRepo = new();
+    private readonly Mock<IMapper> mockMapper = new();
+    private readonly IDistributedCache cache = new MemoryDistributedCache(Options.Create<MemoryDistributedCacheOptions>(new MemoryDistributedCacheOptions()));
+    private readonly AdminManager sut;
 
     public AdminManagerTest()
     {
@@ -51,11 +55,11 @@ public class AdminManagerTest
         mockOrgRepo.Setup(m => m.QueryOrgAsync(It.IsAny<OrgsQry>(), CancellationToken.None))
             .ReturnsAsync(orgsQryResult);
 
-        sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object);
+        sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object, cache);
     }
 
     [Fact]
-    public async void Handle_FindAddressQuery_Return_AddressFindResponse()
+    public async Task Handle_FindAddressQuery_Return_AddressFindResponse()
     {
         FindAddressQuery request = new FindAddressQuery("test");
 

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Utilities.Cache;
-using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -43,8 +41,9 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         #region authenticated
+
         /// <summary>
-        /// Create Permit Application
+        /// Create/partial save permit application
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
@@ -55,6 +54,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             if (licenceCreateRequest.ApplicantId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            licenceCreateRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest));
         }
 
@@ -72,7 +72,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get Lastest Permit Application 
+        /// Get Lastest Permit Application
         /// Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit
         /// </summary>
         /// <param name="applicantId"></param>
@@ -80,54 +80,14 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/applicants/{applicantId}/permit-latest")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<PermitLicenceAppResponse> GetLatestPermitApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] WorkerLicenceTypeCode typeCode)
+        public async Task<PermitLicenceAppResponse> GetLatestPermitApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] ServiceTypeCode typeCode)
         {
             Guid licenceAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery(applicantId, typeCode));
             return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
         }
 
         /// <summary>
-        /// Upload permit application files to transient storage
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/{licenceAppId}/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
-        }
-
-        /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/files")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadPermitAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
-            return fileKeyCode;
-        }
-
-        /// <summary>
-        /// Submit Permit Application
+        /// Submit new permit Application authenticated with bcsc
         /// </summary>
         /// <param name="permitSubmitRequest"></param>
         /// <returns></returns>
@@ -139,6 +99,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            permitSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
         }
@@ -150,10 +111,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/authenticated/submit")]
+        [Route("api/permit-applications/change")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<PermitAppCommandResponse?> ChangePermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             PermitAppCommandResponse? response = null;
 
@@ -162,6 +123,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
@@ -189,9 +151,9 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        #endregion
+        #endregion authenticated
 
-        #region anonymous 
+        #region anonymous
 
         /// <summary>
         /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
@@ -216,45 +178,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
-        /// </summary>
-        /// <param name="recaptcha"></param>
-        /// <param name="ct"></param>
-        /// <returns>Guid: keyCode</returns>
-        [Route("api/permit-applications/anonymous/keyCode")]
-        [HttpPost]
-        public async Task<IActionResult> GetPermitAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
-        {
-            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
-            string keyCode = Guid.NewGuid().ToString();
-            await Cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
-            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/anonymous/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadPermitAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            await VerifyKeyCode();
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
-            return fileKeyCode;
-        }
-
-        /// <summary>
         /// Submit Body Armour or Armour Vehicle permit application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
@@ -262,7 +185,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/anonymous/submit")]
+        [Route("api/permit-applications/anonymous/submit-change")]
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
@@ -272,6 +195,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
             PermitAppCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
@@ -290,12 +214,12 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
-
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return response;
         }
-        #endregion
+
+        #endregion anonymous
     }
 }

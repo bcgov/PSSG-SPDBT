@@ -1,18 +1,20 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.FileStorage
 {
     internal class MainFileStorageService : FileStorageService, IMainFileStorageService
     {
-        private IOptions<S3Settings> _transientConfig;
+        private readonly S3Settings _transientConfig;
 
-        public MainFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, IOptions<S3Settings> transientConfig, ILogger<FileStorageService> logger)
-            : base(amazonS3Client, config, logger)
+        public MainFileStorageService(
+            [FromKeyedServices("main")] IAmazonS3 amazonS3Client,
+            IOptionsMonitor<S3Settings> settings)
+            : base(amazonS3Client, settings.Get("main"))
         {
-            _transientConfig = transientConfig;
+            _transientConfig = settings.Get("transient");
         }
 
         public async Task<string> HandleCopyStorageFromTransientToMainCommand(CopyStorageFromTransientToMainCommand cmd, CancellationToken cancellationToken)
@@ -29,9 +31,9 @@ namespace Spd.Utilities.FileStorage
             var destKey = $"{destFolder}{cmd.DestKey}";
             var request = new CopyObjectRequest
             {
-                SourceBucket = _transientConfig.Value.Bucket,
+                SourceBucket = _transientConfig.Bucket,
                 SourceKey = key,
-                DestinationBucket = _config.Value.Bucket,
+                DestinationBucket = _config.Bucket,
                 DestinationKey = destKey,
             };
 

@@ -26,7 +26,7 @@ namespace Spd.Manager.Screening
         {
             //if already has an user. use email to connect
             Guid? userId = null;
-            PortalUserListResp userList = await _portalUserRepository.QueryAsync(
+            PortalUserListResp userList =(PortalUserListResp) await _portalUserRepository.QueryAsync(
                 new PortalUserQry() { UserEmail = command.CreateRequest.EmailAddress, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                 ct
                 );

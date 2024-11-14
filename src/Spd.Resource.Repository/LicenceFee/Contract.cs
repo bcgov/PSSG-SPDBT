@@ -9,7 +9,7 @@ public partial interface ILicenceFeeRepository
 
 public record LicenceFeeQry
 {
-    public WorkerLicenceTypeEnum? WorkerLicenceTypeEnum { get; set; } = null;
+    public ServiceTypeEnum? ServiceTypeEnum { get; set; } = null;
     public LicenceTermEnum? LicenceTermEnum { get; set; } = null;
     public ApplicationTypeEnum? ApplicationTypeEnum { get; set; } = null;
     public BizTypeEnum? BizTypeEnum { get; set; } = null;
@@ -19,7 +19,7 @@ public record LicenceFeeQry
 
 public record LicenceFeeResp()
 {
-    public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum? ServiceTypeCode { get; set; }
     public BizTypeEnum? BizTypeCode { get; set; }
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }

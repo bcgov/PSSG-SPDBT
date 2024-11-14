@@ -35,7 +35,7 @@ public class BizProfileManager :
         IAddressRepository addressRepository,
         IBCeIDService bceidService,
         IMapper mapper,
-        ILogger<BizProfileManager> logger)
+        ILogger<IBizProfileManager> logger)
     {
         _mapper = mapper;
         _logger = logger;
@@ -59,7 +59,7 @@ public class BizProfileManager :
             _logger.LogError("Cannot get the business information from BCeID web service.");
 
         IdentityQueryResult idResult = await _idRepository.Query(
-            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
+            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, null),
             ct);
         if (idResult != null && idResult.Items.Any())
             currentUserIdentity = idResult.Items.FirstOrDefault();
@@ -84,7 +84,9 @@ public class BizProfileManager :
                 identityId = await CreateUserIdentity(cmd, ct);
 
             PortalUserResp resp = await AddPortalUserToBiz(cmd.BceidIdentityInfo, (Guid)identityId, (Guid)bizId, ct);
-            return _mapper.Map<BizUserLoginResponse>(resp);
+            BizUserLoginResponse response = _mapper.Map<BizUserLoginResponse>(resp);
+            response.BceidBizTradeName = bizInfoFormBceid?.TradeName;
+            return response;
         }
         else
         {
@@ -95,7 +97,11 @@ public class BizProfileManager :
                 //return the loginResponse
                 //update the biz               
                 await UpdateBiz(cmd, bizInfoFormBceid, ct);
-                return _mapper.Map<BizUserLoginResponse>(portalUser);
+                await UpdatePortalUser(cmd.BceidIdentityInfo, portalUser.Id, ct);
+                BizUserLoginResponse response = _mapper.Map<BizUserLoginResponse>(portalUser);
+                response.BceidBizTradeName = bizInfoFormBceid?.TradeName;
+
+                return response;
             }
             else
             {
@@ -148,7 +154,7 @@ public class BizProfileManager :
         if (!biz.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence))
             return true;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         if (portalUsers == null || !portalUsers.Items.Any())
@@ -164,7 +170,7 @@ public class BizProfileManager :
         if (currentUserIdentity == null)
             return null;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();
@@ -211,7 +217,7 @@ public class BizProfileManager :
         {
             Id = (Guid)cmd.BizId,
             BizLegalName = bizInfoFromBceid?.LegalName,
-            BizName = bizInfoFromBceid?.TradeName,
+            BizName = string.IsNullOrWhiteSpace(bizInfoFromBceid?.TradeName) ? null : bizInfoFromBceid.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
             MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid?.MailingAddress),
@@ -232,6 +238,16 @@ public class BizProfileManager :
             OrgId = bizId,
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
             PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+        }, ct);
+    }
+
+    private async Task<PortalUserResp> UpdatePortalUser(BceidIdentityInfo info, Guid portalUserId, CancellationToken ct)
+    {
+        return await _portalUserRepository.ManageAsync(new UpdatePortalUserCmd()
+        {
+            Id = portalUserId,
+            FirstName = info.FirstName,
+            LastName = info.LastName,
         }, ct);
     }
 

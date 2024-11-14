@@ -10,14 +10,6 @@ public class UploadFileRequest
     public string ContentType { get; set; }
 }
 
-public enum WorkerLicenceTypeCode
-{
-    SecurityWorkerLicence,
-    ArmouredVehiclePermit,
-    BodyArmourPermit,
-    SecurityBusinessLicence,
-    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
-}
 
 public enum LicenceDocumentTypeCode
 {
@@ -89,6 +81,7 @@ public enum PoliceOfficerRoleCode
     CourtAppointedBailiff,
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
+    PoliceOfficerRetired,
     Other,
 }
 
@@ -100,6 +93,7 @@ public enum HairColourCode
     Red,
     Grey,
     Bald,
+    White
 }
 
 public enum EyeColourCode
@@ -109,6 +103,8 @@ public enum EyeColourCode
     Black,
     Green,
     Hazel,
+    Grey,
+    Other
 }
 
 public enum HeightUnitCode

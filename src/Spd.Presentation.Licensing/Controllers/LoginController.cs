@@ -49,7 +49,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return Ok();
         }
 
-
         /// <summary>
         /// user calls this endpoint to get the list of the biz that are already existing in system.
         /// </summary>
@@ -74,8 +73,9 @@ namespace Spd.Presentation.Licensing.Controllers
             //    ""Email"": ""peggy.zhang@quartech.com""
             //}";
             //BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
-            return await _mediator.Send(new GetBizsQuery(info.BizGuid));
+            return await _mediator.Send(new GetBizsQuery(info.BizGuid.Value));
         }
+
         /// <summary>
         /// login, for biz licensing portal, bceid login, sample: api/biz/login?bizId=123
         /// or api/biz/login
@@ -104,7 +104,4 @@ namespace Spd.Presentation.Licensing.Controllers
             return Ok();
         }
     }
-
-
-
 }

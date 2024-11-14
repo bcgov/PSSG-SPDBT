@@ -16,17 +16,17 @@ internal class RecaptchaVerificationService : IRecaptchaVerificationService
 
     public async Task<bool> VerifyAsync(string clientResponse, CancellationToken ct)
     {
-        var content = new Dictionary<string, string>()
+        using var content = new FormUrlEncodedContent(new Dictionary<string, string>()
             {
                 { "secret", options.SecretKey },
                 { "response", clientResponse }
-            };
+            });
         using var client = httpClientFactory.CreateClient("recaptcha");
 
-        var response = await client.PostAsync(options.Url.AbsoluteUri, new FormUrlEncodedContent(content), ct);
+        var response = await client.PostAsync(options.Url, content, ct);
         response.EnsureSuccessStatusCode();
 
-        var responseData = await response.Content.ReadFromJsonAsync<CaptchaResponse>();
+        var responseData = await response.Content.ReadFromJsonAsync<CaptchaResponse>(ct);
         if (responseData != null)
         {
             return responseData.Success;

@@ -56,11 +56,13 @@ public record BizListResponse
     public string? BizLegalName { get; set; }
     public string? BizName { get; set; }
     public Guid? BizGuid { get; set; }
+    public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
 }
 
 public record BizProfileResponse : BizInfo
 {
     public Guid BizId { get; set; } //which is accountid in account
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public record BizUserLoginResponse
@@ -71,6 +73,7 @@ public record BizUserLoginResponse
     public string? LastName { get; set; }
     public bool? IsFirstTimeLogin { get; set; } = false;
     public ContactRoleCode ContactRoleCode { get; set; }
+    public string? BceidBizTradeName { get; set; }
 }
 
 public record BizProfileUpdateRequest
@@ -83,6 +86,7 @@ public record BizProfileUpdateRequest
     public Guid? SoleProprietorLicenceId { get; set; }
     public string? SoleProprietorSwlPhoneNumber { get; set; }
     public string? SoleProprietorSwlEmailAddress { get; set; }
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public enum BizTypeCode
