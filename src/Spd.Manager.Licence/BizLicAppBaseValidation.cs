@@ -34,8 +34,7 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
         // Private investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
             .Must(r => r.ContactId != null && r.ContactId != Guid.Empty &&
-                 r.LicenceId != null && r.LicenceId != Guid.Empty &&
-                 !string.IsNullOrEmpty(r.Surname))
+                 r.LicenceId != null && r.LicenceId != Guid.Empty)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor)
