@@ -1,10 +1,12 @@
 export {
-	ApplicationPortalStatusTypes,
+	ApplicationInviteStatuses,
+	ApplicationPortalStatuses,
 	ApplicationTypes,
 	ArmouredVehiclePermitReasonTypes,
 	BizTypes,
 	BodyArmourPermitReasonTypes,
 	BooleanTypes,
+	ContactAuthorizationTypes,
 	CountryTypes,
 	DogDocumentTypes,
 	EyeColourTypes,
@@ -22,5 +24,4 @@ export {
 	ServiceTypes,
 	WeightUnitTypes,
 	WorkerCategoryTypes,
-	WorkerLicenceTypes,
 } from './model-desc.models';

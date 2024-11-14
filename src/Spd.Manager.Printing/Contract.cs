@@ -11,20 +11,12 @@ public interface IPrintingManager
 public record StartPrintJobCommand(Guid EventId) : IRequest<ResultResponse>;
 public record PrintJobStatusQuery(Guid EventId) : IRequest<ResultResponse>;
 public record PreviewDocumentCommand(Guid LicenceId) : IRequest<PreviewDocumentResp>;
-
-public record PrintJob(DocumentType DocumentType, Guid? ApplicationId, Guid? LicenceId);
 public record ResultResponse()
 {
     public string PrintJobId { get; set; }
     public JobStatusCode Status { get; set; }
     public string? Error { get; set; }
 };
-public enum DocumentType
-{
-    FingerprintLetter,
-    PersonalLicencePreview,
-}
-
 public enum JobStatusCode
 {
     Ready, //Active state status reason
@@ -35,4 +27,4 @@ public enum JobStatusCode
     Fail //Inactive State status reason
 }
 
-public record PreviewDocumentResp(string ContentType, IEnumerable<byte> Content);
+public record PreviewDocumentResp(string ContentType, IEnumerable<byte> Content, string JobId);

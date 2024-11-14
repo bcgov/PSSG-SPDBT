@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
@@ -53,26 +52,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-        /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/applicant/files")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
-            return fileKeyCode;
-        }
 
         /// <summary>
         /// Submit applicant update
@@ -124,6 +103,19 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
             return Ok();
+        }
+
+        /// <summary>
+        /// Get applicant profile anonymously, the applicantId is retrieved from cookies.
+        /// For controlling member, The cookie is set when the user click the update cm email link, verify the invitation.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant")]
+        [HttpGet]
+        public async Task<ApplicantProfileResponse?> GetApplicantInfoAnonymous()
+        {
+            string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetApplicantProfileQuery(Guid.Parse(applicantIdStr)));
         }
     }
 }

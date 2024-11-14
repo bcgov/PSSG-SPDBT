@@ -1,4 +1,5 @@
-﻿using Spd.Resource.Repository.Application;
+﻿using MediatR;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PersonLicApplication;
 
@@ -8,15 +9,17 @@ public partial interface IBizLicApplicationRepository
     public Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+    public Task CancelDraftApplicationAsync(Guid applicationId, CancellationToken ct);
 }
 
 public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
 
 public record BizLicApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum ServiceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public BizTypeEnum? BizTypeCode { get; set; }
+    public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.Portal;
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -34,10 +37,14 @@ public record BizLicApplication
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? NoBranding { get; set; }
     public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public Guid? SubmittedByPortalUserId { get; set; }
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication
@@ -67,12 +74,16 @@ public record BizLicApplicationResp() : BizLicApplication
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public Guid? SoleProprietorSWLAppId { get; set; } //sole proprietor swl appliation id, for sole proprietor combo flow
+    public IEnumerable<Guid> NonSwlControllingMemberCrcAppIds { get; set; }
+    public ApplicationOriginTypeEnum SoleProprietorSWLAppOriginTypeCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
 
 public enum PositionEnum

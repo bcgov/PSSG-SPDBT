@@ -104,13 +104,5 @@ namespace Spd.Resource.Repository.ApplicationInvite
         Licensee
     }
 
-    public enum ApplicationInviteStatusEnum
-    {
-        Draft,
-        Sent,
-        Failed,
-        Completed,
-        Cancelled,
-        Expired
-    }
+
 }

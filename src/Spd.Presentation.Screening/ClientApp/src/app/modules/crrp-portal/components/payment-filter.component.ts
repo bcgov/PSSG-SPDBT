@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 

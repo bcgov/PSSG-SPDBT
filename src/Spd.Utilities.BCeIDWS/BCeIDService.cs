@@ -40,18 +40,18 @@ namespace Spd.Utilities.BCeIDWS
                     accountTypeCode = BCeIDAccountTypeCode.Internal,
                 });
 
-                InternalUserGroupInfoResponse groupResp = await _client.getInternalUserGroupInfoAsync(new InternalUserGroupInfoRequest()
+                await _client.getInternalUserGroupInfoAsync(new InternalUserGroupInfoRequest()
                 {
                     onlineServiceId = _config.OnlineServiceId,
                     requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
                     requesterUserGuid = qry.RequesterGuid,
                     userGuid = qry.UserGuid,
                     groupMatches = new BCeIDInternalGroupMatch[]
-                    {
+                   {
                     new() {
                         groupName="Portal_Service_Account"//"MY_IDIR_SECURITY_GROUP"
                     }
-                    }
+                   }
                 });
                 return new IDIRUserDetailResult
                 {
@@ -102,7 +102,8 @@ namespace Spd.Utilities.BCeIDWS
                 }
                 else
                 {
-                    _logger.LogError($"BceidWebService call : getAccountDetailAsync failed. code = {accountDetailResp.code}, failureCode = {accountDetailResp.failureCode}, message = {accountDetailResp.message}");
+                    _logger.LogError("BceidWebService call : getAccountDetailAsync failed. code = {Code}, failureCode = {FailureCode}, message = {Message}",
+                        accountDetailResp.code, accountDetailResp.failureCode, accountDetailResp.message);
                     return null;
                 }
             }

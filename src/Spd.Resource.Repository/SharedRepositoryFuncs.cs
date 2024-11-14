@@ -10,7 +10,10 @@ internal static class SharedRepositoryFuncs
         foreach (var c in categories)
         {
             var cat = _context.LookupLicenceCategory(c.ToString());
-            if (cat != null && !app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
+            if (cat == null)
+                throw new ArgumentException($"licence category not found for {c.ToString()}");
+
+            if (!app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
             {
                 _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
             }
@@ -26,7 +29,7 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkServiceType(DynamicsContext _context, WorkerLicenceTypeEnum? licenceType, spd_application app)
+    public static void LinkServiceType(DynamicsContext _context, ServiceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
         spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());
@@ -44,5 +47,48 @@ internal static class SharedRepositoryFuncs
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
+    }
+
+    public static void LinkSubmittedByPortalUser(DynamicsContext _context, Guid? portalUserId, spd_application app)
+    {
+        if (portalUserId == null) return;
+        var portaluser = _context.spd_portalusers.Where(l => l.spd_portaluserid == portalUserId).FirstOrDefault();
+        if (portaluser != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), portaluser);
+        }
+    }
+
+    public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
+    }
+
+    public static List<spd_alias>? GetAliases(Guid contactId, DynamicsContext _context)
+    {
+        var matchingAliases = _context.spd_aliases.Where(o =>
+           o._spd_contactid_value == contactId &&
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+       ).ToList();
+        return matchingAliases;
+    }
+    public static contact? GetDuplicateContact(DynamicsContext context, contact contact, CancellationToken ct)
+    {
+        var query = context.contacts.Where(x => x.birthdate == contact.birthdate);
+        if (!string.IsNullOrEmpty(contact.spd_bcdriverslicense))
+            query = query.Where(a => a.spd_bcdriverslicense == contact.spd_bcdriverslicense);
+
+        return query.ToList().Where(a => string.Equals(a.firstname, contact.firstname, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(a.lastname, contact.lastname, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+    }
+    public static contact? GetLicenceHolderContact(DynamicsContext context, Guid expiredLicenceId)
+    {
+        return context.spd_licences
+            .Expand(l => l.spd_LicenceHolder_contact)
+            .Where(l => l.spd_licenceid == expiredLicenceId)
+            .FirstOrDefault()?.spd_LicenceHolder_contact;
     }
 }

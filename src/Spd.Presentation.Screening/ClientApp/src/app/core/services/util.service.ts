@@ -1,9 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { HotToastService } from '@ngneat/hot-toast';
-import jwt_decode from 'jwt-decode';
-import * as moment from 'moment';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { jwtDecode } from 'jwt-decode';
+import moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
@@ -17,7 +17,12 @@ import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	constructor(@Inject(DOCUMENT) private document: Document, private hotToastService: HotToastService) {}
+	private uniqueId = 1;
+
+	constructor(
+		@Inject(DOCUMENT) private document: Document,
+		private hotToastService: HotToastService,
+	) {}
 
 	//------------------------------------
 	// Session storage
@@ -41,6 +46,11 @@ export class UtilService {
 		this.clearSessionData(this.ORG_REG_STATE_KEY);
 		this.clearSessionData(this.CRRPA_PORTAL_STATE_KEY);
 		this.clearSessionData(this.PSSOA_PORTAL_STATE_KEY);
+	}
+
+	public getUniqueId(): string {
+		this.uniqueId = this.uniqueId + 1;
+		return `ID${this.uniqueId}`;
 	}
 
 	//------------------------------------
@@ -70,6 +80,10 @@ export class UtilService {
 		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
+	getDateMin(): moment.Moment {
+		return moment('1800-01-01');
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 
@@ -80,8 +94,8 @@ export class UtilService {
 
 	getDecodedAccessToken(token: string): any {
 		try {
-			return jwt_decode(token);
-		} catch (Error) {
+			return jwtDecode(token);
+		} catch (_error) {
 			return null;
 		}
 	}
@@ -113,7 +127,7 @@ export class UtilService {
 
 	getDescByCode(codeTableName: keyof typeof CodeDescTypes, input: string): string {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+		return codeDescs ? ((codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '') : '';
 	}
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
@@ -145,7 +159,7 @@ export class UtilService {
 			document.body.removeChild(anchor);
 		} else {
 			this.hotToastService.error(
-				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.'
+				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.',
 			);
 			console.error(`fileName ${fileName} is empty`);
 		}
@@ -201,7 +215,7 @@ export class UtilService {
 
 	getShowScreeningType(
 		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean
+		contractorsNeedVulnerableSectorScreening: boolean,
 	): boolean {
 		if (!licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
 			return false;
@@ -212,7 +226,7 @@ export class UtilService {
 
 	getScreeningTypes(
 		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean
+		contractorsNeedVulnerableSectorScreening: boolean,
 	): SelectOptions[] {
 		if (!licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
 			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Licensee);

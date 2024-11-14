@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -27,16 +28,16 @@ internal class BizLicAppManager :
         IRequestHandler<BizLicAppReplaceCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppRenewCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
-        IRequestHandler<GetBizMembersQuery, Members>,
-        IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
+        IRequestHandler<CancelDraftApplicationCommand, Unit>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IBizRepository _bizRepository;
+    private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -49,7 +50,8 @@ internal class BizLicAppManager :
         IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository,
         ITaskRepository taskRepository,
-        IBizRepository bizRepository)
+        IBizRepository bizRepository,
+        IPersonLicApplicationRepository personLicApplicationRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -62,6 +64,7 @@ internal class BizLicAppManager :
         _bizContactRepository = bizContactRepository;
         _taskRepository = taskRepository;
         _bizRepository = bizRepository;
+        _personLicApplicationRepository = personLicApplicationRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -70,24 +73,20 @@ internal class BizLicAppManager :
         BizLicAppResponse result = _mapper.Map<BizLicAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
-
-        if (result.BizId != null)
-            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
-
         return result;
     }
 
     public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceTypeEnum.SecurityBusinessLicence, cancellationToken);
+        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, ServiceTypeEnum.SecurityBusinessLicence, cancellationToken);
         return await Handle(new GetBizLicAppQuery(latestAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.BizLicAppUpsertRequest.BizId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.BizLicAppUpsertRequest.ServiceTypeCode.Value.ToString()),
             cmd.BizLicAppUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -98,14 +97,13 @@ internal class BizLicAppManager :
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
 
+        if (cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId != null)//this is a biz lic app from swl as sole proprietor
+        {
+            await _personLicApplicationRepository.UpdateSwlSoleProprietorApplicationAsync((Guid)cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId, response.LicenceAppId, cancellationToken);
+        }
+
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
-
-        if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
-            await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
-                cmd.BizLicAppUpsertRequest.BizId,
-                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
-                cancellationToken);
 
         if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
             await UpdateDocumentsAsync(
@@ -113,15 +111,27 @@ internal class BizLicAppManager :
                 (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
                 cancellationToken);
 
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(cmd.BizLicAppUpsertRequest.BizId, response.LicenceAppId),
+            cancellationToken);
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand cmd, CancellationToken cancellationToken)
     {
+        if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "LicenceAppId cannot be null");
         var response = await this.Handle((BizLicAppUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.BizLicAppUpsertRequest.LicenceAppId, cancellationToken);
-        decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+
+        decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest,
+            cmd.BizLicAppUpsertRequest.LicenceAppId.Value,
+            cancellationToken,
+            HasSwl90DayLicence: false,
+            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId,
+            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppOriginTypeCode);
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -130,30 +140,24 @@ internal class BizLicAppManager :
         BizLicAppSubmitRequest request = cmd.LicenceRequest;
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
+        if (cmd.LicenceRequest.OriginalLicenceId == null)
+            throw new ArgumentException("Original Licence Id cannot be empty");
 
         // Validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-
-        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originalLic.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+        //link biz members to this application
+        //await _bizContactRepository.ManageBizContactsAsync(
+        //    new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+        //    cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
-
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originalLic.BizId,
-                (Guid)originalLic.LicenceAppId,
-                cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -163,23 +167,17 @@ internal class BizLicAppManager :
         BizLicAppSubmitRequest request = cmd.LicenceRequest;
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
+        if (cmd.LicenceRequest.OriginalLicenceId == null)
+            throw new ArgumentException("Original Licence Id cannot be empty");
 
         // Validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        LicenceResp originalLic = originalLicences.Items.First();
-
-        // Check Renew your existing application before it expires, within 90 days of the expiry date.
+        // Check Renew your licence before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
-
-        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originaBizlLic.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
 
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.LatestApplicationId,
@@ -191,26 +189,26 @@ internal class BizLicAppManager :
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+        if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
 
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originaBizlLic.BizId,
-                (Guid)originaBizlLic.LicenceAppId,
-                cancellationToken);
+        if (cmd.LicenceRequest.SoleProprietorSWLAppId != null)//this is renew biz lic app from swl as sole proprietor
+        {
+            await _personLicApplicationRepository.UpdateSwlSoleProprietorApplicationAsync((Guid)cmd.LicenceRequest.SoleProprietorSWLAppId, response.LicenceAppId, cancellationToken);
+        }
 
         // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
-                response?.LicenceAppId,
+                response.LicenceAppId,
                 null,
                 null,
                 null,
                 null,
                 null,
-                response?.AccountId,
+                response.AccountId,
                 cancellationToken);
 
         // Copying all old files to new application in PreviousFileIds 
@@ -223,6 +221,12 @@ internal class BizLicAppManager :
                     cancellationToken);
             }
         }
+
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+            cancellationToken);
+
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -232,20 +236,16 @@ internal class BizLicAppManager :
     {
         BizLicAppSubmitRequest request = cmd.LicenceRequest;
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
-            throw new ArgumentException("should be an update request");
+            throw new ArgumentException("Should be an update request");
+        if (cmd.LicenceRequest.OriginalLicenceId == null)
+            throw new ArgumentException("Original Licence Id cannot be empty");
 
         // Validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originalLic.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
-
-        ChangeSpec changes = await MakeChanges(originalLic, request, cancellationToken);
+        ChangeSpec changes = await MakeChanges(request, originalLic, cancellationToken);
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
@@ -257,19 +257,22 @@ internal class BizLicAppManager :
                 cmd.LicenceRequest.PreviousDocumentIds,
                 cancellationToken);
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+            createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+            if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create biz application failed.");
 
             // Upload new files
             await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
-                    response?.LicenceAppId,
+                    response.LicenceAppId,
                     null,
                     null,
                     null,
                     null,
                     null,
-                    response?.AccountId,
+                    response.AccountId,
                     cancellationToken);
 
             // Copying all old files to new application in PreviousFileIds 
@@ -285,64 +288,8 @@ internal class BizLicAppManager :
 
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
-        else
-        {
-            UpdateBizCmd updateBizCmd = _mapper.Map<UpdateBizCmd>(request);
-            updateBizCmd.Id = (Guid)originalLic.BizId;
-            await _bizRepository.ManageBizAsync(updateBizCmd, cancellationToken);
-        }
 
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originalLic.BizId,
-                (Guid)originalLic.LicenceAppId,
-                cancellationToken);
-
-        return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLic.LicenceAppId, Cost = cost };
-    }
-
-    public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
-    {
-        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
-        Members members = new();
-        members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => new SwlContactInfo()
-            {
-                BizContactId = c.BizContactId,
-                LicenceId = c.LicenceId,
-                ContactId = c.ContactId,
-            });
-        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => _mapper.Map<NonSwlContactInfo>(c));
-        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
-            .Select(c => _mapper.Map<SwlContactInfo>(c));
-        return members;
-    }
-
-    public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
-    {
-        await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
-        if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CorporateRegistryDocument))
-            throw new ApiException(HttpStatusCode.BadRequest, "Can only Upload Corporate Registry Document for management of controlling member.");
-
-        if (cmd.LicAppFileInfos != null && cmd.LicAppFileInfos.Any())
-        {
-            foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
-            {
-                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                fileCmd.AccountId = cmd.BizId;
-                fileCmd.ApplicationId = cmd.ApplicationId;
-                fileCmd.TempFile = tempFile;
-                //create bcgov_documenturl and file
-                await _documentRepository.ManageAsync(fileCmd, ct);
-            }
-        }
-        return default;
+        return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId, Cost = cost };
     }
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery query, CancellationToken cancellationToken)
@@ -350,9 +297,9 @@ internal class BizLicAppManager :
         LicenceAppQuery q = new(
             null,
             query.BizId,
-            new List<WorkerLicenceTypeEnum>
+            new List<ServiceTypeEnum>
             {
-                WorkerLicenceTypeEnum.SecurityBusinessLicence,
+                ServiceTypeEnum.SecurityBusinessLicence,
             },
             new List<ApplicationPortalStatusEnum>
             {
@@ -410,19 +357,16 @@ internal class BizLicAppManager :
             return new FileResponse(); //error in S3, probably cannot find the file
         }
     }
-
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid? appId, CancellationToken ct)
+    public async Task<Unit> Handle(CancelDraftApplicationCommand cmd, CancellationToken ct)
     {
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
-        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
-        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
-        foreach (var e in employees)
+        try
         {
-            e.BizContactRoleCode = BizContactRoleEnum.Employee;
+            await _bizLicApplicationRepository.CancelDraftApplicationAsync(cmd.ApplicationId, ct);
         }
-        contacts.AddRange(employees);
-        BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
-        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
+        catch (ArgumentException e)
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, e.Message);
+        };
         return default;
     }
 
@@ -478,9 +422,9 @@ internal class BizLicAppManager :
 
         if (request.UseDogs == true &&
             (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) +
-            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 1))
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 10))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 dog certificate is allowed.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for dog certificate was exceeded.");
         }
 
         if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
@@ -498,34 +442,40 @@ internal class BizLicAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(BizLicApplicationResp originalApp,
+    private async Task<ChangeSpec> MakeChanges(
         BizLicAppSubmitRequest newRequest,
+        LicenceResp originalLic,
         CancellationToken ct)
     {
         ChangeSpec changes = new();
 
         // Categories changed
-        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
+        if (newRequest.CategoryCodes.Count() != originalLic.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
         {
             List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
             newList.Sort();
-            List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+            List<WorkerCategoryTypeCode> originalList = originalLic.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
         //UseDogs changed
-        if (newRequest.UseDogs != originalApp.UseDogs)
+        if (newRequest.UseDogs != originalLic.UseDogs ||
+            newRequest.IsDogsPurposeProtection != originalLic.IsDogsPurposeProtection ||
+            newRequest.IsDogsPurposeDetectionDrugs != originalLic.IsDogsPurposeDetectionDrugs ||
+            newRequest.IsDogsPurposeDetectionExplosives != originalLic.IsDogsPurposeDetectionExplosives)
+        {
             changes.UseDogsChanged = true;
+        }
 
         if (changes.CategoriesChanged)
         {
             StringBuilder previousCategories = new();
             StringBuilder updatedCategories = new();
 
-            foreach (WorkerCategoryTypeCode category in originalApp.CategoryCodes)
+            foreach (WorkerCategoryTypeCode category in originalLic.CategoryCodes)
                 previousCategories.AppendLine(category.ToString());
 
             foreach (WorkerCategoryTypeCode category in newRequest.CategoryCodes)
@@ -533,15 +483,15 @@ internal class BizLicAppManager :
 
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Request to update the license category applicable on the {originalApp.ExpiredLicenceNumber} \n " +
+                Description = $"Request to update the licence category applicable on the {originalLic.LicenceNumber} \n " +
                     $"Previous Categories: {previousCategories} \n " +
                     $"Updated Categories: {updatedCategories}",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
-                Subject = $"License Category update {originalApp.ExpiredLicenceNumber}",
+                Subject = $"Licence Category update {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingAccountId = originalApp.BizId,
+                RegardingAccountId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
-                LicenceId = originalApp.ExpiredLicenceId
+                LicenceId = originalLic.LicenceId
             }, ct);
         }
 
@@ -549,21 +499,59 @@ internal class BizLicAppManager :
         {
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Below Dog's Handers information needs to be updated in the business license {originalApp.ExpiredLicenceNumber} \n " +
+                Description = $"Below Dog's Handlers information needs to be updated in the business licence {originalLic.LicenceNumber} \n " +
                     $"Use of dog : Explosives detection / Drug detection / Protection (As described in the DSV certificate) \n " +
                     $"DSV Certificate Number \n " +
                     $"Expiry Date \n" +
                     $"DSV certificate (Attachment)",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
-                Subject = $"Dog validation information to be updated for Business License {originalApp.ExpiredLicenceNumber}",
+                Subject = $"Dog validation information to be updated for Business Licence {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingAccountId = originalApp.BizId,
+                RegardingAccountId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
-                LicenceId = originalApp.ExpiredLicenceId
+                LicenceId = originalLic.LicenceId
             }, ct);
         }
 
         return changes;
+    }
+
+    private async Task<CreateBizLicApplicationCmd> SetBizManagerInfo(
+        Guid bizId,
+        CreateBizLicApplicationCmd createApp,
+        bool applicantIsBizManager,
+        ContactInfo? applicantContactInfo,
+        CancellationToken ct)
+    {
+        BizResult bizResult = await _bizRepository.GetBizAsync(bizId, ct);
+
+        createApp.ManagerGivenName = bizResult?.BizManagerContactInfo?.GivenName;
+        createApp.ManagerSurname = bizResult?.BizManagerContactInfo?.Surname;
+        createApp.ManagerMiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+        createApp.ManagerMiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+        createApp.ManagerEmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+        createApp.ManagerPhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
+
+        if (applicantIsBizManager)
+        {
+            createApp.GivenName = bizResult?.BizManagerContactInfo?.GivenName;
+            createApp.Surname = bizResult?.BizManagerContactInfo?.Surname;
+            createApp.MiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+            createApp.MiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+            createApp.EmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+            createApp.PhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
+        }
+        else
+        {
+            createApp.GivenName = applicantContactInfo?.GivenName;
+            createApp.Surname = applicantContactInfo?.Surname;
+            createApp.MiddleName1 = applicantContactInfo?.MiddleName1;
+            createApp.MiddleName2 = applicantContactInfo?.MiddleName2;
+            createApp.EmailAddress = applicantContactInfo?.EmailAddress;
+            createApp.PhoneNumber = applicantContactInfo?.PhoneNumber;
+        }
+
+        return createApp;
     }
 
     private sealed record ChangeSpec

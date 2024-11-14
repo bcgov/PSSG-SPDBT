@@ -17,12 +17,15 @@ public record LicenceBasicResponse
     public Guid? LicenceAppId { get; set; }
     public string? LicenceNumber { get; set; }
     public DateOnly ExpiryDate { get; set; }
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeCode? ServiceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
     public string? LicenceHolderName { get; set; }
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
+
+    //issued categories
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 };
 
 public record LicenceResponse : LicenceBasicResponse
@@ -38,6 +41,24 @@ public record LicenceResponse : LicenceBasicResponse
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
     public IEnumerable<Document> RationalDocumentInfos { get; set; } = [];
+
+    //biz info
+    public BizTypeCode BizTypeCode { get; set; } = BizTypeCode.None;
+
+    //swl & biz info
+    public bool UseDogs { get; set; }
+    public bool IsDogsPurposeProtection { get; set; }
+    public bool IsDogsPurposeDetectionDrugs { get; set; }
+    public bool IsDogsPurposeDetectionExplosives { get; set; }
+    public IEnumerable<Document> DogDocumentInfos { get; set; } = [];
+
+    //swl
+    public bool CarryAndUseRestraints { get; set; }
+    public IEnumerable<Document> RestraintsDocumentInfos { get; set; } = [];
+
+    //sole-proprietor
+    public Guid? LinkedSoleProprietorLicenceId { get; set; }
+    public DateOnly? LinkedSoleProprietorExpiryDate { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;

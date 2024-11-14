@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Org;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -13,9 +12,9 @@ namespace Spd.Manager.Screening
 {
     internal class OrgManager :
         IRequestHandler<OrgUpdateCommand, OrgResponse>,
-        IRequestHandler<OrgGetQuery, OrgResponse>,
+        IRequestHandler<OrgGetQuery, OrgResponse?>,
         IRequestHandler<OrgInvitationLinkCreateCommand, OrgInvitationLinkResponse>,
-        IRequestHandler<OrgInvitationLinkVerifyCommand, OrgInviteVerifyResponse>,
+        IRequestHandler<OrgInvitationLinkVerifyCommand, OrgInviteVerifyResponse?>,
         IOrgManager
     {
         private readonly IOrgRepository _orgRepository;

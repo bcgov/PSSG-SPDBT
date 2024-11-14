@@ -84,6 +84,7 @@ namespace Spd.Resource.Repository.User
                     spd_identityid = Guid.NewGuid(),
                     spd_orgguid = verify.OrgGuid.ToString(),
                     spd_userguid = verify.UserGuid.ToString(),
+                    spd_type = (int)IdentityTypeOptionSet.BusinessBceId
                 };
                 _dynaContext.AddTospd_identities(identity);
             }
@@ -230,7 +231,7 @@ namespace Spd.Resource.Repository.User
                 if (invition != null)
                     _dynaContext.DeleteObject(invition);
 
-                // Delete user and invitation
+                // Delete user
                 _dynaContext.DeleteObject(user);
             }
 

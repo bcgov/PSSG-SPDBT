@@ -7,6 +7,7 @@ metadata:
   labels: {{ .labels | nindent 4 }}
 spec:
   minAvailable: {{ .Values.scaling.minAvailableReplicas }}
+  unhealthyPodEvictionPolicy: AlwaysAllow
   selector:
     matchLabels:
       name: {{ .name }}

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Configurations;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -11,15 +10,16 @@ using System.Configuration;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
+
 public abstract class SpdLicenceControllerBase : SpdControllerBase
 {
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
-    private readonly IConfiguration _configuration;
+    protected readonly IConfiguration _configuration;
 
-    protected SpdLicenceControllerBase(IDistributedCache cache, 
-        IDataProtectionProvider dpProvider, 
+    protected SpdLicenceControllerBase(IDistributedCache cache,
+        IDataProtectionProvider dpProvider,
         IRecaptchaVerificationService recaptchaVerificationService,
         IConfiguration configuration)
     {
@@ -29,19 +29,25 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
         _configuration = configuration;
     }
 
-    protected IDistributedCache Cache { get { return _cache; } }
-    protected void SetValueToResponseCookie(string key, string value)
+    protected IDistributedCache Cache
+    { get { return _cache; } }
+
+    protected void SetValueToResponseCookie(string key, string value, int durationInMins = 20)
     {
-        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
-        this.Response.Cookies.Append(key,
-            encryptedKeyCode,
-            new CookieOptions
-            {
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Secure = true,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(20)
-            });
+        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(durationInMins));
+        try
+        {
+            this.Response.Cookies.Append(key,
+                encryptedKeyCode,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(durationInMins)
+                });
+        }
+        catch (Exception ex) { }
     }
 
     protected string GetInfoFromRequestCookie(string key)
@@ -50,7 +56,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
         string? encodedValue;
         Request.Cookies.TryGetValue(key, out encodedValue);
         if (string.IsNullOrEmpty(encodedValue))
-            throw new ApiException(HttpStatusCode.Unauthorized);
+            throw new ApiException(HttpStatusCode.Unauthorized, "Not valid cookie value");
         string value;
         try
         {
@@ -76,11 +82,11 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     {
         Guid[]? array = docKeyCodes?.ToArray();
         if (array == null || array.Length == 0) return Enumerable.Empty<LicAppFileInfo>();
-        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new();
         foreach (Guid docKey in array)
         {
-            IEnumerable<LicAppFileInfo>? items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
-            if (items!=null && items.Any())
+            IEnumerable<LicAppFileInfo>? items = await _cache.GetAsync<IEnumerable<LicAppFileInfo>>(docKey.ToString());
+            if (items != null && items.Any())
             {
                 results.AddRange(items);
             }
@@ -92,7 +98,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     {
         string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
         //validate keyCode
-        LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+        LicenceAppDocumentsCache? keyCodeValue = await Cache.GetAsync<LicenceAppDocumentsCache?>(keyCode.ToString());
         if (keyCodeValue == null)
         {
             throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");

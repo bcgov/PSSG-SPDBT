@@ -3,9 +3,10 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
-using Spd.Utilities.TempFileStorage;
+using System.Collections.Immutable;
 
 namespace Spd.Resource.Repository.Document;
+
 internal class DocumentRepository : IDocumentRepository
 {
     private readonly DynamicsContext _context;
@@ -39,7 +40,10 @@ internal class DocumentRepository : IDocumentRepository
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.ApplicantId != null)
-            documents = documents.Where(d => d._spd_submittedbyid_value == qry.ApplicantId);
+            documents = documents.Where(d => d._bcgov_customer_value == qry.ApplicantId);
+
+        if (qry.AccountId != null)
+            documents = documents.Where(d => d._bcgov_customer_value == qry.AccountId);
 
         if (qry.ApplicationId != null)
             documents = documents.Where(d => d._spd_applicationid_value == qry.ApplicationId);
@@ -62,14 +66,22 @@ internal class DocumentRepository : IDocumentRepository
             documents = documents.Where(d => d._bcgov_tag1id_value == tagId || d._bcgov_tag2id_value == tagId || d._bcgov_tag3id_value == tagId);
         }
 
-        var result = await documents.GetAllPagesAsync(ct);
-        result = result.OrderByDescending(a => a.createdon);
-
-        return new DocumentListResp
+        var results = await documents.GetAllPagesAsync(ct);
+        IEnumerable<DocumentResp> resp = null;
+        if (qry.MultiFileTypes != null)
         {
-            Items = _mapper.Map<IEnumerable<DocumentResp>>(result)
-        };
+            List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(f.ToString())).ToList();
+            List<bcgov_documenturl> result = results.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
+            resp = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon));
+        }
+        else
+        {
+            results = results.OrderByDescending(a => a.createdon);
+            resp = _mapper.Map<IEnumerable<DocumentResp>>(results);
+        }
+        return qry.OnlyReturnLatestSet ? new DocumentListResp { Items = GetLatestSet(resp) } : new DocumentListResp { Items = resp };
     }
+
     public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)
     {
         return cmd switch
@@ -95,10 +107,26 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
+    //if the documents are in the same application, then we use applicationId to indicate its set. Or we use uploadedDatetime
+    private IEnumerable<DocumentResp> GetLatestSet(IEnumerable<DocumentResp> resp)
+    {
+        if (resp.Any())
+        {
+            DocumentResp? doc = resp.FirstOrDefault();
+            if (doc?.ApplicationId == null)
+                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
+            else
+                return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
+        }
+        return resp;
+    }
+
     private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)
     {
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
         documenturl.bcgov_url = cmd.ApplicationId == null ? $"contact/{cmd.ApplicantId}" : $"spd_application/{cmd.ApplicationId}";
+        if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
+           throw new ArgumentException("Invalid Document Expiry Date");
         if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
         _context.AddTobcgov_documenturls(documenturl);
         if (cmd.ApplicationId != null)
@@ -227,6 +255,8 @@ internal class DocumentRepository : IDocumentRepository
             .Expand(d => d.bcgov_Tag2Id)
             .Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
         if (documenturl == null) { return null; }
+        if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
+            throw new ArgumentException("Invalid Document Expiry Date");
         documenturl.spd_expirydate = cmd.ExpiryDate == null ? null :
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
         if (cmd.Tag1 != null)
@@ -296,7 +326,7 @@ internal class DocumentRepository : IDocumentRepository
         }
         else
         {
-            Utilities.FileStorage.FileStream fileStream = new()
+            Utilities.FileStorage.FileContent fileStream = new()
             {
                 FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
                 ContentType = tempFile.ContentType,
@@ -347,5 +377,3 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 }
-
-

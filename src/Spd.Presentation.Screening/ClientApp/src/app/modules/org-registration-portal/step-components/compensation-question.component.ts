@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -11,40 +13,51 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					title="Do volunteers with your organization get any money for volunteering?"
 					subtitle="This includes honorarium payments. It does not include gifts, gift cards, or meals."
 				></app-step-title>
-				<div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group aria-label="Select an option" [(ngModel)]="employeeMonetaryCompensationFlag">
-							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-						<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
-							An option must be selected
-						</mat-error>
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="employeeMonetaryCompensationFlag">
+								<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-3"></mat-divider>
+								<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('employeeMonetaryCompensationFlag')?.dirty ||
+										form.get('employeeMonetaryCompensationFlag')?.touched) &&
+									form.get('employeeMonetaryCompensationFlag')?.invalid &&
+									form.get('employeeMonetaryCompensationFlag')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
 export class CompensationQuestionComponent implements RegistrationFormStepComponent {
-	employeeMonetaryCompensationFlag: BooleanTypeCode | null = null;
-	isDirtyAndInvalid = false;
+	form: FormGroup = this.formBuilder.group({
+		employeeMonetaryCompensationFlag: new FormControl('', [FormControlValidators.required]),
+	});
 
 	booleanTypeCodes = BooleanTypeCode;
 
+	constructor(private formBuilder: FormBuilder) {}
+
 	getDataToSave(): any {
-		return { employeeMonetaryCompensationFlag: this.employeeMonetaryCompensationFlag };
+		return this.form.value;
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.employeeMonetaryCompensationFlag != null;
-		this.isDirtyAndInvalid = !isValid;
-		return isValid;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	clearCurrentData(): void {
-		this.employeeMonetaryCompensationFlag = null;
+		this.form.reset();
 	}
 }

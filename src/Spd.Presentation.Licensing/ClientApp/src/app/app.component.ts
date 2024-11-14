@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiConfiguration } from './api/api-configuration';
 import { ConfigService } from './core/services/config.service';
 
 @Component({
@@ -10,17 +13,29 @@ import { ConfigService } from './core/services/config.service';
 
 			<ng-container *ngIf="configs$ | async">
 				<router-outlet></router-outlet>
-			</ng-container>
 
-			<footer class="mt-auto">
-				<app-spd-footer></app-spd-footer>
-			</footer>
+				<footer class="mt-auto">
+					<app-spd-footer></app-spd-footer>
+				</footer>
+			</ng-container>
 		</body>
 	`,
 	styles: [],
 })
 export class AppComponent {
-	configs$ = this.configService.getConfigs();
+	configs$: Observable<any>;
 
-	constructor(private configService: ConfigService) {}
+	constructor(
+		private _apiConfig: ApiConfiguration,
+		@Inject(APP_BASE_HREF) href: string,
+		private configService: ConfigService
+	) {
+		_apiConfig.rootUrl = `${location.origin}${href}`;
+		if (_apiConfig.rootUrl.endsWith('/')) {
+			_apiConfig.rootUrl = _apiConfig.rootUrl.substring(0, _apiConfig.rootUrl.length - 1);
+		}
+		console.debug('[API rootUrl]', _apiConfig.rootUrl);
+
+		this.configs$ = this.configService.getConfigs();
+	}
 }

@@ -1,8 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceStepperStepComponent } from '../services/util.service';
 
 @Component({
 	selector: 'app-base-wizard-step',
@@ -17,11 +16,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() cancelAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-	constructor(protected commonApplicationService: CommonApplicationService) {}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
@@ -38,10 +36,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
+	onSaveAndExit(_formNumber: number): void {
 		this.saveAndExit.emit(true);
 	}
 
@@ -49,8 +44,8 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.saveAndExit.emit(true);
 	}
 
-	onExit(): void {
-		this.commonApplicationService.cancelAndLoseChanges();
+	onCancelAndExit(): void {
+		this.cancelAndExit.emit(true);
 	}
 
 	onNextReview(formNumber: number): void {

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { AppRoutes } from '@app/app-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { UtilService } from './util.service';
@@ -15,6 +17,9 @@ import { UtilService } from './util.service';
 export class AuthProcessService {
 	private _waitUntilAuthentication$ = new BehaviorSubject<boolean>(false);
 	waitUntilAuthentication$ = this._waitUntilAuthentication$.asObservable();
+
+	private _hasValidToken$ = new BehaviorSubject<boolean>(false);
+	hasValidToken$ = this._hasValidToken$.asObservable();
 
 	loggedInUserTokenData: any = null;
 	identityProvider: IdentityProviderTypeCode | null = null;
@@ -29,99 +34,97 @@ export class AuthProcessService {
 	) {}
 
 	//----------------------------------------------------------
-	// * Try - BCSC
-	// *
-	async tryInitializeBCSC(): Promise<boolean | null> {
-		// this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BcServicesCard,
-			LicenceApplicationRoutes.pathUserApplications()
-		);
-
-		const identityClaims = this.oauthService.getIdentityClaims();
-		console.debug('tryInitializeBCSC', authInfo, identityClaims);
-
-		const isValidLogin = this.checkLoginIdentityIsValid(
-			authInfo.loggedIn,
-			IdentityProviderTypeCode.BcServicesCard,
-			identityClaims ? identityClaims['preferred_username'] : undefined
-		);
-
-		if (!isValidLogin) {
-			return Promise.resolve(null);
-		}
-
-		if (authInfo.loggedIn) {
-			this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-			this.notify(true);
-			return Promise.resolve(true);
-		}
-
-		this.notify(false);
-		return Promise.resolve(null);
-	}
-
-	//----------------------------------------------------------
-	// * Try - BCeID
-	// *
-	async tryInitializeBCeID(): Promise<boolean | null> {
-		// this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
-
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BusinessBceId,
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()
-		);
-
-		const identityClaims = this.oauthService.getIdentityClaims();
-		console.debug('tryInitializeBCeID', authInfo, identityClaims);
-
-		const isValidLogin = this.checkLoginIdentityIsValid(
-			authInfo.loggedIn,
-			IdentityProviderTypeCode.BusinessBceId,
-			identityClaims ? identityClaims['preferred_username'] : undefined
-		);
-
-		if (!isValidLogin) {
-			this.logout();
-			this.notify(false);
-			return Promise.resolve(null);
-		}
-
-		if (authInfo.loggedIn) {
-			this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
-			this.notify(true);
-			return Promise.resolve(true);
-		}
-
-		this.notify(false);
-		return Promise.resolve(null);
-	}
-
-	//----------------------------------------------------------
 	// * Licencing Portal - BCSC
 	// *
-	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+	async initializeLicencingBCSC(
+		returnComponentRoute: string | undefined = undefined,
+		stateInfo: string | null = null
+	): Promise<string | null> {
+		this.notify(false);
+
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const returningRoute = LicenceApplicationRoutes.pathUserApplications();
+		const returningRoute = PersonalLicenceApplicationRoutes.pathUserApplications();
 
-		const nextUrl = await this.authenticationService.login(
+		const loginInfo = await this.authenticationService.login(
 			this.identityProvider,
-			returnComponentRoute ? returnComponentRoute : returningRoute
+			returnComponentRoute ?? returningRoute,
+			stateInfo
 		);
-		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
-		if (nextUrl) {
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		console.debug('[AuthProcessService] initializeLicencingBCSC loginInfo', returnComponentRoute, loginInfo);
+
+		if (loginInfo.returnRoute) {
 			const success = await this.authUserBcscService.applicantLoginAsync();
 			this.notify(success);
 
-			const nextRoute = decodeURIComponent(nextUrl);
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
 			return Promise.resolve(nextRoute);
+		}
+
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Controlling Member Crc Invite - BCSC - try login
+	// *
+	async tryInitializeControllingMemberCrcInviteBcsc(returningRoute: string): Promise<string | null> {
+		this.notify(false);
+
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		// const returningRoute = ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN);
+		const loginInfo = await this.authenticationService.tryLogin(this.identityProvider, returningRoute);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		if (loginInfo.loggedIn) {
+			const success = await this.authUserBcscService.applicantLoginAsync();
+			this.notify(success);
+
+			if (loginInfo.state) {
+				const stateInfo = this.utilService.getSessionData(this.utilService.CM_CRC_STATE_KEY);
+				if (stateInfo) {
+					return Promise.resolve(stateInfo);
+				}
+			}
+			return Promise.resolve(null);
 		}
 
 		this.notify(false);
 		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Controlling Member Crc Invite - BCSC - login
+	// *
+	async initializeControllingMemberCrcInviteBcsc(
+		stateInfo: string,
+		returningRoute: string
+	): Promise<{
+		returnRoute: string | null;
+		state: string | null;
+		loggedIn: boolean;
+	}> {
+		this.notify(false);
+
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		// const returningRoute = ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN);
+		const loginInfo = await this.authenticationService.login(this.identityProvider, returningRoute, stateInfo);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		if (loginInfo.loggedIn) {
+			const success = await this.authUserBcscService.applicantLoginAsync();
+			this.notify(success);
+
+			return Promise.resolve(loginInfo);
+		}
+
+		return Promise.resolve(loginInfo);
 	}
 
 	//----------------------------------------------------------
@@ -129,35 +132,85 @@ export class AuthProcessService {
 	// *
 	async initializeLicencingBCeID(
 		defaultBizId: string | null = null,
-		defaultRoute: string | null = null
-	): Promise<string | null> {
+		defaultRoute: string | null = null,
+		state: string | undefined = undefined
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
+		this.notify(false);
+
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const returningRoute = LicenceApplicationRoutes.pathBusinessApplications();
+		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
-		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
+		console.debug('[AuthProcessService] initializeLicencingBCeID defaultBizId', defaultBizId);
+		console.debug('[AuthProcessService] initializeLicencingBCeID return route', defaultRoute ?? returningRoute);
+		console.debug('[AuthProcessService] initializeLicencingBCeID state', state);
 
-		if (nextUrl) {
+		const loginInfo = await this.authenticationService.login(
+			this.identityProvider,
+			defaultRoute ?? returningRoute,
+			state
+		);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		console.debug('[AuthProcessService] initializeLicencingBCeID loginInfo', loginInfo, 'defaultBizId', defaultBizId);
+
+		if (loginInfo.returnRoute) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultBizId);
 			this.notify(success);
 
-			const nextRoute = decodeURIComponent(nextUrl);
-			return Promise.resolve(nextRoute);
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
+			loginInfo.returnRoute = nextRoute;
+			return Promise.resolve(loginInfo);
 		}
 
+		return Promise.resolve(loginInfo);
+	}
+
+	//----------------------------------------------------------
+	// * Business Licencing Portal - BCeID - User Invitation
+	// *
+	async initializeBusinessLicenceInvitationBCeID(
+		invitationId: string
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
 		this.notify(false);
-		return Promise.resolve(null);
+
+		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+
+		const returningRoute = BusinessLicenceApplicationRoutes.path(
+			`${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/${invitationId}`
+		);
+
+		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID returningRoute', returningRoute);
+
+		const loginInfo = await this.authenticationService.login(this.identityProvider, returningRoute);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID loginInfo', loginInfo);
+
+		if (loginInfo.returnRoute) {
+			this.notify(true);
+
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
+			loginInfo.returnRoute = nextRoute;
+			return Promise.resolve(loginInfo);
+		}
+
+		return Promise.resolve(loginInfo);
 	}
 
 	//----------------------------------------------------------
 	// *
 	// *
 	public logout(): void {
+		console.debug('[AuthProcessService] logout');
+
 		const loginType = this.identityProvider;
 
 		this.identityProvider = null;
 		this.oauthService.logOut();
+		this.utilService.clearAllSessionData();
 
 		this.authUserBcscService.clearUserData();
 		this.authUserBceidService.clearUserData();
@@ -165,30 +218,61 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
 	}
 
-	public logoutBcsc(): void {
-		console.debug('logoutBcsc');
+	//----------------------------------------------------------
+	// *
+	// *
+	public logoutBcsc(redirectComponentRoute?: string): void {
+		console.debug('[AuthProcessService] logoutBcsc', redirectComponentRoute);
 
-		const bcscIssuer = this.authenticationService.getBcscIssuer();
+		let redirectUri = location.origin;
+		if (redirectComponentRoute) {
+			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
+		}
+
 		const claims = this.oauthService.getIdentityClaims();
-		if (claims && claims['iss'] === bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+		const identity_provider = claims ? claims['identity_provider'] : null;
+		const performLogout = !!(claims && identity_provider != 'bceidbusiness');
+
+		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBcsc identity_provider', identity_provider);
+		console.debug('[AuthProcessService] logoutBcsc performLogout', performLogout);
+
+		if (performLogout) {
+			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
 
-	public logoutBceid(): void {
-		console.debug('logoutBceid');
+	//----------------------------------------------------------
+	// *
+	// *
+	public logoutBceid(redirectComponentRoute?: string): void {
+		console.debug('[AuthProcessService] logoutBceid', redirectComponentRoute);
 
-		const bcscIssuer = this.authenticationService.getBcscIssuer();
+		let redirectUri = location.origin;
+		if (redirectComponentRoute) {
+			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
+		}
+
 		const claims = this.oauthService.getIdentityClaims();
-		if (claims && claims['iss'] !== bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+		const identity_provider = claims ? claims['identity_provider'] : null;
+		const performLogout = !!(claims && identity_provider === 'bceidbusiness');
+
+		console.debug('[AuthProcessService] logoutBceid redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBceid identity_provider', identity_provider);
+		console.debug('[AuthProcessService] logoutBceid performLogout', performLogout);
+
+		if (performLogout) {
+			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	private notify(isLoggedIn: boolean): void {
 		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 
@@ -198,29 +282,13 @@ export class AuthProcessService {
 		} else {
 			const token = this.authenticationService.getToken();
 			this.loggedInUserTokenData = this.utilService.getDecodedAccessToken(token);
+
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
 	}
 
-	//----------------------------------------------------------
-	// * check that loginType matches oauthservice login type
-	// *
-	private checkLoginIdentityIsValid(
-		isLoggedIn: boolean,
-		loginType: IdentityProviderTypeCode,
-		preferredUsername: string | undefined
-	): boolean {
-		if (!isLoggedIn) return true;
-
-		let isValid = false;
-		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			isValid = preferredUsername?.endsWith('bceidbusiness') ?? false;
-		} else {
-			// IdentityProviderTypeCode.BcServicesCard
-			isValid = !preferredUsername;
-		}
-
-		return isValid;
+	private notifyValidToken(hasValidToken: boolean): void {
+		this._hasValidToken$.next(hasValidToken);
 	}
 }

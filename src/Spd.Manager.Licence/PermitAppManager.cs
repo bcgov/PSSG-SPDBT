@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -60,7 +61,7 @@ internal class PermitAppManager :
     public async Task<PermitAppCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.PermitUpsertRequest.ServiceTypeCode.ToString()),
             cmd.PermitUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -92,16 +93,14 @@ internal class PermitAppManager :
 
     public async Task<Guid> Handle(GetLatestPermitApplicationIdQuery query, CancellationToken cancellationToken)
     {
-        if (query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.BodyArmourPermit)
-            throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
+        if (query.ServiceTypeCode != ServiceTypeCode.ArmouredVehiclePermit && query.ServiceTypeCode != ServiceTypeCode.BodyArmourPermit)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Invalid ServiceTypeCode");
         return await GetLatestApplicationId(query.ApplicantId,
             null,
-            Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(query.ServiceTypeCode.ToString()),
             cancellationToken);
     }
     #endregion
-
-
 
     public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
@@ -181,7 +180,7 @@ internal class PermitAppManager :
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
@@ -230,23 +229,17 @@ internal class PermitAppManager :
             throw new ArgumentException("should be an update request");
 
         //validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
-        LicenceResp originalLic = originalLicences.Items.First();
         if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);
         LicenceApplicationCmdResp? createLicResponse = null;
-        if ((request.Reprint != null && request.Reprint.Value))
+        if ((request.Reprint == true))
         {
-            CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-            createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-            createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+            createLicResponse = await HandleReprintRequest(request, cmd.LicAppFileInfos, cancellationToken);
         }
         else
         {
@@ -257,23 +250,7 @@ internal class PermitAppManager :
         }
 
         //clean up old files
-        DocumentListResp docResp = await _documentRepository.QueryAsync(
-            new DocumentQry()
-            {
-                LicenceId = originalLic.LicenceId,
-                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
-                    DocumentTypeEnum.BodyArmourRationale :
-                    DocumentTypeEnum.ArmouredVehicleRationale
-            },
-            cancellationToken);
-        IEnumerable<Guid> removeDocIds = docResp.Items
-            .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
-            .Select(i => i.DocumentUrlId);
-        foreach (var id in removeDocIds)
-        {
-            await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
-        }
-
+        await CleanUpOldFiles(request, originalLic, cancellationToken);
 
         //update lic
         await _licenceRepository.ManageAsync(
@@ -294,8 +271,33 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
-
-
+    private async Task CleanUpOldFiles(PermitAppSubmitRequest request, LicenceResp? originalLic, CancellationToken cancellationToken)
+    {
+        DocumentListResp docResp = await _documentRepository.QueryAsync(
+                    new DocumentQry()
+                    {
+                        LicenceId = originalLic.LicenceId,
+                        FileType = originalLic.ServiceTypeCode == ServiceTypeEnum.BodyArmourPermit ?
+                            DocumentTypeEnum.BodyArmourRationale :
+                            DocumentTypeEnum.ArmouredVehicleRationale
+                    },
+                    cancellationToken);
+        IEnumerable<Guid> removeDocIds = docResp.Items
+            .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
+            .Select(i => i.DocumentUrlId);
+        foreach (var id in removeDocIds)
+        {
+            await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
+        }
+    }
+    private async Task<LicenceApplicationCmdResp?> HandleReprintRequest(PermitAppSubmitRequest? request, IEnumerable<LicAppFileInfo> licAppFileInfos, CancellationToken cancellationToken)
+    {
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(licAppFileInfos, new List<LicAppFileInfo>());
+        var createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+        return createLicResponse;
+    }
     private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
     {
         PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -464,7 +466,7 @@ internal class PermitAppManager :
     {
         List<string> purposes = [];
 
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        if (newRequest.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
         {
             foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
                 purposes.Add(reasonCode.ToString());
@@ -482,7 +484,7 @@ internal class PermitAppManager :
     {
         List<PermitPurposeEnum> permitPurposeRequest = [];
 
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        if (newRequest.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit)
         {
             foreach (BodyArmourPermitReasonCode bodyArmourPermitReason in newRequest.BodyArmourPermitReasonCodes)
             {

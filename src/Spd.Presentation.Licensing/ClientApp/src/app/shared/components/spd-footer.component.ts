@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { Component, OnInit } from '@angular/core';
+import { ConfigurationResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { ConfigService } from '@app/core/services/config.service';
 
 @Component({
 	selector: 'app-spd-footer',
 	template: `
 		<mat-toolbar color="primary" class="no-print footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
+			<a [href]="bcGovDisclaimerUrl">Disclaimer</a>
+			<a [href]="bcGovPrivacyUrl">Privacy</a>
+			<a [href]="bcGovAccessibilityUrl">Accessibility</a>
+			<a [href]="bcGovCopyrightUrl">Copyright</a>
+			<a [href]="bcGovContactUrl">Contact Us</a>
+
+			<span style="flex: 1 1 auto;"></span>
+
+			<span class="fs-7 p-2 text-env" *ngIf="env">{{ env }}</span>
 		</mat-toolbar>
 	`,
 	styles: [
@@ -27,6 +34,10 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 				text-decoration: none !important;
 			}
 
+			.text-env {
+				color: #6c757d !important;
+			}
+
 			@media (max-width: 575px) {
 				.mat-toolbar-row,
 				.mat-toolbar-single-row {
@@ -39,22 +50,32 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 					padding: 3px;
 				}
 			}
-
-			@media print {
-				.no-print,
-				.no-print * {
-					display: none !important;
-				}
-
-				.print-only {
-					display: block;
-				}
-			}
 		`,
 	],
 })
-export class SpdFooterComponent {
-	constructor(private commonApplicationService: CommonApplicationService) {}
+export class SpdFooterComponent implements OnInit {
+	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
+	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
+	bcGovAccessibilityUrl = SPD_CONSTANTS.urls.bcGovAccessibilityUrl;
+	bcGovCopyrightUrl = SPD_CONSTANTS.urls.bcGovCopyrightUrl;
+	bcGovContactUrl = SPD_CONSTANTS.urls.bcGovContactUrl;
+
+	env: string | null | undefined = null;
+
+	constructor(
+		private commonApplicationService: CommonApplicationService,
+		private configService: ConfigService
+	) {}
+
+	ngOnInit(): void {
+		this.configService.getConfigs().subscribe((config: ConfigurationResponse) => {
+			if (this.configService.isProduction()) {
+				this.env = config.version ?? null;
+			} else {
+				this.env = `${config.environment ?? ''} ${config.version ?? ''}`;
+			}
+		});
+	}
 
 	goHome(): void {
 		this.commonApplicationService.onGoToHome();

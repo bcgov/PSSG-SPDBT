@@ -9,9 +9,11 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Controllers;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class BizLicensingControllerTest
@@ -59,6 +61,8 @@ public class BizLicensingControllerTest
             .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppReplaceCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppCommandResponse());
+       
+
         var validationResults = fixture.Build<ValidationResult>()
                 .With(r => r.Errors, [])
                 .Create();
@@ -70,6 +74,7 @@ public class BizLicensingControllerTest
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
                 new Claim("birthdate", "2000-01-01"),
+                new Claim("spd_userid", Guid.NewGuid().ToString()),
                 new Claim("sub", "test"),
             ], "mock"));
 
@@ -96,7 +101,7 @@ public class BizLicensingControllerTest
     [Fact]
     public async void Get_GetBizLicenceApplication_Return_BizLicAppResponse()
     {
-        var result = await sut.GetBizLicenceApplication(Guid.NewGuid());
+        var result = await sut.GetBizLicenceApplication(Guid.NewGuid(), CancellationToken.None);
 
         Assert.IsType<BizLicAppResponse>(result);
         mockMediator.Verify();
@@ -121,16 +126,6 @@ public class BizLicensingControllerTest
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SaveBusinessLicenceApplication(request, CancellationToken.None));
     }
 
-    [Fact]
-    public async void Post_UploadLicenceAppFiles_Return_LicenceAppDocumentResponse_List()
-    {
-        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
-
-        var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
-
-        Assert.IsType<List<LicenceAppDocumentResponse>>(result);
-        mockMediator.Verify();
-    }
 
     [Fact]
     public async void Post_SubmitBusinessLicenceApplication_Return_BizLicAppCommandResponse()

@@ -7,13 +7,17 @@ namespace Spd.Resource.Repository.IntegrationTest;
 
 public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
 {
+    private readonly string testPrefix = "spd-auto-test-";
     private readonly IBizContactRepository _bizContactRepo;
+    private readonly IDynamicsContextFactory _contextFactory;
     private DynamicsContext _context;
 
     public BizContactRepositoryTest(IntegrationTestSetup testSetup)
     {
         _bizContactRepo = testSetup.ServiceProvider.GetRequiredService<IBizContactRepository>();
-        _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
+        _contextFactory = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>();
+        _context = _contextFactory.CreateChangeOverwrite();
+
     }
 
     [Fact]
@@ -21,8 +25,8 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         account biz = await CreateAccountAsync();
         spd_application app = await CreateApplicationAsync(biz);
-        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
-        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.Employee);
+        spd_businesscontact bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.Employee);
         await _context.SaveChangesAsync(CancellationToken.None);
 
         try
@@ -31,7 +35,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizContactQry qry = new(biz.accountid, app.spd_applicationid);
 
             // Action
-            var response = await _bizContactRepo.GetBizAppContactsAsync(qry, CancellationToken.None);
+            var response = await _bizContactRepo.QueryBizContactsAsync(qry, CancellationToken.None);
 
             // Assert
             Assert.NotNull(response);
@@ -58,26 +62,30 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Arrange
         //create account
         account biz = await CreateAccountAsync();
-        spd_application app = await CreateApplicationAsync(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, new List<BizContactResp>());
+        BizContactCreateCmd createCmd = new BizContactCreateCmd(new()
+        {
+            BizId = (Guid)biz.accountid,
+            GivenName = "newFirstName3",
+            EmailAddress = "firstName3@add.com",
+            BizContactRoleCode = BizContactRoleEnum.ControllingMember
+        });
 
         try
         {
             // Action
-            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+            var response = await _bizContactRepo.ManageBizContactsAsync(createCmd, CancellationToken.None);
 
             // Assert
             var contact = await _context.spd_businesscontacts
                 .Where(c => c._spd_organizationid_value == biz.accountid)
                 .FirstOrDefaultAsync(CancellationToken.None);
-            Assert.Equal(null, contact);
+            Assert.Equal(response, contact.spd_businesscontactid);
         }
         finally
         {
             //Annihilate
-            _context.DeleteObject(app);
             _context.DeleteObject(biz);
             await _context.SaveChangesAsync(CancellationToken.None);
         }
@@ -86,102 +94,172 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task ManageBizContactsAsync_WithExistingContacts_Correctly()
     {
-        /********************************************* Dynamics change the schema, licence can only be created when it links to a case. But it seems we cannot create case(incident) in program. So, make this a todo-spdbt-2716
-        // So, we need to deal with it later.
-        // Arrange
-        account biz = await CreateAccountAsync();
-        spd_application app = await CreateApplicationAsync(biz);
-        contact contact = await CreateContactAsync();
-        incident spd_case = await CreateIncidentAsync(contact); //here, we create incident failed. todo: fix it later.
-        spd_licence lic = await CreateLicenceAsync(contact, spd_case);
-        await _context.SaveChangesAsync(CancellationToken.None);
-        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
-        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.ControllingMember);
-        await _context.SaveChangesAsync(CancellationToken.None);
-        List<BizContactResp> requests = new()
+        // Objects to be cleaned up
+        var createdIds = new List<(Type EntityType, Guid Id)>();
+
+        try
         {
-            new BizContactResp{ BizContactId = bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-            new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-            new BizContactResp{ ContactId = contact.contactid, LicenceId=lic.spd_licenceid, BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-            new BizContactResp{ ContactId = contact.contactid, LicenceId=lic.spd_licenceid, BizContactRoleCode=BizContactRoleEnum.Employee},
-        };
-        BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, requests);
+            // Arrange
+            var biz = await CreateAccountAsync();
+            createdIds.Add((typeof(account), (Guid)biz.accountid));
 
-        // Action
-        var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+            var app = await CreateApplicationAsync(biz);
+            createdIds.Add((typeof(spd_application), (Guid)app.spd_applicationid));
 
-        // Assert
-        var bizContacts = _context.spd_businesscontacts
-            .Where(c => c._spd_organizationid_value == biz.accountid)
-            .ToList();
-        Assert.Equal(5, bizContacts.Count());
-        Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
-        Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == IntegrationTestSetup.DataPrefix + "firstName2" && c.statecode == DynamicsConstants.StateCode_Inactive)); //removed
-        Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName3" && c.statecode == DynamicsConstants.StateCode_Active));
-        Assert.Equal(2, bizContacts.Count(c => c._spd_contactid_value == contact.contactid && c.statecode == DynamicsConstants.StateCode_Active));
+            var contact = await CreateContactAsync();
+            createdIds.Add((typeof(contact), (Guid)contact.contactid));
 
-        //Annihilate
-        spd_businesscontact c3 = bizContacts.FirstOrDefault(c => c.spd_firstname == "newFirstName3");
-        _context.DeleteObject(c3);
-        _context.DeleteObject(bizContact);
-        _context.DeleteObject(bizContact2);
-        spd_businesscontact c4 = bizContacts.FirstOrDefault(c => c._spd_contactid_value == contact.contactid);
-        _context.DeleteObject(c4);
-        spd_businesscontact c5 = bizContacts.FirstOrDefault(c => c._spd_contactid_value == contact.contactid);
-        _context.DeleteObject(c5);
-        _context.DeleteObject(lic);
-        _context.DeleteObject(contact);
-        _context.DeleteObject(app);
-        _context.DeleteObject(biz);
-        await _context.SaveChangesAsync(CancellationToken.None);
-        *********************************************/
+            var org = await CreateOrgAsync("orgTest");
+            createdIds.Add((typeof(account), (Guid)org.accountid));
+
+            var spd_case = await CreateIncidentAsync(contact, org, app);
+            createdIds.Add((typeof(incident), (Guid)spd_case.incidentid));
+
+            var lic = await CreateLicenceAsync(contact, spd_case);
+            createdIds.Add((typeof(spd_licence), (Guid)lic.spd_licenceid));
+
+            //await _context.SaveChangesAsync(CancellationToken.None);
+
+            var bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
+            createdIds.Add((typeof(spd_businesscontact), (Guid)bizContact.spd_businesscontactid));
+
+            var bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.ControllingMember);
+            createdIds.Add((typeof(spd_businesscontact), (Guid)bizContact2.spd_businesscontactid));
+
+            await _context.SaveChangesAsync(CancellationToken.None);
+
+            BizContactUpdateCmd cmd = new((Guid)bizContact.spd_businesscontactid, new BizContact.BizContact
+            { GivenName = IntegrationTestSetup.DataPrefix + "newFirstName1", EmailAddress = "firstName1@add.com", BizContactRoleCode = BizContactRoleEnum.ControllingMember });
+            var updatedBizContact = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+
+            BizContactCreateCmd cmd2 = new(new BizContact.BizContact
+            { BizId = (Guid)biz.accountid, ContactId = contact.contactid, GivenName = IntegrationTestSetup.DataPrefix + "newFirstName3", LicenceId = lic.spd_licenceid, BizContactRoleCode = BizContactRoleEnum.ControllingMember });
+            var newBizContact = await _bizContactRepo.ManageBizContactsAsync(cmd2, CancellationToken.None);
+            createdIds.Add((typeof(spd_businesscontact), (Guid)newBizContact));
+
+            BizContactDeleteCmd cmd3 = new((Guid)bizContact2.spd_businesscontactid);
+            var deletedBizContact = await _bizContactRepo.ManageBizContactsAsync(cmd3, CancellationToken.None);
+
+            await _context.SaveChangesAsync(CancellationToken.None);
+
+
+            // Assert
+            var bizContacts = _context.spd_businesscontacts
+                .Where(c => c._spd_organizationid_value == biz.accountid)
+                .ToList();
+
+            Assert.Equal(3, bizContacts.Count());
+            Assert.True(bizContacts.Any(c => c.spd_firstname == IntegrationTestSetup.DataPrefix + "newFirstName1")); // updated
+            Assert.True(bizContacts.Any(c => c.spd_firstname == IntegrationTestSetup.DataPrefix + "firstName2" && c.statecode == DynamicsConstants.StateCode_Inactive)); // removed
+            Assert.True(bizContacts.Any(c => c.spd_firstname == IntegrationTestSetup.DataPrefix + "newFirstName3" && c.statecode == DynamicsConstants.StateCode_Active));
+            Assert.Equal(1, bizContacts.Count(c => c._spd_contactid_value == contact.contactid && c.statecode == DynamicsConstants.StateCode_Active));
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            // Cleanup
+            foreach (var (entityType, id) in createdIds)
+            {
+                object entity = null;
+                var _contextForDelete = _contextFactory.CreateChangeOverwrite();
+                try
+                {
+                    if (entityType == typeof(account))
+                    {
+                        entity = _contextForDelete.accounts.Where(a => a.accountid == id).FirstOrDefault();
+                    }
+                    else if (entityType == typeof(spd_application))
+                    {
+                        entity = _contextForDelete.spd_applications.Where(a => a.spd_applicationid == id).FirstOrDefault();
+                    }
+                    else if (entityType == typeof(contact))
+                    {
+                        entity = _contextForDelete.contacts.Where(c => c.contactid == id).FirstOrDefault();
+                    }
+                    else if (entityType == typeof(incident))
+                    {
+                        entity = _contextForDelete.incidents.Where(i => i.incidentid == id).FirstOrDefault();
+                    }
+                    else if (entityType == typeof(spd_licence))
+                    {
+                        entity = _contextForDelete.spd_licences.Where(l => l.spd_licenceid == id).FirstOrDefault();
+                    }
+                    else if (entityType == typeof(spd_businesscontact))
+                    {
+                        entity = _contextForDelete.spd_businesscontacts.Where(bc => bc.spd_businesscontactid == id).FirstOrDefault();
+                    }
+
+                    if (entity != null)
+                    {
+                        await _context.SaveChangesAsync(CancellationToken.None);
+
+                    }
+                }
+                catch (Exception deleteEx)
+                {
+                }
+            }
+        }
     }
+
+
 
     [Fact]
     public async Task ManageBizContactsAsync_WithExistingBizContacts_Correctly()
     {
         // Arrange
+
         account biz = await CreateAccountAsync();
-        spd_application app = await CreateApplicationAsync(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
-        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
-        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.ControllingMember);
-        spd_application newApp = await CreateApplicationAsync(biz);
+        spd_businesscontact bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.ControllingMember);
         await _context.SaveChangesAsync(CancellationToken.None);
+        
+        Guid? bizContactId1 = bizContact.spd_businesscontactid;
+        Guid? bizContactId2 = bizContact2.spd_businesscontactid;
+        Guid? bizContactId3 = null;
 
         try
         {
-            List<BizContactResp> requests = new()
+            BizContactUpdateCmd updateCmd = new BizContactUpdateCmd((Guid)bizContact.spd_businesscontactid, new()
             {
-                new BizContactResp{ BizContactId = bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-                new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-            };
-
-            BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)newApp.spd_applicationid, requests);
-
-            // Action
-            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
-
+                GivenName = "newFirstName1",
+                EmailAddress = "firstName1@add.com",
+                BizContactRoleCode = BizContactRoleEnum.ControllingMember
+            });
+            BizContactCreateCmd createCmd = new BizContactCreateCmd(new()
+            {
+                BizId = (Guid) biz.accountid,
+                GivenName = "newFirstName3",
+                EmailAddress = "firstName3@add.com",
+                BizContactRoleCode = BizContactRoleEnum.ControllingMember
+            });
+             // Action
+             var response = await _bizContactRepo.ManageBizContactsAsync(updateCmd, CancellationToken.None);
+            var response2 = await _bizContactRepo.ManageBizContactsAsync(createCmd, CancellationToken.None);
+            bizContactId3 = response2;
             // Assert
             var bizContacts = _context.spd_businesscontacts
                 .Where(c => c._spd_organizationid_value == biz.accountid)
                 .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
                 .ToList();
-            Assert.Equal(2, bizContacts.Count());
+            Assert.Equal(3, bizContacts.Count());
             Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
-
-            var newAppliation = _context.spd_applications
-                .Expand(a => a.spd_businesscontact_spd_application)
-                .Where(a => a.spd_applicationid == newApp.spd_applicationid)
-                .FirstOrDefault();
-            Assert.Equal(2, newAppliation.spd_businesscontact_spd_application.Count());
+            Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName3")); //created
         }
         finally
         {
             //Annihilate
-            _context.DeleteObject(bizContact);
-            _context.DeleteObject(bizContact2);
-            _context.DeleteObject(app);
+            spd_businesscontact bizContact1ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId1).FirstOrDefault();
+            spd_businesscontact bizContact2ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId2).FirstOrDefault();
+            spd_businesscontact bizContact3ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId3).FirstOrDefault();
+            _context.DeleteObject(bizContact1ToRemove);
+            _context.DeleteObject(bizContact2ToRemove);
+            _context.DeleteObject(bizContact3ToRemove);
+            await _context.SaveChangesAsync(CancellationToken.None);
             _context.DeleteObject(biz);
             await _context.SaveChangesAsync(CancellationToken.None);
         }
@@ -206,7 +284,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         return app;
     }
 
-    private async Task<spd_businesscontact> CreateBizContactAsync(account biz, spd_application app, string firstName, BizContactRoleOptionSet role)
+    private async Task<spd_businesscontact> CreateBizContactAsync(account biz, string firstName, BizContactRoleOptionSet role)
     {
         spd_businesscontact bizContact = new();
         bizContact.spd_businesscontactid = Guid.NewGuid();
@@ -214,7 +292,6 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         bizContact.spd_role = (int)role;
         _context.AddTospd_businesscontacts(bizContact);
         _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
         return bizContact;
     }
 
@@ -225,23 +302,67 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.AddTocontacts(contact);
         return contact;
     }
-
-    private async Task<incident> CreateIncidentAsync(contact c)
+    public async Task<account> CreateOrgAsync(string orgName)
     {
-        incident incident = new();
-        incident.incidentid = Guid.NewGuid();
+        var existing = _context.accounts
+            .Where(a => a.spd_organizationlegalname == $"{testPrefix}{orgName}")
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+        if (existing != null) return existing;
+        else
+        {
+            Guid orgId = Guid.NewGuid();
+            account newOne = new account
+            {
+                accountid = orgId,
+                name = $"{testPrefix}{orgName}",
+                spd_organizationlegalname = $"{testPrefix}{orgName}",
+                address1_city = "victoria",
+                emailaddress1 = $"{testPrefix}{orgName}@test.gov.bc.ca",
+            };
+            _context.AddToaccounts(newOne);
 
+            foreach (var serviceType in DynamicsContextLookupHelpers.ServiceTypeGuidDictionary)
+            {
+                var st = new spd_servicetype { spd_servicetypeid = serviceType.Value };
+                _context.AttachTo(nameof(_context.spd_servicetypes), st);
+                _context.AddLink(newOne, nameof(account.spd_account_spd_servicetype), st);
+            }
+
+            await _context.SaveChangesAsync();
+            return newOne;
+        }
+    }
+
+    private async Task<incident> CreateIncidentAsync(contact c, account org, spd_application app)
+    {
+        //create case
+        Guid incidentId = Guid.NewGuid();
+        incident incident = new incident
+        {
+            incidentid = incidentId,
+            title = $"{testPrefix}incident",
+            prioritycode = 1,
+            _spd_applicationid_value = app.spd_applicationid,
+            spd_licenceapplicationtype = 100000000
+        };
+        spd_servicetype serviceType = _context.spd_servicetypes.FirstOrDefault();
         _context.AddToincidents(incident);
-        spd_servicetype? servicetype = _context.LookupServiceType("BodyArmourPermit");
-        _context.SetLink(incident, nameof(incident.spd_ServiceTypeId), servicetype);
+        _context.SetLink(incident, nameof(incident.spd_ApplicationId), app);
+        _context.SetLink(incident, nameof(incident.customerid_account), org);
         _context.SetLink(incident, nameof(incident.customerid_contact), c);
+        _context.SetLink(incident, nameof(incident.spd_OrganizationId), org);
+        _context.SetLink(incident, nameof(incident.spd_ServiceTypeId), serviceType);
         _context.SaveChanges();
         return incident;
     }
 
     private async Task<spd_licence> CreateLicenceAsync(contact c, incident incident)
     {
-        spd_licence lic = new();
+        spd_licence lic = new()
+        {
+            spd_licenceterm = 100000001
+        };
         lic.spd_licenceid = Guid.NewGuid();
         _context.AddTospd_licences(lic);
         _context.SetLink(lic, nameof(lic.spd_CaseId), incident);

@@ -11,7 +11,10 @@ import { ConfigurationService } from 'src/app/api/services';
 export class ConfigService {
 	public configs: ConfigurationResponse | null = null;
 
-	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
+	constructor(
+		private oauthService: OAuthService,
+		private configurationService: ConfigurationService
+	) {}
 
 	public getConfigs(): Observable<ConfigurationResponse> {
 		if (this.configs) {
@@ -48,6 +51,14 @@ export class ConfigService {
 		return this.configs?.licenceFees ?? [];
 	}
 
+	public isProduction(): boolean {
+		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
+	}
+
+	public isDevelopment(): boolean {
+		return this.configs?.environment === 'Development';
+	}
+
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.oidcConfiguration!;
 		const bceIdConfig = {
@@ -65,6 +76,8 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
+		console.debug('[getBcscConfig] redirectUri', redirectUri);
+
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
 			issuer: resp.issuer!,
@@ -73,7 +86,6 @@ export class ConfigService {
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
-			strictDiscoveryDocumentValidation: false,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);

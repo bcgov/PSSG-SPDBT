@@ -23,7 +23,7 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IBizRepository> mockBizRepo = new();
         private Mock<IAddressRepository> mockAddressRepo = new();
         private Mock<IBCeIDService> mockBceidService = new();
-        private Mock<ILogger<BizProfileManager>> mockLogger = new();
+        private Mock<ILogger<IBizProfileManager>> mockLogger = new();
         private BizProfileManager sut;
 
         public BizProfileManagerTest()

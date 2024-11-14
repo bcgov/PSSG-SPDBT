@@ -8,6 +8,8 @@ using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.ControllingMemberCrcApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -108,22 +110,55 @@ internal class Mappings : Profile
             .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
+        CreateMap<ControllingMemberCrcAppBase, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
+        CreateMap<ControllingMemberCrcAppBase, CreateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
+        CreateMap<ControllingMemberCrcAppSubmitRequest, UpdateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
+
+        CreateMap<ControllingMemberCrcAppSubmitRequest, CreateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, CreateContactCmd>();
+
+        CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
+
+        CreateMap<ControllingMemberCrcAppUpdateRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
         CreateMap<BizLicenceApp, BizLicApplication>()
-            .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
+            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.ServiceTypeCode))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
-            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.GivenName : s.ApplicantContactInfo.GivenName))
-            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.Surname : s.ApplicantContactInfo.Surname))
-            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.MiddleName1 : s.ApplicantContactInfo.MiddleName1))
-            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.MiddleName2 : s.ApplicantContactInfo.MiddleName2))
-            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.EmailAddress : s.ApplicantContactInfo.EmailAddress))
-            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.PhoneNumber : s.ApplicantContactInfo.PhoneNumber))
-            .ForMember(d => d.ManagerGivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
-            .ForMember(d => d.ManagerSurname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
-            .ForMember(d => d.ManagerMiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
-            .ForMember(d => d.ManagerMiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
-            .ForMember(d => d.ManagerEmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
-            .ForMember(d => d.ManagerPhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.ContactId))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.BizContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.GivenName, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.GivenName))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.Surname, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.Surname))
@@ -138,7 +173,13 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppUpsertRequest, SaveBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
-            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId));
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId))
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.ApplicantContactInfo.GivenName != null ? s.ApplicantContactInfo.GivenName : string.Empty))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname != null ? s.ApplicantContactInfo.Surname : string.Empty))
+            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName1 != null ? s.ApplicantContactInfo.MiddleName1 : string.Empty))
+            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName2 != null ? s.ApplicantContactInfo.MiddleName2 : string.Empty))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ApplicantContactInfo.EmailAddress != null ? s.ApplicantContactInfo.EmailAddress : string.Empty))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ApplicantContactInfo.PhoneNumber != null ? s.ApplicantContactInfo.PhoneNumber : string.Empty));
 
         CreateMap<BizLicAppSubmitRequest, SaveBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
@@ -184,8 +225,8 @@ internal class Mappings : Profile
 
         CreateMap<LicenceResp, LicenceResponse>()
             .IncludeBase<LicenceResp, LicenceBasicResponse>()
-            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
-            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes((ServiceTypeEnum)s.ServiceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes((ServiceTypeEnum)s.ServiceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
 
@@ -224,7 +265,7 @@ internal class Mappings : Profile
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.LicenceDocumentTypeCode)));
 
         CreateMap<LicenceAppListResp, LicenceAppListResponse>()
-            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode));
+            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.ServiceTypeCode));
 
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
@@ -242,17 +283,13 @@ internal class Mappings : Profile
             .ForPath(d => d.EmployerPrimaryAddress.City, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.City))
             .ForPath(d => d.EmployerPrimaryAddress.Country, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Country))
             .ForPath(d => d.EmployerPrimaryAddress.PostalCode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.PostalCode))
-            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
-            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.ServiceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.ServiceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
         CreateMap<BizLicApplicationResp, BizLicAppResponse>()
-            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.ManagerGivenName))
-            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.ManagerSurname))
-            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.ManagerPhoneNumber))
-            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.ManagerEmailAddress))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.ManagerMiddleName1))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.ManagerMiddleName2))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.ContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.BizContactId))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.GivenName, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.GivenName))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.Surname, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.Surname))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.MiddleName1, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.MiddleName1))
@@ -266,7 +303,8 @@ internal class Mappings : Profile
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLogin));
 
         CreateMap<BizResult, BizListResponse>()
-            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id));
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)));
 
         CreateMap<BizResult, BizProfileResponse>()
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
@@ -278,22 +316,41 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
-            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.Email))
-            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId));
+            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s =>
+               (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+               ? s.PhoneNumber : null))
+            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s =>
+            (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+               ? s.Email : null))
+            .ForPath(d => d.SoleProprietorSwlContactInfo, opt => opt.MapFrom(s =>
+            (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+                ? new SwlContactInfo { LicenceId = s.SoleProprietorSwlContactInfo.LicenceId } : null))
+
+            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
+            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2));
 
         CreateMap<PermitAppSubmitRequest, PermitLicence>()
           .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPurposeEnums(s.BodyArmourPermitReasonCodes, s.ArmouredVehiclePermitReasonCodes)))
           .ForMember(d => d.LicenceNumber, opt => opt.Ignore())
           .ForMember(d => d.ExpiryDate, opt => opt.Ignore())
-          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.Ignore())
+          .ForMember(d => d.ServiceTypeCode, opt => opt.Ignore())
           .ForMember(d => d.LicenceTermCode, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderId, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderFirstName, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderLastName, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.Ignore())
           .ForMember(d => d.LicenceStatusCode, opt => opt.Ignore())
-          .ForMember(d => d.NameOnCard, opt => opt.Ignore());
+          .ForMember(d => d.NameOnCard, opt => opt.Ignore())
+          .ForMember(d => d.PermitOtherRequiredReason, opt => opt.MapFrom(s => s.PermitOtherRequiredReason ?? string.Empty))
+          .ForMember(d => d.EmployerName, opt => opt.MapFrom(s => s.EmployerName ?? string.Empty))
+          .ForMember(d => d.SupervisorName, opt => opt.MapFrom(s => s.SupervisorName ?? string.Empty))
+          .ForMember(d => d.SupervisorEmailAddress, opt => opt.MapFrom(s => s.SupervisorEmailAddress ?? string.Empty))
+          .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.SupervisorPhoneNumber ?? string.Empty))
+          .ForMember(d => d.Rationale, opt => opt.MapFrom(s => s.Rationale ?? string.Empty));
 
         CreateMap<BizProfileUpdateRequest, UpdateBizCmd>()
            .ForMember(d => d.BizGuid, opt => opt.Ignore())
@@ -307,41 +364,73 @@ internal class Mappings : Profile
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
            .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : null))
            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))
+           .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+           .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+           .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+           .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+           .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
+           .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
-
-        CreateMap<BizLicAppSubmitRequest, UpdateBizCmd>()
-            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
-            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
-            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
-            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.Email, opt => opt.Ignore())
-            .ForMember(d => d.PhoneNumber, opt => opt.Ignore())
-            .ForMember(d => d.MailingAddress, opt => opt.Ignore())
-            .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
-            .ForMember(d => d.BCBusinessAddress, opt => opt.Ignore())
-            .ForMember(d => d.BizName, opt => opt.Ignore())
-            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
-            .ForMember(d => d.BizGuid, opt => opt.Ignore())
-            .ForMember(d => d.BizType, opt => opt.Ignore())
-            .ForMember(d => d.UpdateSoleProprietor, opt => opt.MapFrom(s => false))
-            .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.Ignore());
 
         CreateMap<AddressResp, BranchAddr>()
             .ReverseMap();
 
         CreateMap<BizContactResp, NonSwlContactInfo>()
+            .ForMember(d => d.ControllingMemberAppStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppPortalStatusEnum))
+            .ForMember(d => d.InviteStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberInvitationStatusEnum))
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 
-        CreateMap<UpsertBizMembersCommand, BizContactUpsertCmd>()
-            .ForMember(d => d.AppId, opt => opt.MapFrom(s => s.ApplicationId));
+        CreateMap<UpsertBizMembersCommand, BizContactUpsertCmd>();
 
         CreateMap<SwlContactInfo, BizContactResp>()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
             .ReverseMap();
+
+        CreateMap<ControllingMemberCrcAppSubmitRequest, SaveControllingMemberCrcAppCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
+
+        CreateMap<ControllingMemberCrcAppUpsertRequest, SaveControllingMemberCrcAppCmd>()
+            .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.ApplicantId))
+            .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
+
+        CreateMap<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>()
+            .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddressData.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddressData.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
+        CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
+
+        CreateMap<ControllingMemberInviteVerifyResp, ControllingMemberAppInviteVerifyResponse>();
+
+        CreateMap<BizContactResp, ControllingMemberInvite>();
+
+        CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
+            .IncludeBase<BizContactResp, ControllingMemberInvite>()
+            .ForMember(d => d.HostUrl, opt => opt.Ignore());
+
+        CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
+            .ForMember(d => d.InviteId, opt => opt.Ignore())
+            .ForMember(d => d.BizContactId, opt => opt.Ignore())
+            .ForMember(d => d.BizLicAppId, opt => opt.Ignore())
+            .ForMember(d => d.ControllingMemberCrcAppId, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppId))
+            .ForMember(d => d.ControllingMemberCrcAppPortalStatusCode, opt => opt.MapFrom(s => GetControllingMemberCrcAppPortalStatusCode(s.LatestControllingMemberCrcAppPortalStatusEnum)));
+
+        CreateMap<SwlContactInfo, BizContact>();
+
+        CreateMap<NonSwlContactInfo, BizContact>();
+
+        CreateMap<ControllingMemberCrcApplicationResp, ControllingMemberCrcAppResponse>()
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddressData.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddressData.City))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddressData.Country))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -443,22 +532,22 @@ internal class Mappings : Profile
 
     private static IEnumerable<PermitPurposeEnum>? GetPermitPurposeEnums(PermitAppSubmitRequest request)
     {
-        if (request.BodyArmourPermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        if (request.BodyArmourPermitReasonCodes != null && request.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit)
         {
             return request.BodyArmourPermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
         }
-        if (request.ArmouredVehiclePermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        if (request.ArmouredVehiclePermitReasonCodes != null && request.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
         {
             return request.ArmouredVehiclePermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
         }
         return null;
     }
 
-    public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(ServiceTypeEnum serviceType, List<PermitPurposeEnum>? permitPurposes)
     {
         List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = [];
 
-        if (workerLicenceType != WorkerLicenceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
+        if (serviceType != ServiceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
 
         foreach (PermitPurposeEnum permitPurpose in permitPurposes)
         {
@@ -471,11 +560,11 @@ internal class Mappings : Profile
         return bodyArmourPermitReasonCodes;
     }
 
-    public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(ServiceTypeEnum serviceType, List<PermitPurposeEnum>? permitPurposes)
     {
         List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = [];
 
-        if (workerLicenceType != WorkerLicenceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
+        if (serviceType != ServiceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
 
         foreach (PermitPurposeEnum permitPurpose in permitPurposes)
         {
@@ -628,7 +717,6 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
 
-
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {
         {LicenceDocumentTypeCode.BcServicesCard, DocumentTypeEnum.AdditionalGovIdDocument},
@@ -701,9 +789,6 @@ internal class Mappings : Profile
 
     private ContactInfo? GetApplicantInfo(BizLicApplicationResp bizLicApplicationResp)
     {
-        if ((bool)bizLicApplicationResp.ApplicantIsBizManager)
-            return null;
-
         return new ContactInfo()
         {
             GivenName = bizLicApplicationResp.GivenName,
@@ -722,6 +807,12 @@ internal class Mappings : Profile
             return true;
 
         return false;
+    }
+
+    private static ApplicationPortalStatusCode? GetControllingMemberCrcAppPortalStatusCode(ApplicationPortalStatusEnum? status)
+    {
+        if (status == null) return null;
+        else return Enum.Parse<ApplicationPortalStatusCode>(status.Value.ToString());
     }
 }
 

@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 		<UserSecretsId>c03da675-16e3-44d2-b265-90779c030de7</UserSecretsId>
 	</PropertyGroup>
@@ -8,6 +7,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="System.Configuration.ConfigurationManager" />
   </ItemGroup>
@@ -20,11 +20,10 @@
 		<ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
-		<ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<None Include="..\..\.editorconfig" Link=".editorconfig" />
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>

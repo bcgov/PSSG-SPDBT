@@ -46,12 +46,12 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, WorkerLicenceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
             .With(r => r.SupervisorPhoneNumber, new string('9', 15))
-            .With(r => r.PhoneNumber, new string('9', 15))
+            .With(r => r.PhoneNumber, new string('9', 30))
             .With(r => r.SupervisorEmailAddress, "test@test.com")
             .With(r => r.EmployerPrimaryAddress, employerPrimaryAddress)
             .With(r => r.ResidentialAddress, residentialAddress)
@@ -92,7 +92,7 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, WorkerLicenceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
@@ -138,12 +138,12 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, WorkerLicenceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
             .With(r => r.SupervisorPhoneNumber, new string('9', 15))
-            .With(r => r.PhoneNumber, new string('9', 15))
+            .With(r => r.PhoneNumber, new string('9', 30))
             .With(r => r.SupervisorEmailAddress, "test@test.com")
             .With(r => r.EmployerPrimaryAddress, employerPrimaryAddress)
             .With(r => r.ResidentialAddress, residentialAddress)
@@ -184,12 +184,12 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, WorkerLicenceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
-            .With(r => r.SupervisorPhoneNumber, new string('9', 15))
-            .With(r => r.PhoneNumber, new string('9', 15))
+            .With(r => r.SupervisorPhoneNumber, new string('9', 30))
+            .With(r => r.PhoneNumber, new string('9', 30))
             .With(r => r.SupervisorEmailAddress, "test@test.com")
             .With(r => r.EmployerPrimaryAddress, employerPrimaryAddress)
             .With(r => r.ResidentialAddress, residentialAddress)

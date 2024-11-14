@@ -3,20 +3,19 @@ import { Injectable } from '@angular/core';
 import { OAuthResourceServerErrorHandler } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthUserBceidService } from '../services/auth-user-bceid.service';
 import { AuthenticationService } from '../services/authentication.service';
-
-const includedURLs = [/^\/api\/.+$/];
 
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
+		private authUserBceidService: AuthUserBceidService,
 		private authenticationService: AuthenticationService,
 		private errorHandler: OAuthResourceServerErrorHandler
 	) {}
 
 	private checkUrl(url: string): boolean {
-		const isIncluded = includedURLs.some((regexp) => regexp.test(url));
-		return isIncluded;
+		return url.toLowerCase().includes('/api/');
 	}
 
 	public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -27,7 +26,10 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 		if (!token) return next.handle(req);
 
 		const header = 'Bearer ' + token;
-		const headers = req.headers.set('Authorization', header);
+		let headers = req.headers.set('Authorization', header);
+		if (this.authUserBceidService.bceidUserProfile?.bizUserId) {
+			headers = req.headers.set('bizUserId', this.authUserBceidService.bceidUserProfile.bizUserId);
+		}
 		req = req.clone({ headers });
 
 		return next.handle(req).pipe(catchError((err) => this.errorHandler.handleError(err)));

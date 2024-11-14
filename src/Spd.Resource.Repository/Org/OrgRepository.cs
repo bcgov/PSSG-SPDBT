@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.Net;
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
@@ -6,8 +8,6 @@ using Microsoft.OData.Client;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
-using System.Collections.Immutable;
-using System.Net;
 
 namespace Spd.Resource.Repository.Org
 {
@@ -15,11 +15,13 @@ namespace Spd.Resource.Repository.Org
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
+
         public OrgRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgRepository> logger)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
         }
+
         public async Task<OrgQryData?> QueryOrgAsync(OrgQry query, CancellationToken ct)
         {
             return query switch
@@ -145,9 +147,10 @@ namespace Spd.Resource.Repository.Org
             if (query.ServiceTypes != null && query.ServiceTypes.Any())
             {
                 IEnumerable<Guid> stIds = query.ServiceTypes.Select(t => DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.GetValueOrDefault(t.ToString()));
-                var accountsList = accounts
-                    .AsEnumerable()
-                    .Where(a => stIds.Any(t => a.spd_account_spd_servicetype.Any(st => st.spd_servicetypeid == t)));
+                var accountsList = (await accounts
+                    .GetAllPagesAsync(ct))
+                    .Where(a => stIds.Any(t => a.spd_account_spd_servicetype.Any(st => st.spd_servicetypeid == t)))
+                    .ToList();
                 return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accountsList));
             }
 
