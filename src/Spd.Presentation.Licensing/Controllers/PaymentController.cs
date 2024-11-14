@@ -85,7 +85,19 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Payment result processing has errors +{ex}");
+                _logger.LogError("Payment result processing has errors : {Exception}", ex);
+                if (paybcResult.trnApproved == 1)
+                {
+                    string[] ids = paybcResult.ref2.Split('*');
+                    if (ids.Length != 2)
+                    {
+                        _logger.LogError("paybc callback url is corrupted.");
+                    }
+                    else
+                    {
+                        _logger.LogError("Get trnApproved = 1 from Paybc, exception thrown for creating payment for application {ApplicationId}", ids[1]);
+                    }
+                }
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }
@@ -191,7 +203,19 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Payment result processing has errors +{ex}");
+                _logger.LogError("Payment result processing has errors : {Exception}", ex);
+                if (paybcResult.trnApproved == 1)
+                {
+                    string[] ids = paybcResult.ref2.Split('*');
+                    if (ids.Length != 2)
+                    {
+                        _logger.LogError("paybc callback url is corrupted.");
+                    }
+                    else
+                    {
+                        _logger.LogError("Get trnApproved = 1 from Paybc, exception thrown for creating payment for application {ApplicationId}", ids[1]);
+                    }
+                }
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }
@@ -302,7 +326,19 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Payment result processing has errors +{ex}");
+                _logger.LogError("Payment result processing has errors : {Exception}", ex);
+                if (paybcResult.trnApproved == 1)
+                {
+                    string[] ids = paybcResult.ref2.Split('*');
+                    if (ids.Length != 2)
+                    {
+                        _logger.LogError("paybc callback url is corrupted.");
+                    }
+                    else
+                    {
+                        _logger.LogError("Get trnApproved = 1 from Paybc, exception thrown for creating payment for application {ApplicationId}", ids[1]);
+                    }
+                }
                 return Redirect($"{hostUrl}{errorPath}?bizId={bizId}");
             }
         }
