@@ -145,6 +145,19 @@ export class FormPhysicalCharacteristicsComponent implements OnInit {
 		}
 	}
 
+	isFormValid(): boolean {
+		if (this.isReadonly) {
+			return true;
+		}
+
+		this.form.markAllAsTouched();
+		const isValid1 = this.form.valid;
+
+		console.debug('[FormPhysicalCharacteristicsComponent] isFormValid', isValid1);
+
+		return isValid1;
+	}
+
 	get hairColourCode(): FormControl {
 		return this.form.get('hairColourCode') as FormControl;
 	}
