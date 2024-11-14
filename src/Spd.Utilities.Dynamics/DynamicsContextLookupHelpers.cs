@@ -301,7 +301,7 @@ namespace Spd.Utilities.Dynamics
         }
 
         public static async Task<spd_portaluser?> GetUserById(this DynamicsContext context, Guid userId, CancellationToken ct)
-            => await context.spd_portalusers.Where(a => a.spd_portaluserid == userId).SingleOrDefaultAsync(ct);
+            => await context.spd_portalusers.Expand(a => a.spd_spd_role_spd_portaluser).Where(a => a.spd_portaluserid == userId).SingleOrDefaultAsync(ct);
 
         public static async Task<account?> GetOrgById(this DynamicsContext context, Guid organizationId, CancellationToken ct)
         {
@@ -346,6 +346,21 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
 
+        }
+
+        public static async Task<spd_businesscontact?> GetBizContactById(this DynamicsContext context, Guid bizContactId, CancellationToken ct)
+        {
+            try
+            {
+                return await context.spd_businesscontacts.Where(a => a.spd_businesscontactid == bizContactId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
         }
 
         public static async Task<task?> GetTaskById(this DynamicsContext context, Guid taskId, CancellationToken ct)

@@ -7,22 +7,27 @@ public interface IAddressAutocompleteClient
 
 public abstract record AddressQuery;
 
+/// <summary>
 /// Returns addresses matching the search term.
+/// </summary>
 public record AddressSearchQuery : AddressQuery
 {
-    public string SearchTerm { get; set; }
-    public string Country { get; set; }
+    public string SearchTerm { get; set; } = null!;
+    public string Country { get; set; } = null!;
     public string? LastId { get; set; }
 }
 
+/// <summary>
 /// Returns the full address details based on the Id.
+/// </summary>
 public record AddressRetrieveQuery : AddressQuery
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 }
 
+#pragma warning disable S2094 // Classes should not be empty
 public abstract record AddressQueryResponse;
-
+#pragma warning restore S2094 // Classes should not be empty
 
 /// <summary>
 /// The response from the web service is a table containing the elements below. Where no items are found, the response will be empty.

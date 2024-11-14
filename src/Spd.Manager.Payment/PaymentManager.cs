@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
@@ -19,12 +19,12 @@ using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
-using Spd.Utilities.Cache;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
+using System.Text.Json;
 
 namespace Spd.Manager.Payment
 {
@@ -56,6 +56,7 @@ namespace Spd.Manager.Payment
         private readonly IPersonLicApplicationRepository _personLicAppRepository;
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
+        private readonly IBizLicApplicationRepository _bizAppRepository;
         private readonly IConfiguration _configuration;
         private readonly IOrgRepository _orgRepository;
         private readonly ITimeLimitedDataProtector _dataProtector;
@@ -75,6 +76,7 @@ namespace Spd.Manager.Payment
             IPersonLicApplicationRepository personLicAppRepository,
             IServiceTypeRepository serviceTypeRepository,
             ILogger<IPaymentManager> logger,
+            IBizLicApplicationRepository bizAppRepository,
             IConfiguration configuration,
             IOrgRepository orgRepository)
         {
@@ -92,6 +94,7 @@ namespace Spd.Manager.Payment
             _personLicAppRepository = personLicAppRepository;
             _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
+            _bizAppRepository = bizAppRepository;
             _configuration = configuration;
             _orgRepository = orgRepository;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
@@ -160,7 +163,7 @@ namespace Spd.Manager.Payment
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentInfoAsync(app, ct);
             Guid transNumber = Guid.NewGuid();
 
-            //generate the link string 
+            //generate the link string
             //payment utility
             var linkResult = (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
@@ -170,7 +173,7 @@ namespace Spd.Manager.Payment
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
                     Description = $"Payment for Case ID: {app.ApplicationNumber}",
-                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
+                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodType.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref2 = paymentId.ToString() + "*" + applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
                     Ref3 = isFromSecurePaymentLink.ToString()
@@ -194,7 +197,35 @@ namespace Spd.Manager.Payment
             await _paymentRepository.ManageAsync(createCmd, ct);
             var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
             updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
-            return await _paymentRepository.ManageAsync(updateCmd, ct);
+            Guid paymentId = await _paymentRepository.ManageAsync(updateCmd, ct);
+
+            //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
+            BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
+            if (bizApp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
+            {
+                if (bizApp.SoleProprietorSWLAppId != null && (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
+                {
+                    createCmd.ApplicationId = bizApp.SoleProprietorSWLAppId.Value;
+                    createCmd.PaymentId = Guid.NewGuid();
+                    createCmd.TransAmount = 0;
+                    await _paymentRepository.ManageAsync(createCmd, ct);
+                    updateCmd.PaymentId = createCmd.PaymentId;
+                    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
+                    await _paymentRepository.ManageAsync(updateCmd, ct);
+                }
+                //if application has non-swl controlling member crc applications, we need to set all those to paid.
+                foreach (Guid cmCrcAppId in bizApp.NonSwlControllingMemberCrcAppIds)
+                {
+                    createCmd.ApplicationId = cmCrcAppId;
+                    createCmd.PaymentId = Guid.NewGuid();
+                    createCmd.TransAmount = 0;
+                    await _paymentRepository.ManageAsync(createCmd, ct);
+                    updateCmd.PaymentId = createCmd.PaymentId;
+                    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
+                    await _paymentRepository.ManageAsync(updateCmd, ct);
+                }
+            }
+            return paymentId;
         }
 
         public async Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct)
@@ -211,6 +242,8 @@ namespace Spd.Manager.Payment
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentInfoAsync(app, ct);
             var cmd = _mapper.Map<RefundPaymentCmd>(paymentList.Items.First());
             cmd.PbcRefNumber = spdPaymentConfig.PbcRefNumber;
+            cmd.TransTypeCode = app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType) ?
+                TransTypeCode.Screening : TransTypeCode.Licensing;
             var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
 
             UpdatePaymentCmd updatePaymentCmd = new()
@@ -354,13 +387,13 @@ namespace Spd.Manager.Payment
 
         private async Task<SpdPaymentConfig> GetSpdPaymentInfoAsync(ApplicationResult app, CancellationToken ct)
         {
-            ConfigResult? configResult = await _cache.Get<ConfigResult>("spdPayBCConfigs");
-            if (configResult == null)
-            {
-                configResult = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
-                await _cache.Set<ConfigResult>("spdPayBCConfigs", configResult, new TimeSpan(1, 0, 0));
-            }
-            if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
+            ConfigResult? configResult = await _cache.GetAsync(
+                "spdPayBCConfigs",
+                async ct => await _configRepository.Query(new ConfigQuery(Group: IConfigRepository.PAYBC_GROUP), ct),
+                TimeSpan.FromMinutes(60),
+                ct);
+
+            if (app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
             {
                 //screening price and payment setting
                 var pbcRefnumberConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
@@ -398,26 +431,25 @@ namespace Spd.Manager.Payment
                 LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
                     new LicenceFeeQry
                     {
-                        WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
+                        ServiceTypeEnum = licApp.ServiceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
                         BizTypeEnum = licApp.BizTypeCode ?? BizTypeEnum.None,
                         HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTermEnum.NinetyDays &&
-                            licApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence &&
+                            licApp.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence &&
                             licApp.ApplicationTypeCode == ApplicationTypeEnum.Renewal
                     },
                     ct);
 
                 decimal? price = feeList.LicenceFees.First()?.Amount;
                 if (price == null)
-                    throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
-                SpdPaymentConfig spdPaymentConfig = new()
+                    throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.ServiceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
+                return new SpdPaymentConfig
                 {
                     PbcRefNumber = pbcRefnumberLicConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountLicConfig.Value,
                     ServiceCost = Decimal.Round((decimal)price, 2)
                 };
-                return spdPaymentConfig;
             }
         }
 
@@ -469,16 +501,14 @@ namespace Spd.Manager.Payment
         {
             try
             {
-                var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
-                return JsonConvert.SerializeObject(result);
+                var result = JsonSerializer.Deserialize<CasInvoiceCreateRespCompact>(response);
+                return JsonSerializer.Serialize(result);
             }
             catch
             {
                 return response;
             }
         }
-
-
     }
 
     internal class CasInvoiceCreateRespCompact

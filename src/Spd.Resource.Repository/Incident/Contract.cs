@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Incident
         public Guid IncidentId { get; set; }
         public Guid ApplicationId { get; set; }
         public string Title { get; set; } = null!;
-        public IEnumerable<string> Conditions { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<Condition> Conditions { get; set; } = Enumerable.Empty<Condition>();
     }
 
     public abstract record IncidentCmd;
@@ -33,6 +33,11 @@ namespace Spd.Resource.Repository.Incident
         public CaseStatusEnum CaseStatus { get; set; }
         public CaseSubStatusEnum CaseSubStatus { get; set; }
 
+    }
+    public record Condition
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     public enum CaseStatusEnum

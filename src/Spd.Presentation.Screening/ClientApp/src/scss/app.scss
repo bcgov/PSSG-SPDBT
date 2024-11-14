@@ -5,13 +5,14 @@
 $spd-blue: (
 	50: #e0e7ed,
 	100: #b3c2d1,
-  200: #8099b3,
-  300: #4d7094,
-  400: #26527d,
-  500: #003366, // BC Gov. Primary
-  600: #002e5e,
-  700: #002753,
-  800: #002049,
+	200: #8099b3,
+	300: #4d7094,
+	400: #26527d,
+	500: #003366,
+	// BC Gov. Primary
+	600: #002e5e,
+	700: #002753,
+	800: #002049,
 	900: #001438,
 	A100: #6e93ff,
 	A200: #3b6cff,
@@ -28,23 +29,24 @@ $spd-blue: (
 		700: #ffffff,
 		800: #ffffff,
 		900: #ffffff,
-      A100: #000000,
-      A200: #ffffff,
-      A400: #ffffff,
-      A700: #ffffff
-  )
+		A100: #000000,
+		A200: #ffffff,
+		A400: #ffffff,
+		A700: #ffffff,
+	),
 );
 
 $spd-yellow: (
 	50: #fff7e3,
 	100: #feeaba,
-  200: #fedd8c,
-  300: #fdcf5e,
-  400: #fcc43c,
-  500: #fcba19, // BC Gov. Secondary
-  600: #fcb316,
-  700: #fbab12,
-  800: #fba30e,
+	200: #fedd8c,
+	300: #fdcf5e,
+	400: #fcc43c,
+	500: #fcba19,
+	// BC Gov. Secondary
+	600: #fcb316,
+	700: #fbab12,
+	800: #fba30e,
 	900: #fa9408,
 	A100: #ffffff,
 	A200: #fff8ef,
@@ -61,29 +63,29 @@ $spd-yellow: (
 		700: #000000,
 		800: #000000,
 		900: #000000,
-      A100: #000000,
-      A200: #000000,
-      A400: #000000,
-      A700: #000000
-  )
+		A100: #000000,
+		A200: #000000,
+		A400: #000000,
+		A700: #000000,
+	),
 );
 
-@import "@bcgov/bc-sans/css/BCSans.css";
+@import '@bcgov/bc-sans/css/BCSans.css';
 
-$font-family-sans-serif: "BC Sans", "Noto Sans", "Verdana", "Arial", "sans serif"; 
+$font-family-sans-serif: 'BC Sans', 'Noto Sans', 'Verdana', 'Arial', 'sans serif';
 
-$spd-body-1: mat.define-typography-level(
-  $font-family: $font-family-sans-serif,
+$spd-body-1: mat.m2-define-typography-level(
+	$font-family: $font-family-sans-serif,
 	$font-weight: 400,
 	$font-size: 16px,
 	$line-height: 1,
 	$letter-spacing: normal,
 );
 
-$spd-typography: mat.define-typography-config(
+$spd-typography: mat.m2-define-typography-config(
 	$font-family: $font-family-sans-serif,
-	$body-1: mat.define-typography-level(16px, 24px, 400),
-	$body-2: mat.define-typography-level(16px, 24px, 400),
+	$body-1: mat.m2-define-typography-level(16px, 24px, 400),
+	$body-2: mat.m2-define-typography-level(16px, 24px, 400),
 );
 
 @include mat.core();
@@ -92,22 +94,24 @@ $spd-typography: mat.define-typography-config(
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$spd-primary: mat.define-palette($spd-blue, 500);
-$spd-accent: mat.define-palette($spd-yellow, 500);
+$spd-primary: mat.m2-define-palette($spd-blue, 500);
+$spd-accent: mat.m2-define-palette($spd-yellow, 500);
 
 // The warn palette is optional (defaults to red).
-$spd-warn: mat.define-palette(mat.$red-palette);
+$spd-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$spd-theme: mat.define-light-theme((
-  color: (
-    primary: $spd-primary,
-    accent: $spd-accent,
-    warn: $spd-warn,
-  ),
-  typography: $spd-typography,
-));
+$spd-theme: mat.m2-define-light-theme(
+	(
+		color: (
+			primary: $spd-primary,
+			accent: $spd-accent,
+			warn: $spd-warn,
+		),
+		typography: $spd-typography,
+	)
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -116,23 +120,23 @@ $spd-theme: mat.define-light-theme((
 
 :root {
 	--color-white: #fff;
-  --color-primary-lightest: #eff2f5; 
-  --color-primary-lighter: #d6ddec;
-  --color-primary-light: #0f48ae;
-  --color-sidebar: #003366;// #385D8A;
-  --color-primary: #003366; // BC Gov. Primary
-  --color-primary-dark: #001b4a;
+	--color-primary-lightest: #eff2f5;
+	--color-primary-lighter: #d6ddec;
+	--color-primary-light: #0f48ae;
+	--color-sidebar: #003366; // #385D8A;
+	--color-primary: #003366; // BC Gov. Primary
+	--color-primary-dark: #001b4a;
 
-  --color-card: #f4f4f4;
-	--color-yellow: #FCBA19;  // BC Gov. Secondary
-  --color-yellow-dark: #df9f03;
-  --color-orange: #fc8119;
-	--color-red: #D8292F;
+	--color-card: #f4f4f4;
+	--color-yellow: #fcba19; // BC Gov. Secondary
+	--color-yellow-dark: #df9f03;
+	--color-orange: #fc8119;
+	--color-red: #d8292f;
 	--color-green-light: #e9f6ee;
-	--color-green: #2E8540;
-  
-  --color-grey-lightest: #eeeeee;
-  --color-grey-lighter: #e1e1e1;
+	--color-green: #2e8540;
+
+	--color-grey-lightest: #eeeeee;
+	--color-grey-lighter: #e1e1e1;
 	--color-grey-light: #bdbdbd; // divider colour
 	--color-grey-inactive: #919191;
 	--color-grey: #606060; // secondary text colour
@@ -148,10 +152,13 @@ $spd-theme: mat.define-light-theme((
 
 @import './material-overrides';
 
-html, body { height: 100%; }
-body { 
-  margin: 0; 
-  background-color: var(--color-primary-lightest);
+html,
+body {
+	height: 100%;
+}
+body {
+	margin: 0;
+	background-color: var(--color-primary-lightest);
 }
 
 @media (max-width: 991px) {
@@ -195,7 +202,7 @@ body {
 }
 
 .alert {
-  padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 }
 
 .alert-info {
@@ -235,10 +242,10 @@ body {
 }
 
 .fs-7 {
-  font-size: .9rem!important;
+	font-size: 0.9rem !important;
 }
 
-.mat-mdc-card-content {  
+.mat-mdc-card-content {
 	text-align: center;
 }
 
@@ -246,12 +253,11 @@ body {
 	background-color: transparent;
 }
 .multi-select-filter .mat-mdc-form-field-focus-overlay {
-  background-color: transparent;
+	background-color: transparent;
 }
 
-
 .search-icon-button {
-  color: var(--color-white) !important;
+	color: var(--color-white) !important;
 	background-color: var(--color-primary) !important;
 	padding: 2.1em 0 !important;
 	border-radius: unset !important;
@@ -262,15 +268,15 @@ body {
 		width: 40px !important;
 		height: 40px !important;
 		left: 8px !important;
-  }
+	}
 }
 
-.table-button  {
-  border: 1px solid var(--color-primary-lighter)!important;
-  margin: 0 !important;
-  margin-right: 0.5rem!important;
-  margin-top: 0.5rem!important;
-  margin-bottom: 0.5rem!important;
+.table-button {
+	border: 1px solid var(--color-primary-lighter) !important;
+	margin: 0 !important;
+	margin-right: 0.5rem !important;
+	margin-top: 0.5rem !important;
+	margin-bottom: 0.5rem !important;
 }
 
 @media (max-width: 1199px) {
@@ -280,13 +286,13 @@ body {
 }
 
 .area-green {
-  background-color: rgba(215, 228, 213, 1) !important;
-    color: #23471F !important;
+	background-color: rgba(215, 228, 213, 1) !important;
+	color: #23471f !important;
 }
 
 .area-yellow {
-  background-color: rgba(251, 227, 163, 1) !important;
-    color: #56451B !important;
+	background-color: rgba(251, 227, 163, 1) !important;
+	color: #56451b !important;
 }
 
 .area-blue {
@@ -327,7 +333,10 @@ a {
 	border-radius: 4px;
 	background-color: #fff;
 	border: 1px solid var(--color-grey-lighter);
-	box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+	box-shadow:
+		0 2px 1px -1px #0003,
+		0 1px 1px #00000024,
+		0 1px 3px #0000001f;
 }
 
 @media (max-width: 991px) {
@@ -338,14 +347,15 @@ a {
 	}
 }
 
-ngx-dropzone-remove-badge {
-	opacity: 1 !important;
-}
-
 .active-selection-main {
-  border: 2px solid #286090 !important;
-  color: #286090 !important;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+	border: 2px solid #286090 !important;
+	color: #286090 !important;
+	box-shadow:
+		rgba(0, 0, 0, 0.25) 0px 54px 55px,
+		rgba(0, 0, 0, 0.12) 0px -12px 30px,
+		rgba(0, 0, 0, 0.12) 0px 4px 6px,
+		rgba(0, 0, 0, 0.17) 0px 12px 13px,
+		rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
 }
 
 .active-selection-border {
@@ -354,12 +364,12 @@ ngx-dropzone-remove-badge {
 }
 
 .active-selection-whole {
-  border: 2px solid var(--color-primary);
-  color: var(--color-white) !important;
-  background-color:#286090 !important; 
+	border: 2px solid var(--color-primary);
+	color: var(--color-white) !important;
+	background-color: #286090 !important;
 
-  mat-icon {
-    color: var(--color-white) !important;
+	mat-icon {
+		color: var(--color-white) !important;
 	}
 }
 
@@ -384,7 +394,10 @@ ngx-dropzone-remove-badge {
 		height: 100%;
 		border-radius: 4px;
 		border: 1px solid grey;
-		box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+		box-shadow:
+			0 3px 1px -2px #0003,
+			0 2px 2px #00000024,
+			0 1px 5px #0000001f;
 		text-align: center;
 
 		&__info {
@@ -417,21 +430,25 @@ ngx-dropzone-remove-badge {
 
 	&__box:hover {
 		color: var(--color-primary-light);
-		box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+		box-shadow:
+			rgba(0, 0, 0, 0.25) 0px 14px 28px,
+			rgba(0, 0, 0, 0.22) 0px 10px 10px;
 
 		mat-icon {
 			color: var(--color-primary-light);
 		}
-  }
+	}
 }
 
-.payment{
-  &__image {
-    max-height: 8em;
-    border-radius: 50%;
+.payment {
+	&__image {
+		max-height: 8em;
+		border-radius: 50%;
 		width: 400px;
 		background: var(--color-grey-lighter);
-		font: 32px Arial, sans-serif;
+		font:
+			32px Arial,
+			sans-serif;
 
 		&__item {
 			margin-top: 15px;

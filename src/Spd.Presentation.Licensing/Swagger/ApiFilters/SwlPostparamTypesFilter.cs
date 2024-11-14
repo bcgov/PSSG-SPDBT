@@ -49,7 +49,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                     Type = "object",
                                     Properties = {
                                         {
-                                            "workerLicenceTypeCode",
+                                            "serviceTypeCode",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -562,7 +562,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                     Example = new OpenApiString(
                                         @"
                                         {
-                                            ""workerLicenceTypeCode"": ""SecurityWorkerLicence"",
+                                            ""serviceTypeCode"": ""SecurityWorkerLicence"",
                                             ""applicationTypeCode"": ""New"",
                                             ""isSoleProprietor"": false,
                                             ""givenName"": ""test2"",

@@ -1,0 +1,18 @@
+{{- if .Values.networkPolicy.create -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "clamav.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "clamav.selectorLabels" . | nindent 6 }}
+  {{- if .Values.networkPolicy.egress }}
+  egress: {{ tpl (.Values.networkPolicy.egress | toYaml) $ | nindent 4 }}
+  {{- end }}
+  {{- if .Values.networkPolicy.ingress }}
+  ingress: {{ tpl (.Values.networkPolicy.ingress | toYaml) $ | nindent 4 }}
+  {{- end }}
+{{- end -}}

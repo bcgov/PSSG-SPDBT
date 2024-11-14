@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable, tap } from 'rxjs';
 import {
 	ApplicationPaymentListResponse,
@@ -290,7 +290,6 @@ export class PaymentsComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${application.applicationNumber}`,
 		};
 		this.paymentService
 			.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({

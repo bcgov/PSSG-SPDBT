@@ -422,7 +422,6 @@ namespace Spd.Presentation.Licensing.Controllers
                     ApplicationId = null,
                     EncodedApplicationId = encodedAppId,
                     EncodedPaymentId = encodedPaymentId,
-                    Description = "Licensing",
                     PaymentMethod = PaymentMethodCode.CreditCard
                 };
                 var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));

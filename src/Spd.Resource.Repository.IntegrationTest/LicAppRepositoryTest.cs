@@ -38,7 +38,7 @@ public class LicAppRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
 
         // Action
-        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, null, CancellationToken.None);
 
         //Assert
         Assert.NotNull(resp);
@@ -65,7 +65,7 @@ public class LicAppRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
 
         // Action
-        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, null, CancellationToken.None);
 
         //Assert
         Assert.NotNull(resp);

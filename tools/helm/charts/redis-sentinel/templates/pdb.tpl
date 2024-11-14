@@ -6,6 +6,7 @@ metadata:
   labels: {{ include "standard.labels" . | nindent 4 }}
 spec:
   minAvailable: 1
+  unhealthyPodEvictionPolicy: AlwaysAllow
   selector:
     matchLabels:
       name: {{ $name }}

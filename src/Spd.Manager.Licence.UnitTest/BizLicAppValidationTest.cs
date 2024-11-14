@@ -1,10 +1,13 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
     private readonly IFixture fixture;
+    private readonly IConfiguration config;
 
     public BizLicAppValidationTest()
     {
@@ -13,14 +16,30 @@ public class BizLicAppValidationTest
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        config = CreateConfiguration();
     }
 
     [Fact]
     public void BizLicAppUpsertRequestValidator_ShouldPass()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+    [Fact]
+    public void BizLicAppUpsertRequestValidator_With_Locksmith_SecurityAlarmInstaller_ShouldPass()
+    {
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>()
+        {
+            WorkerCategoryTypeCode.Locksmith,
+            WorkerCategoryTypeCode.SecurityAlarmInstaller
+        };
 
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
@@ -29,7 +48,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequestValidator_WithEmptyFields_ShouldPass()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -44,10 +63,10 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppSubmitRequestValidator_ShouldPass()
     {
-        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
-
+        model.BizTypeCode = BizTypeCode.RegisteredSoleProprietor;
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
@@ -55,7 +74,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppSubmitRequestValidator_WithEmptyFields_ShouldPass()
     {
-        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
 
@@ -70,24 +89,9 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.BizManagerContactInfo.GivenName = string.Empty;
-        model.BizManagerContactInfo.Surname = string.Empty;
-        model.BizManagerContactInfo.PhoneNumber = string.Empty;
-        model.BizManagerContactInfo.EmailAddress = string.Empty;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
-    }
-
-    [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.ApplicantIsBizManager = false;
@@ -97,16 +101,18 @@ public class BizLicAppValidationTest
         model.ApplicantContactInfo.EmailAddress = string.Empty;
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.Surname);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.PhoneNumber);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.EmailAddress);
     }
 
     [Fact]
     public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.SecurityAlarmInstaller };
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator, WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision };
 
         var result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.CategoryCodes);
@@ -115,7 +121,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequest_DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.DocumentInfos = null;
@@ -127,7 +133,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequest_DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -151,14 +157,12 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for insurance
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizInsurance)
+            .CreateMany(11)
+            .ToList();
+        documentInfos.Add(armourCarRegistrar);
+        documentInfos.Add(dogCertificate);
 
         model.DocumentInfos = documentInfos;
 
@@ -166,14 +170,10 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for armour car registrar
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.ArmourCarGuardRegistrar)
+            .CreateMany(11)
+            .ToList();
 
         model.DocumentInfos = documentInfos;
 
@@ -181,14 +181,10 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for dog certificate
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizSecurityDogCertificate)
+            .CreateMany(11)
+            .ToList();
 
         model.DocumentInfos = documentInfos;
 
@@ -199,7 +195,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -211,56 +207,6 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.PrivateInvestigatorSwlInfo);
     }
 
-    [Fact]
-    public void ControllingMembers_WhenHasEmptyFields_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-
-        List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() };
-        List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() };
-        List<SwlContactInfo> employees = new() { new SwlContactInfo() };
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
-        model.Members = members;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Members.SwlControllingMembers);
-        result.ShouldHaveValidationErrorFor(r => r.Members.NonSwlControllingMembers);
-        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
-    }
-
-    [Fact]
-    public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(10).ToList();
-        List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
-            .With(c => c.EmailAddress, "test@test.com")
-            .CreateMany(11)
-            .ToList();
-        List<SwlContactInfo> employees = fixture.CreateMany<SwlContactInfo>(21).ToList();
-
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
-        model.Members = members;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Members);
-        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
-    }
-
     private T GenerateValidRequest<T>()
     {
         object model;
@@ -268,30 +214,18 @@ public class BizLicAppValidationTest
         List<WorkerCategoryTypeCode> categories = new()
         {
             WorkerCategoryTypeCode.ArmouredCarGuard,
-            WorkerCategoryTypeCode.SecurityGuard,
-            WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            WorkerCategoryTypeCode.SecurityAlarmResponse
         };
 
         // Contact info
-        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
-            .With(c => c.EmailAddress, "test@test.com")
-            .Create();
         ContactInfo applicantContactInfo = fixture.Build<ContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
+            .With(c => c.PhoneNumber, "6133334444")
             .Create();
 
         // Controlling members
         List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
         List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() { Surname = "test", EmailAddress = "test@test.com" } };
         List<SwlContactInfo> employees = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
-
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
 
         if (typeof(T).Name == "BizLicAppUpsertRequest")
         {
@@ -316,9 +250,7 @@ public class BizLicAppValidationTest
                 .With(r => r.NoBranding, false)
                 .With(r => r.DocumentInfos, documentInfos)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
-                .With(r => r.Members, members)
                 .Create();
         }
         else
@@ -330,12 +262,43 @@ public class BizLicAppValidationTest
                 .With(r => r.UseDogs, true)
                 .With(r => r.NoBranding, false)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
-                .With(r => r.Members, members)
                 .Create();
         }
 
         return (T)Convert.ChangeType(model, typeof(T));
+    }
+    private static IConfiguration CreateConfiguration()
+    {
+        var json = @"
+        {
+            ""InvalidWorkerLicenceCategoryMatrix"": {
+                ""ArmouredCarGuard"": [""ArmouredCarGuard"", ""SecurityGuardUnderSupervision""],
+                ""BodyArmourSales"": [""SecurityGuardUnderSupervision"", ""BodyArmourSales""],
+                ""ClosedCircuitTelevisionInstaller"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""ElectronicLockingDeviceInstaller"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""FireInvestigator"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""Locksmith"": [""ElectronicLockingDeviceInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""LocksmithUnderSupervision"": [""ElectronicLockingDeviceInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""PrivateInvestigator"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""PrivateInvestigatorUnderSupervision"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmInstaller"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmInstallerUnderSupervision"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmMonitor"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityAlarmSales"", ""SecurityGuard""],
+                ""SecurityAlarmResponse"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityGuard""],
+                ""SecurityAlarmSales"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmSales"", ""SecurityGuardUnderSupervision"", ""SecurityGuard""],
+                ""SecurityConsultant"": [""SecurityConsultant"", ""SecurityGuardUnderSupervision""],
+                ""SecurityGuard"": [""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityGuard"", ""SecurityAlarmSales""],
+                ""SecurityGuardUnderSupervision"": [""ArmouredCarGuard"", ""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""PrivateInvestigator"", ""PrivateInvestigatorUnderSupervision"", ""FireInvestigator"", ""SecurityConsultant"", ""SecurityGuardUnderSupervision"", ""SecurityGuard"", ""BodyArmourSales""]
+            }
+        }";
+
+
+        var builder = new ConfigurationBuilder()
+            .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+            
+
+
+        return builder.Build();
     }
 }

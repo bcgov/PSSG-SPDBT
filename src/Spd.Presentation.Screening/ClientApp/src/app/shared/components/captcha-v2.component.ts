@@ -14,7 +14,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 					<re-captcha
 						formControlName="token"
 						[siteKey]="siteKey"
-						(resolved)="resolved($event)"
+						(resolved)="resolved($event?? '')"
 						(error)="errored($event)"
 						required
 					></re-captcha>

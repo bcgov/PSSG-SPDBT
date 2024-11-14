@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -302,13 +302,13 @@ export class UsersComponent implements OnInit {
 		const message = `
 		<strong>Primary Authorized Users</strong>
 		<ul>
-		<li>Add or remove others in their organization from the authorized contact roles</li>		
-		<li>Transfer their primary authority to another additional authorized contact</li>		
-		<li>Edit and update organization information</li>		
-		<li>Initiate new criminal record checks</li>		
-		<li>View application statuses</li>		
-		<li>View expiring criminal record checks</li>		
-		<li>View financial information and pay for criminal record checks</li>		
+		<li>Add or remove others in their organization from the authorized contact roles</li>
+		<li>Transfer their primary authority to another additional authorized contact</li>
+		<li>Edit and update organization information</li>
+		<li>Initiate new criminal record checks</li>
+		<li>View application statuses</li>
+		<li>View expiring criminal record checks</li>
+		<li>View financial information and pay for criminal record checks</li>
 		</ul>
 		<strong>Authorized Users</strong>
 		<ul>

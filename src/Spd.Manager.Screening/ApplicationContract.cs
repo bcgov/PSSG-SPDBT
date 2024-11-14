@@ -125,15 +125,6 @@ namespace Spd.Manager.Screening
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
     }
-    public enum ApplicationInviteStatusCode
-    {
-        Draft,
-        Sent,
-        Failed,
-        Completed, //inactive Status code
-        Cancelled,//inactive Status code
-        Expired //inactive Status code
-    }
     #endregion
 
     #region application
@@ -300,32 +291,6 @@ namespace Spd.Manager.Screening
         Completed
     }
 
-    public enum ApplicationOriginTypeCode
-    {
-        //applicant authenticated with bcsc submit app
-        [Description("Portal")]
-        Portal,
-
-        [Description("Email")]
-        Email,
-
-        //applicant anonymous submit app
-        [Description("Web Form")]
-        WebForm,
-
-        [Description("Mail")]
-        Mail,
-
-        [Description("Fax")]
-        Fax,
-
-        [Description("Generic Upload")]
-        GenericUpload,
-
-        //organization submit app manually
-        [Description("Organization Submitted")]
-        OrganizationSubmitted
-    }
     public enum ApplicationStatusCode
     {
         Draft,
@@ -335,7 +300,6 @@ namespace Spd.Manager.Screening
         Submitted,
         Cancelled,
     }
-
 
     public enum ScreeningTypeCode
     {
@@ -630,6 +594,7 @@ namespace Spd.Manager.Screening
                     .NotEmpty();
 
             RuleFor(r => r.DateOfBirth)
+                    .Must(d => d > new DateOnly(1800, 1, 1))
                     .NotEmpty();
 
             RuleFor(r => r.BirthPlace)
@@ -844,7 +809,6 @@ namespace Spd.Manager.Screening
         SelfDisclosurePkg
     }
     #endregion
-
 
     #region application-delegates
 

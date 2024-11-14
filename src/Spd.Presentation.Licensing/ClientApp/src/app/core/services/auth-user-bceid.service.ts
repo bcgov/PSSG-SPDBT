@@ -1,19 +1,27 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BizListResponse, BizUserLoginResponse } from '@app/api/models';
+import { BizListResponse, BizUserLoginResponse, ServiceTypeCode } from '@app/api/models';
 import {
 	BizSelectionDialogData,
-	BizSelectionModalComponent,
-} from '@app/shared/components/biz-selection-modal.component';
+	ModalBizSelectionComponent,
+} from '@app/shared/components/modal-biz-selection.component';
 import { lastValueFrom } from 'rxjs';
 import { LoginService } from 'src/app/api/services';
+import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
 	bceidUserProfile: BizUserLoginResponse | null = null;
 
-	constructor(private loginService: LoginService, private dialog: MatDialog) {}
+	constructor(
+		private configService: ConfigService,
+		private loginService: LoginService,
+		private dialog: MatDialog
+	) {}
 
+	//----------------------------------------------------------
+	// *
+	// * get data related to login
 	async whoAmIAsync(defaultBizId: string | null | undefined = undefined): Promise<boolean> {
 		this.clearUserData();
 
@@ -25,9 +33,19 @@ export class AuthUserBceidService {
 			return await this.setBizProfile(bizsList[0].bizId!);
 		} else {
 			if (defaultBizId) {
-				const bizIdItem = bizsList.find((biz) => biz.bizId == defaultBizId);
-				if (bizIdItem) {
-					return await this.setBizProfile(bizIdItem.bizId);
+				const defaultBiz = bizsList.find((biz: BizListResponse) => biz.bizId == defaultBizId);
+				if (defaultBiz) {
+					return await this.setBizProfile(defaultBiz.bizId);
+				}
+			}
+
+			// SPDBT-2941 use first SecurityBusinessLicence Biz as the default
+			if (this.configService.isProduction()) {
+				const securityBusinessLicenceBiz = bizsList.find((biz: BizListResponse) =>
+					biz.serviceTypeCodes?.findIndex((item: ServiceTypeCode) => item === ServiceTypeCode.SecurityBusinessLicence)
+				);
+				if (securityBusinessLicenceBiz) {
+					return await this.setBizProfile(securityBusinessLicenceBiz.bizId);
 				}
 			}
 
@@ -36,6 +54,9 @@ export class AuthUserBceidService {
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// * clear data on logout
 	public clearUserData(): void {
 		this.bceidUserProfile = null;
 	}
@@ -63,7 +84,7 @@ export class AuthUserBceidService {
 
 		return lastValueFrom(
 			this.dialog
-				.open(BizSelectionModalComponent, {
+				.open(ModalBizSelectionComponent, {
 					width: '500px',
 					data: dialogOptions,
 				})

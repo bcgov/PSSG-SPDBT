@@ -54,6 +54,7 @@ namespace Spd.Resource.Repository.Biz
             IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_Organization_Addresses)
                 .Expand(a => a.spd_organization_spd_licence_soleproprietor)
+                .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
@@ -61,20 +62,13 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
-                .Where(so => so.accountid == biz.accountid)
-                .ToList();
-
-            if (!serviceTypes.Any())
-                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {biz.name} does not have service type.");
-
-            var licenceId = biz.spd_organization_spd_licence_soleproprietor
-                .FirstOrDefault()?.spd_licenceid;
+            spd_licence? swl = biz.spd_organization_spd_licence_soleproprietor
+              .OrderByDescending(a => a.createdon)
+              .FirstOrDefault();
 
             var response = _mapper.Map<BizResult>(biz);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
-            response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
-
+            response.SoleProprietorSwlContactInfo.LicenceId = swl?.spd_licenceid;
+            response.SoleProprietorSwlExpiryDate = SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(swl?.spd_expirydate);
             return response;
         }
 
@@ -102,8 +96,6 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            if (!IsSoleProprietor(updateBizCmd.BizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(biz.spd_licensingbusinesstype)))
-                throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
 
             _mapper.Map(updateBizCmd, biz);
 
@@ -184,16 +176,15 @@ namespace Spd.Resource.Repository.Biz
 
             if (licence != null && licence.spd_licenceid == licenceId && IsSoleProprietor(bizType))
                 return;
-
+            if (!IsSoleProprietor(bizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype)))
+                throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
+            if (!IsSoleProprietor(bizType))
+                return;
             // Remove link with current licence
             if (licence != null)
             {
                 _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
             }
-
-            if (!IsSoleProprietor(bizType))
-                return;
-
             // Add link with new licence
             spd_licence? newLicence = _context.spd_licences
                 .Where(l => l.spd_licenceid == licenceId)
@@ -210,7 +201,7 @@ namespace Spd.Resource.Repository.Biz
         {
             if (bizType == null) return false;
 
-            return soleProprietorTypes.Any(s => s.Equals(bizType));
+            return soleProprietorTypes.Contains((BizTypeEnum)bizType);
         }
     }
 }

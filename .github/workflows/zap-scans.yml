@@ -1,0 +1,30 @@
+name: ZAP Scans
+
+on:
+  schedule:
+    - cron: "3 0 * * Mon"
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  screening-portal-ui-zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: UI
+        uses: zaproxy/action-full-scan@v0.11.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: "https://spd-train.justice.gov.bc.ca/screening/"
+          artifact_name: "screening_portal_ui_zap_scan"
+          issue_title: "screening_portal_ui_zap_scan"
+
+  screening-portal-api-zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: API
+        uses: zaproxy/action-api-scan@v0.8.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: "https://spd-train.justice.gov.bc.ca/screening/swagger/v1/swagger.json"
+          artifact_name: "screening_portal_api_zap_scan"
+          issue_title: "screening_portal_api_zap_scan"

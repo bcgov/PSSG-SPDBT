@@ -8,12 +8,14 @@ public partial interface IPersonLicApplicationRepository
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+    public Task<LicenceApplicationCmdResp> UpdateSwlSoleProprietorApplicationAsync(Guid swlAppId, Guid bizLicAppId, CancellationToken ct);
 }
 
 public record LicenceApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum ServiceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
+    public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeEnum.Portal;
     public BizTypeEnum? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
@@ -91,18 +93,10 @@ public record LicenceApplicationResp() : LicenceApplication
     public string? CaseNumber { get; set; }
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
+    public Guid? SoleProprietorBizAppId { get; set; } //this is for sole-proprietor biz application id for combo app
 };
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
-
-public enum WorkerLicenceTypeEnum
-{
-    SecurityWorkerLicence,
-    ArmouredVehiclePermit,
-    BodyArmourPermit,
-    SecurityBusinessLicence,
-    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
-}
 
 public enum HairColourEnum
 {
@@ -112,6 +106,7 @@ public enum HairColourEnum
     Red,
     Grey,
     Bald,
+    White
 }
 
 public enum EyeColourEnum
@@ -121,6 +116,8 @@ public enum EyeColourEnum
     Black,
     Green,
     Hazel,
+    Grey,
+    Other
 }
 
 public enum HeightUnitEnum

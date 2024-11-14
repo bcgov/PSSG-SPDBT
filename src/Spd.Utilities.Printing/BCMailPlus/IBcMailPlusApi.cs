@@ -108,7 +108,7 @@ internal record JobTemplate(string JobName, string AssetExtension);
 public static class Jobs
 {
     /// <summary>
-    /// Security worker licence job
+    /// Security worker licence job: it will generate image file
     /// </summary>
     public const string SecurityWorkerLicense = "PSSG-SPD-CARD";
 
@@ -126,14 +126,24 @@ public static class Jobs
     /// Metal dealer and recyclers permit job
     /// </summary>
     public const string MetalDealerAndRecyclersPermit = "PSSG-SPD-MTL-PMT";
+
+    /// <summary>
+    /// Release Security worker licence job: the job will be routed to the physical printing queue
+    /// </summary>
+    public const string SecurityWorkerLicenseRelease = "PSSG-SPD-CARD-RELEASE";
 }
 
 internal static class JobStatusValues
 {
     /// <summary>
-    /// Job status that indicates success
+    /// Job status that indicates success, record data rendered to pdb
     /// </summary>
     public const string PdfCreated = "PDF_CREATED";
+
+    /// <summary>
+    /// Pdf created that awaiting for batching
+    /// </summary>
+    public const string PdfCreatedAwaitingBatching = "PDF_CREATED_AWAITING_BATCHING";
 
     /// <summary>
     /// Job status that indicates errors
@@ -141,7 +151,22 @@ internal static class JobStatusValues
     public const string ProcessingError = "PROCESSING_ERROR";
 
     /// <summary>
-    /// Job status that indicates errors
+    /// Job status that indicates errors, Initial record data received 
     /// </summary>
     public const string FileReceived = "FILE_RECEIVED";
+
+    /// <summary>
+    /// Initial request data received, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string RequestReceived = "REQUEST_RECEIVED";
+
+    /// <summary>
+    /// Batch configured for QA, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string BatchConfigured = "BATCH_CONFIGURED";
+
+    /// <summary>
+    /// Batch enqueued for print, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string SentForProcessing = "SENT_FOR_PROCESSING";
 }

@@ -4,7 +4,7 @@ using Spd.Utilities.Shared.Exceptions;
 namespace Spd.Utilities.Shared
 {
     [ApiController]
-    [TypeFilter(typeof(ApiExceptionFilter))]
+    [TypeFilter(typeof(ApiExceptionFilterAttribute))]
     public abstract class SpdControllerBase : ControllerBase
     {
     }

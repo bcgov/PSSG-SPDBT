@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Pipe({

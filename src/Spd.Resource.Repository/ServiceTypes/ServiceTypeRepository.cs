@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.ServiceTypes;
+
 internal class ServiceTypeRepository : IServiceTypeRepository
 {
     private readonly DynamicsContext _context;
@@ -24,20 +24,19 @@ internal class ServiceTypeRepository : IServiceTypeRepository
         {
             throw new ArgumentException("must be at leaset one qry parameter.");
         }
-        IEnumerable<spd_servicetype>? servicetypes = await _cache.Get<IEnumerable<spd_servicetype>>("spd_servicetypes");
-        if (servicetypes == null)
-        {
-            servicetypes = _context.spd_servicetypes.ToList();
-            await _cache.Set<IEnumerable<spd_servicetype>>("spd_servicetypes", servicetypes, new TimeSpan(1, 0, 0));
-        }
+
+        IEnumerable<spd_servicetype> servicetypes = await _cache.GetAsync(
+            "spd_servicetypes",
+            async ct => (await _context.spd_servicetypes.GetAllPagesAsync(ct)).ToList(),
+            TimeSpan.FromMinutes(60),
+            cancellationToken) ?? [];
 
         if (qry.ServiceTypeId != null)
         {
             servicetypes = servicetypes.Where(s => s.spd_servicetypeid == qry.ServiceTypeId);
         }
-        if (qry.ServiceTypeCode != null)
+        if (qry.ServiceTypeCode != null && DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.ServiceTypeCode.ToString()!, out Guid guid))
         {
-            var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.ServiceTypeCode.ToString(), out Guid guid);
             servicetypes = servicetypes.Where(s => s.spd_servicetypeid == guid);
         }
         var list = _mapper.Map<IEnumerable<ServiceTypeResp>>(servicetypes);

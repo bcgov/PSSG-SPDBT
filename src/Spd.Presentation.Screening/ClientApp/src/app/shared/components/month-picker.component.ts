@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 export const MONTH_PICKER_FORMATS = {
 	parse: {
@@ -17,16 +17,25 @@ export const MONTH_PICKER_FORMATS = {
 @Component({
 	selector: 'app-month-picker',
 	template: `
-		<mat-form-field>
-			<mat-label>{{ label }}</mat-label>
-			<input matInput readonly [(ngModel)]="monthAndYear" [matDatepicker]="picker" [max]="maxDate" [min]="minDate" />
-			<mat-hint>{{ hint }}</mat-hint>
-			<mat-datepicker-toggle matSuffix (click)="onClearDate()">
-				<mat-icon matDatepickerToggleIcon>clear</mat-icon>
-			</mat-datepicker-toggle>
-			<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-			<mat-datepicker #picker [startView]="'year'" (monthSelected)="onMonthChanged($event, picker)"> </mat-datepicker>
-		</mat-form-field>
+		<form [formGroup]="form" novalidate>
+			<mat-form-field>
+				<mat-label>{{ label }}</mat-label>
+				<input
+					matInput
+					readonly
+					formControlName="monthAndYear"
+					[matDatepicker]="picker"
+					[max]="maxDate"
+					[min]="minDate"
+				/>
+				<mat-hint>{{ hint }}</mat-hint>
+				<mat-datepicker-toggle matSuffix (click)="onClearDate()">
+					<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+				</mat-datepicker-toggle>
+				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker [startView]="'year'" (monthSelected)="onMonthChanged($event, picker)"> </mat-datepicker>
+			</mat-form-field>
+		</form>
 	`,
 	styles: [],
 	providers: [
@@ -42,23 +51,23 @@ export const MONTH_PICKER_FORMATS = {
 export class MonthPickerComponent {
 	@Input() label = '';
 	@Input() hint = '';
-	@Input() monthAndYear: Moment | null = null;
 	@Input() minDate: Moment | null = null;
 	@Input() maxDate: Moment | null = null;
+	@Input() form!: FormGroup;
 
 	@Output() monthAndYearChange = new EventEmitter<Moment | null>();
 
 	onMonthChanged(value: any, widget: any): void {
 		const selectedDate = moment(value);
+		this.form.patchValue({ monthAndYear: selectedDate });
 
-		this.monthAndYear = selectedDate;
 		this.monthAndYearChange.emit(selectedDate);
 
 		widget.close();
 	}
 
 	onClearDate(): void {
-		this.monthAndYear = null;
+		this.form.reset();
 
 		this.monthAndYearChange.emit(null);
 	}

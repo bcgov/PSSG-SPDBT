@@ -141,6 +141,8 @@ namespace Spd.Utilities.Dynamics
     {
         PortalUser = 100000000,
         ScreeningRequest = 100000001,
+        ControllingMemberCRC = 100000002,
+        ControllingMemberCRCUpdate = 100000003
     }
 
     public enum InvitationStatus
@@ -285,7 +287,8 @@ namespace Spd.Utilities.Dynamics
         Active = 1,
         Inactive = 2,
         Expired = 100000000,
-        Suspended = 100000001
+        Suspended = 100000001,
+        Preview = 100000002
     }
 
     public enum HairColorOptionSet
@@ -295,7 +298,8 @@ namespace Spd.Utilities.Dynamics
         Brown = 100000002,
         Red = 100000003,
         Grey = 100000004,
-        Bald = 100000005
+        Bald = 100000005,
+        White = 100000006
     }
 
     public enum EyeColorOptionSet
@@ -305,6 +309,8 @@ namespace Spd.Utilities.Dynamics
         Black = 100000002,
         Green = 100000003,
         Hazel = 100000004,
+        Grey = 100000005,
+        Other = 100000006
     }
 
     public enum PoliceOfficerRoleOptionSet
@@ -315,7 +321,9 @@ namespace Spd.Utilities.Dynamics
         CourtAppointedBailiff = 100000003,
         SpecialProvincialOrMunicipalConstable = 100000004,
         PoliceOfficer = 100000005,
-        Other = 100000006
+        PoliceOfficerRetired = 100000007,
+        Other = 100000006,
+        None = 100000008
     }
 
     public enum RequestDogPurposeOptionSet
