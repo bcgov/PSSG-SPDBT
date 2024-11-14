@@ -115,6 +115,7 @@ public enum PoliceOfficerRoleEnum
     CourtAppointedBailiff,
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
+    PoliceOfficerRetired,
     Other,
 }
 
@@ -151,4 +152,25 @@ public enum BizTypeEnum
 public record SwlContactInfo
 {
     public Guid? LicenceId { get; set; }
+}
+
+public enum ApplicationInviteStatusEnum
+{
+    Draft,
+    Sent,
+    Failed,
+    Completed,
+    Cancelled,
+    Expired
+}
+
+public enum ApplicationOriginTypeEnum
+{
+    Portal,
+    Email,
+    WebForm,
+    Mail,
+    Fax,
+    GenericUpload,
+    OrganizationSubmitted
 }

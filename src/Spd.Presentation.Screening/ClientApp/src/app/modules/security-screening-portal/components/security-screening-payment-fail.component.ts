@@ -65,7 +65,6 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
 		};
 		this.paymentService
 			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({

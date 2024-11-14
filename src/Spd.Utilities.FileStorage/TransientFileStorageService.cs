@@ -1,14 +1,16 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.FileStorage
 {
     internal class TransientFileStorageService : FileStorageService, ITransientFileStorageService
     {
-        public TransientFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, ILogger<FileStorageService> logger)
-            : base(amazonS3Client, config, logger)
+        public TransientFileStorageService(
+            [FromKeyedServices("transient")] IAmazonS3 amazonS3Client,
+            IOptionsMonitor<S3Settings> settings)
+            : base(amazonS3Client, settings.Get("transient"))
         {
         }
 
@@ -25,7 +27,7 @@ namespace Spd.Utilities.FileStorage
             var request = new DeleteObjectRequest
             {
                 Key = key,
-                BucketName = _config.Value.Bucket,
+                BucketName = _config.Bucket,
             };
 
             var response = await _amazonS3Client.DeleteObjectAsync(request, cancellationToken);

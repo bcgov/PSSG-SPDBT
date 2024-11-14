@@ -2,8 +2,8 @@
 {
     internal record StorageSetting
     {
-        public S3Settings MainBucketSettings { get; set; }
-        public S3Settings TransientBucketSettings { get; set; }
+        public S3Settings MainBucketSettings { get; set; } = new();
+        public S3Settings TransientBucketSettings { get; set; } = new();
     }
     internal record S3Settings
     {

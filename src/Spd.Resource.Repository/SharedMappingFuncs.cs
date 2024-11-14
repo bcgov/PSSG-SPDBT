@@ -3,6 +3,7 @@ using Microsoft.OData.Edm;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
+using System.Text.RegularExpressions;
 
 namespace Spd.Resource.Repository;
 internal static class SharedMappingFuncs
@@ -127,13 +128,13 @@ internal static class SharedMappingFuncs
     internal static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
     {
         if (policeRole == null)
-            return null;
+            return (int)PoliceOfficerRoleOptionSet.None;
         return (int)Enum.Parse<PoliceOfficerRoleOptionSet>(policeRole.ToString());
     }
 
     internal static PoliceOfficerRoleEnum? GetPoliceRoleEnum(int? optionset)
     {
-        if (optionset == null) return null;
+        if (optionset == null || optionset == (int)PoliceOfficerRoleOptionSet.None) return null;
         return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
     }
 
@@ -215,5 +216,172 @@ internal static class SharedMappingFuncs
         {
             return null;
         }
+    }
+
+    internal static ContactRoleCode? GetContactRoleCode(IEnumerable<spd_role> spdRoles)
+    {
+        spd_role role = spdRoles.FirstOrDefault();
+        if (role == null) return null;
+        return Enum.Parse<ContactRoleCode>(
+           DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
+    }
+    internal static bool GetIdentityConfirmed(ApplicationOriginTypeEnum? origin, ApplicationTypeEnum type)
+    {
+        bool isNotPortal = origin != ApplicationOriginTypeEnum.Portal;
+        bool isNewOrRenewal = type == ApplicationTypeEnum.New ||
+                              type == ApplicationTypeEnum.Renewal;
+
+        return !(isNotPortal && isNewOrRenewal);
+    }
+    internal static string? GetDogReasonOptionSets(bool? IsDogsPurposeDetectionDrugs, bool? IsDogsPurposeProtection, bool? IsDogsPurposeDetectionExplosives)
+    {
+        List<string> reasons = new();
+
+        if (IsDogsPurposeDetectionDrugs != null && IsDogsPurposeDetectionDrugs == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionDrugs).ToString());
+        if (IsDogsPurposeDetectionExplosives != null && IsDogsPurposeDetectionExplosives == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionExplosives).ToString());
+        if (IsDogsPurposeProtection != null && IsDogsPurposeProtection == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.Protection).ToString());
+        var result = String.Join(',', reasons.ToArray());
+
+        return string.IsNullOrWhiteSpace(result) ? null : result;
+    }
+    internal static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
+    {
+        if (dogreasonsStr == null) return null;
+        string[] reasons = dogreasonsStr.Split(',');
+        string str = ((int)type).ToString();
+        if (reasons.Any(s => s == str)) return true;
+
+        return false;
+    }
+
+    internal static string? GetWeightStr(int? weight, WeightUnitEnum? unit)
+    {
+        if (unit != null)
+        {
+            return unit switch
+            {
+                WeightUnitEnum.Kilograms => weight + "kg",
+                WeightUnitEnum.Pounds => weight + "lb",
+            };
+        }
+        else
+        {
+            return weight?.ToString();
+        }
+    }
+
+    //str should be like 130lb or 65kg or lb or kg or 130
+    internal static int? GetWeightNumber(string? str)
+    {
+        if (str == null) return null;
+        try
+        {
+            string temp = str.Replace("lb", string.Empty).Replace("kg", string.Empty);
+            return int.Parse(temp);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    //str should be like 130lb or 65kg or lb or kg or 130
+    internal static WeightUnitEnum? GetWeightUnitCode(string? str)
+    {
+        if (str == null) return null;
+        try
+        {
+            string temp = Regex.Replace(str, @"\d", string.Empty);
+            if (temp == "kg") return WeightUnitEnum.Kilograms;
+            if (temp == "lb") return WeightUnitEnum.Pounds;
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    internal static string? GetHeightStr(int? height, HeightUnitEnum? unit)
+    {
+        //if residential address is the same as mailing address, fe will send an empty mailing address
+        if (unit != null)
+        {
+            return unit switch
+            {
+                HeightUnitEnum.Centimeters => height + "cm",
+                HeightUnitEnum.Inches => height + "in", //todo: when ui decide what to use.
+            };
+        }
+        else
+        {
+            return height?.ToString();
+        }
+    }
+
+    //str should be like 130lb or 65kg or lb or kg or 130
+    internal static int? GetHeightNumber(string? str)
+    {
+        if (str == null) return null;
+        try
+        {
+            string temp = str.Replace("cm", string.Empty).Replace("in", string.Empty);
+            return int.Parse(temp);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    //str should be like 130lb or 65kg or lb or kg or 130
+    internal static HeightUnitEnum? GetHeightUnitCode(string? str)
+    {
+        if (str == null) return null;
+        try
+        {
+            string temp = Regex.Replace(str, @"\d", string.Empty);
+            if (temp == "in") return HeightUnitEnum.Inches;
+            if (temp == "cm") return HeightUnitEnum.Centimeters;
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    internal static int? GetHairColor(HairColourEnum? code)
+    {
+        if (code == null) return null;
+        return (int)Enum.Parse<HairColorOptionSet>(code.ToString());
+    }
+
+    internal static HairColourEnum? GetHairColorEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<HairColourEnum>(Enum.GetName(typeof(HairColorOptionSet), optionset));
+    }
+
+    internal static int? GetEyeColor(EyeColourEnum? code)
+    {
+        if (code == null) return null;
+        return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
+    }
+
+    internal static EyeColourEnum? GetEyeColorEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<EyeColourEnum>(Enum.GetName(typeof(EyeColorOptionSet), optionset));
+    }
+
+    internal static DateTimeOffset? GetDeclarationDate(bool? agree)
+    {
+        return agree != null && agree == true ? DateTime.Now : null;
     }
 }

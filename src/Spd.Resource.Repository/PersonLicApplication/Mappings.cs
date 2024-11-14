@@ -3,7 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Alias;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
-using System.Text.RegularExpressions;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 
@@ -41,6 +40,10 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
         .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
         .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
+        .ForMember(d => d.spd_haircolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColor(s.HairColourCode)))
+        .ForMember(d => d.spd_eyecolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColor(s.EyeColourCode)))
+        .ForMember(d => d.spd_height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightStr(s.Height, s.HeightUnitCode)))
+        .ForMember(d => d.spd_weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightStr(s.Weight, s.WeightUnitCode)))
         .ReverseMap()
         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
         .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
@@ -71,17 +74,17 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)ApplicationOriginOptionSet.Portal))
+         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)SharedMappingFuncs.GetOptionset<ApplicationOriginTypeEnum, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
          .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)PayerPreferenceOptionSet.Applicant))
          .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
          .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
          .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
          .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
          .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
-         .ForMember(d => d.spd_applicanthaircolour, opt => opt.MapFrom(s => GetHairColor(s.HairColourCode)))
-         .ForMember(d => d.spd_applicanteyecolour, opt => opt.MapFrom(s => GetEyeColor(s.EyeColourCode)))
-         .ForMember(d => d.spd_height, opt => opt.MapFrom(s => GetHeightStr(s)))
-         .ForMember(d => d.spd_weight, opt => opt.MapFrom(s => GetWeightStr(s)))
+         .ForMember(d => d.spd_applicanthaircolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColor(s.HairColourCode)))
+         .ForMember(d => d.spd_applicanteyecolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColor(s.EyeColourCode)))
+         .ForMember(d => d.spd_height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightStr(s.Height, s.HeightUnitCode)))
+         .ForMember(d => d.spd_weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightStr(s.Weight, s.WeightUnitCode)))
          .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
          .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
          .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine1))
@@ -108,11 +111,11 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_businesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizType(s.BizTypeCode)))
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-         .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
+         .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonOptionSets(s.IsDogsPurposeDetectionDrugs, s.IsDogsPurposeProtection, s.IsDogsPurposeDetectionExplosives)))
          .ForMember(d => d.spd_submittedon, opt => opt.Ignore())
          .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
          .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
-         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
+         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDeclarationDate(s.AgreeToCompleteAndAccurate)))
          .ForMember(d => d.spd_legalnamechange, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasLegalNameChanged)))
          .ForMember(d => d.spd_employeraddress1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : StringHelper.SanitizeEmpty(s.EmployerPrimaryAddress.AddressLine1)))
          .ForMember(d => d.spd_employeraddress2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : StringHelper.SanitizeEmpty(s.EmployerPrimaryAddress.AddressLine2)))
@@ -131,6 +134,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_criminalchargesconvictionsdetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode)))
          .ReverseMap()
          .ForMember(d => d.ContactEmailAddress, opt => opt.Ignore())
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
@@ -140,27 +144,28 @@ internal class Mappings : Profile
          .ForMember(d => d.MiddleName1, opt => opt.Ignore())
          .ForMember(d => d.MiddleName2, opt => opt.Ignore())
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
-         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
+         .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
+         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(s.spd_origin)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
-         .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
-         .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => GetEyeColorEnum(s.spd_applicanteyecolour)))
+         .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColorEnum(s.spd_applicanthaircolour)))
+         .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColorEnum(s.spd_applicanteyecolour)))
          .ForMember(d => d.MailingAddressData, opt => opt.Ignore())
          .ForMember(d => d.ResidentialAddressData, opt => opt.Ignore())
          .ForMember(d => d.IsMailingTheSameAsResidential, opt => opt.Ignore())
-         .ForMember(d => d.Height, opt => opt.MapFrom(s => GetHeightNumber(s.spd_height)))
+         .ForMember(d => d.Height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightNumber(s.spd_height)))
          .ForMember(d => d.HasLegalNameChanged, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_legalnamechange)))
-         .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => GetHeightUnitCode(s.spd_height)))
-         .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightNumber(s.spd_weight)))
-         .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => GetWeightUnitCode(s.spd_weight)))
+         .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightUnitCode(s.spd_height)))
+         .ForMember(d => d.Weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightNumber(s.spd_weight)))
+         .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightUnitCode(s.spd_weight)))
          .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
          .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
-         .ForMember(d => d.IsDogsPurposeProtection, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.Protection)))
-         .ForMember(d => d.IsDogsPurposeDetectionDrugs, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionDrugs)))
-         .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
+         .ForMember(d => d.IsDogsPurposeProtection, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.Protection)))
+         .ForMember(d => d.IsDogsPurposeDetectionDrugs, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionDrugs)))
+         .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
          .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
          .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_canadiancitizen)))
          .ForMember(d => d.HasBcDriversLicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_hasdriverslicence)))
@@ -200,6 +205,7 @@ internal class Mappings : Profile
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
           .ForMember(d => d.OriginalLicenceTermCode, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetLicenceTermEnum(s.spd_CurrentExpiredLicenceId.spd_licenceterm)))
           .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
+          .ForMember(d => d.SoleProprietorBizAppId, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetServiceTypeName(s._spd_servicetypeid_value) == ServiceTypeEnum.SecurityWorkerLicence.ToString() ? s._spd_businesslicenseid_value : null))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<AliasResp, spd_alias>()
@@ -211,41 +217,11 @@ internal class Mappings : Profile
           .ReverseMap();
     }
 
-    private static DateTimeOffset? GetDeclarationDate(LicenceApplication app)
-    {
-        return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
-    }
-
     private static int? GetLicenceTerm(LicenceTermEnum? code)
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
     }
-
-    private static int? GetHairColor(HairColourEnum? code)
-    {
-        if (code == null) return null;
-        return (int)Enum.Parse<HairColorOptionSet>(code.ToString());
-    }
-
-    private static HairColourEnum? GetHairColorEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<HairColourEnum>(Enum.GetName(typeof(HairColorOptionSet), optionset));
-    }
-
-    private static int? GetEyeColor(EyeColourEnum? code)
-    {
-        if (code == null) return null;
-        return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
-    }
-
-    private static EyeColourEnum? GetEyeColorEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<EyeColourEnum>(Enum.GetName(typeof(EyeColorOptionSet), optionset));
-    }
-
     private static Addr GetMailingAddress(LicenceApplication app)
     {
         //if residential address is the same as mailing address, fe will send an empty mailing address
@@ -253,105 +229,6 @@ internal class Mappings : Profile
             return app.MailingAddressData;
         if ((bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
         return app.MailingAddressData;
-    }
-
-    private static string? GetWeightStr(LicenceApplication app)
-    {
-        if (app.WeightUnitCode != null)
-        {
-            return app.WeightUnitCode switch
-            {
-                WeightUnitEnum.Kilograms => app.Weight + "kg",
-                WeightUnitEnum.Pounds => app.Weight + "lb",
-            };
-        }
-        else
-        {
-            return app.Weight.ToString();
-        }
-    }
-
-    //str should be like 130lb or 65kg or lb or kg or 130
-    private static int? GetWeightNumber(string? str)
-    {
-        if (str == null) return null;
-        try
-        {
-            string temp = str.Replace("lb", string.Empty).Replace("kg", string.Empty);
-            return int.Parse(temp);
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    //str should be like 130lb or 65kg or lb or kg or 130
-    private static WeightUnitEnum? GetWeightUnitCode(string? str)
-    {
-        if (str == null) return null;
-        try
-        {
-            string temp = Regex.Replace(str, @"\d", string.Empty);
-            if (temp == "kg") return WeightUnitEnum.Kilograms;
-            if (temp == "lb") return WeightUnitEnum.Pounds;
-            else
-                return null;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    private static string GetHeightStr(LicenceApplication app)
-    {
-        //if residential address is the same as mailing address, fe will send an empty mailing address
-        if (app.HeightUnitCode != null)
-        {
-            return app.HeightUnitCode switch
-            {
-                HeightUnitEnum.Centimeters => app.Height + "cm",
-                HeightUnitEnum.Inches => app.Height + "in", //todo: when ui decide what to use.
-            };
-        }
-        else
-        {
-            return app.Height.ToString();
-        }
-    }
-
-    //str should be like 130lb or 65kg or lb or kg or 130
-    private static int? GetHeightNumber(string? str)
-    {
-        if (str == null) return null;
-        try
-        {
-            string temp = str.Replace("cm", string.Empty).Replace("in", string.Empty);
-            return int.Parse(temp);
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    //str should be like 130lb or 65kg or lb or kg or 130
-    private static HeightUnitEnum? GetHeightUnitCode(string? str)
-    {
-        if (str == null) return null;
-        try
-        {
-            string temp = Regex.Replace(str, @"\d", string.Empty);
-            if (temp == "in") return HeightUnitEnum.Inches;
-            if (temp == "cm") return HeightUnitEnum.Centimeters;
-            else
-                return null;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
     }
 
     private static MailingAddr? GetMailingAddressData(contact c)
@@ -411,29 +288,5 @@ internal class Mappings : Profile
             c.address1_postalcode == c.address2_postalcode;
     }
 
-    private static string? GetDogReasonOptionSets(LicenceApplication app)
-    {
-        List<string> reasons = new();
-
-        if (app.IsDogsPurposeDetectionDrugs != null && app.IsDogsPurposeDetectionDrugs == true)
-            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionDrugs).ToString());
-        if (app.IsDogsPurposeDetectionExplosives != null && app.IsDogsPurposeDetectionExplosives == true)
-            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionExplosives).ToString());
-        if (app.IsDogsPurposeProtection != null && app.IsDogsPurposeProtection == true)
-            reasons.Add(((int)RequestDogPurposeOptionSet.Protection).ToString());
-        var result = String.Join(',', reasons.ToArray());
-
-        return string.IsNullOrWhiteSpace(result) ? null : result;
-    }
-
-    private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
-    {
-        if (dogreasonsStr == null) return null;
-        string[] reasons = dogreasonsStr.Split(',');
-        string str = ((int)type).ToString();
-        if (reasons.Any(s => s == str)) return true;
-
-        return false;
-    }
 }
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
@@ -20,7 +20,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						</button>
 					</ng-container>
 					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Exit</button>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -37,7 +37,16 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						Previous
 					</button>
 				</div>
-				<div class="col-md-12" [ngClass]="isWideNext ? 'col-xxl-3 col-xl-4 col-lg-4' : 'col-xxl-2 col-xl-3 col-lg-3'">
+				<div
+					class="col-md-12"
+					[ngClass]="
+						isWidestNext
+							? 'col-xxl-6 col-xl-6 col-lg-6'
+							: isWideNext
+								? 'col-xxl-3 col-xl-3 col-lg-4'
+								: 'col-xxl-2 col-xl-3 col-lg-3'
+					"
+				>
 					<button
 						*ngIf="isNextStepperStepObserved"
 						mat-flat-button
@@ -50,7 +59,12 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-container>
 			<ng-template #noPreviousButton>
-				<div class="offset-xxl-2 col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+				<div
+					class="col-md-12"
+					[ngClass]="
+						isWideNext ? 'offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
+					"
+				>
 					<button
 						*ngIf="isNextStepperStepObserved"
 						mat-flat-button
@@ -63,17 +77,40 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-template>
 
-			<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-				<button
-					*ngIf="isNextReviewStepperStepObserved"
-					mat-stroked-button
-					color="primary"
-					class="large button-small-caps mb-2"
-					(click)="onReview()"
+			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else defaultFlow">
+				<div
+					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="
+						!isWideNext && !isPreviousStepperStepObserved
+							? 'offset-xxl-3'
+							: !isWideNext && isPreviousStepperStepObserved
+								? 'offset-xxl-2'
+								: 'offset-xxl-1'
+					"
 				>
-					Next: Review
-				</button>
-			</div>
+					<button
+						mat-flat-button
+						class="large button-small-caps bordered mb-2"
+						(click)="onCancelAndExit()"
+						*ngIf="isCancelAndExitObserved"
+					>
+						Exit
+					</button>
+				</div>
+			</ng-container>
+			<ng-template #defaultFlow>
+				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+					<button
+						*ngIf="isNextReviewStepperStepObserved"
+						mat-stroked-button
+						color="primary"
+						class="large button-small-caps mb-2"
+						(click)="onReview()"
+					>
+						Next: Review
+					</button>
+				</div>
+			</ng-template>
 		</div>
 	`,
 	styles: [
@@ -86,6 +123,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;
+	isCancelObserved = false;
+	isCancelAndExitObserved = false;
 	isPreviousStepperStepObserved = false;
 	isNextStepperStepObserved = false;
 	isNextReviewStepperStepObserved = false;
@@ -94,9 +133,13 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
+	@Input() isWidestNext = false;
 	@Input() showExit = true;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
+	@Output() cancelStep: EventEmitter<any> = new EventEmitter();
+	@Output() cancelAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextReviewStepperStep: EventEmitter<number> = new EventEmitter();
@@ -105,6 +148,8 @@ export class WizardFooterComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
+		this.isCancelObserved = this.cancelStep.observed;
+		this.isCancelAndExitObserved = this.cancelAndExit.observed;
 		this.isPreviousStepperStepObserved = this.previousStepperStep.observed;
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
 		this.isNextReviewStepperStepObserved = this.nextReviewStepperStep.observed;
@@ -126,7 +171,21 @@ export class WizardFooterComponent implements OnInit {
 		this.nextReviewStepperStep.emit();
 	}
 
-	onExit(): void {
+	onCancelAndExit(): void {
+		this.cancelAndExit.emit();
+	}
+
+	onCancel(): void {
+		if (this.isCancelObserved) {
+			this.cancelStep.emit();
+			return;
+		}
+
+		if (this.isCancelAndExitObserved) {
+			this.cancelAndExit.emit();
+			return;
+		}
+
 		this.commonApplicationService.cancelAndLoseChanges();
 	}
 }

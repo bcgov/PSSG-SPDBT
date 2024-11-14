@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
@@ -96,6 +97,9 @@ namespace Spd.Manager.Licence
                         UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
                         updateContactCmd.Id = (Guid)id.ContactId;
                         updateContactCmd.IdentityId = id.Id;
+                        updateContactCmd.IsPoliceOrPeaceOfficer = contactResp.IsPoliceOrPeaceOfficer;
+                        updateContactCmd.PoliceOfficerRoleCode = contactResp.PoliceOfficerRoleCode;
+                        updateContactCmd.OtherOfficerRole = contactResp.OtherOfficerRole;
                         contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
                     }
                 }
@@ -139,11 +143,11 @@ namespace Spd.Manager.Licence
             LicenceAppQuery q = new(
                 cmd.ApplicantId,
                 null,
-                new List<WorkerLicenceTypeEnum>
+                new List<ServiceTypeEnum>
                 {
-                    WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                    WorkerLicenceTypeEnum.BodyArmourPermit,
-                    WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                    ServiceTypeEnum.ArmouredVehiclePermit,
+                    ServiceTypeEnum.BodyArmourPermit,
+                    ServiceTypeEnum.SecurityWorkerLicence,
                 },
                 new List<ApplicationPortalStatusEnum>
                 {
@@ -158,7 +162,7 @@ namespace Spd.Manager.Licence
             if (response.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
 
-            await ValidateFilesAsync(cmd, ct);
+            //await ValidateFilesAsync(cmd, ct);
 
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 

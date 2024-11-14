@@ -15,7 +15,7 @@ public class FileStorageControllerTest
     public FileStorageControllerTest()
     {
         mockService.Setup(s => s.HandleQuery(It.IsAny<FileMetadataQuery>(), CancellationToken.None))
-            .ReturnsAsync(new FileMetadataQueryResult("fileId", "folder", Array.Empty<Metadata>()));
+            .ReturnsAsync(new FileMetadataQueryResult("fileId", "folder", Array.Empty<FileMetadata>()));
         mockService.Setup(s => s.HandleCommand(It.IsAny<UploadFileCommand>(),
             CancellationToken.None))
             .ReturnsAsync("key");
@@ -76,7 +76,7 @@ public class FileStorageControllerTest
     {
         //Arrange
         mockTransientService.Setup(s => s.HandleQuery(It.IsAny<FileMetadataQuery>(), CancellationToken.None))
-            .ReturnsAsync(new FileMetadataQueryResult("fileId", "folder", Array.Empty<Metadata>()));
+            .ReturnsAsync(new FileMetadataQueryResult("fileId", "folder", Array.Empty<FileMetadata>()));
         mockService.Setup(s => s.HandleCopyStorageFromTransientToMainCommand(It.IsAny<CopyStorageFromTransientToMainCommand>(), CancellationToken.None))
             .ReturnsAsync("key");
         mockTransientService.Setup(s => s.HandleDeleteCommand(It.IsAny<StorageDeleteCommand>(), It.IsAny<CancellationToken>()))

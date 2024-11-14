@@ -1,6 +1,7 @@
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -55,14 +56,14 @@ namespace Spd.Utilities.LogonUser
             .AddJwtBearer(BCeIDAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{bceidConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = bceidConfig?.Authority;
+                options.Authority = bceidConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { bceidConfig?.Audiences },
+                    ValidAudiences = new[] { bceidConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { bceidConfig?.Issuer },
+                    ValidIssuers = new[] { bceidConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -73,18 +74,19 @@ namespace Spd.Utilities.LogonUser
                     ValidateActor = true,
                     ValidateIssuerSigningKey = true,
                 };
+                options.Validate();
             })
             .AddJwtBearer(IdirAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{idirConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = idirConfig?.Authority;
+                options.Authority = idirConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { idirConfig?.Audiences },
+                    ValidAudiences = new[] { idirConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { idirConfig?.Issuer },
+                    ValidIssuers = new[] { idirConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -95,18 +97,19 @@ namespace Spd.Utilities.LogonUser
                     ValidateActor = true,
                     ValidateIssuerSigningKey = true,
                 };
+                options.Validate();
             })
             .AddJwtBearer(BcscAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{bcscConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = bcscConfig?.Authority;
+                options.Authority = bcscConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { bcscConfig?.Audiences },
+                    ValidAudiences = new[] { bcscConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { bcscConfig?.Issuer },
+                    ValidIssuers = new[] { bcscConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -121,13 +124,13 @@ namespace Spd.Utilities.LogonUser
                 {
                     OnTokenValidated = async ctx =>
                     {
-                        var oidcConfig = await ctx.Options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None);
+                        var ct = ctx.HttpContext.RequestAborted;
+                        var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<BcscAuthenticationConfiguration>>();
+                        var oidcConfig = await ctx.Options.ConfigurationManager!.GetConfigurationAsync(ct);
 
                         //set token validation parameters
                         var validationParameters = ctx.Options.TokenValidationParameters.Clone();
                         validationParameters.IssuerSigningKeys = oidcConfig.JsonWebKeySet.GetSigningKeys();
-                        validationParameters.ValidateLifetime = false;
-                        validationParameters.ValidateIssuer = false;
 
                         string tokenStr = ((JsonWebToken)ctx.SecurityToken).EncodedHeader + "."
                             + ((JsonWebToken)ctx.SecurityToken).EncodedPayload + "."
@@ -143,55 +146,53 @@ namespace Spd.Utilities.LogonUser
                         userInfoRequest.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/jwt"));
 
                         //request userinfo claims through the backchannel
-                        var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, CancellationToken.None);
-                        if (!response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
+                        var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, ct);
+                        if (response != null && !response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
                         {
                             //handle encrypted userinfo response...
-                            if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/jwt")
+                            if (response.HttpResponse?.Content?.Headers?.ContentType?.MediaType == "application/jwt")
                             {
                                 var handler = new JwtSecurityTokenHandler();
                                 if (handler.CanReadToken(response.Raw))
                                 {
-                                    handler.ValidateToken(response.Raw, validationParameters, out var token);
-                                    var jwe = token as JwtSecurityToken;
-                                    MapClaimsToPrincipalClaims(ctx.Principal, jwe.Claims);
+                                    var token = await handler.ValidateTokenAsync(response.Raw, validationParameters);
+                                    if (token.SecurityToken is JwtSecurityToken jwe)
+                                    {
+                                        MapClaimsToPrincipalClaims(ctx.Principal!, jwe.Claims);
+                                    }
                                 }
                             }
-                            else if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/json")
+                            else if (response.HttpResponse?.Content?.Headers?.ContentType?.MediaType == "application/json")
                             {
-                                var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(response.Raw);
+                                var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(response.Raw!)!;
                                 foreach (var claim in claims)
                                 {
-                                    string str = claim.Value.ToString();
-                                    ctx.Principal.AddUpdateClaim(claim.Key, str);
+                                    string str = claim.Value.ToString()!;
+                                    ctx.Principal!.AddUpdateClaim(claim.Key, str);
                                 }
                             }
                             else
                             {
                                 //...or fail
-                                ctx.Fail(response.Error);
+                                ctx.Fail($"Failed to get userinfo: {response.Error}");
                             }
-                        }
-                        else if (response.IsError)
-                        {
-                            //handle for all other failures
-                            ctx.Fail(response.Error);
                         }
                         else
                         {
-                            //handle non encrypted
-                            JsonDocument jd = JsonDocument.Parse(((JsonElement)response.Json).GetRawText());
-                            var claims = jd.RootElement.ToClaims();
-                            MapClaimsToPrincipalClaims(ctx.Principal, claims);
+                            logger.LogError(response?.Exception, "Failed to get userinfo for token {Token}", tokenStr);
+                            //handle for all other failures
+                            ctx.Fail($"Failed to get userinfo: {response?.Error}");
                         }
                     }
                 };
+                options.Validate();
             })
             .AddPolicyScheme(defaultScheme, defaultScheme, options =>
             {
                 options.ForwardDefaultSelector = context =>
                 {
                     string? authorization = context.Request.Headers[HeaderNames.Authorization];
+
                     if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
                     {
                         var token = authorization["Bearer ".Length..].Trim();
@@ -200,27 +201,24 @@ namespace Spd.Utilities.LogonUser
                         if (jwtHandler.CanReadToken(token))
                         {
                             JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(token);
-                            if (jwtToken.Issuer.Equals(bceidConfig.Authority) ||
-                                jwtToken.Audiences.Any(a => bceidConfig.Audiences.Equals(a)))
+                            //idir and bceid and bcsc have the same authoritiy and audience.
+                            var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
+                            if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                //idir and bceid have the same authoritiy and audience.
-                                var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
-                                if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    return IdirAuthenticationConfiguration.AuthSchemeName;
-                                }
-                                return BCeIDAuthenticationConfiguration.AuthSchemeName;
+                                return IdirAuthenticationConfiguration.AuthSchemeName;
                             }
-                            else if (jwtToken.Issuer.Equals(bcscConfig.Issuer) ||
-                                jwtToken.Audiences.Any(a => bcscConfig.Audiences.Equals(a)))
+                            else if (identityProviderClaim != null && identityProviderClaim.Value.Equals(bcscConfig.IdentityProvider, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 return BcscAuthenticationConfiguration.AuthSchemeName;
                             }
+                            else
+                                return BCeIDAuthenticationConfiguration.AuthSchemeName;
                         }
                         return BCeIDAuthenticationConfiguration.AuthSchemeName;
                     }
                     return BCeIDAuthenticationConfiguration.AuthSchemeName;
                 };
+                options.Validate();
             });
         }
 

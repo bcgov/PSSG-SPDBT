@@ -1,42 +1,35 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment
 {
-    internal partial class PaymentService : IPaymentService
+    internal partial class PaymentService(
+        IOptions<PayBCSettings> settings,
+        ITokenProviderResolver tokenProviderResolver,
+        IMapper mapper,
+        IHttpClientFactory httpClientFactory,
+        ILogger<PaymentService> logger) : IPaymentService
     {
-        private readonly PayBCSettings _config;
-        private readonly ITokenProviderResolver _tokenProviderResolver;
-        private readonly IMapper _mapper;
-        private readonly ILogger<IPaymentService> _logger;
+        private readonly PayBCSettings _config = settings.Value;
 
-        public PaymentService(IOptions<PayBCSettings> config, ITokenProviderResolver tokenProviderResolver, IMapper mapper, ILogger<IPaymentService> logger)
-        {
-            _config = config.Value;
-            _tokenProviderResolver = tokenProviderResolver;
-            _mapper = mapper;
-            _logger = logger;
-        }
-        public async Task<PaymentResult> HandleCommand(PaymentCommand cmd)
+        public async Task<PaymentResult> HandleCommand(PaymentCommand cmd, CancellationToken ct = default)
         {
             return cmd switch
             {
-                CreateDirectPaymentLinkCommand c => await CreateDirectPaymentLinkAsync(c),
-                ValidatePaymentResultStrCommand c => await ValidatePaymentResultStrAsync(c),
-                CreateInvoiceCmd c => await CreateInvoiceAsync(c),
-                RefundPaymentCmd c => await RefundDirectPaymentAsync(c),
+                CreateDirectPaymentLinkCommand c => CreateDirectPaymentLinkAsync(c),
+                ValidatePaymentResultStrCommand c => ValidatePaymentResultStrAsync(c),
+                CreateInvoiceCmd c => await CreateInvoiceAsync(c, ct),
+                RefundPaymentCmd c => await RefundDirectPaymentAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
-        public async Task<PaymentResult> HandleQuery(PaymentQuery cmd)
+        public async Task<PaymentResult> HandleQuery(PaymentQuery cmd, CancellationToken ct = default)
         {
             return cmd switch
             {
-                InvoiceStatusQuery c => await GetInvoiceStatusAsync(c),
+                InvoiceStatusQuery c => await GetInvoiceStatusAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }

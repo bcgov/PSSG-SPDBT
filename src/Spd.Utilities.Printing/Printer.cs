@@ -71,7 +71,7 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
     private async Task<SendResponse> CreateJob(BCMailPlusPrintRequest req, CancellationToken ct)
     {
         var createStatus = await bcMailPlusApi.CreateJob(req.JobTemplate, req.payload, ct);
-        if (createStatus.Errors != null && createStatus.Errors.Any()) return new SendResponse(string.Empty, JobStatus.Failed, createStatus.Errors);
+        if (createStatus.Errors != null && createStatus.Errors.Length != 0) return new SendResponse(string.Empty, JobStatus.Failed, createStatus.Errors);
         if (createStatus.JobId == null) return new SendResponse(string.Empty, JobStatus.Failed, "job id was returned null");
         var jobId = createStatus.JobId!;
         return new SendResponse(jobId, JobStatus.InProgress, null);
@@ -82,7 +82,8 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
         var jobStatus = (await bcMailPlusApi.GetJobStatus([req.PrintJobId], ct)).Jobs.SingleOrDefault();
         var status = jobStatus?.Status switch
         {
-            JobStatusValues.PdfCreated => JobStatus.Completed,
+            JobStatusValues.PdfCreatedAwaitingBatching => JobStatus.Completed, //see spdbt-3075
+            JobStatusValues.SentForProcessing => JobStatus.Completed,
             JobStatusValues.ProcessingError => JobStatus.Failed,
             _ => JobStatus.InProgress
         };

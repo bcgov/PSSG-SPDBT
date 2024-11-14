@@ -18,24 +18,29 @@ internal class LicAppRepository : ILicAppRepository
     }
 
     //for unauth, set applcation status to submitted.
-    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct)
+    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct, LicenceTermEnum? term = null)
     {
         spd_application? app = await _context.GetApplicationById(applicationId, ct);
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
+        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
+
         if (status == ApplicationStatusEnum.Submitted)
-        {
-            app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
             app.statecode = DynamicsConstants.StateCode_Inactive;
-        }
-        else
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
-        }
 
         app.spd_submittedon = DateTimeOffset.Now;
         app.spd_portalmodifiedon = DateTimeOffset.Now;
+
+        if (price != null && price >= 0)
+            app.spd_licencefee = price;
+
+        if (term != null) //spdbt-3194
+        {
+            int? bizLicAppTerm = (int?)SharedMappingFuncs.GetOptionset<LicenceTermEnum, LicenceTermOptionSet>(term);
+            if (bizLicAppTerm > app.spd_licenceterm)
+                app.spd_licenceterm = bizLicAppTerm;
+        }
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
 
@@ -59,9 +64,9 @@ internal class LicAppRepository : ILicAppRepository
         }
         var applist = apps.ToList();
 
-        if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())
+        if (qry.ValidServiceTypeCodes != null && qry.ValidServiceTypeCodes.Any())
         {
-            List<Guid?> serviceTypeGuid = qry.ValidWorkerLicenceTypeCodes
+            List<Guid?> serviceTypeGuid = qry.ValidServiceTypeCodes
                 .Select(c => DynamicsContextLookupHelpers.GetServiceTypeGuid(c.ToString()))
                 .ToList();
             applist = applist.Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value)).ToList();

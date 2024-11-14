@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -29,25 +30,27 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 @Component({
 	selector: 'app-security-screening-list',
 	template: `
-		<div class="row">
-			<div class="col-xl-8 col-lg-6 col-md-12">
-				<h3 class="fw-normal">Criminal Record Check History</h3>
-				<h4 class="fw-light">{{ applicantName }}</h4>
-			</div>
-			<div class="col-xl-4 col-lg-6 col-md-12">
-				<div class="d-flex justify-content-end my-2">
-					<mat-button-toggle-group
-						[(ngModel)]="applicationFilter"
-						(change)="onFilterChange($event)"
-						class="w-100"
-						aria-label="Applications Filter"
-					>
-						<mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
-						<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
-					</mat-button-toggle-group>
+		<form [formGroup]="form" novalidate>
+			<div class="row">
+				<div class="col-xl-8 col-lg-6 col-md-12">
+					<h3 class="fw-normal">Criminal Record Check History</h3>
+					<h4 class="fw-light">{{ applicantName }}</h4>
+				</div>
+				<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="d-flex justify-content-end my-2">
+						<mat-button-toggle-group
+							formControlName="applicationFilter"
+							(change)="onFilterChange($event)"
+							class="w-100"
+							aria-label="Applications Filter"
+						>
+							<mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
+							<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
+						</mat-button-toggle-group>
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 
 		<mat-divider class="mat-divider-main my-2 mb-lg-4"></mat-divider>
 
@@ -191,9 +194,12 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 })
 export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';
-	applicationFilter = 'ACTIVE';
 	allApplications: Array<ApplicantApplicationStatusResponse> = [];
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+
+	form: FormGroup = this.formBuilder.group({
+		applicationFilter: new FormControl('ACTIVE'),
+	});
 
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
@@ -207,17 +213,18 @@ export class SecurityScreeningListComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private formBuilder: FormBuilder,
 		private applicantService: ApplicantService,
 		private paymentService: PaymentService,
 		private authUserService: AuthUserBcscService,
-		private utilService: UtilService
+		private utilService: UtilService,
 	) {}
 
 	ngOnInit() {
 		if (!this.authUserService.bcscUserWhoamiProfile?.applicantId) {
 			console.debug(
 				'SecurityScreeningListComponent - bcscUserWhoamiProfile missing applicantId',
-				this.authUserService.bcscUserWhoamiProfile
+				this.authUserService.bcscUserWhoamiProfile,
 			);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -240,7 +247,6 @@ export class SecurityScreeningListComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${application.applicationNumber}`,
 		};
 
 		this.paymentService
@@ -338,8 +344,9 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	private setFilterApplications(): void {
+		const val = this.form.value;
 		const selectedApplications =
-			this.applicationFilter == 'ACTIVE'
+			val.applicationFilter == 'ACTIVE'
 				? this.allApplications.filter((app) => {
 						return ![
 							'CancelledByOrganization',
@@ -348,7 +355,7 @@ export class SecurityScreeningListComponent implements OnInit {
 							'ClosedNoResponse',
 							'CompletedCleared',
 						].includes(app.status ?? '');
-				  })
+					})
 				: [...this.allApplications];
 		this.dataSource.data = selectedApplications;
 	}

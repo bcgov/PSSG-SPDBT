@@ -1,9 +1,11 @@
 import {
+	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BizTypeCode,
 	BodyArmourPermitReasonCode,
+	ContactAuthorizationTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -14,7 +16,6 @@ import {
 	ServiceTypeCode,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
@@ -154,17 +155,6 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 // SelectOptions Lists
 // ============================================================
 
-export const WorkerLicenceTypes: SelectOptions[] = [
-	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
-	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
-	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
-	{ desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
-	{
-		desc: 'Security Business Licence Controlling Member Crc',
-		code: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-	},
-];
-
 export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'New', code: ApplicationTypeCode.New },
 	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
@@ -172,7 +162,7 @@ export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'Update', code: ApplicationTypeCode.Update },
 ];
 
-export const ApplicationPortalStatusTypes: SelectOptions[] = [
+export const ApplicationPortalStatuses: SelectOptions[] = [
 	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
 	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
 	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
@@ -202,6 +192,15 @@ export const BizTypes: SelectOptions[] = [
 export const BusinessLicenceTypes: SelectOptions[] = BizTypes.filter(
 	(item: SelectOptions) => item.code != BizTypeCode.None
 );
+
+export const ApplicationInviteStatuses: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationInviteStatusCode.Draft },
+	{ desc: 'Sent', code: ApplicationInviteStatusCode.Sent },
+	{ desc: 'Failed', code: ApplicationInviteStatusCode.Failed },
+	{ desc: 'Completed', code: ApplicationInviteStatusCode.Completed },
+	{ desc: 'Cancelled', code: ApplicationInviteStatusCode.Cancelled },
+	{ desc: 'Expired', code: ApplicationInviteStatusCode.Expired },
+];
 
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
@@ -311,9 +310,16 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
-		desc: 'Security Business Licence Controlling Member Crc',
+		desc: 'Controlling Member CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
+];
+
+export const ContactAuthorizationTypes: SelectOptions[] = [
+	{ desc: 'Business Manager', code: ContactAuthorizationTypeCode.BusinessManager },
+	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
+	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
+	{ desc: 'Primary Business Manager', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const HairColourTypes: SelectOptions[] = [
@@ -323,6 +329,7 @@ export const HairColourTypes: SelectOptions[] = [
 	{ desc: 'Brown', code: HairColourCode.Brown },
 	{ desc: 'Grey', code: HairColourCode.Grey },
 	{ desc: 'Red', code: HairColourCode.Red },
+	{ desc: 'White', code: HairColourCode.White },
 ];
 
 export const EyeColourTypes: SelectOptions[] = [
@@ -330,7 +337,9 @@ export const EyeColourTypes: SelectOptions[] = [
 	{ desc: 'Blue', code: EyeColourCode.Blue },
 	{ desc: 'Brown', code: EyeColourCode.Brown },
 	{ desc: 'Green', code: EyeColourCode.Green },
+	{ desc: 'Grey', code: EyeColourCode.Grey },
 	{ desc: 'Hazel', code: EyeColourCode.Hazel },
+	{ desc: 'Other', code: EyeColourCode.Other },
 ];
 
 export const HeightUnitTypes: SelectOptions[] = [
@@ -369,7 +378,7 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
-export const BusinessCategoryTypes: SelectOptions[] = [
+export const BusinessLicenceCategoryTypes: SelectOptions[] = [
 	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
 	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
 	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
@@ -390,6 +399,7 @@ export const PoliceOfficerRoleTypes: SelectOptions[] = [
 	{ desc: 'Court Appointed Bailiff', code: PoliceOfficerRoleCode.CourtAppointedBailiff },
 	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
 	{ desc: 'Police Officer', code: PoliceOfficerRoleCode.PoliceOfficer },
+	{ desc: 'Police Officer - Retired', code: PoliceOfficerRoleCode.PoliceOfficerRetired },
 	{ desc: 'Sheriff Deputy Sheriff', code: PoliceOfficerRoleCode.SheriffDeputySheriff },
 	{
 		desc: 'Special Provincial Or Municipal Constable',

@@ -12,10 +12,9 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
-    public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
-    public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
     public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
+    public Task<Unit> Handle(CancelDraftApplicationCommand cmd, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -24,6 +23,8 @@ public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertReque
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 public record GetLatestBizLicenceAppQuery(Guid BizId) : IRequest<BizLicAppResponse>;
 public record GetBizLicAppListQuery(Guid BizId) : IRequest<IEnumerable<LicenceAppListResponse>>;
+public record CancelDraftApplicationCommand(Guid ApplicationId) : IRequest<Unit>;
+
 public record BizLicAppReplaceCommand(
     BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
@@ -74,6 +75,7 @@ public record BizLicAppResponse : BizLicenceApp
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
@@ -84,44 +86,30 @@ public abstract record BizLicenceApp : LicenceAppBase
     //branding
     public bool? NoBranding { get; set; } //wait
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
-
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     //non sole proprietor properties
-    public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
-    public bool? ApplicantIsBizManager { get; set; }
-    public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
+    public Guid? SoleProprietorSWLAppId { get; set; } //for swl apply for sole proprietor, they need to input swl app id here.
+    public ApplicationOriginTypeCode? SoleProprietorSWLAppOriginTypeCode { get; set; }
+    public Guid? SubmittedByPortalUserId { get; set; }
 }
 
 public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
+    public ApplicationPortalStatusCode? ControllingMemberAppStatusCode { get; set; }
+    public ApplicationInviteStatusCode? InviteStatusCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
-
-public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
-
-public record Members
-{
-    public IEnumerable<SwlContactInfo> SwlControllingMembers { get; set; }
-    public IEnumerable<NonSwlContactInfo> NonSwlControllingMembers { get; set; }
-    public IEnumerable<SwlContactInfo> Employees { get; set; }
-};
-
-public record MembersRequest : Members
-{
-    public IEnumerable<Guid> ControllingMemberDocumentKeyCodes { get; set; } = Array.Empty<Guid>();//the document is saved in cache.
-}
-
-public record UpsertBizMembersCommand(
-    Guid BizId,
-    Guid? ApplicationId,
-    Members Members,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;

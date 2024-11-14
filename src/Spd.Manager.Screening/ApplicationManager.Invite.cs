@@ -1,5 +1,6 @@
 using MediatR;
 using Spd.Engine.Validation;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Shared;

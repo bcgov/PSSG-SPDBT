@@ -1,9 +1,8 @@
-﻿using Alba;
+﻿using System.Net;
+using Alba;
 using Microsoft.Dynamics.CRM;
-using Spd.Manager.Shared;
 using Spd.Manager.Screening;
-using Spd.Presentation.Screening.Controllers;
-using System.Net;
+using Spd.Manager.Shared;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
@@ -12,7 +11,6 @@ public class OrgRegistrationScenarios : ScenarioContextBase
 {
     public OrgRegistrationScenarios(ITestOutputHelper output, WebAppFixture fixture) : base(output, fixture)
     { }
-
 
     [Fact]
     public async Task RegisterOrg_NoAuth_Unauthorized()
@@ -29,6 +27,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
     {
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations");
             _.StatusCodeShouldBeOk();
         });
@@ -57,6 +56,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
             _.StatusCodeShouldBe(HttpStatusCode.OK);
         });
     }
+
     private AnonymousOrgRegistrationCreateRequest Create_AnonymousOrgRegistrationCreateRequest() =>
         new AnonymousOrgRegistrationCreateRequest
         {

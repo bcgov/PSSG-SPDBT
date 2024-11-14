@@ -64,7 +64,7 @@ public record ApplicationCreateCmd
 {
     public Guid OrgId { get; set; }
     public Guid? ParentOrgId { get; set; }
-    public ApplicationOriginTypeCode OriginTypeCode { get; set; }
+    public ApplicationOriginTypeEnum OriginTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -172,17 +172,6 @@ public record ApplicantApplicationListQry
 };
 
 public record ApplicationQry(Guid ApplicationId);
-
-public enum ApplicationOriginTypeCode
-{
-    Portal,
-    Email,
-    WebForm,
-    Mail,
-    Fax,
-    GenericUpload,
-    OrganizationSubmitted
-}
 
 public enum IdentityStatusCode
 {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
@@ -39,7 +40,12 @@ internal abstract class LicenceAppManagerBase
         _licAppRepository = licAppRepository;
     }
 
-    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase,
+        Guid licenceAppId,
+        CancellationToken ct,
+        bool HasSwl90DayLicence = false,
+        Guid? companionAppId = null,
+        ApplicationOriginTypeCode? companionAppOrigin = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -47,14 +53,44 @@ internal abstract class LicenceAppManagerBase
             ApplicationTypeEnum = licAppBase.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(licAppBase.ApplicationTypeCode.ToString()),
             BizTypeEnum = licAppBase.BizTypeCode == null ? BizTypeEnum.None : Enum.Parse<BizTypeEnum>(licAppBase.BizTypeCode.ToString()),
             LicenceTermEnum = licAppBase.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = licAppBase.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(licAppBase.WorkerLicenceTypeCode.ToString()),
+            ServiceTypeEnum = licAppBase.ServiceTypeCode == null ? null : Enum.Parse<ServiceTypeEnum>(licAppBase.ServiceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
-        if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+        LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
+
+        //applications with portal origin type are considered authenticated, otherwise not.
+        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
+        bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
+        ApplicationStatusEnum status;
+
+        if (licenceFee == null || licenceFee.Amount == 0)
+        {
+            if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
+                status = ApplicationStatusEnum.PaymentPending;
+            else
+                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+        }
         else
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-        return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
+            status = ApplicationStatusEnum.PaymentPending;
+
+        // Commit the companion application if it exists
+        // companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
+        if (companionAppId != null)
+        {
+            if (companionAppOrigin == ApplicationOriginTypeCode.Portal) //only authenticated swl save file in transient storage
+                await MoveFilesAsync((Guid)companionAppId, ct);
+
+            //spdbt-3194: update swl term with bl term
+            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId,
+                ApplicationStatusEnum.PaymentPending,
+                null,
+                ct,
+                Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
+        }
+        // Commit the main licence application
+        await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount ?? 0, ct);
+
+        return licenceFee?.Amount ?? 0;
     }
 
     //upload file from cache to main bucket
@@ -164,17 +200,17 @@ internal abstract class LicenceAppManagerBase
         }
     }
 
-    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, WorkerLicenceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
+    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, ServiceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
     {
-        if (licenceTypeEnum == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (licenceTypeEnum == ServiceTypeEnum.SecurityBusinessLicence)
         {
             contactId = null;
-            if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is SecurityBusinessLicence.");
+            if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is a Security Business Licence.");
         }
         else
         {
             bizId = null;
-            if (contactId == null) throw new ApiException(HttpStatusCode.BadRequest, $"contactId should not be null if it is peronal Licence.");
+            if (contactId == null) throw new ApiException(HttpStatusCode.BadRequest, $"contactId should not be null if it is a Personal Licence.");
         }
 
         //get the latest app id
@@ -182,7 +218,7 @@ internal abstract class LicenceAppManagerBase
             new LicenceAppQuery(
                 contactId,
                 bizId,
-                new List<WorkerLicenceTypeEnum> { licenceTypeEnum },
+                new List<ServiceTypeEnum> { licenceTypeEnum },
                 new List<ApplicationPortalStatusEnum>
                 {
                     ApplicationPortalStatusEnum.Completed,
@@ -192,18 +228,18 @@ internal abstract class LicenceAppManagerBase
             .OrderByDescending(a => a.SubmittedOn)
             .FirstOrDefault();
         if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {licenceTypeEnum}.");
+            throw new ApiException(HttpStatusCode.InternalServerError, $"there is no completed {licenceTypeEnum} application.");
         return app.LicenceAppId;
     }
 
-    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
+    protected async Task<bool> HasDuplicates(Guid applicantId, ServiceTypeEnum serviceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new(
             applicantId,
             null,
-            new List<WorkerLicenceTypeEnum>
+            new List<ServiceTypeEnum>
             {
-                workerLicenceType
+                serviceType
             },
             new List<ApplicationPortalStatusEnum>
             {
@@ -235,7 +271,7 @@ internal abstract class LicenceAppManagerBase
             new LicenceQry
             {
                 ContactId = applicantId,
-                Type = workerLicenceType,
+                Type = serviceType,
                 IsExpired = false
             }, ct);
 

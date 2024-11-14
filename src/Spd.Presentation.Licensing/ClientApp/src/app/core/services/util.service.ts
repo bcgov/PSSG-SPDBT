@@ -1,3 +1,4 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
@@ -5,15 +6,33 @@ import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import jwt_decode from 'jwt-decode';
-import * as moment from 'moment';
+import { jwtDecode } from 'jwt-decode';
+import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
 
-export interface SpdFile extends File {
-	name: string;
-	documentUrlId?: string | null;
-	lastModifiedDate?: string | null;
+export interface LicenceStepperStepComponent {
+	onStepNext(formNumber: number): void;
+	onStepPrevious(): void;
+	onFormValidNextStep(formNumber: number): void;
+	onStepSelectionChange(event: StepperSelectionEvent): void;
+	onGoToNextStep(): void;
+	onGoToFirstStep(): void;
+	onGoToLastStep(): void;
+}
+
+export interface LicenceChildStepperStepComponent {
+	isFormValid(): boolean;
+}
+
+export interface LicenceDocument {
+	Documents?: Array<File>;
+	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
+}
+
+export class LicenceDocumentsToSave {
+	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
+	'documents': Array<Blob>;
 }
 
 export type SortWeight = -1 | 0 | 1;
@@ -21,6 +40,26 @@ export type SortWeight = -1 | 0 | 1;
 @Injectable({ providedIn: 'root' })
 export class UtilService {
 	constructor(@Inject(DOCUMENT) private document: Document) {}
+
+	//------------------------------------
+	// Session storage
+	readonly CM_CRC_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.cmCrcStateKey;
+
+	setSessionData(key: string, data: any): void {
+		sessionStorage.setItem(key, data);
+	}
+
+	getSessionData(key: string): any {
+		return sessionStorage.getItem(key);
+	}
+
+	clearSessionData(key: string): void {
+		sessionStorage.removeItem(key);
+	}
+
+	clearAllSessionData(): void {
+		this.clearSessionData(this.CM_CRC_STATE_KEY);
+	}
 
 	//------------------------------------
 	// Table config
@@ -78,6 +117,10 @@ export class UtilService {
 		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
+	getDateMin(): moment.Moment {
+		return moment('1800-01-01');
+	}
+
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
@@ -86,6 +129,16 @@ export class UtilService {
 	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isSameOrAfter(moment().startOf('day'), 'day');
+	}
+
+	getIsDate5YearsOrOlder(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const yearsDiff = today.diff(dateDay, 'years');
+		return yearsDiff >= 5;
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
@@ -98,8 +151,8 @@ export class UtilService {
 
 	getDecodedAccessToken(token: string): any {
 		try {
-			return jwt_decode(token);
-		} catch (Error) {
+			return jwtDecode(token);
+		} catch (_error: any) {
 			return null;
 		}
 	}
@@ -126,7 +179,7 @@ export class UtilService {
 
 	getDescByCode(codeTableName: keyof typeof CodeDescTypes, input: string): string {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+		return codeDescs ? ((codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '') : '';
 	}
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
@@ -193,7 +246,11 @@ export class UtilService {
 		return a > b ? 1 : a < b ? -1 : 0;
 	}
 
-	public sortDate(a: string | null | undefined, b: string | null | undefined): SortWeight {
+	public sortDate(
+		a: string | null | undefined,
+		b: string | null | undefined,
+		direction: SortDirection = 'asc'
+	): SortWeight {
 		if (!a) {
 			return -1;
 		}
@@ -204,7 +261,11 @@ export class UtilService {
 		const aDate = moment(a).startOf('day');
 		const bDate = moment(b).startOf('day');
 
-		return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+		if (direction === 'asc') {
+			return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+		} else {
+			return aDate.isAfter(bDate) ? -1 : aDate.isBefore(bDate) ? 1 : 0;
+		}
 	}
 
 	//------------------------------------
@@ -285,6 +346,13 @@ export class UtilService {
 		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 
+	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
+		return (
+			(province === SPD_CONSTANTS.address.provinceBC || province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
+			(country === SPD_CONSTANTS.address.countryCA || country === SPD_CONSTANTS.address.countryCanada)
+		);
+	}
+
 	public getPermitShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		isCanadianResident: boolean,
@@ -292,14 +360,16 @@ export class UtilService {
 		proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
 		proofOfCitizenshipCode: LicenceDocumentTypeCode | null
 	): boolean {
+		const canadianCitizenProof = canadianCitizenProofTypeCode ?? LicenceDocumentTypeCode.CanadianPassport;
+		const proofOfResidentStatus = proofOfResidentStatusCode ?? LicenceDocumentTypeCode.PermanentResidentCard;
+		const proofOfCitizenship = proofOfCitizenshipCode ?? LicenceDocumentTypeCode.NonCanadianPassport;
+
 		return (
-			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(isCanadianCitizen && canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
 			(!isCanadianCitizen &&
 				isCanadianResident &&
-				proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard) ||
-			(!isCanadianCitizen &&
-				!isCanadianResident &&
-				proofOfCitizenshipCode != LicenceDocumentTypeCode.NonCanadianPassport)
+				proofOfResidentStatus != LicenceDocumentTypeCode.PermanentResidentCard) ||
+			(!isCanadianCitizen && !isCanadianResident && proofOfCitizenship != LicenceDocumentTypeCode.NonCanadianPassport)
 		);
 	}
 
@@ -308,14 +378,41 @@ export class UtilService {
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
 	): boolean {
-		return (
-			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(!isCanadianCitizen && notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+			isCanadianCitizen,
+			canadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
 		);
 	}
 
-	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
-		return province === 'British Columbia' && country === 'Canada';
+	public getControllingMemberCrcShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+	): boolean {
+		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+			isCanadianCitizen,
+			canadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
+		);
+	}
+
+	private getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+	): boolean {
+		const canadianCitizenProof = canadianCitizenProofTypeCode
+			? canadianCitizenProofTypeCode
+			: LicenceDocumentTypeCode.CanadianPassport;
+		const notCanadianCitizenProof = notCanadianCitizenProofTypeCode
+			? notCanadianCitizenProofTypeCode
+			: LicenceDocumentTypeCode.PermanentResidentCard;
+
+		return (
+			(isCanadianCitizen && canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
+			(!isCanadianCitizen && notCanadianCitizenProof != LicenceDocumentTypeCode.PermanentResidentCard)
+		);
 	}
 
 	//------------------------------------

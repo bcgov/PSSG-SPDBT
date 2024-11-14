@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Moq;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.LicenceFee;
 
 namespace Spd.Manager.Licence.UnitTest;
@@ -21,7 +22,7 @@ public class FeeManagerTest
         var licenceFee = fixture.Create<LicenceFeeResp>();
         LicenceFeeResponse licenceFeeResponse = new()
         {
-            WorkerLicenceTypeCode = (WorkerLicenceTypeCode?)licenceFee.WorkerLicenceTypeCode,
+            ServiceTypeCode = (ServiceTypeCode?)licenceFee.ServiceTypeCode,
             BizTypeCode = (BizTypeCode?)licenceFee.BizTypeCode,
             ApplicationTypeCode = (Shared.ApplicationTypeCode?)licenceFee.ApplicationTypeCode,
             LicenceTermCode = (Shared.LicenceTermCode?)licenceFee.LicenceTermCode,
