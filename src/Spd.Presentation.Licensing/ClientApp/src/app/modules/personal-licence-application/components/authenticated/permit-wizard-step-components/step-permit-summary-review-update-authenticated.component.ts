@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -73,30 +73,9 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 							</div>
 						</div>
 
-						<mat-divider class="mt-3 mb-2"></mat-divider>
-						<div class="text-minor-heading">Rationale</div>
-						<div class="row mt-0">
-							<div class="col-12">
-								<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
-								<div class="summary-text-data">
-									{{ rationale }}
-								</div>
-							</div>
-							<div class="col-12" *ngIf="isRationaleAttachments">
-								<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
-								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
-											<li>{{ doc.name }}</li>
-										</ng-container>
-									</ul>
-								</div>
-							</div>
-						</div>
-
 						<ng-container *ngIf="showEmployerInformation">
 							<mat-divider class="mt-3 mb-2"></mat-divider>
-							<div class="text-minor-heading">Business Name</div>
+							<div class="text-minor-heading">Employer Information</div>
 							<div class="row mt-0">
 								<div class="col-lg-6 col-md-12">
 									<div class="text-label d-block text-muted">Business Name</div>
@@ -124,14 +103,32 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								</div>
 							</div>
 
-							<mat-divider class="mt-3 mb-2"></mat-divider>
-
 							<app-form-address-summary
 								[formData]="permitModelData.employerData"
-								headingLabel="Business's Primary Address"
 								[isAddressTheSame]="false"
 							></app-form-address-summary>
 						</ng-container>
+
+						<mat-divider class="mt-3 mb-2"></mat-divider>
+						<div class="text-minor-heading">Rationale</div>
+						<div class="row mt-0">
+							<div class="col-12">
+								<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
+								<div class="summary-text-data">
+									{{ rationale }}
+								</div>
+							</div>
+							<div class="col-12" *ngIf="isRationaleAttachments">
+								<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
+								<div class="summary-text-data">
+									<ul class="m-0">
+										<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
+											<li>{{ doc.name }}</li>
+										</ng-container>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -185,9 +182,8 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	permitModelData: any = {};
-	showEmployerInformation = false;
 
-	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
+	@Input() showEmployerInformation!: boolean;
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
@@ -196,10 +192,6 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 
 	ngOnInit(): void {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-	}
-
-	onEditStep(stepNumber: number) {
-		this.editStep.emit(stepNumber);
 	}
 
 	onUpdateData(): void {

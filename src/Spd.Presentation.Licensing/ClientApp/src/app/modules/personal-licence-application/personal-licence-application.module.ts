@@ -24,8 +24,6 @@ import { StepPermitRationaleComponent } from './components/anonymous/permit-wiza
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-step-components/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-anonymous.component';
-import { StepPermitSummaryAuthenticatedComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-authenticated.component';
-import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-step-components/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-step-components/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-step-components/steps-permit-contact.component';
@@ -60,6 +58,8 @@ import { StepPermitPhotographOfYourselfNewComponent } from './components/authent
 import { StepPermitPhotographOfYourselfRenewAndUpdateComponent } from './components/authenticated/permit-wizard-step-components/step-permit-photograph-of-yourself-renew-and-update.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/authenticated/permit-wizard-step-components/step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './components/authenticated/permit-wizard-step-components/step-permit-review-name-change.component';
+import { StepPermitSummaryAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-summary-authenticated.component';
+import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 import { StepPermitUpdateTermsAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-update-terms-authenticated.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-step-components/step-permit-user-profile.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-identification-authenticated.component';

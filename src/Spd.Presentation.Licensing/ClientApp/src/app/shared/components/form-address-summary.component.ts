@@ -3,9 +3,9 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'app-form-address-summary',
 	template: `
-		<div class="text-minor-heading">{{ headingLabel }}</div>
+		<div class="text-minor-heading" *ngIf="headingLabel">{{ headingLabel }}</div>
 		<ng-container *ngIf="isAddressTheSame; else isDifferent">
-			<div class="row mt-2">
+			<div class="row mt-2" *ngIf="isAddressTheSameLabel">
 				<div class="col-12">
 					<div class="summary-text-data">{{ isAddressTheSameLabel }}</div>
 				</div>
@@ -44,9 +44,9 @@ import { Component, Input } from '@angular/core';
 })
 export class FormAddressSummaryComponent {
 	@Input() formData!: any;
-	@Input() headingLabel = 'Address';
+	@Input() headingLabel: string | undefined = undefined;
 	@Input() isAddressTheSame = false;
-	@Input() isAddressTheSameLabel = 'Address is the same';
+	@Input() isAddressTheSameLabel: string | undefined = undefined;
 
 	get addressLine1(): string {
 		return this.formData.addressLine1;
