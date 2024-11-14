@@ -53,82 +53,17 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 						</div>
 
 						<mat-divider class="mt-3 mb-2"></mat-divider>
-						<div class="text-minor-heading">Purpose</div>
-						<div class="row mt-0">
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">{{ purposeLabel }}</div>
-								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let reason of purposeReasons; let i = index">
-											<li>{{ reason }}</li>
-										</ng-container>
-									</ul>
-								</div>
-							</div>
-							<div class="col-12" *ngIf="isOtherReason">
-								<div class="text-label d-block text-muted">Other Reason</div>
-								<div class="summary-text-data">
-									{{ otherReason }}
-								</div>
-							</div>
-						</div>
+						<app-permit-summary-purpose [permitModelData]="permitModelData"></app-permit-summary-purpose>
 
 						<ng-container *ngIf="showEmployerInformation">
 							<mat-divider class="mt-3 mb-2"></mat-divider>
-							<div class="text-minor-heading">Employer Information</div>
-							<div class="row mt-0">
-								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Business Name</div>
-									<div class="summary-text-data">
-										{{ employerName }}
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Supervisor's Name</div>
-									<div class="summary-text-data">
-										{{ supervisorName }}
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Phone Number</div>
-									<div class="summary-text-data">
-										{{ supervisorEmailAddress }}
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Email Address</div>
-									<div class="summary-text-data">
-										{{ supervisorPhoneNumber | formatPhoneNumber }}
-									</div>
-								</div>
-							</div>
-
-							<app-form-address-summary
-								[formData]="permitModelData.employerData"
-								[isAddressTheSame]="false"
-							></app-form-address-summary>
+							<app-permit-summary-employer-information
+								[permitModelData]="permitModelData"
+							></app-permit-summary-employer-information>
 						</ng-container>
 
 						<mat-divider class="mt-3 mb-2"></mat-divider>
-						<div class="text-minor-heading">Rationale</div>
-						<div class="row mt-0">
-							<div class="col-12">
-								<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
-								<div class="summary-text-data">
-									{{ rationale }}
-								</div>
-							</div>
-							<div class="col-12" *ngIf="isRationaleAttachments">
-								<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
-								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
-											<li>{{ doc.name }}</li>
-										</ng-container>
-									</ul>
-								</div>
-							</div>
-						</div>
+						<app-permit-summary-rationale [permitModelData]="permitModelData"></app-permit-summary-rationale>
 					</div>
 				</div>
 			</div>
@@ -147,12 +82,6 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			.panel-body {
 				margin-top: 10px;
 				margin-bottom: 10px;
-			}
-
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
 			}
 
 			.review-panel-title {
@@ -256,44 +185,5 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 
 	get photoOfYourselfAttachments(): File[] {
 		return this.permitApplicationService.getSummaryphotoOfYourselfAttachments(this.permitModelData);
-	}
-
-	get purposeLabel(): string {
-		return this.permitApplicationService.getSummarypurposeLabel(this.permitModelData);
-	}
-	get purposeReasons(): Array<string> {
-		return this.permitApplicationService.getSummarypurposeReasons(this.permitModelData);
-	}
-	get isOtherReason(): boolean {
-		return this.permitApplicationService.getSummaryisOtherReason(this.permitModelData);
-	}
-	get otherReason(): boolean {
-		return this.permitApplicationService.getSummaryotherReason(this.permitModelData);
-	}
-
-	get rationaleLabel(): string {
-		return this.permitApplicationService.getSummaryrationaleLabel(this.permitModelData);
-	}
-	get rationale(): string {
-		return this.permitApplicationService.getSummaryrationale(this.permitModelData);
-	}
-	get isRationaleAttachments(): boolean {
-		return this.permitApplicationService.getSummaryisRationaleAttachments(this.permitModelData);
-	}
-	get rationaleAttachments(): File[] {
-		return this.permitApplicationService.getSummaryrationaleAttachments(this.permitModelData);
-	}
-
-	get employerName(): string {
-		return this.permitApplicationService.getSummaryemployerName(this.permitModelData);
-	}
-	get supervisorName(): string {
-		return this.permitApplicationService.getSummarysupervisorName(this.permitModelData);
-	}
-	get supervisorEmailAddress(): string {
-		return this.permitApplicationService.getSummarysupervisorEmailAddress(this.permitModelData);
-	}
-	get supervisorPhoneNumber(): string {
-		return this.permitApplicationService.getSummarysupervisorPhoneNumber(this.permitModelData);
 	}
 }

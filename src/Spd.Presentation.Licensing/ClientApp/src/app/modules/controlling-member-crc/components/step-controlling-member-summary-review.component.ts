@@ -32,7 +32,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Personal Information</div>
+										<div class="text-minor-heading-small mt-4">Personal Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
@@ -55,7 +55,7 @@ import { UtilService } from '@app/core/services/util.service';
 											</div>
 										</div>
 
-										<div class="text-minor-heading mt-4">Contact</div>
+										<div class="text-minor-heading-small mt-4">Contact</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
@@ -72,7 +72,7 @@ import { UtilService } from '@app/core/services/util.service';
 										<ng-container *ngIf="isNew">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Aliases</div>
+											<div class="text-minor-heading-small">Aliases</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Previous Names or Aliases</div>
@@ -128,7 +128,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</mat-expansion-panel-header>
 									<div class="panel-body">
 										<ng-container *ngIf="isNew">
-											<div class="text-minor-heading">Identification</div>
+											<div class="text-minor-heading-small">Identification</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Canadian Citizen?</div>
@@ -169,7 +169,7 @@ import { UtilService } from '@app/core/services/util.service';
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 										</ng-container>
 
-										<div class="text-minor-heading">Fingerprints</div>
+										<div class="text-minor-heading-small">Fingerprints</div>
 										<div class="row mt-0">
 											<div class="col-12">
 												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
@@ -186,7 +186,7 @@ import { UtilService } from '@app/core/services/util.service';
 										<ng-container *ngIf="isNew">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">BC Driver's Licence</div>
+											<div class="text-minor-heading-small">BC Driver's Licence</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">BC Driver's Licence</div>
@@ -216,7 +216,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Business Involvement</div>
+										<div class="text-minor-heading-small mt-4">Business Involvement</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
@@ -241,7 +241,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</ng-container>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Police Background</div>
+										<div class="text-minor-heading-small">Police Background</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
@@ -275,7 +275,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Mental Health Conditions</div>
+										<div class="text-minor-heading-small">Mental Health Conditions</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Mental Health Conditions</div>
@@ -314,12 +314,6 @@ import { UtilService } from '@app/core/services/util.service';
 			.panel-body {
 				margin-top: 10px;
 				margin-bottom: 10px;
-			}
-
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
 			}
 
 			.review-panel-title {

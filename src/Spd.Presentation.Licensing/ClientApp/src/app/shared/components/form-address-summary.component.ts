@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'app-form-address-summary',
 	template: `
-		<div class="text-minor-heading" *ngIf="headingLabel">{{ headingLabel }}</div>
+		<div class="text-minor-heading-small" *ngIf="headingLabel">{{ headingLabel }}</div>
 		<ng-container *ngIf="isAddressTheSame; else isDifferent">
 			<div class="row mt-2" *ngIf="isAddressTheSameLabel">
 				<div class="col-12">

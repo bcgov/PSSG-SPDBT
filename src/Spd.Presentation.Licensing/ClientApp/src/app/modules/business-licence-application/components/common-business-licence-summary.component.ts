@@ -39,7 +39,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</mat-expansion-panel-header>
 
 								<div class="panel-body">
-									<div class="text-minor-heading mt-4">Business Information</div>
+									<div class="text-minor-heading-small mt-4">Business Information</div>
 									<div class="row mt-0">
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Licence Type</div>
@@ -76,7 +76,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 									<ng-container *ngIf="isBusinessLicenceSoleProprietor">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Sole Proprietor</div>
+										<div class="text-minor-heading-small">Sole Proprietor</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
@@ -121,7 +121,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Expired Licence</div>
+										<div class="text-minor-heading-small">Expired Licence</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Expired Licence Number</div>
@@ -138,7 +138,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 									<ng-container *ngIf="!isUpdate">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Company Branding</div>
+										<div class="text-minor-heading-small">Company Branding</div>
 										<div class="row mt-3">
 											<div class="col-lg-6 col-md-12">
 												<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
@@ -157,7 +157,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Proof of Insurance</div>
+										<div class="text-minor-heading-small">Proof of Insurance</div>
 										<div class="row mt-3">
 											<div class="col-lg-6 col-md-12">
 												<div class="summary-text-data">
@@ -194,7 +194,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</mat-expansion-panel-header>
 
 								<div class="panel-body">
-									<div class="text-minor-heading mt-4">Licence Information</div>
+									<div class="text-minor-heading-small mt-4">Licence Information</div>
 									<div class="row mt-0">
 										<ng-container *ngIf="!isUpdate">
 											<div class="col-lg-3 col-md-12">
@@ -222,7 +222,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 										<ng-container *ngIf="isAnyDocuments">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Documents Uploaded</div>
+											<div class="text-minor-heading-small">Documents Uploaded</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
 													<div class="text-label d-block text-muted">
@@ -275,7 +275,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</mat-expansion-panel-header>
 
 								<div class="panel-body">
-									<div class="text-minor-heading mt-4">Business Manager Information</div>
+									<div class="text-minor-heading-small mt-4">Business Manager Information</div>
 									<div class="row mt-0">
 										<div class="col-lg-6 col-md-12">
 											<div class="text-label d-block text-muted">Name</div>
@@ -301,7 +301,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 									<ng-container *ngIf="!applicantIsBizManager">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Your Information</div>
+										<div class="text-minor-heading-small">Your Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-6 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
@@ -349,7 +349,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									</mat-expansion-panel-header>
 
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4 mb-2">Active Security Worker Licence Holders</div>
+										<div class="text-minor-heading-small mt-4 mb-2">Active Security Worker Licence Holders</div>
 										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
 												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
@@ -364,7 +364,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading mb-2">Members who require Criminal Record Checks</div>
+										<div class="text-minor-heading-small mb-2">Members who require Criminal Record Checks</div>
 										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
 												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
@@ -379,7 +379,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading mb-2">Employees</div>
+										<div class="text-minor-heading-small mb-2">Employees</div>
 										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
 												<ng-container *ngFor="let employee of employeesList; let i = index">
@@ -414,12 +414,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 			.panel-body {
 				margin-top: 10px;
 				margin-bottom: 10px;
-			}
-
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
 			}
 
 			.review-panel-title {

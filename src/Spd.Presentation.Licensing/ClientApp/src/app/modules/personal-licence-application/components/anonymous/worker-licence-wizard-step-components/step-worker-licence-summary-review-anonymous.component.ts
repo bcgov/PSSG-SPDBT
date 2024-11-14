@@ -40,7 +40,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Licence Information</div>
+										<div class="text-minor-heading-small mt-4">Licence Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Type</div>
@@ -84,7 +84,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 										<ng-container *ngIf="isAnyDocuments">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Documents Uploaded</div>
+											<div class="text-minor-heading-small">Documents Uploaded</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
 													<div class="text-label d-block text-muted">
@@ -227,7 +227,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 										<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Expired Licence</div>
+											<div class="text-minor-heading-small">Expired Licence</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Expired Licence Number</div>
@@ -244,7 +244,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 										<ng-container *ngIf="showDogsAndRestraints">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Restraints Authorization</div>
+											<div class="text-minor-heading-small">Restraints Authorization</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Request to Use Restraints</div>
@@ -269,7 +269,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											</div>
 
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Dogs Authorization</div>
+											<div class="text-minor-heading-small">Dogs Authorization</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Request to Use Dogs</div>
@@ -319,7 +319,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Police Background</div>
+										<div class="text-minor-heading-small mt-4">Police Background</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
@@ -353,7 +353,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Mental Health Conditions</div>
+										<div class="text-minor-heading-small">Mental Health Conditions</div>
 										<div class="row mt-0">
 											<div class="col-lg-6 col-md-12">
 												<div class="text-label d-block text-muted">Mental Health Conditions</div>
@@ -372,7 +372,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Criminal History</div>
+										<div class="text-minor-heading-small">Criminal History</div>
 										<div class="row mt-0">
 											<div class="col-12">
 												<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
@@ -386,7 +386,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Fingerprints</div>
+											<div class="text-minor-heading-small">Fingerprints</div>
 											<div class="row mt-0">
 												<div class="col-12">
 													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
@@ -422,7 +422,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Personal Information</div>
+										<div class="text-minor-heading-small mt-4">Personal Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-6 col-md-12">
 												<div class="text-label d-block text-muted">Applicant Name</div>
@@ -448,7 +448,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Aliases</div>
+											<div class="text-minor-heading-small">Aliases</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Previous Names or Aliases</div>
@@ -474,7 +474,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Identification</div>
+											<div class="text-minor-heading-small">Identification</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Canadian Citizen?</div>
@@ -528,38 +528,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												</div>
 											</div>
 										</ng-container>
-										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Characteristics</div>
-										<div class="row mt-0">
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Hair Colour</div>
-												<div class="summary-text-data">
-													{{ hairColourCode | options: 'HairColourTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Eye Colour</div>
-												<div class="summary-text-data">
-													{{ eyeColourCode | options: 'EyeColourTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Height</div>
-												<div class="summary-text-data">
-													{{ height }}
-													{{ heightUnitCode | options: 'HeightUnitTypes' }}
-													{{ heightInches }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Weight</div>
-												<div class="summary-text-data">
-													{{ weight }}
-													{{ weightUnitCode | options: 'WeightUnitTypes' }}
-												</div>
-											</div>
-										</div>
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-worker-summary-characteristics
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-characteristics>
 									</div>
 								</mat-expansion-panel>
 
@@ -582,7 +555,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Contact</div>
+										<div class="text-minor-heading-small mt-4">Contact</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
@@ -633,12 +606,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			.panel-body {
 				margin-top: 10px;
 				margin-bottom: 10px;
-			}
-
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
 			}
 
 			.review-panel-title {
@@ -940,28 +907,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	get bcDriversLicenceNumber(): string {
 		return this.workerApplicationService.getSummarybcDriversLicenceNumber(this.licenceModelData);
-	}
-
-	get hairColourCode(): string {
-		return this.workerApplicationService.getSummaryhairColourCode(this.licenceModelData);
-	}
-	get eyeColourCode(): string {
-		return this.workerApplicationService.getSummaryeyeColourCode(this.licenceModelData);
-	}
-	get height(): string {
-		return this.workerApplicationService.getSummaryheight(this.licenceModelData);
-	}
-	get heightInches(): string {
-		return this.workerApplicationService.getSummaryheightInches(this.licenceModelData);
-	}
-	get heightUnitCode(): string {
-		return this.workerApplicationService.getSummaryheightUnitCode(this.licenceModelData);
-	}
-	get weight(): string {
-		return this.workerApplicationService.getSummaryweight(this.licenceModelData);
-	}
-	get weightUnitCode(): string {
-		return this.workerApplicationService.getSummaryweightUnitCode(this.licenceModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] | null {

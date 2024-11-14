@@ -96,6 +96,10 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
+import { PermitSummaryCharacteristicsComponent } from './components/shared/permit-summary-characteristics.component';
+import { PermitSummaryEmployerInformationComponent } from './components/shared/permit-summary-employer-information.component';
+import { PermitSummaryPurposeComponent } from './components/shared/permit-summary-purpose.component';
+import { PermitSummaryRationaleComponent } from './components/shared/permit-summary-rationale.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-step-components/step-permit-reprint.component';
@@ -141,12 +145,18 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
+import { WorkerSummaryCharacteristicsComponent } from './components/shared/worker-summary-characteristics.component';
 import { PersonalLicenceApplicationBaseComponent } from './personal-licence-application-base.component';
 import { LicenceApplicationRoutingModule } from './personal-licence-application-routing.module';
 
 @NgModule({
 	declarations: [
 		LicenceReturnFromBlSoleProprietorComponent,
+		PermitSummaryCharacteristicsComponent,
+		PermitSummaryPurposeComponent,
+		PermitSummaryRationaleComponent,
+		PermitSummaryEmployerInformationComponent,
+		WorkerSummaryCharacteristicsComponent,
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
