@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Spd.Presentation.Dynamics.Controllers;
 using Spd.Presentation.Dynamics.Models;
+using Spd.Utilities.FileScanning;
 using Spd.Utilities.FileStorage;
 using System.Text;
 
 namespace Spd.Presentation.Dynamics.UnitTest.Controller;
 public class FileStorageControllerTest
 {
-    private Mock<IMainFileStorageService> mockService = new Mock<IMainFileStorageService>();
-    private Mock<ITransientFileStorageService> mockTransientService = new Mock<ITransientFileStorageService>();
+    private Mock<IMainFileStorageService> mockService = new();
+    private Mock<ITransientFileStorageService> mockTransientService = new();
+    private Mock<IFileScanProvider> mockFileScanService = new();
     private FileStorageController sut;
     public FileStorageControllerTest()
     {
@@ -19,7 +21,7 @@ public class FileStorageControllerTest
         mockService.Setup(s => s.HandleCommand(It.IsAny<UploadFileCommand>(),
             CancellationToken.None))
             .ReturnsAsync("key");
-        sut = new FileStorageController(mockService.Object, mockTransientService.Object);
+        sut = new FileStorageController(mockService.Object, mockTransientService.Object, mockFileScanService.Object);
     }
 
     [Fact]
