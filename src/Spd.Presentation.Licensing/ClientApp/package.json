@@ -52,7 +52,7 @@
     "@angular-eslint/schematics": "18.4.0",
     "@angular-eslint/template-parser": "18.4.0",
     "@angular/cli": "~18.2.11",
-    "@angular/compiler-cli": "^18.2.11",
+    "@angular/compiler-cli": "^18.2.12",
     "@types/jasmine": "~5.1.4",
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
