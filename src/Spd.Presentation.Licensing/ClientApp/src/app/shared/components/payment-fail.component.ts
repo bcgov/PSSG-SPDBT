@@ -100,10 +100,6 @@ export class PaymentFailComponent {
 		}
 
 		this._payment = data;
-
-		// if (data.paidSuccess) {
-		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		// }
 	}
 	get payment(): PaymentResponse | null {
 		return this._payment;
