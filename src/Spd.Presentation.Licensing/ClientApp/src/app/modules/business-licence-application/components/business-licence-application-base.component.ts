@@ -134,6 +134,8 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
+			this.businessApplicationService.reset();
+
 			this.router.navigateByUrl(`${redirectComponentRoute}`);
 			return;
 		}
