@@ -35,8 +35,9 @@ export class LicencePaymentFailComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('LicencePaymentFailComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
+
 		this.paymentService
 			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(

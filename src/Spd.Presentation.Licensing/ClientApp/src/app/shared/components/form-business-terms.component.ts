@@ -283,7 +283,7 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
-						<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
+						<div class="alert alert-warning" role="alert">Scroll to the bottom</div>
 					</ng-container>
 				</div>
 			</div>
