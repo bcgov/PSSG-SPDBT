@@ -2,10 +2,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from './steps-business-licence-information.component';
@@ -140,12 +142,18 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
