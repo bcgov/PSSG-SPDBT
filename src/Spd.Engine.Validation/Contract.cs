@@ -9,6 +9,7 @@ namespace Spd.Engine.Validation
     public abstract record DuplicateCheckResponse;
 
     #region bulk upload duplicate check
+
     public record BulkUploadAppDuplicateCheckRequest(IEnumerable<AppBulkDuplicateCheck> BulkDuplicateChecks) : DuplicateCheckRequest;
     public record AppBulkDuplicateCheck : AppDuplicateCheck
     {
@@ -35,9 +36,11 @@ namespace Spd.Engine.Validation
         public string? FirstName { get; set; }
         public string LastName { get; set; } = null!;
     }
-    #endregion
+
+    #endregion bulk upload duplicate check
 
     #region app invite duplicate check
+
     public record AppInviteDuplicateCheckRequest(IEnumerable<AppInviteDuplicateCheck> AppInviteChecks, Guid OrgId) : DuplicateCheckRequest;
     public record AppInviteDuplicateCheck
     {
@@ -49,6 +52,6 @@ namespace Spd.Engine.Validation
     {
         public bool HasPotentialDuplicate { get; set; } = false;
     }
-    #endregion
 
+    #endregion app invite duplicate check
 }
