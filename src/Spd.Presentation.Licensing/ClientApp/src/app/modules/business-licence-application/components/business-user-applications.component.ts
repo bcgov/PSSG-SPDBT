@@ -65,7 +65,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								(click)="onManageMembersAndEmployees()"
 								(keydown)="onKeydownManageMembersAndEmployees($event)"
 							>
-								Manage Controlling Members & Employees
+								Controlling Members & Employees
 							</a>
 						</div>
 					</div>
@@ -81,8 +81,8 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 							<app-alert type="warning" icon="warning">
 								<div>Your Business Licence application has outstanding controlling member invitations.</div>
 								<div class="mt-2">
-									Click on <strong>'Manage Controlling Members & Employees'</strong> to see the invitation status of
-									each of the members.
+									Click on <strong>'Controlling Members & Employees'</strong> to see the invitation status of each of
+									the members.
 								</div>
 							</app-alert>
 						</ng-container>
@@ -100,6 +100,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onDelete($event)"
+						(manageMembersAndEmployees)="onManageMembersAndEmployees()"
 					></app-applications-list-current>
 
 					<app-business-licence-list-current
@@ -112,7 +113,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						(renewLicence)="onRenewal($event)"
 					></app-business-licence-list-current>
 
-					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
 							<div class="col-xl-7 col-lg-6">
 								<div class="text-data">You don't have an active business licence</div>
@@ -143,7 +144,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	showManageMembersAndEmployees = false;
 	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
-	getApplicationIsDraftOrWaitingForPayment = false;
+	applicationIsDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
 	lostLicenceDaysText = 'TBD';
 
@@ -179,14 +180,18 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onManageMembersAndEmployees(): void {
+		const isApplExists = this.applicationIsInProgress || this.applicationIsDraftOrWaitingForPayment;
+		const isApplDraftOrWaitingForPayment = this.applicationIsDraftOrWaitingForPayment;
+
 		this.businessApplicationService
-			.getMembersAndEmployees(this.getApplicationIsDraftOrWaitingForPayment)
+			.getMembersAndEmployees(isApplDraftOrWaitingForPayment)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
 							BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES
-						)
+						),
+						{ state: { isApplExists: isApplExists, isApplDraftOrWaitingForPayment: isApplDraftOrWaitingForPayment } }
 					);
 				}),
 				take(1)
@@ -383,15 +388,13 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.isSoleProprietorAppSimultaneousFlow =
 							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
 
-						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
-						this.showManageMembersAndEmployees = this.isSoleProprietor
-							? false
-							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
-
 						// User Licences/Permits
 						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
 							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
 						);
+
+						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
+						this.showManageMembersAndEmployees = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
 
 						this.expiredLicencesList = businessLicencesList.filter(
 							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
@@ -401,7 +404,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
 						this.applicationIsInProgress =
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
-						this.getApplicationIsDraftOrWaitingForPayment =
+						this.applicationIsDraftOrWaitingForPayment =
 							this.commonApplicationService.getApplicationIsDraftOrWaitingForPayment(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created

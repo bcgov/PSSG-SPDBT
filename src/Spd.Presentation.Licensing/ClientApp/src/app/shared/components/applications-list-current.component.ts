@@ -2,7 +2,7 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
@@ -103,11 +103,23 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								>
 									<mat-icon>payment</mat-icon>Pay Now
 								</button>
+
+								<a
+									tabindex="0"
+									class="text-start"
+									(click)="onManageMembersAndEmployees()"
+									(keydown)="onKeydownManageMembersAndEmployees($event)"
+									*ngIf="isBusinessLicenceInProgress(application)"
+									>Controlling Members & Employees</a
+								>
 							</mat-cell>
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-						<mat-row class="mat-data-row" *matRowDef="let row; columns: applicationColumns"></mat-row>
+						<mat-row
+							class="mat-data-row spd-table-tall-row"
+							*matRowDef="let row; columns: applicationColumns"
+						></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -153,6 +165,7 @@ export class ApplicationsListCurrentComponent {
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
+	@Output() manageMembersAndEmployees: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -207,5 +220,23 @@ export class ApplicationsListCurrentComponent {
 			!this.isControllingMemberWarning &&
 			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
 		);
+	}
+
+	isBusinessLicenceInProgress(appl: MainApplicationResponse): boolean {
+		return (
+			appl.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence &&
+			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft &&
+			!this.isPaymentPending(appl)
+		);
+	}
+
+	onManageMembersAndEmployees(): void {
+		this.manageMembersAndEmployees.emit();
+	}
+
+	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.manageMembersAndEmployees.emit();
 	}
 }

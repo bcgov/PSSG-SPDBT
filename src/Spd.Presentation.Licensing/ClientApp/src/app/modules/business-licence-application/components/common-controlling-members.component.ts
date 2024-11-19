@@ -22,13 +22,13 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
-import { take, tap } from 'rxjs';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
-} from '../../../shared/components/modal-lookup-by-licence-number.component';
+} from '@app/shared/components/modal-lookup-by-licence-number.component';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { take, tap } from 'rxjs';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -216,17 +216,19 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
-						<ng-container *ngIf="!isWizard">
+						<ng-container *ngIf="canSendInvitations">
 							<app-alert type="info" icon="info">
 								By clicking a 'send invitation' button, a link to an online application form will be sent to the
 								controlling member via email. They must provide personal information and consent to a criminal record
 								check.
 							</app-alert>
 						</ng-container>
-						<app-alert type="warning" icon="warning">
-							We must receive criminal record check consent forms from each individual listed here before the business
-							licence application will be reviewed.
-						</app-alert>
+						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
+							<app-alert type="warning" icon="warning">
+								We must receive criminal record check consent forms from each individual listed here before the business
+								licence application will be reviewed.
+							</app-alert>
+						</ng-container>
 					</div>
 
 					<div class="row">
@@ -244,6 +246,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									tabindex="0"
 									(click)="onAddMemberWithoutSWL()"
 									(keydown)="onKeydownAddMemberWithoutSWL($event)"
+									*ngIf="canAddMemberWithoutSwl"
 								>
 									Add Member without a Security Worker Licence
 								</a>
@@ -335,9 +338,15 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;
+	@Input() isApplDraftOrWaitingForPayment = false;
+	@Input() isApplExists = false;
 
 	isBcBusinessAddress = true;
 	allowDocumentUpload = false;
+
+	allowNewInvitationsToBeSent = false;
+	allowUpdateInvitationsToBeSent = false;
+	canAddMemberWithoutSwl = true;
 
 	dataSourceWithSWL!: MatTableDataSource<any>;
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
@@ -361,13 +370,53 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
+		//  'action1' - EDIT
+		//  'action2' - REMOVE
+		//  'action3' - INVITATIONS/DOWNLOAD
+
 		// When in the wizard, the user cannot view the status or send / resend invitations.
 		// This should occur automatically when saving the application.
 		if (this.isWizard) {
+			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
 		} else {
-			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2', 'action3'];
+			if (this.isApplExists) {
+				// User should not be in here for Draft
+				if (this.isApplDraftOrWaitingForPayment) {
+					// If appl exists in Draft or Payment Pending, you can send invitations
+					this.allowNewInvitationsToBeSent = true;
+					this.allowUpdateInvitationsToBeSent = true;
+
+					// Only allow Edit in the wizard - remove 'action1'.
+					// This way we can ensure invites are sent correctly.
+					// Reduce complexity - don't have to handle user updates to email
+					this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode', 'action2', 'action3'];
+				} else {
+					// if appl is in progress (after payment but no licence yet),
+					// it is readonly and you cannot send invitations
+					this.allowNewInvitationsToBeSent = false;
+					this.allowUpdateInvitationsToBeSent = false;
+
+					this.canAddMemberWithoutSwl = false;
+
+					// if appl is in progress (after payment but no licence yet), it is readonly
+					this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode'];
+				}
+			} else {
+				// If no appl exists, you can make any changes but only send Update Invitations
+				this.allowNewInvitationsToBeSent = false;
+				this.allowUpdateInvitationsToBeSent = true;
+
+				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
+			}
 		}
+
+		console.log('************ isWizard', this.isWizard);
+		console.log('************ isApplExists', this.isApplExists);
+		console.log('************ isApplDraftOrWaitingForPayment', this.isApplDraftOrWaitingForPayment);
+		console.log('************ allowNewInvitationsToBeSent', this.allowNewInvitationsToBeSent);
+		console.log('************ allowUpdateInvitationsToBeSent', this.allowUpdateInvitationsToBeSent);
+		console.log('************ canAddMemberWithoutSwl', this.canAddMemberWithoutSwl);
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
 		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
@@ -396,8 +445,13 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		if (!inviteTypeCode) return null;
 
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
+			if (!this.allowUpdateInvitationsToBeSent) return null;
+
 			return 'Send Update Invitation';
 		}
+
+		if (!this.allowNewInvitationsToBeSent) return null;
+
 		return inviteStatusCode ? 'Resend Invitation' : 'Send Invitation';
 	}
 
@@ -596,6 +650,10 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		}
 
 		return ControllingMemberAppInviteTypeCode.New;
+	}
+
+	get canSendInvitations(): boolean {
+		return !this.isWizard && (this.allowNewInvitationsToBeSent || this.allowUpdateInvitationsToBeSent);
 	}
 
 	private memberAlreadyListed(): void {

@@ -41,7 +41,12 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
+					<app-common-controlling-members
+						[defaultExpanded]="true"
+						[isWizard]="false"
+						[isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
+						[isApplExists]="isApplExists"
+					></app-common-controlling-members>
 
 					<div class="mt-3">
 						<app-common-employees [defaultExpanded]="true"></app-common-employees>
@@ -53,7 +58,15 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	constructor(private router: Router) {}
+	isApplExists!: boolean;
+	isApplDraftOrWaitingForPayment!: boolean;
+
+	constructor(private router: Router) {
+		const state = this.router.getCurrentNavigation()?.extras.state;
+
+		this.isApplExists = state ? state['isApplExists'] : false;
+		this.isApplDraftOrWaitingForPayment = state ? state['isApplDraftOrWaitingForPayment'] : false;
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
