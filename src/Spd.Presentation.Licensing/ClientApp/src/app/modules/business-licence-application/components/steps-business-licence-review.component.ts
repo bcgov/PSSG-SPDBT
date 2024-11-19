@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
@@ -10,13 +9,19 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
+				<app-step-business-licence-summary
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+					(editStep)="onGoToStep($event)"
+				></app-step-business-licence-summary>
 
 				<app-wizard-footer
 					[isFormValid]="true"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
+					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -47,6 +52,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(saveAndExit)="onNoSaveAndExit()"
 							(cancelAndExit)="onCancelAndExit()"
+							cancelAndExitLabel="Cancel"
 							nextButtonLabel="Pay Now"
 							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onPayNow()"
@@ -92,9 +98,9 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() showSaveAndExit!: boolean;
 	@Input() licenceCost = 0;
-	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isBusinessLicenceSoleProprietor = false;
 	@Input() isSoleProprietorSimultaneousFlow = false;
-	@Input() isControllingMembersWithoutSwlExist!: boolean;
+	@Input() isControllingMembersWithoutSwlExist = false;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -102,7 +108,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
