@@ -24,8 +24,6 @@ import { StepPermitRationaleComponent } from './components/anonymous/permit-wiza
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-step-components/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-anonymous.component';
-import { StepPermitSummaryAuthenticatedComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-authenticated.component';
-import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from './components/anonymous/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-step-components/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-step-components/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-step-components/steps-permit-contact.component';
@@ -60,6 +58,8 @@ import { StepPermitPhotographOfYourselfNewComponent } from './components/authent
 import { StepPermitPhotographOfYourselfRenewAndUpdateComponent } from './components/authenticated/permit-wizard-step-components/step-permit-photograph-of-yourself-renew-and-update.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/authenticated/permit-wizard-step-components/step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './components/authenticated/permit-wizard-step-components/step-permit-review-name-change.component';
+import { StepPermitSummaryAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-summary-authenticated.component';
+import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 import { StepPermitUpdateTermsAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-update-terms-authenticated.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-step-components/step-permit-user-profile.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-identification-authenticated.component';
@@ -96,6 +96,10 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
+import { PermitSummaryCharacteristicsComponent } from './components/shared/permit-summary-characteristics.component';
+import { PermitSummaryEmployerInformationComponent } from './components/shared/permit-summary-employer-information.component';
+import { PermitSummaryPurposeComponent } from './components/shared/permit-summary-purpose.component';
+import { PermitSummaryRationaleComponent } from './components/shared/permit-summary-rationale.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-step-components/step-permit-reprint.component';
@@ -141,12 +145,18 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
+import { WorkerSummaryCharacteristicsComponent } from './components/shared/worker-summary-characteristics.component';
 import { PersonalLicenceApplicationBaseComponent } from './personal-licence-application-base.component';
 import { LicenceApplicationRoutingModule } from './personal-licence-application-routing.module';
 
 @NgModule({
 	declarations: [
 		LicenceReturnFromBlSoleProprietorComponent,
+		PermitSummaryCharacteristicsComponent,
+		PermitSummaryPurposeComponent,
+		PermitSummaryRationaleComponent,
+		PermitSummaryEmployerInformationComponent,
+		WorkerSummaryCharacteristicsComponent,
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
