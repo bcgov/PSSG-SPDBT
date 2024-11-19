@@ -230,7 +230,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step + this.STEP_BUSINESS_INFORMATION; // add offset
 	}
 
 	onChildNextStep() {
@@ -261,8 +261,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Cancel application',
-			cancelText: 'Continue application',
+			actionText: 'Cancel Application',
+			cancelText: 'Continue Application',
 			wideButtons: true,
 		};
 

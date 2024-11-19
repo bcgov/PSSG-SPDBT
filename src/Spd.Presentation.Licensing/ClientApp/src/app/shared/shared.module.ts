@@ -5,10 +5,6 @@ import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha-2';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
-import { AddressAndIsSameFlagComponent } from './components/address-and-is-same-flag.component';
-import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
-import { AddressComponent } from './components/address.component';
-import { AlertUpdateOrRenewalComponent } from './components/alert-update-or-renewal.component';
 import { AlertComponent } from './components/alert.component';
 import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
 import { BaseFilterComponent } from './components/base-filter.component';
@@ -20,6 +16,11 @@ import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { ExpiredLicenceComponent } from './components/expired-licence.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { FormAddressAndIsSameFlagComponent } from './components/form-address-and-is-same-flag.component';
+import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
+import { FormAddressSummaryComponent } from './components/form-address-summary.component';
+import { FormAddressComponent } from './components/form-address.component';
+import { FormAlertUpdateOrRenewalComponent } from './components/form-alert-update-or-renewal.component';
 import { FormAliasesComponent } from './components/form-aliases.component';
 import { FormBcDriverLicenceComponent } from './components/form-bc-driver-licence.component';
 import { FormBusinessTermsComponent } from './components/form-business-terms.component';
@@ -64,8 +65,6 @@ const SHARED_COMPONENTS = [
 	DialogComponent,
 	DialogOopsComponent,
 	ModalBizSelectionComponent,
-	AddressAutocompleteComponent,
-	ModalAddressComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
 	StepTitleComponent,
@@ -80,12 +79,12 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	AddressComponent,
 	PaymentCancelComponent,
 	PaymentSuccessComponent,
 	PaymentErrorComponent,
 	PaymentFailComponent,
 	BaseFilterComponent,
+	ModalAddressComponent,
 	ModalFingerprintTearOffComponent,
 	WizardFooterComponent,
 	WizardOutsideFooterComponent,
@@ -94,12 +93,15 @@ const SHARED_COMPONENTS = [
 	ModalLookupByLicenceNumberComponent,
 	LicenceListExpiredComponent,
 	ApplicationsListCurrentComponent,
-	AlertUpdateOrRenewalComponent,
+	FormAlertUpdateOrRenewalComponent,
 	LicenceReprintComponent,
 	ExpiredLicenceComponent,
-	AddressAndIsSameFlagComponent,
+	FormAddressAndIsSameFlagComponent,
 	ContainerComponent,
 	FileDragNDropDirective,
+	FormAddressAutocompleteComponent,
+	FormAddressComponent,
+	FormAddressSummaryComponent,
 	FormAliasesComponent,
 	FormBusinessTermsComponent,
 	FormFingerprintsComponent,

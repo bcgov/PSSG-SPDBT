@@ -301,6 +301,18 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
+	getShowEmployerInformation(serviceTypeCode: ServiceTypeCode): boolean {
+		const permitRequirementData = this.permitModelFormGroup.get('permitRequirementData')?.value;
+
+		if (serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
+			const bodyArmourRequirement = permitRequirementData.bodyArmourRequirementFormGroup;
+			return !!bodyArmourRequirement.isMyEmployment;
+		} else {
+			const armouredVehicleRequirement = permitRequirementData.armouredVehicleRequirementFormGroup;
+			return !!armouredVehicleRequirement.isMyEmployment;
+		}
+	}
+
 	/**
 	 * Determine if the Save & Exit process can occur
 	 * @returns

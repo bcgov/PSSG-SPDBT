@@ -20,6 +20,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
@@ -40,7 +41,8 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onStepPrevious()"
+					cancelAndExitLabel="Cancel"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
 				></app-wizard-footer>
