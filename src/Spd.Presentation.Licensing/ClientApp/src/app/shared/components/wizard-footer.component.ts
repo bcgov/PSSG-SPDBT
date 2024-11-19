@@ -94,7 +94,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						(click)="onCancelAndExit()"
 						*ngIf="isCancelAndExitObserved"
 					>
-						Exit
+						{{ cancelAndExitLabel }}
 					</button>
 				</div>
 			</ng-container>
@@ -130,6 +130,7 @@ export class WizardFooterComponent implements OnInit {
 	isNextReviewStepperStepObserved = false;
 
 	@Input() nextButtonLabel = 'Next';
+	@Input() cancelAndExitLabel = 'Exit';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
