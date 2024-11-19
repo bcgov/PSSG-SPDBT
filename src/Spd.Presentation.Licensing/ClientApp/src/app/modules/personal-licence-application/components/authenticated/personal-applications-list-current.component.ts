@@ -2,11 +2,11 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationPortalStatusCode, ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-applications-list-current',
+	selector: 'app-personal-applications-list-current',
 	template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
@@ -18,9 +18,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Licence Type:</span>
-								<span class="my-2">
-									{{ application.serviceTypeCode | options: 'ServiceTypes' }}
-								</span>
+								{{ application.serviceTypeCode | options: 'ServiceTypes' }}
 							</mat-cell>
 						</ng-container>
 
@@ -82,18 +80,6 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								</button>
 
 								<button
-									mat-stroked-button
-									color="primary"
-									class="large my-2"
-									aria-label="Remove the application"
-									matTooltip="Remove the application"
-									(click)="onCancel(application)"
-									*ngIf="isDraftCancelable(application)"
-								>
-									<mat-icon>delete_outline</mat-icon>Remove
-								</button>
-
-								<button
 									mat-flat-button
 									color="primary"
 									class="large my-2"
@@ -104,22 +90,22 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									<mat-icon>payment</mat-icon>Pay Now
 								</button>
 
-								<a
-									tabindex="0"
-									class="text-start"
-									(click)="onManageMembersAndEmployees()"
-									(keydown)="onKeydownManageMembersAndEmployees($event)"
-									*ngIf="isBusinessLicenceInProgress(application)"
-									>Controlling Members & Employees</a
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large my-2"
+									aria-label="Remove the application"
+									matTooltip="Remove the application"
+									(click)="onCancel(application)"
+									*ngIf="isDraftCancelable(application)"
 								>
+									<mat-icon>delete_outline</mat-icon>Remove
+								</button>
 							</mat-cell>
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-						<mat-row
-							class="mat-data-row spd-table-tall-row"
-							*matRowDef="let row; columns: applicationColumns"
-						></mat-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: applicationColumns"></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -127,6 +113,14 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	`,
 	styles: [
 		`
+			.mat-column-applicationPortalStatusCode {
+				word-break: break-word;
+			}
+
+			.mat-column-caseNumber {
+				word-break: break-word;
+			}
+
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
@@ -147,7 +141,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 		`,
 	],
 })
-export class ApplicationsListCurrentComponent {
+export class PersonalApplicationsListCurrentComponent {
 	applicationColumns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
@@ -158,14 +152,14 @@ export class ApplicationsListCurrentComponent {
 		'action1',
 	];
 
+	isShowStatusText = true;
+
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
-	@Input() isControllingMemberWarning!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
-	@Output() manageMembersAndEmployees: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -216,27 +210,6 @@ export class ApplicationsListCurrentComponent {
 	}
 
 	isPaymentPending(appl: MainApplicationResponse): boolean {
-		return (
-			!this.isControllingMemberWarning &&
-			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
-		);
-	}
-
-	isBusinessLicenceInProgress(appl: MainApplicationResponse): boolean {
-		return (
-			appl.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence &&
-			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft &&
-			!this.isPaymentPending(appl)
-		);
-	}
-
-	onManageMembersAndEmployees(): void {
-		this.manageMembersAndEmployees.emit();
-	}
-
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-		this.manageMembersAndEmployees.emit();
+		return appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment;
 	}
 }

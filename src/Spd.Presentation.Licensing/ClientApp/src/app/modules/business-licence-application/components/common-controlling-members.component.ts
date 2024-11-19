@@ -41,11 +41,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
-					<ng-container *ngIf="!controllingMembersExist">
-						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
-					</ng-container>
-
-					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist">
+					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist; else noControllingMembersWithSwlExist">
 						<div class="col-12">
 							<mat-table [dataSource]="dataSourceWithSWL">
 								<ng-container matColumnDef="licenceHolderName">
@@ -102,6 +98,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</mat-table>
 						</div>
 					</div>
+					<ng-template #noControllingMembersWithSwlExist>
+						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
+					</ng-template>
 
 					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
 						<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
@@ -110,6 +109,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								tabindex="0"
 								(click)="onAddMemberWithSWL()"
 								(keydown)="onKeydownAddMemberWithSWL($event)"
+								*ngIf="!isReadonly"
 							>
 								Add Member with a Security Worker Licence
 							</a>
@@ -122,11 +122,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
-					<ng-container *ngIf="!controllingMembersWithoutSwlExist">
-						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
-					</ng-container>
-
-					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist">
+					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
 						<div class="col-12 mb-3">
 							<mat-table [dataSource]="dataSourceWithoutSWL">
 								<ng-container matColumnDef="licenceHolderName">
@@ -138,7 +134,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="email">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Email </mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
 									<mat-cell class="mat-cell-email" *matCellDef="let member">
 										<span class="mobile-label">Email:</span>
 										{{ member.emailAddress | default }}
@@ -146,7 +142,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="inviteStatusCode">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Invitation Status </mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Invitation Status</mat-header-cell>
 									<mat-cell class="mat-column-inviteStatusCode" *matCellDef="let member">
 										<span class="mobile-label">Invitation Status:</span>
 										{{ member.inviteStatusCode | default }}
@@ -230,6 +226,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</app-alert>
 						</ng-container>
 					</div>
+					<ng-template #noControllingMembersWithoutSwlExist>
+						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
+					</ng-template>
 
 					<div class="row">
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
@@ -246,7 +245,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									tabindex="0"
 									(click)="onAddMemberWithoutSWL()"
 									(keydown)="onKeydownAddMemberWithoutSWL($event)"
-									*ngIf="canAddMemberWithoutSwl"
+									*ngIf="!isReadonly"
 								>
 									Add Member without a Security Worker Licence
 								</a>
@@ -297,13 +296,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				height: fit-content;
 			}
 
-			.mat-column-inviteStatusCode {
-				min-width: 150px;
-				max-width: 150px;
-				.table-button {
-					min-width: 130px;
-				}
-			}
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -340,13 +332,13 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	@Input() isWizard = false;
 	@Input() isApplDraftOrWaitingForPayment = false;
 	@Input() isApplExists = false;
+	@Input() isReadonly = false;
 
 	isBcBusinessAddress = true;
 	allowDocumentUpload = false;
 
 	allowNewInvitationsToBeSent = false;
 	allowUpdateInvitationsToBeSent = false;
-	canAddMemberWithoutSwl = true;
 
 	dataSourceWithSWL!: MatTableDataSource<any>;
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
@@ -397,10 +389,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 					this.allowNewInvitationsToBeSent = false;
 					this.allowUpdateInvitationsToBeSent = false;
 
-					this.canAddMemberWithoutSwl = false;
-
 					// if appl is in progress (after payment but no licence yet), it is readonly
 					this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode'];
+					this.columnsWithSWL = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate'];
 				}
 			} else {
 				// If no appl exists, you can make any changes but only send Update Invitations
@@ -410,13 +401,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
 			}
 		}
-
-		console.log('************ isWizard', this.isWizard);
-		console.log('************ isApplExists', this.isApplExists);
-		console.log('************ isApplDraftOrWaitingForPayment', this.isApplDraftOrWaitingForPayment);
-		console.log('************ allowNewInvitationsToBeSent', this.allowNewInvitationsToBeSent);
-		console.log('************ allowUpdateInvitationsToBeSent', this.allowUpdateInvitationsToBeSent);
-		console.log('************ canAddMemberWithoutSwl', this.canAddMemberWithoutSwl);
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
 		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
@@ -777,9 +761,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 	get membersWithoutSwlList(): FormArray {
 		return <FormArray>this.form.get('membersWithoutSwl');
-	}
-	get controllingMembersExist(): boolean {
-		return this.dataSourceWithSWL.data.length > 0 || this.dataSourceWithoutSWL.data.length > 0;
 	}
 	get controllingMembersWithSwlExist(): boolean {
 		return this.dataSourceWithSWL.data.length > 0;

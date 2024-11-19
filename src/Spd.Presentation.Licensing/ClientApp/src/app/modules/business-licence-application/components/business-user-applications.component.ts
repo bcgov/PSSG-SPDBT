@@ -44,11 +44,11 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 									class="large w-auto me-2 mb-3"
 									(click)="onBusinessProfile()"
 								>
-									<mat-icon>storefront</mat-icon>
+									<mat-icon class="d-none d-md-block">storefront</mat-icon>
 									{{ businessProfileLabel }}
 								</button>
 								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
-									<mat-icon>people</mat-icon>
+									<mat-icon class="d-none d-md-block">people</mat-icon>
 									Business Managers
 								</button>
 							</div>
@@ -94,14 +94,15 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						</ng-container>
 					</div>
 
-					<app-applications-list-current
+					<app-business-applications-list-current
 						[applicationsDataSource]="applicationsDataSource"
 						[isControllingMemberWarning]="isControllingMemberWarning"
+						[isSoleProprietor]="isSoleProprietor"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onDelete($event)"
 						(manageMembersAndEmployees)="onManageMembersAndEmployees()"
-					></app-applications-list-current>
+					></app-business-applications-list-current>
 
 					<app-business-licence-list-current
 						[activeLicences]="activeLicencesList"
