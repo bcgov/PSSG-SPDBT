@@ -210,8 +210,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		document: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 		const doc: LicenceDocument = {
-			Documents: [document],
-			LicenceDocumentTypeCode: documentCode,
+			documents: [document],
+			licenceDocumentTypeCode: documentCode,
 		};
 
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
@@ -675,8 +675,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -766,8 +766,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1173,8 +1173,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

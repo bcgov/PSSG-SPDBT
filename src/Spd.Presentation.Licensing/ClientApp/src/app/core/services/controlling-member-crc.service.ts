@@ -217,8 +217,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: documentCode,
+			documents: [documentFile],
+			licenceDocumentTypeCode: documentCode,
 		};
 
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
@@ -398,8 +398,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -443,8 +443,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -518,8 +518,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

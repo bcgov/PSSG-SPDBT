@@ -472,8 +472,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -516,8 +516,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: documentCode,
+			documents: [documentFile],
+			licenceDocumentTypeCode: documentCode,
 		};
 
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({

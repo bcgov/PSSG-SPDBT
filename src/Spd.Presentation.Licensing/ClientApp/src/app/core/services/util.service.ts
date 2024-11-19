@@ -26,8 +26,8 @@ export interface LicenceChildStepperStepComponent {
 }
 
 export interface LicenceDocument {
-	Documents?: Array<File>;
-	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
+	documents?: Array<File>;
+	licenceDocumentTypeCode?: string;
 }
 
 export class LicenceDocumentsToSave {
