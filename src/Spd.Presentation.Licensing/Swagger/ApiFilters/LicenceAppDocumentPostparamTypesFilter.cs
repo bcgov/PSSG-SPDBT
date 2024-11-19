@@ -44,7 +44,11 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                 "licenceDocumentTypeCode",
                                 new OpenApiSchema()
                                 {
-                                    Type = "string",
+                                    Reference = new OpenApiReference
+                                    {
+                                        Type= ReferenceType.Schema,
+                                        Id = "LicenceDocumentTypeCode"
+                                    },
                                     Nullable= false
                                 }
                             }
