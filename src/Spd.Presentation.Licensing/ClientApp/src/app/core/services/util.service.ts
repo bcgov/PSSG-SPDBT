@@ -25,11 +25,6 @@ export interface LicenceChildStepperStepComponent {
 	isFormValid(): boolean;
 }
 
-export interface LicenceDocument {
-	Documents?: Array<File>;
-	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
-}
-
 export class LicenceDocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
 	'documents': Array<Blob>;
