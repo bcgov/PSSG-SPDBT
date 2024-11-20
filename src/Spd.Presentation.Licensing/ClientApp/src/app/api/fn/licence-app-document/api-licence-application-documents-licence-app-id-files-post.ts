@@ -9,12 +9,13 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { LicenceAppDocumentResponse } from '../../models/licence-app-document-response';
+import { LicenceDocumentTypeCode } from '../../models/licence-document-type-code';
 
 export interface ApiLicenceApplicationDocumentsLicenceAppIdFilesPost$Params {
   licenceAppId: string;
       body: {
 'documents'?: Array<Blob>;
-'licenceDocumentTypeCode'?: string;
+'licenceDocumentTypeCode'?: LicenceDocumentTypeCode;
 }
 }
 

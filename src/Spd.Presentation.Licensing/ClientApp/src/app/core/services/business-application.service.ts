@@ -60,7 +60,7 @@ import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
@@ -515,14 +515,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			documents: [documentFile],
-			licenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 

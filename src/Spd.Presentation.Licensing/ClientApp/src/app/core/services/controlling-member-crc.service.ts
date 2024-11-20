@@ -42,7 +42,7 @@ import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -216,14 +216,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		documentCode: LicenceDocumentTypeCode,
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			documents: [documentFile],
-			licenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
-			body: doc,
+			body: {
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 

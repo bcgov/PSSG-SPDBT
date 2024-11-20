@@ -51,7 +51,7 @@ import {
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
+import { LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
@@ -178,14 +178,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		document: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			documents: [document],
-			licenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [document],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 

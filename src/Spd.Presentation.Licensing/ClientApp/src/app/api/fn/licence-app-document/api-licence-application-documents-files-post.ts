@@ -8,11 +8,12 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { LicenceDocumentTypeCode } from '../../models/licence-document-type-code';
 
 export interface ApiLicenceApplicationDocumentsFilesPost$Params {
       body: {
 'documents'?: Array<Blob>;
-'licenceDocumentTypeCode'?: string;
+'licenceDocumentTypeCode'?: LicenceDocumentTypeCode;
 }
 }
 
