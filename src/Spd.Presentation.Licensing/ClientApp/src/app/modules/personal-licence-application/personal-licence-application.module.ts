@@ -66,6 +66,7 @@ import { StepsPermitIdentificationAuthenticatedComponent } from './components/au
 import { StepsPermitPurposeAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-purpose-authenticated.component';
 import { StepsPermitReviewAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-review-authenticated.component';
 import { StepsPermitUpdatesAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-updates-authenticated.component';
+import { PersonalApplicationsListCurrentComponent } from './components/authenticated/personal-applications-list-current.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
@@ -298,6 +299,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		WorkerLicenceWizardAuthenticatedRenewalComponent,
 		WorkerLicenceWizardAuthenticatedReplacementComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
+		PersonalApplicationsListCurrentComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [],
