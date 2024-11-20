@@ -332,6 +332,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	@Input() isWizard = false;
 	@Input() isApplDraftOrWaitingForPayment = false;
 	@Input() isApplExists = false;
+	@Input() isLicenceExists = false;
 	@Input() isReadonly = false;
 
 	isBcBusinessAddress = true;
@@ -397,7 +398,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			} else {
 				// If no appl exists, you can make any changes but only send Update Invitations
 				this.allowNewInvitationsToBeSent = false;
-				this.allowUpdateInvitationsToBeSent = true;
+				this.allowUpdateInvitationsToBeSent = this.isLicenceExists;
 
 				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
 			}

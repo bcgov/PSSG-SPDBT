@@ -185,6 +185,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	onManageMembersAndEmployees(): void {
 		const isApplExists = this.applicationIsInProgress || this.applicationIsDraftOrWaitingForPayment;
 		const isApplDraftOrWaitingForPayment = this.applicationIsDraftOrWaitingForPayment;
+		const isLicenceExists = this.activeLicencesList.length > 0;
 
 		this.businessApplicationService
 			.getMembersAndEmployees(isApplDraftOrWaitingForPayment)
@@ -194,7 +195,13 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
 							BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES
 						),
-						{ state: { isApplExists: isApplExists, isApplDraftOrWaitingForPayment: isApplDraftOrWaitingForPayment } }
+						{
+							state: {
+								isApplExists: isApplExists,
+								isApplDraftOrWaitingForPayment: isApplDraftOrWaitingForPayment,
+								isLicenceExists: isLicenceExists,
+							},
+						}
 					);
 				}),
 				take(1)
