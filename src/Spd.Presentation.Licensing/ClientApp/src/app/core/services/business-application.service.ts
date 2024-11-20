@@ -1988,7 +1988,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// business licence is sole proprietor
 				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
 			} else if (soleProprietorSWLAppId) {
-				// using sole proprietor simulataneous flow
+				// using sole proprietor simultaneous flow
 				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 			}
 		}
