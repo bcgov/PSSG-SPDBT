@@ -173,7 +173,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.businessApplicationService.reset();
+		this.businessApplicationService.reset(); // prevent back button into wizard
 
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 

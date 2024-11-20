@@ -86,6 +86,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isControllingMembersWithoutSwlExist: new FormControl(), // placeholder
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
+		soleProprietorSWLAppPortalStatus: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppOriginTypeCode: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
@@ -1987,7 +1988,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// business licence is sole proprietor
 				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
 			} else if (soleProprietorSWLAppId) {
-				// using sole proprietor combined flow
+				// using sole proprietor simulataneous flow
 				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 			}
 		}
@@ -2044,13 +2045,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
+				const isSoleProprietorSimultaneousSWLAnonymous =
+					resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal;
+
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppPortalStatus: resp.applicationPortalStatus,
 						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
 						isSoleProprietorSimultaneousFlow: true,
-						isSoleProprietorSimultaneousSWLAnonymous:
-							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
+						isSoleProprietorSimultaneousSWLAnonymous,
 						isBusinessLicenceSoleProprietor,
 						businessInformationData,
 						categoryData,
