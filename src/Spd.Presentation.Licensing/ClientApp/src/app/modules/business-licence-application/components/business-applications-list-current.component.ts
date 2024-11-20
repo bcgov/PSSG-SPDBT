@@ -56,7 +56,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 
 						<ng-container matColumnDef="applicationPortalStatusCode">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-							<mat-cell *matCellDef="let application" [ngClass]="isShowStatusButton ? 'col-status-button' : ''">
+							<mat-cell *matCellDef="let application" [ngClass]="showStatusButton ? 'col-status-button' : ''">
 								<span class="mobile-label">Status:</span>
 								<ng-container *ngIf="isNewDraft(application); else isNotDraft">
 									<button
@@ -111,7 +111,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									class="text-start"
 									(click)="onManageMembersAndEmployees()"
 									(keydown)="onKeydownManageMembersAndEmployees($event)"
-									*ngIf="!isSoleProprietor"
+									*ngIf="showManageMembersAndEmployees"
 									>Controlling Members & Employees</a
 								>
 							</mat-cell>
@@ -183,7 +183,8 @@ export class BusinessApplicationsListCurrentComponent implements OnInit {
 		'action1',
 	];
 
-	isShowStatusButton = false;
+	showStatusButton = false;
+	showManageMembersAndEmployees = false;
 
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
@@ -198,7 +199,8 @@ export class BusinessApplicationsListCurrentComponent implements OnInit {
 	ngOnInit(): void {
 		if (this.applicationsDataSource.data.length > 0) {
 			const application = this.applicationsDataSource.data[0];
-			this.isShowStatusButton = this.isNewDraft(application) || this.isPaymentPending(application);
+			this.showStatusButton = this.isNewDraft(application) || this.isPaymentPending(application);
+			this.showManageMembersAndEmployees = !this.isNewDraft(application) && !this.isSoleProprietor;
 		}
 	}
 

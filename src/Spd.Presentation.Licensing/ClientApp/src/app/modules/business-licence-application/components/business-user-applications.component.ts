@@ -173,6 +173,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.businessApplicationService.reset();
+
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
 		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
