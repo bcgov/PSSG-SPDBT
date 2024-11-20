@@ -6,8 +6,8 @@ import {
 	Document,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
+	PrivateInvestigatorSwlContactInfo,
 	ServiceTypeCode,
-	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
@@ -495,7 +495,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
-		let privateInvestigatorSwlInfo: SwlContactInfo = {};
+		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
 			useDogs: null,
 			isDogsPurposeDetectionDrugs: null,

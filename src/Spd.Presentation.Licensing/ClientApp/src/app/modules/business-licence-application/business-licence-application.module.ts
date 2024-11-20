@@ -13,6 +13,7 @@ import { StepsBusinessLicenceInformationComponent } from '../business-licence-ap
 import { StepsBusinessLicenceSelectionComponent } from '../business-licence-application/components/steps-business-licence-selection.component';
 import { StepsBusinessLicenceUpdatesComponent } from '../business-licence-application/components/steps-business-licence-updates.component';
 import { BusinessLicenceApplicationRoutingModule } from './business-licence-application-routing.module';
+import { BusinessApplicationsListCurrentComponent } from './components/business-applications-list-current.component';
 import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business-category-private-investigator.component';
@@ -120,6 +121,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessManagersComponent,
 		BusinessProfileComponent,
 		BusinessControllingMembersAndEmployeesComponent,
+		BusinessApplicationsListCurrentComponent,
 	],
 	imports: [SharedModule, BusinessLicenceApplicationRoutingModule],
 	providers: [],
