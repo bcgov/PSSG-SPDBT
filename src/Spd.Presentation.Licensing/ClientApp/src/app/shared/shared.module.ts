@@ -6,7 +6,6 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
 import { AlertComponent } from './components/alert.component';
-import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
@@ -92,7 +91,6 @@ const SHARED_COMPONENTS = [
 	CollectionNoticeComponent,
 	ModalLookupByLicenceNumberComponent,
 	LicenceListExpiredComponent,
-	ApplicationsListCurrentComponent,
 	FormAlertUpdateOrRenewalComponent,
 	LicenceReprintComponent,
 	ExpiredLicenceComponent,

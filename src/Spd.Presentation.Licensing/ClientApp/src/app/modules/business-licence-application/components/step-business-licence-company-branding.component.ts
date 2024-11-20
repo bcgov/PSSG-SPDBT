@@ -81,7 +81,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 		} else {
 			this.title = 'Provide examples of company branding';
 			this.subtitle =
-				'Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Program Division must review and approve these before your licence will be issued.';
+				'Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Programs Division must review and approve these before your licence will be issued.';
 			this.info =
 				'We recommend you do not finalize any branding, marketing or advertising until your licence is approved.';
 		}

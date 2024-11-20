@@ -9,11 +9,11 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
-						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
-							<h2 class="fs-3">Controlling Members & Employees</h2>
+						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">{{ title }}</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-12">
+						<div class="col-xl-4 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
 								<button
 									mat-stroked-button
@@ -41,10 +41,20 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
+					<app-common-controlling-members
+						[defaultExpanded]="true"
+						[isWizard]="false"
+						[isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
+						[isApplExists]="isApplExists"
+						[isReadonly]="isReadonly"
+					></app-common-controlling-members>
 
 					<div class="mt-3">
-						<app-common-employees [defaultExpanded]="true"></app-common-employees>
+						<app-common-employees
+							[defaultExpanded]="true"
+							[isWizard]="false"
+							[isReadonly]="isReadonly"
+						></app-common-employees>
 					</div>
 				</div>
 			</div>
@@ -53,7 +63,20 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	constructor(private router: Router) {}
+	title = 'Controlling Members & Employees';
+	isApplExists!: boolean;
+	isApplDraftOrWaitingForPayment!: boolean;
+	isReadonly!: boolean;
+
+	constructor(private router: Router) {
+		const state = this.router.getCurrentNavigation()?.extras.state;
+
+		this.isApplExists = state ? state['isApplExists'] : false;
+		this.isApplDraftOrWaitingForPayment = state ? state['isApplDraftOrWaitingForPayment'] : false;
+
+		this.isReadonly = this.isApplExists && !this.isApplDraftOrWaitingForPayment;
+		this.title = this.isReadonly ? 'View Controlling Members & Employees' : 'Controlling Members & Employees';
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
