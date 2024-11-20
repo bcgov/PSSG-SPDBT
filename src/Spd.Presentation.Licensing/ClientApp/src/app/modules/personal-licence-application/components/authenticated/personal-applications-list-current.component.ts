@@ -70,7 +70,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								<button
 									mat-flat-button
 									color="primary"
-									class="large my-2"
+									class="large w-auto"
 									aria-label="Resume"
 									(click)="onResume(application)"
 									[disabled]="isDraftAndNotResumable(application)"
@@ -82,7 +82,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								<button
 									mat-flat-button
 									color="primary"
-									class="large my-2"
+									class="large w-auto"
 									aria-label="Pay now"
 									(click)="onPayNow(application)"
 									*ngIf="isPaymentPending(application)"
@@ -93,7 +93,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								<button
 									mat-stroked-button
 									color="primary"
-									class="large my-2"
+									class="large w-auto"
 									aria-label="Remove the application"
 									matTooltip="Remove the application"
 									(click)="onCancel(application)"
@@ -105,7 +105,10 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-						<mat-row class="mat-data-row" *matRowDef="let row; columns: applicationColumns"></mat-row>
+						<mat-row
+							class="mat-data-row spd-table-tall-row"
+							*matRowDef="let row; columns: applicationColumns"
+						></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -113,18 +116,20 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	`,
 	styles: [
 		`
-			.mat-column-applicationPortalStatusCode {
-				word-break: break-word;
-			}
-
-			.mat-column-caseNumber {
-				word-break: break-word;
-			}
-
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
 				min-width: 170px;
+			}
+
+			@media (min-width: 1200px) {
+				/* only force max width on large screens */
+				.mat-column-applicationTypeCode {
+					max-width: 120px;
+				}
+				.mat-column-serviceTypeCode {
+					max-width: 130px;
+				}
 			}
 
 			.status-green {
