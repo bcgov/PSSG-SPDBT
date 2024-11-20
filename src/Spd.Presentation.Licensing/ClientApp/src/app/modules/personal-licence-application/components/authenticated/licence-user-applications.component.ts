@@ -54,13 +54,13 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
-					<app-applications-list-current
+					<app-personal-applications-list-current
 						[applicationsDataSource]="applicationsDataSource"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
 						(cancelApplication)="onDelete($event)"
-					></app-applications-list-current>
+					></app-personal-applications-list-current>
 
 					<app-licence-active-swl-permit-licences
 						[activeLicences]="activeLicences"
