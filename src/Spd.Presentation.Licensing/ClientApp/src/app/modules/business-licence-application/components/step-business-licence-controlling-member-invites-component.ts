@@ -29,9 +29,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-template #noEmailAddress>
 									<a
 										mat-stroked-button
-										aria-label="Download Business Member Auth Consent"
-										download="Business Member Auth Consent"
-										matTooltip="Download Business Member Auth Consent"
+										aria-label="Download Consent to Criminal Record Check"
+										download="business-memberauthconsent"
+										matTooltip="Download Consent to Criminal Record Check"
 										[href]="downloadFilePath"
 									>
 										<mat-icon>download</mat-icon>Download Manual Form
@@ -48,7 +48,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepBusinessLicenceControllingMemberInvitesComponent implements LicenceChildStepperStepComponent {
-	downloadFilePath = SPD_CONSTANTS.files.securityServicesBusinessApplicantTerms;
+	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
 

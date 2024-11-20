@@ -19,7 +19,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import {
@@ -197,9 +197,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											<a
 												mat-stroked-button
 												class="w-100 invitation-button"
-												aria-label="Download Business Member Auth Consent"
-												download="Business Member Auth Consent"
-												matTooltip="Download Business Member Auth Consent"
+												aria-label="Download Consent to Criminal Record Check"
+												download="business-memberauthconsent"
+												matTooltip="Download Consent to Criminal Record Check"
 												[href]="downloadFilePath"
 											>
 												Download Manual Form
@@ -351,6 +351,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
 		private authUserBceidService: AuthUserBceidService,
 		private hotToastService: HotToastService,
@@ -708,7 +709,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	private newMemberRow(bizContactId: string, memberData: any): FormGroup {
 		return this.formBuilder.group({
-			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
+			licenceHolderName: [
+				memberData.licenceHolderName ?? this.utilService.getFullName(memberData.givenName, memberData.surname),
+			],
 			bizContactId: bizContactId,
 			contactId: [memberData.licenceHolderId],
 			givenName: [memberData.givenName],
@@ -733,7 +736,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		}
 
 		this.membersWithoutSwlList.at(memberIndex).patchValue({
-			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
+			licenceHolderName: [
+				memberData.licenceHolderName ?? this.utilService.getFullName(memberData.givenName, memberData.surname),
+			],
 			bizContactId: memberData.bizContactId,
 			givenName: memberData.givenName,
 			middleName1: memberData.middleName1,
