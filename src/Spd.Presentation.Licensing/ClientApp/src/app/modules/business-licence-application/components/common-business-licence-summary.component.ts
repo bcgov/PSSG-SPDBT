@@ -277,7 +277,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								<div class="panel-body">
 									<div class="text-minor-heading-small mt-4">Business Manager Information</div>
 									<div class="row mt-0">
-										<div class="col-lg-6 col-md-12">
+										<div class="col-lg-5 col-md-12">
 											<div class="text-label d-block text-muted">Name</div>
 											<div class="summary-text-data">
 												{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
@@ -285,7 +285,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												{{ businessManagerSurname }}
 											</div>
 										</div>
-										<div class="col-lg-3 col-md-12">
+										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Email Address</div>
 											<div class="summary-text-data">
 												{{ businessManagerEmailAddress | default }}

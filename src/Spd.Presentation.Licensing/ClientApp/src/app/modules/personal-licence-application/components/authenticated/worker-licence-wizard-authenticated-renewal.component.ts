@@ -14,6 +14,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routes';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 
@@ -137,6 +138,11 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	ngOnInit(): void {
+		if (!this.workerApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
