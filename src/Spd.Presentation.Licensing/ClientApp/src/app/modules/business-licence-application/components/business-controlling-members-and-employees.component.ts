@@ -46,6 +46,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 						[isWizard]="false"
 						[isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
 						[isApplExists]="isApplExists"
+						[isLicenceExists]="isLicenceExists"
 						[isReadonly]="isReadonly"
 					></app-common-controlling-members>
 
@@ -65,6 +66,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 export class BusinessControllingMembersAndEmployeesComponent {
 	title = 'Controlling Members & Employees';
 	isApplExists!: boolean;
+	isLicenceExists!: boolean;
 	isApplDraftOrWaitingForPayment!: boolean;
 	isReadonly!: boolean;
 
@@ -73,6 +75,7 @@ export class BusinessControllingMembersAndEmployeesComponent {
 
 		this.isApplExists = state ? state['isApplExists'] : false;
 		this.isApplDraftOrWaitingForPayment = state ? state['isApplDraftOrWaitingForPayment'] : false;
+		this.isLicenceExists = state ? state['isLicenceExists'] : false;
 
 		this.isReadonly = this.isApplExists && !this.isApplDraftOrWaitingForPayment;
 		this.title = this.isReadonly ? 'View Controlling Members & Employees' : 'Controlling Members & Employees';
