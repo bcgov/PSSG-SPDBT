@@ -94,7 +94,6 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step completed="false">
 				<ng-template matStepLabel>Business Licence Review</ng-template>
 				<app-steps-business-licence-review
-					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[showSaveAndExit]="showSaveAndExit"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"

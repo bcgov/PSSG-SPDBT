@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { DialogComponent, DialogOptions } from './dialog.component';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
@@ -145,7 +147,10 @@ export class WizardFooterComponent implements OnInit {
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextReviewStepperStep: EventEmitter<number> = new EventEmitter();
 
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
@@ -157,7 +162,22 @@ export class WizardFooterComponent implements OnInit {
 	}
 
 	onSaveAndExit(): void {
-		this.saveAndExit.emit();
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to save your changes and exit?',
+			actionText: 'Exit',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.saveAndExit.emit();
+				}
+			});
 	}
 
 	onPrevious(): void {
@@ -179,11 +199,6 @@ export class WizardFooterComponent implements OnInit {
 	onCancel(): void {
 		if (this.isCancelObserved) {
 			this.cancelStep.emit();
-			return;
-		}
-
-		if (this.isCancelAndExitObserved) {
-			this.cancelAndExit.emit();
 			return;
 		}
 

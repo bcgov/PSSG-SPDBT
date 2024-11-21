@@ -141,6 +141,11 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathPermitAuthenticated());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
