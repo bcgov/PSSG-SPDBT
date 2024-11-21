@@ -202,6 +202,9 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.permitApplicationService.reset(); // prevent back button into wizard
+		this.workerApplicationService.reset(); // prevent back button into wizard
+
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TDB';
 
 		this.commonApplicationService.setApplicationTitle();

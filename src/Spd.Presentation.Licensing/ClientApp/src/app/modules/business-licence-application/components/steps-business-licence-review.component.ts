@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
@@ -94,7 +94,6 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() showSaveAndExit!: boolean;
 	@Input() licenceCost = 0;

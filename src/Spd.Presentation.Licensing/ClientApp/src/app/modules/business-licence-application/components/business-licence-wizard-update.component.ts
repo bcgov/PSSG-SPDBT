@@ -53,7 +53,6 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-business-licence-review
-							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
 							[showSaveAndExit]="false"
