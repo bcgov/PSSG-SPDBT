@@ -6,8 +6,8 @@ import {
 	Document,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
+	PrivateInvestigatorSwlContactInfo,
 	ServiceTypeCode,
-	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
@@ -172,7 +172,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	);
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl('', [FormControlValidators.required]),
+		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
@@ -192,10 +192,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'givenName',
-					(form) => form.get('applicantIsBizManager')?.value != true
-				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'surname',
 					(form) => form.get('applicantIsBizManager')?.value != true
@@ -344,7 +340,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
 			bizContactId: new FormControl(''),
-			givenName: new FormControl('', [FormControlValidators.required]),
+			givenName: new FormControl(''),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
@@ -365,7 +361,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
 		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
-		firstName: new FormControl('', [FormControlValidators.required]),
+		firstName: new FormControl(''),
 		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
 		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
@@ -495,7 +491,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
-		let privateInvestigatorSwlInfo: SwlContactInfo = {};
+		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
 			useDogs: null,
 			isDogsPurposeDetectionDrugs: null,

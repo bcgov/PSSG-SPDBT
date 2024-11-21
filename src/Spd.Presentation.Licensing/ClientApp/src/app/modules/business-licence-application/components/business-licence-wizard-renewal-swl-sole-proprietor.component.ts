@@ -47,8 +47,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[showSaveAndExit]="false"
 						(childNextStep)="onChildNextStep()"
-						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -64,9 +64,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 						[isFormValid]="false"
-						[showSaveAndExit]="true"
+						[showSaveAndExit]="false"
 						(childNextStep)="onChildNextStep()"
-						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -77,10 +76,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Review Business Licence</ng-template>
 					<app-steps-business-licence-review
-						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[showSaveAndExit]="false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -139,6 +138,11 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -221,21 +225,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 
 	onChildNextStep() {
 		this.saveStep();
-	}
-
-	onSaveAndExit(): void {
-		if (!this.businessApplicationService.isSaveAndExit()) {
-			return;
-		}
-
-		this.businessApplicationService.partialSaveBusinessLicenceWithSwlCombinedFlow(true).subscribe({
-			next: (_resp: any) => {
-				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
-			},
-		});
 	}
 
 	onReturnToSwl(): void {
