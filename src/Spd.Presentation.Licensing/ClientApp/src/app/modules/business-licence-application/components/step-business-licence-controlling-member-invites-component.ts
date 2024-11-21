@@ -28,13 +28,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</ng-container>
 								<ng-template #noEmailAddress>
 									<a
-										mat-stroked-button
 										aria-label="Download Consent to Criminal Record Check"
 										download="business-memberauthconsent"
 										matTooltip="Download Consent to Criminal Record Check"
 										[href]="downloadFilePath"
 									>
-										<mat-icon>download</mat-icon>Download Manual Form
+										Download Manual Form
 									</a>
 								</ng-template>
 							</div>
