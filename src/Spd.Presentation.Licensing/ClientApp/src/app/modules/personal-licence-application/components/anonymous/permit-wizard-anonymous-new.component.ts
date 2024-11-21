@@ -2,8 +2,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
@@ -140,6 +142,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -148,6 +151,11 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
