@@ -214,7 +214,7 @@ namespace Spd.Manager.Payment
                     await _paymentRepository.ManageAsync(updateCmd, ct);
                 }
                 //if application has non-swl controlling member crc applications, we need to set all those to paid. 
-                //dynamics will do this part.
+                //removed as dynamics will do this part.
                 //foreach (Guid cmCrcAppId in bizApp.NonSwlControllingMemberCrcAppIds)
                 //{
                 //    createCmd.ApplicationId = cmCrcAppId;
