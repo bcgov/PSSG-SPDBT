@@ -21,7 +21,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-address [form]="form" [isReadonly]="isLoggedIn" [isWideView]="true"></app-address>
+					<app-form-address [form]="form" [isReadonly]="isLoggedIn" [isWideView]="true"></app-form-address>
 				</div>
 			</div>
 		</app-step-section>

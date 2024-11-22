@@ -17,12 +17,12 @@ import {
 	IdentityStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
-import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
+import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routes';
+import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routes';
 import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import {
 	ScreeningRequestAddCommonModalComponent,

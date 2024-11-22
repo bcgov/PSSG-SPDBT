@@ -701,6 +701,12 @@ export class CommonApplicationService {
 		);
 	}
 
+	getApplicationIsDraft(appls: Array<MainApplicationResponse>): boolean {
+		return !!appls.find(
+			(item: MainApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
+	}
+
 	getApplicationIsDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>

@@ -5,6 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -139,6 +140,11 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	ngOnInit(): void {
+		if (!this.workerApplicationService.initialized) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

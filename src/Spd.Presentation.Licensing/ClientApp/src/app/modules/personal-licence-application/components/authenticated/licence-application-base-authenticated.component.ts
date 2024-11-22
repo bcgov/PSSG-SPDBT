@@ -63,6 +63,9 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 			path.includes(PersonalLicenceApplicationRoutes.PAYMENT_CANCEL) ||
 			path.includes(PersonalLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
+			this.workerApplicationService.reset(); // prevent back button into wizard
+			this.permitApplicationService.reset(); // prevent back button into wizard
+
 			return;
 		}
 
