@@ -245,6 +245,37 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</ng-container>
 
+										<ng-container *ngIf="isDogs">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading-small">Dogs Authorization</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Request to Use Dogs</div>
+													<div class="summary-text-data">{{ useDogs }}</div>
+												</div>
+												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Reason</div>
+														<div class="summary-text-data">
+															<div *ngIf="isDogsPurposeProtection">Protection</div>
+															<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+															<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</div>
+												</ng-container>
+											</div>
+										</ng-container>
+
 										<ng-container *ngIf="isAnyDocuments">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading-small">Documents Uploaded</div>
@@ -556,6 +587,26 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	get categoryList(): Array<WorkerCategoryTypeCode> {
 		return this.businessApplicationService.getSummarycategoryList(this.businessModelData);
 	}
+
+	get isDogs(): boolean {
+		return this.businessApplicationService.getSummaryisDogs(this.businessModelData);
+	}
+	get useDogs(): string {
+		return this.businessApplicationService.getSummaryuseDogs(this.businessModelData);
+	}
+	get isDogsPurposeProtection(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeProtection(this.businessModelData);
+	}
+	get isDogsPurposeDetectionDrugs(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.businessModelData);
+	}
+	get isDogsPurposeDetectionExplosives(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.businessModelData);
+	}
+	get dogsPurposeAttachments(): File[] {
+		return this.businessApplicationService.getSummarydogsPurposeAttachments(this.businessModelData);
+	}
+
 	get isPrivateInvestigator(): boolean {
 		return this.businessApplicationService.getSummaryisPrivateInvestigator(this.businessModelData);
 	}

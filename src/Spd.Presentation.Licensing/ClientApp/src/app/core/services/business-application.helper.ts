@@ -781,6 +781,32 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 		return list.sort();
 	}
+	getSummaryisDogs(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+	}
+	getSummaryuseDogs(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.useDogs ?? '';
+	}
+	getSummaryisDogsPurposeProtection(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeProtection ?? false
+		);
+	}
+	getSummaryisDogsPurposeDetectionDrugs(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false
+		);
+	}
+	getSummaryisDogsPurposeDetectionExplosives(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ??
+			false
+		);
+	}
+	getSummarydogsPurposeAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
+	}
+
 	getSummaryisPrivateInvestigator(businessLicenceModelData: any): boolean {
 		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup?.isInclude ?? false;
 	}
