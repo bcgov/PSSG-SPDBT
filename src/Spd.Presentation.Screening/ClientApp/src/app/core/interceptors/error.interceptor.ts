@@ -11,10 +11,7 @@ import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(
-		private router: Router,
-		private dialog: MatDialog,
-	) {}
+	constructor(private router: Router, private dialog: MatDialog) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
