@@ -3,24 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { CrrpaPaymentErrorComponent } from './components/crrpa-payment-error.component';
 import { CrrpaPaymentFailComponent } from './components/crrpa-payment-fail.component';
 import { CrrpaPaymentSuccessComponent } from './components/crrpa-payment-success.component';
+import { CrrpaRoutes } from './crrpa-routes';
 import { CrrpaComponent } from './crrpa.component';
 import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
-
-export class CrrpaRoutes {
-	public static CRRPA = 'crrpa';
-	public static INVITATION = 'invitation';
-	public static ORG_ACCESS = 'org-access';
-	public static PAYMENT_SUCCESS = 'payment-success';
-	public static PAYMENT_FAIL = 'payment-fail';
-	public static PAYMENT_ERROR = 'payment-error';
-
-	public static MODULE_PATH = CrrpaRoutes.CRRPA;
-
-	public static path(route: string | null = null): string {
-		return route ? `/${CrrpaRoutes.MODULE_PATH}/${route}` : `/${CrrpaRoutes.MODULE_PATH}`;
-	}
-}
 
 const routes: Routes = [
 	{
