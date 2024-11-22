@@ -49,9 +49,16 @@ internal class PaymentRepository : IPaymentRepository
         spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (application == null)
             throw new ArgumentException("invalid application id");
+
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
         if (payment != null)
-            throw new ApiException(HttpStatusCode.BadRequest, "The payment result has been updated.");
+        {
+            //payment should not exist, so, should not get here.
+            if (payment.spd_ordernumber == cmd.TransOrderId)
+                return cmd.PaymentId; //payment already updated
+            else
+                cmd.PaymentId = Guid.NewGuid();
+        }
 
         payment = _mapper.Map<spd_payment>(cmd);
         _context.AddTospd_payments(payment);
@@ -75,5 +82,4 @@ internal class PaymentRepository : IPaymentRepository
     }
 
 }
-
 
