@@ -5,13 +5,16 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApplicantService, OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private router: Router, private dialog: MatDialog) {}
+	constructor(
+		private router: Router,
+		private dialog: MatDialog,
+	) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(

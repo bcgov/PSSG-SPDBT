@@ -1,31 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AppRoutes } from './app-routes';
 import { LandingComponent } from './landing.component';
-import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
-import { CrrpaRoutes } from './modules/crrpa-portal/crrpa-routing.module';
-import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routing.module';
-import { PssoRoutes } from './modules/psso-portal/psso-routing.module';
-import { PssoaRoutes } from './modules/pssoa-portal/pssoa-routing.module';
-import { SecurityScreeningRoutes } from './modules/security-screening-portal/security-screening-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 import { LoginFailureComponent } from './shared/components/login-failure.component';
-
-export class AppRoutes {
-	public static readonly ORG_REGISTRATION = OrgRegistrationRoutes.MODULE_PATH;
-	public static readonly CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
-	public static readonly CRRPA_APPLICATION = CrrpaRoutes.MODULE_PATH;
-	public static readonly PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
-	public static readonly PSSOA_APPLICATION = PssoaRoutes.MODULE_PATH;
-	public static readonly SECURITY_SCREENING_APPLICATION = SecurityScreeningRoutes.MODULE_PATH;
-	public static readonly LANDING = '';
-	public static readonly ACCESS_DENIED = 'access-denied';
-	public static readonly LOGIN_FAILURE = 'login-failure';
-	public static readonly INVITATION_DENIED = 'invitation-denied';
-
-	public static path(route: string): string {
-		return `/${route}`;
-	}
-}
 
 const routes: Routes = [
 	{
@@ -36,7 +14,7 @@ const routes: Routes = [
 		path: AppRoutes.ORG_REGISTRATION,
 		loadChildren: () =>
 			import('./modules/org-registration-portal/org-registration-portal.module').then(
-				(m) => m.OrgRegistrationPortalModule
+				(m) => m.OrgRegistrationPortalModule,
 			),
 		data: { title: 'Organization Registration' },
 	},
@@ -64,7 +42,7 @@ const routes: Routes = [
 		path: AppRoutes.SECURITY_SCREENING_APPLICATION,
 		loadChildren: () =>
 			import('./modules/security-screening-portal/security-screening-portal.module').then(
-				(m) => m.SecurityScreeningPortalModule
+				(m) => m.SecurityScreeningPortalModule,
 			),
 		data: { title: 'Security Screening' },
 	},
