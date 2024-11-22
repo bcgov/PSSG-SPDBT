@@ -14,7 +14,7 @@ import {
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
 import {
 	GenderTypes,
@@ -31,8 +31,8 @@ import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
-import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
+import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routes';
+import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routes';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';

@@ -1514,45 +1514,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		return workerLicenceModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
-	getSummaryresidentialAddressLine1(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.addressLine1 ?? '';
-	}
-	getSummaryresidentialAddressLine2(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.addressLine2 ?? '';
-	}
-	getSummaryresidentialCity(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.city ?? '';
-	}
-	getSummaryresidentialPostalCode(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.postalCode ?? '';
-	}
-	getSummaryresidentialProvince(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.province ?? '';
-	}
-	getSummaryresidentialCountry(workerLicenceModelData: any): string {
-		return workerLicenceModelData.residentialAddressData?.country ?? '';
-	}
-	getSummaryisAddressTheSame(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.isAddressTheSame ?? '';
-	}
-
-	getSummarymailingAddressLine1(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.addressLine1 ?? '';
-	}
-	getSummarymailingAddressLine2(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.addressLine2 ?? '';
-	}
-	getSummarymailingCity(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.city ?? '';
-	}
-	getSummarymailingPostalCode(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.postalCode ?? '';
-	}
-	getSummarymailingProvince(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.province ?? '';
-	}
-	getSummarymailingCountry(workerLicenceModelData: any): string {
-		return workerLicenceModelData.mailingAddressData?.country ?? '';
+	getSummaryisAddressTheSame(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.mailingAddressData?.isAddressTheSame ?? false;
 	}
 
 	getSummarycategoryList(workerLicenceModelData: any): Array<WorkerCategoryTypeCode> {

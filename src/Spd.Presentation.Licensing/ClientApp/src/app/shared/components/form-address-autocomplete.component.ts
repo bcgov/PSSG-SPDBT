@@ -41,7 +41,7 @@ export class Address {
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-address-form-autocomplete',
+	selector: 'app-form-address-autocomplete',
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
@@ -103,7 +103,7 @@ export class Address {
 		`,
 	],
 })
-export class AddressAutocompleteComponent implements OnInit {
+export class FormAddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
 	@Output() enterAddressManually: EventEmitter<boolean> = new EventEmitter<boolean>();
 	// @Input() isWizardStep = true;
