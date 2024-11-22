@@ -28,7 +28,7 @@ export class LicencePaymentCancelComponent implements OnInit {
 		this.licenceAppId = this.route.snapshot.paramMap.get('id');
 		if (!this.licenceAppId) {
 			console.debug('LicencePaymentCancelComponent - missing licenceAppId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
 	}
 

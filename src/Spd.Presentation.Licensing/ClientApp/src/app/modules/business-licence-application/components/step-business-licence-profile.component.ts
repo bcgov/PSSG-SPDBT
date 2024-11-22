@@ -31,9 +31,9 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[isReadonly]="false"
 					></app-common-business-profile>
 
-					<section class="mb-2" *ngIf="showConfirmation">
+					<section class="mb-3" *ngIf="showConfirmation">
 						<form [formGroup]="profileConfirmationFormGroup" novalidate>
-							<div class="text-minor-heading">Confirmation</div>
+							<div class="text-minor-heading mb-2">Confirmation</div>
 							<mat-checkbox formControlName="isProfileUpToDate">
 								I confirm that this information is up-to-date
 							</mat-checkbox>

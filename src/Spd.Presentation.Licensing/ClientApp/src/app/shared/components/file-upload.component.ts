@@ -251,7 +251,7 @@ export class FileUploadComponent implements OnInit {
 		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
 
 		if (numberOfPeriods > 1) {
-			this.hotToastService.error('A file name cannot contain multiple periods. Please rename this file and try again.');
+			this.hotToastService.error('A file name cannot contain multiple periods. Rename this file and try again.');
 			return;
 		}
 

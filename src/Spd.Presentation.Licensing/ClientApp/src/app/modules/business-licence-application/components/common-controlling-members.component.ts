@@ -19,16 +19,16 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
-import { take, tap } from 'rxjs';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
-} from '../../../shared/components/modal-lookup-by-licence-number.component';
+} from '@app/shared/components/modal-lookup-by-licence-number.component';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { take, tap } from 'rxjs';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -41,11 +41,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
-					<ng-container *ngIf="!controllingMembersExist">
-						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
-					</ng-container>
-
-					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist">
+					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist; else noControllingMembersWithSwlExist">
 						<div class="col-12">
 							<mat-table [dataSource]="dataSourceWithSWL">
 								<ng-container matColumnDef="licenceHolderName">
@@ -102,6 +98,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</mat-table>
 						</div>
 					</div>
+					<ng-template #noControllingMembersWithSwlExist>
+						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
+					</ng-template>
 
 					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
 						<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
@@ -110,6 +109,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								tabindex="0"
 								(click)="onAddMemberWithSWL()"
 								(keydown)="onKeydownAddMemberWithSWL($event)"
+								*ngIf="!isReadonly"
 							>
 								Add Member with a Security Worker Licence
 							</a>
@@ -122,11 +122,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
-					<ng-container *ngIf="!controllingMembersWithoutSwlExist">
-						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
-					</ng-container>
-
-					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist">
+					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
 						<div class="col-12 mb-3">
 							<mat-table [dataSource]="dataSourceWithoutSWL">
 								<ng-container matColumnDef="licenceHolderName">
@@ -138,7 +134,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="email">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Email </mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
 									<mat-cell class="mat-cell-email" *matCellDef="let member">
 										<span class="mobile-label">Email:</span>
 										{{ member.emailAddress | default }}
@@ -146,7 +142,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="inviteStatusCode">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Invitation Status </mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Invitation Status</mat-header-cell>
 									<mat-cell class="mat-column-inviteStatusCode" *matCellDef="let member">
 										<span class="mobile-label">Invitation Status:</span>
 										{{ member.inviteStatusCode | default }}
@@ -201,9 +197,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											<a
 												mat-stroked-button
 												class="w-100 invitation-button"
-												aria-label="Download Business Member Auth Consent"
-												download="Business Member Auth Consent"
-												matTooltip="Download Business Member Auth Consent"
+												aria-label="Download Consent to Criminal Record Check"
+												download="business-memberauthconsent"
+												matTooltip="Download Consent to Criminal Record Check"
 												[href]="downloadFilePath"
 											>
 												Download Manual Form
@@ -216,18 +212,23 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
-						<ng-container *ngIf="!isWizard">
+						<ng-container *ngIf="canSendInvitations">
 							<app-alert type="info" icon="info">
 								By clicking a 'send invitation' button, a link to an online application form will be sent to the
 								controlling member via email. They must provide personal information and consent to a criminal record
 								check.
 							</app-alert>
 						</ng-container>
-						<app-alert type="warning" icon="warning">
-							We must receive criminal record check consent forms from each individual listed here before the business
-							licence application will be reviewed.
-						</app-alert>
+						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
+							<app-alert type="warning" icon="warning">
+								We must receive criminal record check consent forms from each individual listed here before the business
+								licence application will be reviewed.
+							</app-alert>
+						</ng-container>
 					</div>
+					<ng-template #noControllingMembersWithoutSwlExist>
+						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
+					</ng-template>
 
 					<div class="row">
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
@@ -244,6 +245,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									tabindex="0"
 									(click)="onAddMemberWithoutSWL()"
 									(keydown)="onKeydownAddMemberWithoutSWL($event)"
+									*ngIf="!isReadonly"
 								>
 									Add Member without a Security Worker Licence
 								</a>
@@ -294,13 +296,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				height: fit-content;
 			}
 
-			.mat-column-inviteStatusCode {
-				min-width: 150px;
-				max-width: 150px;
-				.table-button {
-					min-width: 130px;
-				}
-			}
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -335,9 +330,16 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;
+	@Input() isApplDraftOrWaitingForPayment = false;
+	@Input() isApplExists = false;
+	@Input() isLicenceExists = false;
+	@Input() isReadonly = false;
 
 	isBcBusinessAddress = true;
 	allowDocumentUpload = false;
+
+	allowNewInvitationsToBeSent = false;
+	allowUpdateInvitationsToBeSent = false;
 
 	dataSourceWithSWL!: MatTableDataSource<any>;
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
@@ -350,6 +352,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
 		private authUserBceidService: AuthUserBceidService,
 		private hotToastService: HotToastService,
@@ -361,12 +364,44 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
+		//  'action1' - EDIT
+		//  'action2' - REMOVE
+		//  'action3' - INVITATIONS/DOWNLOAD
+
 		// When in the wizard, the user cannot view the status or send / resend invitations.
 		// This should occur automatically when saving the application.
 		if (this.isWizard) {
+			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
 		} else {
-			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2', 'action3'];
+			if (this.isApplExists) {
+				// User should not be in here for Draft
+				if (this.isApplDraftOrWaitingForPayment) {
+					// If appl exists in Draft or Payment Pending, you can send invitations
+					this.allowNewInvitationsToBeSent = true;
+					this.allowUpdateInvitationsToBeSent = true;
+
+					// Only allow Edit in the wizard - remove 'action1'.
+					// This way we can ensure invites are sent correctly.
+					// Reduce complexity - don't have to handle user updates to email
+					this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode', 'action2', 'action3'];
+				} else {
+					// if appl is in progress (after payment but no licence yet),
+					// it is readonly and you cannot send invitations
+					this.allowNewInvitationsToBeSent = false;
+					this.allowUpdateInvitationsToBeSent = false;
+
+					// if appl is in progress (after payment but no licence yet), it is readonly
+					this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode'];
+					this.columnsWithSWL = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate'];
+				}
+			} else {
+				// If no appl exists, you can make any changes but only send Update Invitations
+				this.allowNewInvitationsToBeSent = false;
+				this.allowUpdateInvitationsToBeSent = this.isLicenceExists;
+
+				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
+			}
 		}
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
@@ -396,8 +431,13 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		if (!inviteTypeCode) return null;
 
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
+			if (!this.allowUpdateInvitationsToBeSent) return null;
+
 			return 'Send Update Invitation';
 		}
+
+		if (!this.allowNewInvitationsToBeSent) return null;
+
 		return inviteStatusCode ? 'Resend Invitation' : 'Send Invitation';
 	}
 
@@ -598,6 +638,10 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		return ControllingMemberAppInviteTypeCode.New;
 	}
 
+	get canSendInvitations(): boolean {
+		return !this.isWizard && (this.allowNewInvitationsToBeSent || this.allowUpdateInvitationsToBeSent);
+	}
+
 	private memberAlreadyListed(): void {
 		const data: DialogOptions = {
 			icon: 'error',
@@ -666,7 +710,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	private newMemberRow(bizContactId: string, memberData: any): FormGroup {
 		return this.formBuilder.group({
-			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
+			licenceHolderName: [
+				memberData.licenceHolderName ?? this.utilService.getFullName(memberData.givenName, memberData.surname),
+			],
 			bizContactId: bizContactId,
 			contactId: [memberData.licenceHolderId],
 			givenName: [memberData.givenName],
@@ -691,7 +737,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		}
 
 		this.membersWithoutSwlList.at(memberIndex).patchValue({
-			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
+			licenceHolderName: [
+				memberData.licenceHolderName ?? this.utilService.getFullName(memberData.givenName, memberData.surname),
+			],
 			bizContactId: memberData.bizContactId,
 			givenName: memberData.givenName,
 			middleName1: memberData.middleName1,
@@ -719,9 +767,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 	get membersWithoutSwlList(): FormArray {
 		return <FormArray>this.form.get('membersWithoutSwl');
-	}
-	get controllingMembersExist(): boolean {
-		return this.dataSourceWithSWL.data.length > 0 || this.dataSourceWithoutSWL.data.length > 0;
 	}
 	get controllingMembersWithSwlExist(): boolean {
 		return this.dataSourceWithSWL.data.length > 0;

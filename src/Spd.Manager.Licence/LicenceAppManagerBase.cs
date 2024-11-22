@@ -66,7 +66,7 @@ internal abstract class LicenceAppManagerBase
         if (licenceFee == null || licenceFee.Amount == 0)
         {
             if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
-                status = ApplicationStatusEnum.PaymentPending;
+                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
             else
                 status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         }

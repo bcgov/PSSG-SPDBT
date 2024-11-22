@@ -59,6 +59,16 @@ export class ConfigService {
 		return this.configs?.environment === 'Development';
 	}
 
+	getBcscIdentityProvider(): string {
+		const bcscConfiguration = this.configs?.bcscConfiguration!;
+		return bcscConfiguration.identityProvider!;
+	}
+
+	getBceidIdentityProvider(): string {
+		const bceidConfiguration = this.configs?.oidcConfiguration!;
+		return bceidConfiguration.identityProvider!;
+	}
+
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.oidcConfiguration!;
 		const bceIdConfig = {
@@ -76,8 +86,6 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
-		console.debug('[getBcscConfig] redirectUri', redirectUri);
-
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
 			issuer: resp.issuer!,
