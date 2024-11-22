@@ -10,14 +10,14 @@ import {
 	ValidationErr,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
 	selector: 'app-generic-uploads',

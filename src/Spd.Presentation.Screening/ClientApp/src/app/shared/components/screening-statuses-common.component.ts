@@ -12,7 +12,7 @@ import {
 	PayerPreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -557,8 +557,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					app.isPayNow =
 						this.portal == 'CRRP'
 							? isNotVolunteerOrg &&
-							  app.payeeType === PayerPreferenceTypeCode.Organization &&
-							  app.status === ApplicationPortalStatusCode.AwaitingPayment
+								app.payeeType === PayerPreferenceTypeCode.Organization &&
+								app.status === ApplicationPortalStatusCode.AwaitingPayment
 							: false;
 					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
 				});

@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { PssoaRoutes } from './pssoa-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
+import { PssoaRoutes } from './pssoa-routes';
 
 @Component({
 	selector: 'app-invitation-pssoa',

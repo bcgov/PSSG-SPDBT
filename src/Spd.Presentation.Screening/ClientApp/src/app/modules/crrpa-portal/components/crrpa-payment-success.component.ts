@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 

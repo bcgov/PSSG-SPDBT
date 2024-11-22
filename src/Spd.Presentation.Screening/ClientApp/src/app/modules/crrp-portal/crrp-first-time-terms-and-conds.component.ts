@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { CrrpRoutes } from './crrp-routing.module';
+import { CrrpRoutes } from './crrp-routes';
 
 @Component({
 	selector: 'app-crrp-first-time-terms-and-conds',
