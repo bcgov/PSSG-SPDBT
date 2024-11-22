@@ -7,7 +7,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
