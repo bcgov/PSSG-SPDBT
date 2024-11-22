@@ -10,7 +10,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-address [form]="form" [isWideView]="true"></app-address>
+					<app-form-address [form]="form" [isWideView]="true"></app-form-address>
 				</div>
 			</div>
 

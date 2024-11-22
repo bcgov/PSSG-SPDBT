@@ -32,7 +32,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Personal Information</div>
+										<div class="text-minor-heading-small mt-4">Personal Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
@@ -50,12 +50,12 @@ import { UtilService } from '@app/core/services/util.service';
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Sex</div>
 												<div class="summary-text-data">
-													{{ genderCode | options : 'GenderTypes' | default }}
+													{{ genderCode | options: 'GenderTypes' | default }}
 												</div>
 											</div>
 										</div>
 
-										<div class="text-minor-heading mt-4">Contact</div>
+										<div class="text-minor-heading-small mt-4">Contact</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
@@ -72,7 +72,7 @@ import { UtilService } from '@app/core/services/util.service';
 										<ng-container *ngIf="isNew">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Aliases</div>
+											<div class="text-minor-heading-small">Aliases</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Previous Names or Aliases</div>
@@ -97,37 +97,11 @@ import { UtilService } from '@app/core/services/util.service';
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Residential Address</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 1</div>
-												<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Address Line 2</div>
-												<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">City</div>
-												<div class="summary-text-data">{{ residentialCity | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Postal Code</div>
-												<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Province</div>
-												<div class="summary-text-data">
-													{{ residentialProvince | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Country</div>
-												<div class="summary-text-data">
-													{{ residentialCountry | default }}
-												</div>
-											</div>
-										</div>
+										<app-form-address-summary
+											[formData]="controllingMemberModelData.residentialAddressData"
+											headingLabel="Residential Address"
+											[isAddressTheSame]="false"
+										></app-form-address-summary>
 									</div>
 								</mat-expansion-panel>
 
@@ -154,7 +128,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</mat-expansion-panel-header>
 									<div class="panel-body">
 										<ng-container *ngIf="isNew">
-											<div class="text-minor-heading">Identification</div>
+											<div class="text-minor-heading-small">Identification</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Canadian Citizen?</div>
@@ -163,10 +137,10 @@ import { UtilService } from '@app/core/services/util.service';
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">
 														<span *ngIf="canadianCitizenProofTypeCode">
-															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+															{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
 														</span>
 														<span *ngIf="notCanadianCitizenProofTypeCode">
-															{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+															{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
 														</span>
 													</div>
 													<div class="summary-text-data">
@@ -180,7 +154,7 @@ import { UtilService } from '@app/core/services/util.service';
 
 												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
 													<div class="text-label d-block text-muted">
-														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+														{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -195,7 +169,7 @@ import { UtilService } from '@app/core/services/util.service';
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 										</ng-container>
 
-										<div class="text-minor-heading">Fingerprints</div>
+										<div class="text-minor-heading-small">Fingerprints</div>
 										<div class="row mt-0">
 											<div class="col-12">
 												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
@@ -212,7 +186,7 @@ import { UtilService } from '@app/core/services/util.service';
 										<ng-container *ngIf="isNew">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">BC Driver's Licence</div>
+											<div class="text-minor-heading-small">BC Driver's Licence</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">BC Driver's Licence</div>
@@ -242,7 +216,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Business Involvement</div>
+										<div class="text-minor-heading-small mt-4">Business Involvement</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
@@ -267,7 +241,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</ng-container>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Police Background</div>
+										<div class="text-minor-heading-small">Police Background</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
@@ -282,7 +256,7 @@ import { UtilService } from '@app/core/services/util.service';
 																policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
 																else otherPoliceOfficerRole
 															"
-															>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
+															>{{ policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default }}</span
 														>
 														<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
 													</div>
@@ -301,7 +275,7 @@ import { UtilService } from '@app/core/services/util.service';
 										</div>
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Mental Health Conditions</div>
+										<div class="text-minor-heading-small">Mental Health Conditions</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Mental Health Conditions</div>
@@ -342,12 +316,6 @@ import { UtilService } from '@app/core/services/util.service';
 				margin-bottom: 10px;
 			}
 
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
-			}
-
 			.review-panel-title {
 				width: 100%;
 
@@ -385,7 +353,10 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private controllingMembersService: ControllingMemberCrcService, private utilService: UtilService) {}
+	constructor(
+		private controllingMembersService: ControllingMemberCrcService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit(): void {
 		this.controllingMemberModelData = {
@@ -429,7 +400,7 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	}
 	get bankruptcyHistoryDetail(): string {
 		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.hasBankruptcyHistory === BooleanTypeCode.Yes
-			? this.controllingMemberModelData.bcSecurityLicenceHistoryData.bankruptcyHistoryDetail ?? ''
+			? (this.controllingMemberModelData.bcSecurityLicenceHistoryData.bankruptcyHistoryDetail ?? '')
 			: '';
 	}
 	get hasCriminalHistory(): string {
@@ -437,7 +408,7 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	}
 	get criminalHistoryDetail(): File[] {
 		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
-			? this.controllingMemberModelData.bcSecurityLicenceHistoryData.criminalHistoryDetail ?? ''
+			? (this.controllingMemberModelData.bcSecurityLicenceHistoryData.criminalHistoryDetail ?? '')
 			: '';
 	}
 
@@ -487,12 +458,12 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	}
 	get canadianCitizenProofTypeCode(): string {
 		return this.controllingMemberModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
-			? this.controllingMemberModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			? (this.controllingMemberModelData.citizenshipData.canadianCitizenProofTypeCode ?? '')
 			: '';
 	}
 	get notCanadianCitizenProofTypeCode(): string {
 		return this.controllingMemberModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? this.controllingMemberModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? ''
+			? (this.controllingMemberModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? '')
 			: '';
 	}
 	get proofOfAbility(): string {
@@ -530,7 +501,7 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 
 	get bcDriversLicenceNumber(): string {
 		return this.controllingMemberModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
-			? this.controllingMemberModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			? (this.controllingMemberModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '')
 			: '';
 	}
 
@@ -539,24 +510,5 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	}
 	get phoneNumber(): string {
 		return this.controllingMemberModelData.contactInformationData?.phoneNumber ?? '';
-	}
-
-	get residentialAddressLine1(): string {
-		return this.controllingMemberModelData.residentialAddressData?.addressLine1 ?? '';
-	}
-	get residentialAddressLine2(): string {
-		return this.controllingMemberModelData.residentialAddressData?.addressLine2 ?? '';
-	}
-	get residentialCity(): string {
-		return this.controllingMemberModelData.residentialAddressData?.city ?? '';
-	}
-	get residentialPostalCode(): string {
-		return this.controllingMemberModelData.residentialAddressData?.postalCode ?? '';
-	}
-	get residentialProvince(): string {
-		return this.controllingMemberModelData.residentialAddressData?.province ?? '';
-	}
-	get residentialCountry(): string {
-		return this.controllingMemberModelData.residentialAddressData?.country ?? '';
 	}
 }

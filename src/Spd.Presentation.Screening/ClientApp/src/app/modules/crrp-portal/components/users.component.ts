@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';

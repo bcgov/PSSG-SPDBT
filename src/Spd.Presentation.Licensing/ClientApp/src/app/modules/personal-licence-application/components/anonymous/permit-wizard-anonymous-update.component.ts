@@ -5,6 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
@@ -152,6 +153,11 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -168,19 +174,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
+				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
 				this.updateCompleteStatus();
 			}

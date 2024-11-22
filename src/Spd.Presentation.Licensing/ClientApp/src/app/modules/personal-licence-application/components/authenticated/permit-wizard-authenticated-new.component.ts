@@ -141,6 +141,11 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathPermitAuthenticated());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -157,19 +162,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
+				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
 				this.updateCompleteStatus();
 			}

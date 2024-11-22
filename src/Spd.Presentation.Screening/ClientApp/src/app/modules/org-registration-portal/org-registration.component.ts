@@ -21,7 +21,7 @@ import {
 	OrgRegDuplicateDialogResponse,
 	OrgRegDuplicateModalComponent,
 } from './org-reg-duplicate-modal.component';
-import { OrgRegistrationRoutes } from './org-registration-routing.module';
+import { OrgRegistrationRoutes } from './org-registration-routes';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';

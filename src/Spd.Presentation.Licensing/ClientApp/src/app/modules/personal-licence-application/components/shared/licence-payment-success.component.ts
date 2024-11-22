@@ -10,10 +10,7 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 	selector: 'app-licence-payment-success',
 	template: `
 		<section class="step-section">
-			<app-payment-success
-				[payment]="payment"
-				(downloadReceipt)="onDownloadReceipt()"
-			></app-payment-success>
+			<app-payment-success [payment]="payment" (downloadReceipt)="onDownloadReceipt()"></app-payment-success>
 		</section>
 	`,
 	styles: [],
@@ -32,8 +29,9 @@ export class LicencePaymentSuccessComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('LicencePaymentSuccessComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
+
 		this.paymentService
 			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe()

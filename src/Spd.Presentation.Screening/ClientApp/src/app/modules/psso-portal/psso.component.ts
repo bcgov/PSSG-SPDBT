@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { PssoRoutes } from './psso-routing.module';
+import { PssoRoutes } from './psso-routes';
 
 export interface NavigationItemType {
 	label: string;

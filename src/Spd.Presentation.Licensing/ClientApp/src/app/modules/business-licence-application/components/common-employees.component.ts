@@ -96,7 +96,13 @@ import {
 						</ng-container>
 						<ng-template #CanAddEmployee>
 							<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-4 col-xl-4' : 'col-lg-6 col-xl-5'">
-								<a class="large" tabindex="0" (click)="onAddEmployee()" (keydown)="onKeydownAddEmployee($event)">
+								<a
+									class="large"
+									tabindex="0"
+									(click)="onAddEmployee()"
+									(keydown)="onKeydownAddEmployee($event)"
+									*ngIf="!isReadonly"
+								>
 									Add Employee
 								</a>
 							</div>
@@ -127,6 +133,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;
+	@Input() isReadonly = false;
 
 	dataSource!: MatTableDataSource<any>;
 	columns: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
@@ -144,6 +151,10 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		this.dataSource = new MatTableDataSource(this.employeesList.value);
+
+		if (this.isReadonly) {
+			this.columns = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate'];
+		}
 	}
 
 	isFormValid(): boolean {
