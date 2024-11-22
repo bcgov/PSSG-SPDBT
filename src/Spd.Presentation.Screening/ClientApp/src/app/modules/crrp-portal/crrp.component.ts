@@ -3,7 +3,7 @@ import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } fro
 import { lastValueFrom, take } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { CrrpRoutes } from './crrp-routing.module';
+import { CrrpRoutes } from './crrp-routes';
 
 export interface NavigationItemType {
 	label: string;

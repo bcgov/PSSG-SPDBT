@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { PssoRoutes } from './psso-routing.module';
+import { PssoRoutes } from './psso-routes';
 
 @Component({
 	selector: 'app-psso-terms-and-conds',
