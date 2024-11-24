@@ -94,7 +94,6 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step completed="false">
 				<ng-template matStepLabel>Business Licence Review</ng-template>
 				<app-steps-business-licence-review
-					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[showSaveAndExit]="showSaveAndExit"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
@@ -159,6 +158,11 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

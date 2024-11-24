@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
 	selector: 'app-crrp-payment-error',

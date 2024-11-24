@@ -1,7 +1,9 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -46,6 +48,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -54,6 +57,11 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	}
 
 	ngOnInit(): void {
+		if (!this.workerApplicationService.initialized) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

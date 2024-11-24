@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApplicantService, OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 

@@ -13,12 +13,12 @@ import {
 	VolunteerOrganizationTypeCode,
 } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
 	selector: 'app-organization-profile',

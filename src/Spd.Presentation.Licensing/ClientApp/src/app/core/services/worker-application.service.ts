@@ -53,7 +53,7 @@ import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 import { WorkerApplicationHelper } from './worker-application.helper';
 
 @Injectable({
@@ -209,14 +209,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		document: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [document],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.workerModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [document],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 
@@ -675,8 +673,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -766,8 +764,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1173,8 +1171,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

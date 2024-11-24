@@ -7,10 +7,10 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-alert-update-or-renewal
+					<app-form-alert-update-or-renewal
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
-					></app-alert-update-or-renewal>
+					></app-form-alert-update-or-renewal>
 				</ng-container>
 
 				<app-step-title
