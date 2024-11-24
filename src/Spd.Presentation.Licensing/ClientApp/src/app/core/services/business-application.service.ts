@@ -60,7 +60,7 @@ import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
@@ -86,6 +86,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isControllingMembersWithoutSwlExist: new FormControl(), // placeholder
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
+		soleProprietorSWLAppPortalStatus: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppOriginTypeCode: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
@@ -472,8 +473,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -515,14 +516,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 
@@ -1989,7 +1988,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// business licence is sole proprietor
 				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
 			} else if (soleProprietorSWLAppId) {
-				// using sole proprietor combined flow
+				// using sole proprietor simultaneous flow
 				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 			}
 		}
@@ -2046,13 +2045,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
+				const isSoleProprietorSimultaneousSWLAnonymous =
+					resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal;
+
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppPortalStatus: resp.applicationPortalStatus,
 						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
 						isSoleProprietorSimultaneousFlow: true,
-						isSoleProprietorSimultaneousSWLAnonymous:
-							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
+						isSoleProprietorSimultaneousSWLAnonymous,
 						isBusinessLicenceSoleProprietor,
 						businessInformationData,
 						categoryData,

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { Address } from '@app/shared/components/address-autocomplete.component';
+import { Address } from '@app/shared/components/form-address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -69,12 +69,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 
 						<div class="text-minor-heading my-3">Business's Primary Address</div>
-						<app-address-form-autocomplete
+						<app-form-address-autocomplete
 							(autocompleteAddress)="onAddressAutocomplete($event)"
 							(enterAddressManually)="onEnterAddressManually()"
 							[isWideView]="true"
 						>
-						</app-address-form-autocomplete>
+						</app-form-address-autocomplete>
 						<mat-error
 							class="mat-option-error"
 							*ngIf="

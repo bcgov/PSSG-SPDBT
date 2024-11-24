@@ -213,17 +213,18 @@ namespace Spd.Manager.Payment
                     updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
                     await _paymentRepository.ManageAsync(updateCmd, ct);
                 }
-                //if application has non-swl controlling member crc applications, we need to set all those to paid.
-                foreach (Guid cmCrcAppId in bizApp.NonSwlControllingMemberCrcAppIds)
-                {
-                    createCmd.ApplicationId = cmCrcAppId;
-                    createCmd.PaymentId = Guid.NewGuid();
-                    createCmd.TransAmount = 0;
-                    await _paymentRepository.ManageAsync(createCmd, ct);
-                    updateCmd.PaymentId = createCmd.PaymentId;
-                    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
-                    await _paymentRepository.ManageAsync(updateCmd, ct);
-                }
+                //if application has non-swl controlling member crc applications, we need to set all those to paid. 
+                //removed as dynamics will do this part.
+                //foreach (Guid cmCrcAppId in bizApp.NonSwlControllingMemberCrcAppIds)
+                //{
+                //    createCmd.ApplicationId = cmCrcAppId;
+                //    createCmd.PaymentId = Guid.NewGuid();
+                //    createCmd.TransAmount = 0;
+                //    await _paymentRepository.ManageAsync(createCmd, ct);
+                //    updateCmd.PaymentId = createCmd.PaymentId;
+                //    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
+                //    await _paymentRepository.ManageAsync(updateCmd, ct);
+                //}
             }
             return paymentId;
         }

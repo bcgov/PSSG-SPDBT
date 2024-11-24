@@ -49,6 +49,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -65,7 +66,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
@@ -79,10 +79,11 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Review Business Licence</ng-template>
 					<app-steps-business-licence-review
-						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
+						[showSaveAndExit]="true"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -142,6 +143,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -230,7 +236,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step + this.STEP_BUSINESS_INFORMATION; // add offset
 	}
 
 	onChildNextStep() {
@@ -261,8 +267,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Cancel application',
-			cancelText: 'Continue application',
+			actionText: 'Cancel Application',
+			cancelText: 'Continue Application',
 			wideButtons: true,
 		};
 
