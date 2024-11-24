@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
-import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
@@ -153,7 +151,7 @@ export class PaymentSuccessComponent {
 		this._payment = data;
 
 		if (data.paidSuccess != true) {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.commonApplicationService.onGoToHome();
 		}
 	}
 	get payment(): PaymentResponse | null {
@@ -162,10 +160,7 @@ export class PaymentSuccessComponent {
 
 	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
-	constructor(
-		private router: Router,
-		private commonApplicationService: CommonApplicationService
-	) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();

@@ -51,7 +51,7 @@ import { BranchResponse } from './business-bc-branches.component';
 			</form>
 
 			<div class="text-minor-heading my-2">Branch Address</div>
-			<app-address [form]="form" [isWideView]="true"></app-address>
+			<app-form-address [form]="form" [isWideView]="true"></app-form-address>
 		</mat-dialog-content>
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">

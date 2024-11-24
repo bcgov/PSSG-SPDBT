@@ -233,11 +233,13 @@ export class AuthProcessService {
 			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
 		}
 
+		const bceidIdentityProvider = this.authenticationService.getBceidIdentityProvider();
 		const claims = this.oauthService.getIdentityClaims();
 		const identity_provider = claims ? claims['identity_provider'] : null;
-		const performLogout = !!(claims && identity_provider != 'bceidbusiness');
+		const performLogout = !!(claims && identity_provider != bceidIdentityProvider);
 
 		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBcsc bceidIdentityProvider', bceidIdentityProvider);
 		console.debug('[AuthProcessService] logoutBcsc identity_provider', identity_provider);
 		console.debug('[AuthProcessService] logoutBcsc performLogout', performLogout);
 
@@ -257,11 +259,13 @@ export class AuthProcessService {
 			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
 		}
 
+		const bceidIdentityProvider = this.authenticationService.getBceidIdentityProvider();
 		const claims = this.oauthService.getIdentityClaims();
 		const identity_provider = claims ? claims['identity_provider'] : null;
-		const performLogout = !!(claims && identity_provider === 'bceidbusiness');
+		const performLogout = !!(claims && identity_provider === bceidIdentityProvider);
 
 		console.debug('[AuthProcessService] logoutBceid redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBcsc bceidIdentityProvider', bceidIdentityProvider);
 		console.debug('[AuthProcessService] logoutBceid identity_provider', identity_provider);
 		console.debug('[AuthProcessService] logoutBceid performLogout', performLogout);
 

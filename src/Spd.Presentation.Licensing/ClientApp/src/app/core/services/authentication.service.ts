@@ -98,6 +98,14 @@ export class AuthenticationService {
 		return this.oauthService.hasValidAccessToken();
 	}
 
+	getBcscIdentityProvider(): string {
+		return this.configService.getBcscIdentityProvider();
+	}
+
+	getBceidIdentityProvider(): string {
+		return this.configService.getBceidIdentityProvider();
+	}
+
 	//----------------------------------------------------------
 	// *
 	// *

@@ -1065,63 +1065,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	getSummarysupervisorPhoneNumber(permitModelData: any): string {
 		return permitModelData.employerData?.supervisorPhoneNumber ?? '';
 	}
-	getSummarybusinessAddressLine1(permitModelData: any): string {
-		return permitModelData.employerData?.addressLine1 ?? '';
-	}
-	getSummarybusinessAddressLine2(permitModelData: any): string {
-		return permitModelData.employerData?.addressLine2 ?? '';
-	}
-	getSummarybusinessCity(permitModelData: any): string {
-		return permitModelData.employerData?.city ?? '';
-	}
-	getSummarybusinessPostalCode(permitModelData: any): string {
-		return permitModelData.employerData?.postalCode ?? '';
-	}
-	getSummarybusinessProvince(permitModelData: any): string {
-		return permitModelData.employerData?.province ?? '';
-	}
-	getSummarybusinessCountry(permitModelData: any): string {
-		return permitModelData.employerData?.country ?? '';
-	}
 
-	getSummaryresidentialAddressLine1(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.addressLine1 ?? '';
-	}
-	getSummaryresidentialAddressLine2(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.addressLine2 ?? '';
-	}
-	getSummaryresidentialCity(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.city ?? '';
-	}
-	getSummaryresidentialPostalCode(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.postalCode ?? '';
-	}
-	getSummaryresidentialProvince(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.province ?? '';
-	}
-	getSummaryresidentialCountry(permitModelData: any): string {
-		return permitModelData.residentialAddressData?.country ?? '';
-	}
-	getSummaryisAddressTheSame(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.isAddressTheSame ?? '';
-	}
-
-	getSummarymailingAddressLine1(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.addressLine1 ?? '';
-	}
-	getSummarymailingAddressLine2(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.addressLine2 ?? '';
-	}
-	getSummarymailingCity(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.city ?? '';
-	}
-	getSummarymailingPostalCode(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.postalCode ?? '';
-	}
-	getSummarymailingProvince(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.province ?? '';
-	}
-	getSummarymailingCountry(permitModelData: any): string {
-		return permitModelData.mailingAddressData?.country ?? '';
+	getSummaryisAddressTheSame(permitModelData: any): boolean {
+		return permitModelData.mailingAddressData?.isAddressTheSame ?? false;
 	}
 }

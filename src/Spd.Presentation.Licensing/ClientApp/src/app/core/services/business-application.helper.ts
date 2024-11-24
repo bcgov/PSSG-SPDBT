@@ -6,8 +6,8 @@ import {
 	Document,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
+	PrivateInvestigatorSwlContactInfo,
 	ServiceTypeCode,
-	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
@@ -172,7 +172,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	);
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl('', [FormControlValidators.required]),
+		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
@@ -192,10 +192,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'givenName',
-					(form) => form.get('applicantIsBizManager')?.value != true
-				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'surname',
 					(form) => form.get('applicantIsBizManager')?.value != true
@@ -344,7 +340,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
 			bizContactId: new FormControl(''),
-			givenName: new FormControl('', [FormControlValidators.required]),
+			givenName: new FormControl(''),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
@@ -365,7 +361,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
 		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
-		firstName: new FormControl('', [FormControlValidators.required]),
+		firstName: new FormControl(''),
 		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
 		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
@@ -495,7 +491,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
-		let privateInvestigatorSwlInfo: SwlContactInfo = {};
+		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
 			useDogs: null,
 			isDogsPurposeDetectionDrugs: null,
@@ -767,6 +763,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
 		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	getSummarysoleProprietorSwlEmailAddress(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlEmailAddress ?? '';
+	}
+	getSummarysoleProprietorSwlPhoneNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlPhoneNumber ?? '';
+	}
 
 	getSummarycategoryList(businessLicenceModelData: any): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];
@@ -849,6 +851,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
 		return businessLicenceModelData.employeesData.employees ?? [];
+	}
+
+	getSummaryisAddressTheSame(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.businessAddressData?.isAddressTheSame ?? false;
+	}
+
+	getSummaryisBcBusinessAddress(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.isBcBusinessAddress ?? false;
 	}
 
 	private clearPrivateInvestigatorModelData(): void {

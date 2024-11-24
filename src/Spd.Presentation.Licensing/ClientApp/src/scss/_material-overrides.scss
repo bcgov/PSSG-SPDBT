@@ -238,6 +238,10 @@ button.mat-red-button {
 	display: none;
 }
 
+.spd-table-tall-row {
+	min-height: 100px;
+}
+
 .mat-table-header-cell {
 	font-weight: 600 !important;
 	font-size: 1.05rem !important;
@@ -319,6 +323,10 @@ button.mat-red-button {
 	.mat-column-action2:empty {
 		/* hide column if empty on small screens */
 		display: none;
+	}
+
+	.spd-table-tall-row {
+		min-height: unset;
 	}
 }
 
