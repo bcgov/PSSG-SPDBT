@@ -6,7 +6,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-alert-update-or-renewal',
+	selector: 'app-form-alert-update-or-renewal',
 	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
@@ -44,7 +44,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 		`,
 	],
 })
-export class AlertUpdateOrRenewalComponent implements OnInit {
+export class FormAlertUpdateOrRenewalComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	licenceModelData: any = {};

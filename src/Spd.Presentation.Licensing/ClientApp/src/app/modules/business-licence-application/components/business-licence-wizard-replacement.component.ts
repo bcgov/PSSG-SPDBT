@@ -1,10 +1,12 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { distinctUntilChanged } from 'rxjs';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
 	selector: 'app-business-licence-wizard-replacement',
@@ -45,6 +47,7 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -52,6 +55,11 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

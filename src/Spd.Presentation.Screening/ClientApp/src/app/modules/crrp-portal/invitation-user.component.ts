@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeWhile } from 'rxjs';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { CrrpRoutes } from './crrp-routing.module';
+import { CrrpRoutes } from './crrp-routes';
 
 @Component({
 	selector: 'app-invitation',

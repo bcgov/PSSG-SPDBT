@@ -51,8 +51,8 @@ namespace Spd.Resource.Repository.Org
     }
     public record OrgResult : Org
     {
-        public int MaxContacts { get; } = 6;
-        public int MaxPrimaryContacts { get; } = 2;
+        public int MaxContacts { get; set; } = 6;
+        public int MaxPrimaryContacts { get; set; } = 2;
         public string? AccessCode { get; set; }
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonAliasListComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-alias-list.component';
-import { AddressComponent } from '@app/shared/components/address.component';
+import { FormAddressComponent } from '@app/shared/components/form-address.component';
 import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 import { FormPersonalInformationComponent } from '@app/shared/components/form-personal-information.component';
 import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/form-physical-characteristics.component';
@@ -81,7 +81,7 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 							</div>
 
 							<section>
-								<app-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-address>
+								<app-form-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-form-address>
 							</section>
 						</div>
 					</mat-expansion-panel>
@@ -101,12 +101,12 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 								address.
 							</div>
 
-							<app-address-and-is-same-flag
+							<app-form-address-and-is-same-flag
 								[form]="mailingAddressFormGroup"
 								[isReadonly]="isReadonlyMailingAddress"
 								[isCheckboxReadOnly]="isReadonlyMailingAddress"
 								isAddressTheSameLabel="The residential address and mailing address are the same"
-							></app-address-and-is-same-flag>
+							></app-form-address-and-is-same-flag>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -121,7 +121,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@ViewChild(FormPersonalInformationComponent) personalComponent!: FormPersonalInformationComponent;
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
 	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
-	@ViewChild(AddressComponent) mailingAddressComponent!: AddressComponent;
+	@ViewChild(FormAddressComponent) mailingAddressComponent!: FormAddressComponent;
 	@ViewChild(FormPhysicalCharacteristicsComponent) characteristicsComponent!: FormPhysicalCharacteristicsComponent;
 
 	@Input() isReadonlyPersonalInfo!: boolean;
