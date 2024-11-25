@@ -227,4 +227,18 @@ namespace Spd.Manager.Shared
         [Description("Organization Submitted")]
         OrganizationSubmitted
     }
+
+    public enum PaymentTypeCode
+    {
+        PayBC_OnSubmission,
+        Cash,
+        CreditCard,
+        MoneyOrder,
+        Cheque,
+        CertifiedCheque,
+        CreditAccount,
+        JournalVoucher,
+        NoPayment,
+        PayBC_SecurePaymentLink,
+    }
 }
