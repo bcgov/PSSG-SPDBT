@@ -82,7 +82,7 @@ namespace Spd.Presentation.Screening.Controllers
                     return Redirect($"{hostUrl}{cancelPath}");
                 }
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -196,7 +196,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}?orgId={orgId}");
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}?orgId={orgId}");
 
@@ -309,7 +309,7 @@ namespace Spd.Presentation.Screening.Controllers
                     return Redirect($"{hostUrl}{cancelPath}");
                 }
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 

@@ -77,7 +77,7 @@ namespace Spd.Presentation.Licensing.Controllers
                     return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
                 }
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -188,7 +188,7 @@ namespace Spd.Presentation.Licensing.Controllers
                     return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
                 }
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -304,7 +304,7 @@ namespace Spd.Presentation.Licensing.Controllers
                     return Redirect($"{hostUrl}{cancelPath}?bizId={bizId}");
                 }
 
-                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}?bizId={bizId}");
 

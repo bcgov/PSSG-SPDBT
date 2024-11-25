@@ -8,7 +8,7 @@ namespace Spd.Manager.Payment
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
         public Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct);
         public Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct);
-        public Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct);
+        public Task<Guid> Handle(PaymentCreateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
         public Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct);
@@ -66,7 +66,7 @@ namespace Spd.Manager.Payment
     #endregion
 
     #region payment result
-    public record PaymenCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
+    public record PaymentCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaymentFailedAttemptCountQuery(Guid ApplicationId) : IRequest<int>;
     public record PaybcPaymentResult

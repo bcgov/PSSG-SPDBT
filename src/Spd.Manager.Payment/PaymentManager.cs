@@ -30,7 +30,7 @@ namespace Spd.Manager.Payment
 {
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
-        IRequestHandler<PaymenCreateCommand, Guid>,
+        IRequestHandler<PaymentCreateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
@@ -183,7 +183,7 @@ namespace Spd.Manager.Payment
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
-        public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
+        public async Task<Guid> Handle(PaymentCreateCommand command, CancellationToken ct)
         {
             _logger.LogInformation("PaymentManager get PaymenCreateCommand");
             //validate hashcode
