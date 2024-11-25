@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrgService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { CrrpaRoutes } from './crrpa-routing.module';
+import { CrrpaRoutes } from './crrpa-routes';
 
 @Component({
 	selector: 'app-org-access',

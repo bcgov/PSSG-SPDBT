@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 @Component({
 	selector: 'app-security-screening-payment-manual',

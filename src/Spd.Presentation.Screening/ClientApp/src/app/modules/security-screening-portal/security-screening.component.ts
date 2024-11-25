@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { SecurityScreeningRoutes } from './security-screening-routing.module';
+import { SecurityScreeningRoutes } from './security-screening-routes';
 
 @Component({
 	selector: 'app-security-screening',
