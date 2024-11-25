@@ -177,6 +177,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.owningteam), team);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.ownerid), team);
         await _context.SaveChangesAsync(ct);
+
+        spd_clearanceaccess? clearAccess = await _context.GetClearanceAccessById((Guid)clearanceaccess.spd_clearanceaccessid, ct);
+        if (clearAccess == null) throw new ApiException(HttpStatusCode.InternalServerError, "cannot find clearance access.");
+        var result = await clearAccess.spd_ClearanceAccessNotification().GetValueAsync(ct);
     }
 
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)
@@ -510,5 +514,4 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
     }
 }
-
 
