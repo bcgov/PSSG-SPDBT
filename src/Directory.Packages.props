@@ -13,7 +13,7 @@
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="AWSSDK.S3" Version="3.7.407.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="FluentValidation" Version="11.10.0" />
+    <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Flurl" Version="4.0.0" />
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
