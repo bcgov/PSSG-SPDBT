@@ -154,7 +154,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					);
 
 					const isSoleProprietorYesNo = this.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value;
-					console.log('***** isSoleProprietorYesNo', isSoleProprietorYesNo);
 					if (isSoleProprietorYesNo) {
 						const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYesNo);
 						if (!isSoleProprietor) {
@@ -1481,13 +1480,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
 
-		console.debug('************* applyLicenceIntoModel');
-		console.debug('************* workerLicenceAppl', workerLicenceAppl);
-		console.debug('************* associatedLicence', associatedLicence);
-		console.debug('************* associatedExpiredLicence', associatedExpiredLicence);
-		console.debug('************* isSoleProprietor', isSoleProprietor);
-		console.debug('************* isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
-		console.debug('************* soleProprietorData', soleProprietorData);
+		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
+		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
+		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
+		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
+		console.debug('[applyLicenceIntoModel] isSoleProprietor', isSoleProprietor);
+		console.debug('[applyLicenceIntoModel] isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
+		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
