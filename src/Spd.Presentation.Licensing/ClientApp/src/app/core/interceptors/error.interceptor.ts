@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BizLicensingService, LoginService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
