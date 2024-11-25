@@ -310,81 +310,83 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</div>
 							</mat-expansion-panel>
 
-							<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel-header>
-									<mat-panel-title class="review-panel-title">
-										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Contact Information</div>
-											<button
-												*ngIf="showEditButton"
-												mat-mini-fab
-												color="primary"
-												class="go-to-step-button"
-												matTooltip="Go to Step 3"
-												aria-label="Go to Step 3"
-												(click)="$event.stopPropagation(); onEditStep(2)"
-											>
-												<mat-icon>edit</mat-icon>
-											</button>
-										</mat-toolbar>
-									</mat-panel-title>
-								</mat-expansion-panel-header>
+							<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Contact Information</div>
+												<button
+													*ngIf="showEditButton"
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 3"
+													aria-label="Go to Step 3"
+													(click)="$event.stopPropagation(); onEditStep(2)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
 
-								<div class="panel-body">
-									<div class="text-minor-heading-small mt-4">Business Manager Information</div>
-									<div class="row mt-0">
-										<div class="col-lg-5 col-md-12">
-											<div class="text-label d-block text-muted">Name</div>
-											<div class="summary-text-data">
-												{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
-												{{ businessManagerMiddleName2 }}
-												{{ businessManagerSurname }}
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Email Address</div>
-											<div class="summary-text-data">
-												{{ businessManagerEmailAddress | default }}
-											</div>
-										</div>
-										<div class="col-lg-3 col-md-12">
-											<div class="text-label d-block text-muted">Phone Number</div>
-											<div class="summary-text-data">
-												{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
-											</div>
-										</div>
-									</div>
-
-									<ng-container *ngIf="!applicantIsBizManager">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Your Information</div>
+									<div class="panel-body">
+										<div class="text-minor-heading-small mt-4">Business Manager Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-5 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
 												<div class="summary-text-data">
-													{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
-													{{ yourContactSurname }}
+													{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
+													{{ businessManagerMiddleName2 }}
+													{{ businessManagerSurname }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
 												<div class="summary-text-data">
-													{{ yourContactEmailAddress | default }}
+													{{ businessManagerEmailAddress | default }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ yourContactPhoneNumber | formatPhoneNumber | default }}
+													{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
 												</div>
 											</div>
 										</div>
-									</ng-container>
-								</div>
-							</mat-expansion-panel>
 
-							<ng-container *ngIf="!isUpdate">
-								<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
+										<ng-container *ngIf="!applicantIsBizManager">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading-small">Your Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-5 col-md-12">
+													<div class="text-label d-block text-muted">Name</div>
+													<div class="summary-text-data">
+														{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
+														{{ yourContactSurname }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Email Address</div>
+													<div class="summary-text-data">
+														{{ yourContactEmailAddress | default }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Phone Number</div>
+													<div class="summary-text-data">
+														{{ yourContactPhoneNumber | formatPhoneNumber | default }}
+													</div>
+												</div>
+											</div>
+										</ng-container>
+									</div>
+								</mat-expansion-panel>
+							</ng-container>
+
+							<ng-container *ngIf="!isUpdate && !isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
