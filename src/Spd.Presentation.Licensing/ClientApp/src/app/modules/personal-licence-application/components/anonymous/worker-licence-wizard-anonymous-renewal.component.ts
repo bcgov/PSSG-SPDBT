@@ -9,7 +9,6 @@ import { AppRoutes } from '@app/app-routing.module';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
@@ -137,6 +136,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 	isSoleProprietorSimultaneousFlow = false;
 	showWorkerLicenceSoleProprietorStep = false;
+	isSoleProprietor = false;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
@@ -149,7 +149,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -176,18 +175,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				const isSoleProprietor = this.workerApplicationService.workerModelFormGroup.get(
-					'soleProprietorData.isSoleProprietor'
+				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
+					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
-
-				if (isSoleProprietor) {
-					// for new flow, use value selected by the user
-					this.isSoleProprietorSimultaneousFlow = this.utilService.booleanTypeToBoolean(isSoleProprietor) ?? false;
-				} else {
-					// during a renewal - use this flag
-					this.isSoleProprietorSimultaneousFlow =
-						this.workerApplicationService.workerModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value ?? false;
-				}
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
@@ -196,22 +186,24 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No;
-
-				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
-					'policeBackgroundData.policeOfficerRoleCode'
-				)?.value;
+				this.showCitizenshipStep = isCanadianCitizen === BooleanTypeCode.No;
 
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
 				)?.value;
-				this.showWorkerLicenceSoleProprietorStep =
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
 
 				this.linkedSoleProprietorBizLicId = this.workerApplicationService.workerModelFormGroup.get(
 					'originalLicenceData.linkedSoleProprietorLicenceId'
 				)?.value;
+
+				this.isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+
+				this.showWorkerLicenceSoleProprietorStep = !!this.linkedSoleProprietorBizLicId;
+
+				this.isSoleProprietorSimultaneousFlow =
+					!!this.linkedSoleProprietorBizLicId && this.isSoleProprietor
+						? this.workerApplicationService.workerModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value
+						: false;
 
 				this.updateCompleteStatus();
 			}
