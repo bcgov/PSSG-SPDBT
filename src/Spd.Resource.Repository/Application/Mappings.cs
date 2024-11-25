@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Incident;
+using Spd.Resource.Repository.Payment;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
 
@@ -93,6 +94,7 @@ namespace Spd.Resource.Repository.Application
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
             .ForMember(d => d.PaidOn, opt => opt.MapFrom(s => s.spd_paidon))
+            .ForMember(d => d.PaymentTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<PaymentTypeOptionSet, PaymentTypeEnum>(s.spd_paymenttype)))
             .ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => GetScreenType(s.spd_screeningrequesttype)))
             .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts))
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s._spd_applicantid_value));
