@@ -64,57 +64,9 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							</div>
 						</div>
 
-						<ng-container *ngIf="showDogsAndRestraints">
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Request to Use Restraints?</div>
-								<div class="summary-text-data">
-									{{ carryAndUseRestraints }}
-								</div>
-							</div>
-							<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodeYes">
-								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Proof of Qualification</div>
-									<div class="summary-text-data">
-										{{ carryAndUseRestraintsDocument | options: 'RestraintDocumentTypes' }}
-									</div>
-								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Proof of Qualification Documents</div>
-									<div class="summary-text-data">
-										<ul class="m-0">
-											<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-												<li>{{ doc.name }}</li>
-											</ng-container>
-										</ul>
-									</div>
-								</div>
-							</ng-container>
-
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Request to Use Dogs?</div>
-								<div class="summary-text-data">{{ useDogs }}</div>
-							</div>
-							<ng-container *ngIf="useDogs === booleanTypeCodeYes">
-								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Reason</div>
-									<div class="summary-text-data">
-										<div *ngIf="isDogsPurposeProtection">Protection</div>
-										<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-										<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-									</div>
-								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-									<div class="summary-text-data">
-										<ul class="m-0">
-											<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-												<li>{{ doc.name }}</li>
-											</ng-container>
-										</ul>
-									</div>
-								</div>
-							</ng-container>
-						</ng-container>
+						<app-worker-summary-dogs-restraints
+							[workerModelData]="licenceModelData"
+						></app-worker-summary-dogs-restraints>
 					</div>
 				</div>
 			</div>
@@ -235,34 +187,6 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 
 	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
-	}
-
-	get carryAndUseRestraints(): string {
-		return this.workerApplicationService.getSummarycarryAndUseRestraints(this.licenceModelData);
-	}
-	get carryAndUseRestraintsDocument(): string {
-		return this.workerApplicationService.getSummarycarryAndUseRestraintsDocument(this.licenceModelData);
-	}
-	get carryAndUseRestraintsAttachments(): File[] {
-		return this.workerApplicationService.getSummarycarryAndUseRestraintsAttachments(this.licenceModelData);
-	}
-	get showDogsAndRestraints(): boolean {
-		return this.workerApplicationService.getSummaryshowDogsAndRestraints(this.licenceModelData);
-	}
-	get useDogs(): string {
-		return this.workerApplicationService.getSummaryuseDogs(this.licenceModelData);
-	}
-	get isDogsPurposeProtection(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeProtection(this.licenceModelData);
-	}
-	get isDogsPurposeDetectionDrugs(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.licenceModelData);
-	}
-	get isDogsPurposeDetectionExplosives(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.licenceModelData);
-	}
-	get dogsPurposeAttachments(): File[] {
-		return this.workerApplicationService.getSummarydogsPurposeAttachments(this.licenceModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] {

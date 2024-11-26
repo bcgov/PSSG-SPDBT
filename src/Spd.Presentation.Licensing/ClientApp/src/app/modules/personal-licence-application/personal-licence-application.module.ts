@@ -146,7 +146,13 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
+import { WorkerSummaryBcDriversLicenceComponent } from './components/shared/worker-summary-bc-drivers-licence.component';
 import { WorkerSummaryCharacteristicsComponent } from './components/shared/worker-summary-characteristics.component';
+import { WorkerSummaryCitizenshipComponent } from './components/shared/worker-summary-citizenship.component';
+import { WorkerSummaryDocumentsUploadedComponent } from './components/shared/worker-summary-documents-uploaded.component';
+import { WorkerSummaryDogsRestraintsComponent } from './components/shared/worker-summary-dogs-restraints.component';
+import { WorkerSummaryExpiredLicenceComponent } from './components/shared/worker-summary-expired-licence.component';
+import { WorkerSummaryPhotoOfYourselfComponent } from './components/shared/worker-summary-photo-of-yourself.component';
 import { PersonalLicenceApplicationBaseComponent } from './personal-licence-application-base.component';
 import { LicenceApplicationRoutingModule } from './personal-licence-application-routing.module';
 
@@ -158,6 +164,12 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		PermitSummaryRationaleComponent,
 		PermitSummaryEmployerInformationComponent,
 		WorkerSummaryCharacteristicsComponent,
+		WorkerSummaryExpiredLicenceComponent,
+		WorkerSummaryDogsRestraintsComponent,
+		WorkerSummaryDocumentsUploadedComponent,
+		WorkerSummaryCitizenshipComponent,
+		WorkerSummaryBcDriversLicenceComponent,
+		WorkerSummaryPhotoOfYourselfComponent,
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
