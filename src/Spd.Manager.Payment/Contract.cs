@@ -49,20 +49,6 @@ namespace Spd.Manager.Payment
     {
         CreditCard
     }
-
-    public enum PaymentTypeCode
-    {
-        PayBC_OnSubmission,
-        Cash,
-        CreditCard,
-        MoneyOrder,
-        Cheque,
-        CertifiedCheque,
-        CreditAccount,
-        JournalVoucher,
-        NoPayment,
-        PayBC_SecurePaymentLink,
-    }
     #endregion
 
     #region payment result
