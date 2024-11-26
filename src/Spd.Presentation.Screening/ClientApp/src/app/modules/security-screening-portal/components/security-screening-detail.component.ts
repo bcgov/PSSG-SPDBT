@@ -79,34 +79,30 @@ import {
 			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
 				{{ application.orgName }}
 				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 275px;">
-					{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
+					{{ application.status | options: 'ApplicationPortalStatusTypes' : application.status }}
 				</mat-chip-row>
 			</h3>
 
-			<div class="row mt-2 mb-4">
-				<div class="col-md-11 col-sm-12">
-					<section class="px-4 py-2 ">
-						<div class="row mt-2">
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label">Case ID</div>
-								<strong> {{ application.applicationNumber }} </strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
-								<strong> {{ application.createdOn! | formatDate }} </strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
-								<strong> {{ application.serviceType | options : 'ServiceTypes' }}</strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
-								<strong> {{ application.payeeType }}</strong>
-							</div>
-						</div>
-					</section>
+			<section class="detail-table px-4 py-3 my-4 ">
+				<div class="row">
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label">Case ID</div>
+						<strong> {{ application.applicationNumber }} </strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
+						<strong> {{ application.createdOn! | formatDate }} </strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
+						<strong> {{ application.serviceType | options: 'ServiceTypes' }}</strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
+						<strong> {{ application.payeeType }}</strong>
+					</div>
 				</div>
-			</div>
+			</section>
 		</ng-container>
 
 		<ng-container *ngIf="fingerprintsAlert || selfDisclosureAlert">
@@ -172,7 +168,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="documentHistoryExists">
-			<h4 class="subheading fw-normal mb-4">Document Upload History</h4>
+			<h4 class="subheading fw-normal mb-2">Document Upload History</h4>
 			<div class="row">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSourceHistory">
@@ -215,6 +211,10 @@ import {
 
 			.subheading {
 				color: var(--color-grey);
+			}
+
+			.detail-table {
+				background-color: #f6f6f6 !important;
 			}
 		`,
 	],
