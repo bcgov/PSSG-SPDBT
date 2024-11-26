@@ -302,6 +302,7 @@ namespace Spd.Presentation.Screening.Controllers
 
             try
             {
+                throw new Exception("testing");
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
