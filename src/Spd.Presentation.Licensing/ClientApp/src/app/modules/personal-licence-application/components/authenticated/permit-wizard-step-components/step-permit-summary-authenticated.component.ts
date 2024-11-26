@@ -336,7 +336,7 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 		return this.permitApplicationService.getSummarybcDriversLicenceNumber(this.permitModelData);
 	}
 
-	get photoOfYourselfAttachments(): File[] {
+	get photoOfYourselfAttachments(): File[] | null {
 		return this.permitApplicationService.getSummaryphotoOfYourselfAttachments(this.permitModelData);
 	}
 }
