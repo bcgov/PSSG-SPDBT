@@ -503,7 +503,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
-					_resp.applicationTypeData.applicationTypeCode
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
 				);
 			})
 		);

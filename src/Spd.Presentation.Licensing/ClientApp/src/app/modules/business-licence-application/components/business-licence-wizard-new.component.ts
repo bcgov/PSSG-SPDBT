@@ -96,6 +96,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-review
 					[applicationTypeCode]="applicationTypeCode"
 					[showSaveAndExit]="showSaveAndExit"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="false"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"

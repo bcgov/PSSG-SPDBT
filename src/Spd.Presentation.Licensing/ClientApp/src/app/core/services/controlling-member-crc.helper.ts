@@ -50,7 +50,6 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		check3: new FormControl(null, [Validators.requiredTrue]),
 		check4: new FormControl(null, [Validators.requiredTrue]),
 		check5: new FormControl(null, [Validators.requiredTrue]),
-		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
 			{
