@@ -15,6 +15,7 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
+	PaymentTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -256,7 +257,7 @@ export class PaymentsComponent implements OnInit {
 		private paymentService: PaymentService,
 		private authUserService: AuthUserBceidService,
 		private configService: ConfigService,
-		private location: Location
+		private location: Location,
 	) {
 		this.refreshStats();
 	}
@@ -416,7 +417,10 @@ export class PaymentsComponent implements OnInit {
 
 					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
 						if (app.paidOn) {
-							app.isDownloadReceipt = true;
+							// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
+							app.isDownloadReceipt =
+								app.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
+								app.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
 						}
 					} else {
 						const numberOfAttempts = app.numberOfAttempts ?? 0;
@@ -439,7 +443,7 @@ export class PaymentsComponent implements OnInit {
 				tap((res: ApplicationStatisticsResponse) => {
 					const applicationStatistics = res.statistics ?? {};
 					this.count = applicationStatistics.AwaitingPayment ?? 0;
-				})
+				}),
 			);
 	}
 }
