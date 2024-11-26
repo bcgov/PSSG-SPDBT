@@ -31,6 +31,7 @@ import { PaymentFilter } from './payment-filter.component';
 export interface PaymentResponse extends ApplicationPaymentResponse {
 	isPayNow: boolean;
 	isPayManual: boolean;
+	isPaid: boolean;
 	isDownloadReceipt: boolean;
 }
 
@@ -145,7 +146,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 								<mat-chip-row
 									aria-label="Status"
 									class="mat-chip-green"
-									*ngIf="application.status && application.isDownloadReceipt; else notpaid"
+									*ngIf="application.status && application.isPaid; else notpaid"
 								>
 									Paid
 								</mat-chip-row>
@@ -411,12 +412,15 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
+					app.isPaid = false;
 					app.isDownloadReceipt = false;
 					app.isPayManual = false;
 					app.isPayNow = false;
 
 					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
 						if (app.paidOn) {
+							app.isPaid = true;
+
 							// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
 							app.isDownloadReceipt =
 								app.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
