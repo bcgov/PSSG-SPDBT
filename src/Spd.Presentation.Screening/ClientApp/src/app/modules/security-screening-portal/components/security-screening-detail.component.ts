@@ -151,7 +151,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
+			<h4 class="subheading fw-normal mb-3">Upload Document</h4>
 			<div class="row">
 				<div class="col-12">
 					<button
