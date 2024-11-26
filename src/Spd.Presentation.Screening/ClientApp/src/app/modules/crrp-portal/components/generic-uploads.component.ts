@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -30,8 +31,10 @@ import { CrrpRoutes } from '../crrp-routes';
 					<app-file-upload
 						accept=".tsv,.txt"
 						[maxNumberOfFiles]="1"
-						(uploadedFile)="onUploadFile($event)"
-						(removeFile)="onRemoveFile($event)"
+						[control]="attachments"
+						[files]="attachments.value"
+						(fileUploaded)="onUploadFile($event)"
+						(fileRemoved)="onRemoveFile($event)"
 						message="Text files ending in '.TSV' or '.TXT' only"
 					></app-file-upload>
 				</div>
@@ -66,7 +69,7 @@ import { CrrpRoutes } from '../crrp-routes';
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ application.uploadedDateTime | formatDate : constants.date.dateTimeFormat }}
+								{{ application.uploadedDateTime | formatDate: constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -122,6 +125,10 @@ import { CrrpRoutes } from '../crrp-routes';
 export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
+	form: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([]),
+	});
+
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<BulkHistoryResponse> = new MatTableDataSource<BulkHistoryResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -134,11 +141,12 @@ export class GenericUploadsComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private formBuilder: FormBuilder,
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBceidService,
 		private applicationService: ApplicationService,
 		private utilService: UtilService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
 	) {}
 
 	ngOnInit() {
@@ -158,11 +166,11 @@ export class GenericUploadsComponent implements OnInit {
 		this.loadList();
 	}
 
-	onUploadFile(files: any) {
+	onUploadFile(uploadedFile: any) {
 		this.showUploadMessages = false;
 
 		const body = {
-			File: files[0],
+			File: uploadedFile,
 			RequireDuplicateCheck: true,
 		};
 
@@ -235,7 +243,7 @@ export class GenericUploadsComponent implements OnInit {
 					.afterClosed()
 					.subscribe((response: boolean) => {
 						if (response) {
-							this.saveBulkUpload(files[0]);
+							this.saveBulkUpload(uploadedFile);
 						} else {
 							this.removeFileFromView(); // on cancel, remove file from upload area
 						}
@@ -283,5 +291,9 @@ export class GenericUploadsComponent implements OnInit {
 				this.dataSource.data = res.bulkUploadHistorys as Array<BulkHistoryResponse>;
 				this.tablePaginator = { ...res.pagination };
 			});
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }
