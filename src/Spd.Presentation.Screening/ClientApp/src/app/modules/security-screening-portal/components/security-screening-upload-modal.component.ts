@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileTypeCode } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 
 export interface CrcUploadDialogData {
 	applicationId: string;
@@ -17,7 +17,12 @@ export interface CrcUploadDialogData {
 		<mat-dialog-content class="mb-2">
 			<div class="row">
 				<div class="col-12">
-					<app-file-upload [maxNumberOfFiles]="maxNumberOfFiles" accept=".doc,.docx,.pdf"></app-file-upload>
+					<app-file-upload
+						accept=".doc,.docx,.pdf"
+						[maxNumberOfFiles]="maxNumberOfFiles"
+						[control]="attachments"
+						[files]="attachments.value"
+					></app-file-upload>
 				</div>
 			</div>
 		</mat-dialog-content>
@@ -37,12 +42,15 @@ export interface CrcUploadDialogData {
 export class SecurityScreeningUploadModalComponent implements OnInit {
 	maxNumberOfFiles = 1;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+	form: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([]),
+	});
 
 	constructor(
+		private formBuilder: FormBuilder,
 		private applicantService: ApplicantService,
 		private dialogRef: MatDialogRef<SecurityScreeningUploadModalComponent>,
-		@Inject(MAT_DIALOG_DATA) public dialogData: CrcUploadDialogData
+		@Inject(MAT_DIALOG_DATA) public dialogData: CrcUploadDialogData,
 	) {}
 
 	ngOnInit(): void {
@@ -57,7 +65,7 @@ export class SecurityScreeningUploadModalComponent implements OnInit {
 
 	onSave(): void {
 		const body = {
-			Files: this.fileUploadComponent.files,
+			Files: this.attachments.value,
 			FileType: this.dialogData.fileType,
 		};
 		this.applicantService
@@ -71,5 +79,9 @@ export class SecurityScreeningUploadModalComponent implements OnInit {
 					success: true,
 				});
 			});
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }
