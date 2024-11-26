@@ -55,6 +55,9 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 						<app-steps-business-licence-review
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
+							[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+							[isSoleProprietorSimultaneousFlow]="false"
+							[isControllingMembersWithoutSwlExist]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
