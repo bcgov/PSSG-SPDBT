@@ -88,6 +88,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-business-licence-review
 					[applicationTypeCode]="applicationTypeCode"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="false"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"

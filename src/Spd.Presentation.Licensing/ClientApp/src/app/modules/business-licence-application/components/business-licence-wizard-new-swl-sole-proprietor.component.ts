@@ -83,6 +83,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[showSaveAndExit]="true"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[isControllingMembersWithoutSwlExist]="false"
 						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"

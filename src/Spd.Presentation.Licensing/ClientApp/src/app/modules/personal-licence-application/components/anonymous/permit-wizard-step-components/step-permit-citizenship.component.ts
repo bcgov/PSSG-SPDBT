@@ -459,11 +459,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 		);
 	}
 	get isShowNonCanadianFrontAndBackAdditional(): boolean {
-		console.log(
-			'isShowNonCanadianFrontAndBackAdditional',
-			this.isCanadianCitizenNo,
-			this.governmentIssuedPhotoTypeCode.value
-		);
 		return (
 			this.isCanadianCitizenNo &&
 			(this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.DriversLicenceAdditional ||

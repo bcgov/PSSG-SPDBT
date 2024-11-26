@@ -95,71 +95,73 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</div>
 
 				<div class="my-2">
-					<ng-container *ngIf="!isSoleProprietorCombinedFlow">
-						<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
-							<app-alert type="success" icon="check_circle">
-								<div class="row">
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Name</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
-									</div>
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
-									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-primary-color fs-5">
-											{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
+					<ng-container *ngIf="!isReadonly">
+						<ng-container *ngIf="!isSoleProprietorCombinedFlow">
+							<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
+								<app-alert type="success" icon="check_circle">
+									<div class="row">
+										<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+											<div class="text-primary-color">Name</div>
+											<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
+										</div>
+										<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+											<div class="text-primary-color">Security Worker Licence Number</div>
+											<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
+										</div>
+										<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+											<div class="text-primary-color">Expiry Date</div>
+											<div class="text-primary-color fs-5">
+												{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
+											</div>
+										</div>
+										<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+											<div class="text-primary-color">Licence Status</div>
+											<div class="text-primary-color fs-5 fw-bold">
+												{{ soleProprietorLicenceStatusCode.value }}
+											</div>
 										</div>
 									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Licence Status</div>
-										<div class="text-primary-color fs-5 fw-bold">
-											{{ soleProprietorLicenceStatusCode.value }}
-										</div>
+								</app-alert>
+							</ng-container>
+							<ng-template #SearchForSP>
+								<app-alert type="warning" icon="">
+									Search for a sole proprietor with a valid security worker licence
+								</app-alert>
+							</ng-template>
+
+							<mat-error
+								class="mat-option-error mb-4"
+								*ngIf="
+									(form.get('soleProprietorLicenceId')?.dirty || form.get('soleProprietorLicenceId')?.touched) &&
+									form.get('soleProprietorLicenceId')?.invalid &&
+									form.get('soleProprietorLicenceId')?.hasError('required')
+								"
+							>
+								A valid security worker licence must be selected
+							</mat-error>
+
+							<div
+								class="col-12"
+								*ngIf="
+									(form.dirty || form.touched) &&
+									form.invalid &&
+									!form.get('soleProprietorLicenceId')?.hasError('required') &&
+									form.hasError('licencemustbeactive')
+								"
+							>
+								<app-alert type="danger" icon="error">
+									<div>
+										You must have a valid security worker licence to apply for a sole proprietor business licence.
 									</div>
-								</div>
-							</app-alert>
+									<div class="mt-2">
+										To renew your security worker licence, visit
+										<a href="https://prod-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/" target="_blank"
+											>Security worker licencing</a
+										>. Once you have your renewed licence, return to complete your business licence application.
+									</div>
+								</app-alert>
+							</div>
 						</ng-container>
-						<ng-template #SearchForSP>
-							<app-alert type="warning" icon="">
-								Search for a sole proprietor with a valid security worker licence
-							</app-alert>
-						</ng-template>
-
-						<mat-error
-							class="mat-option-error mb-4"
-							*ngIf="
-								(form.get('soleProprietorLicenceId')?.dirty || form.get('soleProprietorLicenceId')?.touched) &&
-								form.get('soleProprietorLicenceId')?.invalid &&
-								form.get('soleProprietorLicenceId')?.hasError('required')
-							"
-						>
-							A valid security worker licence must be selected
-						</mat-error>
-
-						<div
-							class="col-12"
-							*ngIf="
-								(form.dirty || form.touched) &&
-								form.invalid &&
-								!form.get('soleProprietorLicenceId')?.hasError('required') &&
-								form.hasError('licencemustbeactive')
-							"
-						>
-							<app-alert type="danger" icon="error">
-								<div>
-									You must have a valid security worker licence to apply for a sole proprietor business licence.
-								</div>
-								<div class="mt-2">
-									To renew your security worker licence, visit
-									<a href="https://prod-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/" target="_blank"
-										>Security worker licencing</a
-									>. Once you have your renewed licence, return to complete your business licence application.
-								</div>
-							</app-alert>
-						</div>
 					</ng-container>
 
 					<div class="row">
