@@ -42,7 +42,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 		private route: ActivatedRoute,
 		private authProcessService: AuthProcessService,
 		private paymentService: PaymentService,
-		private utilService: UtilService
+		private utilService: UtilService,
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -61,10 +61,10 @@ export class CrrpaPaymentFailComponent implements OnInit {
 						return this.paymentService.apiCrrpaApplicationIdPaymentAttemptsGet({
 							applicationId: paymentResp.applicationId!,
 						});
-					})
+					}),
 				)
 				.subscribe((numberOfFails) => {
-					this.isPayBySecureLink = this.payment?.paymentType == PaymentTypeCode.PayBcSecurePaymentLink;
+					this.isPayBySecureLink = this.payment?.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
 					if (this.isPayBySecureLink) {
 						this.numberOfAttemptsRemaining = 0;
 					} else {
