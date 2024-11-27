@@ -24,7 +24,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<div class="text-label d-block text-muted">Licence Number</div>
 							<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
+						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChanged">
 							<div class="text-label d-block text-muted">Photograph of Yourself</div>
 							<div class="summary-text-data">
 								<ul class="m-0">
@@ -133,8 +133,8 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 			this.licenceModelData.personalInformationData.surname
 		);
 	}
-	get showPhotographOfYourself(): boolean {
-		return this.workerApplicationService.getSummaryshowPhotographOfYourself(this.licenceModelData);
+	get showPhotographOfYourselfGenderChanged(): boolean {
+		return this.workerApplicationService.getSummaryshowPhotographOfYourselfGenderChanged(this.licenceModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {

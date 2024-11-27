@@ -546,14 +546,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.workerApplicationService.getSummaryshowAdditionalGovIdData(this.licenceModelData);
 	}
 
-	get bcDriversLicenceNumber(): string {
-		return this.workerApplicationService.getSummarybcDriversLicenceNumber(this.licenceModelData);
-	}
-
-	get photoOfYourselfAttachments(): File[] | null {
-		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData) ?? null;
-	}
-
 	get emailAddress(): string {
 		return this.workerApplicationService.getSummaryemailAddress(this.licenceModelData);
 	}
