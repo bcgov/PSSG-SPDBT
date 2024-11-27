@@ -86,7 +86,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						<mat-accordion multi="false">
 							<ng-container *ngIf="this.ArmouredCarGuard.value">
 								<div class="row">
-									<div class="col-12">
+									<div
+										class="col-md-12 col-sm-12"
+										[ngClass]="blockArmouredCarGuard ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+									>
 										<mat-expansion-panel
 											[hideToggle]="blockArmouredCarGuard"
 											class="my-3 w-100"
@@ -104,7 +107,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 															categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
 														"
 														>error</mat-icon
-													>{{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
+													>{{ armouredCarGuardCode | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -113,7 +116,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														mat-stroked-button
 														class="xlarge w-auto float-end"
 														aria-label="Remove category"
-														(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
+														(click)="onRemove(armouredCarGuardCode)"
 													>
 														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 													</button>
@@ -122,6 +125,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 											<app-business-category-amoured-car-guard></app-business-category-amoured-car-guard>
 										</mat-expansion-panel>
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockArmouredCarGuard">
+										<button
+											mat-stroked-button
+											class="large delete-button my-lg-3"
+											aria-label="Remove category"
+											(click)="onDeselect(armouredCarGuardCode)"
+										>
+											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+										</button>
 									</div>
 								</div>
 							</ng-container>
@@ -169,7 +183,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							<ng-container *ngIf="showPrivateInvestigator">
 								<ng-container *ngIf="isBusinessLicenceSoleProprietor; else notBusinessLicenceSoleProprietor">
 									<app-licence-category-panel-simple
-										[categoryTypeCode]="workerCategoryTypeCodes.PrivateInvestigator"
+										[categoryTypeCode]="privateInvestigatorCode"
 										[blockCategory]="blockPrivateInvestigator"
 										[expandCategory]="expandPrivateInvestigator"
 										(removeCategory)="onRemove($event)"
@@ -178,7 +192,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								</ng-container>
 								<ng-template #notBusinessLicenceSoleProprietor>
 									<div class="row">
-										<div class="col-12">
+										<div
+											class="col-md-12 col-sm-12"
+											[ngClass]="blockPrivateInvestigator ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+										>
 											<mat-expansion-panel
 												[hideToggle]="blockPrivateInvestigator"
 												class="my-3 w-100"
@@ -197,7 +214,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 																categoryPrivateInvestigatorFormGroup?.invalid
 															"
 															>error</mat-icon
-														>{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
+														>{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="row my-3">
@@ -206,7 +223,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 															mat-stroked-button
 															class="xlarge w-auto float-end"
 															aria-label="Remove category"
-															(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
+															(click)="onRemove(privateInvestigatorCode)"
 														>
 															<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 														</button>
@@ -215,6 +232,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 												<app-business-category-private-investigator></app-business-category-private-investigator>
 											</mat-expansion-panel>
+										</div>
+
+										<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockPrivateInvestigator">
+											<button
+												mat-stroked-button
+												class="large delete-button my-lg-3"
+												aria-label="Remove category"
+												(click)="onDeselect(privateInvestigatorCode)"
+											>
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+											</button>
 										</div>
 									</div>
 								</ng-template>
@@ -272,10 +300,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 							<ng-container *ngIf="showSecurityGuard">
 								<div class="row">
-									<div
-										class="col-md-12 col-sm-12"
-										[ngClass]="blockSecurityGuard ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
-									>
+									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
@@ -286,17 +311,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
 														>error</mat-icon
 													>
-													{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
+													{{ securityGuardCode | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 
-											<div class="row my-3" *ngIf="!blockSecurityGuard">
+											<div class="row my-3">
 												<div class="col-12 mx-auto">
 													<button
 														mat-stroked-button
 														class="xlarge w-auto float-end"
 														aria-label="Remove category"
-														(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
+														(click)="onRemove(securityGuardCode)"
 													>
 														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 													</button>
@@ -305,17 +330,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 											<app-business-category-security-guard></app-business-category-security-guard>
 										</mat-expansion-panel>
-									</div>
-
-									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockSecurityGuard">
-										<button
-											mat-stroked-button
-											class="large delete-button my-lg-3"
-											aria-label="Remove category"
-											(click)="onDeselect(workerCategoryTypeCodes.SecurityGuard)"
-										>
-											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
-										</button>
 									</div>
 								</div>
 							</ng-container>
@@ -372,6 +386,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
+	armouredCarGuardCode = WorkerCategoryTypeCode.ArmouredCarGuard;
+	securityGuardCode = WorkerCategoryTypeCode.SecurityGuard;
+	privateInvestigatorCode = WorkerCategoryTypeCode.PrivateInvestigator;
+
 	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
@@ -410,7 +428,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	blockSecurityAlarmResponse = false;
 	blockSecurityAlarmSales = false;
 	blockSecurityConsultant = false;
-	blockSecurityGuard = false;
 
 	originalCategoryCodes: Array<WorkerCategoryTypeCode> | null = [];
 	availableCategoryCodes: Array<WorkerCategoryTypeCode> = [];
@@ -485,12 +502,12 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		if (categoryCode) {
 			switch (categoryCode) {
 				case WorkerCategoryTypeCode.ArmouredCarGuard:
-					// if (!this.blockArmouredCarGuard)
+					this.blockArmouredCarGuard = false;
 					this.expandArmouredCarGuard = true;
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigator:
-					// if (!this.blockPrivateInvestigator)
+					this.blockPrivateInvestigator = false;
 					this.expandPrivateInvestigator = true;
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
 					break;
@@ -499,30 +516,39 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.BodyArmourSales:
+					this.blockBodyArmourSales = false;
 					this.expandBodyArmourSales = true;
 					break;
 				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					this.blockClosedCircuitTelevisionInstaller = false;
 					this.expandClosedCircuitTelevisionInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					this.blockElectronicLockingDeviceInstaller = false;
 					this.expandElectronicLockingDeviceInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.Locksmith:
+					this.blockLocksmith = false;
 					this.expandLocksmith = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+					this.blockSecurityAlarmInstaller = false;
 					this.expandSecurityAlarmInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+					this.blockSecurityAlarmMonitor = false;
 					this.expandSecurityAlarmMonitor = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmResponse:
+					this.blockSecurityAlarmResponse = false;
 					this.expandSecurityAlarmResponse = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmSales:
+					this.blockSecurityAlarmSales = false;
 					this.expandSecurityAlarmSales = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityConsultant:
+					this.blockSecurityConsultant = false;
 					this.expandSecurityConsultant = true;
 					break;
 			}
@@ -600,10 +626,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityGuard:
-							if (!justDeselect) {
-								this.categorySecurityGuardFormGroup.reset();
-								this.blockSecurityGuard = false;
-							}
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
@@ -693,9 +715,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 			if (this.showSecurityAlarmSales) {
 				this.blockSecurityAlarmSales = true;
-			}
-			if (this.showSecurityGuard) {
-				this.blockSecurityGuard = true;
 			}
 		}
 	}
