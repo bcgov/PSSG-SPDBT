@@ -739,11 +739,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			permitModelData.personalInformationData.surname
 		);
 	}
-	getSummaryshowPhotographOfYourself(permitModelData: any): boolean {
-		return (
-			this.getSummaryhasGenderChanged(permitModelData) &&
-			this.getSummaryphotoOfYourselfAttachments(permitModelData).length > 0
-		);
+	getSummaryshowPhotographOfYourselfGenderChange(permitModelData: any): boolean {
+		const attachments = this.getSummaryphotoOfYourselfAttachments(permitModelData) ?? [];
+		return this.getSummaryhasGenderChanged(permitModelData) && attachments.length > 0;
 	}
 
 	getSummaryisReprint(permitModelData: any): string {
@@ -919,7 +917,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		return permitModelData.characteristicsData.weightUnitCode ?? '';
 	}
 
-	getSummaryphotoOfYourselfAttachments(permitModelData: any): File[] {
+	getSummaryphotoOfYourselfAttachments(permitModelData: any): File[] | null {
 		const applicationTypeCode = this.getSummaryapplicationTypeCode(permitModelData);
 
 		if (applicationTypeCode === ApplicationTypeCode.New) {
