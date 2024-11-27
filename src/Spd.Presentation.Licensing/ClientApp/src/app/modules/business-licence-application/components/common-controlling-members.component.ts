@@ -216,9 +216,8 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 						<ng-container *ngIf="canSendInvitations">
 							<app-alert type="info" icon="info">
-								By clicking a 'send invitation' button, a link to an online application form will be sent to the
-								controlling member via email. They must provide personal information and consent to a criminal record
-								check.
+								When an invitation is issued, the controlling member will receive a link to an online application form
+								via email. They must provide personal information and consent to a criminal record check.
 							</app-alert>
 						</ng-container>
 						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
@@ -387,7 +386,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				if (this.isApplDraftOrWaitingForPayment) {
 					// If appl exists in Draft or Payment Pending, you can send invitations
 					this.allowNewInvitationsToBeSent = true;
-					this.allowUpdateInvitationsToBeSent = true;
+					this.allowUpdateInvitationsToBeSent = false;
 
 					// Only allow Edit in the wizard - remove 'action1'.
 					// This way we can ensure invites are sent correctly.
