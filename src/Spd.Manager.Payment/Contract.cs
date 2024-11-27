@@ -79,7 +79,7 @@ namespace Spd.Manager.Payment
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
         public PaymentStatusCode PaymentStatus { get; set; }
-        public PaymentTypeCode? PaymentType { get; set; }
+        public PaymentTypeCode? PaymentTypeCode { get; set; }
         public string Message { get; set; }
         public string TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
