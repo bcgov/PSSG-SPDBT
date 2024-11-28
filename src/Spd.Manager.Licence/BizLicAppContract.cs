@@ -98,6 +98,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public Guid? SoleProprietorSWLAppId { get; set; } //for swl apply for sole proprietor, they need to input swl app id here.
     public ApplicationOriginTypeCode? SoleProprietorSWLAppOriginTypeCode { get; set; }
     public Guid? SubmittedByPortalUserId { get; set; }
+    public Guid? ApplicantSwlLicenceId { get; set; } //for sole proprietor (registered or non-registered) 
 }
 
 public record NonSwlContactInfo : ContactInfo
