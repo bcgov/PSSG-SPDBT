@@ -81,7 +81,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 							<app-alert type="warning" icon="warning">
 								<div>Your Business Licence application has outstanding controlling member invitations.</div>
 								<div class="mt-2">
-									Click on <strong>'Controlling Members & Employees'</strong> to see the invitation status of each of
+									View the <strong>'Controlling Members & Employees'</strong> to see the invitation status of each of
 									the members.
 								</div>
 							</app-alert>

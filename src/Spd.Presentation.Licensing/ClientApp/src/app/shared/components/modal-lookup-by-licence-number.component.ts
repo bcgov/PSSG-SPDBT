@@ -141,7 +141,9 @@ export interface LookupByLicenceNumberDialogData {
 					</ng-container>
 
 					<ng-template #IsNotFound>
-						<app-alert type="danger" icon="error"> This licence number does not match any existing licences </app-alert>
+						<app-alert type="danger" icon="error">
+							{{ messageError }}
+						</app-alert>
 					</ng-template>
 				</ng-container>
 			</form>
