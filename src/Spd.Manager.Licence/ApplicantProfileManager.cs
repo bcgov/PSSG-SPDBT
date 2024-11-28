@@ -58,7 +58,7 @@ namespace Spd.Manager.Licence
             var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
 
-            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
+            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId, OnlyReturnLatestSet: false), ct);
             result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition ||
                 d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
 
@@ -171,7 +171,7 @@ namespace Spd.Manager.Licence
             await _contactRepository.ManageAsync(updateContactCmd, ct);
 
             // Remove documents that are not in previous document ids
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId, OnlyReturnLatestSet: false), ct);
             List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
             List<Guid> documentsToRemove = docListResps.Items
                 .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
