@@ -683,7 +683,11 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
+				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
+			} else {
+				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			}
 		}
 
 		return [messageWarn, messageError];

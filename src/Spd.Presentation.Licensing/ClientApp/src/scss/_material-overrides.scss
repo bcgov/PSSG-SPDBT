@@ -170,6 +170,10 @@ button.mat-red-button {
 	color: rgba(0, 0, 0, 0.9) !important;
 }
 
+.mat-mdc-select-disabled .mat-mdc-select-arrow {
+	display: none;
+}
+
 .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label,
 .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label--float-above {
 	color: rgba(0, 0, 0, 0.9) !important;
