@@ -16,6 +16,7 @@ export interface BizLicAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: boolean | null;
+  applicantSwlLicenceId?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
