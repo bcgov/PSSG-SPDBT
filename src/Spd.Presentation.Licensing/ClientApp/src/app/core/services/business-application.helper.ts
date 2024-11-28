@@ -489,7 +489,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const applicantData = { ...businessModelFormValue.applicantData };
 		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
 
-		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+		const businessInformationData = businessModelFormValue.businessInformationData;
+		const bizTypeCode = businessInformationData.bizTypeCode;
+		const applicantSwlLicenceId = businessInformationData.soleProprietorLicenceId;
 
 		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
@@ -559,6 +561,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			licenceAppId,
 			soleProprietorSWLAppId,
 			soleProprietorSWLAppOriginTypeCode,
+			applicantSwlLicenceId,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
