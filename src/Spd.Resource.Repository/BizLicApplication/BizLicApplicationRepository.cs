@@ -114,6 +114,17 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
+        if (cmd.ApplicantSwlLicenceId != null)
+        {
+            var licence = _context.spd_licences.Where(l => l.spd_licenceid == cmd.ApplicantSwlLicenceId).FirstOrDefault();
+            if (licence != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantSWLNumberId), licence);
+            }
+        }
+        else
+            _context.SetLink(app, nameof(app.spd_ApplicantSWLNumberId), null);
+
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
