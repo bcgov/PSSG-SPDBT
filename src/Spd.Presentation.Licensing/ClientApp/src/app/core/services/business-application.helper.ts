@@ -823,23 +823,20 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceExpiryDate ?? '';
 	}
 	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
-		return (
-			this.getSummaryshowArmouredCarGuard(businessLicenceModelData) ||
-			this.getSummaryshowSecurityGuard(businessLicenceModelData)
-		);
+		return this.getSummaryshowArmouredCarGuard(businessLicenceModelData);
 	}
 	getSummaryshowArmouredCarGuard(businessLicenceModelData: any): boolean {
-		return businessLicenceModelData.categoryArmouredCarGuardData?.isInclude ?? false;
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup?.isInclude ?? false;
 	}
 	getSummaryshowSecurityGuard(businessLicenceModelData: any): boolean {
-		const isInclude = businessLicenceModelData.categorySecurityGuardData?.isInclude ?? false;
-		return isInclude && businessLicenceModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
+		const isInclude = businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+		return isInclude && businessLicenceModelData.categorySecurityGuardFormGroup?.useDogs === BooleanTypeCode.Yes;
 	}
 	getSummarycategoryArmouredCarGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categoryArmouredCarGuardData.attachments ?? [];
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
 	}
 	getSummarycategorySecurityGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categorySecurityGuardData.attachments ?? [];
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
 	}
 
 	getSummarybusinessManagerGivenName(businessLicenceModelData: any): string {

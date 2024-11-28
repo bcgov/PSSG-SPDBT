@@ -292,18 +292,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														</ul>
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
 											</div>
 										</ng-container>
 									</div>
