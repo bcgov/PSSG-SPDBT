@@ -17,7 +17,7 @@ namespace Spd.Utilities.Dynamics
             client.Configurations.RequestPipeline.OnEntryStarting((arg) =>
             {
                 // do not send reference properties and null values to Dynamics
-                arg.Entry.Properties = arg.Entry.Properties.Cast<ODataProperty>().Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
+                arg.Entry.Properties = arg.Entry.Properties.Cast<ODataProperty>().Where((prop) => !prop.Name.StartsWith('_') /*&& prop.Value != null*/);
             });
             client.BuildingRequest += Client_BuildingRequest;
             client.SendingRequest2 += Client_SendingRequest2;
