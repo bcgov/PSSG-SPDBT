@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.BizContact;
@@ -120,7 +120,7 @@ internal class ControllingMemberCrcAppManager :
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse()
         {
-            ControllingMemberAppId = (Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId
+            ControllingMemberAppId = cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId ?? Guid.Empty //update cm does not have application Id
         };
     }
 
