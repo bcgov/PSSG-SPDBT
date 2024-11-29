@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.BizContact;
@@ -74,12 +74,13 @@ internal class ControllingMemberCrcAppManager :
             ct);
         ControllingMemberCrcAppUpdateRequest request = cmd.ControllingMemberCrcAppRequest;
 
-        var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
-        //check validation
-        ValidateFilesForUpdateAppAsync(cmd.ControllingMemberCrcAppRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles,
-            ct);
+        //no need to get existing files
+        //var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
+        ////check validation
+        //ValidateFilesForUpdateAppAsync(cmd.ControllingMemberCrcAppRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles,
+        //    ct);
         ContactResp? contact = await _contactRepository.GetAsync((Guid)request.ApplicantId, ct);
         if (contact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Applicant info not found");
@@ -87,10 +88,11 @@ internal class ControllingMemberCrcAppManager :
         BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync(request.BizContactId, ct);
         if (bizContact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Business Contact not found");
+
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
         {
             AccountId = bizContact.BizId,
-            Type = ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+            Type = ServiceTypeEnum.SecurityBusinessLicence
         }, ct);
 
         LicenceResp? bizLicence = licences?.Items?.SingleOrDefault();
@@ -118,7 +120,7 @@ internal class ControllingMemberCrcAppManager :
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse()
         {
-            ControllingMemberAppId = (Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId
+            ControllingMemberAppId = cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId ?? Guid.Empty //update cm does not have application Id
         };
     }
 
