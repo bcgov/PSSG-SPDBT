@@ -179,8 +179,13 @@ internal partial class ApplicationRepository : IApplicationRepository
         await _context.SaveChangesAsync(ct);
 
         spd_clearanceaccess? clearAccess = await _context.GetClearanceAccessById((Guid)clearanceaccess.spd_clearanceaccessid, ct);
+
         if (clearAccess == null) throw new ApiException(HttpStatusCode.InternalServerError, "cannot find clearance access.");
         var result = await clearAccess.spd_ClearanceAccessNotification().GetValueAsync(ct);
+        if (result.IsSuccess != true)
+        {
+            _logger.LogError("ClearanceAccessNotification failed with error {Error}", result.Result);
+        }
     }
 
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)
