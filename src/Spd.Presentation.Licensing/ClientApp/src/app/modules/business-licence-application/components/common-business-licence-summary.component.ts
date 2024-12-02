@@ -78,16 +78,37 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Sole Proprietor</div>
 										<div class="row mt-0">
+											<ng-container *ngIf="soleProprietorLicenceHolderName">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Name</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceHolderName | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Security Worker Licence Number</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceNumber | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Expiry Date</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceExpiryDate | formatDate | default }}
+													</div>
+												</div>
+											</ng-container>
+
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlEmailAddress }}
+													{{ soleProprietorSwlEmailAddress | default }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlPhoneNumber }}
+													{{ soleProprietorSwlPhoneNumber | default }}
 												</div>
 											</div>
 										</div>
@@ -550,6 +571,15 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessApplicationService.getSummarybizTypeCode(this.businessModelData);
 	}
 
+	get soleProprietorLicenceHolderName(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceHolderName(this.businessModelData);
+	}
+	get soleProprietorLicenceNumber(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceNumber(this.businessModelData);
+	}
+	get soleProprietorLicenceExpiryDate(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceExpiryDate(this.businessModelData);
+	}
 	get soleProprietorSwlEmailAddress(): string {
 		return this.businessApplicationService.getSummarysoleProprietorSwlEmailAddress(this.businessModelData);
 	}

@@ -766,6 +766,15 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
 		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	getSummarysoleProprietorLicenceHolderName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceHolderName ?? '';
+	}
+	getSummarysoleProprietorLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceNumber ?? '';
+	}
+	getSummarysoleProprietorLicenceExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceExpiryDate ?? '';
+	}
 	getSummarysoleProprietorSwlEmailAddress(businessLicenceModelData: any): string {
 		return businessLicenceModelData.businessInformationData.soleProprietorSwlEmailAddress ?? '';
 	}

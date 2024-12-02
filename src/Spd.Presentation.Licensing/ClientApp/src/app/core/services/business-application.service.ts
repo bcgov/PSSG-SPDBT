@@ -2065,6 +2065,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				this.businessModelFormGroup.patchValue(
 					{
+						licenceAppId: resp.soleProprietorBizAppId ?? null,
 						soleProprietorSWLAppId: licenceAppId,
 						soleProprietorSWLAppPortalStatus: resp.applicationPortalStatus,
 						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
