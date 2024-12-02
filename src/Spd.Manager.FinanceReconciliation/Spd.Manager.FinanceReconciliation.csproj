@@ -10,4 +10,8 @@
     <PackageReference Include="MediatR" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
+  </ItemGroup>
+
 </Project>
