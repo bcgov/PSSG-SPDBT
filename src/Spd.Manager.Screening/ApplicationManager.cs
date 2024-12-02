@@ -102,7 +102,6 @@ namespace Spd.Manager.Screening
 
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
-            _logger.LogDebug($"applicationCreateCommand={request}");
             ApplicationCreateResponse result = new();
             if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
