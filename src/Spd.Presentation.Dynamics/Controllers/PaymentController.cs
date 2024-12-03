@@ -51,8 +51,8 @@ public class PaymentController : SpdControllerBase
             throw new ConfigurationErrorsException("ScreeningHostUrl or screeningPaymentPath is not set correctly.");
         }
 
-        return await _mediator.Send(new PrePaymentLinkCreateCommand(applicationId, 
-            $"{screeningHostUrl}{screeningPaymentPath}", 
+        return await _mediator.Send(new PrePaymentLinkCreateCommand(applicationId,
+            $"{screeningHostUrl}{screeningPaymentPath}",
             $"{licensingHostUrl}{licensingPaymentPath}"), ct);
 
     }

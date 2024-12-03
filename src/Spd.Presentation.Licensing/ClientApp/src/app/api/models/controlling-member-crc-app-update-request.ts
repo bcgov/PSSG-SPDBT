@@ -12,6 +12,7 @@ export interface ControllingMemberCrcAppUpdateRequest {
   bizContactId?: string;
   controllingMemberAppId?: string | null;
   criminalHistoryDetail?: string | null;
+  dateOfBirth?: string | null;
   documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentKeyCodes?: Array<string> | null;
   emailAddress?: string | null;

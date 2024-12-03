@@ -78,16 +78,37 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Sole Proprietor</div>
 										<div class="row mt-0">
+											<ng-container *ngIf="soleProprietorLicenceHolderName">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Name</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceHolderName | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Security Worker Licence Number</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceNumber | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Expiry Date</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceExpiryDate | formatDate | default }}
+													</div>
+												</div>
+											</ng-container>
+
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlEmailAddress }}
+													{{ soleProprietorSwlEmailAddress | default }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlPhoneNumber }}
+													{{ soleProprietorSwlPhoneNumber | default }}
 												</div>
 											</div>
 										</div>
@@ -287,18 +308,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													<div class="summary-text-data">
 														<ul class="m-0">
 															<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
 																<li>{{ doc.name }}</li>
 															</ng-container>
 														</ul>
@@ -562,6 +571,15 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessApplicationService.getSummarybizTypeCode(this.businessModelData);
 	}
 
+	get soleProprietorLicenceHolderName(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceHolderName(this.businessModelData);
+	}
+	get soleProprietorLicenceNumber(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceNumber(this.businessModelData);
+	}
+	get soleProprietorLicenceExpiryDate(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceExpiryDate(this.businessModelData);
+	}
 	get soleProprietorSwlEmailAddress(): string {
 		return this.businessApplicationService.getSummarysoleProprietorSwlEmailAddress(this.businessModelData);
 	}
