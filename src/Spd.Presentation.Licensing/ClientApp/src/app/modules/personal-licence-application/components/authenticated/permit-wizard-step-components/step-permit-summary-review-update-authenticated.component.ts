@@ -41,7 +41,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
-						<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
+						<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChange">
 							<div class="text-label d-block text-muted">Photograph of Yourself</div>
 							<div class="summary-text-data">
 								<ul class="m-0">
@@ -132,8 +132,8 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	get licenceHolderName(): string {
 		return this.permitApplicationService.getSummarylicenceHolderName(this.permitModelData);
 	}
-	get showPhotographOfYourself(): boolean {
-		return this.permitApplicationService.getSummaryshowPhotographOfYourself(this.permitModelData);
+	get showPhotographOfYourselfGenderChange(): boolean {
+		return this.permitApplicationService.getSummaryshowPhotographOfYourselfGenderChange(this.permitModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {
@@ -183,7 +183,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
 
-	get photoOfYourselfAttachments(): File[] {
+	get photoOfYourselfAttachments(): File[] | null {
 		return this.permitApplicationService.getSummaryphotoOfYourselfAttachments(this.permitModelData);
 	}
 }

@@ -81,225 +81,17 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											</div>
 										</div>
 
-										<ng-container *ngIf="isAnyDocuments">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Documents Uploaded</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container
-																*ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index"
-															>
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-														<ul class="m-0">
-															<ng-container
-																*ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index"
-															>
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
+										<app-worker-summary-document-uploaded
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-document-uploaded>
 
-												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigator">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
-														Documents
-													</div>
-													<div class="summary-text-data">
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-												</div>
+										<app-worker-summary-dogs-restraints
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-dogs-restraints>
 
-												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigatorUnderSupervision">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
-														Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container
-																*ngFor="
-																	let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
-																	let i = index
-																"
-															>
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityAlarmInstaller">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
-														Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container
-																*ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index"
-															>
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityConsultant">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-														<ul class="m-0">
-															<ng-container
-																*ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index"
-															>
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-											</div>
-										</ng-container>
-
-										<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Expired Licence</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Expired Licence Number</div>
-													<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Expiry Date</div>
-													<div class="summary-text-data">
-														{{ expiredLicenceExpiryDate | formatDate | default }}
-													</div>
-												</div>
-											</div>
-										</ng-container>
-
-										<ng-container *ngIf="showDogsAndRestraints">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Restraints Authorization</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Request to Use Restraints?</div>
-													<div class="summary-text-data">
-														{{ carryAndUseRestraints | options: 'BooleanTypes' }}
-													</div>
-												</div>
-												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
-													<div class="col-xl-4 col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">Proof of Qualification</div>
-														<div class="summary-text-data">
-															{{ carryAndUseRestraintsDocument | options: 'RestraintDocumentTypes' }}
-														</div>
-													</div>
-													<div class="col-xl-4 col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">Proof of Qualification Documents</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-												</ng-container>
-											</div>
-
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Dogs Authorization</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Request to Use Dogs?</div>
-													<div class="summary-text-data">{{ useDogs }}</div>
-												</div>
-												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Reason</div>
-														<div class="summary-text-data">
-															<div *ngIf="isDogsPurposeProtection">Protection</div>
-															<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-															<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-												</ng-container>
-											</div>
-										</ng-container>
+										<app-worker-summary-expired-licence
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-expired-licence>
 									</div>
 								</mat-expansion-panel>
 
@@ -323,59 +115,24 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</mat-expansion-panel-header>
 									<div class="panel-body">
 										<div class="text-minor-heading-small">Identification</div>
+										<app-worker-summary-citizenship
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-citizenship>
+
+										<app-worker-summary-photo-of-yourself
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-photo-of-yourself>
+
+										<app-worker-summary-bc-drivers-licence
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-bc-drivers-licence>
+
 										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
-												<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-											</div>
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">
-													<span *ngIf="canadianCitizenProofTypeCode">
-														{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
-													</span>
-													<span *ngIf="notCanadianCitizenProofTypeCode">
-														{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
-													</span>
-												</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-											<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-												<div class="text-label d-block text-muted">
-													{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-												</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">BC Driver's Licence</div>
-												<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-											</div>
 											<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
 												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
 												<div class="summary-text-data">
 													<ul class="m-0">
 														<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-											<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
-												<div class="text-label d-block text-muted">Photograph of Yourself</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
 															<li>{{ doc.name }}</li>
 														</ng-container>
 													</ul>
@@ -525,172 +282,19 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.workerApplicationService.getSummarysoleProprietorBizTypeCode(this.licenceModelData);
 	}
 
-	get categoryArmouredCarGuardAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryArmouredCarGuardAttachments(this.licenceModelData);
-	}
-	get categoryFireInvestigatorCertificateAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryFireInvestigatorCertificateAttachments(
-			this.licenceModelData
-		);
-	}
-	get categoryFireInvestigatorLetterAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryFireInvestigatorLetterAttachments(this.licenceModelData);
-	}
-	get categoryLocksmithAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryLocksmithAttachments(this.licenceModelData);
-	}
-	get categorySecurityGuardAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategorySecurityGuardAttachments(this.licenceModelData);
-	}
-	get categorySecurityConsultantAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategorySecurityConsultantAttachments(this.licenceModelData);
-	}
-	get categorySecurityConsultantResumeAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategorySecurityConsultantResumeAttachments(this.licenceModelData);
-	}
-	get categorySecurityAlarmInstallerAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategorySecurityAlarmInstallerAttachments(this.licenceModelData);
-	}
-	get categoryPrivateInvestigatorAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryPrivateInvestigatorAttachments(this.licenceModelData);
-	}
-	get categoryPrivateInvestigatorTrainingAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryPrivateInvestigatorTrainingAttachments(
-			this.licenceModelData
-		);
-	}
-	get categoryPrivateInvestigatorFireCertificateAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryPrivateInvestigatorFireCertificateAttachments(
-			this.licenceModelData
-		);
-	}
-	get categoryPrivateInvestigatorFireLetterAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryPrivateInvestigatorFireLetterAttachments(
-			this.licenceModelData
-		);
-	}
-	get categoryPrivateInvestigatorUnderSupervisionAttachments(): File[] {
-		return this.workerApplicationService.getSummarycategoryPrivateInvestigatorUnderSupervisionAttachments(
-			this.licenceModelData
-		);
-	}
-
 	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
-	}
-
-	get hasExpiredLicence(): string {
-		return this.workerApplicationService.getSummaryhasExpiredLicence(this.licenceModelData);
-	}
-	get expiredLicenceNumber(): string {
-		return this.workerApplicationService.getSummaryexpiredLicenceNumber(this.licenceModelData);
-	}
-	get expiredLicenceExpiryDate(): string {
-		return this.workerApplicationService.getSummaryexpiredLicenceExpiryDate(this.licenceModelData);
-	}
-
-	get carryAndUseRestraints(): string {
-		return this.workerApplicationService.getSummarycarryAndUseRestraints(this.licenceModelData);
-	}
-	get carryAndUseRestraintsDocument(): string {
-		return this.workerApplicationService.getSummarycarryAndUseRestraintsDocument(this.licenceModelData);
-	}
-	get carryAndUseRestraintsAttachments(): File[] {
-		return this.workerApplicationService.getSummarycarryAndUseRestraintsAttachments(this.licenceModelData);
-	}
-	get showDogsAndRestraints(): boolean {
-		return this.workerApplicationService.getSummaryshowDogsAndRestraints(this.licenceModelData);
-	}
-	get useDogs(): string {
-		return this.workerApplicationService.getSummaryuseDogs(this.licenceModelData);
-	}
-	get isDogsPurposeProtection(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeProtection(this.licenceModelData);
-	}
-	get isDogsPurposeDetectionDrugs(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.licenceModelData);
-	}
-	get isDogsPurposeDetectionExplosives(): string {
-		return this.workerApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.licenceModelData);
-	}
-	get dogsPurposeAttachments(): File[] {
-		return this.workerApplicationService.getSummarydogsPurposeAttachments(this.licenceModelData);
 	}
 
 	get proofOfFingerprintAttachments(): File[] {
 		return this.workerApplicationService.getSummaryproofOfFingerprintAttachments(this.licenceModelData);
 	}
 
-	get isCanadianCitizen(): string {
-		return this.workerApplicationService.getSummaryisCanadianCitizen(this.licenceModelData);
-	}
-	get canadianCitizenProofTypeCode(): string {
-		return this.workerApplicationService.getSummarycanadianCitizenProofTypeCode(this.licenceModelData);
-	}
-	get notCanadianCitizenProofTypeCode(): string {
-		return this.workerApplicationService.getSummarynotCanadianCitizenProofTypeCode(this.licenceModelData);
-	}
-	get proofOfAbility(): string {
-		return this.workerApplicationService.getSummaryproofOfAbility(this.licenceModelData);
-	}
-	get citizenshipExpiryDate(): string {
-		return this.workerApplicationService.getSummarycitizenshipExpiryDate(this.licenceModelData);
-	}
-	get citizenshipAttachments(): File[] {
-		return this.workerApplicationService.getSummarycitizenshipAttachments(this.licenceModelData);
-	}
-	get governmentIssuedPhotoTypeCode(): string {
-		return this.workerApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.licenceModelData);
-	}
-	get governmentIssuedPhotoExpiryDate(): string {
-		return this.workerApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.licenceModelData);
-	}
-	get governmentIssuedPhotoAttachments(): File[] {
-		return this.workerApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.licenceModelData);
-	}
-
 	get showAdditionalGovIdData(): boolean {
 		return this.workerApplicationService.getSummaryshowAdditionalGovIdData(this.licenceModelData);
 	}
 
-	get bcDriversLicenceNumber(): string {
-		return this.workerApplicationService.getSummarybcDriversLicenceNumber(this.licenceModelData);
-	}
-
-	get photoOfYourselfAttachments(): File[] | null {
-		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
-	}
-
 	get categoryList(): Array<WorkerCategoryTypeCode> {
 		return this.workerApplicationService.getSummarycategoryList(this.licenceModelData);
-	}
-
-	get isAnyDocuments(): boolean {
-		return this.workerApplicationService.getSummaryisAnyDocuments(this.licenceModelData);
-	}
-
-	get showArmouredCarGuard(): boolean {
-		return this.workerApplicationService.getSummaryshowArmouredCarGuard(this.licenceModelData);
-	}
-	get showFireInvestigator(): boolean {
-		return this.workerApplicationService.getSummaryshowFireInvestigator(this.licenceModelData);
-	}
-	get showLocksmith(): boolean {
-		return this.workerApplicationService.getSummaryshowLocksmith(this.licenceModelData);
-	}
-	get showPrivateInvestigator(): boolean {
-		return this.workerApplicationService.getSummaryshowPrivateInvestigator(this.licenceModelData);
-	}
-	get showPrivateInvestigatorUnderSupervision(): boolean {
-		return this.workerApplicationService.getSummaryshowPrivateInvestigatorUnderSupervision(this.licenceModelData);
-	}
-	get showSecurityAlarmInstaller(): boolean {
-		return this.workerApplicationService.getSummaryshowSecurityAlarmInstaller(this.licenceModelData);
-	}
-	get showSecurityConsultant(): boolean {
-		return this.workerApplicationService.getSummaryshowSecurityConsultant(this.licenceModelData);
-	}
-	get showSecurityGuard(): boolean {
-		return this.workerApplicationService.getSummaryshowSecurityGuard(this.licenceModelData);
 	}
 }

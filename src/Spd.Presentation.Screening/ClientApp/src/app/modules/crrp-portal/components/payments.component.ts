@@ -15,21 +15,23 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
+	PaymentTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationPaymentResponse {
 	isPayNow: boolean;
 	isPayManual: boolean;
+	isPaid: boolean;
 	isDownloadReceipt: boolean;
 }
 
@@ -144,7 +146,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 								<mat-chip-row
 									aria-label="Status"
 									class="mat-chip-green"
-									*ngIf="application.status && application.isDownloadReceipt; else notpaid"
+									*ngIf="application.status && application.isPaid; else notpaid"
 								>
 									Paid
 								</mat-chip-row>
@@ -256,7 +258,7 @@ export class PaymentsComponent implements OnInit {
 		private paymentService: PaymentService,
 		private authUserService: AuthUserBceidService,
 		private configService: ConfigService,
-		private location: Location
+		private location: Location,
 	) {
 		this.refreshStats();
 	}
@@ -410,13 +412,19 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
+					app.isPaid = false;
 					app.isDownloadReceipt = false;
 					app.isPayManual = false;
 					app.isPayNow = false;
 
 					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
 						if (app.paidOn) {
-							app.isDownloadReceipt = true;
+							app.isPaid = true;
+
+							// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
+							app.isDownloadReceipt =
+								app.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
+								app.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
 						}
 					} else {
 						const numberOfAttempts = app.numberOfAttempts ?? 0;
@@ -439,7 +447,7 @@ export class PaymentsComponent implements OnInit {
 				tap((res: ApplicationStatisticsResponse) => {
 					const applicationStatistics = res.statistics ?? {};
 					this.count = applicationStatistics.AwaitingPayment ?? 0;
-				})
+				}),
 			);
 	}
 }

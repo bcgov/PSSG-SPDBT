@@ -5,7 +5,7 @@ import { ApplicationPaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
 	selector: 'app-crrp-payment-manual',

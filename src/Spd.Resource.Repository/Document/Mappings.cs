@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Edm;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
@@ -14,7 +13,7 @@ namespace Spd.Resource.Repository.Document
             _ = CreateMap<bcgov_documenturl, DocumentResp>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType(s)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2(s)))
-            .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.bcgov_receiveddate))
+            .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.DocumentUrlId, opt => opt.MapFrom(s => s.bcgov_documenturlid))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value))
             .ForMember(d => d.CaseId, opt => opt.MapFrom(s => s._bcgov_caseid_value))

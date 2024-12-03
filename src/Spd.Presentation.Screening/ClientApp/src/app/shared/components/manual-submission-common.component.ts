@@ -14,7 +14,7 @@ import {
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
 import {
 	GenderTypes,
@@ -31,11 +31,10 @@ import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
-import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
+import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routes';
+import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routes';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '../pipes/format-date.pipe';
 
@@ -493,7 +492,11 @@ export interface ManualSubmissionBody {
 								</div>
 								<div class="row my-4">
 									<div class="col-xxl-8 col-xl-10 col-lg-12">
-										<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="1"
+											[control]="attachments"
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -623,8 +626,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	constructor(
 		private router: Router,
 		private formBuilder: FormBuilder,
@@ -699,14 +700,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 
 	onSubmit() {
-		if (this.portal == PortalTypeCode.Crrp) {
-			const attachments =
-				this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
-					? this.fileUploadComponent.files[0]
-					: '';
-			this.form.controls['attachments'].setValue(attachments);
-		}
-
 		this.form.markAllAsTouched();
 
 		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
@@ -744,7 +737,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			createRequest.requireDuplicateCheck = true;
 
 			const body: ManualSubmissionBody = {
-				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
+				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.attachments.value : null,
 				ApplicationCreateRequestJson: JSON.stringify(createRequest),
 			};
 
@@ -1035,5 +1028,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 	get serviceTypeIsPssoVs(): boolean {
 		return this.form.get('serviceType')?.value === ServiceTypeCode.PssoVs;
+	}
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

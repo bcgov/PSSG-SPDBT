@@ -1454,15 +1454,19 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
-		const originalLicenceData = this.originalLicenceFormGroup.value;
-		originalLicenceData.originalBizTypeCode = workerLicenceAppl.bizTypeCode;
+		const bizTypeCode = workerLicenceAppl.bizTypeCode ?? BizTypeCode.None;
 
-		const isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(
-			workerLicenceAppl.bizTypeCode!
-		);
+		const originalLicenceData = this.originalLicenceFormGroup.value;
+		originalLicenceData.originalBizTypeCode = bizTypeCode;
+
+		let isSoleProprietor = !!associatedLicence?.linkedSoleProprietorLicenceId;
+		if (!isSoleProprietor) {
+			isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+		}
+
 		const soleProprietorData = {
 			isSoleProprietor: this.utilService.booleanToBooleanType(isSoleProprietor),
-			bizTypeCode: workerLicenceAppl.bizTypeCode,
+			bizTypeCode,
 		};
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
@@ -1476,13 +1480,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
 
-		// console.debug('************* applyLicenceIntoModel');
-		// console.debug('************* workerLicenceAppl', workerLicenceAppl);
-		// console.debug('************* associatedLicence', associatedLicence);
-		// console.debug('************* associatedExpiredLicence', associatedExpiredLicence);
-		// console.debug('************* isSoleProprietor', isSoleProprietor);
-		// console.debug('************* isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
-		// console.debug('************* soleProprietorData', soleProprietorData);
+		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
+		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
+		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
+		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
+		console.debug('[applyLicenceIntoModel] isSoleProprietor', isSoleProprietor);
+		console.debug('[applyLicenceIntoModel] isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
+		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(

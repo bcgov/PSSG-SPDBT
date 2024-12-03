@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { UtilService } from 'src/app/core/services/util.service';
-import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routes';
 import { ApplicantApplicationStatusResponse } from './security-screening-list.component';
 
 @Component({

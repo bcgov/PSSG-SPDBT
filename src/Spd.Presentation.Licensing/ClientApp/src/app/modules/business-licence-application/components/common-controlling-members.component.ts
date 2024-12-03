@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import {
 	ApplicationInviteStatusCode,
 	BizMemberResponse,
@@ -29,6 +30,7 @@ import {
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { take, tap } from 'rxjs';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -38,7 +40,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 			<mat-accordion multi="true">
 				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Members with a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist; else noControllingMembersWithSwlExist">
@@ -119,7 +121,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 				<mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
@@ -183,19 +185,19 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 									<mat-cell *matCellDef="let member">
 										<ng-container *ngIf="member.emailAddress; else noEmailAddress">
-											<button
-												mat-stroked-button
+											<a
+												tabindex="0"
 												class="w-100 invitation-button"
-												aria-label="Send invitation"
+												aria-label="Send Invitation"
 												(click)="onSendInvitation(member)"
+												(keydown)="onKeydownSendInvitation($event, member)"
 												*ngIf="getInvitationButtonLabel(member.inviteStatusCode)"
 											>
 												{{ getInvitationButtonLabel(member.inviteStatusCode) }}
-											</button>
+											</a>
 										</ng-container>
 										<ng-template #noEmailAddress>
 											<a
-												mat-stroked-button
 												class="w-100 invitation-button"
 												aria-label="Download Consent to Criminal Record Check"
 												download="business-memberauthconsent"
@@ -214,9 +216,8 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 						<ng-container *ngIf="canSendInvitations">
 							<app-alert type="info" icon="info">
-								By clicking a 'send invitation' button, a link to an online application form will be sent to the
-								controlling member via email. They must provide personal information and consent to a criminal record
-								check.
+								When an invitation is issued, the controlling member will receive a link to an online application form
+								via email. They must provide personal information and consent to a criminal record check.
 							</app-alert>
 						</ng-container>
 						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
@@ -351,6 +352,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	constructor(
 		private formBuilder: FormBuilder,
+		private router: Router,
 		private dialog: MatDialog,
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
@@ -361,6 +363,11 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	) {}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
@@ -379,7 +386,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				if (this.isApplDraftOrWaitingForPayment) {
 					// If appl exists in Draft or Payment Pending, you can send invitations
 					this.allowNewInvitationsToBeSent = true;
-					this.allowUpdateInvitationsToBeSent = true;
+					this.allowUpdateInvitationsToBeSent = false;
 
 					// Only allow Edit in the wizard - remove 'action1'.
 					// This way we can ensure invites are sent correctly.
@@ -587,6 +594,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						.subscribe();
 				}
 			});
+	}
+
+	onKeydownSendInvitation(event: KeyboardEvent, member: NonSwlContactInfo) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onSendInvitation(member);
 	}
 
 	onAddMemberWithoutSWL(): void {

@@ -147,6 +147,7 @@ internal class Mappings : Profile
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
