@@ -115,19 +115,19 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</mat-expansion-panel-header>
 									<div class="panel-body">
 										<div class="text-minor-heading-small">Identification</div>
+										<app-worker-summary-citizenship
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-citizenship>
+
+										<app-worker-summary-photo-of-yourself
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-photo-of-yourself>
+
+										<app-worker-summary-bc-drivers-licence
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-bc-drivers-licence>
+
 										<div class="row mt-0">
-											<app-worker-summary-citizenship
-												[workerModelData]="licenceModelData"
-											></app-worker-summary-citizenship>
-
-											<app-worker-summary-photo-of-yourself
-												[workerModelData]="licenceModelData"
-											></app-worker-summary-photo-of-yourself>
-
-											<app-worker-summary-bc-drivers-licence
-												[workerModelData]="licenceModelData"
-											></app-worker-summary-bc-drivers-licence>
-
 											<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
 												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
 												<div class="summary-text-data">

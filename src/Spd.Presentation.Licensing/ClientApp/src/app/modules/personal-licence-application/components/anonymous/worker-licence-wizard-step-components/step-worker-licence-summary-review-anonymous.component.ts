@@ -271,19 +271,17 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading-small">Identification</div>
-											<div class="row mt-0">
-												<app-worker-summary-citizenship
-													[workerModelData]="licenceModelData"
-												></app-worker-summary-citizenship>
+											<app-worker-summary-citizenship
+												[workerModelData]="licenceModelData"
+											></app-worker-summary-citizenship>
 
-												<app-worker-summary-photo-of-yourself
-													[workerModelData]="licenceModelData"
-												></app-worker-summary-photo-of-yourself>
+											<app-worker-summary-photo-of-yourself
+												[workerModelData]="licenceModelData"
+											></app-worker-summary-photo-of-yourself>
 
-												<app-worker-summary-bc-drivers-licence
-													[workerModelData]="licenceModelData"
-												></app-worker-summary-bc-drivers-licence>
-											</div>
+											<app-worker-summary-bc-drivers-licence
+												[workerModelData]="licenceModelData"
+											></app-worker-summary-bc-drivers-licence>
 										</ng-container>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>

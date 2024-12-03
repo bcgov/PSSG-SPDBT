@@ -4,37 +4,39 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-worker-summary-citizenship',
 	template: `
-		<div class="col-lg-6 col-md-12">
-			<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
-			<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-		</div>
-		<div class="col-lg-6 col-md-12">
-			<div class="text-label d-block text-muted">
-				<span *ngIf="canadianCitizenProofTypeCode">
-					{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
-				</span>
-				<span *ngIf="notCanadianCitizenProofTypeCode">
-					{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
-				</span>
+		<div class="row mt-0">
+			<div class="col-lg-6 col-md-12">
+				<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
+				<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 			</div>
-			<div class="summary-text-data">
-				<ul class="m-0">
-					<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
-						<li>{{ doc.name }}</li>
-					</ng-container>
-				</ul>
+			<div class="col-lg-6 col-md-12">
+				<div class="text-label d-block text-muted">
+					<span *ngIf="canadianCitizenProofTypeCode">
+						{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
+					</span>
+					<span *ngIf="notCanadianCitizenProofTypeCode">
+						{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
+					</span>
+				</div>
+				<div class="summary-text-data">
+					<ul class="m-0">
+						<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
+							<li>{{ doc.name }}</li>
+						</ng-container>
+					</ul>
+				</div>
 			</div>
-		</div>
-		<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-			<div class="text-label d-block text-muted">
-				{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-			</div>
-			<div class="summary-text-data">
-				<ul class="m-0">
-					<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-						<li>{{ doc.name }}</li>
-					</ng-container>
-				</ul>
+			<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+				<div class="text-label d-block text-muted">
+					{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
+				</div>
+				<div class="summary-text-data">
+					<ul class="m-0">
+						<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+							<li>{{ doc.name }}</li>
+						</ng-container>
+					</ul>
+				</div>
 			</div>
 		</div>
 	`,

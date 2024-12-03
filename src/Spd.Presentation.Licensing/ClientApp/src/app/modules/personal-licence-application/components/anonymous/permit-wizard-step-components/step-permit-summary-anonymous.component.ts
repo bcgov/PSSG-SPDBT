@@ -261,6 +261,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 												</div>
 											</div>
 
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<app-permit-summary-characteristics
 												[permitModelData]="permitModelData"
 											></app-permit-summary-characteristics>

@@ -566,7 +566,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// 	this.licenceTermFormGroup.valid
 		// );
 
-		return this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+		let isValid = this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+		if (isValid) {
+			const categoryData = this.businessModelFormGroup.get('categoryData')?.value;
+
+			if (categoryData.ArmouredCarGuard) {
+				isValid = isValid && this.categoryArmouredCarGuardFormGroup.valid;
+			}
+			if (categoryData.PrivateInvestigator) {
+				isValid = isValid && this.categoryPrivateInvestigatorFormGroup.valid;
+			}
+			if (categoryData.SecurityGuard) {
+				isValid = isValid && this.categorySecurityGuardFormGroup.valid;
+			}
+		}
+
+		return isValid;
 	}
 
 	/**
@@ -2050,6 +2065,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				this.businessModelFormGroup.patchValue(
 					{
+						licenceAppId: resp.soleProprietorBizAppId ?? null,
 						soleProprietorSWLAppId: licenceAppId,
 						soleProprietorSWLAppPortalStatus: resp.applicationPortalStatus,
 						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
