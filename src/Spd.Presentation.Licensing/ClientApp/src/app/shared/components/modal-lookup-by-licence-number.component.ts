@@ -41,7 +41,8 @@ export interface LookupByLicenceNumberDialogData {
 								mat-button
 								matSuffix
 								mat-flat-button
-								aria-label="search"
+								aria-label="Perform licence search"
+								matTooltip="Perform licence search"
 								(click)="onSearch()"
 								class="search-icon-button"
 							>
@@ -52,7 +53,7 @@ export interface LookupByLicenceNumberDialogData {
 					</div>
 
 					<div class="col-xl-6 col-lg-12" *ngIf="!isLoggedIn">
-						<div formGroupName="captchaFormGroup" class="mb-3">
+						<div [formGroup]="captchaFormGroup" class="mb-3">
 							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 							<mat-error
 								class="mat-option-error-small"
@@ -66,6 +67,17 @@ export interface LookupByLicenceNumberDialogData {
 						</div>
 					</div>
 				</div>
+
+				<ng-container *ngIf="!isSearchPerformed">
+					<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
+						<app-alert type="info" icon="info"> Enter the Licence Number and press the search button. </app-alert>
+					</ng-container>
+					<ng-template #notLoggedInMsg>
+						<app-alert type="info" icon="info">
+							Enter the Licence Number, perform the reCaptcha and then press the search button.
+						</app-alert>
+					</ng-template>
+				</ng-container>
 
 				<ng-container *ngIf="isSearchPerformed">
 					<ng-container *ngIf="isFound; else IsNotFound">

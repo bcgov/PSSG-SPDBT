@@ -101,7 +101,11 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-container>
 			<ng-template #defaultFlow>
-				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+				<div
+					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
+					*ngIf="isFormValid"
+				>
 					<button
 						*ngIf="isNextReviewStepperStepObserved"
 						mat-stroked-button
