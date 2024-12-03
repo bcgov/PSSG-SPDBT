@@ -185,7 +185,6 @@ namespace Spd.Manager.Payment
 
         public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
         {
-            _logger.LogInformation("PaymentManager get PaymenCreateCommand");
             //validate hashcode
             PaymentValidationResult validated = (PaymentValidationResult)await _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
@@ -194,10 +193,30 @@ namespace Spd.Manager.Payment
             }
 
             var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
-            await _paymentRepository.ManageAsync(createCmd, ct);
+
+            //create payment
+            Guid paymentId = Guid.Empty;
+            var retryIfExceptionOccur = Policy.Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(2),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                {
+                    _logger.LogInformation($"Retry attempt {retryCount} failed due to: {exception.Message}. Retrying in {timeSpan.TotalSeconds} seconds...");
+                    if (retryCount == 3) throw exception;
+                });
+
+            await retryIfExceptionOccur.ExecuteAsync(async () =>
+            {
+                paymentId = await _paymentRepository.ManageAsync(createCmd, ct);
+            });
+
             var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
             updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
-            Guid paymentId = await _paymentRepository.ManageAsync(updateCmd, ct);
+            await retryIfExceptionOccur.ExecuteAsync(async () =>
+            {
+                paymentId = await _paymentRepository.ManageAsync(updateCmd, ct);
+            });
 
             //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
             BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
