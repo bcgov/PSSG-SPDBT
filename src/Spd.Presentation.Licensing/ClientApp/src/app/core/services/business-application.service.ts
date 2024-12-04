@@ -290,18 +290,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
 
 			// Send the controlling member invitations
-			const apis: Observable<any>[] = [];
-			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
-				if (item.emailAddress) {
-					apis.push(
-						this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
-							bizContactId: item.bizContactId!,
-							inviteType: ControllingMemberAppInviteTypeCode.New,
-						})
-					);
-				}
-			});
-
+			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
 			if (apis.length > 0) {
 				forkJoin(apis)
 					.pipe(
@@ -356,17 +345,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
 
 			// Send the controlling member invitations
-
-			const apis: Observable<any>[] = [];
-			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
-				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
-						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.New,
-					})
-				);
-			});
-
+			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
 			if (apis.length > 0) {
 				forkJoin(apis)
 					.pipe(
@@ -2340,5 +2319,33 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
+	}
+
+	private membersWithoutSwlApis(membersWithoutSwl: Array<any> | null): Observable<NonSwlContactInfo>[] {
+		if (!membersWithoutSwl || membersWithoutSwl.length === 0) {
+			return [];
+		}
+
+		// Send the controlling member invitations
+		const apis: Observable<any>[] = [];
+		membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
+			if (item.emailAddress) {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.New,
+					})
+				);
+			} else {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.CreateShellApp,
+					})
+				);
+			}
+		});
+
+		return apis;
 	}
 }
