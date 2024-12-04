@@ -413,6 +413,14 @@ internal class Mappings : Profile
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
 
+        CreateMap<BizContactResp, SaveControllingMemberCrcAppCmd>()
+            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC))
+            .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => ApplicationTypeEnum.New))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.MiddleName1))
+            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.MiddleName2));
+
         CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
             .ForMember(d => d.InviteId, opt => opt.Ignore())
             .ForMember(d => d.BizContactId, opt => opt.Ignore())

@@ -21,7 +21,7 @@ public record ControllingMemberCrcApplication
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; } = new DateOnly(1800, 1, 1);
     public GenderEnum? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
