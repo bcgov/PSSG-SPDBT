@@ -3,6 +3,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
+import { CommonSwlPermitTermsUpdateReplaceComponent } from '../../shared/common-step-components/common-swl-permit-terms-update-replace.component';
 
 @Component({
 	selector: 'app-step-permit-terms-of-use',
@@ -22,13 +23,19 @@ export class StepPermitTermsOfUseComponent implements LicenceChildStepperStepCom
 	form = this.permitApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
+	@ViewChild(CommonSwlPermitTermsUpdateReplaceComponent)
+	commonTermsUpdateReplaceComponent!: CommonSwlPermitTermsUpdateReplaceComponent;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	isFormValid(): boolean {
-		return this.commonTermsComponent.isFormValid();
+		if (this.isNewOrRenewal) {
+			return this.commonTermsComponent.isFormValid();
+		}
+
+		return this.commonTermsUpdateReplaceComponent.isFormValid();
 	}
 
 	get isNewOrRenewal(): boolean {

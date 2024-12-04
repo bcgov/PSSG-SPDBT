@@ -3,6 +3,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
+import { CommonSwlPermitTermsUpdateReplaceComponent } from '../common-step-components/common-swl-permit-terms-update-replace.component';
 
 @Component({
 	selector: 'app-step-worker-licence-terms-of-use',
@@ -22,13 +23,19 @@ export class StepWorkerLicenceTermsOfUseComponent implements LicenceChildStepper
 	form = this.workerApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
+	@ViewChild(CommonSwlPermitTermsUpdateReplaceComponent)
+	commonTermsUpdateReplaceComponent!: CommonSwlPermitTermsUpdateReplaceComponent;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	isFormValid(): boolean {
-		return this.commonTermsComponent.isFormValid();
+		if (this.isNewOrRenewal) {
+			return this.commonTermsComponent.isFormValid();
+		}
+
+		return this.commonTermsUpdateReplaceComponent.isFormValid();
 	}
 
 	get isNewOrRenewal(): boolean {
