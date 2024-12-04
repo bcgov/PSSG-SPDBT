@@ -8,10 +8,12 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 	selector: 'app-step-permit-terms-of-use',
 	template: `
 		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
-			<app-common-swl-permit-terms
-				[form]="form"
-				[applicationTypeCode]="applicationTypeCode"
-			></app-common-swl-permit-terms>
+			<ng-container *ngIf="isNewOrRenewal; else isUpdate">
+				<app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
+			</ng-container>
+			<ng-template #isUpdate>
+				<app-common-swl-permit-terms-update-replace [form]="form"></app-common-swl-permit-terms-update-replace>
+			</ng-template>
 		</app-step-section>
 	`,
 	styles: [],
@@ -27,5 +29,11 @@ export class StepPermitTermsOfUseComponent implements LicenceChildStepperStepCom
 
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();
+	}
+
+	get isNewOrRenewal(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal || this.applicationTypeCode === ApplicationTypeCode.New
+		);
 	}
 }
