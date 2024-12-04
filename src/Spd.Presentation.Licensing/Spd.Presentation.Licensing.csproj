@@ -8,10 +8,6 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<Folder Include="ClientApp\" />
-		</ItemGroup>
-
-		<ItemGroup>
 				<PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
 				<PackageReference Include="AutoMapper" />
 				<PackageReference Include="MediatR" />
