@@ -75,7 +75,6 @@ try
     app.UseResponseCaching();
     app.UseRequestDecompression();
     app.UseResponseCompression();
-
     app.Use(async (context, next) =>
     {
         var isMaintenance = builder.Configuration.GetValue<bool>("MaintenanceMode"); // Get the value from appsettings.json
