@@ -227,7 +227,7 @@ internal static class SharedMappingFuncs
     }
     internal static bool GetIdentityConfirmed(ApplicationOriginTypeEnum? origin, ApplicationTypeEnum type)
     {
-        bool isNotPortal = origin != ApplicationOriginTypeEnum.Portal;
+        bool isNotPortal = origin == null || origin != ApplicationOriginTypeEnum.Portal;
         bool isNewOrRenewal = type == ApplicationTypeEnum.New ||
                               type == ApplicationTypeEnum.Renewal;
 
