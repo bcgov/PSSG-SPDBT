@@ -14,9 +14,15 @@ export class ErrorInterceptor implements HttpInterceptor {
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
-			catchError((errorResponse: HttpErrorResponse) => {
-				console.error('ErrorInterceptor errorResponse', errorResponse);
+      catchError((errorResponse: HttpErrorResponse) => {
 
+        if (errorResponse.status === 200 && errorResponse.url?.includes('spd-unavailable.html')) {
+          // Let the browser handle the HTML response directly
+          window.location.href = '/maintenance/spd-unavailable.html';
+          return throwError(() => null);
+        }
+
+        console.error('ErrorInterceptor errorResponse', errorResponse);
 				// Certain 404s will be handled in the component
 				if (
 					errorResponse.status == 403 &&
