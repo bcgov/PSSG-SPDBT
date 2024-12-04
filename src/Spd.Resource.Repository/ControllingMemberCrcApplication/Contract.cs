@@ -26,7 +26,7 @@ public record ControllingMemberCrcApplication
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public bool? HasPreviousName { get; set; }
-    public IEnumerable<AliasResp> Aliases { get; set; }
+    public IEnumerable<AliasResp> Aliases { get; set; } = Array.Empty<AliasResp>();
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public bool? IsPoliceOrPeaceOfficer { get; set; }
@@ -39,7 +39,7 @@ public record ControllingMemberCrcApplication
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
-    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; } = Array.Empty<UploadedDocumentEnum>();
     public Guid BizContactId { get; set; }
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
