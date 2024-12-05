@@ -18,6 +18,7 @@ internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -100,7 +101,7 @@ internal class LicenceManager :
         if (!response.Items.Any())
         {
             _logger.LogDebug("No licence found.");
-            return Array.Empty<LicenceResponse>();
+            return Array.Empty<LicenceBasicResponse>();
         }
 
         //only return expired and active ones
@@ -143,6 +144,38 @@ internal class LicenceManager :
             }
         }
         return new FileResponse();
+    }
+
+    public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
+    {
+        if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+        {
+            if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.FirstName) && string.IsNullOrWhiteSpace(search.LastName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Applicant and Biz Id cannot both are null");
+        }
+
+        if (search.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+        {
+
+        }
+
+        //var response = await _licenceRepository.QueryAsync(
+        //    new LicenceQry
+        //    {
+        //        ContactId = query.ApplicantId,
+        //        AccountId = query.BizId,
+        //        IncludeInactive = true
+        //    }, cancellationToken);
+
+        //if (!response.Items.Any())
+        //{
+        //    _logger.LogDebug("No licence found.");
+        //    return Array.Empty<LicenceBasicResponse>();
+        //}
+
+        //only return expired and active ones
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview));
+
     }
 
     private async Task GetSoleProprietorInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
@@ -217,4 +250,5 @@ internal class LicenceManager :
             lic.RestraintsDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items);
         }
     }
+
 }

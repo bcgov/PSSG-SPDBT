@@ -182,5 +182,20 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new LicenceByIdQuery(licenceId), ct);
         }
+
+        /// <summary>
+        /// Get latest secure worker licence by licence number and/or firstname, lastname
+        /// Example: http://localhost:5114/api/licences/security-worker-licence?licenceNumber=E123&firstName=fn&lastName=ln
+        /// </summary>
+        /// <param name="licenceNumber"></param>
+        /// <param name="accessCode"></param>
+        /// <returns></returns>
+        [Route("api/licences/security-worker-licence")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<LicenceResponse>> GetSecureWorkerLicence([FromQuery] string licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
+        {
+            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+        }
     }
 }
