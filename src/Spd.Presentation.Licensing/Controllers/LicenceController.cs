@@ -193,9 +193,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/security-worker-licence")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceResponse>> GetSecureWorkerLicence([FromQuery] string licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
+        public async Task<IEnumerable<LicenceBasicResponse>> GetSecureWorkerLicence([FromQuery] string? licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
         {
-            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            return await _mediator.Send(new LicenceListSearch(licenceNumber, firstName, lastName, null, ServiceTypeCode.SecurityWorkerLicence));
         }
     }
 }

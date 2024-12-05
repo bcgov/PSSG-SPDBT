@@ -151,7 +151,8 @@ internal class LicenceManager :
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
             if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.FirstName) && string.IsNullOrWhiteSpace(search.LastName))
-                throw new ApiException(HttpStatusCode.BadRequest, "Applicant and Biz Id cannot both are null");
+                throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
+
         }
 
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
@@ -159,19 +160,19 @@ internal class LicenceManager :
 
         }
 
-        //var response = await _licenceRepository.QueryAsync(
-        //    new LicenceQry
-        //    {
-        //        ContactId = query.ApplicantId,
-        //        AccountId = query.BizId,
-        //        IncludeInactive = true
-        //    }, cancellationToken);
+        var response = await _licenceRepository.QueryAsync(
+            new LicenceQry
+            {
+                ContactId = query.ApplicantId,
+                AccountId = query.BizId,
+                IncludeInactive = true
+            }, cancellationToken);
 
-        //if (!response.Items.Any())
-        //{
-        //    _logger.LogDebug("No licence found.");
-        //    return Array.Empty<LicenceBasicResponse>();
-        //}
+        if (!response.Items.Any())
+        {
+            _logger.LogDebug("No licence found.");
+            return Array.Empty<LicenceBasicResponse>();
+        }
 
         //only return expired and active ones
         return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview));
