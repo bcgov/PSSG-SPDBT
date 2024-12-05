@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SecurityLicenceStatusVerificationBaseComponent } from './components/security-licence-status-verification-base.component';
 import { SecurityLicenceStatusVerificationMainComponent } from './components/security-licence-status-verification-main.component';
+import { SecurityLicenceStatusVerificationSblComponent } from './components/security-licence-status-verification-sbl.component';
 import { SecurityLicenceStatusVerificationSwlComponent } from './components/security-licence-status-verification-swl.component';
 import { SecurityLicenceStatusVerificationRoutes } from './security-licence-status-verification-routes';
 
@@ -15,8 +16,12 @@ const routes: Routes = [
 				component: SecurityLicenceStatusVerificationMainComponent,
 			},
 			{
-				path: 'swl',
+				path: SecurityLicenceStatusVerificationRoutes.SECURITY_LICENCE_STATUS_VERIFICATION_SWL,
 				component: SecurityLicenceStatusVerificationSwlComponent,
+			},
+			{
+				path: SecurityLicenceStatusVerificationRoutes.SECURITY_LICENCE_STATUS_VERIFICATION_SBL,
+				component: SecurityLicenceStatusVerificationSblComponent,
 			},
 		],
 	},

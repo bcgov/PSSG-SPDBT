@@ -1,4 +1,9 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
 	selector: 'app-security-licence-status-verification-swl',
@@ -18,52 +23,93 @@ import { Component } from '@angular/core';
 									color="primary"
 									class="large w-auto mb-3"
 									aria-label="Back"
-									(click)="onCancel()"
+									(click)="onBack()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
 								</button>
 							</div>
 						</div>
 						<div class="col-12 mb-3">
-							<p>
+							<app-alert type="info" icon="">
 								Enter a security worker licence number, or the full name as it appears on the licence, below. The
 								results page will confirm if the licence number is valid and the name of the licensee.
-							</p>
+							</app-alert>
 						</div>
 					</div>
+
+					<form [formGroup]="form" novalidate>
+						<div class="row">
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>Worker Licence Number</mat-label>
+									<input matInput formControlName="workerLicenceNumber" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('workerLicenceNumber')?.hasError('required')">
+										This is required
+									</mat-error>
+								</mat-form-field>
+							</div>
+						</div>
+
+						<div class="text-minor-heading text-red mt-3 mb-4">OR</div>
+
+						<div class="row">
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>First Name</mat-label>
+									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
+								</mat-form-field>
+							</div>
+
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>Last Name</mat-label>
+									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+								</mat-form-field>
+							</div>
+						</div>
+					</form>
+
+					<div class="row mb-4">
+						<div class="offset-md-8 col-md-4 col-sm-12 text-end">
+							<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
+						</div>
+					</div>
+
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
+					<div class="text-minor-heading my-3">Search Results</div>
 				</div>
 			</div>
 		</section>
-		<!-- 
-		<div>Verify a Security Worker Licence</div>
-		<div>
-			Select this option if you have one or a few security worker licence number to check. It will return either VALID
-			or INVALID for each licence number entered.
-		</div>
-
-		<div>Verify a Security Worker Licence</div>
-		<div>
-			Enter a security worker licence number, or the full name as it appears on the licence, below. The results page
-			will confirm if the licence number is valid and the name of the licensee.
-		</div>
-
-		<div>Worker Licence Number:</div>
-		<div>First Name:</div>
-		<div>Last Name:</div>
-		<div>Submit</div>
-
-		<div>Verify a Security Business Licence</div>
-		<div>
-			Select this option if you have one or a few security business licence numbers or names to check. You may enter a
-			minimum of three letters to search by company name or you may enter a licence number. The results page will
-			display the Legal Business Name, the Trade Name, the Licence Number, the Licence Status (valid, not valid), and
-			the Licence Type of any of the businesses matching the search criteria.
-		</div> -->
 	`,
-	styles: ``,
+	styles: [
+		`
+			.text-red {
+				color: var(--color-red) !important;
+			}
+		`,
+	],
 })
 export class SecurityLicenceStatusVerificationSwlComponent {
-	title = 'test';
-	onCancel(): void {}
+	form = this.formBuilder.group({
+		workerLicenceNumber: new FormControl('', [FormControlValidators.required]),
+		givenName: new FormControl('', [FormControlValidators.required]),
+		surname: new FormControl('', [FormControlValidators.required]),
+	});
+
+	matcher = new FormErrorStateMatcher();
+
+	constructor(
+		private router: Router,
+		private formBuilder: FormBuilder
+	) {}
+
+	onBack(): void {
+		this.router.navigateByUrl(SecurityLicenceStatusVerificationRoutes.path());
+	}
+
+	onSubmit() {
+		this.form.markAllAsTouched();
+	}
 }
