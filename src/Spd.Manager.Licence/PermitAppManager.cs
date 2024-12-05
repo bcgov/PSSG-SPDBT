@@ -136,7 +136,8 @@ internal class PermitAppManager :
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-        if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate)
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -179,8 +180,9 @@ internal class PermitAppManager :
         LicenceResp originalLic = originalLicences.Items.First();
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
-        if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays)
+            || currentDate > originalLic.ExpiryDate)
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
@@ -232,7 +234,8 @@ internal class PermitAppManager :
         LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
-        if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);

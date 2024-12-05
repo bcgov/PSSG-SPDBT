@@ -23,7 +23,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="text-minor-heading my-3">Supervisor's Contact Information</div>
+						<div class="text-minor-heading mt-3 mb-2">Supervisor's Contact Information</div>
 						<div class="row">
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
@@ -68,7 +68,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="text-minor-heading my-3">Business's Primary Address</div>
+						<div class="text-minor-heading mt-3 mb-2">Business's Primary Address</div>
 						<app-form-address-autocomplete
 							(autocompleteAddress)="onAddressAutocomplete($event)"
 							(enterAddressManually)="onEnterAddressManually()"

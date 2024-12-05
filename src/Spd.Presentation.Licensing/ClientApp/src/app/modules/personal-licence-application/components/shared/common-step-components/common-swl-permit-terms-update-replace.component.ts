@@ -1,28 +1,32 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-swl-permit-terms',
+	selector: 'app-common-swl-permit-terms-update-replace',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 					<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
 						<div class="fs-5 mt-2 mb-3">
-							Terms of Use for Submitting a New or Renewal Security Worker Licence or Permit Application Online,
-							including Related Prescribed Checks
+							Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
+							Permit Application Online, including Related Prescribed Checks
 						</div>
 						<p>
 							In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic Security
-							Services Portal (the "Site") on their own behalf to submit a new or renewal online application for a
-							security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal licence or
-							permit application includes authorizations for the British Columbia Registrar of Security Services
-							(Registrar) to carry out a criminal record check, police information check and a correctional service
-							information check on you (Prescribed Checks). These Terms of Use apply to the online application process,
-							including your request to submit to Prescribed Checks administered by the Registrar. You will be directed
-							to a separate page for specific consent language as it relates to the conduct of Prescribed Checks.
+							Services Portal (the "Site") on their own behalf to submit an update to, or request a replacement of, a
+							security worker licence, armoured vehicle permit, or body armour permit. Depending on the nature of the
+							submitted update to your licence or permit, the British Columbia Registrar of Security Services
+							(Registrar) may decide to carry out a criminal record check, police information check and a correctional
+							service information check on you (Prescribed Checks). You provided your authorization for the Registrar to
+							carry out Prescribed Checks at the time of applying for or renewing your licence or permit, with your
+							authorization to remain in place for the duration of your licence or permit term. Accordingly, the
+							Registrar will not seek a new authorization to carry out Prescribed Checks from you at this time. These
+							Terms of Use apply to the online update process for your licence or permit, including as applicable your
+							submission to Prescribed Checks administered by the Registrar.
 						</p>
 						<p>
 							These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
@@ -46,8 +50,9 @@ import { UtilService } from '@app/core/services/util.service';
 								Services and the Site in general. However, you are encouraged to refer to the
 								<i>Security Services Act</i>, <i>Body Armour Control Act</i>, or
 								<i>Armoured Vehicle and After Market Compartment Control Act</i>, as applicable, and any related
-								Regulations and other official information materials before submitting an online application for a
-								security licence or permit described above, including Prescribed Checks.
+								Regulations and other official information materials before submitting an online update to, or
+								requesting a replacement of, a security licence or permit described above, including Prescribed Checks,
+								where applicable.
 							</li>
 							<li>
 								THE SERVICES ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND INCLUDING WARRANTY OF FITNESS FOR A
@@ -94,21 +99,24 @@ import { UtilService } from '@app/core/services/util.service';
 							</li>
 							<div class="fs-5 terms-subtitle">Authentication:</div>
 							<li>
-								You must be authenticated before you can submit an online application for a new or renewed security
-								licence or permit, including a request to submit to Prescribed Checks. Your identity will be verified
-								through your BC Services Card account login, approved government-issued ID, or other approved
-								authentication method as may be implemented from time to time.
+								You must be authenticated to submit an online update to, or request a replacement of, your security
+								licence or permit, including submitting to Prescribed Checks, if applicable. Your identity will be
+								verified through your BC Services Card account login, approved government-issued ID, or other approved
+								authentication method as may be implemented from time to time, which at the time of an update to your
+								licence or permit may require that you gain access to the Site by way of a unique access code provided
+								to you.
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
 								used, you may be required to follow a link to an external site, including the
 								<a [href]="bcServicesCardUrl" target="_blank">BC Services Card Site</a>, following which you will be
-								returned to, and allowed to access the application portions of, the Site.
+								returned to, and allowed to access the application or update portions of, the Site.
 							</li>
 							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>
 								You may be required to access an external payment processing site (“Payment Site” or, as the context
-								requires, “Associated Service” ) in order to pay the required licence or permit fee.
+								requires, “Associated Service”) in order to pay the required fee, if any, associated with the update to,
+								or replacement of, your licence or permit.
 							</li>
 							<div class="fs-5 terms-subtitle">Additional Terms and Personal Information Collection:</div>
 							<li>
@@ -184,7 +192,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</li>
 									<li>
 										the Province or the provider of any Associated Service deems such suspension or cancellation
-										necessary for any good and valid reason
+										necessary for any good and valid reason.
 									</li>
 								</ol>
 							</li>
@@ -283,16 +291,17 @@ import { UtilService } from '@app/core/services/util.service';
 		`,
 	],
 })
-export class CommonSwlPermitTermsComponent {
+export class CommonSwlPermitTermsUpdateReplaceComponent {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
 	bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;
 	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
 	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
-	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantTerms;
+	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
 	@Input() form!: FormGroup;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService) {}
 
