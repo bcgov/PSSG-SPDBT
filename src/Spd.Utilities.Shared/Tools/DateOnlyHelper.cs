@@ -13,5 +13,10 @@ public static class DateOnlyHelper
         var inTargetZone = TimeZoneInfo.ConvertTime(dto, zone);
         return DateOnly.FromDateTime(inTargetZone.Date);
     }
+
+    public static DateOnly GetCurrentPSTDate()
+    {
+        return DateTimeOffset.UtcNow.ToDateOnly(TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"));
+    }
 }
 

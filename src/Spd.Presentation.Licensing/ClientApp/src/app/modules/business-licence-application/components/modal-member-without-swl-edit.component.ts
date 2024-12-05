@@ -1,10 +1,23 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+	BizMemberResponse,
+	ControllingMemberAppInviteTypeCode,
+	ControllingMemberInvitesCreateResponse,
+	NonSwlContactInfo,
+} from '@app/api/models';
+import { BizMembersService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { take, tap } from 'rxjs';
+
+export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
+	allowNewInvitationsToBeSent?: boolean;
+	bizId?: string;
+}
 
 @Component({
 	selector: 'app-modal-member-without-swl-edit',
@@ -95,6 +108,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
+		private bizMembersService: BizMembersService,
 		private dialogRef: MatDialogRef<ModalMemberWithoutSwlEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: any
@@ -118,9 +132,69 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 			formValue.emailAddress = null;
 		}
 
-		this.dialogRef.close({
-			data: formValue,
-		});
+		if (!this.isEdit) {
+			// CREATE
+			this.bizMembersService
+				.apiBusinessBizIdNonSwlControllingMembersPost({
+					bizId: this.dialogData.bizId,
+					body: formValue,
+				})
+				.subscribe((resp: BizMemberResponse) => {
+					formValue.bizContactId = resp.bizContactId;
+
+					if (this.dialogData.allowNewInvitationsToBeSent) {
+						if (formValue.emailAddress) {
+							this.businessApplicationService
+								.sendControllingMembersWithoutSwlInvitation(resp.bizContactId!, ControllingMemberAppInviteTypeCode.New)
+								.pipe(
+									tap((_resp: ControllingMemberInvitesCreateResponse) => {
+										this.dialogRef.close({
+											data: formValue,
+										});
+									}),
+									take(1)
+								)
+								.subscribe();
+						} else {
+							this.businessApplicationService
+								.sendControllingMembersWithoutSwlInvitation(
+									resp.bizContactId!,
+									ControllingMemberAppInviteTypeCode.CreateShellApp
+								)
+								.pipe(
+									tap((_resp: ControllingMemberInvitesCreateResponse) => {
+										this.dialogRef.close({
+											data: formValue,
+										});
+									}),
+									take(1)
+								)
+								.subscribe();
+						}
+					} else {
+						this.dialogRef.close({
+							data: formValue,
+						});
+					}
+				});
+		} else {
+			// EDIT
+			this.bizMembersService
+				.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
+					bizId: this.dialogData.bizId,
+					bizContactId: this.dialogData.bizContactId!,
+					body: formValue,
+				})
+				.pipe(
+					tap((_resp: BizMemberResponse) => {
+						this.dialogRef.close({
+							data: formValue,
+						});
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
 	}
 
 	get noEmailAddress(): FormControl {

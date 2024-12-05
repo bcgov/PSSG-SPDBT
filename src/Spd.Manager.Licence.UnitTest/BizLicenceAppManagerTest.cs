@@ -14,6 +14,7 @@ using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicenceAppManagerTest
@@ -276,7 +277,8 @@ public class BizLicenceAppManagerTest
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
-        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly dateTime = currentDate.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
         DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
             .With(r => r.ExpiryDate, expiryDate)

@@ -13,6 +13,7 @@ using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -174,9 +175,10 @@ internal class SecurityWorkerAppManager :
 
         //validation: check if original licence meet replacement condition.
         LicenceResp? originalLic = await _licenceRepository.GetAsync(request.OriginalLicenceId.Value, cancellationToken);
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
         if (originalLic == null)
             throw new ArgumentException("Cannot find the licence that needs to be renewed.");
-        if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException("The licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -227,16 +229,17 @@ internal class SecurityWorkerAppManager :
         LicenceResp? originalLic = await _licenceRepository.GetAsync(request.OriginalLicenceId.Value, cancellationToken);
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
         if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
         {
-            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
+            if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays)
+                || currentDate > originalLic.ExpiryDate)
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         else
         {
-            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
+            if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays)
+                || currentDate > originalLic.ExpiryDate)
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
@@ -316,7 +319,8 @@ internal class SecurityWorkerAppManager :
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
@@ -397,7 +401,8 @@ internal class SecurityWorkerAppManager :
         }
 
         //DogRestraintsChanged - this check only matters if the new and original requests both contain SecurityGuard, otherwise 'CategoriesChanged' will catch the change.
-        if (newRequest.CategoryCodes.Any(d => d == WorkerCategoryTypeCode.SecurityGuard) && originalLic.CategoryCodes.Any(d => d == WorkerCategoryTypeEnum.SecurityGuard)) {
+        if (newRequest.CategoryCodes.Any(d => d == WorkerCategoryTypeCode.SecurityGuard) && originalLic.CategoryCodes.Any(d => d == WorkerCategoryTypeEnum.SecurityGuard))
+        {
             if (newRequest.UseDogs != originalLic.UseDogs ||
                 newRequest.CarryAndUseRestraints != originalLic.CarryAndUseRestraints ||
                 newRequest.IsDogsPurposeProtection != originalLic.IsDogsPurposeProtection ||

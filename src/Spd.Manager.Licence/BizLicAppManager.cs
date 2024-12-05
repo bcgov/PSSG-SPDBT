@@ -15,6 +15,7 @@ using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 using System.Text;
 
@@ -174,9 +175,11 @@ internal class BizLicAppManager :
         LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
+
         // Check Renew your licence before it expires, within 90 days of the expiry date.
-        if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays)
+            || currentDate > originalLic.ExpiryDate)
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
