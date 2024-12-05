@@ -90,7 +90,10 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = lics.Where(a => a.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode);
         }
-
+        if (qry.LastName != null || qry.FirstName != null)
+        {
+            lics = lics.Where(a => a.spd_LicenceHolder_contact.firstname == qry.FirstName && a.spd_LicenceHolder_contact.lastname == qry.LastName);
+        }
         return new LicenceListResp()
         {
             Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)
