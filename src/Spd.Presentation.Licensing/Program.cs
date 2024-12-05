@@ -78,7 +78,7 @@ try
     app.UseStaticFiles();
     if (app.Configuration.GetValue("MaintenanceMode", false))
     {
-        app.MapFallbackToFile("maintenance/spd-unavailable.html");
+        app.MapFallbackToFile("maintenance/offline.html");
     }
     else
     {
