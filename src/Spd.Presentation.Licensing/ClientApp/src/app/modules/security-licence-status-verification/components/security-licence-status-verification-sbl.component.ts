@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
@@ -28,24 +30,161 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-12 mb-3">
 							<app-alert type="info" icon="">
-								Select this option if you have one or a few security business licence numbers or names to check. You may
-								enter a minimum of three letters to search by company name or you may enter a licence number. The
-								results page will display the Legal Business Name, the Trade Name, the Licence Number, the Licence
-								Status (valid, not valid), and the Licence Type of any of the businesses matching the search criteria.
+								Enter a security business <strong>licence number</strong> or at least the
+								<strong>first three (3)</strong> letters of the name of a security business below. The results will
+								display the Legal Business Name, the Trade Name, the Licence Number, the Licence Status (valid, not
+								valid), and the Licence Type of any businesses matching the search criteria.
 							</app-alert>
 						</div>
 					</div>
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
+
+					<form [formGroup]="form" novalidate>
+						<div class="row mb-2">
+							<div class="col-xl-5 col-lg-5 col-md-12">
+								<mat-form-field>
+									<mat-label>Business Licence Number</mat-label>
+									<input
+										matInput
+										formControlName="businessLicenceNumber"
+										oninput="this.value = this.value.toUpperCase()"
+										[errorStateMatcher]="matcher"
+										maxlength="20"
+									/>
+								</mat-form-field>
+							</div>
+
+							<div class="col-xl-2 col-lg-2 col-md-12 text-center">
+								<div class="text-minor-heading text-red my-3">OR</div>
+							</div>
+
+							<div class="col-xl-5 col-lg-5 col-md-12">
+								<mat-form-field>
+									<mat-label>Business Name</mat-label>
+									<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
+								</mat-form-field>
+							</div>
+						</div>
+
+						<ng-container *ngIf="showSearchDataError">
+							<app-alert type="danger" icon="error">
+								Enter either a business licence number, OR the business name is required.
+							</app-alert>
+						</ng-container>
+
+						<div class="row my-2">
+							<div class="col-12 text-end">
+								<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
+							</div>
+						</div>
+					</form>
+
+					<ng-container *ngIf="showSearchResults">
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						<div class="text-minor-heading my-3">Search Results</div>
+
+						<div class="mb-3" *ngIf="searchResults.length > 0">
+							<div
+								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
+								*ngFor="let licence of searchResults; let i = index"
+							>
+								<div class="row">
+									<div class="col-xl-2 col-lg-2">
+										<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+										<div class="fs-5" style="color: var(--color-primary);">
+											{{ licence.licenceNumber }}
+										</div>
+									</div>
+									<div class="col-xl-8 col-lg-8">
+										<div class="row">
+											<div class="col-xl-6 col-lg-6">
+												<div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
+												<div class="text-data fw-bold">aa</div>
+											</div>
+											<div class="col-xl-6 col-lg-6">
+												<div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
+												<div class="text-data fw-bold">aa</div>
+											</div>
+											<div class="col-xl-6 col-lg-6">
+												<div class="d-block text-muted mt-2">Licence Type(s)</div>
+												<div class="text-data fw-bold">Armoured Vehicle, Security Guard</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-xl-2 col-lg-2 text-end">
+										<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+											<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+										</mat-chip-option>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-container>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [
+		`
+			.text-red {
+				color: var(--color-red) !important;
+			}
+		`,
+	],
 })
 export class SecurityLicenceStatusVerificationSblComponent {
-	constructor(private router: Router) {}
+	showSearchResults = false;
+	showSearchDataError = false;
+
+	searchResults: Array<any> = [{ licenceNumber: 'B1073' }, { licenceNumber: 'B1043' }, { licenceNumber: 'B9833' }];
+
+	form = this.formBuilder.group({
+		businessLicenceNumber: new FormControl(''),
+		businessName: new FormControl(''),
+	});
+
+	matcher = new FormErrorStateMatcher();
+
+	constructor(
+		private router: Router,
+		private formBuilder: FormBuilder
+	) {}
 
 	onBack(): void {
 		this.router.navigateByUrl(SecurityLicenceStatusVerificationRoutes.path());
+	}
+
+	onSubmit() {
+		this.reset();
+
+		this.form.markAllAsTouched();
+
+		const formValue = this.form.value;
+
+		const businessLicenceNumber = formValue.businessLicenceNumber?.trim() ?? null;
+		const businessName = formValue.businessName?.trim() ?? null;
+
+		let performSearch = true;
+		if ((businessLicenceNumber && businessName) || (!businessLicenceNumber && !businessName)) {
+			performSearch = false;
+		}
+
+		if (!performSearch) {
+			this.showSearchDataError = true;
+			return;
+		}
+
+		this.performSearch(businessLicenceNumber, businessName);
+	}
+
+	private reset(): void {
+		this.showSearchDataError = false;
+		this.showSearchResults = false;
+	}
+
+	private performSearch(businessLicenceNumber: string | null, businessName: string | null): void {
+		console.debug('[performSearch] businessLicenceNumber', businessLicenceNumber);
+		console.debug('businessName', businessName);
+
+		this.showSearchResults = true;
 	}
 }

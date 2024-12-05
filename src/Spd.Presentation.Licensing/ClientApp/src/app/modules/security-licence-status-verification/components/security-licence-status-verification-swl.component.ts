@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
@@ -31,54 +30,98 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-12 mb-3">
 							<app-alert type="info" icon="">
-								Enter a security worker licence number, or the full name as it appears on the licence, below. The
-								results page will confirm if the licence number is valid and the name of the licensee.
+								Enter a security worker <strong>licence number</strong>, or the <strong>full name</strong> as it appears
+								on the licence, below. Press 'Submit' and the results will confirm if the licence number is valid and
+								the name of the licensee.
 							</app-alert>
 						</div>
 					</div>
 
 					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-xl-4 col-lg-6 col-md-12">
+						<div class="row mb-2">
+							<div class="col-xl-4 col-lg-5 col-md-12">
 								<mat-form-field>
 									<mat-label>Worker Licence Number</mat-label>
-									<input matInput formControlName="workerLicenceNumber" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('workerLicenceNumber')?.hasError('required')">
-										This is required
-									</mat-error>
+									<input
+										matInput
+										formControlName="workerLicenceNumber"
+										oninput="this.value = this.value.toUpperCase()"
+										placeholder="E12345678"
+										[errorStateMatcher]="matcher"
+										maxlength="20"
+									/>
+								</mat-form-field>
+							</div>
+
+							<div class="col-xl-1 col-lg-1 col-md-12 text-center">
+								<div class="text-minor-heading text-red my-3">OR</div>
+							</div>
+
+							<div class="col-xl-3 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>First Name</mat-label>
+									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+								</mat-form-field>
+							</div>
+
+							<div class="offset-xl-0 col-xl-4 offset-lg-6 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>Last Name</mat-label>
+									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
 						</div>
 
-						<div class="text-minor-heading text-red mt-3 mb-4">OR</div>
+						<ng-container *ngIf="showSearchDataError">
+							<app-alert type="danger" icon="error">
+								Enter either a security worker licence number, OR the full name as it appears on the licence.
+							</app-alert>
+						</ng-container>
 
-						<div class="row">
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>First Name</mat-label>
-									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Last Name</mat-label>
-									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
+						<div class="row my-2">
+							<div class="col-12 text-end">
+								<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
 							</div>
 						</div>
 					</form>
 
-					<div class="row mb-4">
-						<div class="offset-md-8 col-md-4 col-sm-12 text-end">
-							<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
-						</div>
-					</div>
+					<ng-container *ngIf="showSearchResults">
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						<div class="text-minor-heading my-3">Search Results</div>
 
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-					<div class="text-minor-heading my-3">Search Results</div>
+						<div class="mb-3" *ngIf="searchResults.length > 0">
+							<div
+								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
+								*ngFor="let licence of searchResults; let i = index"
+							>
+								<div class="row">
+									<div class="col-xl-2 col-lg-2">
+										<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+										<div class="fs-5" style="color: var(--color-primary);">
+											{{ licence.licenceNumber }}
+										</div>
+									</div>
+									<div class="col-xl-8 col-lg-8">
+										<div class="row">
+											<div class="col-xl-6 col-lg-6">
+												<div class="d-block text-muted mt-2 mt-lg-0">Licence Holder Name</div>
+												<div class="text-data fw-bold">aa</div>
+											</div>
+											<div class="col-xl-6 col-lg-6">
+												<div class="d-block text-muted mt-2 mt-lg-0">Licence Type(s)</div>
+												<div class="text-data fw-bold">Armoured Vehicle, Security Guard</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-xl-2 col-lg-2 text-end">
+										<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+											<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+										</mat-chip-option>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-container>
 				</div>
 			</div>
 		</section>
@@ -92,10 +135,19 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	],
 })
 export class SecurityLicenceStatusVerificationSwlComponent {
+	showSearchResults = false;
+	showSearchDataError = false;
+
+	searchResults: Array<any> = [
+		{ licenceNumber: 'E4431073' },
+		{ licenceNumber: 'E2341043' },
+		{ licenceNumber: 'E2349833' },
+	];
+
 	form = this.formBuilder.group({
-		workerLicenceNumber: new FormControl('', [FormControlValidators.required]),
-		givenName: new FormControl('', [FormControlValidators.required]),
-		surname: new FormControl('', [FormControlValidators.required]),
+		workerLicenceNumber: new FormControl(''),
+		givenName: new FormControl(''),
+		surname: new FormControl(''),
 	});
 
 	matcher = new FormErrorStateMatcher();
@@ -110,6 +162,44 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	}
 
 	onSubmit() {
+		this.reset();
+
 		this.form.markAllAsTouched();
+
+		const formValue = this.form.value;
+
+		const workerLicenceNumber = formValue.workerLicenceNumber?.trim() ?? null;
+		const givenName = formValue.givenName?.trim() ?? null;
+		const surname = formValue.surname?.trim() ?? null;
+
+		let performSearch = true;
+		if ((workerLicenceNumber && givenName && surname) || (!workerLicenceNumber && !givenName && !surname)) {
+			performSearch = false;
+		} else if (!workerLicenceNumber) {
+			// must have both names
+			if (!givenName || !surname) {
+				performSearch = false;
+			}
+		}
+
+		if (!performSearch) {
+			this.showSearchDataError = true;
+			return;
+		}
+
+		this.performSearch(workerLicenceNumber, givenName, surname);
+	}
+
+	private reset(): void {
+		this.showSearchDataError = false;
+		this.showSearchResults = false;
+	}
+
+	private performSearch(workerLicenceNumber: string | null, givenName: string | null, surname: string | null): void {
+		console.debug('[performSearch] workerLicenceNumber', workerLicenceNumber);
+		console.debug('givenName', givenName);
+		console.debug('surname', surname);
+
+		this.showSearchResults = true;
 	}
 }
