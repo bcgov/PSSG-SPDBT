@@ -86,6 +86,7 @@ import { CommonAccessCodeAnonymousComponent } from './components/shared/common-s
 import { CommonAliasListComponent } from './components/shared/common-step-components/common-alias-list.component';
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/common-step-components/common-photograph-of-yourself.component';
+import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
 import { LicenceActiveSwlPermitLicencesComponent } from './components/shared/licence-active-swl-permit-licences.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
@@ -176,6 +177,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		CommonCriminalHistoryComponent,
 		CommonPhotographOfYourselfComponent,
 		CommonSwlPermitTermsComponent,
+		CommonSwlPermitTermsUpdateReplaceComponent,
 		CommonUserProfileComponent,
 		CommonUserProfileLicencePoliceBackgroundComponent,
 		PersonalLicenceApplicationBaseComponent,
