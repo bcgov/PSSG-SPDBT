@@ -80,7 +80,7 @@ try
         var isMaintenance = builder.Configuration.GetValue<bool>("MaintenanceMode"); // Get the value from appsettings.json
         if (isMaintenance && !context.Request.Path.Value.Contains("maintenance"))
         {
-            context.Response.Redirect("/maintenance/offline.html");
+            context.Response.Redirect("/licensing/maintenance/offline.html");
             return;
         }
         await next();
