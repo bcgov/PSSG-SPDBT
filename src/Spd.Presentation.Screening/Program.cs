@@ -78,7 +78,14 @@ try
     app.UseRequestDecompression();
     app.UseResponseCompression();
     app.UseStaticFiles();
-    app.MapFallbackToFile("index.html");
+    if (app.Configuration.GetValue("MaintenanceMode", false))
+    {
+        app.MapFallbackToFile("offline.html");
+    }
+    else
+    {
+        app.MapFallbackToFile("index.html");
+    }
     app.UseRouting();
     app.UseObservabilityMiddleware();
     app.UseHealthChecks();
