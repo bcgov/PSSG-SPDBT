@@ -2,6 +2,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Resource.Repository.Application;
@@ -148,7 +149,8 @@ internal partial class ApplicationRepository : IApplicationRepository
     private string GetClearanceFilterString(ClearanceAccessFilterBy clearanceFilterBy)
     {
         ClearanceAccessStatusOptionSet status = Enum.Parse<ClearanceAccessStatusOptionSet>(clearanceFilterBy.ClearanceAccessStatus.ToString());
-        string dateStr = DateTime.UtcNow.AddDays(90).Date.ToString("yyyy-MM-dd");
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        string dateStr = currentDate.AddDays(90).ToString("yyyy-MM-dd");
         string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
         string statusFilter = $"statuscode eq {(int)status}";
         string expireDateFilter = $"spd_expirydate le {dateStr}";
@@ -196,5 +198,4 @@ internal partial class ApplicationRepository : IApplicationRepository
        => await _context.spd_clearanceaccesses
             .Where(a => a.spd_clearanceaccessid == clearanceAccessId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();
 }
-
 
