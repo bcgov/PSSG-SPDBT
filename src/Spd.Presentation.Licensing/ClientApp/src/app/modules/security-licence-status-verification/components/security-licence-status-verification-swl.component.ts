@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LicenceBasicResponse, LicenceStatusCode } from '@app/api/models';
+import { LicenceService } from '@app/api/services';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
@@ -86,10 +88,10 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					</form>
 
 					<ng-container *ngIf="showSearchResults">
-						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						<mat-divider class="mat-divider-main my-3"></mat-divider>
 						<div class="text-minor-heading my-3">Search Results</div>
 
-						<div class="mb-3" *ngIf="searchResults.length > 0">
+						<div class="mb-3" *ngIf="searchResults.length > 0; else NoSearchResults">
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 								*ngFor="let licence of searchResults; let i = index"
@@ -105,22 +107,25 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										<div class="row">
 											<div class="col-xl-6 col-lg-6">
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Holder Name</div>
-												<div class="text-data fw-bold">aa</div>
+												<div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
 											</div>
 											<div class="col-xl-6 col-lg-6">
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Type(s)</div>
-												<div class="text-data fw-bold">Armoured Vehicle, Security Guard</div>
+												<div class="text-data fw-bold">{{ licence.categoryCodes }}</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-xl-2 col-lg-2 text-end">
 										<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-											<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+											<span class="appl-chip-option-item mx-2 fs-5">{{
+												getLicenceStatus(licence.licenceStatusCode)
+											}}</span>
 										</mat-chip-option>
 									</div>
 								</div>
 							</div>
 						</div>
+						<ng-template #NoSearchResults> not found </ng-template>
 					</ng-container>
 				</div>
 			</div>
@@ -138,11 +143,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	showSearchResults = false;
 	showSearchDataError = false;
 
-	searchResults: Array<any> = [
-		{ licenceNumber: 'E4431073' },
-		{ licenceNumber: 'E2341043' },
-		{ licenceNumber: 'E2349833' },
-	];
+	searchResults: Array<any> = [];
 
 	form = this.formBuilder.group({
 		workerLicenceNumber: new FormControl(''),
@@ -154,7 +155,8 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 
 	constructor(
 		private router: Router,
-		private formBuilder: FormBuilder
+		private formBuilder: FormBuilder,
+		private licenceService: LicenceService
 	) {}
 
 	onBack(): void {
@@ -168,9 +170,9 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 
 		const formValue = this.form.value;
 
-		const workerLicenceNumber = formValue.workerLicenceNumber?.trim() ?? null;
-		const givenName = formValue.givenName?.trim() ?? null;
-		const surname = formValue.surname?.trim() ?? null;
+		const workerLicenceNumber = formValue.workerLicenceNumber?.trim();
+		const givenName = formValue.givenName?.trim();
+		const surname = formValue.surname?.trim();
 
 		let performSearch = true;
 		if ((workerLicenceNumber && givenName && surname) || (!workerLicenceNumber && !givenName && !surname)) {
@@ -195,11 +197,47 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		this.showSearchResults = false;
 	}
 
-	private performSearch(workerLicenceNumber: string | null, givenName: string | null, surname: string | null): void {
-		console.debug('[performSearch] workerLicenceNumber', workerLicenceNumber);
-		console.debug('givenName', givenName);
-		console.debug('surname', surname);
+	private performSearch(
+		licenceNumber: string | undefined,
+		firstName: string | undefined,
+		lastName: string | undefined
+	): void {
+		console.debug('[performSearch] licenceNumber', licenceNumber);
+		console.debug('firstName', firstName);
+		console.debug('lastName', lastName);
 
-		this.showSearchResults = true;
+		this.licenceService
+			.apiLicencesSecurityWorkerLicenceGet({
+				licenceNumber,
+				firstName,
+				lastName,
+			})
+			.subscribe((resps: Array<LicenceBasicResponse>) => {
+				this.showSearchResults = true;
+				this.searchResults = resps;
+				// LicenceBasicResponse {
+				// 	categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+				// 	expiryDate?: string;
+				// 	licenceAppId?: string | null;
+				// 	licenceHolderId?: string | null;
+				// 	licenceHolderName?: string | null;
+				// 	licenceId?: string | null;
+				// 	licenceNumber?: string | null;
+				// 	licenceStatusCode?: LicenceStatusCode;
+				// 	licenceTermCode?: LicenceTermCode;
+				// 	nameOnCard?: string | null;
+				// 	serviceTypeCode?: ServiceTypeCode;
+				//   }
+			});
+	}
+
+	public getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
+		if (!licenceStatusCode) return '';
+
+		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
+			return 'Active';
+		}
+
+		return licenceStatusCode;
 	}
 }
