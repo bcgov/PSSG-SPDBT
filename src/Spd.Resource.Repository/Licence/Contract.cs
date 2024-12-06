@@ -42,6 +42,7 @@ namespace Spd.Resource.Repository.Licence
 
         //biz info
         public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
+        public string? BizLegalName { get; set; }
 
         //swl & biz info
         public bool UseDogs { get; set; }
