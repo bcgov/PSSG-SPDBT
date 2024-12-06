@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LicenceBasicResponse } from '@app/api/models';
+import { LicenceBasicResponse, LicenceStatusCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
+import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
@@ -17,7 +18,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 							<h2 class="fs-3">Verify a Security Business Licence</h2>
 						</div>
 
-						<div class="col-xl-4 col-lg-4 col-md-12">
+						<div class="col-xl-4 col-lg-4 col-md-12 no-print">
 							<div class="d-flex justify-content-end">
 								<button
 									mat-stroked-button
@@ -73,7 +74,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 							</app-alert>
 						</ng-container>
 
-						<div class="row my-2">
+						<div class="row no-print my-2">
 							<div class="col-12 text-end">
 								<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
 							</div>
@@ -100,21 +101,33 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										<div class="row">
 											<div class="col-xl-6 col-lg-6">
 												<div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
-												<div class="text-data fw-bold">aa</div>
+												<div class="text-data fw-bold">{{ licence.bizLegalName }}</div>
 											</div>
 											<div class="col-xl-6 col-lg-6">
 												<div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
-												<div class="text-data fw-bold">aa</div>
+												<div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
 											</div>
-											<div class="col-xl-6 col-lg-6">
+											<div class="col-xl-12 col-lg-6">
 												<div class="d-block text-muted mt-2">Licence Type(s)</div>
-												<div class="text-data fw-bold">Armoured Vehicle, Security Guard</div>
+												<div class="text-data fw-bold">
+													<ul class="m-0">
+														<ng-container *ngFor="let category of licence.categoryCodes; let i = index">
+															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+														</ng-container>
+													</ul>
+												</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-xl-2 col-lg-2 text-end">
-										<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-											<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+										<mat-chip-option
+											[selectable]="false"
+											class="appl-chip-option"
+											[ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
+										>
+											<span class="appl-chip-option-item mx-2 fs-5">{{
+												getLicenceStatus(licence.licenceStatusCode)
+											}}</span>
 										</mat-chip-option>
 									</div>
 								</div>
@@ -149,6 +162,7 @@ export class SecurityLicenceStatusVerificationSblComponent {
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private licenceService: LicenceService
 	) {}
@@ -180,6 +194,26 @@ export class SecurityLicenceStatusVerificationSblComponent {
 		this.performSearch(businessLicenceNumber, businessName);
 	}
 
+	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
+		if (!licenceStatusCode) return '';
+
+		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
+			return 'mat-chip-green';
+		}
+
+		return 'mat-chip-red';
+	}
+
+	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
+		if (!licenceStatusCode) return '';
+
+		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
+			return 'Active';
+		}
+
+		return licenceStatusCode;
+	}
+
 	private reset(): void {
 		this.showSearchDataError = false;
 		this.showSearchResults = false;
@@ -196,21 +230,12 @@ export class SecurityLicenceStatusVerificationSblComponent {
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				this.showSearchResults = true;
-				this.searchResults = resps;
 
-				// LicenceBasicResponse {
-				// 	categoryCodes?: Array<WorkerCategoryTypeCode> | null;
-				// 	expiryDate?: string;
-				// 	licenceAppId?: string | null;
-				// 	licenceHolderId?: string | null;
-				// 	licenceHolderName?: string | null;
-				// 	licenceId?: string | null;
-				// 	licenceNumber?: string | null;
-				// 	licenceStatusCode?: LicenceStatusCode;
-				// 	licenceTermCode?: LicenceTermCode;
-				// 	nameOnCard?: string | null;
-				// 	serviceTypeCode?: ServiceTypeCode;
-				//   }
+				const sortedResps = resps.sort((a, b) => {
+					return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
+				});
+
+				this.searchResults = sortedResps;
 			});
 	}
 }
