@@ -155,7 +155,7 @@ internal class LicenceManager :
                 throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
             if ((!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.FirstName))
                 || (!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.LastName)))
-                throw new ApiException(HttpStatusCode.BadRequest, "Cannot input name and licence number together.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot search name and licence number together.");
             response = await _licenceRepository.QueryAsync(
                 new LicenceQry
                 {
@@ -171,6 +171,10 @@ internal class LicenceManager :
         {
             if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.BizName))
                 throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
+            if (!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.BizName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot search biz name and licence number together.");
+            if (!string.IsNullOrWhiteSpace(search.BizName) && search.BizName.Length < 3)
+                throw new ApiException(HttpStatusCode.BadRequest, "Business name must have at least 3 chars.");
 
             response = await _licenceRepository.QueryAsync(
                 new LicenceQry

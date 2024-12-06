@@ -91,7 +91,7 @@ internal class LicenceRepository : ILicenceRepository
         }
         if (qry.BizName != null)
         {
-            lics = lics.Where(a => a.spd_LicenceHolder_account.name == qry.BizName || a.spd_LicenceHolder_account.spd_organizationlegalname == qry.BizName);
+            lics = lics.Where(a => a.spd_LicenceHolder_account.name.StartsWith(qry.BizName) || a.spd_LicenceHolder_account.spd_organizationlegalname.StartsWith(qry.BizName));
         }
         return new LicenceListResp()
         {
