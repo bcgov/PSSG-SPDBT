@@ -146,36 +146,48 @@ internal class LicenceManager :
         return new FileResponse();
     }
 
-    public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
     {
+        LicenceListResp response = new LicenceListResp();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
             if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.FirstName) && string.IsNullOrWhiteSpace(search.LastName))
                 throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
-
+            if ((!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.FirstName))
+                || (!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.LastName)))
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot input name and licence number together.");
+            response = await _licenceRepository.QueryAsync(
+                new LicenceQry
+                {
+                    LicenceNumber = search.LicenceNumber,
+                    FirstName = search.FirstName,
+                    LastName = search.LastName,
+                    Type = ServiceTypeEnum.SecurityWorkerLicence,
+                    IncludeInactive = true
+                }, cancellationToken);
         }
 
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
         {
+            if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.BizName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
 
+            response = await _licenceRepository.QueryAsync(
+                new LicenceQry
+                {
+                    LicenceNumber = search.LicenceNumber,
+                    BizName = search.BizName,
+                    IncludeInactive = true,
+                    Type = ServiceTypeEnum.SecurityBusinessLicence,
+                }, cancellationToken);
         }
 
-        var response = await _licenceRepository.QueryAsync(
-            new LicenceQry
-            {
-                ContactId = query.ApplicantId,
-                AccountId = query.BizId,
-                IncludeInactive = true
-            }, cancellationToken);
-
-        if (!response.Items.Any())
-        {
-            _logger.LogDebug("No licence found.");
-            return Array.Empty<LicenceBasicResponse>();
-        }
-
+        var result = response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview)
+            .GroupBy(r => r.LicenceNumber)
+            .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
+            .ToList();
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview));
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
 
     }
 
