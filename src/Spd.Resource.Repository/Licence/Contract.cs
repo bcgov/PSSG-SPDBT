@@ -19,6 +19,9 @@ namespace Spd.Resource.Repository.Licence
         public ServiceTypeEnum? Type { get; set; }
         public bool IncludeInactive { get; set; }
         public bool? IsExpired { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? BizName { get; set; }
     };
     public record LicenceListResp
     {

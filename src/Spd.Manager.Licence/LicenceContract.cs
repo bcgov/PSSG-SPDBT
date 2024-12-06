@@ -8,6 +8,7 @@ public interface ILicenceManager
     public Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken ct);
     public Task<LicenceResponse> Handle(LicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListQuery query, CancellationToken ct);
+    public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken ct);
     public Task<FileResponse> Handle(LicencePhotoQuery query, CancellationToken ct);
 }
 
@@ -65,3 +66,4 @@ public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest
 public record LicenceByIdQuery(Guid LicenceId) : IRequest<LicenceResponse>;
 public record LicenceListQuery(Guid? ApplicantId, Guid? BizId) : IRequest<IEnumerable<LicenceBasicResponse>>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;
+public record LicenceListSearch(string? LicenceNumber, string? FirstName, string? LastName, string? BizName, ServiceTypeCode ServiceTypeCode) : IRequest<IEnumerable<LicenceBasicResponse>>;
