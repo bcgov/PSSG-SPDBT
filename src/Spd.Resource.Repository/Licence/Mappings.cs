@@ -19,6 +19,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value)))
              .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
              .ForMember(d => d.BizLegalName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.spd_organizationlegalname : null))
+             .ForMember(d => d.LicenceHolderDateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.birthdate))
              .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.name : s.spd_LicenceHolder_contact.firstname))
              .ForMember(d => d.LicenceStatusCode, opt => opt.MapFrom(s => GetLicenceStatusEnum(s.statuscode)))
              .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.lastname))

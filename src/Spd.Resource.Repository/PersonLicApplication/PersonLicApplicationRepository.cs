@@ -3,7 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicApp;
-using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -39,13 +38,8 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             else
                 existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
 
-            //for new, create a new contact if it doesn't exist with same info, or update the licence holder contact if Has expired licence.
-            if (existingContact != null)
-                contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-            else
-            {
-                contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-            }
+            //spdbt-3402: for unauth, always create new contact
+            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         else
         {
