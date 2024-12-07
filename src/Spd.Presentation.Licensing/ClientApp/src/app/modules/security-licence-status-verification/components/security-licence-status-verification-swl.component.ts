@@ -3,6 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LicenceBasicResponse, LicenceStatusCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
@@ -49,7 +50,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										matInput
 										formControlName="workerLicenceNumber"
 										oninput="this.value = this.value.toUpperCase()"
-										placeholder="E12345678"
+										placeholder="E123456"
 										[errorStateMatcher]="matcher"
 										maxlength="20"
 									/>
@@ -63,22 +64,20 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 							<div class="col-xl-3 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>First Name</mat-label>
-									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
 
 							<div class="offset-xl-0 col-xl-4 offset-lg-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Last Name</mat-label>
-									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
 						</div>
 
 						<ng-container *ngIf="showSearchDataError">
-							<app-alert type="danger" icon="error">
-								Enter either a security worker licence number, OR the full name as it appears on the licence.
-							</app-alert>
+							<app-alert type="danger" icon="error"> {{ searchDataError }} </app-alert>
 						</ng-container>
 
 						<div class="row no-print my-2">
@@ -89,10 +88,10 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					</form>
 
 					<ng-container *ngIf="showSearchResults">
-						<mat-divider class="mat-divider-main my-3"></mat-divider>
-						<div class="text-minor-heading my-3">Search Results</div>
-
 						<div class="mb-3" *ngIf="searchResults.length > 0; else NoSearchResults">
+							<mat-divider class="mat-divider-main my-3"></mat-divider>
+							<div class="text-minor-heading my-3">Search Results</div>
+
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 								*ngFor="let licence of searchResults; let i = index"
@@ -120,6 +119,14 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 													</ul>
 												</div>
 											</div>
+
+											<div class="mt-3" *ngIf="!isLicenceActive(licence.licenceStatusCode)">
+												<app-alert type="warning" icon="warn">
+													<strong>{{ licence.licenceNumber }} - {{ licence.licenceHolderName }}</strong> does not hold a
+													valid licence. If you believe they are working in security in B.C., please consider submitting
+													a <a [href]="spdComplaintUrl" target="_blank">complaint</a>.
+												</app-alert>
+											</div>
 										</div>
 									</div>
 									<div class="col-xl-2 col-lg-2 text-end">
@@ -136,7 +143,21 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-						<ng-template #NoSearchResults> not found </ng-template>
+						<ng-template #NoSearchResults>
+							<div class="mt-3">
+								<ng-container *ngIf="isWorkerLicenceNumberSearchError; else NameSearchError">
+									<app-alert type="danger" icon="error">No results match your search.</app-alert>
+								</ng-container>
+
+								<ng-template #NameSearchError>
+									<app-alert type="danger" icon="error">
+										<strong>{{ firstName }} {{ lastName }}</strong> does not hold a valid licence. If you believe they
+										are working in security in B.C., please consider submitting a
+										<a [href]="spdComplaintUrl" target="_blank">complaint</a>.
+									</app-alert>
+								</ng-template>
+							</div>
+						</ng-template>
 					</ng-container>
 				</div>
 			</div>
@@ -151,15 +172,20 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	],
 })
 export class SecurityLicenceStatusVerificationSwlComponent {
-	showSearchResults = false;
+	spdComplaintUrl = SPD_CONSTANTS.urls.spdComplaintUrl;
+
 	showSearchDataError = false;
+	searchDataError = '';
+
+	showSearchResults = false;
+	isWorkerLicenceNumberSearchError = false;
 
 	searchResults: Array<any> = [];
 
 	form = this.formBuilder.group({
 		workerLicenceNumber: new FormControl(''),
-		givenName: new FormControl(''),
-		surname: new FormControl(''),
+		firstName: new FormControl(''),
+		lastName: new FormControl(''),
 	});
 
 	matcher = new FormErrorStateMatcher();
@@ -183,15 +209,15 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		const formValue = this.form.value;
 
 		const workerLicenceNumber = formValue.workerLicenceNumber?.trim();
-		const givenName = formValue.givenName?.trim();
-		const surname = formValue.surname?.trim();
+		const firstName = formValue.firstName?.trim();
+		const lastName = formValue.lastName?.trim();
 
 		let performSearch = true;
-		if ((workerLicenceNumber && givenName && surname) || (!workerLicenceNumber && !givenName && !surname)) {
+		if ((workerLicenceNumber && firstName && lastName) || (!workerLicenceNumber && !firstName && !lastName)) {
 			performSearch = false;
 		} else if (!workerLicenceNumber) {
 			// must have both names
-			if (!givenName || !surname) {
+			if (!firstName || !lastName) {
 				performSearch = false;
 			}
 		}
@@ -201,31 +227,42 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 			return;
 		}
 
-		this.performSearch(workerLicenceNumber, givenName, surname);
+		this.performSearch(workerLicenceNumber, firstName, lastName);
 	}
 
 	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		if (!licenceStatusCode) return '';
-
-		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return 'mat-chip-green';
-		}
-
-		return 'mat-chip-red';
+		return this.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
 	}
 
 	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		if (!licenceStatusCode) return '';
+		return this.isLicenceActive(licenceStatusCode) ? 'Active' : (licenceStatusCode ?? '---');
+	}
+
+	isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
+		if (!licenceStatusCode) return false;
 
 		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return 'Active';
+			return true;
 		}
 
-		return licenceStatusCode;
+		return false;
+	}
+
+	get firstName(): string {
+		return this.form.value.firstName ?? '';
+	}
+
+	get lastName(): string {
+		return this.form.value.lastName ?? '';
 	}
 
 	private reset(): void {
+		this.searchResults = [];
+
 		this.showSearchDataError = false;
+		this.searchDataError =
+			'Enter either a security worker licence number, OR the full name as it appears on the licence.';
+
 		this.showSearchResults = false;
 	}
 
@@ -245,13 +282,17 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 				lastName,
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
+				if (resps.length === 0) {
+					this.isWorkerLicenceNumberSearchError = !!licenceNumber;
+				} else {
+					const sortedResps = resps.sort((a, b) => {
+						return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
+					});
+
+					this.searchResults = sortedResps;
+				}
+
 				this.showSearchResults = true;
-
-				const sortedResps = resps.sort((a, b) => {
-					return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
-				});
-
-				this.searchResults = sortedResps;
 			});
 	}
 }

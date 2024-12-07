@@ -50,17 +50,18 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										matInput
 										formControlName="businessLicenceNumber"
 										oninput="this.value = this.value.toUpperCase()"
+										placeholder="B123456"
 										[errorStateMatcher]="matcher"
 										maxlength="20"
 									/>
 								</mat-form-field>
 							</div>
 
-							<div class="col-xl-2 col-lg-2 col-md-12 text-center">
+							<div class="col-xl-1 col-lg-1 col-md-12 text-center">
 								<div class="text-minor-heading text-red my-3">OR</div>
 							</div>
 
-							<div class="col-xl-5 col-lg-5 col-md-12">
+							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Business Name</mat-label>
 									<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
@@ -70,7 +71,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 
 						<ng-container *ngIf="showSearchDataError">
 							<app-alert type="danger" icon="error">
-								Enter either a business licence number, OR the business name is required.
+								{{ searchDataError }}
 							</app-alert>
 						</ng-container>
 
@@ -82,10 +83,10 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					</form>
 
 					<ng-container *ngIf="showSearchResults">
-						<mat-divider class="mat-divider-main my-3"></mat-divider>
-						<div class="text-minor-heading my-3">Search Results</div>
-
 						<div class="mb-3" *ngIf="searchResults.length > 0; else NoSearchResults">
+							<mat-divider class="mat-divider-main my-3"></mat-divider>
+							<div class="text-minor-heading my-3">Search Results</div>
+
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 								*ngFor="let licence of searchResults; let i = index"
@@ -133,7 +134,11 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-						<ng-template #NoSearchResults> not found </ng-template>
+						<ng-template #NoSearchResults>
+							<div class="mt-3">
+								<app-alert type="danger" icon="error"> No results match your search. </app-alert>
+							</div>
+						</ng-template>
 					</ng-container>
 				</div>
 			</div>
@@ -148,8 +153,10 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	],
 })
 export class SecurityLicenceStatusVerificationSblComponent {
-	showSearchResults = false;
 	showSearchDataError = false;
+	searchDataError = '';
+
+	showSearchResults = false;
 
 	searchResults: Array<any> = [{ licenceNumber: 'B1073' }, { licenceNumber: 'B1043' }, { licenceNumber: 'B9833' }];
 
@@ -184,6 +191,9 @@ export class SecurityLicenceStatusVerificationSblComponent {
 		let performSearch = true;
 		if ((businessLicenceNumber && businessName) || (!businessLicenceNumber && !businessName)) {
 			performSearch = false;
+		} else if (businessName && businessName.length < 3) {
+			this.searchDataError = 'The business name must be at least 3 characters.';
+			performSearch = false;
 		}
 
 		if (!performSearch) {
@@ -195,27 +205,29 @@ export class SecurityLicenceStatusVerificationSblComponent {
 	}
 
 	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		if (!licenceStatusCode) return '';
-
-		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return 'mat-chip-green';
-		}
-
-		return 'mat-chip-red';
+		return this.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
 	}
 
 	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		if (!licenceStatusCode) return '';
+		return this.isLicenceActive(licenceStatusCode) ? 'Active' : (licenceStatusCode ?? '---');
+	}
+
+	private isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
+		if (!licenceStatusCode) return false;
 
 		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return 'Active';
+			return true;
 		}
 
-		return licenceStatusCode;
+		return false;
 	}
 
 	private reset(): void {
+		this.searchResults = [];
+
 		this.showSearchDataError = false;
+		this.searchDataError = 'Enter either a business licence number, OR the business name is required.';
+
 		this.showSearchResults = false;
 	}
 
@@ -229,13 +241,13 @@ export class SecurityLicenceStatusVerificationSblComponent {
 				businessName,
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
-				this.showSearchResults = true;
-
 				const sortedResps = resps.sort((a, b) => {
 					return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
 				});
 
 				this.searchResults = sortedResps;
+
+				this.showSearchResults = true;
 			});
 	}
 }
