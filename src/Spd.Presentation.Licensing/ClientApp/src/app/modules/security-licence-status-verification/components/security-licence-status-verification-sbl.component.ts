@@ -205,21 +205,11 @@ export class SecurityLicenceStatusVerificationSblComponent {
 	}
 
 	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		return this.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
+		return this.utilService.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
 	}
 
 	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		return this.isLicenceActive(licenceStatusCode) ? 'Active' : (licenceStatusCode ?? '---');
-	}
-
-	private isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
-		if (!licenceStatusCode) return false;
-
-		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return true;
-		}
-
-		return false;
+		return this.utilService.isLicenceActive(licenceStatusCode) ? 'Active' : (licenceStatusCode ?? '---');
 	}
 
 	private reset(): void {

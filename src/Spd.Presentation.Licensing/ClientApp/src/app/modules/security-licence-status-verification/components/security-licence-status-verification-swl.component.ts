@@ -135,9 +135,9 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 											class="appl-chip-option"
 											[ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
 										>
-											<span class="appl-chip-option-item mx-2 fs-5">{{
-												getLicenceStatus(licence.licenceStatusCode)
-											}}</span>
+											<span class="appl-chip-option-item mx-2 fs-5">
+												{{ getLicenceStatus(licence.licenceStatusCode) | default }}
+											</span>
 										</mat-chip-option>
 									</div>
 								</div>
@@ -231,21 +231,15 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	}
 
 	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		return this.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
+		return this.utilService.isLicenceActive(licenceStatusCode) ? 'mat-chip-green' : 'mat-chip-red';
 	}
 
-	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string {
-		return this.isLicenceActive(licenceStatusCode) ? 'Active' : (licenceStatusCode ?? '---');
+	getLicenceStatus(licenceStatusCode: LicenceStatusCode | null | undefined): string | null | undefined {
+		return this.utilService.isLicenceActive(licenceStatusCode) ? 'Active' : licenceStatusCode;
 	}
 
 	isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
-		if (!licenceStatusCode) return false;
-
-		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return true;
-		}
-
-		return false;
+		return this.utilService.isLicenceActive(licenceStatusCode);
 	}
 
 	get firstName(): string {
