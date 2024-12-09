@@ -11,6 +11,7 @@ export interface LicenceBasicResponse {
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   expiryDate?: string;
   licenceAppId?: string | null;
+  licenceHolderDateOfBirth?: string | null;
   licenceHolderId?: string | null;
   licenceHolderName?: string | null;
   licenceId?: string | null;
