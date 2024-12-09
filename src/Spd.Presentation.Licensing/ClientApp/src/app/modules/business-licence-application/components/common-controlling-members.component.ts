@@ -220,10 +220,10 @@ import {
 								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
-						<ng-container *ngIf="canSendInvitations">
+						<ng-container *ngIf="canSendUpdateInvitations">
 							<app-alert type="info" icon="info">
-								When an invitation is issued, the controlling member will receive a link to an online application form
-								via email. They must provide personal information and consent to a criminal record check.
+								When an update invitation is issued, the controlling member will receive a link to an online application
+								form via email. They can update personal information and consent to a criminal record check.
 							</app-alert>
 						</ng-container>
 						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
@@ -624,7 +624,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	get canSendInvitations(): boolean {
+	get canSendUpdateInvitations(): boolean {
 		return !this.isWizard && this.allowUpdateInvitationsToBeSent;
 	}
 
