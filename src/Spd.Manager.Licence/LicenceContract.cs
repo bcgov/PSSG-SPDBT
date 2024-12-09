@@ -33,6 +33,8 @@ public record LicenceBasicResponse
 
 public record LicenceResponse : LicenceBasicResponse
 {
+    public Guid? PhotoDocumentUrlId { get; set; }
+
     //permit info
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
