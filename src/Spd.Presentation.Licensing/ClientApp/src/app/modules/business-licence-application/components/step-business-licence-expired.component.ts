@@ -16,11 +16,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				</div>
 			</div>
 
-			<app-expired-licence
+			<app-form-expired-licence
 				[form]="form"
 				[isLoggedIn]="true"
 				[serviceTypeCode]="securityBusinessLicenceCode"
-			></app-expired-licence>
+			></app-form-expired-licence>
 		</app-step-section>
 	`,
 	styles: [],
