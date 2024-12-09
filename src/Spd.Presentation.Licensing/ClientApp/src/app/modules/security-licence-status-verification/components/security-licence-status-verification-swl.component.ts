@@ -61,18 +61,28 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								<div class="text-minor-heading text-red my-3">OR</div>
 							</div>
 
-							<div class="col-xl-3 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>First Name</mat-label>
-									<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
-								</mat-form-field>
-							</div>
+							<div class="col-xl-7 col-lg-6 col-md-12">
+								<div class="row">
+									<div class="col-xl-6 col-lg-12 col-md-12" *ngIf="!isOneNameOnly.value">
+										<mat-form-field>
+											<mat-label>First Name</mat-label>
+											<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
+										</mat-form-field>
+									</div>
 
-							<div class="offset-xl-0 col-xl-4 offset-lg-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Last Name</mat-label>
-									<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
-								</mat-form-field>
+									<div class="col-xl-6 col-lg-12 col-md-12">
+										<mat-form-field>
+											<mat-label>{{ lastNameLabel }}</mat-label>
+											<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
+										</mat-form-field>
+									</div>
+
+									<div class="col-xl-6 col-lg-12 col-md-12">
+										<mat-checkbox formControlName="isOneNameOnly" (click)="onCheckboxChange()"
+											>Licence holder has one name only</mat-checkbox
+										>
+									</div>
+								</div>
 							</div>
 						</div>
 
@@ -180,6 +190,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	showSearchResults = false;
 	isWorkerLicenceNumberSearchError = false;
 	searchResultsErrorName = '';
+	lastNameLabel = 'Last Name';
 
 	searchResults: Array<any> = [];
 
@@ -187,6 +198,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		workerLicenceNumber: new FormControl(''),
 		firstName: new FormControl(''),
 		lastName: new FormControl(''),
+		isOneNameOnly: new FormControl(false),
 	});
 
 	matcher = new FormErrorStateMatcher();
@@ -212,6 +224,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		const workerLicenceNumber = formValue.workerLicenceNumber?.trim();
 		const firstName = formValue.firstName?.trim();
 		const lastName = formValue.lastName?.trim();
+		const isOneNameOnly = formValue.isOneNameOnly ?? false;
 
 		let performSearch = true;
 		if ((workerLicenceNumber && firstName && lastName) || (!workerLicenceNumber && !firstName && !lastName)) {
@@ -221,17 +234,20 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 			performSearch = false;
 		} else if (!workerLicenceNumber) {
 			// must have both names
-			if (!firstName || !lastName) {
+			if (!isOneNameOnly && (!firstName || !lastName)) {
+				performSearch = false;
+			}
+			// must have last name
+			if (isOneNameOnly && !lastName) {
 				performSearch = false;
 			}
 		}
-
 		if (!performSearch) {
 			this.showSearchDataError = true;
 			return;
 		}
 
-		this.performSearch(workerLicenceNumber, firstName, lastName);
+		this.performSearch(workerLicenceNumber, firstName, lastName, isOneNameOnly);
 	}
 
 	getLicenceStatusClass(licenceStatusCode: LicenceStatusCode | null | undefined): string {
@@ -246,12 +262,22 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		return this.utilService.isLicenceActive(licenceStatusCode);
 	}
 
-	get firstName(): string {
-		return this.form.value.firstName ?? '';
+	onCheckboxChange(): void {
+		const data = this.form.value;
+		if (data.isOneNameOnly) {
+			this.form.controls['firstName'].setValue('');
+			this.lastNameLabel = 'Name';
+		} else {
+			this.lastNameLabel = 'Last Name';
+		}
 	}
 
-	get lastName(): string {
-		return this.form.value.lastName ?? '';
+	get firstName(): FormControl {
+		return this.form.get('firstName') as FormControl;
+	}
+
+	get isOneNameOnly(): FormControl {
+		return this.form.get('isOneNameOnly') as FormControl;
 	}
 
 	private reset(): void {
@@ -268,25 +294,29 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	private performSearch(
 		licenceNumber: string | undefined,
 		firstName: string | undefined,
-		lastName: string | undefined
+		lastName: string | undefined,
+		isOneNameOnly: boolean
 	): void {
-		console.debug('[performSearch] licenceNumber', licenceNumber);
+		console.debug('licenceNumber', licenceNumber);
 		console.debug('firstName', firstName);
 		console.debug('lastName', lastName);
+		console.debug('isOneNameOnly', isOneNameOnly);
+
+		const searchFirstName = isOneNameOnly ? '' : firstName;
 
 		this.licenceService
 			.apiLicencesSecurityWorkerLicenceGet({
 				licenceNumber,
-				firstName,
+				firstName: searchFirstName,
 				lastName,
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				if (resps.length === 0) {
-					this.searchResultsErrorName = this.utilService.getFullName(firstName, lastName) ?? '';
+					this.searchResultsErrorName = this.utilService.getFullName(searchFirstName, lastName) ?? '';
 					this.isWorkerLicenceNumberSearchError = !!licenceNumber;
 				} else {
 					const sortedResps = resps.sort((a, b) => {
-						return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
+						return this.utilService.sortByDirection(a.licenceNumber, b.licenceNumber);
 					});
 
 					this.searchResults = sortedResps;
