@@ -113,7 +113,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Type(s)</div>
 												<div class="text-data fw-bold">
 													<ul class="m-0">
-														<ng-container *ngFor="let category of licence.categoryCodes; let i = index">
+														<ng-container *ngFor="let category of licence.categoryCodes?.sort(); let i = index">
 															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 														</ng-container>
 													</ul>
@@ -151,8 +151,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 
 								<ng-template #NameSearchError>
 									<app-alert type="danger" icon="error">
-										<strong>{{ firstName }} {{ lastName }}</strong> does not hold a valid licence. If you believe they
-										are working in security in B.C., please consider submitting a
+										<strong>{{ searchResultsErrorName }}</strong> does not hold a valid licence. If you believe they are
+										working in security in B.C., please consider submitting a
 										<a [href]="spdComplaintUrl" target="_blank">complaint</a>.
 									</app-alert>
 								</ng-template>
@@ -179,6 +179,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 
 	showSearchResults = false;
 	isWorkerLicenceNumberSearchError = false;
+	searchResultsErrorName = '';
 
 	searchResults: Array<any> = [];
 
@@ -214,6 +215,9 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 
 		let performSearch = true;
 		if ((workerLicenceNumber && firstName && lastName) || (!workerLicenceNumber && !firstName && !lastName)) {
+			performSearch = false;
+		} else if (workerLicenceNumber && !workerLicenceNumber.startsWith('E')) {
+			this.searchDataError = 'The security worker licence number must start with an "E".';
 			performSearch = false;
 		} else if (!workerLicenceNumber) {
 			// must have both names
@@ -258,6 +262,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 			'Enter either a security worker licence number, OR the full name as it appears on the licence.';
 
 		this.showSearchResults = false;
+		this.searchResultsErrorName = '';
 	}
 
 	private performSearch(
@@ -277,6 +282,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				if (resps.length === 0) {
+					this.searchResultsErrorName = this.utilService.getFullName(firstName, lastName) ?? '';
 					this.isWorkerLicenceNumberSearchError = !!licenceNumber;
 				} else {
 					const sortedResps = resps.sort((a, b) => {

@@ -112,7 +112,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 												<div class="d-block text-muted mt-2">Licence Type(s)</div>
 												<div class="text-data fw-bold">
 													<ul class="m-0">
-														<ng-container *ngFor="let category of licence.categoryCodes; let i = index">
+														<ng-container *ngFor="let category of licence.categoryCodes?.sort(); let i = index">
 															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 														</ng-container>
 													</ul>
@@ -190,6 +190,9 @@ export class SecurityLicenceStatusVerificationSblComponent {
 
 		let performSearch = true;
 		if ((businessLicenceNumber && businessName) || (!businessLicenceNumber && !businessName)) {
+			performSearch = false;
+		} else if (businessLicenceNumber && !businessLicenceNumber.startsWith('B')) {
+			this.searchDataError = 'The business licence number must start with a "B".';
 			performSearch = false;
 		} else if (businessName && businessName.length < 3) {
 			this.searchDataError = 'The business name must be at least 3 characters.';
