@@ -33,7 +33,7 @@ RUN cat Spd.sln \
 
 RUN dotnet restore "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj" -r linux-x64 -p:PublishReadyToRun=true
 COPY . .
-RUN dotnet publish "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj" -c Release -o /app/publish --no-restore --self-contained -r linux-x64 -p:PublishReadyToRun=true
+RUN dotnet publish "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj" -c Release -o /app/publish --no-restore --self-contained true -r linux-x64 -p:PublishReadyToRun=true
 
 FROM registry.access.redhat.com/ubi8/dotnet-80-runtime:8.0 AS final
 ARG VERSION
