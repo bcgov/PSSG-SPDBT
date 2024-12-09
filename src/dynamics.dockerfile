@@ -1,5 +1,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-builder
 
+# Update the package list and install required dependencies
+RUN apt-get update && apt-get install -y \
+    libfontconfig1 \
+    libfreetype6 \
+    libpng16-16 \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    libxrandr2 \
+    libglib2.0-0 \
+    && apt-get clean
+
 # install diagnostics tools
 RUN mkdir /tools && \
     dotnet tool install --tool-path /tools dotnet-trace && \
