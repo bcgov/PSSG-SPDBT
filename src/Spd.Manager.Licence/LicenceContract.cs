@@ -22,6 +22,7 @@ public record LicenceBasicResponse
     public LicenceTermCode? LicenceTermCode { get; set; }
     public string? LicenceHolderName { get; set; }
     public string? BizLegalName { get; set; }
+    public DateOnly? LicenceHolderDateOfBirth { get; set; }
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
