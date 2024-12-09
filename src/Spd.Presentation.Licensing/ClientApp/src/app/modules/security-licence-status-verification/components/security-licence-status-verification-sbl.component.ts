@@ -225,7 +225,7 @@ export class SecurityLicenceStatusVerificationSblComponent {
 	}
 
 	private performSearch(licenceNumber: string | undefined, businessName: string | undefined): void {
-		console.debug('[performSearch] licenceNumber', licenceNumber);
+		console.debug('licenceNumber', licenceNumber);
 		console.debug('businessName', businessName);
 
 		this.licenceService
@@ -235,7 +235,7 @@ export class SecurityLicenceStatusVerificationSblComponent {
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				const sortedResps = resps.sort((a, b) => {
-					return this.utilService.sortDate(a.licenceNumber, b.licenceNumber);
+					return this.utilService.sortByDirection(a.licenceNumber, b.licenceNumber);
 				});
 
 				this.searchResults = sortedResps;
