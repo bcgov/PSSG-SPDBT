@@ -70,11 +70,11 @@ export interface LookupByLicenceNumberDialogData {
 
 				<ng-container *ngIf="!isSearchPerformed">
 					<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
-						<app-alert type="info" icon="info"> Enter the Licence Number and press the search button. </app-alert>
+						<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
 					</ng-container>
 					<ng-template #notLoggedInMsg>
 						<app-alert type="info" icon="info">
-							Enter the Licence Number, perform the reCaptcha and then press the search button.
+							Enter the Licence Number, perform the reCaptcha and then click the search button.
 						</app-alert>
 					</ng-template>
 				</ng-container>
