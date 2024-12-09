@@ -27,6 +27,13 @@ const routes: Routes = [
 			),
 	},
 	{
+		path: AppRoutes.SECURITY_LICENCE_STATUS_VERIFICATION,
+		loadChildren: () =>
+			import('./modules/security-licence-status-verification/security-licence-status-verification.module').then(
+				(m) => m.SecurityLicenceStatusVerificationModule
+			),
+	},
+	{
 		path: AppRoutes.ACCESS_DENIED,
 		component: AccessDeniedComponent,
 	},

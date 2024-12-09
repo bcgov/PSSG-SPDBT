@@ -19,12 +19,16 @@ import { apiLicenceLookupAnonymousLicenceNumberPost } from '../fn/licence/api-li
 import { ApiLicenceLookupAnonymousLicenceNumberPost$Params } from '../fn/licence/api-licence-lookup-anonymous-licence-number-post';
 import { apiLicenceLookupLicenceNumberGet } from '../fn/licence/api-licence-lookup-licence-number-get';
 import { ApiLicenceLookupLicenceNumberGet$Params } from '../fn/licence/api-licence-lookup-licence-number-get';
+import { apiLicencesBusinessLicenceGet } from '../fn/licence/api-licences-business-licence-get';
+import { ApiLicencesBusinessLicenceGet$Params } from '../fn/licence/api-licences-business-licence-get';
 import { apiLicencesLicenceIdGet } from '../fn/licence/api-licences-licence-id-get';
 import { ApiLicencesLicenceIdGet$Params } from '../fn/licence/api-licences-licence-id-get';
 import { apiLicencesLicencePhotoGet } from '../fn/licence/api-licences-licence-photo-get';
 import { ApiLicencesLicencePhotoGet$Params } from '../fn/licence/api-licences-licence-photo-get';
 import { apiLicencesLicencePhotoLicenceIdGet } from '../fn/licence/api-licences-licence-photo-licence-id-get';
 import { ApiLicencesLicencePhotoLicenceIdGet$Params } from '../fn/licence/api-licences-licence-photo-licence-id-get';
+import { apiLicencesSecurityWorkerLicenceGet } from '../fn/licence/api-licences-security-worker-licence-get';
+import { ApiLicencesSecurityWorkerLicenceGet$Params } from '../fn/licence/api-licences-security-worker-licence-get';
 import { LicenceBasicResponse } from '../models/licence-basic-response';
 import { LicenceResponse } from '../models/licence-response';
 
@@ -278,6 +282,66 @@ export class LicenceService extends BaseService {
   apiLicencesLicenceIdGet(params: ApiLicencesLicenceIdGet$Params, context?: HttpContext): Observable<LicenceResponse> {
     return this.apiLicencesLicenceIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<LicenceResponse>): LicenceResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiLicencesSecurityWorkerLicenceGet()` */
+  static readonly ApiLicencesSecurityWorkerLicenceGetPath = '/api/licences/security-worker-licence';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesSecurityWorkerLicenceGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesSecurityWorkerLicenceGet$Response(params?: ApiLicencesSecurityWorkerLicenceGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+    return apiLicencesSecurityWorkerLicenceGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesSecurityWorkerLicenceGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesSecurityWorkerLicenceGet(params?: ApiLicencesSecurityWorkerLicenceGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+    return this.apiLicencesSecurityWorkerLicenceGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
+    );
+  }
+
+  /** Path part for operation `apiLicencesBusinessLicenceGet()` */
+  static readonly ApiLicencesBusinessLicenceGetPath = '/api/licences/business-licence';
+
+  /**
+   * Get latest secure business licence by licence number or at least the first 3 letters of biz name (for either legal name or trade name)
+   * Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesBusinessLicenceGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesBusinessLicenceGet$Response(params?: ApiLicencesBusinessLicenceGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+    return apiLicencesBusinessLicenceGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get latest secure business licence by licence number or at least the first 3 letters of biz name (for either legal name or trade name)
+   * Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesBusinessLicenceGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesBusinessLicenceGet(params?: ApiLicencesBusinessLicenceGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+    return this.apiLicencesBusinessLicenceGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
     );
   }
 
