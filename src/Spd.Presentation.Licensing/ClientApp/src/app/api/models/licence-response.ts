@@ -26,6 +26,7 @@ export interface LicenceResponse {
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;
   licenceAppId?: string | null;
+  licenceHolderDateOfBirth?: string | null;
   licenceHolderId?: string | null;
   licenceHolderName?: string | null;
   licenceId?: string | null;

@@ -13,6 +13,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 							<h2 class="fs-3">Security Licence Status Verification</h2>
 						</div>
 					</div>
+					<mat-divider class="mat-divider-main mb-4"></mat-divider>
 
 					<div class="text-minor-heading my-3">Verify a Security Worker Licence</div>
 
@@ -30,7 +31,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					</div>
 
-					<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
+					<mat-divider class="mt-3 mb-4"></mat-divider>
 					<div class="text-minor-heading my-3">Verify a Security Business Licence</div>
 
 					<div class="row">

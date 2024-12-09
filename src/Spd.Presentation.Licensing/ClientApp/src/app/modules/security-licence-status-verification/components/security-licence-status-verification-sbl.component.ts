@@ -31,6 +31,9 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</button>
 							</div>
 						</div>
+
+						<mat-divider class="mat-divider-main mb-4"></mat-divider>
+
 						<div class="col-12 mb-3">
 							<app-alert type="info" icon="">
 								Enter a security business <strong>licence number</strong> or at least the
