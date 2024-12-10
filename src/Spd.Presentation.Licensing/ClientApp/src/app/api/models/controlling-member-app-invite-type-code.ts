@@ -4,5 +4,6 @@
 
 export enum ControllingMemberAppInviteTypeCode {
   New = 'New',
-  Update = 'Update'
+  Update = 'Update',
+  CreateShellApp = 'CreateShellApp'
 }

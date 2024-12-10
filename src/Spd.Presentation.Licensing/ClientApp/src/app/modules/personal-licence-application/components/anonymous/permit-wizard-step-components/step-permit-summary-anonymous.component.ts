@@ -261,6 +261,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 												</div>
 											</div>
 
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<app-permit-summary-characteristics
 												[permitModelData]="permitModelData"
 											></app-permit-summary-characteristics>
@@ -511,7 +512,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitApplicationService.getSummarybcDriversLicenceNumber(this.permitModelData);
 	}
 
-	get photoOfYourselfAttachments(): File[] {
+	get photoOfYourselfAttachments(): File[] | null {
 		return this.permitApplicationService.getSummaryphotoOfYourselfAttachments(this.permitModelData);
 	}
 

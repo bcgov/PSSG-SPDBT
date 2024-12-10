@@ -489,7 +489,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const applicantData = { ...businessModelFormValue.applicantData };
 		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
 
-		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+		const businessInformationData = businessModelFormValue.businessInformationData;
+		const bizTypeCode = businessInformationData.bizTypeCode;
+		const applicantSwlLicenceId = businessInformationData.soleProprietorLicenceId;
 
 		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
@@ -559,6 +561,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			licenceAppId,
 			soleProprietorSWLAppId,
 			soleProprietorSWLAppOriginTypeCode,
+			applicantSwlLicenceId,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
@@ -763,6 +766,15 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
 		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	getSummarysoleProprietorLicenceHolderName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceHolderName ?? '';
+	}
+	getSummarysoleProprietorLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceNumber ?? '';
+	}
+	getSummarysoleProprietorLicenceExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceExpiryDate ?? '';
+	}
 	getSummarysoleProprietorSwlEmailAddress(businessLicenceModelData: any): string {
 		return businessLicenceModelData.businessInformationData.soleProprietorSwlEmailAddress ?? '';
 	}
@@ -781,24 +793,59 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 		return list.sort();
 	}
-	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
+	getSummaryisDogs(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+	}
+	getSummaryuseDogs(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.useDogs ?? '';
+	}
+	getSummaryisDogsPurposeProtection(businessLicenceModelData: any): string {
 		return (
-			this.getSummaryshowArmouredCarGuard(businessLicenceModelData) ||
-			this.getSummaryshowSecurityGuard(businessLicenceModelData)
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeProtection ?? false
 		);
 	}
+	getSummaryisDogsPurposeDetectionDrugs(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false
+		);
+	}
+	getSummaryisDogsPurposeDetectionExplosives(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ??
+			false
+		);
+	}
+	getSummarydogsPurposeAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
+	}
+
+	getSummaryisPrivateInvestigator(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup?.isInclude ?? false;
+	}
+	getSummaryprivateInvestigatorName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceHolderName ?? '';
+	}
+	getSummaryprivateInvestigatorLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceNumber ?? '';
+	}
+	getSummaryprivateInvestigatorExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceExpiryDate ?? '';
+	}
+	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
+		return this.getSummaryshowArmouredCarGuard(businessLicenceModelData);
+	}
 	getSummaryshowArmouredCarGuard(businessLicenceModelData: any): boolean {
-		return businessLicenceModelData.categoryArmouredCarGuardData?.isInclude ?? false;
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup?.isInclude ?? false;
 	}
 	getSummaryshowSecurityGuard(businessLicenceModelData: any): boolean {
-		const isInclude = businessLicenceModelData.categorySecurityGuardData?.isInclude ?? false;
-		return isInclude && businessLicenceModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
+		const isInclude = businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+		return isInclude && businessLicenceModelData.categorySecurityGuardFormGroup?.useDogs === BooleanTypeCode.Yes;
 	}
 	getSummarycategoryArmouredCarGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categoryArmouredCarGuardData.attachments ?? [];
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
 	}
 	getSummarycategorySecurityGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categorySecurityGuardData.attachments ?? [];
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
 	}
 
 	getSummarybusinessManagerGivenName(businessLicenceModelData: any): string {

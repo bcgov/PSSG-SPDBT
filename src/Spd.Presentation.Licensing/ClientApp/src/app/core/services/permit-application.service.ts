@@ -91,6 +91,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
 		characteristicsData: this.characteristicsFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		photoDocumentUrlId: new FormControl(), // placeholder photo on the licence
 
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
@@ -503,7 +504,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
-					_resp.applicationTypeData.applicationTypeCode
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
 				);
 			})
 		);
@@ -1355,9 +1357,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
-					const aFile = this.fileUtilService.dummyFile(doc);
-					photographOfYourselfAttachments.push(aFile);
+					// If there is a photo on the licence, use that one. See below
+					if (!associatedLicence?.photoDocumentUrlId) {
+						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+						const aFile = this.fileUtilService.dummyFile(doc);
+						photographOfYourselfAttachments.push(aFile);
+					}
 					break;
 				}
 				case LicenceDocumentTypeCode.ArmouredVehicleRationale:
@@ -1370,6 +1375,21 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 			}
 		});
+
+		if (associatedLicence?.photoDocumentUrlId) {
+			const doc: Document = {
+				documentExtension: null,
+				documentName: null,
+				documentUrlId: associatedLicence?.photoDocumentUrlId,
+				expiryDate: null,
+				licenceAppId: permitLicenceAppl.licenceAppId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				uploadedDateTime: undefined,
+			};
+			const aFile = this.fileUtilService.dummyFile(doc);
+			photographOfYourselfAttachments.push(aFile);
+			photographOfYourselfLastUploadedDateTime = '';
+		}
 
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,

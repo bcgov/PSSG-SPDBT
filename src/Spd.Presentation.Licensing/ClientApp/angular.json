@@ -22,14 +22,14 @@
 					"builder": "@angular-devkit/build-angular:application",
 					"options": {
 						"outputPath": {
-              "base": "dist",
-              "browser": ""
-            },
-            "index": "src/index.html",
+							"base": "dist",
+							"browser": ""
+						},
+						"index": "src/index.html",
 						"polyfills": ["zone.js"],
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
-						"assets": ["src/favicon.ico", "src/assets"],
+						"assets": ["src/favicon.ico", "src/assets", "src/maintenance"],
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.min.css",
 							"node_modules/ngx-spinner/animations/square-jelly-box.css",
@@ -37,10 +37,8 @@
 							"src/scss/app.scss"
 						],
 						"scripts": ["node_modules/jquery/dist/jquery.min.js", "node_modules/bootstrap/dist/js/bootstrap.min.js"],
-            "allowedCommonJsDependencies": [
-              "moment"
-            ],
-            "browser": "src/main.ts"
+						"allowedCommonJsDependencies": ["moment"],
+						"browser": "src/main.ts"
 					},
 					"configurations": {
 						"production": {
@@ -59,8 +57,8 @@
 							"outputHashing": "all",
 							"baseHref": "/licensing/"
 						},
-            "development": {
-              "optimization": false,
+						"development": {
+							"optimization": false,
 							"extractLicenses": false,
 							"sourceMap": true,
 							"namedChunks": true
@@ -92,7 +90,7 @@
 						"polyfills": ["zone.js", "zone.js/testing"],
 						"tsConfig": "tsconfig.spec.json",
 						"inlineStyleLanguage": "scss",
-						"assets": ["src/favicon.ico", "src/assets"],
+						"assets": ["src/favicon.ico", "src/assets", "src/maintenance"],
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.min.css",
 							"node_modules/ngx-spinner/animations/square-jelly-box.css",

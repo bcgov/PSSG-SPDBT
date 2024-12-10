@@ -78,16 +78,37 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Sole Proprietor</div>
 										<div class="row mt-0">
+											<ng-container *ngIf="soleProprietorLicenceHolderName">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Name</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceHolderName | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Security Worker Licence Number</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceNumber | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Expiry Date</div>
+													<div class="summary-text-data">
+														{{ soleProprietorLicenceExpiryDate | formatDate | default }}
+													</div>
+												</div>
+											</ng-container>
+
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlEmailAddress }}
+													{{ soleProprietorSwlEmailAddress | default }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlPhoneNumber }}
+													{{ soleProprietorSwlPhoneNumber | default }}
 												</div>
 											</div>
 										</div>
@@ -220,6 +241,62 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</div>
 
+										<ng-container *ngIf="isPrivateInvestigator">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading-small">Private Investigator Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-5 col-md-12">
+													<div class="text-label d-block text-muted">Manager Name</div>
+													<div class="summary-text-data">
+														{{ privateInvestigatorName | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Licence Number</div>
+													<div class="summary-text-data">
+														{{ privateInvestigatorLicenceNumber | default }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Expiry Date</div>
+													<div class="summary-text-data">
+														{{ privateInvestigatorExpiryDate | formatDate | default }}
+													</div>
+												</div>
+											</div>
+										</ng-container>
+
+										<ng-container *ngIf="isDogs">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading-small">Dogs Authorization</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Request to Use Dogs</div>
+													<div class="summary-text-data">{{ useDogs }}</div>
+												</div>
+												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Reason</div>
+														<div class="summary-text-data">
+															<div *ngIf="isDogsPurposeProtection">Protection</div>
+															<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+															<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</div>
+												</ng-container>
+											</div>
+										</ng-container>
+
 										<ng-container *ngIf="isAnyDocuments">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading-small">Documents Uploaded</div>
@@ -236,103 +313,93 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														</ul>
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
 											</div>
 										</ng-container>
 									</div>
 								</div>
 							</mat-expansion-panel>
 
-							<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel-header>
-									<mat-panel-title class="review-panel-title">
-										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Contact Information</div>
-											<button
-												*ngIf="showEditButton"
-												mat-mini-fab
-												color="primary"
-												class="go-to-step-button"
-												matTooltip="Go to Step 3"
-												aria-label="Go to Step 3"
-												(click)="$event.stopPropagation(); onEditStep(2)"
-											>
-												<mat-icon>edit</mat-icon>
-											</button>
-										</mat-toolbar>
-									</mat-panel-title>
-								</mat-expansion-panel-header>
+							<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Contact Information</div>
+												<button
+													*ngIf="showEditButton"
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 3"
+													aria-label="Go to Step 3"
+													(click)="$event.stopPropagation(); onEditStep(2)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
 
-								<div class="panel-body">
-									<div class="text-minor-heading-small mt-4">Business Manager Information</div>
-									<div class="row mt-0">
-										<div class="col-lg-5 col-md-12">
-											<div class="text-label d-block text-muted">Name</div>
-											<div class="summary-text-data">
-												{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
-												{{ businessManagerMiddleName2 }}
-												{{ businessManagerSurname }}
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Email Address</div>
-											<div class="summary-text-data">
-												{{ businessManagerEmailAddress | default }}
-											</div>
-										</div>
-										<div class="col-lg-3 col-md-12">
-											<div class="text-label d-block text-muted">Phone Number</div>
-											<div class="summary-text-data">
-												{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
-											</div>
-										</div>
-									</div>
-
-									<ng-container *ngIf="!applicantIsBizManager">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Your Information</div>
+									<div class="panel-body">
+										<div class="text-minor-heading-small mt-4">Business Manager Information</div>
 										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12">
+											<div class="col-lg-5 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
 												<div class="summary-text-data">
-													{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
-													{{ yourContactSurname }}
+													{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
+													{{ businessManagerMiddleName2 }}
+													{{ businessManagerSurname }}
 												</div>
 											</div>
-											<div class="col-lg-3 col-md-12">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Email Address</div>
 												<div class="summary-text-data">
-													{{ yourContactEmailAddress | default }}
+													{{ businessManagerEmailAddress | default }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ yourContactPhoneNumber | formatPhoneNumber | default }}
+													{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
 												</div>
 											</div>
 										</div>
-									</ng-container>
-								</div>
-							</mat-expansion-panel>
 
-							<ng-container *ngIf="!isUpdate">
-								<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
+										<ng-container *ngIf="!applicantIsBizManager">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading-small">Your Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-5 col-md-12">
+													<div class="text-label d-block text-muted">Name</div>
+													<div class="summary-text-data">
+														{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
+														{{ yourContactSurname }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Email Address</div>
+													<div class="summary-text-data">
+														{{ yourContactEmailAddress | default }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Phone Number</div>
+													<div class="summary-text-data">
+														{{ yourContactPhoneNumber | formatPhoneNumber | default }}
+													</div>
+												</div>
+											</div>
+										</ng-container>
+									</div>
+								</mat-expansion-panel>
+							</ng-container>
+
+							<ng-container *ngIf="!isUpdate && !isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Controlling Members & Employees</div>
+												<div class="panel-header">Members & Employees</div>
 												<button
 													*ngIf="showEditButton"
 													mat-mini-fab
@@ -370,7 +437,10 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
 													<div class="col-xl-6 col-lg-12">
 														<ul class="m-0">
-															<li>{{ member.licenceHolderName }}</li>
+															<li style="word-break: break-all;">
+																{{ member.licenceHolderName }} -
+																{{ member.emailAddress ? member.emailAddress : 'No email address' }}
+															</li>
 														</ul>
 													</div>
 												</ng-container>
@@ -501,6 +571,15 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessApplicationService.getSummarybizTypeCode(this.businessModelData);
 	}
 
+	get soleProprietorLicenceHolderName(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceHolderName(this.businessModelData);
+	}
+	get soleProprietorLicenceNumber(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceNumber(this.businessModelData);
+	}
+	get soleProprietorLicenceExpiryDate(): string {
+		return this.businessApplicationService.getSummarysoleProprietorLicenceExpiryDate(this.businessModelData);
+	}
 	get soleProprietorSwlEmailAddress(): string {
 		return this.businessApplicationService.getSummarysoleProprietorSwlEmailAddress(this.businessModelData);
 	}
@@ -528,6 +607,39 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	get categoryList(): Array<WorkerCategoryTypeCode> {
 		return this.businessApplicationService.getSummarycategoryList(this.businessModelData);
 	}
+
+	get isDogs(): boolean {
+		return this.businessApplicationService.getSummaryisDogs(this.businessModelData);
+	}
+	get useDogs(): string {
+		return this.businessApplicationService.getSummaryuseDogs(this.businessModelData);
+	}
+	get isDogsPurposeProtection(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeProtection(this.businessModelData);
+	}
+	get isDogsPurposeDetectionDrugs(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.businessModelData);
+	}
+	get isDogsPurposeDetectionExplosives(): string {
+		return this.businessApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.businessModelData);
+	}
+	get dogsPurposeAttachments(): File[] {
+		return this.businessApplicationService.getSummarydogsPurposeAttachments(this.businessModelData);
+	}
+
+	get isPrivateInvestigator(): boolean {
+		return this.businessApplicationService.getSummaryisPrivateInvestigator(this.businessModelData);
+	}
+	get privateInvestigatorName(): string {
+		return this.businessApplicationService.getSummaryprivateInvestigatorName(this.businessModelData);
+	}
+	get privateInvestigatorLicenceNumber(): string {
+		return this.businessApplicationService.getSummaryprivateInvestigatorLicenceNumber(this.businessModelData);
+	}
+	get privateInvestigatorExpiryDate(): string {
+		return this.businessApplicationService.getSummaryprivateInvestigatorExpiryDate(this.businessModelData);
+	}
+
 	get isAnyDocuments(): boolean {
 		return this.businessApplicationService.getSummaryisAnyDocuments(this.businessModelData);
 	}

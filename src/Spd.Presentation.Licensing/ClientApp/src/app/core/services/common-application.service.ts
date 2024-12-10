@@ -33,7 +33,7 @@ import {
 	PaymentService,
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
@@ -683,7 +683,11 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
+				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
+			} else {
+				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			}
 		}
 
 		return [messageWarn, messageError];

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
@@ -97,6 +97,7 @@ public record ControllingMemberCrcAppUpdateRequest
     public bool? HasNewCriminalRecordCharge { get; set; }
     public bool? HasNewMentalHealthCondition { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();

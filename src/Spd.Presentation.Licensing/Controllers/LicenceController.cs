@@ -182,5 +182,30 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new LicenceByIdQuery(licenceId), ct);
         }
+
+        /// <summary>
+        /// Get latest secure worker licence by licence number or firstname, lastname
+        /// Example: http://localhost:5114/api/licences/security-worker-licence?licenceNumber=E123
+        /// http://localhost:5114/api/licences/security-worker-licence?firstName=XXX&lastName=yyy
+        /// </summary>
+        [Route("api/licences/security-worker-licence")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence([FromQuery] string? licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
+        {
+            return await _mediator.Send(new LicenceListSearch(licenceNumber?.Trim(), firstName?.Trim(), lastName?.Trim(), null, ServiceTypeCode.SecurityWorkerLicence));
+        }
+
+        /// <summary>
+        /// Get latest secure business licence by licence number or at least the first 3 letters of biz name (for either legal name or trade name)
+        /// Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123
+        /// </summary>
+        [Route("api/licences/business-licence")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromQuery] string? licenceNumber, [FromQuery] string? businessName = null)
+        {
+            return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
+        }
     }
 }
