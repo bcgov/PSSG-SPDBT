@@ -37,6 +37,7 @@ export interface LicenceResponse {
   linkedSoleProprietorLicenceId?: string | null;
   nameOnCard?: string | null;
   permitOtherRequiredReason?: string | null;
+  photoDocumentUrlId?: string | null;
   rationalDocumentInfos?: Array<Document> | null;
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;
