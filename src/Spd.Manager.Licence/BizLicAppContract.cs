@@ -75,7 +75,6 @@ public record BizLicAppResponse : BizLicenceApp
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
-    public bool? ApplicantIsBizManager { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
