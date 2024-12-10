@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import {
 	ApplicationInviteStatusCode,
 	BizMemberResponse,
@@ -29,7 +30,11 @@ import {
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { take, tap } from 'rxjs';
-import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
+import {
+	MemberWithoutSWLDialogData,
+	ModalMemberWithoutSwlEditComponent,
+} from './modal-member-without-swl-edit.component';
 
 @Component({
 	selector: 'app-common-controlling-members',
@@ -38,7 +43,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 			<mat-accordion multi="true">
 				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Members with a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist; else noControllingMembersWithSwlExist">
@@ -119,7 +124,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 				<mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
@@ -183,27 +188,30 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 									<mat-cell *matCellDef="let member">
 										<ng-container *ngIf="member.emailAddress; else noEmailAddress">
-											<button
-												mat-stroked-button
-												class="w-100 invitation-button"
-												aria-label="Send invitation"
-												(click)="onSendInvitation(member)"
-												*ngIf="getInvitationButtonLabel(member.inviteStatusCode)"
-											>
-												{{ getInvitationButtonLabel(member.inviteStatusCode) }}
-											</button>
+											<ng-container *ngIf="isAllowUpdateInvitation(member.inviteStatusCode)">
+												<a
+													tabindex="0"
+													class="w-100 invitation-button"
+													aria-label="Send Update Invitation"
+													(click)="onSendUpdateInvitation(member)"
+													(keydown)="onKeydownSendUpdateInvitation($event, member)"
+												>
+													Send Update Invitation
+												</a>
+											</ng-container>
 										</ng-container>
 										<ng-template #noEmailAddress>
-											<a
-												mat-stroked-button
-												class="w-100 invitation-button"
-												aria-label="Download Consent to Criminal Record Check"
-												download="business-memberauthconsent"
-												matTooltip="Download Consent to Criminal Record Check"
-												[href]="downloadFilePath"
-											>
-												Download Manual Form
-											</a>
+											<ng-container *ngIf="allowNewInvitationsToBeSent">
+												<a
+													class="w-100 invitation-button"
+													aria-label="Download Consent to Criminal Record Check"
+													download="business-memberauthconsent"
+													matTooltip="Download Consent to Criminal Record Check"
+													[href]="downloadFilePath"
+												>
+													Download Manual Form
+												</a>
+											</ng-container>
 										</ng-template>
 									</mat-cell>
 								</ng-container>
@@ -212,11 +220,10 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
-						<ng-container *ngIf="canSendInvitations">
+						<ng-container *ngIf="canSendUpdateInvitations">
 							<app-alert type="info" icon="info">
-								By clicking a 'send invitation' button, a link to an online application form will be sent to the
-								controlling member via email. They must provide personal information and consent to a criminal record
-								check.
+								When an update invitation is issued, the controlling member will receive a link to an online application
+								form via email. They can update personal information and consent to a criminal record check.
 							</app-alert>
 						</ng-container>
 						<ng-container *ngIf="isApplDraftOrWaitingForPayment">
@@ -351,6 +358,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	constructor(
 		private formBuilder: FormBuilder,
+		private router: Router,
 		private dialog: MatDialog,
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
@@ -361,6 +369,11 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	) {}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
@@ -369,7 +382,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		//  'action3' - INVITATIONS/DOWNLOAD
 
 		// When in the wizard, the user cannot view the status or send / resend invitations.
-		// This should occur automatically when saving the application.
+		// This should occur automatically for the user when submitting the application.
 		if (this.isWizard) {
 			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
@@ -379,7 +392,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				if (this.isApplDraftOrWaitingForPayment) {
 					// If appl exists in Draft or Payment Pending, you can send invitations
 					this.allowNewInvitationsToBeSent = true;
-					this.allowUpdateInvitationsToBeSent = true;
+					this.allowUpdateInvitationsToBeSent = false;
 
 					// Only allow Edit in the wizard - remove 'action1'.
 					// This way we can ensure invites are sent correctly.
@@ -424,21 +437,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			return `${this.optionsPipe.transform(member.inviteStatusCode, 'ApplicationInviteStatuses')} Invitation`;
 		}
 		return null;
-	}
-
-	getInvitationButtonLabel(inviteStatusCode?: ApplicationInviteStatusCode): string | null {
-		const inviteTypeCode = this.getSendInvitationType(inviteStatusCode);
-		if (!inviteTypeCode) return null;
-
-		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
-			if (!this.allowUpdateInvitationsToBeSent) return null;
-
-			return 'Send Update Invitation';
-		}
-
-		if (!this.allowNewInvitationsToBeSent) return null;
-
-		return inviteStatusCode ? 'Resend Invitation' : 'Send Invitation';
 	}
 
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
@@ -537,16 +535,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.memberDialogWithoutSWL(member, false);
 	}
 
-	onSendInvitation(member: NonSwlContactInfo): void {
-		const inviteTypeCode = this.getSendInvitationType(member.inviteStatusCode);
-		if (!inviteTypeCode) return;
+	isAllowUpdateInvitation(inviteStatusCode?: ApplicationInviteStatusCode): boolean {
+		return inviteStatusCode === ApplicationInviteStatusCode.Completed;
+	}
 
-		let message = '';
-		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
-			message = `Does this controlling member need to report an update to their criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
-		} else {
-			message = `Does this controlling member need to be sent a criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
-		}
+	onSendUpdateInvitation(member: NonSwlContactInfo): void {
+		const message = `Does this controlling member need to report an update to their criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
 
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -562,7 +556,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.businessApplicationService
-						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, inviteTypeCode)
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, ControllingMemberAppInviteTypeCode.Update)
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
@@ -589,8 +583,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			});
 	}
 
+	onKeydownSendUpdateInvitation(event: KeyboardEvent, member: NonSwlContactInfo) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onSendUpdateInvitation(member);
+	}
+
 	onAddMemberWithoutSWL(): void {
-		this.memberDialogWithoutSWL({}, true);
+		this.memberDialogWithoutSWL(null, true);
 	}
 
 	onKeydownAddMemberWithoutSWL(event: KeyboardEvent) {
@@ -624,22 +624,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	getSendInvitationType(inviteStatusCode?: ApplicationInviteStatusCode): ControllingMemberAppInviteTypeCode | null {
-		if (inviteStatusCode === ApplicationInviteStatusCode.Completed) {
-			return ControllingMemberAppInviteTypeCode.Update;
-		}
-
-		// User cannot send/resend new invitation when there is not an application in draft or waiting for payment
-		const formValue = this.form.value;
-		if (!formValue.applicationIsInDraftOrWaitingForPayment) {
-			return null;
-		}
-
-		return ControllingMemberAppInviteTypeCode.New;
-	}
-
-	get canSendInvitations(): boolean {
-		return !this.isWizard && (this.allowNewInvitationsToBeSent || this.allowUpdateInvitationsToBeSent);
+	get canSendUpdateInvitations(): boolean {
+		return !this.isWizard && this.allowUpdateInvitationsToBeSent;
 	}
 
 	private memberAlreadyListed(): void {
@@ -663,46 +649,47 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
 	}
 
-	private memberDialogWithoutSWL(dialogOptions: any, isCreate: boolean): void {
+	private memberDialogWithoutSWL(dialogOptions: NonSwlContactInfo | null, isCreate: boolean): void {
+		const dialogData: MemberWithoutSWLDialogData = dialogOptions ?? {};
+		dialogData.bizId = this.bizId;
+		dialogData.allowNewInvitationsToBeSent = this.allowNewInvitationsToBeSent;
+
 		this.dialog
 			.open(ModalMemberWithoutSwlEditComponent, {
 				width: '800px',
-				data: dialogOptions,
+				data: dialogData,
 				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
 				const memberData = resp?.data;
+
 				if (memberData) {
 					if (isCreate) {
-						this.bizMembersService
-							.apiBusinessBizIdNonSwlControllingMembersPost({
-								bizId: this.bizId,
-								body: memberData,
-							})
-							.subscribe((resp: BizMemberResponse) => {
-								this.controllingMemberChanged();
-								this.membersWithoutSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
-								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+						this.controllingMemberChanged();
 
-								this.hotToastService.success('The member has been successfully added');
-							});
+						this.membersWithoutSwlList.push(this.newMemberRow(memberData.bizContactId!, memberData));
+						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+
+						if (this.allowNewInvitationsToBeSent && memberData.emailAddress) {
+							this.hotToastService.success(
+								'The member has been successfully added and an invitation has been sent.<br><br><strong>The controlling member will receive a link to an online application form via email. They must provide personal information and consent to a criminal record check.</strong>',
+								{
+									autoClose: false,
+									dismissible: true,
+								}
+							);
+						} else {
+							this.hotToastService.success('The member has been successfully added');
+						}
 					} else {
-						this.bizMembersService
-							.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
-								bizId: this.bizId,
-								bizContactId: dialogOptions.bizContactId!,
-								body: memberData,
-							})
-							.subscribe((_resp: BizMemberResponse) => {
-								const memberIndex = this.membersWithoutSwlList.value.findIndex(
-									(item: any) => item.bizContactId == dialogOptions.bizContactId!
-								);
-								this.patchMemberData(memberIndex, memberData);
-								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+						const memberIndex = this.membersWithoutSwlList.value.findIndex(
+							(item: any) => item.bizContactId == dialogData.bizContactId!
+						);
+						this.patchMemberData(memberIndex, memberData);
+						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
-								this.hotToastService.success('The member has been successfully updated');
-							});
+						this.hotToastService.success('The member has been successfully updated');
 					}
 				}
 			});

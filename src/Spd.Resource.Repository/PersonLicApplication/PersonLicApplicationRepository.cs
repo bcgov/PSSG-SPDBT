@@ -3,7 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicApp;
-using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -39,13 +38,8 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             else
                 existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
 
-            //for new, create a new contact if it doesn't exist with same info, or update the licence holder contact if Has expired licence.
-            if (existingContact != null)
-                contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-            else
-            {
-                contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-            }
+            //spdbt-3402: for unauth, always create new contact
+            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         else
         {
@@ -164,8 +158,11 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 
         var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
         if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business application for {bizLicAppId}.");
+        var biz = await _context.accounts.Where(a => a.accountid == bizLicApp._spd_applicantid_value).SingleOrDefaultAsync(ct);
+        if (biz == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business for {bizLicApp._spd_applicantid_value}.");
 
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
+        _context.SetLink(swlApp, nameof(swlApp.spd_soleproprietororganizationid), biz);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }

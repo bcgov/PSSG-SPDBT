@@ -13,7 +13,7 @@ import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
-import { ExpiredLicenceComponent } from './components/expired-licence.component';
+import { FormExpiredLicenceComponent } from './components/form-expired-licence.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { FormAddressAndIsSameFlagComponent } from './components/form-address-and-is-same-flag.component';
 import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
@@ -93,7 +93,7 @@ const SHARED_COMPONENTS = [
 	LicenceListExpiredComponent,
 	FormAlertUpdateOrRenewalComponent,
 	LicenceReprintComponent,
-	ExpiredLicenceComponent,
+	FormExpiredLicenceComponent,
 	FormAddressAndIsSameFlagComponent,
 	ContainerComponent,
 	FileDragNDropDirective,

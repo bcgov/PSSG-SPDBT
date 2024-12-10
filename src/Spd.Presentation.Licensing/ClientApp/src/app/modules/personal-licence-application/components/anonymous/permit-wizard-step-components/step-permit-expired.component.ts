@@ -16,11 +16,11 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 				</div>
 			</div>
 
-			<app-expired-licence
+			<app-form-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
 				[serviceTypeCode]="serviceTypeCode"
-			></app-expired-licence>
+			></app-form-expired-licence>
 		</app-step-section>
 	`,
 	styles: [],

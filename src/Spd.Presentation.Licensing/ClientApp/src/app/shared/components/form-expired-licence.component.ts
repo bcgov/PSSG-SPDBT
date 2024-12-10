@@ -12,7 +12,7 @@ import {
 } from './modal-lookup-by-licence-number.component';
 
 @Component({
-	selector: 'app-expired-licence',
+	selector: 'app-form-expired-licence',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -88,7 +88,7 @@ import {
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class ExpiredLicenceComponent implements OnInit {
+export class FormExpiredLicenceComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	booleanTypeCodes = BooleanTypeCode;
 

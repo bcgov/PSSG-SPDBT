@@ -46,6 +46,7 @@ export const FileTypes: SelectOptions[] = [
 	{ desc: 'Canadian Firearms License', code: FileTypeCode.CanadianFirearmsLicense },
 	{ desc: 'Canadian Native Status Card', code: FileTypeCode.CanadianNativeStatusCard },
 	{ desc: 'Certificate Of Advanced Security Training', code: FileTypeCode.CertificateOfAdvancedSecurityTraining },
+	{ desc: 'Clearance Letter', code: FileTypeCode.ClearanceLetter },
 	{ desc: 'Confirmation Letter From Superior Officer', code: FileTypeCode.ConfirmationLetterFromSuperiorOfficer },
 	{ desc: 'Confirmation Of Fingerprints', code: FileTypeCode.ConfirmationOfFingerprints },
 	{ desc: 'Convicted Offence', code: FileTypeCode.ConvictedOffence },
@@ -57,7 +58,9 @@ export const FileTypes: SelectOptions[] = [
 	{ desc: 'Letter Of No Conflict', code: FileTypeCode.LetterOfNoConflict },
 	{ desc: 'Locksmith', code: FileTypeCode.Locksmith },
 	{ desc: 'Mental Health Condition Form', code: FileTypeCode.MentalHealthConditionForm },
+	{ desc: 'Opportunity To Respond', code: FileTypeCode.OpportunityToRespond },
 	{ desc: 'Passport', code: FileTypeCode.Passport },
+	{ desc: 'Payment Receipt', code: FileTypeCode.PaymentReceipt },
 	{ desc: 'Permanent Residence Card', code: FileTypeCode.PermanentResidenceCard },
 	{ desc: 'Photograph', code: FileTypeCode.Photograph },
 	{ desc: 'Private Investigator', code: FileTypeCode.PrivateInvestigator },
@@ -67,7 +70,6 @@ export const FileTypes: SelectOptions[] = [
 	{ desc: 'Security Guard', code: FileTypeCode.SecurityGuard },
 	{ desc: 'Self Disclosure', code: FileTypeCode.SelfDisclosure },
 	{ desc: 'Validation Certificate', code: FileTypeCode.ValidationCertificate },
-	{ desc: 'Opportunity To Respond', code: FileTypeCode.OpportunityToRespond },
 ];
 
 export const ScreeningTypes: SelectOptions[] = [

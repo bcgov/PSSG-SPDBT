@@ -19,6 +19,9 @@ namespace Spd.Resource.Repository.Licence
         public ServiceTypeEnum? Type { get; set; }
         public bool IncludeInactive { get; set; }
         public bool? IsExpired { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? BizName { get; set; }
     };
     public record LicenceListResp
     {
@@ -39,6 +42,7 @@ namespace Spd.Resource.Repository.Licence
 
         //biz info
         public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
+        public string? BizLegalName { get; set; }
 
         //swl & biz info
         public bool UseDogs { get; set; }
@@ -64,6 +68,7 @@ namespace Spd.Resource.Repository.Licence
         public string? LicenceHolderLastName { get; set; }
         public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
+        public DateOnly? LicenceHolderDateOfBirth { get; set; }
         public string? NameOnCard { get; set; }
 
         //issued categories 
