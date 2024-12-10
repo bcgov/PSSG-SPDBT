@@ -17,7 +17,7 @@ export interface PaymentResponse {
   paidSuccess?: boolean;
   paymentId?: string;
   paymentStatus?: PaymentStatusCode;
-  paymentType?: PaymentTypeCode;
+  paymentTypeCode?: PaymentTypeCode;
   serviceTypeCode?: ServiceTypeCode;
   transAmount?: number;
   transDateTime?: string;

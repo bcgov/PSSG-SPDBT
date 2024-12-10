@@ -290,18 +290,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
 
 			// Send the controlling member invitations
-			const apis: Observable<any>[] = [];
-			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
-				if (item.emailAddress) {
-					apis.push(
-						this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
-							bizContactId: item.bizContactId!,
-							inviteType: ControllingMemberAppInviteTypeCode.New,
-						})
-					);
-				}
-			});
-
+			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
 			if (apis.length > 0) {
 				forkJoin(apis)
 					.pipe(
@@ -356,26 +345,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
 
 			// Send the controlling member invitations
-
-			const apis: Observable<any>[] = [];
-			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
-				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
-						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.New,
-					})
-				);
-			});
-
+			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
 			if (apis.length > 0) {
-				forkJoin(apis)
+				this.submitBusinessLicenceRenewalOrUpdateOrReplace()
 					.pipe(
-						switchMap((_resps: any[]) => {
-							return this.submitBusinessLicenceRenewalOrUpdateOrReplace();
+						switchMap((_resp: BizLicAppCommandResponse) => {
+							return forkJoin(apis);
 						})
 					)
 					.subscribe({
-						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						next: (_resps: any[]) => {
 							this.hotToastService.success(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
@@ -389,9 +368,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+			next: (_resp: BizLicAppCommandResponse) => {
 				this.hotToastService.success(successMessage);
-				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
+				this.commonApplicationService.payNowBusinessLicence(_resp.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -401,14 +380,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	payBusinessLicenceUpdateOrReplace(params: { applicationTypeCode: ApplicationTypeCode }): void {
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+			next: (_resp: BizLicAppCommandResponse) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.SecurityBusinessLicence,
 					params.applicationTypeCode
 				);
 
 				this.hotToastService.success(successMessage);
-				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
+				this.commonApplicationService.payNowBusinessLicence(_resp.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -436,7 +415,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<BizLicAppCommandResponse> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -490,7 +469,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+					return this.bizLicensingService.apiBusinessLicenceApplicationChangePost({
 						body,
 					});
 				})
@@ -500,7 +479,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost({
 				body,
 			});
 		}
@@ -566,7 +545,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// 	this.licenceTermFormGroup.valid
 		// );
 
-		return this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+		let isValid = this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+		if (isValid) {
+			const categoryData = this.businessModelFormGroup.get('categoryData')?.value;
+
+			if (categoryData.ArmouredCarGuard) {
+				isValid = isValid && this.categoryArmouredCarGuardFormGroup.valid;
+			}
+			if (categoryData.PrivateInvestigator) {
+				isValid = isValid && this.categoryPrivateInvestigatorFormGroup.valid;
+			}
+			if (categoryData.SecurityGuard) {
+				isValid = isValid && this.categorySecurityGuardFormGroup.valid;
+			}
+		}
+
+		return isValid;
 	}
 
 	/**
@@ -1725,15 +1719,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
+		if (categoryData.PrivateInvestigator) {
+			const managerContactId = privateInvestigatorSwlLicence
+				? businessLicenceAppl.privateInvestigatorSwlInfo?.contactId
+				: null;
+			const managerLicenceId = privateInvestigatorSwlLicence
+				? businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId
+				: null;
+
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
-				managerContactId: businessLicenceAppl.privateInvestigatorSwlInfo?.contactId,
-				managerLicenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
-				managerLicenceHolderName: privateInvestigatorSwlLicence.licenceHolderName,
-				managerLicenceNumber: privateInvestigatorSwlLicence.licenceNumber,
-				managerLicenceExpiryDate: privateInvestigatorSwlLicence.expiryDate,
-				managerLicenceStatusCode: privateInvestigatorSwlLicence.licenceStatusCode,
+				managerContactId,
+				managerLicenceId,
+				managerLicenceHolderName: privateInvestigatorSwlLicence?.licenceHolderName,
+				managerLicenceNumber: privateInvestigatorSwlLicence?.licenceNumber,
+				managerLicenceExpiryDate: privateInvestigatorSwlLicence?.expiryDate,
+				managerLicenceStatusCode: privateInvestigatorSwlLicence?.licenceStatusCode,
 			};
 		}
 
@@ -2050,6 +2051,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				this.businessModelFormGroup.patchValue(
 					{
+						licenceAppId: resp.soleProprietorBizAppId ?? null,
 						soleProprietorSWLAppId: licenceAppId,
 						soleProprietorSWLAppPortalStatus: resp.applicationPortalStatus,
 						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
@@ -2324,5 +2326,33 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
+	}
+
+	private membersWithoutSwlApis(membersWithoutSwl: Array<any> | null): Observable<NonSwlContactInfo>[] {
+		if (!membersWithoutSwl || membersWithoutSwl.length === 0) {
+			return [];
+		}
+
+		// Send the controlling member invitations
+		const apis: Observable<any>[] = [];
+		membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
+			if (item.emailAddress) {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.New,
+					})
+				);
+			} else {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.CreateShellApp,
+					})
+				);
+			}
+		});
+
+		return apis;
 	}
 }

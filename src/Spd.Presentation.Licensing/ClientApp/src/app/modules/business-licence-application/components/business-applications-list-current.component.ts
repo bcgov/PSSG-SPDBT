@@ -83,6 +83,16 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 										</button>
 									</ng-container>
 									<ng-template #showStatus>
+										<a
+											tabindex="0"
+											class="text-start me-2"
+											aria-label="Remove the draft application"
+											matTooltip="Remove the draft application"
+											(click)="onCancel(application)"
+											(keydown)="onKeydownCancel($event, application)"
+											*ngIf="isDraftCancelable(application)"
+											><mat-icon>delete_outline</mat-icon></a
+										>
 										<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
 											{{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
 										</span>
@@ -94,18 +104,6 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 						<ng-container matColumnDef="action1">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button
-									mat-stroked-button
-									color="primary"
-									class="large w-auto"
-									aria-label="Remove the application"
-									matTooltip="Remove the application"
-									(click)="onCancel(application)"
-									*ngIf="isDraftCancelable(application)"
-								>
-									<mat-icon>delete_outline</mat-icon>Remove
-								</button>
-
 								<a
 									tabindex="0"
 									class="text-start"
@@ -222,6 +220,12 @@ export class BusinessApplicationsListCurrentComponent implements OnInit {
 		this.cancelApplication.emit(appl);
 	}
 
+	onKeydownCancel(event: KeyboardEvent, appl: MainApplicationResponse) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onCancel(appl);
+	}
+
 	onResume(appl: MainApplicationResponse): void {
 		this.resumeApplication.emit(appl);
 	}
@@ -266,6 +270,6 @@ export class BusinessApplicationsListCurrentComponent implements OnInit {
 	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.manageMembersAndEmployees.emit();
+		this.onManageMembersAndEmployees();
 	}
 }

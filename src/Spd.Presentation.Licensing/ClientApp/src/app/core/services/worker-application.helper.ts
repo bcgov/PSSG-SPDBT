@@ -1229,7 +1229,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		return documents;
 	}
 
-	getSummaryshowPhotographOfYourself(workerLicenceModelData: any): boolean {
+	getSummaryshowPhotographOfYourselfGenderChanged(workerLicenceModelData: any): boolean {
 		const att = this.getSummaryphotoOfYourselfAttachments(workerLicenceModelData);
 		return this.getSummaryhasGenderChanged(workerLicenceModelData) && !!att && att.length > 0;
 	}
