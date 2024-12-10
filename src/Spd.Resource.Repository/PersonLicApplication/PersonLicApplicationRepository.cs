@@ -158,8 +158,11 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 
         var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
         if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business application for {bizLicAppId}.");
+        var biz = await _context.accounts.Where(a => a.accountid == bizLicApp._spd_applicantid_value).SingleOrDefaultAsync(ct);
+        if (biz == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business for {bizLicApp._spd_applicantid_value}.");
 
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
+        _context.SetLink(swlApp, nameof(swlApp.spd_soleproprietororganizationid), biz);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
