@@ -74,7 +74,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
-					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
+					<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
 						<mat-step completed="false">
 							<ng-template matStepLabel>Business Information</ng-template>
 						</mat-step>
@@ -122,6 +122,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
 	showWorkerLicenceSoleProprietorStep = false;
+	isSoleProprietor = false;
 	isSoleProprietorSimultaneousFlow = false;
 	linkedSoleProprietorBizLicId: string | null = null;
 
@@ -163,27 +164,24 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+				this.showCitizenshipStep = isCanadianCitizen === BooleanTypeCode.No;
 
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
 				)?.value;
-				const originalBizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
-					'originalLicenceData.originalBizTypeCode'
-				)?.value;
-
-				this.showWorkerLicenceSoleProprietorStep =
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode) ||
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(originalBizTypeCode);
-
-				this.isSoleProprietorSimultaneousFlow =
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
 
 				this.linkedSoleProprietorBizLicId = this.workerApplicationService.workerModelFormGroup.get(
 					'originalLicenceData.linkedSoleProprietorLicenceId'
 				)?.value;
+
+				this.isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+
+				this.showWorkerLicenceSoleProprietorStep = !!this.linkedSoleProprietorBizLicId;
+
+				this.isSoleProprietorSimultaneousFlow =
+					!!this.linkedSoleProprietorBizLicId && this.isSoleProprietor
+						? this.workerApplicationService.workerModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value
+						: false;
 
 				this.updateCompleteStatus();
 			}

@@ -68,5 +68,6 @@ public record ControllingMemberAppInviteVerifyResponse()
 public enum ControllingMemberAppInviteTypeCode
 {
     New,
-    Update
+    Update,
+    CreateShellApp
 }

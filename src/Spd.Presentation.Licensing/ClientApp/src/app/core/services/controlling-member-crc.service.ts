@@ -7,8 +7,6 @@ import {
 	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
-	ControllingMemberCrcAppSubmitRequest,
-	ControllingMemberCrcAppUpdateRequest,
 	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
@@ -360,9 +358,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		) as ControllingMemberCrcAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
 	}
@@ -377,9 +373,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+		body.agreeToCompleteAndAccurate = true;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -419,9 +415,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const body = this.getSaveBodyBaseAuthenticated(controllingMembersModelFormValue);
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		// Get the keyCode for the existing documents to save.
 		// const existingDocumentIds: Array<string> = [];
@@ -495,11 +489,11 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		body.agreeToCompleteAndAccurate = true;
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -903,7 +897,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		applicationTypeCode: ApplicationTypeCode,
 		documentsToSaveApis: Observable<string>[],
-		body: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
+		body: any // should be: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
 	) {
 		return this.licenceAppDocumentService
 			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })

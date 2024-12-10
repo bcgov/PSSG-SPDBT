@@ -16,11 +16,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				</div>
 			</div>
 
-			<app-expired-licence
+			<app-form-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
 				[serviceTypeCode]="securityWorkerLicenceCode"
-			></app-expired-licence>
+			></app-form-expired-licence>
 		</app-step-section>
 	`,
 	styles: [],

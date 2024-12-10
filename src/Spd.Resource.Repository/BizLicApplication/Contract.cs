@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Spd.Resource.Repository.Application;
+﻿using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PersonLicApplication;
 
@@ -45,6 +44,7 @@ public record BizLicApplication
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public Guid? SubmittedByPortalUserId { get; set; }
+    public Guid? ApplicantSwlLicenceId { get; set; } //for sole proprietor (registered or non-registered) 
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication
