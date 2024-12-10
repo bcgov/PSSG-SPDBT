@@ -113,7 +113,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		citizenshipData: this.citizenshipFormGroup,
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
 		characteristicsData: this.characteristicsFormGroup,
+
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		photoDocumentUrlId: new FormControl(), // placeholder photo on the licence
 	});
 
 	workerModelChangedSubscription!: Subscription;
@@ -1796,9 +1798,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
-					const aFile = this.fileUtilService.dummyFile(doc);
-					photographOfYourselfAttachments.push(aFile);
+					// If there is a photo on the licence, use that one. See below
+					if (!associatedLicence?.photoDocumentUrlId) {
+						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+						const aFile = this.fileUtilService.dummyFile(doc);
+						photographOfYourselfAttachments.push(aFile);
+					}
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {
@@ -1812,6 +1817,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const fingerprintProofData = {
 			attachments: fingerprintProofDataAttachments,
 		};
+
+		if (associatedLicence?.photoDocumentUrlId) {
+			const doc: Document = {
+				documentExtension: null,
+				documentName: null,
+				documentUrlId: associatedLicence?.photoDocumentUrlId,
+				expiryDate: null,
+				licenceAppId: workerLicenceAppl.licenceAppId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				uploadedDateTime: undefined,
+			};
+			const aFile = this.fileUtilService.dummyFile(doc);
+			photographOfYourselfAttachments.push(aFile);
+			photographOfYourselfLastUploadedDateTime = '';
+		}
 
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
@@ -1872,6 +1892,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				fingerprintProofData,
 				citizenshipData,
 				photographOfYourselfData,
+				photoDocumentUrlId: associatedLicence?.photoDocumentUrlId,
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
 				categoryClosedCircuitTelevisionInstallerFormGroup,
