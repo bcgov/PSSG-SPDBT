@@ -87,7 +87,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 
 					<ng-container *ngIf="showSearchResults">
 						<div class="mb-3" *ngIf="searchResults.length > 0; else NoSearchResults">
-							<mat-divider class="mat-divider-main my-3"></mat-divider>
+							<mat-divider class="my-3"></mat-divider>
 							<div class="text-minor-heading my-3">Search Results</div>
 
 							<div
