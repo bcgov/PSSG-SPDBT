@@ -1719,15 +1719,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
+		if (categoryData.PrivateInvestigator) {
+			const managerContactId = privateInvestigatorSwlLicence
+				? businessLicenceAppl.privateInvestigatorSwlInfo?.contactId
+				: null;
+			const managerLicenceId = privateInvestigatorSwlLicence
+				? businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId
+				: null;
+
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
-				managerContactId: businessLicenceAppl.privateInvestigatorSwlInfo?.contactId,
-				managerLicenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
-				managerLicenceHolderName: privateInvestigatorSwlLicence.licenceHolderName,
-				managerLicenceNumber: privateInvestigatorSwlLicence.licenceNumber,
-				managerLicenceExpiryDate: privateInvestigatorSwlLicence.expiryDate,
-				managerLicenceStatusCode: privateInvestigatorSwlLicence.licenceStatusCode,
+				managerContactId,
+				managerLicenceId,
+				managerLicenceHolderName: privateInvestigatorSwlLicence?.licenceHolderName,
+				managerLicenceNumber: privateInvestigatorSwlLicence?.licenceNumber,
+				managerLicenceExpiryDate: privateInvestigatorSwlLicence?.expiryDate,
+				managerLicenceStatusCode: privateInvestigatorSwlLicence?.licenceStatusCode,
 			};
 		}
 
