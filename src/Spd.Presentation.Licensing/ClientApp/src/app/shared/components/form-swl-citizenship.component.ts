@@ -83,12 +83,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-form-field>
 							</ng-template>
 						</div>
-						<div class="col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Document ID</mat-label>
-								<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
-							</mat-form-field>
-						</div>
 						<div class="col-lg-6 col-md-12" *ngIf="showExpiryDate">
 							<mat-form-field>
 								<mat-label>Document Expiry Date</mat-label>
@@ -103,6 +97,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">Invalid expiry date</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Document ID</mat-label>
+								<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -175,12 +175,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</div>
 								<div class="col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Document ID</mat-label>
-										<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
-									</mat-form-field>
-								</div>
-								<div class="col-lg-6 col-md-12">
-									<mat-form-field>
 										<mat-label>Document Expiry Date</mat-label>
 										<input
 											matInput
@@ -197,6 +191,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')">
 											Invalid expiry date
 										</mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Document ID</mat-label>
+										<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
 									</mat-form-field>
 								</div>
 							</div>
