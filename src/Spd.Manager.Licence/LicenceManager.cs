@@ -200,7 +200,10 @@ internal class LicenceManager :
     private async Task GetPhotoDocumentsInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
     {
         if (licResp.PhotoDocumentUrlId != null)
-            lic.PhotoDocumentInfo = await _documentRepository.GetAsync((Guid)licResp.PhotoDocumentUrlId, cancellationToken);
+        {
+            var doc = await _documentRepository.GetAsync((Guid)licResp.PhotoDocumentUrlId, cancellationToken);
+            lic.PhotoDocumentInfo = _mapper.Map<Document>(doc);
+        }
     }
 
     private async Task GetSoleProprietorInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
