@@ -112,9 +112,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
+			documentId: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 			governmentIssuedPhotoTypeCode: new FormControl(''),
 			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedDocumentId: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
 		},
 		{

@@ -50,7 +50,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</ng-template>
 
 						<div class="row my-2" *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
-							<div class="col-lg-7 col-md-12">
+							<div class="col-md-12" [ngClass]="showIfPassport ? 'col-lg-12' : 'col-lg-6'">
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
 									<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
@@ -67,7 +67,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-lg-5 col-md-12" *ngIf="showIfPassport">
+							<div class="col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>Document ID</mat-label>
+									<input matInput formControlName="documentId" maxlength="30" />
+								</mat-form-field>
+							</div>
+							<div class="col-lg-6 col-md-12" *ngIf="showIfPassport">
 								<mat-form-field>
 									<mat-label>Document Expiry Date</mat-label>
 									<input
@@ -108,7 +114,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 						<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.No && isCanadianResident.value">
 							<div class="row my-2">
-								<div class="col-lg-7 col-md-12">
+								<div class="col-lg-12 col-md-12">
 									<ng-container *ngIf="isCanadianResident.value === booleanTypeCodes.Yes; else notResidentOfCanada">
 										<mat-form-field>
 											<mat-label>Proof of Resident Status</mat-label>
@@ -145,7 +151,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										</mat-form-field>
 									</ng-template>
 								</div>
-								<div class="col-lg-5 col-md-12">
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Document ID</mat-label>
+										<input matInput formControlName="documentId" maxlength="30" />
+									</mat-form-field>
+								</div>
+								<div class="col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Document Expiry Date</mat-label>
 										<input
@@ -215,7 +227,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 								<div class="text-minor-heading mb-2">Type of additional piece of government-issued photo ID</div>
 								<div class="row my-2">
-									<div class="col-lg-7 col-md-12">
+									<div class="col-lg-12 col-md-12">
 										<mat-form-field>
 											<mat-label>Additional Type of Proof</mat-label>
 											<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
@@ -232,7 +244,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											</mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-lg-5 col-md-12">
+									<div class="col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Document ID</mat-label>
+											<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
+										</mat-form-field>
+									</div>
+									<div class="col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Document Expiry Date</mat-label>
 											<input
