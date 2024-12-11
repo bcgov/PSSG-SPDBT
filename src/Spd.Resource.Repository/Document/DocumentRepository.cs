@@ -114,7 +114,7 @@ internal class DocumentRepository : IDocumentRepository
         {
             DocumentResp? doc = resp.FirstOrDefault();
             if (doc?.ApplicationId == null)
-                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
+                return resp.Where(i => i.CreatedOn == doc.CreatedOn).ToList();
             else
                 return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
         }
