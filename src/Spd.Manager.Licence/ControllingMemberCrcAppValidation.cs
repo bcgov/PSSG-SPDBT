@@ -107,10 +107,8 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
         RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.IsCanadianCitizen).NotNull();
         RuleFor(r => r.BcDriversLicenceNumber)
-            .NotNull()
-            .NotEmpty()
             .MaximumLength(8)
-            .When(r => r.HasBcDriversLicence == true);
+            .When(r => r.BcDriversLicenceNumber != null);
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
         RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
