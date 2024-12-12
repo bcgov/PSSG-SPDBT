@@ -67,7 +67,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStepCompensationQuestion">
+			<mat-step *ngIf="isVolunteerPath">
 				<app-compensation-question></app-compensation-question>
 
 				<div class="row mt-4">
@@ -88,7 +88,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 			</mat-step>
 
 			<mat-step>
-				<app-vulnerable-sector-question></app-vulnerable-sector-question>
+				<app-vulnerable-sector-question [isVolunteer]="isVolunteerPath"></app-vulnerable-sector-question>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -125,7 +125,7 @@ export class StepOneComponent {
 	readonly STEP_COMPENSATION_OPTION = 2;
 	readonly STEP_VULNERABLE_SECTOR_OPTION = 3;
 
-	showStepCompensationQuestion = true;
+	isVolunteerPath = true;
 	showStepOrganizationProblem = false;
 	showStepEligibilityProblem = false;
 
@@ -236,7 +236,7 @@ export class StepOneComponent {
 		}
 		this.vulnerableSectorQuestionComponent.employeeInteractionFlag = currentStateInfo.employeeInteractionFlag;
 
-		this.childstepper.selectedIndex = this.showStepCompensationQuestion ? 3 : 2;
+		this.childstepper.selectedIndex = this.isVolunteerPath ? 3 : 2;
 	}
 
 	private dirtyForm(step: number): boolean {
@@ -246,7 +246,7 @@ export class StepOneComponent {
 				this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
 				return this.registrationPathSelectionComponent.isFormValid();
 			case this.STEP_ORGANIZATION_OPTION:
-				this.showStepCompensationQuestion = false;
+				this.isVolunteerPath = false;
 				this.showStepOrganizationProblem = false;
 				this.showStepEligibilityProblem = false;
 
@@ -273,7 +273,6 @@ export class StepOneComponent {
 	}
 
 	setShowStepCompensationQuestionFlag(): void {
-		this.showStepCompensationQuestion =
-			this.registrationPathSelectionData.registrationTypeCode != RegistrationTypeCode.Employee;
+		this.isVolunteerPath = this.registrationPathSelectionData.registrationTypeCode != RegistrationTypeCode.Employee;
 	}
 }
