@@ -32,6 +32,7 @@ namespace Spd.Resource.Repository.Document
         public DocumentTypeEnum? DocumentType { get; set; }
         public DocumentTypeEnum? DocumentType2 { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public Guid DocumentUrlId { get; set; }
         public Guid? ClearanceId { get; set; }
         public Guid? ApplicationId { get; set; }
