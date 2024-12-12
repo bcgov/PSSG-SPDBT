@@ -586,6 +586,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
@@ -595,6 +597,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 			governmentIssuedAttachments: [],
 		};
 
@@ -622,6 +626,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+					// TODO governmentIssuedDocumentID?
 
 					break;
 				}
@@ -647,6 +652,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
+					// TODO documentID?
 
 					break;
 				}

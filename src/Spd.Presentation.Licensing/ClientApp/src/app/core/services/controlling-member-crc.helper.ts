@@ -161,6 +161,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
 						: citizenshipData.notCanadianCitizenProofTypeCode,
+				// TODO documentID?
 			});
 		});
 
@@ -180,6 +181,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					// TODO governmentIssuedDocumentID?
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -200,6 +202,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
+						// TODO documentID?
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 					} as DocumentExpiredInfo;
 				}) ?? [];

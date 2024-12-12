@@ -1283,6 +1283,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
 			governmentIssuedAttachments: File[];
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 		} = {
 			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
 			isCanadianResident: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianResident),
@@ -1294,6 +1296,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 		};
 
 		const rationaleAttachments: Array<File> = [];
@@ -1324,6 +1328,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+					// TODO governmentIssuedDocumentID?
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes
@@ -1354,6 +1359,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 							: null;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
+					// TODO documentID?
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
