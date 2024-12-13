@@ -113,9 +113,13 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
+			? policeBackgroundData.policeOfficerRoleCode
+			: PoliceOfficerRoleCode.None;
 		const otherOfficerRole =
-			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
+				? policeBackgroundData.otherOfficerRole
+				: null;
 
 		const documentInfos: Array<Document> = [];
 

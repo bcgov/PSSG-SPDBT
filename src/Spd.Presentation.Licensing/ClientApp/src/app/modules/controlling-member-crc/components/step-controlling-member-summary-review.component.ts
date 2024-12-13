@@ -281,16 +281,18 @@ import { UtilService } from '@app/core/services/util.service';
 												<div class="text-label d-block text-muted">Mental Health Conditions</div>
 												<div class="summary-text-data">{{ isTreatedForMHC }}</div>
 											</div>
-											<div class="col-lg-8 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
-												<div class="text-label d-block text-muted">Mental Health Condition Form</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
+											<ng-container *ngIf="isTreatedForMHC === booleanTypeCodes.Yes">
+												<div class="col-lg-8 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
+													<div class="text-label d-block text-muted">Mental Health Condition Form</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
 												</div>
-											</div>
+											</ng-container>
 										</div>
 									</div>
 								</mat-expansion-panel>
