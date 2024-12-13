@@ -40,7 +40,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</div>
 
 					<div class="row mt-3">
-						<div [formGroup]="personalInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+						<div [formGroup]="personalInformationFormGroup" class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Sex</mat-label>
 								<mat-select
@@ -58,7 +58,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</mat-form-field>
 						</div>
 
-						<div [formGroup]="contactInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+						<div [formGroup]="contactInformationFormGroup" class="col-xl-5 col-lg-5 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Email Address</mat-label>
 								<input
