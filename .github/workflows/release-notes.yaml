@@ -3,10 +3,10 @@ name: Generate Release Notes
 on:
   workflow_dispatch: # Enables manual triggering
     inputs:
-    release_tag:
-      description: "Tag of the release"
-      required: true
-      default: "release-1.2.1"
+      release_tag:
+        description: "Tag of the release"
+        required: true
+        default: "release-1.2.1"
   release:
     types:
       - created
