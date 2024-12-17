@@ -18,7 +18,7 @@ jobs:
         uses: release-drafter/release-drafter@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          config-name: release-drafter.yml
+          config-name: custom-config.yml
 
       - name: Upload Release Notes
         env:
