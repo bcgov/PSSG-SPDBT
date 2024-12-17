@@ -11,7 +11,7 @@
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="Bogus" Version="35.6.1" />
-    <PackageVersion Include="AWSSDK.S3" Version="3.7.410.1" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.410.6" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
@@ -42,11 +42,11 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="Microsoft.OData.Client" Version="8.2.2" />
-    <PackageVersion Include="Microsoft.OData.Core" Version="8.2.2" />
-    <PackageVersion Include="Microsoft.OData.Edm" Version="8.2.2" />
+    <PackageVersion Include="Microsoft.OData.Client" Version="8.2.3" />
+    <PackageVersion Include="Microsoft.OData.Core" Version="8.2.3" />
+    <PackageVersion Include="Microsoft.OData.Edm" Version="8.2.3" />
     <PackageVersion Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
-    <PackageVersion Include="Microsoft.Spatial" Version="8.2.2" />
+    <PackageVersion Include="Microsoft.Spatial" Version="8.2.3" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="nClam" Version="9.0.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
@@ -75,8 +75,8 @@
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.ServiceModel.Duplex" Version="6.0.0" />
     <PackageVersion Include="System.ServiceModel.Federation" Version="8.0.0" />
-    <PackageVersion Include="System.ServiceModel.Http" Version="8.0.0" />
     <PackageVersion Include="System.ServiceModel.NetTcp" Version="8.1.1" />
+    <PackageVersion Include="System.ServiceModel.Http" Version="8.1.1" />
     <PackageVersion Include="System.ServiceModel.Security" Version="6.0.0" />
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
     <PackageVersion Include="TimeZoneConverter" Version="6.1.0" />
