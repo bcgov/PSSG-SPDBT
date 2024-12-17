@@ -12,8 +12,7 @@ categories:
       - chore
 change-template: "- ${{PR.title}} (#${{PR.number}}) by @${{PR.author}}"
 no-changes-template: "- No changes in this release."
-sort-by: "merged_at"
-sort-direction: "descending"
+
 template: |
   ## 🚀 New Features
   $CHANGES_FOR_CATEGORY🚀 New Features$
