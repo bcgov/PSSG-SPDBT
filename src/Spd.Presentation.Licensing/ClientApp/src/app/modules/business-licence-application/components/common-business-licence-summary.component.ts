@@ -241,7 +241,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</div>
 
-										<ng-container *ngIf="isPrivateInvestigator">
+										<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading-small">Private Investigator Information</div>
 											<div class="row mt-0">

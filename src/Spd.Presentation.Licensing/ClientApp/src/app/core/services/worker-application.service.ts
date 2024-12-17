@@ -1472,11 +1472,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
 		if (associatedLicence) {
-			if ('isSimultaneousFlow' in associatedLicence) {
-				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
-			} else {
-				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
-			}
+			isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
 		} else {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
