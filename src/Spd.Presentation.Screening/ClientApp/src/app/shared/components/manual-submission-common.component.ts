@@ -480,8 +480,16 @@ export interface ManualSubmissionBody {
 										<ng-template #haveVerifiedIdentityCrrpLabel>
 											I confirm that I have verified the identity of the applicant for this criminal record check
 										</ng-template>
-										<span class="optional-label">(optional)</span>
 									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
+											form.get('haveVerifiedIdentity')?.invalid &&
+											form.get('haveVerifiedIdentity')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
 								</div>
 							</div>
 
@@ -588,7 +596,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			province: new FormControl('', [FormControlValidators.required]),
 			country: new FormControl('', [FormControlValidators.required]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
-			haveVerifiedIdentity: new FormControl(''),
+			haveVerifiedIdentity: new FormControl('', [Validators.requiredTrue]),
 			aliases: this.formBuilder.array([]),
 			attachments: new FormControl('', [Validators.required]),
 		},
