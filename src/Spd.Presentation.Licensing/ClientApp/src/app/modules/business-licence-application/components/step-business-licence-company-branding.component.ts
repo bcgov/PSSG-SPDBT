@@ -44,7 +44,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
 
 						<div class="mt-3" *ngIf="isNoLogoOrBranding">
-							<app-alert type="info" icon="info">SPD will follow-up</app-alert>
+							<app-alert type="info" icon="info">SPD will follow-up.</app-alert>
 						</div>
 					</div>
 				</div>

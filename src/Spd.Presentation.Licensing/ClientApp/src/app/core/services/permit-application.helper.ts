@@ -241,9 +241,13 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
+			? policeBackgroundData.policeOfficerRoleCode
+			: PoliceOfficerRoleCode.None;
 		const otherOfficerRole =
-			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
+				? policeBackgroundData.otherOfficerRole
+				: null;
 
 		let hasNewMentalHealthCondition: boolean | null = null;
 		let hasNewCriminalRecordCharge: boolean | null = null;

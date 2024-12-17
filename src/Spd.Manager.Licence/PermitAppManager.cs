@@ -250,15 +250,14 @@ internal class PermitAppManager :
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
             updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            //clean up old files
+            await CleanUpOldFiles(request, originalLic, cancellationToken);
+
+            //update lic, it is used to update the permit additional infos which will be used when user do update, renew, replace etc again.
+            await _licenceRepository.ManageAsync(
+                new UpdateLicenceCmd(_mapper.Map<PermitLicence>(cmd.LicenceAnonymousRequest), (Guid)originalLic.LicenceId),
+                cancellationToken);
         }
-
-        //clean up old files
-        await CleanUpOldFiles(request, originalLic, cancellationToken);
-
-        //update lic
-        await _licenceRepository.ManageAsync(
-            new UpdateLicenceCmd(_mapper.Map<PermitLicence>(cmd.LicenceAnonymousRequest), (Guid)originalLic.LicenceId),
-            cancellationToken);
 
         //upload new files
         await UploadNewDocsAsync(request.DocumentExpiredInfos,
@@ -299,6 +298,17 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(licAppFileInfos, new List<LicAppFileInfo>());
         var createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+
+        //copying all old files to new application in PreviousFileIds 
+        if (request.PreviousDocumentIds != null && request.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in request.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, createLicResponse.LicenceAppId, createLicResponse.ContactId),
+                    cancellationToken);
+            }
+        }
         return createLicResponse;
     }
     private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
