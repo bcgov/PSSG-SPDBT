@@ -2,6 +2,11 @@ name: Generate Release Notes
 
 on:
   workflow_dispatch: # Enables manual triggering
+    inputs:
+    release_tag:
+      description: "Tag of the release"
+      required: true
+      default: "release-1.2.1"
   release:
     types:
       - created
@@ -24,5 +29,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Ensure token is available
         run: |
-          gh release edit ${{ github.event.release.id }} \
+          gh release edit ${{ github.event.release.tag_name }} \
             --notes "${{ steps.notes.outputs.release_notes }}"
