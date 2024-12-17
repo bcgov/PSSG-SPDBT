@@ -845,6 +845,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
+				// remove reference to expired licence - only applies to Resume flow.
+				workerLicenceAppl.expiredLicenceId = null;
+				workerLicenceAppl.expiredLicenceNumber = null;
+				workerLicenceAppl.hasExpiredLicence = false;
+
 				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
@@ -1138,6 +1143,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					associatedLicence
 				).pipe(
 					switchMap((_resp: any) => {
+						// remove reference to expired licence - only applies to Resume authenticated flow.
+						workerLicenceAppl.expiredLicenceId = null;
+						workerLicenceAppl.expiredLicenceNumber = null;
+						workerLicenceAppl.hasExpiredLicence = false;
+
 						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
 					})
 				);

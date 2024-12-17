@@ -1350,6 +1350,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[1];
 				const businessMembers = isSoleProprietor ? undefined : resps[2];
 
+				// remove reference to expired licence - only applies to Resume flow.
+				businessLicenceAppl.expiredLicenceId = null;
+				businessLicenceAppl.expiredLicenceNumber = null;
+				businessLicenceAppl.hasExpiredLicence = false;
+
 				return this.loadBusinessApplAndProfile({
 					applicationTypeCode,
 					businessLicenceAppl,

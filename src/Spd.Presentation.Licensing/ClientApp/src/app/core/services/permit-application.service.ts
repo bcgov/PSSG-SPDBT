@@ -684,6 +684,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
+				// remove reference to expired licence - only applies to Resume authenticated flow.
+				permitLicenceAppl.expiredLicenceId = null;
+				permitLicenceAppl.expiredLicenceNumber = null;
+				permitLicenceAppl.hasExpiredLicence = false;
+
 				return this.applyPermitAndProfileIntoModel({
 					permitLicenceAppl,
 					applicantProfile,
@@ -976,8 +981,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		return this.permitService.apiPermitApplicationGet().pipe(
-			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl: resp, associatedLicence });
+			switchMap((permitLicenceAppl: PermitLicenceAppResponse) => {
+				// remove reference to expired licence - only applies to Resume authenticated flow.
+				permitLicenceAppl.expiredLicenceId = null;
+				permitLicenceAppl.expiredLicenceNumber = null;
+				permitLicenceAppl.hasExpiredLicence = false;
+
+				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl, associatedLicence });
 			})
 		);
 	}
