@@ -29,5 +29,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Ensure token is available
         run: |
-          gh release edit ${{ github.event.release.tag_name }} \
+          gh release edit ${{ github.event.inputs.release_tag }} \
             --notes "${{ steps.notes.outputs.release_notes }}"
