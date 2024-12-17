@@ -91,7 +91,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
 		characteristicsData: this.characteristicsFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
-		photoDocumentUrlId: new FormControl(), // placeholder photo on the licence
 
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
@@ -1358,7 +1357,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
 					// If there is a photo on the licence, use that one. See below
-					if (!associatedLicence?.photoDocumentUrlId) {
+					if (!associatedLicence?.photoDocumentInfo) {
 						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
 						const aFile = this.fileUtilService.dummyFile(doc);
 						photographOfYourselfAttachments.push(aFile);
@@ -1376,24 +1375,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		});
 
-		if (associatedLicence?.photoDocumentUrlId) {
+		if (associatedLicence?.photoDocumentInfo) {
 			const doc: Document = {
-				documentExtension: null,
-				documentName: null,
-				documentUrlId: associatedLicence?.photoDocumentUrlId,
-				expiryDate: null,
+				documentExtension: associatedLicence?.photoDocumentInfo.documentExtension,
+				documentName: associatedLicence?.photoDocumentInfo.documentName,
+				documentUrlId: associatedLicence?.photoDocumentInfo.documentUrlId,
+				expiryDate: associatedLicence?.photoDocumentInfo.expiryDate,
 				licenceAppId: permitLicenceAppl.licenceAppId,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-				uploadedDateTime: undefined,
+				uploadedDateTime: associatedLicence?.photoDocumentInfo.uploadedDateTime,
 			};
 			const aFile = this.fileUtilService.dummyFile(doc);
 			photographOfYourselfAttachments.push(aFile);
-			photographOfYourselfLastUploadedDateTime = '';
+			photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
 		}
 
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
 			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
+			updatePhoto: null,
+			updateAttachments: [],
 		};
 
 		const permitRationaleData = {
