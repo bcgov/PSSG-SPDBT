@@ -15,7 +15,7 @@ change-template: "- ${{PR.title}} (#${{PR.number}}) by @${{PR.author}} {{PR.labe
 no-changes-template: "- No changes in this release."
 
 template: |
-  ## What's Changed
+  ## What's Changed in this release
   $CHANGES$
 
   ## 🚀 New Features

@@ -24,6 +24,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-name: custom-config.yml
+        env:
+          LOG_LEVEL: debug
 
       - name: Upload Release Notes
         env:
