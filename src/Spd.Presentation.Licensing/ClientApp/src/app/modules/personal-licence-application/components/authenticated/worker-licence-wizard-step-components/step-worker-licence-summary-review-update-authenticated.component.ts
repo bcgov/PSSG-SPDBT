@@ -12,67 +12,112 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
-				<div class="col-xxl-8 col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row mt-0 mb-4">
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">
-								Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
-							</div>
-							<div class="summary-text-data">{{ licenceHolderName }}</div>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Licence Number</div>
-							<div class="summary-text-data">{{ originalLicenceNumber }}</div>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChanged">
-							<div class="text-label d-block text-muted">Photograph of Yourself</div>
-							<div class="summary-text-data">
-								<ul class="m-0">
-									<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-										<li>{{ doc.name }}</li>
-									</ng-container>
-								</ul>
-							</div>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Expiry Date</div>
-							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate: formalDateFormat }}
-							</div>
-						</div>
+				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<mat-accordion multi="true">
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Licence Updates</div>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<ng-container *ngIf="isUpdate">
-								<div class="text-label d-block text-muted">Reprint Fee</div>
-								<div class="summary-text-data">
-									{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+							<div class="panel-body">
+								<div class="row mt-0 mb-4">
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">
+											Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
+										</div>
+										<div class="summary-text-data">{{ licenceHolderName }}</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Licence Number</div>
+										<div class="summary-text-data">{{ originalLicenceNumber }}</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChanged">
+										<div class="text-label d-block text-muted">Photograph of Yourself</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Expiry Date</div>
+										<div class="summary-text-data">
+											{{ originalExpiryDate | formatDate: formalDateFormat }}
+										</div>
+									</div>
+
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Licence Term</div>
+										<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<ng-container *ngIf="isUpdate">
+											<div class="text-label d-block text-muted">Reprint Fee</div>
+											<div class="summary-text-data">
+												{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+											</div>
+										</ng-container>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Licence Categories</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let category of categoryList; let i = index">
+													<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+
+									<app-worker-summary-dogs-restraints
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-dogs-restraints>
 								</div>
-							</ng-container>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Licence Categories</div>
-							<div class="summary-text-data">
-								<ul class="m-0">
-									<ng-container *ngFor="let category of categoryList; let i = index">
-										<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-									</ng-container>
-								</ul>
 							</div>
-						</div>
-
-						<app-worker-summary-dogs-restraints
-							[workerModelData]="licenceModelData"
-						></app-worker-summary-dogs-restraints>
-					</div>
+						</mat-expansion-panel>
+					</mat-accordion>
 				</div>
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.mat-expansion-panel {
+				border-radius: 0;
+			}
+
+			.mat-expansion-panel-header {
+				height: unset;
+			}
+
+			.panel-body {
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+
+			.review-panel-title {
+				width: 100%;
+
+				.mat-toolbar {
+					background-color: var(--color-primary-lighter) !important;
+					color: var(--color-primary-dark) !important;
+					padding: 0;
+
+					.panel-header {
+						white-space: normal;
+						margin-top: 0.5rem !important;
+						margin-bottom: 0.5rem !important;
+					}
+				}
+			}
+		`,
+	],
 })
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
