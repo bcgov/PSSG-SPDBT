@@ -11,10 +11,13 @@ categories:
     labels:
       - chore
 
-change-template: "- ${{PR.title}} (#${{PR.number}}) by @${{PR.author}}"
+change-template: "- ${{PR.title}} (#${{PR.number}}) by @${{PR.author}} {{PR.labels}}"
 no-changes-template: "- No changes in this release."
 
 template: |
+  ## What's Changed
+  $CHANGES$
+
   ## 🚀 New Features
   $CHANGES_FOR_CATEGORY🚀 New Features$
 
