@@ -330,7 +330,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
-		branchPhoneNumber: new FormControl(''),
+		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
