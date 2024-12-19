@@ -21,7 +21,7 @@ import { BranchResponse } from './business-bc-branches.component';
 
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Manager's Phone Number <span class="optional-label">(optional)</span></mat-label>
+							<mat-label>Manager's Phone Number</mat-label>
 							<input
 								matInput
 								formControlName="branchPhoneNumber"
@@ -29,6 +29,7 @@ import { BranchResponse } from './business-bc-branches.component';
 								maxlength="30"
 								appPhoneNumberTransform
 							/>
+							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 

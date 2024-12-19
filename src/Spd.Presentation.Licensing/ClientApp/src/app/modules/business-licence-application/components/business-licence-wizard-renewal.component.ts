@@ -100,7 +100,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-review>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" *ngIf="showPayStep">
 				<ng-template matStepLabel>Pay</ng-template>
 			</mat-step>
 		</mat-stepper>
@@ -127,6 +127,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
+	showPayStep!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -179,6 +180,10 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'
 				)?.value;
+
+				this.showPayStep =
+					this.isBusinessLicenceSoleProprietor ||
+					(!this.isBusinessLicenceSoleProprietor && !this.isControllingMembersWithoutSwlExist);
 
 				this.isFormValid = _resp;
 
