@@ -230,7 +230,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		const isOneNameOnly = formValue.isOneNameOnly ?? false;
 
 		let performSearch = true;
-		if ((workerLicenceNumber && firstName && lastName) || (!workerLicenceNumber && !firstName && !lastName)) {
+		if ((workerLicenceNumber && (firstName || lastName)) || (!workerLicenceNumber && !firstName && !lastName)) {
 			performSearch = false;
 		} else if (workerLicenceNumber && !workerLicenceNumber.startsWith('E')) {
 			this.searchDataError = 'The security worker licence number must start with an "E".';
