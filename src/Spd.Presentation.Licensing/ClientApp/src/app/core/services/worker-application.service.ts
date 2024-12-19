@@ -845,7 +845,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				// remove reference to expired licence - only applies to Resume flow.
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
 				workerLicenceAppl.expiredLicenceId = null;
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
@@ -1143,7 +1143,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					associatedLicence
 				).pipe(
 					switchMap((_resp: any) => {
-						// remove reference to expired licence - only applies to Resume authenticated flow.
+						// remove reference to expired licence - data is only used in the Resume authenticated flow.
 						workerLicenceAppl.expiredLicenceId = null;
 						workerLicenceAppl.expiredLicenceNumber = null;
 						workerLicenceAppl.hasExpiredLicence = false;

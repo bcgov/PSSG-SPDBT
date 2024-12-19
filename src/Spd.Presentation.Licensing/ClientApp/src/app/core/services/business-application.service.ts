@@ -1127,13 +1127,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const associatedLicence = resps[1];
 				const businessLicenceAppl = resps[2];
 
-				// remove reference to expired licence - only applies to Resume flow.
+				// remove reference to expired licence - data is only used in the Resume flow.
 				businessLicenceAppl.expiredLicenceId = null;
+				businessLicenceAppl.expiredLicenceNumber = null;
 				businessLicenceAppl.hasExpiredLicence = false;
-
-				// console.debug('************* businessProfile', businessProfile);
-				// console.debug('************* associatedLicence', associatedLicence);
-				// console.debug('************* businessLicenceAppl', businessLicenceAppl);
 
 				return this.applyLicenceProfileIntoModel({
 					businessProfile,
@@ -1355,8 +1352,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[1];
 				const businessMembers = isSoleProprietor ? undefined : resps[2];
 
-				// remove reference to expired licence - only applies to Resume flow.
+				// remove reference to expired licence - data is only used in the Resume flow.
 				businessLicenceAppl.expiredLicenceId = null;
+				businessLicenceAppl.expiredLicenceNumber = null;
 				businessLicenceAppl.hasExpiredLicence = false;
 
 				return this.loadBusinessApplAndProfile({
