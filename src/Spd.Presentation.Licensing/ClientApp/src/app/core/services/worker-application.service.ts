@@ -845,6 +845,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
+				workerLicenceAppl.expiredLicenceId = null;
+				workerLicenceAppl.expiredLicenceNumber = null;
+				workerLicenceAppl.hasExpiredLicence = false;
+
 				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
@@ -1138,6 +1143,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					associatedLicence
 				).pipe(
 					switchMap((_resp: any) => {
+						// remove reference to expired licence - data is only used in the Resume authenticated flow.
+						workerLicenceAppl.expiredLicenceId = null;
+						workerLicenceAppl.expiredLicenceNumber = null;
+						workerLicenceAppl.hasExpiredLicence = false;
+
 						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
 					})
 				);
@@ -1472,11 +1482,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
 		if (associatedLicence) {
-			if ('isSimultaneousFlow' in associatedLicence) {
-				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
-			} else {
-				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
-			}
+			isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
 		} else {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
