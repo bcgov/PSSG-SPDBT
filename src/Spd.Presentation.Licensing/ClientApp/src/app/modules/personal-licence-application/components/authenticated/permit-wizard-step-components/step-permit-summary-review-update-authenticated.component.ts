@@ -9,7 +9,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
-				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
 						<mat-expansion-panel class="mb-2" [expanded]="true">
 							<mat-expansion-panel-header>
