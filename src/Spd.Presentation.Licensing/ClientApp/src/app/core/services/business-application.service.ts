@@ -1051,6 +1051,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					soleProprietorLicenceId: null,
 					soleProprietorLicenceAppId: null,
 					soleProprietorLicenceHolderName: null,
+					soleProprietorLicenceHolderId: null,
 					soleProprietorLicenceNumber: null,
 					soleProprietorLicenceExpiryDate: null,
 					soleProprietorLicenceStatusCode: null,
@@ -1126,9 +1127,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const associatedLicence = resps[1];
 				const businessLicenceAppl = resps[2];
 
-				// console.debug('************* businessProfile', businessProfile);
-				// console.debug('************* associatedLicence', associatedLicence);
-				// console.debug('************* businessLicenceAppl', businessLicenceAppl);
+				// remove reference to expired licence - data is only used in the Resume flow.
+				businessLicenceAppl.expiredLicenceId = null;
+				businessLicenceAppl.expiredLicenceNumber = null;
+				businessLicenceAppl.hasExpiredLicence = false;
 
 				return this.applyLicenceProfileIntoModel({
 					businessProfile,
@@ -1350,6 +1352,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[1];
 				const businessMembers = isSoleProprietor ? undefined : resps[2];
 
+				// remove reference to expired licence - data is only used in the Resume flow.
+				businessLicenceAppl.expiredLicenceId = null;
+				businessLicenceAppl.expiredLicenceNumber = null;
+				businessLicenceAppl.hasExpiredLicence = false;
+
 				return this.loadBusinessApplAndProfile({
 					applicationTypeCode,
 					businessLicenceAppl,
@@ -1445,7 +1452,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					}
 
 					let soleProprietorSwlLicence: LicenceResponse | undefined = undefined;
-					if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+					if (
+						this.isSoleProprietor(businessProfile.bizTypeCode) &&
+						businessProfile.soleProprietorSwlContactInfo?.licenceId
+					) {
 						soleProprietorSwlLicence = licenceResponses.find(
 							(item: LicenceResponse) => item.licenceId === businessProfile.soleProprietorSwlContactInfo?.licenceId
 						);
@@ -1460,6 +1470,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					return this.applyLicenceAndProfileIntoModel({
 						businessLicenceAppl,
+						applicationTypeCode,
 						businessProfile,
 						associatedLicence,
 						associatedExpiredLicence,
@@ -1473,6 +1484,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.applyLicenceAndProfileIntoModel({
 			businessLicenceAppl,
+			applicationTypeCode,
 			businessProfile,
 			associatedLicence,
 			brandingDocumentInfos,
@@ -1538,6 +1550,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private applyLicenceAndProfileIntoModel({
 		businessLicenceAppl,
+		applicationTypeCode,
 		businessProfile,
 		associatedLicence,
 		associatedExpiredLicence,
@@ -1546,6 +1559,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		brandingDocumentInfos,
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
+		applicationTypeCode: ApplicationTypeCode;
 		businessProfile: BizProfileResponse;
 		associatedLicence?: LicenceResponse | MainLicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
@@ -1558,7 +1572,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
-			applicationTypeCode: businessLicenceAppl.applicationTypeCode,
+			applicationTypeCode,
 			soleProprietorSwlLicence,
 			soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId ?? undefined,
 		}).pipe(
@@ -1799,6 +1813,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
 		}
 
+		// console.debug('*********** isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
+		// console.debug('*********** associatedLicence', associatedLicence);
+		// console.debug('*********** soleProprietorSWLAppId', soleProprietorSWLAppId);
+
 		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
 			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
 			: null;
@@ -1871,6 +1889,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorLicenceAppId: null,
 			soleProprietorCategoryCodes: null,
 			soleProprietorLicenceHolderName: null,
+			soleProprietorLicenceHolderId: null,
 			soleProprietorLicenceNumber: null,
 			soleProprietorLicenceExpiryDate: null,
 			soleProprietorLicenceStatusCode: null,
@@ -1884,6 +1903,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessInformationData.soleProprietorLicenceAppId = soleProprietorSwlLicence.licenceAppId;
 			businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
 			businessInformationData.soleProprietorLicenceHolderName = soleProprietorSwlLicence.licenceHolderName;
+			businessInformationData.soleProprietorLicenceHolderId = soleProprietorSwlLicence.licenceHolderId;
 			businessInformationData.soleProprietorLicenceNumber = soleProprietorSwlLicence.licenceNumber;
 			businessInformationData.soleProprietorLicenceExpiryDate = soleProprietorSwlLicence.expiryDate;
 			businessInformationData.soleProprietorLicenceStatusCode = soleProprietorSwlLicence.licenceStatusCode;
@@ -1983,14 +2003,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		// console.debug('applicationTypeCode', applicationTypeCode);
+		// console.debug('soleProprietorSwlLicence?.licenceAppId', soleProprietorSwlLicence?.licenceAppId);
+		// console.debug('soleProprietorSWLAppId', soleProprietorSWLAppId);
+
 		// if there is no applicationTypeCode, then we are supporting just loading the profile
 		if (applicationTypeCode) {
-			if (soleProprietorSwlLicence?.licenceAppId) {
-				// business licence is sole proprietor
-				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
-			} else if (soleProprietorSWLAppId) {
+			if (soleProprietorSWLAppId && applicationTypeCode != ApplicationTypeCode.Update) {
 				// using sole proprietor simultaneous flow
 				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+			} else if (soleProprietorSwlLicence?.licenceAppId) {
+				// business licence is sole proprietor (licence selected in profile)
+				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
 			}
 		}
 

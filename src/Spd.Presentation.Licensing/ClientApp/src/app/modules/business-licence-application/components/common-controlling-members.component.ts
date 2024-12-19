@@ -536,7 +536,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	isAllowUpdateInvitation(inviteStatusCode?: ApplicationInviteStatusCode): boolean {
-		return inviteStatusCode === ApplicationInviteStatusCode.Completed;
+		return this.canSendUpdateInvitations && inviteStatusCode === ApplicationInviteStatusCode.Completed;
 	}
 
 	onSendUpdateInvitation(member: NonSwlContactInfo): void {
