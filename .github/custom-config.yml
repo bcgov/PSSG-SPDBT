@@ -1,0 +1,28 @@
+name-template: "Release v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
+categories:
+  - title: 🚀 New Features
+    labels:
+      - feature
+  - title: 🐛 Bug Fixes
+    labels:
+      - bug
+  - title: 🧹 Chores
+    labels:
+      - chore
+
+change-template: "- ${{PR.title}} (#${{PR.number}}) by @${{PR.author}}"
+no-changes-template: "- No changes in this release."
+
+template: |
+  ## What's Changed in this release
+  $CHANGES$
+
+  ## 🚀 New Features
+  $CHANGES_FOR_CATEGORY[🚀 New Features]$
+
+  ## 🐛 Bug Fixes
+  $CHANGES_FOR_CATEGORY[🐛 Bug Fixes]$
+
+  ## 🧹 Maintenance
+  $CHANGES_FOR_CATEGORY[🧹 Maintenance]$
