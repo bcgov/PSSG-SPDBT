@@ -11,7 +11,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<div [formGroup]="personalInformationFormGroup">
 			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xl-8 mx-auto' : ''">
+				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
 					<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
 						<app-alert type="warning" icon="warning">
 							We noticed you changed your name recently on your BC Services Card.
