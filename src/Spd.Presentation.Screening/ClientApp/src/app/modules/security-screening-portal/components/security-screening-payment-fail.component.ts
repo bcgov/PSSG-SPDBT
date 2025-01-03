@@ -10,8 +10,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 @Component({
-	selector: 'app-security-screening-payment-fail',
-	template: `
+    selector: 'app-security-screening-payment-fail',
+    template: `
 		<app-payment-fail
 			[payment]="payment"
 			[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
@@ -20,7 +20,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routes';
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
 		></app-payment-fail>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningPaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;

@@ -8,8 +8,8 @@ import { SaConsentToReleaseOfInfoComponent } from './step-components/sa-consent-
 import { SaDeclarationComponent } from './step-components/sa-declaration.component';
 
 @Component({
-	selector: 'app-sa-step-terms-and-cond',
-	template: `
+    selector: 'app-sa-step-terms-and-cond',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-declaration *ngIf="orgData" [orgData]="orgData"></app-sa-declaration>
@@ -86,8 +86,9 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepTermsAndCondComponent {
 	agreeToShareCrc = false; // default and also, does not apply to PSSO
