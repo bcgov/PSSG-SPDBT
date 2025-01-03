@@ -20,8 +20,8 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 }
 
 @Component({
-	selector: 'app-modal-member-without-swl-edit',
-	template: `
+    selector: 'app-modal-member-without-swl-edit',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -94,8 +94,9 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class ModalMemberWithoutSwlEditComponent implements OnInit {
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;

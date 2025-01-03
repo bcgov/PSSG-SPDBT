@@ -4,8 +4,8 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
 @Component({
-	selector: 'app-steps-business-licence-contact-information',
-	template: `
+    selector: 'app-steps-business-licence-contact-information',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-manager-information
@@ -23,8 +23,9 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceContactInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_MANAGER_INFORMATION = 0;

@@ -4,8 +4,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-worker-licence-checklist-renewal',
-	template: `
+    selector: 'app-step-worker-licence-checklist-renewal',
+    template: `
 		<app-step-section title="Checklist" subtitle="Make sure you have the following items before you continue">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -113,7 +113,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceChecklistRenewalComponent implements LicenceChildStepperStepComponent {
 	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;

@@ -3,8 +3,8 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-worker-summary-document-uploaded',
-	template: `
+    selector: 'app-worker-summary-document-uploaded',
+    template: `
 		<ng-container *ngIf="isAnyDocuments">
 			<mat-divider class="mt-3 mb-2"></mat-divider>
 			<div class="text-minor-heading-small">Documents Uploaded</div>
@@ -133,7 +133,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerSummaryDocumentsUploadedComponent {
 	categoryTypeCodes = WorkerCategoryTypeCode;

@@ -8,8 +8,8 @@ import { StepBusinessLicenceControllingMembersComponent } from './step-business-
 import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';
 
 @Component({
-	selector: 'app-steps-business-licence-controlling-members',
-	template: `
+    selector: 'app-steps-business-licence-controlling-members',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-controlling-members
@@ -55,8 +55,9 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardStepComponent {
 	readonly STEP_CONTROLLING_MEMBERS = 0;

@@ -5,8 +5,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-mailing-address',
-	template: `
+    selector: 'app-step-permit-mailing-address',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
@@ -19,7 +19,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.mailingAddressFormGroup;

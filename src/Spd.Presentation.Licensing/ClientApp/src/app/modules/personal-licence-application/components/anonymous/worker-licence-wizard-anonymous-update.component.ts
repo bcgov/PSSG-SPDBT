@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
 @Component({
-	selector: 'app-worker-licence-wizard-anonymous-update',
-	template: `
+    selector: 'app-worker-licence-wizard-anonymous-update',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -91,7 +91,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based

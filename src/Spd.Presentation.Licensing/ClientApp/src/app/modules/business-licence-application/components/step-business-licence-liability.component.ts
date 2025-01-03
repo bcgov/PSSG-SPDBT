@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-step-business-licence-liability',
-	template: `
+    selector: 'app-step-business-licence-liability',
+    template: `
 		<app-step-section title="Provide proof of insurance">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -49,7 +49,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceLiabilityComponent implements LicenceChildStepperStepComponent {
 	proofOfInsuranceUrl = SPD_CONSTANTS.urls.proofOfInsuranceUrl;

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'app-form-address-summary',
-	template: `
+    selector: 'app-form-address-summary',
+    template: `
 		<div class="text-minor-heading-small" *ngIf="headingLabel">{{ headingLabel }}</div>
 		<ng-container *ngIf="isAddressTheSame; else isDifferent">
 			<div class="row mt-2" *ngIf="isAddressTheSameLabel">
@@ -40,7 +40,8 @@ import { Component, Input } from '@angular/core';
 			</div>
 		</ng-template>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormAddressSummaryComponent {
 	@Input() formData!: any;

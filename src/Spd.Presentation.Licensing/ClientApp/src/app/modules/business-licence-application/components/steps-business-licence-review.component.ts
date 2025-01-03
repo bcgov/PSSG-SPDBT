@@ -5,8 +5,8 @@ import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-busine
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
 
 @Component({
-	selector: 'app-steps-business-licence-review',
-	template: `
+    selector: 'app-steps-business-licence-review',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-summary
@@ -88,8 +88,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

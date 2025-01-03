@@ -7,8 +7,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-	selector: 'app-form-mental-health-conditions',
-	template: `
+    selector: 'app-form-mental-health-conditions',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
@@ -62,8 +62,9 @@ import { FileUploadComponent } from './file-upload.component';
 			</div>
 		</form>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class FormMentalHealthConditionsComponent {
 	securityServicesActUrl = SPD_CONSTANTS.urls.securityServicesActUrl;

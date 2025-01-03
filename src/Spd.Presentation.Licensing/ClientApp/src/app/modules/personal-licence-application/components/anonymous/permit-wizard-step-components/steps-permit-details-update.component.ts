@@ -5,8 +5,8 @@ import { StepPermitReprintComponent } from '@app/modules/personal-licence-applic
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
 @Component({
-	selector: 'app-steps-permit-details-update',
-	template: `
+    selector: 'app-steps-permit-details-update',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
@@ -39,8 +39,9 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
