@@ -107,16 +107,20 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    //if the documents are in the same application, then we use applicationId to indicate its set. Or we use uploadedDatetime
+    //if the documents are in the same application, then we use applicationId to indicate its set.
+    //if the documents are in the same licence, then we use licenceId to indicate its set.
+    //Or we use uploadedDatetime
     private IEnumerable<DocumentResp> GetLatestSet(IEnumerable<DocumentResp> resp)
     {
         if (resp.Any())
         {
             DocumentResp? doc = resp.FirstOrDefault();
-            if (doc?.ApplicationId == null)
-                return resp.Where(i => i.CreatedOn == doc.CreatedOn).ToList();
-            else
+            if (doc?.LicenceId != null)
+                return resp.Where(i => i.LicenceId == doc.LicenceId).ToList();
+            else if (doc?.ApplicationId != null)
                 return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
+            else
+                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
         }
         return resp;
     }
