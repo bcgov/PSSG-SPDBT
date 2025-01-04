@@ -9,15 +9,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 @Component({
-	selector: 'app-security-screening-payment-success',
-	template: `
+    selector: 'app-security-screening-payment-success',
+    template: `
 		<app-payment-success
 			[payment]="payment"
 			(backRoute)="onBackRoute()"
 			(downloadReceipt)="onDownloadReceipt()"
 		></app-payment-success>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;

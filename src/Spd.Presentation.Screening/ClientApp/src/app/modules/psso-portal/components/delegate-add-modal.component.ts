@@ -12,8 +12,8 @@ export interface DelegateDialogData {
 }
 
 @Component({
-	selector: 'app-delegate-add-modal',
-	template: `
+    selector: 'app-delegate-add-modal',
+    template: `
 		<div mat-dialog-title>Add Delegate</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
@@ -55,7 +55,8 @@ export interface DelegateDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({

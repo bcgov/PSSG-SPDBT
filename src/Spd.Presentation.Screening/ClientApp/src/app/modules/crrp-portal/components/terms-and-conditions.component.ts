@@ -2,8 +2,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-terms-and-conditions',
-	template: `
+    selector: 'app-terms-and-conditions',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -61,14 +61,15 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-mdc-checkbox.mat-mdc-checkbox-disabled label {
 				color: black;
 			}
 		`,
-	],
-	encapsulation: ViewEncapsulation.None,
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class TermsAndConditionsComponent {
 	form: FormGroup = this.formBuilder.group({
