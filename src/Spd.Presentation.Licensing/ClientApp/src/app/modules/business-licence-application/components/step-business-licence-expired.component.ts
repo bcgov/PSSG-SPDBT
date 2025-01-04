@@ -5,8 +5,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-business-licence-expired',
-	template: `
+    selector: 'app-step-business-licence-expired',
+    template: `
 		<app-step-section title="Does your business have an expired licence in BC?">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
@@ -23,7 +23,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			></app-form-expired-licence>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;

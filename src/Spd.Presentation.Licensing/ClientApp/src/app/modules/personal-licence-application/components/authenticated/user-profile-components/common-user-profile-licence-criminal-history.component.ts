@@ -6,8 +6,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-user-profile-licence-criminal-history',
-	template: `
+    selector: 'app-common-user-profile-licence-criminal-history',
+    template: `
 		<mat-accordion>
 			<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 				<mat-expansion-panel-header>
@@ -25,7 +25,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</mat-expansion-panel>
 		</mat-accordion>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonUserProfileLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

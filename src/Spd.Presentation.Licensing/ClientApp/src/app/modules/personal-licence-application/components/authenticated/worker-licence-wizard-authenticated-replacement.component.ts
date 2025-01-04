@@ -11,8 +11,8 @@ import { distinctUntilChanged } from 'rxjs';
 import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routes';
 
 @Component({
-	selector: 'app-worker-licence-wizard-authenticated-replacement',
-	template: `
+    selector: 'app-worker-licence-wizard-authenticated-replacement',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -40,7 +40,8 @@ import { PersonalLicenceApplicationRoutes } from '../../personal-licence-applica
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWizardComponent implements OnInit {
 	constructor(

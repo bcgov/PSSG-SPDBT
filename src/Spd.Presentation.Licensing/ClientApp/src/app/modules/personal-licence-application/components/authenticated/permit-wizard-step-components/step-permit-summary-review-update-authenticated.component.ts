@@ -5,8 +5,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-permit-summary-review-update-authenticated',
-	template: `
+    selector: 'app-step-permit-summary-review-update-authenticated',
+    template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -83,8 +83,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -114,7 +114,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

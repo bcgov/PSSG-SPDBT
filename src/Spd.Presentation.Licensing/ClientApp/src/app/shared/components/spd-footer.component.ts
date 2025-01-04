@@ -5,8 +5,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { ConfigService } from '@app/core/services/config.service';
 
 @Component({
-	selector: 'app-spd-footer',
-	template: `
+    selector: 'app-spd-footer',
+    template: `
 		<mat-toolbar color="primary" class="no-print footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
 			<a [href]="bcGovDisclaimerUrl">Disclaimer</a>
@@ -20,8 +20,8 @@ import { ConfigService } from '@app/core/services/config.service';
 			<span class="fs-7 p-2 text-env" *ngIf="env">{{ env }}</span>
 		</mat-toolbar>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.footer {
 				border-top: 2px solid var(--color-yellow);
 			}
@@ -51,7 +51,8 @@ import { ConfigService } from '@app/core/services/config.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SpdFooterComponent implements OnInit {
 	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;

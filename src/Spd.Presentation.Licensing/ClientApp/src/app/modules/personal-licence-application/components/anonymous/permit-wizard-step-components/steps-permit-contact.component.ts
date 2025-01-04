@@ -6,8 +6,8 @@ import { StepPermitMailingAddressComponent } from './step-permit-mailing-address
 import { StepPermitResidentialAddressComponent } from './step-permit-residential-address.component';
 
 @Component({
-	selector: 'app-steps-permit-contact',
-	template: `
+    selector: 'app-steps-permit-contact',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-residential-address
@@ -53,8 +53,9 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	readonly STEP_RESIDENTIAL_ADDRESS = 1;

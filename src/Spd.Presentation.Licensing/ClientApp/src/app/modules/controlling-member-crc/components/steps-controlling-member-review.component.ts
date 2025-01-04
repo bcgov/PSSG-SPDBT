@@ -5,8 +5,8 @@ import { StepControllingMemberConsentAndDeclarationComponent } from './step-cont
 import { StepControllingMemberSummaryReviewComponent } from './step-controlling-member-summary-review.component';
 
 @Component({
-	selector: 'app-steps-controlling-member-review',
-	template: `
+    selector: 'app-steps-controlling-member-review',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-summary-review
@@ -38,8 +38,9 @@ import { StepControllingMemberSummaryReviewComponent } from './step-controlling-
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsControllingMemberReviewComponent extends BaseWizardStepComponent {
 	readonly STEP_REVIEW = 0;

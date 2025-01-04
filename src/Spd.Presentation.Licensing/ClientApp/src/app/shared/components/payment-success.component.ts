@@ -4,8 +4,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-payment-success',
-	template: `
+    selector: 'app-payment-success',
+    template: `
 		<div class="row">
 			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
@@ -134,7 +134,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PaymentSuccessComponent {
 	appConstants = SPD_CONSTANTS;

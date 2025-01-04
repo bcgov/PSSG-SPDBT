@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-permit-summary-rationale',
-	template: `
+    selector: 'app-permit-summary-rationale',
+    template: `
 		<div class="text-minor-heading-small">Rationale</div>
 		<div class="row mt-0">
 			<div class="col-12">
@@ -24,7 +24,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitSummaryRationaleComponent {
 	constructor(private permitApplicationService: PermitApplicationService) {}

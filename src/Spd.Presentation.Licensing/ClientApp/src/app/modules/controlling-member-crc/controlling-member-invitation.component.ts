@@ -7,8 +7,8 @@ import { UtilService } from '@app/core/services/util.service';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
-	selector: 'app-controlling-member-invitation',
-	template: `
+    selector: 'app-controlling-member-invitation',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon class="my-4">error</mat-icon>
 			<h1>CRC Invitation</h1>
@@ -18,8 +18,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 			<p class="mt-4">Please contact your business manager for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -28,7 +28,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ControllingMemberInvitationComponent implements OnInit {
 	message = '';

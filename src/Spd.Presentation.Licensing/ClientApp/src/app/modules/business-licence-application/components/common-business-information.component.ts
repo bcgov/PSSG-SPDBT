@@ -15,8 +15,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
-	selector: 'app-common-business-information',
-	template: `
+    selector: 'app-common-business-information',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
@@ -202,8 +202,9 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 			</div>
 		</form>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class CommonBusinessInformationComponent implements OnInit {
 	bcRegistriesAccountUrl = SPD_CONSTANTS.urls.bcRegistriesAccountUrl;

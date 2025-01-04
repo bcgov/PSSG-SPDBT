@@ -24,8 +24,8 @@ export interface BranchResponse {
 }
 
 @Component({
-	selector: 'app-business-bc-branches',
-	template: `
+    selector: 'app-business-bc-branches',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="py-2">Does your business have any branches in B.C.?</div>
@@ -128,8 +128,8 @@ export interface BranchResponse {
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -146,8 +146,9 @@ export interface BranchResponse {
 				}
 			}
 		`,
-	],
-	animations: [showHideTriggerSlideAnimation],
+    ],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;

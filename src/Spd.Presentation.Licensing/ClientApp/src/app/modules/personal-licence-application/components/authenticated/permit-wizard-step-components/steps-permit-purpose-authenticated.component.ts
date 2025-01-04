@@ -6,8 +6,8 @@ import { StepPermitRationaleComponent } from '@app/modules/personal-licence-appl
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 
 @Component({
-	selector: 'app-steps-permit-purpose-authenticated',
-	template: `
+    selector: 'app-steps-permit-purpose-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-reason
@@ -57,8 +57,9 @@ import { StepPermitReasonComponent } from '@app/modules/personal-licence-applica
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_PERMIT_REASON = 1;

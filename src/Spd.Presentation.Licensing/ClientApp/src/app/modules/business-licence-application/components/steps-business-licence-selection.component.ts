@@ -5,8 +5,8 @@ import { StepBusinessLicenceCategoryComponent } from './step-business-licence-ca
 import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
 
 @Component({
-	selector: 'app-steps-business-licence-selection',
-	template: `
+    selector: 'app-steps-business-licence-selection',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-category
@@ -49,8 +49,9 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;
