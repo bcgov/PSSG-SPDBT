@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-citizenship.component';
 
 @Component({
-	selector: 'app-step-controlling-member-citizenship',
-	template: `
+    selector: 'app-step-controlling-member-citizenship',
+    template: `
 		<app-step-section [title]="title">
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCodeNew"
@@ -19,7 +19,8 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 			></app-form-swl-citizenship>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepControllingMemberCitizenshipComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodeNew = ApplicationTypeCode.New;

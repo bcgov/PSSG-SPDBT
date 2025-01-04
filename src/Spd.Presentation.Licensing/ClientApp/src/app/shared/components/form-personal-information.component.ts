@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-form-personal-information',
-	template: `
+    selector: 'app-form-personal-information',
+    template: `
 		<div [formGroup]="personalInformationFormGroup">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
@@ -96,7 +96,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	changeNameOrAddressUrl = SPD_CONSTANTS.urls.changeNameOrAddressUrl;

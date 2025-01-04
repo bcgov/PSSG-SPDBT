@@ -8,8 +8,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { lastValueFrom, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-business-licence-application-base',
-	template: `
+    selector: 'app-business-licence-application-base',
+    template: `
 		<ng-container *ngIf="isAuthenticated$ | async">
 			<div class="container px-0 my-0 px-md-2 my-md-3">
 				<!-- hide padding/margin on smaller screens -->
@@ -21,7 +21,8 @@ import { lastValueFrom, take, tap } from 'rxjs';
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-business-licence-payment-error',
-	template: `
+    selector: 'app-business-licence-payment-error',
+    template: `
 		<section class="step-section">
 			<app-payment-error></app-payment-error>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicencePaymentErrorComponent {}

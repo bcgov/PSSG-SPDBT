@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-worker-summary-photo-of-yourself',
-	template: `
+    selector: 'app-worker-summary-photo-of-yourself',
+    template: `
 		<div class="row mt-0">
 			<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 				<div class="text-label d-block text-muted">Photograph of Yourself</div>
@@ -17,7 +17,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerSummaryPhotoOfYourselfComponent {
 	constructor(private workerApplicationService: WorkerApplicationService) {}

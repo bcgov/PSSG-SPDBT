@@ -15,8 +15,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
 
 @Component({
-	selector: 'app-worker-licence-wizard-authenticated-update',
-	template: `
+    selector: 'app-worker-licence-wizard-authenticated-update',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -69,8 +69,9 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 			</div>
 		</div>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;

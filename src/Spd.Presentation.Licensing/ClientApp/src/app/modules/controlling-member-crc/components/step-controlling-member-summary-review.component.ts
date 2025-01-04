@@ -5,8 +5,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-summary-review',
-	template: `
+    selector: 'app-step-controlling-member-summary-review',
+    template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
@@ -296,8 +296,8 @@ import { UtilService } from '@app/core/services/util.service';
 			</div>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -334,7 +334,8 @@ import { UtilService } from '@app/core/services/util.service';
 				height: 35px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	controllingMemberModelData: any = {};

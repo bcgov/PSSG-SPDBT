@@ -5,8 +5,8 @@ import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-
 import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anonymous.component';
 
 @Component({
-	selector: 'app-steps-permit-review-anonymous',
-	template: `
+    selector: 'app-steps-permit-review-anonymous',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-summary-anonymous
@@ -34,8 +34,9 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';

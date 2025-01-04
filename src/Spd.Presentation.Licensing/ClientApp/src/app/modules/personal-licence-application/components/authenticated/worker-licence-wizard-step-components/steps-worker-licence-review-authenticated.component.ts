@@ -6,8 +6,8 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-wor
 import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './step-worker-licence-summary-review-update-authenticated.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-review-authenticated',
-	template: `
+    selector: 'app-steps-worker-licence-review-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
@@ -105,8 +105,9 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

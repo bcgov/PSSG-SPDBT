@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 @Component({
-	selector: 'app-wizard-outside-footer',
-	template: `
+    selector: 'app-wizard-outside-footer',
+    template: `
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 				<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
@@ -17,7 +17,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WizardOutsideFooterComponent implements OnInit {
 	isNextStepperStepObserved = false;

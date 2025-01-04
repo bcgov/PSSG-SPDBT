@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-step-business-licence-company-branding',
-	template: `
+    selector: 'app-step-business-licence-company-branding',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -51,8 +51,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	title = '';

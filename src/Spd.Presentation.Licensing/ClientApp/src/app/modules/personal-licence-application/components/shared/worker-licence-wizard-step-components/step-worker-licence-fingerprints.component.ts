@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormFingerprintsComponent } from '@app/shared/components/form-fingerprints.component';
 
 @Component({
-	selector: 'app-step-worker-licence-fingerprints',
-	template: `
+    selector: 'app-step-worker-licence-fingerprints',
+    template: `
 		<app-step-section
 			title="Upload proof of fingerprinting request"
 			subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
@@ -19,7 +19,8 @@ import { FormFingerprintsComponent } from '@app/shared/components/form-fingerpri
 			></app-form-fingerprints>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.fingerprintProofFormGroup;

@@ -8,8 +8,8 @@ import { UtilService } from '@app/core/services/util.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-	selector: 'app-spd-header',
-	template: `
+    selector: 'app-spd-header',
+    template: `
 		<mat-toolbar color="primary" class="spd-header">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
@@ -29,8 +29,8 @@ import { Subscription } from 'rxjs';
 			</div>
 		</mat-toolbar>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-toolbar-row,
 			.mat-toolbar-single-row {
 				height: 74px;
@@ -83,7 +83,8 @@ import { Subscription } from 'rxjs';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SpdHeaderComponent implements OnInit, OnDestroy {
 	fullTitle = '';

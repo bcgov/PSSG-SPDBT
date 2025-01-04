@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-	selector: 'app-form-police-background',
-	template: `
+    selector: 'app-form-police-background',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
@@ -120,8 +120,9 @@ import { FileUploadComponent } from './file-upload.component';
 			licence.
 		</ng-template>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class FormPoliceBackgroundComponent {
 	securityLicensingProcessAndLicenceConditionsPoliciesUrl =

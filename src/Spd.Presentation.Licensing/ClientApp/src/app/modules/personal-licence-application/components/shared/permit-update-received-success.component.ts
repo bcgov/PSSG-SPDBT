@@ -4,8 +4,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-permit-update-received-success',
-	template: `
+    selector: 'app-permit-update-received-success',
+    template: `
 		<app-container>
 			<section class="step-section">
 				<div class="row">
@@ -74,7 +74,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</section>
 		</app-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	permitModelData: any = {};

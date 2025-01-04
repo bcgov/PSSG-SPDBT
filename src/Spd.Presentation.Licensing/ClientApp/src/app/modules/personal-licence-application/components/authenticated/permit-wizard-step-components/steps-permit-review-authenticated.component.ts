@@ -6,8 +6,8 @@ import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-l
 import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 
 @Component({
-	selector: 'app-steps-permit-review-authenticated',
-	template: `
+    selector: 'app-steps-permit-review-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
@@ -65,8 +65,9 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/module
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';
