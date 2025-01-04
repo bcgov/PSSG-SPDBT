@@ -5,8 +5,8 @@ import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-reg
 import { PssoRoutes } from './modules/psso-portal/psso-routes';
 
 @Component({
-	selector: 'app-landing',
-	template: `
+    selector: 'app-landing',
+    template: `
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
 			<h1>Organization Online Access</h1>
 			<p class="mt-4 lead">Submit and manage criminal record checks for your employees or volunteers</p>
@@ -20,13 +20,14 @@ import { PssoRoutes } from './modules/psso-portal/psso-routes';
 			<a tabindex="0" (click)="goToOrgRegistration()" (keydown)="onKeyDownOrgRegistration($event)"> Register now </a>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class LandingComponent {
 	constructor(private router: Router) {}

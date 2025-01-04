@@ -39,8 +39,8 @@ export interface ScreeningRequestAddDialogData {
 }
 
 @Component({
-	selector: 'app-screening-request-add-common-modal',
-	template: `
+    selector: 'app-screening-request-add-common-modal',
+    template: `
 		<div mat-dialog-title>Add {{ requestName }}</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
@@ -212,8 +212,8 @@ export interface ScreeningRequestAddDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.button-toggle {
 				width: 130px;
 			}
@@ -222,7 +222,8 @@ export interface ScreeningRequestAddDialogData {
 				color: var(--color-red);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;

@@ -4,8 +4,8 @@ import { PaymentResponse } from 'src/app/api/models';
 import { AppRoutes } from 'src/app/app-routes';
 
 @Component({
-	selector: 'app-payment-fail',
-	template: `
+    selector: 'app-payment-fail',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">
@@ -132,13 +132,14 @@ import { AppRoutes } from 'src/app/app-routes';
 			</ng-template>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PaymentFailComponent implements OnInit {
 	isBackRoute = false;

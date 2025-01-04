@@ -8,8 +8,8 @@ import { SaPersonalInformationComponent } from './step-components/sa-personal-in
 import { SaPreviousNameComponent } from './step-components/sa-previous-name.component';
 
 @Component({
-	selector: 'app-sa-step-personal-info',
-	template: `
+    selector: 'app-sa-step-personal-info',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-contact-information *ngIf="orgData" [orgData]="orgData"></app-sa-contact-information>
@@ -107,8 +107,9 @@ import { SaPreviousNameComponent } from './step-components/sa-previous-name.comp
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepPersonalInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

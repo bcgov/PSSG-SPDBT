@@ -15,8 +15,8 @@ export const MONTH_PICKER_FORMATS = {
 };
 
 @Component({
-	selector: 'app-month-picker',
-	template: `
+    selector: 'app-month-picker',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<mat-form-field>
 				<mat-label>{{ label }}</mat-label>
@@ -37,16 +37,16 @@ export const MONTH_PICKER_FORMATS = {
 			</mat-form-field>
 		</form>
 	`,
-	styles: [],
-	providers: [
-		{
-			provide: DateAdapter,
-			useClass: MomentDateAdapter,
-			deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-		},
-
-		{ provide: MAT_DATE_FORMATS, useValue: MONTH_PICKER_FORMATS },
-	],
+    styles: [],
+    providers: [
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MONTH_PICKER_FORMATS },
+    ],
+    standalone: false
 })
 export class MonthPickerComponent {
 	@Input() label = '';

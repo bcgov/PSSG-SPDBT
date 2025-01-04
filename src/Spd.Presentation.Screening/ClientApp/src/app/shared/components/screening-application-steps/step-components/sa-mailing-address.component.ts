@@ -9,8 +9,8 @@ import { CrcFormStepComponent } from '../screening-application.model';
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-sa-mailing-address',
-	template: `
+    selector: 'app-sa-mailing-address',
+    template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -98,13 +98,14 @@ import { CrcFormStepComponent } from '../screening-application.model';
 			</form>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaMailingAddressComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;

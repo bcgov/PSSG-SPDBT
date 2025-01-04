@@ -16,8 +16,8 @@ export interface OrgRegDuplicateDialogResponse {
 }
 
 @Component({
-	selector: 'app-org-registration-duplicate-modal',
-	template: `
+    selector: 'app-org-registration-duplicate-modal',
+    template: `
 		<div mat-dialog-title>{{ dialogData.title }}</div>
 		<mat-dialog-content>
 			<p>{{ dialogData.message }}</p>
@@ -44,7 +44,8 @@ export interface OrgRegDuplicateDialogResponse {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class OrgRegDuplicateModalComponent {
 	displayValidationErrors = false;

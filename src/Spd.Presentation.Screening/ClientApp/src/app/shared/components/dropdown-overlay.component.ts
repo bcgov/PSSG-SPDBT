@@ -3,22 +3,23 @@ import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
-	selector: 'app-overlay-button',
-	template: `<ng-content></ng-content>`,
-	styles: [
-		`
+    selector: 'app-overlay-button',
+    template: `<ng-content></ng-content>`,
+    styles: [
+        `
 			:host {
 				line-height: 0px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class DropdownOverlayButtonComponent {}
 
 @UntilDestroy()
 @Component({
-	selector: 'app-dropdown-overlay',
-	template: `
+    selector: 'app-dropdown-overlay',
+    template: `
 		<!-- This button triggers the overlay and is it's origin -->
 		<button
 			matTooltip="Apply filters"
@@ -57,8 +58,8 @@ export class DropdownOverlayButtonComponent {}
 			<ng-content></ng-content>
 		</ng-template>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.filter-button {
 				position: relative;
 				top: -3px;
@@ -73,7 +74,8 @@ export class DropdownOverlayButtonComponent {}
 				height: 52px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class DropdownOverlayComponent implements OnInit {
 	@Input() dropdownIcon = 'filter_list';
