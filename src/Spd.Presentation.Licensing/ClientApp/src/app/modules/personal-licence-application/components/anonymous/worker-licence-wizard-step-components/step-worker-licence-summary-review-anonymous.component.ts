@@ -13,8 +13,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-summary-review-anonymous',
-	template: `
+    selector: 'app-step-worker-licence-summary-review-anonymous',
+    template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
@@ -341,8 +341,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -379,7 +379,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				height: 35px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit {
 	licenceModelData: any = {};

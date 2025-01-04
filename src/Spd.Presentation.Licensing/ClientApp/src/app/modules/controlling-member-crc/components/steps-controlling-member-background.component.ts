@@ -6,8 +6,8 @@ import { StepControllingMemberMentalHealthConditionsComponent } from './step-con
 import { StepControllingMemberPoliceBackgroundComponent } from './step-controlling-member-police-background.component';
 
 @Component({
-	selector: 'app-steps-controlling-member-background',
-	template: `
+    selector: 'app-steps-controlling-member-background',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-bc-security-licence-history
@@ -58,8 +58,9 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsControllingMemberBackgroundComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_HISTORY = 0;

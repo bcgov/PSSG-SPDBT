@@ -5,15 +5,16 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-licence-category-security-guard-sup',
-	template: `
+    selector: 'app-licence-category-security-guard-sup',
+    template: `
 		<div class="row my-4">
 			<div class="col-12 text-center">
 				<mat-icon style="vertical-align: sub;" class="me-2">check_box</mat-icon>{{ title }}
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceCategorySecurityGuardSupComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.workerApplicationService.categorySecurityGuardSupFormGroup;

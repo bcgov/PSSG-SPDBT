@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-step-permit-rationale',
-	template: `
+    selector: 'app-step-permit-rationale',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -45,7 +45,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitRationaleComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

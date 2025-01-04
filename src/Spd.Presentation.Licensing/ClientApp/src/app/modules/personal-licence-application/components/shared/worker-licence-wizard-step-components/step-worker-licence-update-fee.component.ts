@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-worker-licence-update-fee',
-	template: `
+    selector: 'app-step-worker-licence-update-fee',
+    template: `
 		<app-step-section title="Update fee">
 			<div class="row">
 				<div class="col-xxl-4 col-xl-4 col-lg-8 col-md-12 col-sm-12 mx-auto">
@@ -20,13 +20,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			li:not(:last-child) {
 				margin-bottom: 1em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepWorkerLicenceUpdateFeeComponent implements LicenceChildStepperStepComponent {
 	@Input() licenceCost = 0;

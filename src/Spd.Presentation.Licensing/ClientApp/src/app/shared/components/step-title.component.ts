@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'app-step-title',
-	template: `
+    selector: 'app-step-title',
+    template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="title lh-base mb-4">
@@ -14,14 +14,15 @@ import { Component, Input } from '@angular/core';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.title {
 				text-align: center;
 				color: var(--color-primary);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepTitleComponent {
 	@Input() title = '';

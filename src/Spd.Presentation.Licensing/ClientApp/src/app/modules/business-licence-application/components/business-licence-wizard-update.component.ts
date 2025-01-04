@@ -15,8 +15,8 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-updates.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-update',
-	template: `
+    selector: 'app-business-licence-wizard-update',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -73,7 +73,8 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeUpdate = ApplicationTypeCode.Update;

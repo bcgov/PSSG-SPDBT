@@ -15,8 +15,8 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-renewal',
-	template: `
+    selector: 'app-business-licence-wizard-renewal',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -105,7 +105,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based

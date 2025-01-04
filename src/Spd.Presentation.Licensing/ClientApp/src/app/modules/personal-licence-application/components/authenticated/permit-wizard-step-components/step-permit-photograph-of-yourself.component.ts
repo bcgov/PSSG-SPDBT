@@ -5,8 +5,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-photograph-of-yourself',
-	template: `
+    selector: 'app-step-permit-photograph-of-yourself',
+    template: `
 		<ng-container *ngIf="applicationTypeCode === applicationTypeCodeNew; else isRenewOrUpdate">
 			<app-step-permit-photograph-of-yourself-new [form]="form"></app-step-permit-photograph-of-yourself-new>
 		</ng-container>
@@ -17,7 +17,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			></app-step-permit-photograph-of-yourself-renew-and-update>
 		</ng-template>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodeNew = ApplicationTypeCode.New;

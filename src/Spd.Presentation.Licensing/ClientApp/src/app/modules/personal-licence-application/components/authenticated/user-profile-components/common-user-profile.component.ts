@@ -9,8 +9,8 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/form-physical-characteristics.component';
 
 @Component({
-	selector: 'app-common-user-profile',
-	template: `
+    selector: 'app-common-user-profile',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-accordion>
@@ -113,7 +113,8 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
