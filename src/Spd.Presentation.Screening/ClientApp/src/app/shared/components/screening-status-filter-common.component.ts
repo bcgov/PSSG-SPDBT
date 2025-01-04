@@ -25,8 +25,8 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 };
 
 @Component({
-	selector: 'app-screening-status-filter-common',
-	template: `
+    selector: 'app-screening-status-filter-common',
+    template: `
 		<div class="filter-container mat-elevation-z8">
 			<form [formGroup]="formGroup" novalidate>
 				<mat-toolbar>
@@ -73,8 +73,8 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 			</form>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-toolbar-single-row {
 				justify-content: space-between;
 				background-color: var(--color-primary-light);
@@ -92,7 +92,8 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 				justify-content: space-between;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent implements OnInit {
 	applicationPortalStatusCodes!: SelectOptions[];

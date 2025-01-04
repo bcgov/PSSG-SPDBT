@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-previous-name',
-	template: `
+    selector: 'app-sa-previous-name',
+    template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -92,8 +92,8 @@ import { CrcFormStepComponent } from '../screening-application.model';
 			</form>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;
@@ -109,7 +109,8 @@ import { CrcFormStepComponent } from '../screening-application.model';
 				color: var(--color-green);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaPreviousNameComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;

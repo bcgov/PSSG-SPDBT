@@ -26,8 +26,8 @@ import {
 } from './security-screening-upload-modal.component';
 
 @Component({
-	selector: 'app-security-screening-detail',
-	template: `
+    selector: 'app-security-screening-detail',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal">Application Information</h3>
@@ -203,8 +203,8 @@ import {
 			</div>
 		</ng-container>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.warning-text {
 				color: var(--color-red);
 			}
@@ -217,7 +217,8 @@ import {
 				background-color: #f6f6f6 !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	showDownloadReceipt = false;

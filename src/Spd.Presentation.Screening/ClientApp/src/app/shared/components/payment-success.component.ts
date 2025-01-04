@@ -5,8 +5,8 @@ import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
-	selector: 'app-payment-success',
-	template: `
+    selector: 'app-payment-success',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">Payment Succeeded</h3>
@@ -122,7 +122,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PaymentSuccessComponent implements OnInit {
 	isBackRoute = false;

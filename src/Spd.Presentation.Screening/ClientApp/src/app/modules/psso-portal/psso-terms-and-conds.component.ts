@@ -8,9 +8,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { PssoRoutes } from './psso-routes';
 
 @Component({
-	selector: 'app-psso-terms-and-conds',
-
-	template: `
+    selector: 'app-psso-terms-and-conds',
+    template: `
 		<div class="container" *ngIf="isAuthenticated | async">
 			<section class="step-section my-4">
 				<div class="row m-4">
@@ -94,13 +93,14 @@ import { PssoRoutes } from './psso-routes';
 			</section>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.subheading {
 				color: grey;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PssoTermsAndCondsComponent implements OnInit {
 	pssoTerms = SPD_CONSTANTS.files.pssoFirstTimeTerms;

@@ -9,8 +9,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-payment-success',
-	template: `
+    selector: 'app-crrp-payment-success',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<app-payment-success
@@ -21,7 +21,8 @@ import { CrrpRoutes } from '../crrp-routes';
 			></app-payment-success>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;

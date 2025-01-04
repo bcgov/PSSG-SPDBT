@@ -7,8 +7,8 @@ import { AppRoutes } from 'src/app/app-routes';
 import { CrrpaRoutes } from './crrpa-routes';
 
 @Component({
-	selector: 'app-invitation-crrpa',
-	template: `
+    selector: 'app-invitation-crrpa',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon>no_accounts</mat-icon>
 			<h1>Invite Denied</h1>
@@ -18,8 +18,8 @@ import { CrrpaRoutes } from './crrpa-routes';
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -28,7 +28,8 @@ import { CrrpaRoutes } from './crrpa-routes';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class InvitationCrrpaComponent implements OnInit {
 	message = '';

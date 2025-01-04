@@ -8,8 +8,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-header',
-	template: `
+    selector: 'app-header',
+    template: `
 		<mat-toolbar color="primary" class="app-header">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
@@ -25,8 +25,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</mat-toolbar>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-toolbar-row,
 			.mat-toolbar-single-row {
 				height: 74px;
@@ -66,7 +66,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class HeaderComponent implements OnInit {
 	@Input() title = '';

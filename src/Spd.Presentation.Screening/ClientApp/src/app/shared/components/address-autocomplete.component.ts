@@ -41,8 +41,8 @@ export class Address {
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-address-form-autocomplete',
-	template: `
+    selector: 'app-address-form-autocomplete',
+    template: `
 		<form [formGroup]="form">
 			<div class="row">
 				<div class="col-xl-7 col-lg-7 col-md-12">
@@ -90,13 +90,14 @@ export class Address {
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-option {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class AddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();

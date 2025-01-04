@@ -8,14 +8,15 @@ import { SecurityScreeningRoutes } from '../security-screening-routes';
 import { ApplicantApplicationStatusResponse } from './security-screening-list.component';
 
 @Component({
-	selector: 'app-security-screening-payment-manual',
-	template: `
+    selector: 'app-security-screening-payment-manual',
+    template: `
 		<app-payment-manual
 			(backRoute)="onBackRoute()"
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
 		></app-payment-manual>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningPaymentManualComponent implements OnInit {
 	applicationData: ApplicantApplicationStatusResponse | null = null;

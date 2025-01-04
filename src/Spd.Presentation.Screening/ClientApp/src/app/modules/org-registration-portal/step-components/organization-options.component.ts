@@ -8,8 +8,8 @@ export class OrganizationOptionsModel {
 }
 
 @Component({
-	selector: 'app-organization-options',
-	template: `
+    selector: 'app-organization-options',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="How would you best describe your organization?"></app-step-title>
@@ -93,8 +93,8 @@ export class OrganizationOptionsModel {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.none-apply {
 				text-align: center;
 				color: var(--color-primary-light);
@@ -111,7 +111,8 @@ export class OrganizationOptionsModel {
 				text-align: center;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class OrganizationOptionsComponent implements RegistrationFormStepComponent {
 	employeeOrganizationTypeCode: EmployeeOrganizationTypeCode | null = null;

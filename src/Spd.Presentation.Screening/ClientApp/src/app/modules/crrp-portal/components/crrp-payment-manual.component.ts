@@ -8,8 +8,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-payment-manual',
-	template: `
+    selector: 'app-crrp-payment-manual',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<app-payment-manual
@@ -18,7 +18,8 @@ import { CrrpRoutes } from '../crrp-routes';
 			></app-payment-manual>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpPaymentManualComponent implements OnInit {
 	applicationData: ApplicationPaymentResponse | null = null;

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
-	selector: 'app-sa-log-in-options',
-	template: `
+    selector: 'app-sa-log-in-options',
+    template: `
 		<div class="step">
 			<app-step-title title="What is your preferred log in option?"></app-step-title>
 			<div class="step-container row">
@@ -73,8 +73,8 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.badge {
 				background-color: var(--color-yellow);
 				border: 1px solid var(--color-primary);
@@ -111,7 +111,8 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaLogInOptionsComponent {
 	portalTypeCodes = PortalTypeCode;
