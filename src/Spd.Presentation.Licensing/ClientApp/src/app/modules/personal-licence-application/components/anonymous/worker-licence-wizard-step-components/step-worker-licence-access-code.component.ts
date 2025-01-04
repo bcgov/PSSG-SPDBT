@@ -10,8 +10,8 @@ import { CommonAccessCodeAnonymousComponent } from '@app/modules/personal-licenc
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-step-worker-licence-access-code',
-	template: `
+    selector: 'app-step-worker-licence-access-code',
+    template: `
 		<app-step-section
 			title="Provide your access code"
 			info="<p>
@@ -34,7 +34,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;

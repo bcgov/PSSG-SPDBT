@@ -9,8 +9,8 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-step-worker-licence-category',
-	template: `
+    selector: 'app-step-worker-licence-category',
+    template: `
 		<app-step-section
 			[title]="title"
 			[subtitle]="infoTitle"
@@ -597,8 +597,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.title {
 				padding-bottom: 2px;
 			}
@@ -616,7 +616,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				pointer-events: none;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	isDirtyAndInvalid = false;

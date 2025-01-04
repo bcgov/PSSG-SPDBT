@@ -21,8 +21,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
-	template: `
+    selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
+    template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
 				[selectedIndex]="3"
@@ -99,7 +99,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-stepper>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	extends BaseWizardComponent

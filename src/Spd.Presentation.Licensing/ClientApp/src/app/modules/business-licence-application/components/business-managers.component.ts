@@ -12,8 +12,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({
-	selector: 'app-business-managers',
-	template: `
+    selector: 'app-business-managers',
+    template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -182,8 +182,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-status {
@@ -208,7 +208,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class BusinessManagersComponent implements OnInit {
 	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;

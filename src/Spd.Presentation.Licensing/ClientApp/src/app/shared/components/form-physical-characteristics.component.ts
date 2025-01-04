@@ -10,8 +10,8 @@ import {
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-form-physical-characteristics',
-	template: `
+    selector: 'app-form-physical-characteristics',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
@@ -110,7 +110,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormPhysicalCharacteristicsComponent implements OnInit {
 	hairColourTypes = HairColourTypes;

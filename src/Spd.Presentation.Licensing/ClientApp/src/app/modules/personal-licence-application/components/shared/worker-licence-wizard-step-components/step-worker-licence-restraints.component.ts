@@ -8,8 +8,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-step-worker-licence-restraints',
-	template: `
+    selector: 'app-step-worker-licence-restraints',
+    template: `
 		<app-step-section title="Do you want to request authorization to use restraints?" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -83,8 +83,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';

@@ -6,8 +6,8 @@ import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/pe
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-review-anonymous',
-	template: `
+    selector: 'app-steps-worker-licence-review-anonymous',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-worker-licence-summary-review-anonymous
@@ -55,8 +55,9 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;

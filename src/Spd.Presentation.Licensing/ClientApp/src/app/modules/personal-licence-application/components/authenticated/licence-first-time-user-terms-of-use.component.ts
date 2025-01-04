@@ -9,8 +9,8 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-licence-first-time-user-terms-of-use',
-	template: `
+    selector: 'app-licence-first-time-user-terms-of-use',
+    template: `
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
@@ -28,7 +28,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.workerApplicationService.termsAndConditionsFormGroup;

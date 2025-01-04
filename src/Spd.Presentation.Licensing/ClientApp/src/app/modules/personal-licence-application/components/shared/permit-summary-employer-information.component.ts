@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-permit-summary-employer-information',
-	template: `
+    selector: 'app-permit-summary-employer-information',
+    template: `
 		<div class="text-minor-heading-small">Employer Information</div>
 		<div class="row mt-0">
 			<div class="col-lg-6 col-md-12">
@@ -40,7 +40,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			[isAddressTheSame]="false"
 		></app-form-address-summary>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitSummaryEmployerInformationComponent {
 	constructor(private permitApplicationService: PermitApplicationService) {}

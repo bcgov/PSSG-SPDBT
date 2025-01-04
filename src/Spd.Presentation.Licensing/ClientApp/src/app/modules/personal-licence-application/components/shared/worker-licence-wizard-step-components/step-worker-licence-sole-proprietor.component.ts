@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-sole-proprietor',
-	template: `
+    selector: 'app-step-worker-licence-sole-proprietor',
+    template: `
 		<app-step-section [title]="title" [subtitle]="infoTitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
@@ -66,7 +66,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;

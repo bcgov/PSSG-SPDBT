@@ -6,8 +6,8 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 @Component({
-	selector: 'app-wizard-footer',
-	template: `
+    selector: 'app-wizard-footer',
+    template: `
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 				<ng-container *ngIf="showExit">
@@ -119,13 +119,14 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</ng-template>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.button-small-caps {
 				font-variant: small-caps;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;

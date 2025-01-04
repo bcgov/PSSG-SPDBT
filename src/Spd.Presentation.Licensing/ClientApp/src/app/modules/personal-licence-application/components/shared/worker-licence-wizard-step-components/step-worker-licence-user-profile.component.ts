@@ -10,8 +10,8 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '@app/modules/
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
 
 @Component({
-	selector: 'app-step-worker-licence-user-profile',
-	template: `
+    selector: 'app-step-worker-licence-user-profile',
+    template: `
 		<div class="step-section">
 			<div class="step">
 				<div class="row">
@@ -90,7 +90,8 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
 	alertText = '';

@@ -4,8 +4,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-business-licence-controlling-member-invites',
-	template: `
+    selector: 'app-step-business-licence-controlling-member-invites',
+    template: `
 		<app-step-section title="Controlling members request summary">
 			<div class="row">
 				<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
@@ -44,7 +44,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceControllingMemberInvitesComponent implements LicenceChildStepperStepComponent {
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;

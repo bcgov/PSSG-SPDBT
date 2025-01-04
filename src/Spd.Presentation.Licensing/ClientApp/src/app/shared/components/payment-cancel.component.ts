@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-payment-cancel',
-	template: `
+    selector: 'app-payment-cancel',
+    template: `
 		<div class="row">
 			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
@@ -51,13 +51,14 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PaymentCancelComponent {
 	payBySecureLink = true;

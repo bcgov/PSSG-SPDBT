@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-citizenship.component';
 
 @Component({
-	selector: 'app-step-worker-licence-citizenship',
-	template: `
+    selector: 'app-step-worker-licence-citizenship',
+    template: `
 		<app-step-section [title]="title">
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCode"
@@ -19,7 +19,8 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 			></app-form-swl-citizenship>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = 'Are you a Canadian citizen?';

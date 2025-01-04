@@ -18,8 +18,8 @@ import { StepsPermitPurposeAuthenticatedComponent } from './permit-wizard-step-c
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-review-authenticated.component';
 
 @Component({
-	selector: 'app-permit-wizard-authenticated-new',
-	template: `
+    selector: 'app-permit-wizard-authenticated-new',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -96,7 +96,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeCodeNew = ApplicationTypeCode.New;

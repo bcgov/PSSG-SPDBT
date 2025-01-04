@@ -5,8 +5,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-photograph-of-yourself-anonymous',
-	template: `
+    selector: 'app-step-worker-licence-photograph-of-yourself-anonymous',
+    template: `
 		<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else isRenewOrUpdate">
 			<app-step-worker-licence-photograph-of-yourself-new
 				[form]="form"
@@ -19,7 +19,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			></app-step-worker-licence-photograph-of-yourself-renew-and-update>
 		</ng-template>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicencePhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

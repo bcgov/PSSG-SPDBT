@@ -5,8 +5,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { BranchResponse } from './business-bc-branches.component';
 
 @Component({
-	selector: 'app-modal-bc-branch-edit',
-	template: `
+    selector: 'app-modal-bc-branch-edit',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -68,7 +68,8 @@ import { BranchResponse } from './business-bc-branches.component';
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ModalBcBranchEditComponent implements OnInit {
 	title = '';

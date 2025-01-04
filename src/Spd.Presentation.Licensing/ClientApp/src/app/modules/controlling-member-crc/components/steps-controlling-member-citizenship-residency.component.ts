@@ -6,8 +6,8 @@ import { StepControllingMemberCitizenshipComponent } from './step-controlling-me
 import { StepControllingMemberFingerprintsComponent } from './step-controlling-member-fingerprints.component';
 
 @Component({
-	selector: 'app-steps-controlling-member-citizenship-residency',
-	template: `
+    selector: 'app-steps-controlling-member-citizenship-residency',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="isNew">
 				<app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
@@ -52,8 +52,9 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 0;

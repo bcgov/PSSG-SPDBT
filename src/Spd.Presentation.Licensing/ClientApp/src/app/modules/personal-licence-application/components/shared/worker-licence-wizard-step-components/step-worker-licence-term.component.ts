@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-term',
-	template: `
+    selector: 'app-step-worker-licence-term',
+    template: `
 		<app-step-section
 			title="Select your licence term"
 			subtitle="The licence term will apply to all licence categories"
@@ -41,7 +41,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepComponent {
 	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;

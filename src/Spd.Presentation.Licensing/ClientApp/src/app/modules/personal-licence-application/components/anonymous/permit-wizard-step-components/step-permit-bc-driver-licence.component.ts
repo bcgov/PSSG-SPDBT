@@ -5,8 +5,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-bc-driver-licence',
-	template: `
+    selector: 'app-step-permit-bc-driver-licence',
+    template: `
 		<app-step-section title="Do you have a BC Driver's Licence?" [subtitle]="subtitle">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
@@ -19,7 +19,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-bc-driver-licence [form]="form"></app-form-bc-driver-licence>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';

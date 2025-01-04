@@ -11,8 +11,8 @@ import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.compo
 import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-terms-of-use.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-selection',
-	template: `
+    selector: 'app-steps-worker-licence-selection',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-worker-licence-terms-of-use
@@ -145,8 +145,9 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent {
 	// If step ordering changes, crucial  to update this <- look for this comment below
