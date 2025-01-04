@@ -5,13 +5,14 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 
 @Component({
-	selector: 'app-manual-submission',
-	template: `
+    selector: 'app-manual-submission',
+    template: `
 		<app-crrp-header></app-crrp-header>
 
 		<app-manual-submission-common [portal]="portal.Crrp" [orgId]="orgId"></app-manual-submission-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ManualSubmissionComponent implements OnInit {
 	orgId: string | null = null;

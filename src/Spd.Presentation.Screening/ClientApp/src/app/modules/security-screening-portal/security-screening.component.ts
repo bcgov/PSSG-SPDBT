@@ -4,15 +4,16 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { SecurityScreeningRoutes } from './security-screening-routes';
 
 @Component({
-	selector: 'app-security-screening',
-	template: `
+    selector: 'app-security-screening',
+    template: `
 		<div class="container mt-4" *ngIf="isAuthenticated$ | async">
 			<section class="step-section p-0 p-lg-4 m-0 m-lg-4">
 				<router-outlet></router-outlet>
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;

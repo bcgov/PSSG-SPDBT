@@ -7,8 +7,8 @@ import { ScreeningStatusResponse } from 'src/app/shared/components/screening-sta
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-application-statuses',
-	template: `
+    selector: 'app-application-statuses',
+    template: `
 		<app-crrp-header></app-crrp-header>
 
 		<app-screening-statuses-common
@@ -19,7 +19,8 @@ import { CrrpRoutes } from '../crrp-routes';
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
 		></app-screening-statuses-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ApplicationStatusesComponent implements OnInit {
 	portal = PortalTypeCode;

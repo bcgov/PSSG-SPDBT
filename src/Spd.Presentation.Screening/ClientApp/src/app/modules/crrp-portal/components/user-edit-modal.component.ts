@@ -17,8 +17,8 @@ export interface UserDialogData {
 }
 
 @Component({
-	selector: 'app-user-edit-modal',
-	template: `
+    selector: 'app-user-edit-modal',
+    template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
@@ -85,7 +85,8 @@ export interface UserDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class UserEditModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;

@@ -13,8 +13,8 @@ import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.serv
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-reports',
-	template: `
+    selector: 'app-reports',
+    template: `
 		<app-crrp-header></app-crrp-header>
 
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -87,8 +87,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
@@ -98,7 +98,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ReportsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();

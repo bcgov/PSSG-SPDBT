@@ -5,8 +5,8 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 @Component({
-	selector: 'app-screening-checks',
-	template: `
+    selector: 'app-screening-checks',
+    template: `
 		<app-psso-header></app-psso-header>
 
 		<app-screening-requests-common
@@ -17,7 +17,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 			subtitle="Criminal Record check links will expire 14 days after being sent"
 		></app-screening-requests-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ScreeningChecksComponent implements OnInit {
 	orgId: string | null = null;

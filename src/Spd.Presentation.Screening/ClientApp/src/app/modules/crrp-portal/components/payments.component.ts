@@ -36,8 +36,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 }
 
 @Component({
-	selector: 'app-payments',
-	template: `
+    selector: 'app-payments',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -212,8 +212,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-status {
 				min-width: 110px;
 			}
@@ -225,7 +225,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PaymentsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();

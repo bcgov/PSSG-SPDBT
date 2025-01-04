@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
-	selector: 'app-sa-step-login-options',
-	template: `
+    selector: 'app-sa-step-login-options',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-log-in-options
@@ -21,8 +21,9 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepLoginOptionsComponent {
 	@Input() portal!: PortalTypeCode;
