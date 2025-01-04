@@ -9,8 +9,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-licence-category-armoured-car-guard',
-	template: `
+    selector: 'app-licence-category-armoured-car-guard',
+    template: `
 		<div class="text-minor-heading mb-2">Authorization to Carry Certificate required</div>
 		<div class="alert alert-category d-flex" role="alert">
 			<div>
@@ -62,7 +62,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	rcmpUrl = SPD_CONSTANTS.urls.rcmpUrl;

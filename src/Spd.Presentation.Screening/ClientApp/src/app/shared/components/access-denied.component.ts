@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserInfoMsgTypeCode } from 'src/app/api/models';
 
 @Component({
-	selector: 'app-access-denied',
-	template: `
+    selector: 'app-access-denied',
+    template: `
 		<div class="container-fluid text-center mt-4">
 			<ng-container [ngSwitch]="userInfoMsgType">
 				<ng-container *ngSwitchCase="userInfoMsgTypeCodes.RegistrationDenied">
@@ -47,8 +47,8 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 			</ng-container>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 80px;
 				width: 80px;
@@ -57,7 +57,8 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class AccessDeniedComponent implements OnInit {
 	errorMessage: string | null = null;

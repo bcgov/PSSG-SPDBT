@@ -5,13 +5,14 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-reprint',
-	template: `
+    selector: 'app-step-permit-reprint',
+    template: `
 		<app-step-section title="Do you need a new permit printed?" [subtitle]="subtitle">
 			<app-licence-reprint [form]="form"></app-licence-reprint>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitReprintComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';

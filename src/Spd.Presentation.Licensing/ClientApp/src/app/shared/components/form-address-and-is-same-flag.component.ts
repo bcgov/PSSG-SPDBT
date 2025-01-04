@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-form-address-and-is-same-flag',
-	template: `
+    selector: 'app-form-address-and-is-same-flag',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<mat-checkbox formControlName="isAddressTheSame">
 				{{ isAddressTheSameLabel }}
@@ -17,7 +17,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 			<app-form-address [form]="form" [isReadonly]="isReadonly" [isWideView]="isWideView"></app-form-address>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormAddressAndIsSameFlagComponent implements OnInit {
 	@Input() form!: FormGroup;

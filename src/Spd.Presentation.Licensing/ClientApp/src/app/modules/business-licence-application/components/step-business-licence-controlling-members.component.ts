@@ -5,8 +5,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { CommonControllingMembersComponent } from './common-controlling-members.component';
 
 @Component({
-	selector: 'app-step-business-licence-controlling-members',
-	template: `
+    selector: 'app-step-business-licence-controlling-members',
+    template: `
 		<app-step-section
 			[title]="title"
 			subtitle="A controlling member is any person who can direct the activity of your business."
@@ -25,7 +25,8 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

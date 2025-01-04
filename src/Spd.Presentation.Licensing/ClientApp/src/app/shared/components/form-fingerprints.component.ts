@@ -6,8 +6,8 @@ import { FileUploadComponent } from './file-upload.component';
 import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.component';
 
 @Component({
-	selector: 'app-form-fingerprints',
-	template: `
+    selector: 'app-form-fingerprints',
+    template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<app-alert type="info" icon="info">
@@ -69,7 +69,8 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormFingerprintsComponent {
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;

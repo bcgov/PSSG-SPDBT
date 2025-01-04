@@ -4,8 +4,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-common-photograph-of-yourself',
-	template: `
+    selector: 'app-common-photograph-of-yourself',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -40,7 +40,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</div>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');

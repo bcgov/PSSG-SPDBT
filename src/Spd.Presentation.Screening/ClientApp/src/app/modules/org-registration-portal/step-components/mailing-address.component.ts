@@ -9,8 +9,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-mailing-address',
-	template: `
+    selector: 'app-mailing-address',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="What is your organization's mailing address?"></app-step-title>
@@ -97,13 +97,14 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class MailingAddressComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;

@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-form-contact-information',
-	template: `
+    selector: 'app-form-contact-information',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'offset-lg-2' : ''">
@@ -37,7 +37,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormContactInformationComponent {
 	matcher = new FormErrorStateMatcher();

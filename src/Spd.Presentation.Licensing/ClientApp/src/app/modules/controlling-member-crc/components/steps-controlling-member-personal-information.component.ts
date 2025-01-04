@@ -7,8 +7,8 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 import { StepControllingMemberTermsComponent } from './step-controlling-member-terms.component';
 
 @Component({
-	selector: 'app-steps-controlling-member-personal-information',
-	template: `
+    selector: 'app-steps-controlling-member-personal-information',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-terms
@@ -89,8 +89,9 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;

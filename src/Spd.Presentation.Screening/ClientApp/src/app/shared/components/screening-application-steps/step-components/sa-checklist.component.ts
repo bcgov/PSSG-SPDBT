@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
-	selector: 'app-sa-checklist',
-	template: `
+    selector: 'app-sa-checklist',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="To submit this criminal record check form, you will need:"></app-step-title>
@@ -35,13 +35,14 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			li:not(:last-child) {
 				margin-bottom: 1em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaChecklistComponent {
 	payerPreferenceTypeCodes = PayerPreferenceTypeCode;

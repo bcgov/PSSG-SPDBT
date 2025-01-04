@@ -2,8 +2,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
-	selector: 'app-step-two',
-	template: `
+    selector: 'app-step-two',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-registration-options
@@ -19,8 +19,9 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepTwoComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();

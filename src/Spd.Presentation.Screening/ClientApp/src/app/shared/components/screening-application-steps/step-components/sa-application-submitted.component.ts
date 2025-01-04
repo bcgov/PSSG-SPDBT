@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'app-sa-application-submitted',
-	template: `
+    selector: 'app-sa-application-submitted',
+    template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<app-step-title title="Application Submitted"></app-step-title>
 
@@ -21,7 +21,8 @@ import { Component, Input } from '@angular/core';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SaApplicationSubmittedComponent {
 	@Input() emailAddress: string | null = null;

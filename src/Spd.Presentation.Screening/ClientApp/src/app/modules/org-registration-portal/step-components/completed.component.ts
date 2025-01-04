@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
-	selector: 'app-completed',
-	template: `
+    selector: 'app-completed',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Thank you!" [subheading]="subHeading"></app-step-title>
@@ -53,8 +53,8 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.point {
 				&__green-icon {
 					display: inline-block;
@@ -90,7 +90,8 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 				position: relative;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CompletedComponent implements OnInit {
 	@Input() sendToEmailAddress = '';

@@ -11,8 +11,8 @@ import {
 } from '../../../shared/components/modal-lookup-by-licence-number.component';
 
 @Component({
-	selector: 'app-business-category-private-investigator',
-	template: `
+    selector: 'app-business-category-private-investigator',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row mt-3">
 				<div class="col-lg-8 col-md-12 col-sm-12">
@@ -70,7 +70,8 @@ import {
 			</div>
 		</form>
 	`,
-	styles: ``,
+    styles: ``,
+    standalone: false
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

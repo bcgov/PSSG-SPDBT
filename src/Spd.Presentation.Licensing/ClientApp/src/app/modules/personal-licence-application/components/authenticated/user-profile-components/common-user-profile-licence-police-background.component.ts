@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
-	selector: 'app-common-user-profile-licence-police-background',
-	template: `
+    selector: 'app-common-user-profile-licence-police-background',
+    template: `
 		<mat-accordion>
 			<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 				<mat-expansion-panel-header>
@@ -26,7 +26,8 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 			</mat-expansion-panel>
 		</mat-accordion>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

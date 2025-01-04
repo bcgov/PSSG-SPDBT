@@ -11,8 +11,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-common-business-licence-summary',
-	template: `
+    selector: 'app-common-business-licence-summary',
+    template: `
 		<div class="row" *ngIf="businessModelData">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row mb-3">
@@ -471,8 +471,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -507,7 +507,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 				height: 35px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	businessModelData: any = {};

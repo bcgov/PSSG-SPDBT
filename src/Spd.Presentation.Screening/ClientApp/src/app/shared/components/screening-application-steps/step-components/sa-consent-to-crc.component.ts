@@ -8,8 +8,8 @@ import { CaptchaResponse } from '../../captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-consent-to-crc',
-	template: `
+    selector: 'app-sa-consent-to-crc',
+    template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -113,8 +113,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			p {
 				margin-bottom: 0.5rem !important;
 			}
@@ -124,7 +124,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaConsentToCrcComponent implements OnInit, CrcFormStepComponent {
 	matcher = new FormErrorStateMatcher();
