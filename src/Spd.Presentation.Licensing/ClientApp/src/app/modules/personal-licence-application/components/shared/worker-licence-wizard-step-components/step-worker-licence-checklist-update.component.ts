@@ -48,6 +48,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>
 						</li>
+
 						<li>
 							<div class="checklist-label">If you have changed your name, proof of legal name change</div>
 							<p class="checklist-info">
