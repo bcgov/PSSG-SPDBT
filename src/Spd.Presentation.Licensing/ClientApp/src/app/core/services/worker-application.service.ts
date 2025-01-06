@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
+	WeightUnitCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
@@ -1079,11 +1080,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const characteristicsData = {
+			hairColourCode: null,
+			eyeColourCode: null,
+			height: null,
+			heightUnitCode: HeightUnitCode.Inches,
+			heightInches: null,
+			weight: null,
+			weightUnitCode: WeightUnitCode.Pounds,
+		};
+
 		this.workerModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -1346,10 +1358,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			hairColourCode: applicantProfile.hairColourCode,
 			eyeColourCode: applicantProfile.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode,
+			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
 			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode,
+			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
