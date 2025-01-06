@@ -7,8 +7,8 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-status-statistics-common',
-	template: `
+    selector: 'app-status-statistics-common',
+    template: `
 		<ng-container *ngIf="applicationStatistics$ | async">
 			<div class="fw-semibold mb-4">
 				<div>Active applications <span class="fw-normal">(for the last 365 days)</span></div>
@@ -158,8 +158,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</ng-container>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.statistic-card {
 				cursor: default;
 				height: 4em;
@@ -174,7 +174,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StatusStatisticsCommonComponent implements OnInit {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;

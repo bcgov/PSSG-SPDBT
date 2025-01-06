@@ -4,8 +4,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-checklist-update',
-	template: `
+    selector: 'app-step-controlling-member-checklist-update',
+    template: `
 		<app-step-section
 			title="Checklist"
 			subtitle="Make sure you have the following items before you continue"
@@ -58,7 +58,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepControllingMemberChecklistUpdateComponent implements LicenceChildStepperStepComponent {
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;

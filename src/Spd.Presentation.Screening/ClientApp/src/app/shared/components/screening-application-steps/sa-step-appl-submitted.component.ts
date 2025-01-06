@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AppInviteOrgData } from './screening-application.model';
 
 @Component({
-	selector: 'app-sa-step-appl-submitted',
-	template: `
+    selector: 'app-sa-step-appl-submitted',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-application-submitted [emailAddress]="emailAddress"></app-sa-application-submitted>
@@ -20,8 +20,9 @@ import { AppInviteOrgData } from './screening-application.model';
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

@@ -15,8 +15,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-step-business-licence-category',
-	template: `
+    selector: 'app-step-business-licence-category',
+    template: `
 		<app-step-section [title]="title" [subtitle]="infoTitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -361,8 +361,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.title {
 				padding-bottom: 2px;
 			}
@@ -376,8 +376,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				pointer-events: none;
 			}
 		`,
-	],
-	animations: [showHideTriggerSlideAnimation],
+    ],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	isDirtyAndInvalid = false;
@@ -767,7 +768,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			valid2 = this.categoryArmouredCarGuardFormGroup.valid;
 		}
 		let valid3 = true;
-		if (this.PrivateInvestigator.value) {
+		if (!this.isBusinessLicenceSoleProprietor && this.PrivateInvestigator.value) {
 			this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
 			valid3 = this.categoryPrivateInvestigatorFormGroup.valid;
 		}

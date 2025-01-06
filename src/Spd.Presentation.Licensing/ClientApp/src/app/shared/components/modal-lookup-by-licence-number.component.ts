@@ -19,8 +19,8 @@ export interface LookupByLicenceNumberDialogData {
 }
 
 @Component({
-	selector: 'app-modal-lookup-by-licence-number',
-	template: `
+    selector: 'app-modal-lookup-by-licence-number',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
@@ -171,8 +171,9 @@ export interface LookupByLicenceNumberDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class ModalLookupByLicenceNumberComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;

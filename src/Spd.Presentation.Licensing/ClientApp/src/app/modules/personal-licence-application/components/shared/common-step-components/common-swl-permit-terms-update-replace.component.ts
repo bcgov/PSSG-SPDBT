@@ -5,8 +5,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-swl-permit-terms-update-replace',
-	template: `
+    selector: 'app-common-swl-permit-terms-update-replace',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
@@ -282,14 +282,15 @@ import { UtilService } from '@app/core/services/util.service';
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.conditions {
 				max-height: 400px;
 				overflow-y: auto;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CommonSwlPermitTermsUpdateReplaceComponent {
 	hasScrolledToBottom = false;

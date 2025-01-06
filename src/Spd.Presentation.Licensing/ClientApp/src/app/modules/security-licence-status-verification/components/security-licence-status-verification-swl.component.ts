@@ -9,8 +9,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
-	selector: 'app-security-licence-status-verification-swl',
-	template: `
+    selector: 'app-security-licence-status-verification-swl',
+    template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -176,13 +176,14 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-red {
 				color: var(--color-red) !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SecurityLicenceStatusVerificationSwlComponent {
 	spdComplaintUrl = SPD_CONSTANTS.urls.spdComplaintUrl;
@@ -230,7 +231,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		const isOneNameOnly = formValue.isOneNameOnly ?? false;
 
 		let performSearch = true;
-		if ((workerLicenceNumber && firstName && lastName) || (!workerLicenceNumber && !firstName && !lastName)) {
+		if ((workerLicenceNumber && (firstName || lastName)) || (!workerLicenceNumber && !firstName && !lastName)) {
 			performSearch = false;
 		} else if (workerLicenceNumber && !workerLicenceNumber.startsWith('E')) {
 			this.searchDataError = 'The security worker licence number must start with an "E".';

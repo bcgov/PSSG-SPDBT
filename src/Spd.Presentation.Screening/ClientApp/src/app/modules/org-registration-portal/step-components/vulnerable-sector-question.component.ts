@@ -7,8 +7,8 @@ export class VulnerableSectorQuestionModel {
 }
 
 @Component({
-	selector: 'app-vulnerable-sector-question',
-	template: `
+    selector: 'app-vulnerable-sector-question',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
@@ -134,8 +134,8 @@ export class VulnerableSectorQuestionModel {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.icon-container {
 				display: block;
 				text-align: center;
@@ -148,7 +148,8 @@ export class VulnerableSectorQuestionModel {
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
 	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;

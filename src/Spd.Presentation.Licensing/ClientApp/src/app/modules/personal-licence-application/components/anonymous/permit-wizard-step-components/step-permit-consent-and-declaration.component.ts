@@ -6,8 +6,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-consent-and-declaration',
-	template: `
+    selector: 'app-step-permit-consent-and-declaration',
+    template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -211,7 +211,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';

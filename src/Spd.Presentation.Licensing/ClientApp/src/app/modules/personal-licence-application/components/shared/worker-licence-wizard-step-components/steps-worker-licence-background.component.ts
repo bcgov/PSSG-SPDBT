@@ -7,8 +7,8 @@ import { StepWorkerLicenceMentalHealthConditionsComponent } from './step-worker-
 import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licence-police-background.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-background',
-	template: `
+    selector: 'app-steps-worker-licence-background',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
@@ -67,8 +67,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepComponent {
 	readonly STEP_POLICE_BACKGROUND = 1;

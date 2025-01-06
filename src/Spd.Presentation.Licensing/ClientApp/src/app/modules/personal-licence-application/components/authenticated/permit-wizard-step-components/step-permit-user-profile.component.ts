@@ -9,8 +9,8 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-step-permit-user-profile',
-	template: `
+    selector: 'app-step-permit-user-profile',
+    template: `
 		<div class="step-section">
 			<div class="step">
 				<div class="row">
@@ -75,7 +75,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';

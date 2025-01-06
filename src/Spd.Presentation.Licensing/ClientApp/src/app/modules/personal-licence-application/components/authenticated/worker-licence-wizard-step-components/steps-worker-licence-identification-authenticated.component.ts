@@ -7,8 +7,8 @@ import { StepWorkerLicenceFingerprintsComponent } from '@app/modules/personal-li
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-identification-authenticated',
-	template: `
+    selector: 'app-steps-worker-licence-identification-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showCitizenshipStep">
 				<app-step-worker-licence-citizenship
@@ -69,8 +69,9 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;

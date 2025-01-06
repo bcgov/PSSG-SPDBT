@@ -6,12 +6,12 @@ import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/model
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-business-applications-list-current',
-	template: `
+    selector: 'app-business-applications-list-current',
+    template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
 
-			<div class="row summary-card-section summary-card-section__orange m-0">
+			<div class="row summary-card-section summary-card-section__orange m-0 pt-2">
 				<div class="col-12">
 					<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
 						<ng-container matColumnDef="serviceTypeCode">
@@ -125,8 +125,8 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-applicationPortalStatusCode {
 				word-break: break-word;
 			}
@@ -168,7 +168,8 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 				background-color: #f6f6f6 !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class BusinessApplicationsListCurrentComponent implements OnInit {
 	applicationColumns: string[] = [

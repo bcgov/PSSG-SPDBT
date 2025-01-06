@@ -6,8 +6,8 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
 @Component({
-	selector: 'app-steps-permit-details-new',
-	template: `
+    selector: 'app-steps-permit-details-new',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
@@ -51,8 +51,9 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 1;

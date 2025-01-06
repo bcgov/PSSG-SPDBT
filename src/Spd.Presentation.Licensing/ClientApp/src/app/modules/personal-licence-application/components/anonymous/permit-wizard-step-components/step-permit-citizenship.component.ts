@@ -15,8 +15,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-permit-citizenship',
-	template: `
+    selector: 'app-step-permit-citizenship',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -306,14 +306,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.proof-option {
 				padding-bottom: 12px;
 			}
 		`,
-	],
-	animations: [showHideTriggerSlideAnimation],
+    ],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

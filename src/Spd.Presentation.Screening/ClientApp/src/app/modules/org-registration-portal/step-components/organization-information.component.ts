@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
-	selector: 'app-organization-information',
-	template: `
+    selector: 'app-organization-information',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
@@ -68,7 +68,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class OrganizationInformationComponent implements OnInit, RegistrationFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;

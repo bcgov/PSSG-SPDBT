@@ -5,8 +5,8 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 @Component({
-	selector: 'app-identity-verification',
-	template: `
+    selector: 'app-identity-verification',
+    template: `
 		<app-psso-header></app-psso-header>
 
 		<app-identify-verification-common
@@ -16,7 +16,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 			[userId]="userId"
 		></app-identify-verification-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class IdentityVerificationComponent implements OnInit {
 	orgId: string | null = null;

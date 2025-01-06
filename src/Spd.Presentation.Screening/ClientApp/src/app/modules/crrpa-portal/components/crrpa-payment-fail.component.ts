@@ -15,8 +15,8 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-crrpa-payment-fail',
-	template: `
+    selector: 'app-crrpa-payment-fail',
+    template: `
 		<div class="container mt-4">
 			<section class="step-section p-3">
 				<app-payment-fail
@@ -30,7 +30,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpaPaymentFailComponent implements OnInit {
 	isCancelledPaymentFlow = false;

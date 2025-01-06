@@ -51,8 +51,8 @@ export interface ManualSubmissionBody {
 }
 
 @Component({
-	selector: 'app-manual-submission-common',
-	template: `
+    selector: 'app-manual-submission-common',
+    template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -533,13 +533,14 @@ export interface ManualSubmissionBody {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;

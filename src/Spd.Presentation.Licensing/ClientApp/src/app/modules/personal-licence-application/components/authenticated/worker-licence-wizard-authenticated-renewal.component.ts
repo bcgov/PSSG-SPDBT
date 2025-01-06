@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 
 @Component({
-	selector: 'app-worker-licence-wizard-authenticated-renewal',
-	template: `
+    selector: 'app-worker-licence-wizard-authenticated-renewal',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -97,7 +97,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based

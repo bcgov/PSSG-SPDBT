@@ -49,6 +49,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			soleProprietorLicenceAppId: new FormControl(''),
 			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
+			soleProprietorLicenceHolderId: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
 			soleProprietorLicenceExpiryDate: new FormControl(''),
 			soleProprietorLicenceStatusCode: new FormControl(''),
@@ -329,7 +330,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
-		branchPhoneNumber: new FormControl(''),
+		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
@@ -540,11 +541,20 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 
 		if (categoryData.PrivateInvestigator) {
-			const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
-			privateInvestigatorSwlInfo = {
-				contactId: privateInvestigatorData.managerContactId,
-				licenceId: privateInvestigatorData.managerLicenceId,
-			};
+			const isSoleProprietorSimultaneousFlow = businessModelFormValue.isSoleProprietorSimultaneousFlow;
+			if (!isSoleProprietorSimultaneousFlow && this.isSoleProprietor(bizTypeCode)) {
+				// if sole proprietor, populate the PI info from the associated swl in the profile
+				privateInvestigatorSwlInfo = {
+					contactId: businessInformationData.soleProprietorLicenceHolderId,
+					licenceId: businessInformationData.soleProprietorLicenceId,
+				};
+			} else {
+				const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
+				privateInvestigatorSwlInfo = {
+					contactId: privateInvestigatorData.managerContactId,
+					licenceId: privateInvestigatorData.managerLicenceId,
+				};
+			}
 		} else {
 			this.clearPrivateInvestigatorModelData();
 		}
