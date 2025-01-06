@@ -9,8 +9,8 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-step-worker-licence-category',
-    template: `
+	selector: 'app-step-worker-licence-category',
+	template: `
 		<app-step-section
 			[title]="title"
 			[subtitle]="infoTitle"
@@ -32,13 +32,20 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									</mat-select>
 								</mat-form-field>
 								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-									At least one category must be added. Click 'Add Category' after selection.
+									At least one category must be added. Click 'Add Category' after selecting a category.
 								</mat-error>
 							</div>
 							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
 								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
 									Add Category
 								</button>
+							</div>
+
+							<div class="col-12 mt-3">
+								<app-alert type="info" icon="info">
+									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
+									categories.
+								</app-alert>
 							</div>
 						</div>
 					</div>
@@ -597,8 +604,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.title {
 				padding-bottom: 2px;
 			}
@@ -616,8 +623,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				pointer-events: none;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	isDirtyAndInvalid = false;
