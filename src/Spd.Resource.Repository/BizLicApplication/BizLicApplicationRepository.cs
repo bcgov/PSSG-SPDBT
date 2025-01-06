@@ -187,6 +187,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(b => b.spd_ContactId)
                 .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
                 .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
+                .Where(b => b.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
 
             PrivateInvestigatorSwlContactInfo privateInvestigatorInfo = new()
@@ -388,6 +389,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), biz);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), biz);
+        await _context.SaveChangesAsync(ct);
     }
 
     private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
