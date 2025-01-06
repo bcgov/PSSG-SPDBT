@@ -388,6 +388,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), biz);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), biz);
+        await _context.SaveChangesAsync(ct);
     }
 
     private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
