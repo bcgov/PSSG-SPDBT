@@ -688,11 +688,7 @@ export class CommonApplicationService {
 		return [messageWarn, messageError];
 	}
 
-	setLicenceLookupMessage(
-		licence: LicenceResponse | null,
-		serviceTypeCode: ServiceTypeCode
-	): [string | null, string | null] {
-		let messageWarn = null;
+	setLicenceLookupMessage(licence: LicenceResponse | null, serviceTypeCode: ServiceTypeCode): string | null {
 		let messageError = null;
 
 		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
@@ -704,7 +700,7 @@ export class CommonApplicationService {
 			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
 		}
 
-		return [messageWarn, messageError];
+		return messageError;
 	}
 
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {

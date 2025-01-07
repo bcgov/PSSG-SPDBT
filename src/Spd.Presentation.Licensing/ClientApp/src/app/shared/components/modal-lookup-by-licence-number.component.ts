@@ -272,17 +272,18 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	}
 
 	private handleSearchResults(resp: LicenceLookupResult) {
-		[this.messageWarn, this.messageError] = this.commonApplicationService.setLicenceLookupMessage(
+		this.messageError = this.commonApplicationService.setLicenceLookupMessage(
 			resp.searchResult,
 			this.lookupServiceTypeCode
 		);
 
 		this.isSearchPerformed = true;
 		this.isFound = resp.isFound;
+		this.messageWarn = null;
 
 		this.searchResultDisplay = resp.searchResult;
 
-		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageWarn && !this.messageError;
+		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageError;
 	}
 
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
