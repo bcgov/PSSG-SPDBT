@@ -83,7 +83,7 @@ internal abstract class LicenceAppManagerBase
             //spdbt-3194: update swl term with bl term
             await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId,
                 ApplicationStatusEnum.PaymentPending,
-                null,
+                0,
                 ct,
                 Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
         }
