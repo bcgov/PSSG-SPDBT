@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.BizContact
@@ -23,6 +24,7 @@ namespace Spd.Resource.Repository.BizContact
                 .IncludeBase<spd_businesscontact, BizContact>()
                 .ForMember(d => d.BizContactId, opt => opt.MapFrom(s => s.spd_businesscontactid))
                 .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<BizContactRoleOptionSet, BizContactRoleEnum>(s.spd_role)))
+                .ForMember(d => d.PositionCodes, opt => opt.MapFrom(s => GetPositions(s.spd_position_spd_businesscontact.ToArray())))
                 .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
                 .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_swlnumber_value))
                 .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
@@ -73,6 +75,11 @@ namespace Spd.Resource.Repository.BizContact
                     return (invite.spd_portalinvitationid, statusEnum);
                 }
             }
+        }
+
+        private static IEnumerable<PositionEnum> GetPositions(spd_position[] positions)
+        {
+            return positions.Select(p => Enum.Parse<PositionEnum>(DynamicsContextLookupHelpers.LookupPositionKey(p.spd_positionid))).AsEnumerable();
         }
     }
 }

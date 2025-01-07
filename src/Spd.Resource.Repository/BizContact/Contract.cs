@@ -1,4 +1,5 @@
 ﻿using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.BizLicApplication;
 
 namespace Spd.Resource.Repository.BizContact
 {
@@ -39,6 +40,7 @@ namespace Spd.Resource.Repository.BizContact
         public Guid? ContactId { get; set; }
         public Guid? LicenceId { get; set; }
         public BizContactRoleEnum BizContactRoleCode { get; set; } = BizContactRoleEnum.ControllingMember;
+        public IEnumerable<PositionEnum> PositionCodes { get; set; } = Enumerable.Empty<PositionEnum>();
         public Guid BizId { get; set; }
     }
 
