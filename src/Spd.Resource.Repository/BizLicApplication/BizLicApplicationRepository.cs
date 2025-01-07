@@ -62,6 +62,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         await SetInfoFromBiz(biz, app, cmd.ApplicantIsBizManager ?? false, ct);
         await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
+        await SetApplicantSwlLicenceId(app, cmd.ApplicantSwlLicenceId, ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
 
@@ -114,16 +115,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-        if (cmd.ApplicantSwlLicenceId != null)
-        {
-            var licence = _context.spd_licences.Where(l => l.spd_licenceid == cmd.ApplicantSwlLicenceId).FirstOrDefault();
-            if (licence != null)
-            {
-                _context.SetLink(app, nameof(spd_application.spd_ApplicantSWLNumberId), licence);
-            }
-        }
-        else
-            _context.SetLink(app, nameof(app.spd_ApplicantSWLNumberId), null);
+        await SetApplicantSwlLicenceId(app, cmd.ApplicantSwlLicenceId, ct);
 
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
 
@@ -285,6 +277,20 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         spd_licence licence = GetLicence((Guid)privateInvestigatorInfo.LicenceId);
         _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
         return bizContact;
+    }
+
+    private async Task SetApplicantSwlLicenceId(spd_application app, Guid? applicantSwlLicenceId, CancellationToken ct)
+    {
+        if (applicantSwlLicenceId != null)
+        {
+            var licence = await _context.spd_licences.Where(l => l.spd_licenceid == applicantSwlLicenceId).FirstOrDefaultAsync(ct);
+            if (licence != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantSWLNumberId), licence);
+            }
+        }
+        else
+            _context.SetLink(app, nameof(app.spd_ApplicantSWLNumberId), null);
     }
 
     private void AddPrivateInvestigatorLink(spd_businesscontact bizContact, spd_application app)
