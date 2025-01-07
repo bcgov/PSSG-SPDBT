@@ -19,8 +19,8 @@ export interface LookupByLicenceNumberDialogData {
 }
 
 @Component({
-    selector: 'app-modal-lookup-by-licence-number',
-    template: `
+	selector: 'app-modal-lookup-by-licence-number',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
@@ -122,7 +122,7 @@ export interface LookupByLicenceNumberDialogData {
 
 							<ng-template #LicenceSearchNotValid>
 								<div class="mt-3">
-									<app-alert type="warning" icon="">
+									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
 											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}
 										</div>
@@ -171,9 +171,9 @@ export interface LookupByLicenceNumberDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class ModalLookupByLicenceNumberComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;
@@ -274,17 +274,17 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	}
 
 	private handleSearchResults(resp: LicenceLookupResult) {
+		[this.messageWarn, this.messageError] = this.commonApplicationService.setLicenceLookupMessage(
+			resp.searchResult,
+			this.lookupServiceTypeCode
+		);
+
 		this.isSearchPerformed = true;
 		this.isFound = resp.isFound;
-		this.isFoundValid = resp.isFoundValid;
 
-		if (resp.searchResult) {
-			if (resp.searchResult.serviceTypeCode !== this.lookupServiceTypeCode) {
-				this.isFoundValid = false;
-			}
+		this.searchResultDisplay = resp.searchResult;
 
-			this.searchResultDisplay = resp.searchResult;
-		}
+		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageWarn && !this.messageError;
 	}
 
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
