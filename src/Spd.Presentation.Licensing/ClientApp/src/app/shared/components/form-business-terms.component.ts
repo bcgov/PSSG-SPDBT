@@ -5,8 +5,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-form-business-terms',
-    template: `
+	selector: 'app-form-business-terms',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
@@ -283,7 +283,9 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
-						<div class="alert alert-warning" role="alert">Scroll to the bottom</div>
+						<div class="alert alert-danger" role="alert">
+							Scroll to the bottom of the terms and conditions section to proceed
+						</div>
 					</ng-container>
 				</div>
 			</div>
@@ -328,15 +330,15 @@ import { UtilService } from '@app/core/services/util.service';
 			</div>
 		</form>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.conditions {
 				max-height: 400px;
 				overflow-y: auto;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class FormBusinessTermsComponent implements OnInit {
 	hasScrolledToBottom = false;
