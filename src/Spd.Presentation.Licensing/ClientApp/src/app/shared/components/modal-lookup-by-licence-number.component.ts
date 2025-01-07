@@ -25,6 +25,15 @@ export interface LookupByLicenceNumberDialogData {
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
+				<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
+					<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
+				</ng-container>
+				<ng-template #notLoggedInMsg>
+					<app-alert type="info" icon="info">
+						Enter the Licence Number, perform the reCaptcha and then click the search button.
+					</app-alert>
+				</ng-template>
+
 				<div class="row">
 					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
 						<mat-form-field>
@@ -67,17 +76,6 @@ export interface LookupByLicenceNumberDialogData {
 						</div>
 					</div>
 				</div>
-
-				<ng-container *ngIf="!isSearchPerformed">
-					<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
-						<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
-					</ng-container>
-					<ng-template #notLoggedInMsg>
-						<app-alert type="info" icon="info">
-							Enter the Licence Number, perform the reCaptcha and then click the search button.
-						</app-alert>
-					</ng-template>
-				</ng-container>
 
 				<ng-container *ngIf="isSearchPerformed">
 					<ng-container *ngIf="isFound; else IsNotFound">
