@@ -165,7 +165,7 @@ internal class BizMemberManager :
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => _mapper.Map<NonSwlContactInfo>(c));
         members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee && !c.PositionCodes.Any(c => c == PositionEnum.PrivateInvestigatorManager))
             .Select(c => _mapper.Map<SwlContactInfo>(c));
         return members;
     }
