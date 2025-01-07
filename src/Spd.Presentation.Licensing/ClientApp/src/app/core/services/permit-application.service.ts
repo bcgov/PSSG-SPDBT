@@ -21,6 +21,7 @@ import {
 	PermitAppUpsertRequest,
 	PermitLicenceAppResponse,
 	ServiceTypeCode,
+	WeightUnitCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -838,12 +839,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private createEmptyPermitAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const characteristicsData = {
+			hairColourCode: null,
+			eyeColourCode: null,
+			height: null,
+			heightUnitCode: HeightUnitCode.Inches,
+			heightInches: null,
+			weight: null,
+			weightUnitCode: WeightUnitCode.Pounds,
+		};
+
 		this.permitModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				permitRequirementData: { serviceTypeCode: serviceTypeCode },
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -1077,10 +1089,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			hairColourCode: applicantProfile.hairColourCode,
 			eyeColourCode: applicantProfile.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode,
+			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
 			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode,
+			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {

@@ -6,32 +6,32 @@ import { FileUploadComponent } from './file-upload.component';
 import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.component';
 
 @Component({
-    selector: 'app-form-fingerprints',
-    template: `
+	selector: 'app-form-fingerprints',
+	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<app-alert type="info" icon="info">
-					<div class="d-flex">
-						<div>
-							Scan or take a photo of the tear-off section on page 2 of the
-							<a
-								aria-label="Request for Fingerprinting form"
-								download="Request For Fingerprinting Form"
-								[href]="downloadFilePath"
-								>Request for Fingerprinting form</a
-							>
-							form.
-						</div>
-						<div class="ms-auto">
-							<button
-								mat-icon-button
-								color="primary"
-								(click)="onShowSampleTearOffModal()"
-								aria-label="View sample fingerprint tear-off section"
-							>
-								<mat-icon>info</mat-icon>
-							</button>
-						</div>
+					<div>
+						All applicants must submit a proof of fingerprinting request. After the
+						<a
+							aria-label="Request for Fingerprinting form"
+							download="Request For Fingerprinting Form"
+							[href]="downloadFilePath"
+							>Request for Fingerprinting form</a
+						>
+						is complete, scan or take a photo of the tear-off section on page 2 of the form.
+					</div>
+
+					<div class="text-end">
+						<button
+							mat-flat-button
+							color="primary"
+							class="mt-2 w-auto"
+							(click)="onShowSampleTearOffModal()"
+							aria-label="View sample fingerprint tear-off section"
+						>
+							View Sample
+						</button>
 					</div>
 				</app-alert>
 			</div>
@@ -69,8 +69,8 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class FormFingerprintsComponent {
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;

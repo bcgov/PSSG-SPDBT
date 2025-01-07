@@ -11,8 +11,8 @@ import {
 } from '../../../shared/components/modal-lookup-by-licence-number.component';
 
 @Component({
-    selector: 'app-business-category-private-investigator',
-    template: `
+	selector: 'app-business-category-private-investigator',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row mt-3">
 				<div class="col-lg-8 col-md-12 col-sm-12">
@@ -35,14 +35,14 @@ import {
 									<div class="text-primary-color">Name</div>
 									<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
 								</div>
-								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Security Worker Licence Number</div>
 									<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
 								</div>
-								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Expiry Date</div>
 									<div class="text-primary-color fs-5">
-										{{ managerLicenceExpiryDate.value | formatDate : formalDateFormat }}
+										{{ managerLicenceExpiryDate.value | formatDate: formalDateFormat }}
 									</div>
 								</div>
 								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
@@ -70,15 +70,18 @@ import {
 			</div>
 		</form>
 	`,
-    styles: ``,
-    standalone: false
+	styles: ``,
+	standalone: false,
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	form = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
 
-	constructor(private dialog: MatDialog, private businessApplicationService: BusinessApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
