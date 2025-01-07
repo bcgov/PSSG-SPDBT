@@ -8,8 +8,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-    selector: 'app-step-worker-licence-dogs-authorization',
-    template: `
+	selector: 'app-step-worker-licence-dogs-authorization',
+	template: `
 		<app-step-section title="Do you want to request authorization to use dogs?" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -89,9 +89,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
@@ -108,7 +108,9 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewalOrUpdate
+			? 'Update any information that has changed since your last application'
+			: 'Check with your employer if the use of dogs is required.';
 
 		this.originalDogAuthorizationExists = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalDogAuthorizationExists'
