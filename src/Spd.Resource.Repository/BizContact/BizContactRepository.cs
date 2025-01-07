@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -41,6 +40,7 @@ namespace Spd.Resource.Repository.BizContact
         public async Task<IEnumerable<BizContactResp>> QueryBizContactsAsync(BizContactQry qry, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(c => c.spd_position_spd_businesscontact)
                 .Expand(c => c.spd_businesscontact_spd_application)
                 .Expand(c => c.spd_businesscontact_spd_portalinvitation);
 
