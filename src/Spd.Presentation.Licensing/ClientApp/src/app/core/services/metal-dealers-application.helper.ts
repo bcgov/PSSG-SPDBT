@@ -10,8 +10,8 @@ import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
-		legalBusinessName: new FormControl(''),
-		tradeName: new FormControl(''),
+		legalBusinessName: new FormControl('', [FormControlValidators.required]),
+		tradeName: new FormControl('', [FormControlValidators.required]),
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),

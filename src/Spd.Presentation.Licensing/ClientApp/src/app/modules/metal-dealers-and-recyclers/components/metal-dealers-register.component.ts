@@ -41,6 +41,19 @@ import { distinctUntilChanged } from 'rxjs';
 			</mat-step>
 
 			<mat-step [completed]="step1Complete">
+				<ng-template matStepLabel>Business Addresses</ng-template>
+
+				<app-step-metal-dealers-business-address></app-step-metal-dealers-business-address>
+
+				<app-wizard-footer
+					cancelLabel="Cancel"
+					(cancelStep)="onCancel()"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Branch Offices</ng-template>
 
 				<app-step-metal-dealers-branches></app-step-metal-dealers-branches>

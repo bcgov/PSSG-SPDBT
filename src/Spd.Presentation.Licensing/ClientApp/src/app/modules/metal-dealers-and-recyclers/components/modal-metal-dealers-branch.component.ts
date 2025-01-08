@@ -59,7 +59,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 								formControlName="branchPhoneNumber"
 								[errorStateMatcher]="matcher"
 								[mask]="phoneMask"
-								[showMaskTyped]="false"
+								[showMaskTyped]="true"
 							/>
 							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>

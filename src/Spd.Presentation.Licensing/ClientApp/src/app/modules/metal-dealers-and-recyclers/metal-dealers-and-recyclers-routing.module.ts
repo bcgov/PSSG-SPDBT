@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MetalDealersBaseComponent } from './components/metal-dealers-base.component';
 import { MetalDealersMainComponent } from './components/metal-dealers-main.component';
 import { MetalDealersRegisterComponent } from './components/metal-dealers-register.component';
+import { MetalDealersRegistrationReceivedComponent } from './components/metal-dealers-registration-received.component';
 import { MetalDealersAndRecyclersRoutes } from './metal-dealers-and-recyclers-routes';
 
 const routes: Routes = [
@@ -17,6 +18,10 @@ const routes: Routes = [
 			{
 				path: MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER,
 				component: MetalDealersRegisterComponent,
+			},
+			{
+				path: MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED,
+				component: MetalDealersRegistrationReceivedComponent,
 			},
 		],
 	},

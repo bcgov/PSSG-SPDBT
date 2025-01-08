@@ -4,14 +4,6 @@ import { Component } from '@angular/core';
 	selector: 'app-step-metal-dealers-checklist',
 	template: `
 		<app-step-section title="Checklist">
-			<!-- <div class="row">
-				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info">
-						There is no fee for registration, renewal or updating registration information.
-					</app-alert>
-				</div>
-			</div> -->
-
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<p>
