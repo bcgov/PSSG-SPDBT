@@ -3,8 +3,8 @@ import { Component, ContentChild, ElementRef, Input } from '@angular/core';
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 @Component({
-    selector: 'app-alert',
-    template: `
+	selector: 'app-alert',
+	template: `
 		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
 			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon">{{ icon }}</mat-icon>
 			<div style="width: inherit;" class="my-2" [ngClass]="getText()">
@@ -12,11 +12,11 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.alert-info {
-				border: 1px solid rgba(217, 234, 247, 1);
-				background-color: rgba(217, 234, 247, 1);
+				border: 1px solid #b6d4fe;
+				background-color: #d9eaf7;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
@@ -26,7 +26,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			}
 
 			.alert-success {
-				border: 1px solid #e8f5eb;
+				border: 1px solid #badbcc;
 				background-color: #e8f5eb;
 				border-radius: 5px;
 				font-weight: 500;
@@ -37,8 +37,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			}
 
 			.alert-warning {
-				border: 1px solid rgba(250, 235, 204, 1);
-				background-color: rgba(249, 241, 198, 1);
+				border: 1px solid #ffecb5;
+				background-color: #f9f1c6;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
@@ -48,8 +48,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			}
 
 			.alert-danger {
-				border: 1px solid rgba(235, 204, 209, 1);
-				background-color: rgba(242, 222, 222, 1);
+				border: 1px solid #f5c2c7;
+				background-color: #f2dede;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
@@ -58,8 +58,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				line-height: 1.5 !important;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';
