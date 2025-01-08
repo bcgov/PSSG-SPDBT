@@ -19,12 +19,21 @@ export interface LookupByLicenceNumberDialogData {
 }
 
 @Component({
-    selector: 'app-modal-lookup-by-licence-number',
-    template: `
+	selector: 'app-modal-lookup-by-licence-number',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
+				<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
+					<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
+				</ng-container>
+				<ng-template #notLoggedInMsg>
+					<app-alert type="info" icon="info">
+						Enter the Licence Number, perform the reCaptcha and then click the search button.
+					</app-alert>
+				</ng-template>
+
 				<div class="row">
 					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
 						<mat-form-field>
@@ -67,17 +76,6 @@ export interface LookupByLicenceNumberDialogData {
 						</div>
 					</div>
 				</div>
-
-				<ng-container *ngIf="!isSearchPerformed">
-					<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
-						<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
-					</ng-container>
-					<ng-template #notLoggedInMsg>
-						<app-alert type="info" icon="info">
-							Enter the Licence Number, perform the reCaptcha and then click the search button.
-						</app-alert>
-					</ng-template>
-				</ng-container>
 
 				<ng-container *ngIf="isSearchPerformed">
 					<ng-container *ngIf="isFound; else IsNotFound">
@@ -122,7 +120,7 @@ export interface LookupByLicenceNumberDialogData {
 
 							<ng-template #LicenceSearchNotValid>
 								<div class="mt-3">
-									<app-alert type="warning" icon="">
+									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
 											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}
 										</div>
@@ -171,9 +169,9 @@ export interface LookupByLicenceNumberDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class ModalLookupByLicenceNumberComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;
@@ -274,17 +272,18 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	}
 
 	private handleSearchResults(resp: LicenceLookupResult) {
+		this.messageError = this.commonApplicationService.setLicenceLookupMessage(
+			resp.searchResult,
+			this.lookupServiceTypeCode
+		);
+
 		this.isSearchPerformed = true;
 		this.isFound = resp.isFound;
-		this.isFoundValid = resp.isFoundValid;
+		this.messageWarn = null;
 
-		if (resp.searchResult) {
-			if (resp.searchResult.serviceTypeCode !== this.lookupServiceTypeCode) {
-				this.isFoundValid = false;
-			}
+		this.searchResultDisplay = resp.searchResult;
 
-			this.searchResultDisplay = resp.searchResult;
-		}
+		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageError;
 	}
 
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
