@@ -6,8 +6,8 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 @Component({
-    selector: 'app-wizard-footer',
-    template: `
+	selector: 'app-wizard-footer',
+	template: `
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 				<ng-container *ngIf="showExit">
@@ -22,7 +22,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						</button>
 					</ng-container>
 					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Exit</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">{{ cancelLabel }}</button>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -119,14 +119,14 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</ng-template>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.button-small-caps {
 				font-variant: small-caps;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;
@@ -138,6 +138,7 @@ export class WizardFooterComponent implements OnInit {
 
 	@Input() nextButtonLabel = 'Next';
 	@Input() cancelAndExitLabel = 'Exit';
+	@Input() cancelLabel = 'Exit';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
