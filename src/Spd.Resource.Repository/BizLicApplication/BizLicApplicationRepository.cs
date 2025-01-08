@@ -66,11 +66,13 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && cmd.PrivateInvestigatorSwlInfo != null)
         {
             spd_businesscontact businessContact = await UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app, ct);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_OrganizationId), biz);
         }
+        else
+            DeletePrivateInvestigatorLink(app);
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -127,7 +129,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_OrganizationId), biz);
         }
         else
-            DeletePrivateInvestigator(app);
+            DeletePrivateInvestigatorLink(app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -168,9 +170,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         var response = _mapper.Map<BizLicApplicationResp>(app);
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
-        if (position == null)
-            return response;
-
         try
         {
             spd_businesscontact? bizContact = _context.spd_businesscontacts
@@ -182,19 +181,20 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Where(b => b.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
 
-            PrivateInvestigatorSwlContactInfo privateInvestigatorInfo = new()
+            if (bizContact != null)
             {
-                ContactId = bizContact?.spd_ContactId?.contactid,
-                BizContactId = bizContact?.spd_businesscontactid,
-                GivenName = bizContact?.spd_firstname,
-                Surname = bizContact?.spd_surname,
-                MiddleName1 = bizContact?.spd_middlename1,
-                MiddleName2 = bizContact?.spd_middlename2,
-                EmailAddress = bizContact?.spd_email,
-                LicenceId = bizContact?._spd_swlnumber_value
-            };
-
-            response.PrivateInvestigatorSwlInfo = privateInvestigatorInfo;
+                response.PrivateInvestigatorSwlInfo = new()
+                {
+                    ContactId = (Guid)bizContact.spd_ContactId.contactid,
+                    BizContactId = bizContact?.spd_businesscontactid,
+                    GivenName = bizContact?.spd_firstname,
+                    Surname = bizContact?.spd_surname,
+                    MiddleName1 = bizContact?.spd_middlename1,
+                    MiddleName2 = bizContact?.spd_middlename2,
+                    EmailAddress = bizContact?.spd_email,
+                    LicenceId = (Guid)bizContact._spd_swlnumber_value
+                };
+            }
 
         }
         catch (DataServiceQueryException ex)
@@ -210,7 +210,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private async Task<spd_businesscontact> UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app, CancellationToken ct)
     {
-        contact? contact = await _context.GetContactById((Guid)privateInvestigatorInfo.ContactId, ct);
+        contact? contact = await _context.GetContactById(privateInvestigatorInfo.ContactId, ct);
         if (contact == null)
             throw new ArgumentException($"cannot find the contact with contactId : {privateInvestigatorInfo.ContactId}");
 
@@ -230,10 +230,18 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(b => b.spd_businesscontact_spd_application)
                 .Expand(b => b.spd_SWLNumber)
                 .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == positionid))
-                .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
+                .Where(b => b.spd_SWLNumber.spd_licenceid == privateInvestigatorInfo.LicenceId)
                 .FirstOrDefault();
             if (existingBizContact == null)
             {
+                //we probably do not need to make other private investigator inactive. - tbd
+                //find other pi bizContact, make them inactive. - not clear in requirement, should be fine to not do that.
+                //otherPiBizContact.statecode = DynamicsConstants.StateCode_Inactive;
+                //_context.UpdateObject(otherPiBizContact);
+
+                //for same application, that means user changed his pi link during the same application - partial save. then we need to delete the old bizcontact.
+                DeletePrivateInvestigatorLink(app);
+
                 //add new one
                 bizContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
                 bizContact.spd_businesscontactid = Guid.NewGuid();
@@ -243,20 +251,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             }
             else
             {
-                if (existingBizContact.spd_SWLNumber.spd_licenceid != privateInvestigatorInfo.LicenceId)
-                {
-                    _context.DeleteObject(existingBizContact);
-                    //add new one
-                    bizContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
-                    bizContact.spd_businesscontactid = Guid.NewGuid();
-                    bizContact.spd_role = (int)BizContactRoleOptionSet.Employee;
-                    _context.AddTospd_businesscontacts(bizContact);
-                    AddPrivateInvestigatorLink(bizContact, app);
-                }
-                else
-                {
-                    bizContact = existingBizContact;
-                }
+                bizContact = existingBizContact;
+                AddPrivateInvestigatorLink(bizContact, app);
             }
         }
         else
@@ -274,7 +270,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             AddPrivateInvestigatorLink(bizContact, app);
         }
         _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), contact);
-        spd_licence licence = GetLicence((Guid)privateInvestigatorInfo.LicenceId);
+        spd_licence licence = GetLicence(privateInvestigatorInfo.LicenceId);
         _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
         return bizContact;
     }
@@ -295,38 +291,18 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private void AddPrivateInvestigatorLink(spd_businesscontact bizContact, spd_application app)
     {
-        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+        if (!bizContact.spd_businesscontact_spd_application.Contains(app))
+            _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
-        if (position != null)
+        if (!bizContact.spd_position_spd_businesscontact.Contains(position))
             _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
-    }
-
-    private void DeletePrivateInvestigator(spd_application app)
-    {
-        DynamicsContextLookupHelpers.PositionDictionary.TryGetValue(PositionEnum.PrivateInvestigatorManager.ToString(), out Guid positionid);
-        spd_businesscontact? bizContact = _context.spd_businesscontacts
-            .Expand(b => b.spd_position_spd_businesscontact)
-            .Expand(b => b.spd_businesscontact_spd_application)
-            .Expand(b => b.spd_SWLNumber)
-            .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == positionid))
-            .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
-            .FirstOrDefault();
-
-        if (bizContact == null)
-            return;
-
-        _context.DeleteObject(bizContact);
-        //_context.SaveChanges();
     }
 
     private void DeletePrivateInvestigatorLink(spd_application app)
     {
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
-
-        if (position == null)
-            return;
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
             .Expand(b => b.spd_position_spd_businesscontact)
@@ -339,24 +315,16 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (bizContact == null)
             return;
 
+        //if no spd_application connected with this bizContact, then set this bizContact inactive.
+        if (bizContact.spd_businesscontact_spd_application.ToArray().Count() == 1)
+        {
+            bizContact.statecode = DynamicsConstants.StateCode_Inactive;
+            bizContact.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _context.UpdateObject(bizContact);
+        }
+
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
-        _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), null);
-        _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
-
-        Guid? licenceId = bizContact.spd_SWLNumber.spd_licenceid;
-
-        if (licenceId == null)
-            return;
-
-        spd_licence? licence = _context.spd_licences
-            .Where(l => l.spd_licenceid == licenceId)
-            .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
-
-        if (licence == null)
-            return;
-
-        _context.DeleteLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
+        _context.SaveChanges();
     }
 
     //set biz manager info, applicant info, address and link biz to application
