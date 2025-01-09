@@ -55,6 +55,8 @@ namespace Spd.Resource.Repository.Licence
 
         //sole proprietor
         public Guid? SoleProprietorOrgId { get; set; }
+
+        public IEnumerable<Condition> Conditions { get; set; } = Enumerable.Empty<Condition>();
     }
 
     public record Licence
@@ -86,6 +88,12 @@ namespace Spd.Resource.Repository.Licence
         public Addr? EmployerPrimaryAddress { get; set; }
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+    }
+
+    public record Condition
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     public enum LicenceStatusEnum
