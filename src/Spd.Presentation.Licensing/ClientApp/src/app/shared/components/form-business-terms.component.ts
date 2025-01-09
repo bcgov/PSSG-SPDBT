@@ -109,7 +109,7 @@ import { UtilService } from '@app/core/services/util.service';
 								<ol type="a">
 									<li>
 										THE ACCURACY, COMPLETENESS OR CURRENCY OF SERVICES OR ANY ASSOCIATED INFORMATION, OR THAT ANY ERRORS
-										WILL BE CORRECTED.
+										WILL BE CORRECTED;
 									</li>
 									<li>
 										THE SERVICES WILL FUNCTION IN A TIMELY MANNER OR WILL BE AVAILABLE WITHOUT ERROR, FAILURE OR
@@ -238,7 +238,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</li>
 									<li>
 										the Province or the provider of any Associated Service deems such suspension or cancellation
-										necessary for any good and valid reason
+										necessary for any good and valid reason.
 									</li>
 								</ol>
 							</li>
