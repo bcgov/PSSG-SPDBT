@@ -191,6 +191,7 @@ internal class PermitAppManager :
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
+            existingFiles,
             cancellationToken);
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -404,21 +405,9 @@ internal class PermitAppManager :
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
+        IList<LicAppFileInfo> existingFileInfos,
         CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-        if (request.PreviousDocumentIds != null)
-        {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
-            {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
-        }
-
         if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
