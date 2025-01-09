@@ -229,6 +229,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(b => b.spd_position_spd_businesscontact)
                 .Expand(b => b.spd_businesscontact_spd_application)
                 .Expand(b => b.spd_SWLNumber)
+                .Where(b => b._spd_organizationid_value == app._spd_organizationid_value && b.statecode == DynamicsConstants.StateCode_Active)
                 .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == positionid))
                 .Where(b => b.spd_SWLNumber.spd_licenceid == privateInvestigatorInfo.LicenceId)
                 .FirstOrDefault();
@@ -302,13 +303,14 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private void DeletePrivateInvestigatorLink(spd_application app)
     {
-        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+        DynamicsContextLookupHelpers.PositionDictionary.TryGetValue(PositionEnum.PrivateInvestigatorManager.ToString(), out Guid positionid);
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
             .Expand(b => b.spd_position_spd_businesscontact)
             .Expand(b => b.spd_businesscontact_spd_application)
-            .Expand(b => b.spd_SWLNumber)
-            .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
+            //.Expand(b => b.spd_SWLNumber)
+            .Where(b => b._spd_organizationid_value == app._spd_organizationid_value && b.statecode == DynamicsConstants.StateCode_Active)
+            .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == positionid))
             .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
             .FirstOrDefault();
 
@@ -316,7 +318,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             return;
 
         //if no spd_application connected with this bizContact, then set this bizContact inactive.
-        if (bizContact.spd_businesscontact_spd_application.ToArray().Count() == 1)
+        if (bizContact.spd_businesscontact_spd_application.ToArray().Count() <= 1)
         {
             bizContact.statecode = DynamicsConstants.StateCode_Inactive;
             bizContact.statuscode = DynamicsConstants.StatusCode_Inactive;
