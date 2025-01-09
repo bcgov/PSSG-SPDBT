@@ -15,16 +15,14 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		branchManagerGivenName: new FormControl(''),
-		branchManagerMiddleName: new FormControl(''),
-		branchManagerSurname: new FormControl('', [FormControlValidators.required]),
-		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
-		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
+		givenName: new FormControl(''),
+		middleName: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -93,22 +91,20 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			FormControlValidators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
-		branchManagerGivenName: new FormControl(''),
-		branchManagerMiddleName: new FormControl(''),
-		branchManagerSurname: new FormControl('', [FormControlValidators.required]),
-		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
-		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
+		givenName: new FormControl(''),
+		middleName: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
-		check2: new FormControl(null, [Validators.requiredTrue]),
-		check3: new FormControl(null, [Validators.requiredTrue]),
-		check4: new FormControl(null, [Validators.requiredTrue]),
-		check5: new FormControl(null, [Validators.requiredTrue]),
-		check6: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', FormControlValidators.required),
+		}),
 	});
 
 	constructor(
@@ -119,5 +115,51 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		protected fileUtilService: FileUtilService
 	) {
 		super(formBuilder);
+	}
+
+	getFullNameWithMiddle(
+		givenName: string | null | undefined,
+		middleName: string | null | undefined,
+		surname: string | null | undefined
+	): string {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName) {
+			userNameArray.push(middleName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
+	getSummarybusinessOwnerDataname(modelData: any): string {
+		return this.getFullNameWithMiddle(
+			modelData.businessOwnerData.givenName,
+			modelData.businessOwnerData.middleName,
+			modelData.businessOwnerData.surname
+		);
+	}
+	getSummarybusinessOwnerDatalegalBusinessName(modelData: any): string {
+		return modelData.businessOwnerData.legalBusinessName ?? '';
+	}
+	getSummarybusinessOwnerDatatradeName(modelData: any): string {
+		return modelData.businessOwnerData.tradeName ?? '';
+	}
+
+	getSummarybusinessManagerDataname(modelData: any): string {
+		return this.getFullNameWithMiddle(
+			modelData.businessManagerData.givenName,
+			modelData.businessManagerData.middleName,
+			modelData.businessManagerData.surname
+		);
+	}
+	getSummarybusinessManagerDataphoneNumber(modelData: any): string {
+		return modelData.businessManagerData.phoneNumber ?? '';
+	}
+	getSummarybusinessManagerDataemailAddress(modelData: any): string {
+		return modelData.businessManagerData.emailAddress ?? '';
 	}
 }

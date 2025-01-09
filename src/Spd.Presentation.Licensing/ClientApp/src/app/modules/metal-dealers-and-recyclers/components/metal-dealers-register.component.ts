@@ -1,8 +1,10 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { distinctUntilChanged } from 'rxjs';
+import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.component';
 
 @Component({
 	selector: 'app-metal-dealers-register',
@@ -69,7 +71,7 @@ import { distinctUntilChanged } from 'rxjs';
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Review</ng-template>
 
-				<app-step-metal-dealers-summary></app-step-metal-dealers-summary>
+				<app-step-metal-dealers-summary (editStep)="onGoToStep($event)"></app-step-metal-dealers-summary>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -106,6 +108,8 @@ export class MetalDealersRegisterComponent extends BaseWizardComponent implement
 	readonly STEP_LICENCE_BRANDING = 3;
 	readonly STEP_LICENCE_LIABILITY = 4;
 
+	@ViewChild(StepMetalDealersSummaryComponent) stepReview!: StepMetalDealersSummaryComponent;
+
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private commonApplicationService: CommonApplicationService
@@ -126,6 +130,10 @@ export class MetalDealersRegisterComponent extends BaseWizardComponent implement
 	}
 
 	onCancel() {}
+
+	onGoToStep(step: number) {
+		this.stepper.selectedIndex = step;
+	}
 
 	onGoToPreviousStep() {
 		this.stepper.previous();
@@ -148,5 +156,11 @@ export class MetalDealersRegisterComponent extends BaseWizardComponent implement
 		// if (!isValid) return;
 
 		this.stepper.next();
+	}
+
+	override onStepSelectionChange(event: StepperSelectionEvent) {
+		this.stepReview.onUpdateData();
+
+		super.onStepSelectionChange(event);
 	}
 }

@@ -14,11 +14,11 @@ export interface MetalDealersAndRecyclersBranchResponse {
 	country?: null | string;
 	postalCode?: null | string;
 	province?: null | string;
-	branchManagerGivenName?: null | string;
-	branchManagerMiddleName?: null | string;
-	branchManagerSurname?: null | string;
-	branchPhoneNumber?: null | string;
-	branchEmailAddr?: null | string;
+	givenName?: null | string;
+	middleName?: null | string;
+	surname?: null | string;
+	phoneNumber?: null | string;
+	emailAddress?: null | string;
 }
 
 @Component({
@@ -27,58 +27,59 @@ export interface MetalDealersAndRecyclersBranchResponse {
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
-				<div class="text-minor-heading my-2">Branch Manager</div>
+				<div class="text-minor-heading mb-3">Branch Manager</div>
+				<div class="fw-semibold fs-6 mb-3">
+					The Branch Manager is the person responsible for the day to day management of the business
+				</div>
 				<div class="row">
-					<div class="col-md-4">
+					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Manager's Given Name <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="branchManagerMiddleName" maxlength="100" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="middleName" maxlength="100" [errorStateMatcher]="matcher" />
 						</mat-form-field>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Manager's Middle Name <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="branchManagerGivenName" maxlength="100" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="givenName" maxlength="100" [errorStateMatcher]="matcher" />
 						</mat-form-field>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Manager's Surname</mat-label>
-							<input matInput formControlName="branchManagerSurname" maxlength="100" [errorStateMatcher]="matcher" />
-							<mat-error *ngIf="form.get('branchManagerSurname')?.hasError('required')">This is required</mat-error>
+							<input matInput formControlName="surname" maxlength="100" [errorStateMatcher]="matcher" />
+							<mat-error *ngIf="form.get('surname')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Manager's Phone Number</mat-label>
 							<input
 								matInput
-								formControlName="branchPhoneNumber"
+								formControlName="phoneNumber"
 								[errorStateMatcher]="matcher"
 								[mask]="phoneMask"
-								[showMaskTyped]="true"
+								[showMaskTyped]="false"
 							/>
-							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Manager's Email <span class="optional-label">(optional)</span></mat-label>
 							<input
 								matInput
-								formControlName="branchEmailAddr"
+								formControlName="emailAddress"
 								placeholder="name@domain.com"
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('branchEmailAddr')?.hasError('email')">
-								Must be a valid email address
-							</mat-error>
+							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
 						</mat-form-field>
 					</div>
 				</div>

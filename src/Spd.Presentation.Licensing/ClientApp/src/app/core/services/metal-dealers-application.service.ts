@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -14,7 +14,12 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	modelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	modelFormGroup: FormGroup = this.formBuilder.group({
-		bizId: new FormControl(),
+		businessOwnerData: this.businessOwnerFormGroup,
+		businessManagerData: this.businessManagerFormGroup,
+		businessAddressData: this.businessAddressFormGroup,
+		businessMailingAddressData: this.businessMailingAddressFormGroup,
+		branchesData: this.branchesFormGroup,
+		consentAndDeclarationData: this.consentAndDeclarationFormGroup,
 	});
 
 	constructor(

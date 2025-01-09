@@ -6,10 +6,7 @@ import { Component } from '@angular/core';
 		<app-step-section title="Checklist">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<p>
-						<strong>Branch Manager:</strong> Is the person responsible for the day to day management of the business
-					</p>
-					<p><strong>Branch Licence:</strong> Is a Municipal or Regional District business licence</p>
+					<!-- <p><strong>Business Licence:</strong> Is a Municipal or Regional District business licence</p> -->
 
 					<div class="fw-semibold fs-6 mb-2">Terms and Conditions of Registration:</div>
 					<ul>

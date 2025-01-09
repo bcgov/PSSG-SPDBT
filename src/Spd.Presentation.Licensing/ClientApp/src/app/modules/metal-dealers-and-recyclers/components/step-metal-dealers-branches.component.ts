@@ -12,11 +12,9 @@ import {
 @Component({
 	selector: 'app-step-metal-dealers-branches',
 	template: `
-		<app-step-section title="Branch Offices">
+		<app-step-section title="Branch Offices" subtitle="Click on the 'Add Branch' button to add your branch offices.">
 			<div class="row">
 				<div class="col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info"> Click on the 'Add Branch' button to add your branch offices. </app-alert>
-
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="addressLine1">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
@@ -38,7 +36,7 @@ import {
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager</mat-header-cell>
 							<mat-cell *matCellDef="let branch">
 								<span class="mobile-label">Manager:</span>
-								{{ branch.branchManagerSurname | default }}
+								{{ branch | fullname | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -192,11 +190,11 @@ export class StepMetalDealersBranchesComponent implements OnInit {
 			postalCode: [branchData.postalCode],
 			province: [branchData.province],
 			country: [branchData.country],
-			branchManagerGivenName: [branchData.branchManagerGivenName],
-			branchManagerMiddleName: [branchData.branchManagerMiddleName],
-			branchManagerSurname: [branchData.branchManagerSurname],
-			branchPhoneNumber: [branchData.branchPhoneNumber],
-			branchEmailAddr: [branchData.branchEmailAddr],
+			givenName: [branchData.givenName],
+			middleName: [branchData.middleName],
+			surname: [branchData.surname],
+			phoneNumber: [branchData.phoneNumber],
+			emailAddress: [branchData.emailAddress],
 		});
 	}
 
@@ -212,11 +210,11 @@ export class StepMetalDealersBranchesComponent implements OnInit {
 			postalCode: branchData.postalCode,
 			province: branchData.province,
 			country: branchData.country,
-			branchManagerGivenName: branchData.branchManagerGivenName,
-			branchManagerMiddleName: branchData.branchManagerMiddleName,
-			branchManagerSurname: branchData.branchManagerSurname,
-			branchPhoneNumber: branchData.branchPhoneNumber,
-			branchEmailAddr: branchData.branchEmailAddr,
+			givenName: branchData.givenName,
+			middleName: branchData.middleName,
+			surname: branchData.surname,
+			phoneNumber: branchData.phoneNumber,
+			emailAddress: branchData.emailAddress,
 		});
 	}
 
