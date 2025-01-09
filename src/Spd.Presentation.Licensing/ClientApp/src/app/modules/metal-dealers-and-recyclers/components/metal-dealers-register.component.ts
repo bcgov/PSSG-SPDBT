@@ -151,7 +151,7 @@ export class MetalDealersRegisterComponent extends BaseWizardComponent implement
 		this.stepper.selectedIndex = this.stepper.steps.length - 1;
 	}
 
-	onFormValidNextStep(formNumber: number): void {
+	onFormValidNextStep(_formNumber: number): void {
 		// const isValid = this.dirtyForm(formNumber);
 		// if (!isValid) return;
 

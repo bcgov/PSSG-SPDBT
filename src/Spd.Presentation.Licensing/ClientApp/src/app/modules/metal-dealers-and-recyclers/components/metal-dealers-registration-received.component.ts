@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 @Component({
@@ -49,34 +49,33 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	styles: [],
 	standalone: false,
 })
-export class MetalDealersRegistrationReceivedComponent implements OnInit {
+export class MetalDealersRegistrationReceivedComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
 	isSubmit: boolean | null = null;
 
-	constructor() // private controllingMembersService: ControllingMemberCrcService, // private router: Router,
-	// private location: Location
+	constructor() // private location: Location // private controllingMembersService: ControllingMemberCrcService, // private router: Router,
 	{}
 
-	ngOnInit(): void {
-		// if (!this.controllingMembersService.initialized) {
-		// 	this.router.navigateByUrl(
-		// 		ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
-		// 	);
-		// 	return;
-		// }
-		// const isSubmit = (this.location.getState() as any).isSubmit;
-		// if (!isSubmit) {
-		// 	console.debug('ControllingMemberSubmissionReceivedComponent - missing isSubmit');
-		// 	this.router.navigateByUrl(
-		// 		ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
-		// 	);
-		// 	return;
-		// }
-		// this.isSubmit = isSubmit === BooleanTypeCode.Yes;
-		// this.controllingMembersService.reset();
-	}
+	// ngOnInit(): void {
+	// if (!this.controllingMembersService.initialized) {
+	// 	this.router.navigateByUrl(
+	// 		ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
+	// 	);
+	// 	return;
+	// }
+	// const isSubmit = (this.location.getState() as any).isSubmit;
+	// if (!isSubmit) {
+	// 	console.debug('ControllingMemberSubmissionReceivedComponent - missing isSubmit');
+	// 	this.router.navigateByUrl(
+	// 		ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
+	// 	);
+	// 	return;
+	// }
+	// this.isSubmit = isSubmit === BooleanTypeCode.Yes;
+	// this.controllingMembersService.reset();
+	// }
 
 	onPrint(): void {
 		window.print();
