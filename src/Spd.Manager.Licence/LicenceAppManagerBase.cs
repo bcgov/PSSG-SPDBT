@@ -83,7 +83,7 @@ internal abstract class LicenceAppManagerBase
             //spdbt-3194: update swl term with bl term
             await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId,
                 ApplicationStatusEnum.PaymentPending,
-                null,
+                0,
                 ct,
                 Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
         }
@@ -312,17 +312,19 @@ internal abstract class LicenceAppManagerBase
 
     protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(Guid? originalApplicationId, IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(originalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+        IList<LicAppFileInfo> existingFileInfos = new List<LicAppFileInfo>();
 
-        if (previousDocumentIds != null && docListResps != null)
+        if (previousDocumentIds != null && previousDocumentIds.Any())
         {
-            existingFileInfos = docListResps.Items.Where(d => previousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
+            foreach (var documentId in previousDocumentIds)
             {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
+                var resp = await _documentRepository.GetAsync(documentId, ct);
+                existingFileInfos.Add(new LicAppFileInfo()
+                {
+                    FileName = resp.FileName ?? String.Empty,
+                    LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(resp.DocumentType, resp.DocumentType2),
+                });
+            }
         }
         return existingFileInfos;
     }
