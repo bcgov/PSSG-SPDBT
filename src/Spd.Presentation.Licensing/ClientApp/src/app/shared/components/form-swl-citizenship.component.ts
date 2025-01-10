@@ -47,7 +47,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</ng-template>
 
 					<div class="row my-2">
-						<div class="col-lg-7 col-md-12">
+						<div class="col-md-12" [ngClass]="showExpiryDate ? 'col-lg-12' : 'col-lg-6'">
 							<ng-container *ngIf="isCanadianCitizenYes; else notCanadianCitizen">
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
@@ -83,7 +83,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-form-field>
 							</ng-template>
 						</div>
-						<div class="col-lg-5 col-md-12" *ngIf="showExpiryDate">
+						<div class="col-lg-6 col-md-12" *ngIf="showExpiryDate">
 							<mat-form-field>
 								<mat-label>Document Expiry Date</mat-label>
 								<input
@@ -97,6 +97,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">Invalid expiry date</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Document ID</mat-label>
+								<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -153,7 +159,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="text-minor-heading mb-2">Type of additional piece of government-issued photo ID</div>
 
 							<div class="row my-2">
-								<div class="col-lg-6 col-md-12">
+								<div class="col-lg-12 col-md-12">
 									<mat-form-field>
 										<mat-label>Additional Type of Proof</mat-label>
 										<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
@@ -185,6 +191,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')">
 											Invalid expiry date
 										</mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Document ID</mat-label>
+										<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
 									</mat-form-field>
 								</div>
 							</div>

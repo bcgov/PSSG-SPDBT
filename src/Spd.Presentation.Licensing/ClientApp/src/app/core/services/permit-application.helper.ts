@@ -112,9 +112,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
+			documentId: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 			governmentIssuedPhotoTypeCode: new FormControl(''),
 			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedDocumentId: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
@@ -519,6 +521,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
+				// TODO documentID?
 				licenceDocumentTypeCode,
 			});
 		});
@@ -541,6 +544,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					// TODO governmentIssuedDocumentID?
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -650,6 +654,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
+						// TODO documentID?
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 					} as DocumentExpiredInfo;
 				}) ?? [];

@@ -1570,6 +1570,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
 			governmentIssuedAttachments: File[];
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
@@ -1579,6 +1581,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
+			// TODO documentID?
+			// TODO governmentIssuedDocumentID?
 		};
 
 		citizenshipData.isCanadianCitizen =
@@ -1621,6 +1625,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+					// TODO governmentIssuedDocumentID?
 
 					break;
 				}
@@ -1648,6 +1653,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
+					// TODO documentID?
 
 					break;
 				}
