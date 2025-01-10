@@ -24,8 +24,8 @@ export interface BranchResponse {
 }
 
 @Component({
-    selector: 'app-business-bc-branches',
-    template: `
+	selector: 'app-business-bc-branches',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="py-2">Does your business have any branches in B.C.?</div>
@@ -62,9 +62,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="city">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef sortActionDescription="Sort by city"
-									>City</mat-header-cell
-								>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>City</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">City:</span>
 									{{ branch.city | default }}
@@ -72,12 +70,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="branchManager">
-								<mat-header-cell
-									class="mat-table-header-cell"
-									*matHeaderCellDef
-									sortActionDescription="Sort by manager name"
-									>Manager</mat-header-cell
-								>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">Manager:</span>
 									{{ branch.branchManager | default }}
@@ -128,8 +121,8 @@ export interface BranchResponse {
 			</div>
 		</form>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -146,9 +139,9 @@ export interface BranchResponse {
 				}
 			}
 		`,
-    ],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
