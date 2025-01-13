@@ -33,17 +33,20 @@ public record PersonalLicenceAppBase : LicenceAppBase
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
-    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    //used for document saved in cache scenario, such as anonymous new, auth & unauth renew, update, replace
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
     public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
 public record ResidentialAddress : Address;
 public record MailingAddress : Address;
-public record DocumentExpiredInfo
+public record DocumentRelatedInfo
 {
     public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
+    public string? DocumentIdNumber { get; set; }
 }
+
 public record LicenceAppUpsertResponse
 {
     public Guid? LicenceAppId { get; set; }

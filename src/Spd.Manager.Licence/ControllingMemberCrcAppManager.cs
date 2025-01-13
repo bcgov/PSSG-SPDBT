@@ -104,7 +104,7 @@ internal class ControllingMemberCrcAppManager :
         //update applicant
         await UpdateApplicantProfile(request, contact, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
             cmd.LicAppFileInfos,
             //set link to applicant only, application Id should be null
             null,
@@ -139,7 +139,7 @@ internal class ControllingMemberCrcAppManager :
         //create the application and create or update contact
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
+        await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
         await CommitApplicationAsync(
