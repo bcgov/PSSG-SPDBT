@@ -202,7 +202,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 
 		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate)
+				.filter((doc) => doc.expiryDate || doc.documentIdNumber)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
