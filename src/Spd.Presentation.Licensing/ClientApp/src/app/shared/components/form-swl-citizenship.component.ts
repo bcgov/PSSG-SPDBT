@@ -13,8 +13,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-form-swl-citizenship',
-    template: `
+	selector: 'app-form-swl-citizenship',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row" *ngIf="isNotRenewal">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -102,7 +102,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Document ID</mat-label>
-								<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
+								<input
+									matInput
+									formControlName="documentIdNumber"
+									oninput="this.value = this.value.toUpperCase()"
+									maxlength="30"
+								/>
 							</mat-form-field>
 						</div>
 					</div>
@@ -196,7 +201,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Document ID</mat-label>
-										<input matInput formControlName="governmentIssuedDocumentId" maxlength="30" />
+										<input
+											matInput
+											formControlName="governmentIssuedDocumentIdNumber"
+											oninput="this.value = this.value.toUpperCase()"
+											maxlength="30"
+										/>
 									</mat-form-field>
 								</div>
 							</div>
@@ -235,15 +245,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</form>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.proof-option {
 				padding-bottom: 12px;
 			}
 		`,
-    ],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class FormSwlCitizenshipComponent implements LicenceChildStepperStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;

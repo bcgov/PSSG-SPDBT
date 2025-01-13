@@ -7,7 +7,7 @@ import {
 	BizTypeCode,
 	BodyArmourPermitReasonCode,
 	Document,
-	DocumentExpiredInfo,
+	DocumentRelatedInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
@@ -112,11 +112,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
-			documentId: new FormControl(''),
+			documentIdNumber: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 			governmentIssuedPhotoTypeCode: new FormControl(''),
 			governmentIssuedExpiryDate: new FormControl(''),
-			governmentIssuedDocumentId: new FormControl(''),
+			governmentIssuedDocumentIdNumber: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
@@ -521,7 +521,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
-				// TODO documentID?
+				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode,
 			});
 		});
@@ -544,7 +544,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
-					// TODO governmentIssuedDocumentID?
+					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -648,15 +648,15 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
 				.filter((doc) => doc.expiryDate)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
-						// TODO documentID?
+						documentIdNumber: doc.documentIdNumber,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-					} as DocumentExpiredInfo;
+					} as DocumentRelatedInfo;
 				}) ?? [];
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
@@ -732,8 +732,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			bodyArmourPermitReasonCodes,
 			permitOtherRequiredReason,
 			//-----------------------------------
-			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: isAuthenticated ? [...documentInfos] : undefined,
+			documentRelatedInfos: documentRelatedInfos,
+			documentInfos: isAuthenticated ? documentInfos : undefined,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);

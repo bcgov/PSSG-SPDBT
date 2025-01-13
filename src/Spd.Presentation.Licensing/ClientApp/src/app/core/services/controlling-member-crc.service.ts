@@ -583,22 +583,22 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
+			governmentIssuedDocumentIdNumber: null,
 			governmentIssuedAttachments: [],
 		};
 
@@ -625,9 +625,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-					// TODO governmentIssuedDocumentID?
-
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate:
@@ -651,9 +650,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 						? null
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-					// TODO documentID?
-
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {

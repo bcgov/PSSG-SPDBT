@@ -4,7 +4,7 @@ import {
 	ApplicationTypeCode,
 	BizTypeCode,
 	Document,
-	DocumentExpiredInfo,
+	DocumentRelatedInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
@@ -873,11 +873,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
+				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
 						: citizenshipData.notCanadianCitizenProofTypeCode,
-				// TODO documentID?
 			});
 		});
 
@@ -897,8 +897,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
-					// TODO governmentIssuedDocumentID?
 				});
 			});
 		}
@@ -926,15 +926,15 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				updatePhoto || personalInformationData.hasLegalNameChanged || personalInformationData.hasBcscNameChanged;
 		}
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
 				.filter((doc) => doc.expiryDate)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-						// TODO documentID?
-					} as DocumentExpiredInfo;
+						documentIdNumber: doc.documentIdNumber,
+					} as DocumentRelatedInfo;
 				}) ?? [];
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
@@ -1037,9 +1037,9 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			reprint,
 			//-----------------------------------
-			categoryCodes: [...categoryCodes],
-			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: [...documentInfos],
+			categoryCodes: categoryCodes,
+			documentRelatedInfos: documentRelatedInfos,
+			documentInfos: documentInfos,
 			...dogsAuthorizationData,
 			...restraintsAuthorizationData,
 		};

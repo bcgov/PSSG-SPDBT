@@ -1566,23 +1566,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
+			governmentIssuedDocumentIdNumber: null,
 		};
 
 		citizenshipData.isCanadianCitizen =
@@ -1624,9 +1624,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-					// TODO governmentIssuedDocumentID?
-
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate:
@@ -1652,9 +1651,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						? null
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-					// TODO documentID?
-
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {

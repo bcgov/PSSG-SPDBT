@@ -90,11 +90,11 @@ export abstract class CommonApplicationHelper {
 			canadianCitizenProofTypeCode: new FormControl(''),
 			notCanadianCitizenProofTypeCode: new FormControl(''),
 			expiryDate: new FormControl(''),
-			documentId: new FormControl(''),
+			documentIdNumber: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 			governmentIssuedPhotoTypeCode: new FormControl(''),
 			governmentIssuedExpiryDate: new FormControl(''),
-			governmentIssuedDocumentId: new FormControl(''),
+			governmentIssuedDocumentIdNumber: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
 		},
 		{

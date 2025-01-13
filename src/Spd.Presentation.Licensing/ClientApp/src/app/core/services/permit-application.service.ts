@@ -1300,12 +1300,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: LicenceDocumentTypeCode | null;
 			proofOfCitizenshipCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
 		} = {
 			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
 			isCanadianResident: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianResident),
@@ -1313,12 +1313,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: null,
 			proofOfCitizenshipCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
+			governmentIssuedDocumentIdNumber: null,
 			governmentIssuedAttachments: [],
-			// TODO documentID?
-			// TODO governmentIssuedDocumentID?
 		};
 
 		const rationaleAttachments: Array<File> = [];
@@ -1348,8 +1348,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-					// TODO governmentIssuedDocumentID?
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes
@@ -1379,8 +1379,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 							? doc.licenceDocumentTypeCode
 							: null;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-					// TODO documentID?
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
