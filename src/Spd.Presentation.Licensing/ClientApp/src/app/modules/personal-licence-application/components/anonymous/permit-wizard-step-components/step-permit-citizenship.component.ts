@@ -88,12 +88,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Document ID</mat-label>
-									<input
-										matInput
-										formControlName="documentIdNumber"
-										oninput="this.value = this.value.toUpperCase()"
-										maxlength="30"
-									/>
+									<input matInput formControlName="documentIdNumber" maxlength="30" />
 								</mat-form-field>
 							</div>
 						</div>
@@ -177,12 +172,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Document ID</mat-label>
-										<input
-											matInput
-											formControlName="documentIdNumber"
-											oninput="this.value = this.value.toUpperCase()"
-											maxlength="30"
-										/>
+										<input matInput formControlName="documentIdNumber" maxlength="30" />
 									</mat-form-field>
 								</div>
 							</div>
@@ -277,12 +267,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<div class="col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Document ID</mat-label>
-											<input
-												matInput
-												formControlName="governmentIssuedDocumentIdNumber"
-												oninput="this.value = this.value.toUpperCase()"
-												maxlength="30"
-											/>
+											<input matInput formControlName="governmentIssuedDocumentIdNumber" maxlength="30" />
 										</mat-form-field>
 									</div>
 								</div>
