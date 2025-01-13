@@ -5,8 +5,8 @@ import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/core/services/config.service';
 @UntilDestroy({ checkProperties: true })
 @Component({
-    selector: 'app-captcha-v2',
-    template: `
+	selector: 'app-captcha-v2',
+	template: `
 		<div [formGroup]="captchaFormGroup">
 			<re-captcha
 				formControlName="token"
@@ -17,8 +17,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 			></re-captcha>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CaptchaV2Component implements OnInit {
 	@Input() captchaFormGroup!: FormGroup;

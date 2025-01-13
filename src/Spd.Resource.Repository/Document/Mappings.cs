@@ -24,7 +24,8 @@ namespace Spd.Resource.Repository.Document
             .ForMember(d => d.Folder, opt => opt.MapFrom(s => s.bcgov_url))
             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_licenceid_value))
             .ForMember(d => d.FileExtension, opt => opt.MapFrom(s => FileHelper.GetFileExtensionWithoutDot(s.bcgov_fileextension)))
-            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)));
+            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)))
+            .ForMember(d => d.DocumentIdNumber, opt => opt.MapFrom(s => s.spd_documentid));
 
             _ = CreateMap<SpdTempFile, bcgov_documenturl>()
             .ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))

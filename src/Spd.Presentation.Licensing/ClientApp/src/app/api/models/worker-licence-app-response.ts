@@ -8,7 +8,7 @@ import { ApplicationPortalStatusCode } from '../models/application-portal-status
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
 import { Document } from '../models/document';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
 import { HairColourCode } from '../models/hair-colour-code';
@@ -32,8 +32,8 @@ export interface WorkerLicenceAppResponse {
   caseNumber?: string | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   dateOfBirth?: string | null;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentInfos?: Array<Document> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   emailAddress?: string | null;
   expiredLicenceId?: string | null;
   expiredLicenceNumber?: string | null;
