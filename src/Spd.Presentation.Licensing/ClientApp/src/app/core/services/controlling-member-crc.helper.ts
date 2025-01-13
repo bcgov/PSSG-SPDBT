@@ -4,7 +4,7 @@ import {
 	ApplicationTypeCode,
 	ControllingMemberCrcAppSubmitRequest,
 	Document,
-	DocumentExpiredInfo,
+	DocumentRelatedInfo,
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 } from '@app/api/models';
@@ -161,6 +161,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
+				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
@@ -184,6 +185,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -198,14 +200,15 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate)
+				.filter((doc) => doc.expiryDate || doc.documentIdNumber)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
+						documentIdNumber: doc.documentIdNumber,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-					} as DocumentExpiredInfo;
+					} as DocumentRelatedInfo;
 				}) ?? [];
 
 		const body = {
@@ -255,8 +258,8 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			policeOfficerRoleCode,
 			otherOfficerRole,
 			//-----------------------------------
-			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: [...documentInfos],
+			documentRelatedInfos: documentRelatedInfos,
+			documentInfos: documentInfos,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
