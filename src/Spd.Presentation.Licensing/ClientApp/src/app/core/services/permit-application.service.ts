@@ -1300,9 +1300,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: LicenceDocumentTypeCode | null;
 			proofOfCitizenshipCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
@@ -1311,9 +1313,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: null,
 			proofOfCitizenshipCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
+			governmentIssuedDocumentIdNumber: null,
 			governmentIssuedAttachments: [],
 		};
 
@@ -1344,6 +1348,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
 					break;
 				}
@@ -1374,6 +1379,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 							? doc.licenceDocumentTypeCode
 							: null;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
 					break;
 				}
