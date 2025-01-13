@@ -12,7 +12,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					<app-alert type="warning" icon="warning">
 						<p>
 							Upload a clear photo of yourself that closely matches the photo on your submitted government-issued ID.
-							This photo will be used for your security worker license if your application is approved. A mismatched or
+							This photo will be used for your license or permit if your application is approved. A mismatched or
 							unclear photo may delay your application's processing time.
 						</p>
 
