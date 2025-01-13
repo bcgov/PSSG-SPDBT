@@ -101,7 +101,7 @@ export const SPD_CONSTANTS = {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
 		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
 		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
-		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use .pdf',
+		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use.pdf',
 		securityServicesBusinessApplicantUpdateTerms:
 			'./assets/files/Security Services Business Applicant Update Terms of Use.pdf',
 		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',
