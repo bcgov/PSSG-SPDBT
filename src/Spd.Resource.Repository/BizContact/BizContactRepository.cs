@@ -101,7 +101,6 @@ namespace Spd.Resource.Repository.BizContact
                 c = await _context.GetContactById((Guid)cmd.BizContact.ContactId, ct);
                 if (c == null)
                     throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {cmd.BizContact.ContactId.Value}");
-                bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
             }
             _context.AddTospd_businesscontacts(bizContact);
             if (c != null)
@@ -145,6 +144,7 @@ namespace Spd.Resource.Repository.BizContact
                 _context.UpdateObject(app);
             }
             bizContact.statecode = DynamicsConstants.StateCode_Inactive;
+            bizContact.statuscode = DynamicsConstants.StatusCode_Inactive;
             _context.UpdateObject(bizContact);
 
             await _context.SaveChangesAsync(ct);
