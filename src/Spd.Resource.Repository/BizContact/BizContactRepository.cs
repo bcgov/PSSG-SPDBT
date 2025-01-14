@@ -207,7 +207,6 @@ namespace Spd.Resource.Repository.BizContact
                         contact? c = await _context.GetContactById((Guid)item.ContactId, ct);
                         if (c == null)
                             throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
-                        bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
                         _context.AddTospd_businesscontacts(bizContact);
                         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
                     }
