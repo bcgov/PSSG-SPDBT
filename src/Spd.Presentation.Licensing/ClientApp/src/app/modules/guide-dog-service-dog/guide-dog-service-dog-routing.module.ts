@@ -1,22 +1,61 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
+import { GuideDogServiceDogAuthenticatedBaseComponent } from './components/guide-dog-service-dog-authenticated-base.component';
 import { GuideDogServiceDogBaseComponent } from './components/guide-dog-service-dog-base.component';
+import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
 import { GuideDogServiceDogMainComponent } from './components/guide-dog-service-dog-main.component';
 import { GuideDogServiceDogRoutes } from './guide-dog-service-dog-routes';
 
 const routes: Routes = [
 	{
-		path: '',
+		/**************************************************** */
+		// ANONYMOUS
+		/**************************************************** */
+		path: GuideDogServiceDogRoutes.GDSD_APPLICATION_ANONYMOUS,
 		component: GuideDogServiceDogBaseComponent,
 		children: [
 			{
-				path: '',
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS,
+				component: GdsdApplicationTypeAnonymousComponent,
+			},
+		],
+	},
+	{
+		/**************************************************** */
+		// AUTHENTICATED
+		/**************************************************** */
+		path: GuideDogServiceDogRoutes.GDSD_AUTHENTICATED_BASE,
+		component: GuideDogServiceDogAuthenticatedBaseComponent,
+		children: [
+			{
+				path: GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED,
 				component: GuideDogServiceDogMainComponent,
 			},
 		],
 	},
 	{
 		path: '',
+		component: GuideDogServiceDogBaseComponent,
+		children: [
+			{
+				path: '',
+				component: GuideDogServiceDogLandingComponent,
+			},
+			// 		{
+			// 			path: GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED,
+			// 			component: GuideDogServiceDogMainComponent,
+			// 		},
+		],
+	},
+	/**************************************************** */
+	// ANONYMOUS
+	/**************************************************** */
+	/**************************************************** */
+	// AUTHENTICATED
+	/**************************************************** */
+	{
+		path: '**',
 		redirectTo: GuideDogServiceDogRoutes.path(),
 		pathMatch: 'full',
 	},
