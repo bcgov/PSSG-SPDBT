@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { UtilService } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-metal-dealers-consent',
@@ -86,7 +86,7 @@ import { UtilService } from '@app/core/services/util.service';
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersConsentComponent {
+export class StepMetalDealersConsentComponent implements LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
 	collectionNoticeActNameWithAbbrev = '';
 	check3Name = '';

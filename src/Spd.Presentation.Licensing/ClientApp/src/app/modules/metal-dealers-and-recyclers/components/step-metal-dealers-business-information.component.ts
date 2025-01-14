@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -62,7 +64,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="row">
 							<div class="text-minor-heading mb-3">Business Manager</div>
 							<div class="fw-semibold fs-6 mb-3">
-								The Business Manager is the person responsible for the day to day management of the business
+								The Business Manager is the person responsible for the day to day management of the business.
 							</div>
 
 							<div class="col-xl-4 col-lg-6 col-md-12">
@@ -125,6 +127,29 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 					</form>
+					<mat-divider class="mb-4 mt-3 mat-divider-primary"></mat-divider>
+
+					<div class="text-minor-heading my-2">Upload your valid business licence documents</div>
+
+					<div class="my-2">
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+						></app-file-upload>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(businessOwnerFormGroup.get('attachments')?.dirty ||
+									businessOwnerFormGroup.get('attachments')?.touched) &&
+								businessOwnerFormGroup.get('attachments')?.invalid &&
+								businessOwnerFormGroup.get('attachments')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
+					</div>
 				</div>
 			</div>
 		</app-step-section>
@@ -132,7 +157,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersBusinessInformationComponent {
+export class StepMetalDealersBusinessInformationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
@@ -146,5 +171,17 @@ export class StepMetalDealersBusinessInformationComponent {
 		this.businessOwnerFormGroup.markAllAsTouched();
 		this.businessManagerFormGroup.markAllAsTouched();
 		return this.businessOwnerFormGroup.valid && this.businessManagerFormGroup.valid;
+	}
+
+	onFileUploaded(_file: File): void {
+		// this.metalDealersApplicationService.hasValueChanged = true;
+	}
+
+	onFileRemoved(): void {
+		// this.metalDealersApplicationService.hasValueChanged = true;
+	}
+
+	get attachments(): FormControl {
+		return this.businessOwnerFormGroup.get('attachments') as FormControl;
 	}
 }

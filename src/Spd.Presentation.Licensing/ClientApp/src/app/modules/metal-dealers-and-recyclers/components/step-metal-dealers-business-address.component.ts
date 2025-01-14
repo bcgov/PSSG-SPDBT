@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-metal-dealers-business-address',
@@ -57,7 +58,7 @@ import { MetalDealersApplicationService } from '@app/core/services/metal-dealers
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersBusinessAddressComponent {
+export class StepMetalDealersBusinessAddressComponent implements LicenceChildStepperStepComponent {
 	businessAddressForm = this.metalDealersApplicationService.businessAddressFormGroup;
 	businessMailingAddressForm = this.metalDealersApplicationService.businessMailingAddressFormGroup;
 

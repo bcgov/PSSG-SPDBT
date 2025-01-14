@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-metal-dealers-summary',
@@ -8,6 +9,28 @@ import { MetalDealersApplicationService } from '@app/core/services/metal-dealers
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
+						<mat-expansion-panel class="mb-4" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Registration Information</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(0)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+
+							<div class="panel-body"></div>
+						</mat-expansion-panel>
+
 						<mat-expansion-panel class="mb-4" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
@@ -160,7 +183,7 @@ import { MetalDealersApplicationService } from '@app/core/services/metal-dealers
 	],
 	standalone: false,
 })
-export class StepMetalDealersSummaryComponent implements OnInit {
+export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
 	modelData: any = {};
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
@@ -181,6 +204,10 @@ export class StepMetalDealersSummaryComponent implements OnInit {
 		this.modelData = {
 			...this.metalDealersApplicationService.modelFormGroup.getRawValue(),
 		};
+	}
+
+	isFormValid(): boolean {
+		return true;
 	}
 
 	get businessOwnerDataname(): string {

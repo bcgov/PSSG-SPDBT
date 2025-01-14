@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
+import { take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-metal-dealers-main',
@@ -36,20 +38,79 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 								Register as a Metal Recycling Dealer
 							</button>
 						</div>
+						<div class="col-12">
+							<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
+							<ul>
+								<li class="metal-dealers-checklist-label">No registration fee</li>
+								<li class="metal-dealers-checklist-label">Term of registration is 3 years</li>
+								<li class="metal-dealers-checklist-label">
+									Must provide business name, address, telephone number, and email address (if any)
+								</li>
+								<li class="metal-dealers-checklist-label">Must provide address of additional business locations</li>
+								<li class="metal-dealers-checklist-label">
+									Must provide the identity of person(s) responsible for the daily management of the business
+								</li>
+								<li class="metal-dealers-checklist-label">
+									Must provide copies of business licence registration documents
+								</li>
+								<li class="metal-dealers-checklist-label">
+									Must display registration certificate in a conspicuous place at each of the business locations
+								</li>
+								<li class="metal-dealers-checklist-label">
+									Registration must not be transferred unless the Registrar consents in writing to the transfer
+								</li>
+								<li class="metal-dealers-checklist-label">
+									On the expiry, cancellation, suspension or refusal of a renewal of a registration, the registrant must
+									immediately surrender the registration and all duplicates to the registrar
+								</li>
+								<li class="metal-dealers-checklist-label">
+									The registrant must not carry on a business using a name other than the name specified in the
+									registration
+								</li>
+							</ul>
+
+							<app-alert type="success" icon="" [showBorder]="false">
+								Further information regarding the <i>Metal Dealers and Recyclers Act</i> can be found on
+								<a
+									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/metal-recycling/the-act-and-regulations"
+									>our website</a
+								>.
+							</app-alert>
+						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [
+		`
+			.metal-dealers-checklist-label {
+				color: var(--color-primary);
+				line-height: 2em;
+			}
+		`,
+	],
 	standalone: false,
 })
 export class MetalDealersMainComponent {
-	constructor(private router: Router) {}
+	constructor(
+		private router: Router,
+		private metalDealersApplicationService: MetalDealersApplicationService
+	) {}
 
 	onRegister(): void {
-		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER)
-		);
+		this.metalDealersApplicationService
+			.createNewRegistration()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers(
+							MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 }
