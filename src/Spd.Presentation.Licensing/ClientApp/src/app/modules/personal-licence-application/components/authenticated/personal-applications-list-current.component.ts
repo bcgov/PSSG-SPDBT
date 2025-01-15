@@ -6,21 +6,19 @@ import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/model
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-applications-list-current',
-	template: `
+    selector: 'app-personal-applications-list-current',
+    template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
 
-			<div class="row summary-card-section summary-card-section__orange m-0">
+			<div class="row summary-card-section summary-card-section__orange m-0 pt-2">
 				<div class="col-12">
 					<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
 						<ng-container matColumnDef="serviceTypeCode">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Licence Type:</span>
-								<span class="my-2">
-									{{ application.serviceTypeCode | options: 'ServiceTypes' }}
-								</span>
+								{{ application.serviceTypeCode | options: 'ServiceTypes' }}
 							</mat-cell>
 						</ng-container>
 
@@ -72,7 +70,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								<button
 									mat-flat-button
 									color="primary"
-									class="large my-2"
+									class="large w-auto"
 									aria-label="Resume"
 									(click)="onResume(application)"
 									[disabled]="isDraftAndNotResumable(application)"
@@ -82,9 +80,20 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								</button>
 
 								<button
+									mat-flat-button
+									color="primary"
+									class="large w-auto"
+									aria-label="Pay now"
+									(click)="onPayNow(application)"
+									*ngIf="isPaymentPending(application)"
+								>
+									<mat-icon>payment</mat-icon>Pay Now
+								</button>
+
+								<button
 									mat-stroked-button
 									color="primary"
-									class="large my-2"
+									class="large w-auto"
 									aria-label="Remove the application"
 									matTooltip="Remove the application"
 									(click)="onCancel(application)"
@@ -92,33 +101,35 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								>
 									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
-
-								<button
-									mat-flat-button
-									color="primary"
-									class="large my-2"
-									aria-label="Pay now"
-									(click)="onPayNow(application)"
-									*ngIf="isPaymentPending(application)"
-								>
-									<mat-icon>payment</mat-icon>Pay Now
-								</button>
 							</mat-cell>
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-						<mat-row class="mat-data-row" *matRowDef="let row; columns: applicationColumns"></mat-row>
+						<mat-row
+							class="mat-data-row spd-table-tall-row"
+							*matRowDef="let row; columns: applicationColumns"
+						></mat-row>
 					</mat-table>
 				</div>
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
 				min-width: 170px;
+			}
+
+			@media (min-width: 1200px) {
+				/* only force max width on large screens */
+				.mat-column-applicationTypeCode {
+					max-width: 120px;
+				}
+				.mat-column-serviceTypeCode {
+					max-width: 130px;
+				}
 			}
 
 			.status-green {
@@ -133,9 +144,10 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 				background-color: #f6f6f6 !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
-export class ApplicationsListCurrentComponent {
+export class PersonalApplicationsListCurrentComponent {
 	applicationColumns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
@@ -146,9 +158,10 @@ export class ApplicationsListCurrentComponent {
 		'action1',
 	];
 
+	isShowStatusText = true;
+
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
-	@Input() isControllingMemberWarning!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
@@ -203,9 +216,6 @@ export class ApplicationsListCurrentComponent {
 	}
 
 	isPaymentPending(appl: MainApplicationResponse): boolean {
-		return (
-			!this.isControllingMemberWarning &&
-			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
-		);
+		return appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment;
 	}
 }

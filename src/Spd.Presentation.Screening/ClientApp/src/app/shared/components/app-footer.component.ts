@@ -3,8 +3,8 @@ import { ConfigurationResponse } from 'src/app/api/models';
 import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
-	selector: 'app-footer',
-	template: `
+    selector: 'app-footer',
+    template: `
 		<mat-toolbar color="primary" class="footer">
 			<a href="/">Home</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
@@ -18,8 +18,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 			<span class="fs-7 p-2 text-muted" *ngIf="env">{{ env }}</span>
 		</mat-toolbar>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.footer {
 				border-top: 2px solid var(--color-yellow);
 			}
@@ -44,7 +44,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class FooterComponent implements OnInit {
 	env: string | null | undefined = null;

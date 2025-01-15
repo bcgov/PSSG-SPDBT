@@ -6,8 +6,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-business-licence-term',
-	template: `
+    selector: 'app-step-business-licence-term',
+    template: `
 		<app-step-section
 			title="Select your licence term"
 			subtitle="The licence term will apply to all licence categories"
@@ -49,7 +49,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;

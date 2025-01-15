@@ -9,8 +9,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { FormBusinessTermsComponent } from '@app/shared/components/form-business-terms.component';
 
 @Component({
-	selector: 'app-business-first-time-user-terms-of-use',
-	template: `
+    selector: 'app-business-first-time-user-terms-of-use',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<div class="row">
 				<div class="col-12">
@@ -33,7 +33,8 @@ import { FormBusinessTermsComponent } from '@app/shared/components/form-business
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.termsAndConditionsFormGroup;

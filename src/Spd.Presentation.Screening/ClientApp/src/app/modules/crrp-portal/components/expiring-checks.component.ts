@@ -10,7 +10,7 @@ import moment from 'moment';
 import { ClearanceAccessListResponse, ClearanceAccessResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
@@ -20,7 +20,7 @@ import {
 	ScreeningRequestAddCommonModalComponent,
 	ScreeningRequestAddDialogData,
 } from 'src/app/shared/components/screening-request-add-common-modal.component';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 export interface ExpiredClearanceResponse extends ClearanceAccessResponse {
 	daysRemainingText: string;
@@ -42,8 +42,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 };
 
 @Component({
-	selector: 'app-expiring-checks',
-	template: `
+    selector: 'app-expiring-checks',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -190,8 +190,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.days-remaining-red {
 				color: var(--color-red);
 			}
@@ -225,7 +225,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;

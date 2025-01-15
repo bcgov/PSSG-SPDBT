@@ -10,5 +10,6 @@ export enum PoliceOfficerRoleCode {
   SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
   PoliceOfficer = 'PoliceOfficer',
   PoliceOfficerRetired = 'PoliceOfficerRetired',
-  Other = 'Other'
+  Other = 'Other',
+  None = 'None'
 }

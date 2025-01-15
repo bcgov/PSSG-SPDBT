@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.BizContact;
@@ -74,12 +74,13 @@ internal class ControllingMemberCrcAppManager :
             ct);
         ControllingMemberCrcAppUpdateRequest request = cmd.ControllingMemberCrcAppRequest;
 
-        var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
-        //check validation
-        ValidateFilesForUpdateAppAsync(cmd.ControllingMemberCrcAppRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles,
-            ct);
+        //no need to get existing files
+        //var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
+        ////check validation
+        //ValidateFilesForUpdateAppAsync(cmd.ControllingMemberCrcAppRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles,
+        //    ct);
         ContactResp? contact = await _contactRepository.GetAsync((Guid)request.ApplicantId, ct);
         if (contact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Applicant info not found");
@@ -87,10 +88,11 @@ internal class ControllingMemberCrcAppManager :
         BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync(request.BizContactId, ct);
         if (bizContact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Business Contact not found");
+
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
         {
             AccountId = bizContact.BizId,
-            Type = ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+            Type = ServiceTypeEnum.SecurityBusinessLicence
         }, ct);
 
         LicenceResp? bizLicence = licences?.Items?.SingleOrDefault();
@@ -102,7 +104,7 @@ internal class ControllingMemberCrcAppManager :
         //update applicant
         await UpdateApplicantProfile(request, contact, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
             cmd.LicAppFileInfos,
             //set link to applicant only, application Id should be null
             null,
@@ -118,7 +120,7 @@ internal class ControllingMemberCrcAppManager :
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse()
         {
-            ControllingMemberAppId = (Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId
+            ControllingMemberAppId = cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId ?? Guid.Empty //update cm does not have application Id
         };
     }
 
@@ -137,7 +139,7 @@ internal class ControllingMemberCrcAppManager :
         //create the application and create or update contact
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
+        await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
         await CommitApplicationAsync(
@@ -196,15 +198,16 @@ internal class ControllingMemberCrcAppManager :
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
         updateCmd.Id = (Guid)request.ApplicantId;
 
-        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false
-        if (contact.HasCriminalHistory == true)
-            updateCmd.HasCriminalHistory = true;
-        if (contact.IsTreatedForMHC == true)
-            updateCmd.IsTreatedForMHC = true;
+        //Jan.14, 2025 Open door session, we decide: contact always updated with the latest application info, no need to keep history.
+        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false - not valid anymore
+        //if (contact.HasCriminalHistory == true)
+        //    updateCmd.HasCriminalHistory = true;
+        //if (contact.IsTreatedForMHC == true)
+        //    updateCmd.IsTreatedForMHC = true;
 
-        //concat new crminal history detail with old ones.
-        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
-            updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+        ////concat new crminal history detail with old ones. - not valid any more.
+        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
 
         await _contactRepository.ManageAsync(updateCmd, ct);
     }

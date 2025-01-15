@@ -15,8 +15,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-updates-authenticated.component';
 
 @Component({
-	selector: 'app-permit-wizard-authenticated-update',
-	template: `
+    selector: 'app-permit-wizard-authenticated-update',
+    template: `
 		<div class="row">
 			<div class="offset-xl-1 col-xl-10 col-lg-12">
 				<mat-stepper
@@ -71,8 +71,9 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 			</div>
 		</div>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
@@ -86,8 +87,6 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
-	isFormValid = false;
-	showSaveAndExit = false;
 	showEmployerInformation = false;
 	hasBcscNameChanged = false;
 	hasGenderChanged = false;
@@ -108,6 +107,11 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathPermitAuthenticated());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -122,19 +126,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
+				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
 				this.hasBcscNameChanged = this.permitApplicationService.permitModelFormGroup.get(
 					'personalInformationData.hasBcscNameChanged'

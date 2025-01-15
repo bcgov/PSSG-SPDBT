@@ -5,8 +5,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-business-licence-consent-and-declaration',
-	template: `
+    selector: 'app-step-business-licence-consent-and-declaration',
+    template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -209,7 +209,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

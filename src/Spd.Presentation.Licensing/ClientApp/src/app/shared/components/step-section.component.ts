@@ -2,15 +2,15 @@ import { Component, Input } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 
 @Component({
-	selector: 'app-step-section',
-	template: `
+    selector: 'app-step-section',
+    template: `
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-alert-update-or-renewal
+					<app-form-alert-update-or-renewal
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
-					></app-alert-update-or-renewal>
+					></app-form-alert-update-or-renewal>
 				</ng-container>
 
 				<app-step-title
@@ -24,14 +24,15 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.title {
 				text-align: center;
 				color: var(--color-primary);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepSectionComponent {
 	@Input() title = '';

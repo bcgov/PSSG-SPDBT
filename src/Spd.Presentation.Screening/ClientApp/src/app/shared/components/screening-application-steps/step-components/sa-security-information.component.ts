@@ -9,8 +9,8 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-security-information',
-	template: `
+    selector: 'app-sa-security-information',
+    template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -88,7 +88,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SaSecurityInformationComponent implements CrcFormStepComponent {
 	facilityNameShow = false;

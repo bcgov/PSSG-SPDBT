@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { CrrpaRoutes } from './crrpa-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
+import { CrrpaRoutes } from './crrpa-routes';
 
 @Component({
-	selector: 'app-invitation-crrpa',
-	template: `
+    selector: 'app-invitation-crrpa',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon>no_accounts</mat-icon>
 			<h1>Invite Denied</h1>
@@ -18,8 +18,8 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -28,7 +28,8 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class InvitationCrrpaComponent implements OnInit {
 	message = '';

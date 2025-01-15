@@ -3,20 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { FileUtilService } from '@app/core/services/file-util.service';
 
 @Component({
-	selector: 'app-licence-payment-success',
-	template: `
+    selector: 'app-licence-payment-success',
+    template: `
 		<section class="step-section">
-			<app-payment-success
-				[payment]="payment"
-				(downloadReceipt)="onDownloadReceipt()"
-			></app-payment-success>
+			<app-payment-success [payment]="payment" (downloadReceipt)="onDownloadReceipt()"></app-payment-success>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicencePaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;
@@ -32,8 +30,9 @@ export class LicencePaymentSuccessComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('LicencePaymentSuccessComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
+
 		this.paymentService
 			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe()

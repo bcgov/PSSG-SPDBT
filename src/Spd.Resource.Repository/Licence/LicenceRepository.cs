@@ -24,6 +24,7 @@ internal class LicenceRepository : ILicenceRepository
             licence = await _context.spd_licences
                 .Expand(i => i.spd_LicenceHolder_contact)
                 .Expand(i => i.spd_LicenceHolder_account)
+                .Expand(i => i.spd_spd_licence_spd_licencecondition)
                 .Expand(i => i.spd_CaseId)
                 .Expand(i => i.spd_SoleProprietorId)
                 .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
@@ -43,13 +44,9 @@ internal class LicenceRepository : ILicenceRepository
 
     public async Task<LicenceListResp> QueryAsync(LicenceQry qry, CancellationToken ct)
     {
-        if (qry.LicenceNumber == null && qry.AccountId == null && qry.ContactId == null && qry.LicenceId == null)
-        {
-            throw new ArgumentException("at least need 1 parameter to do licence query.");
-        }
-
         IQueryable<spd_licence> lics = _context.spd_licences
             .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
+            .Expand(i => i.spd_spd_licence_spd_licencecondition)
             .Expand(i => i.spd_LicenceHolder_contact)
             .Expand(i => i.spd_LicenceHolder_account)
             .Expand(i => i.spd_CaseId);
@@ -90,7 +87,14 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = lics.Where(a => a.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode);
         }
-
+        if (qry.LastName != null || qry.FirstName != null)
+        {
+            lics = lics.Where(a => a.spd_LicenceHolder_contact.firstname == qry.FirstName && a.spd_LicenceHolder_contact.lastname == qry.LastName);
+        }
+        if (qry.BizName != null)
+        {
+            lics = lics.Where(a => a.spd_LicenceHolder_account.name.StartsWith(qry.BizName) || a.spd_LicenceHolder_account.spd_organizationlegalname.StartsWith(qry.BizName));
+        }
         return new LicenceListResp()
         {
             Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)

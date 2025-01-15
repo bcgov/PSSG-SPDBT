@@ -96,7 +96,6 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
     public decimal? Cost { get; set; }
 };
 
-
 #endregion
 
 #region anonymous user
@@ -114,12 +113,10 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
 
 #endregion
 
-
 public record Document : LicenceAppDocumentResponse
 {
     public LicenceDocumentTypeCode? LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
+    public string? DocumentIdNumber { get; set; }
 };
-
-
 

@@ -3,8 +3,8 @@ import { Component, ContentChild, ElementRef, Input } from '@angular/core';
 export type AlertType = 'success' | 'warning' | 'danger';
 
 @Component({
-	selector: 'app-alert',
-	template: `
+    selector: 'app-alert',
+    template: `
 		<div
 			class="alert fw-semibold d-flex d-inline-flex align-items-center mb-3 py-3 w-100"
 			role="alert"
@@ -14,8 +14,8 @@ export type AlertType = 'success' | 'warning' | 'danger';
 			<ng-content #alertContent></ng-content>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.alert-icon {
 				overflow: visible;
 			}
@@ -64,7 +64,8 @@ export type AlertType = 'success' | 'warning' | 'danger';
 				line-height: 1.5 !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';

@@ -147,6 +147,8 @@ internal class Mappings : Profile
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.HasNewCriminalRecordCharge == true ? s.CriminalHistoryDetail : string.Empty))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
@@ -411,6 +413,13 @@ internal class Mappings : Profile
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
+
+        //this mapping is used for create shell app for no-email bizContact
+        CreateMap<BizContactResp, SaveControllingMemberCrcAppCmd>()
+            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC))
+            .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => ApplicationTypeEnum.New))
+            .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(_ => (ApplicationOriginTypeEnum?)null))
+            .ForMember(d => d.AgreeToCompleteAndAccurate, opt => opt.MapFrom(s => false));
 
         CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
             .ForMember(d => d.InviteId, opt => opt.Ignore())

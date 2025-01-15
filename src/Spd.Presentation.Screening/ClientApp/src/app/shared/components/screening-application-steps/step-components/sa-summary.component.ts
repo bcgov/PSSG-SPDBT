@@ -3,8 +3,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-sa-summary',
-	template: `
+    selector: 'app-sa-summary',
+    template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step" *ngIf="orgData">
 				<app-step-title title="Review the following information"></app-step-title>
@@ -148,8 +148,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			h4,
 			.mat-icon {
 				color: var(--color-primary-light);
@@ -169,7 +169,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				border-bottom-color: rgba(0, 0, 0, 0.12);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaSummaryComponent {
 	appConstants = SPD_CONSTANTS;

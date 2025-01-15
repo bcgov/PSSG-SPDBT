@@ -12,8 +12,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-licence-category-private-investigator',
-	template: `
+    selector: 'app-licence-category-private-investigator',
+    template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -213,8 +213,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;

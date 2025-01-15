@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
-	selector: 'app-common-business-profile',
-	template: `
+    selector: 'app-common-business-profile',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<section>
@@ -62,7 +62,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
 								</div>
 
-								<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
+								<app-form-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-form-address>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -82,12 +82,12 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									Provide your business address, if different from your mailing address.
 								</div>
 
-								<app-address-and-is-same-flag
+								<app-form-address-and-is-same-flag
 									[form]="businessAddressFormGroup"
 									[isReadonly]="isReadonly"
 									[isCheckboxReadOnly]="isReadonly"
 									isAddressTheSameLabel="The business address and mailing address are the same"
-								></app-address-and-is-same-flag>
+								></app-form-address-and-is-same-flag>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -107,11 +107,11 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									Provide an address in British Columbia for document service.
 								</app-alert>
 
-								<app-address
+								<app-form-address
 									[form]="bcBusinessAddressFormGroup"
 									[isWideView]="true"
 									[isReadonly]="isReadonly"
-								></app-address>
+								></app-form-address>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -138,7 +138,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
 	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;

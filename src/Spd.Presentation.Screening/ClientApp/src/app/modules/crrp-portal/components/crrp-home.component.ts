@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-home',
-	template: `
+    selector: 'app-crrp-home',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -253,8 +253,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</ng-container>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.box-text-height {
 				height: 110px;
 			}
@@ -366,7 +366,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CrrpHomeComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;

@@ -245,6 +245,7 @@ namespace Spd.Manager.Screening
     public record ApplicationPaymentResponse : ApplicationResponse
     {
         public DateTimeOffset? PaidOn { get; set; }
+        public PaymentTypeCode? PaymentTypeCode { get; set; }
         public int? NumberOfAttempts { get; set; }
     }
 

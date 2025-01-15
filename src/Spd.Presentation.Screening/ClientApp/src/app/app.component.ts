@@ -7,8 +7,8 @@ import { ApiConfiguration } from './api/api-configuration';
 import { APP_BASE_HREF } from '@angular/common';
 
 @Component({
-  selector: 'app-root',
-	template: `
+    selector: 'app-root',
+    template: `
 		<body class="d-flex flex-column h-100">
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
 			<app-header [title]="title"></app-header>
@@ -22,7 +22,8 @@ import { APP_BASE_HREF } from '@angular/common';
 			</ng-container>
 		</body>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class AppComponent {
 	configs$: Observable<any>;

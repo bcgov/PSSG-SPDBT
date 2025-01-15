@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -19,8 +19,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-renewal-swl-sole-proprietor',
-	template: `
+    selector: 'app-business-licence-wizard-renewal-swl-sole-proprietor',
+    template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
 				[selectedIndex]="3"
@@ -47,8 +47,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[showSaveAndExit]="false"
 						(childNextStep)="onChildNextStep()"
-						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -64,9 +64,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 						[isFormValid]="false"
-						[showSaveAndExit]="true"
+						[showSaveAndExit]="false"
 						(childNextStep)="onChildNextStep()"
-						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -77,10 +76,11 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Review Business Licence</ng-template>
 					<app-steps-business-licence-review
-						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[isControllingMembersWithoutSwlExist]="false"
+						[showSaveAndExit]="false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -95,7 +95,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-stepper>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	extends BaseWizardComponent
@@ -139,6 +140,11 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -216,26 +222,11 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step + this.STEP_BUSINESS_INFORMATION; // add offset
 	}
 
 	onChildNextStep() {
 		this.saveStep();
-	}
-
-	onSaveAndExit(): void {
-		if (!this.businessApplicationService.isSaveAndExit()) {
-			return;
-		}
-
-		this.businessApplicationService.partialSaveBusinessLicenceWithSwlCombinedFlow(true).subscribe({
-			next: (_resp: any) => {
-				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
-			},
-		});
 	}
 
 	onReturnToSwl(): void {
@@ -244,8 +235,8 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 			title: 'Confirmation',
 			message:
 				'<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence renewal application.',
-			actionText: 'Cancel application',
-			cancelText: 'Continue application',
+			actionText: 'Cancel Application',
+			cancelText: 'Continue Application',
 			wideButtons: true,
 		};
 

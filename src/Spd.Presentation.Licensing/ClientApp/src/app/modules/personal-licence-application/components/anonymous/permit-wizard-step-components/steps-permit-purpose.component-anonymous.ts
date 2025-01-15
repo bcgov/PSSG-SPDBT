@@ -6,8 +6,8 @@ import { StepPermitRationaleComponent } from './step-permit-rationale.component'
 import { StepPermitReasonComponent } from './step-permit-reason.component';
 
 @Component({
-	selector: 'app-steps-permit-purpose-anonymous',
-	template: `
+    selector: 'app-steps-permit-purpose-anonymous',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-reason
@@ -51,8 +51,9 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERMIT_REASON = 1;

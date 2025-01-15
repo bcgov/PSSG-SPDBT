@@ -2,10 +2,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from './steps-business-licence-information.component';
@@ -13,8 +15,8 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-renewal',
-	template: `
+    selector: 'app-business-licence-wizard-renewal',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -85,8 +87,9 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-business-licence-review
-					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="false"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -97,12 +100,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-review>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" *ngIf="showPayStep">
 				<ng-template matStepLabel>Pay</ng-template>
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -110,7 +114,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 2;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -124,6 +128,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
+	showPayStep!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -140,12 +145,18 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -171,6 +182,10 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 					'isControllingMembersWithoutSwlExist'
 				)?.value;
 
+				this.showPayStep =
+					this.isBusinessLicenceSoleProprietor ||
+					(!this.isBusinessLicenceSoleProprietor && !this.isControllingMembersWithoutSwlExist);
+
 				this.isFormValid = _resp;
 
 				this.updateCompleteStatus();
@@ -183,29 +198,36 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTROLLING_MEMBERS:
-				// If Sole Proprietor biz type, this step is not the controlling members step,
-				// but the review step
-				if (this.isBusinessLicenceSoleProprietor) {
+		if (this.isBusinessLicenceSoleProprietor) {
+			switch (event.selectedIndex) {
+				case this.STEP_BUSINESS_INFORMATION:
+					this.stepsBusinessInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_LICENCE_SELECTION:
+					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 					this.stepsReviewAndConfirm?.onGoToFirstStep();
-				} else {
+					break;
+			}
+		} else {
+			switch (event.selectedIndex) {
+				case this.STEP_BUSINESS_INFORMATION:
+					this.stepsBusinessInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_LICENCE_SELECTION:
+					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_CONTACT_INFORMATION:
+					this.stepsContactInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_CONTROLLING_MEMBERS:
 					this.stepsControllingMembersComponent?.onGoToFirstStep();
-				}
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-				this.stepsReviewAndConfirm?.onGoToFirstStep();
-				break;
+					break;
+				case this.STEP_REVIEW_AND_CONFIRM:
+					this.stepsReviewAndConfirm?.onGoToFirstStep();
+					break;
+			}
 		}
 
 		super.onStepSelectionChange(event);

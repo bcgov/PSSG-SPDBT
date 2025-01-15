@@ -7,8 +7,6 @@ import {
 	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
-	ControllingMemberCrcAppSubmitRequest,
-	ControllingMemberCrcAppUpdateRequest,
 	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
@@ -42,7 +40,7 @@ import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -216,14 +214,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		documentCode: LicenceDocumentTypeCode,
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
-			body: doc,
+			body: {
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 
@@ -362,9 +358,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		) as ControllingMemberCrcAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
 	}
@@ -379,9 +373,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+		body.agreeToCompleteAndAccurate = true;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -398,8 +392,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -421,9 +415,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const body = this.getSaveBodyBaseAuthenticated(controllingMembersModelFormValue);
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		// Get the keyCode for the existing documents to save.
 		// const existingDocumentIds: Array<string> = [];
@@ -443,8 +435,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -497,11 +489,11 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		body.agreeToCompleteAndAccurate = true;
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -518,8 +510,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -591,18 +583,22 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
+			governmentIssuedDocumentIdNumber: null,
 			governmentIssuedAttachments: [],
 		};
 
@@ -629,8 +625,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate:
@@ -654,8 +650,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 						? null
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {
@@ -905,7 +901,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		applicationTypeCode: ApplicationTypeCode,
 		documentsToSaveApis: Observable<string>[],
-		body: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
+		body: any // should be: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
 	) {
 		return this.licenceAppDocumentService
 			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })

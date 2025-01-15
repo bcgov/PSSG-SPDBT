@@ -7,8 +7,8 @@ import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-ap
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-steps-permit-identification-authenticated',
-	template: `
+    selector: 'app-steps-permit-identification-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
@@ -54,8 +54,9 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;

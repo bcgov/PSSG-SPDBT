@@ -17,12 +17,12 @@ import {
 	IdentityStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
-import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
+import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routes';
+import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routes';
 import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import {
 	ScreeningRequestAddCommonModalComponent,
@@ -35,8 +35,8 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 }
 
 @Component({
-	selector: 'app-identify-verification-common',
-	template: `
+    selector: 'app-identify-verification-common',
+    template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -186,8 +186,8 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-action1 {
 				min-width: 170px;
 				.table-button {
@@ -202,7 +202,8 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class IdentifyVerificationCommonComponent implements OnInit {
 	private currentSearch = '';

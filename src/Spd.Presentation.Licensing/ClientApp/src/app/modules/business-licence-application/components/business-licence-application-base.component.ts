@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ApplicationPortalStatusCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -7,8 +8,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { lastValueFrom, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-business-licence-application-base',
-	template: `
+    selector: 'app-business-licence-application-base',
+    template: `
 		<ng-container *ngIf="isAuthenticated$ | async">
 			<div class="container px-0 my-0 px-md-2 my-md-3">
 				<!-- hide padding/margin on smaller screens -->
@@ -20,7 +21,8 @@ import { lastValueFrom, take, tap } from 'rxjs';
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
@@ -71,7 +73,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			redirectComponentRoute = BusinessLicenceApplicationRoutes.pathBusinessLicence();
 		}
 
-		console.debug('**** BaseComponent **** redirectComponentRoute', redirectComponentRoute);
+		console.debug('[BaseComponent] redirectComponentRoute', redirectComponentRoute);
 
 		this.authProcessService.logoutBcsc(redirectComponentRoute);
 
@@ -81,11 +83,11 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			params.toString()
 		);
 
-		console.debug('**** BaseComponent **** loginInfo', loginInfo);
-		console.debug('**** BaseComponent **** defaultBizId', defaultBizId);
-		console.debug('**** BaseComponent **** swlLicAppId', swlLicAppId);
-		console.debug('**** BaseComponent **** bizLicAppId', bizLicAppId);
-		console.debug('**** BaseComponent **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
+		console.debug('[BaseComponent] loginInfo', loginInfo);
+		console.debug('[BaseComponent] defaultBizId', defaultBizId);
+		console.debug('[BaseComponent] swlLicAppId', swlLicAppId);
+		console.debug('[BaseComponent] bizLicAppId', bizLicAppId);
+		console.debug('[BaseComponent] linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			if ((swlLicAppId || bizLicAppId) && loginInfo.state) {
@@ -93,8 +95,13 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 				this.businessApplicationService
 					.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 					.pipe(
-						tap((_resp: any) => {
-							this.router.navigateByUrl(`${redirectComponentRoute}`);
+						tap((resp: any) => {
+							if (resp.soleProprietorSWLAppPortalStatus != ApplicationPortalStatusCode.Draft) {
+								this.businessApplicationService.reset(); // prevent back button into wizard
+								this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+							} else {
+								this.router.navigateByUrl(`${redirectComponentRoute}`);
+							}
 						}),
 						take(1)
 					)
@@ -113,8 +120,13 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 				this.businessApplicationService
 					.getRenewalBusinessLicenceWithSwlCombinedFlow(swlLicAppId, linkedSoleProprietorBizLicId)
 					.pipe(
-						tap((_resp: any) => {
-							this.router.navigateByUrl(`${redirectComponentRoute}`);
+						tap((resp: any) => {
+							if (resp.soleProprietorSWLAppPortalStatus != ApplicationPortalStatusCode.Draft) {
+								this.businessApplicationService.reset(); // prevent back button into wizard
+								this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+							} else {
+								this.router.navigateByUrl(`${redirectComponentRoute}`);
+							}
 						}),
 						take(1)
 					)
@@ -134,13 +146,14 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
+			this.businessApplicationService.reset(); // prevent back button into wizard
 			this.router.navigateByUrl(`${redirectComponentRoute}`);
 			return;
 		}
 
 		const isFirstTimeLogin = this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin ?? false;
 
-		console.debug('**** BaseComponent **** isFirstTimeLogin', isFirstTimeLogin);
+		console.debug('[BaseComponent] isFirstTimeLogin', isFirstTimeLogin);
 
 		// handle first time login
 		if (isFirstTimeLogin) {

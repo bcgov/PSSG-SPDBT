@@ -19,15 +19,15 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routes';
 import {
 	CrcUploadDialogData,
 	SecurityScreeningUploadModalComponent,
 } from './security-screening-upload-modal.component';
 
 @Component({
-	selector: 'app-security-screening-detail',
-	template: `
+    selector: 'app-security-screening-detail',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal">Application Information</h3>
@@ -79,34 +79,30 @@ import {
 			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
 				{{ application.orgName }}
 				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 275px;">
-					{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
+					{{ application.status | options: 'ApplicationPortalStatusTypes' : application.status }}
 				</mat-chip-row>
 			</h3>
 
-			<div class="row mt-2 mb-4">
-				<div class="col-md-11 col-sm-12">
-					<section class="px-4 py-2 ">
-						<div class="row mt-2">
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label">Case ID</div>
-								<strong> {{ application.applicationNumber }} </strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
-								<strong> {{ application.createdOn! | formatDate }} </strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
-								<strong> {{ application.serviceType | options : 'ServiceTypes' }}</strong>
-							</div>
-							<div class="col-lg-3 col-md-3">
-								<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
-								<strong> {{ application.payeeType }}</strong>
-							</div>
-						</div>
-					</section>
+			<section class="detail-table px-4 py-3 my-4 ">
+				<div class="row">
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label">Case ID</div>
+						<strong> {{ application.applicationNumber }} </strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
+						<strong> {{ application.createdOn! | formatDate }} </strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
+						<strong> {{ application.serviceType | options: 'ServiceTypes' }}</strong>
+					</div>
+					<div class="col-lg-3 col-md-3">
+						<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
+						<strong> {{ application.payeeType }}</strong>
+					</div>
 				</div>
-			</div>
+			</section>
 		</ng-container>
 
 		<ng-container *ngIf="fingerprintsAlert || selfDisclosureAlert">
@@ -155,7 +151,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
+			<h4 class="subheading fw-normal mb-3">Upload Document</h4>
 			<div class="row">
 				<div class="col-12">
 					<button
@@ -172,7 +168,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="documentHistoryExists">
-			<h4 class="subheading fw-normal mb-4">Document Upload History</h4>
+			<h4 class="subheading fw-normal mb-2">Document Upload History</h4>
 			<div class="row">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSourceHistory">
@@ -207,8 +203,8 @@ import {
 			</div>
 		</ng-container>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.warning-text {
 				color: var(--color-red);
 			}
@@ -216,8 +212,13 @@ import {
 			.subheading {
 				color: var(--color-grey);
 			}
+
+			.detail-table {
+				background-color: #f6f6f6 !important;
+			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	showDownloadReceipt = false;

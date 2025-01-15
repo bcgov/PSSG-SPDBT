@@ -63,6 +63,7 @@ namespace Spd.Resource.Repository.Biz
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             spd_licence? swl = biz.spd_organization_spd_licence_soleproprietor
+              .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
               .OrderByDescending(a => a.createdon)
               .FirstOrDefault();
 
@@ -96,13 +97,13 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
             if (updateBizCmd.UpdateSoleProprietor)
             {
-                UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
+                UpdateSPLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
+                await UpdateSPBizContact(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, ct);
             }
             await _context.SaveChangesAsync(ct);
 
@@ -169,21 +170,22 @@ namespace Spd.Resource.Repository.Biz
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
 
-        private void UpdateLicenceLink(account account, Guid? licenceId, BizTypeEnum? bizType)
+        private void UpdateSPLicenceLink(account account, Guid? licenceId, BizTypeEnum? bizType)
         {
-            spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
+            spd_licence? existingLicence = account.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
 
-            if (licence != null && licence.spd_licenceid == licenceId && IsSoleProprietor(bizType))
+            if (existingLicence != null && existingLicence.spd_licenceid == licenceId && IsSoleProprietor(bizType))
                 return;
             if (!IsSoleProprietor(bizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype)))
                 throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
             if (!IsSoleProprietor(bizType))
                 return;
+
             // Remove link with current licence
-            if (licence != null)
+            if (existingLicence != null)
             {
-                _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
+                _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), existingLicence);
             }
             // Add link with new licence
             spd_licence? newLicence = _context.spd_licences
@@ -194,6 +196,44 @@ namespace Spd.Resource.Repository.Biz
             if (newLicence != null)
             {
                 _context.AddLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), newLicence);
+            }
+        }
+
+        private async Task UpdateSPBizContact(account account, Guid? licenceId, CancellationToken ct)
+        {
+            IQueryable<spd_businesscontact> bizExistingContacts = _context.spd_businesscontacts
+                .Where(b => b._spd_organizationid_value == account.accountid)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
+
+            spd_businesscontact? validSpContact = bizExistingContacts.FirstOrDefault(
+                c => c.spd_role == (int)BizContactRoleOptionSet.ControllingMember && c._spd_swlnumber_value == licenceId
+                );
+
+            foreach (spd_businesscontact bc in bizExistingContacts)
+            {
+                if (validSpContact == null || bc.spd_businesscontactid != validSpContact.spd_businesscontactid)
+                {
+                    bc.statecode = DynamicsConstants.StateCode_Inactive;
+                    bc.statuscode = DynamicsConstants.StatusCode_Inactive;
+                    _context.UpdateObject(bc);
+                }
+            }
+            if (validSpContact == null)
+            {
+                //add a bizcontact
+                spd_licence? newLicence = await _context.spd_licences
+                    .Expand(l => l.spd_LicenceHolder_contact)
+                    .Where(l => l.spd_licenceid == licenceId)
+                    .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
+                    .FirstOrDefaultAsync(ct);
+                contact? contact = await _context.contacts.Where(c => c.contactid == newLicence.spd_LicenceHolder_contact.contactid).FirstOrDefaultAsync(ct);
+                spd_businesscontact bizContact = new spd_businesscontact();
+                bizContact.spd_businesscontactid = Guid.NewGuid();
+                bizContact.spd_role = (int)BizContactRoleOptionSet.ControllingMember;
+                _context.AddTospd_businesscontacts(bizContact);
+                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
+                _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), account);
+                _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), newLicence);
             }
         }
 

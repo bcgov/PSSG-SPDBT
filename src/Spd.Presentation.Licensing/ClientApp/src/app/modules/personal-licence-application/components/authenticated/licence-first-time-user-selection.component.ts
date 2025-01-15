@@ -8,8 +8,8 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-licence-first-time-user-selection',
-	template: `
+    selector: 'app-licence-first-time-user-selection',
+    template: `
 		<section class="step-section" *ngIf="options">
 			<div class="step">
 				<app-step-title title="First Time User Selection"></app-step-title>
@@ -62,15 +62,16 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.user-option {
 				border-radius: 4px;
 				border: 1px solid grey;
 				box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

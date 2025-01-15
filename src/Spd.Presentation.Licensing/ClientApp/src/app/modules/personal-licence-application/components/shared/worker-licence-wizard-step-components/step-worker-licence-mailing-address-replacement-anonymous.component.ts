@@ -5,12 +5,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-mailing-address-replacement-anonymous',
-	template: `
+    selector: 'app-step-worker-licence-mailing-address-replacement-anonymous',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-address [form]="form" [isWideView]="true"></app-address>
+					<app-form-address [form]="form" [isWideView]="true"></app-form-address>
 				</div>
 			</div>
 
@@ -36,7 +36,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceMailingAddressReplacementAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent

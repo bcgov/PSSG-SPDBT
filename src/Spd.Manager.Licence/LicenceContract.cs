@@ -8,6 +8,7 @@ public interface ILicenceManager
     public Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken ct);
     public Task<LicenceResponse> Handle(LicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListQuery query, CancellationToken ct);
+    public Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken ct);
     public Task<FileResponse> Handle(LicencePhotoQuery query, CancellationToken ct);
 }
 
@@ -20,6 +21,8 @@ public record LicenceBasicResponse
     public ServiceTypeCode? ServiceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
     public string? LicenceHolderName { get; set; }
+    public string? BizLegalName { get; set; }
+    public DateOnly? LicenceHolderDateOfBirth { get; set; }
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
@@ -30,6 +33,8 @@ public record LicenceBasicResponse
 
 public record LicenceResponse : LicenceBasicResponse
 {
+    public Document? PhotoDocumentInfo { get; set; }
+
     //permit info
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
@@ -65,3 +70,4 @@ public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest
 public record LicenceByIdQuery(Guid LicenceId) : IRequest<LicenceResponse>;
 public record LicenceListQuery(Guid? ApplicantId, Guid? BizId) : IRequest<IEnumerable<LicenceBasicResponse>>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;
+public record LicenceListSearch(string? LicenceNumber, string? FirstName, string? LastName, string? BizName, ServiceTypeCode ServiceTypeCode) : IRequest<IEnumerable<LicenceBasicResponse>>;

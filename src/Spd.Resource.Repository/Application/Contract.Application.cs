@@ -1,5 +1,6 @@
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Incident;
+using Spd.Resource.Repository.Payment;
 
 namespace Spd.Resource.Repository.Application;
 
@@ -155,6 +156,7 @@ public record ApplicationResult
     public ServiceTypeEnum? ServiceType { get; set; }
     public ScreenTypeEnum? ScreeningType { get; set; }
     public DateTimeOffset? PaidOn { get; set; }
+    public PaymentTypeEnum? PaymentTypeCode { get; set; }
     public int? NumberOfAttempts { get; set; }
     public Guid? ApplicantId { get; set; }
 }

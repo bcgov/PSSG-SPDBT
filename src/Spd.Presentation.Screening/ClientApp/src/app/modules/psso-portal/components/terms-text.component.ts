@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-terms-text',
-	template: `
+    selector: 'app-terms-text',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
@@ -178,8 +178,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				max-height: 400px;
@@ -187,7 +187,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class TermsTextComponent {
 	@Output() hasScrolledToBottom: EventEmitter<boolean> = new EventEmitter();

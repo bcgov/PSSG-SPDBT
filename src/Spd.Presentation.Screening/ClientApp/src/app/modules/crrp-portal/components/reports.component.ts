@@ -7,14 +7,14 @@ import moment from 'moment';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-reports',
-	template: `
+    selector: 'app-reports',
+    template: `
 		<app-crrp-header></app-crrp-header>
 
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -48,7 +48,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 			<div class="row">
 				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12">
-					<mat-table [dataSource]="dataSource" class="report-table">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
@@ -87,12 +87,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.report-table {
-				background-color: var(--color-primary-lightest);
-			}
-
+    styles: [
+        `
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
@@ -102,7 +98,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ReportsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
