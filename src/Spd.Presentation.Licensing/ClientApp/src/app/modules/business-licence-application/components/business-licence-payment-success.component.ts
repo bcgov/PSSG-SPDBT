@@ -3,21 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
-	selector: 'app-business-licence-payment-success',
-	template: `
+    selector: 'app-business-licence-payment-success',
+    template: `
 		<section class="step-section">
-			<app-payment-success
-				[payment]="payment"
-				(downloadReceipt)="onDownloadReceipt()"
-			></app-payment-success>
+			<app-payment-success [payment]="payment" (downloadReceipt)="onDownloadReceipt()"></app-payment-success>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicencePaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;
@@ -34,7 +32,7 @@ export class BusinessLicencePaymentSuccessComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('BusinessLicencePaymentSuccessComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 		}
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;

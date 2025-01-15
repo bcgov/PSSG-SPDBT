@@ -344,7 +344,7 @@ export const EyeColourTypes: SelectOptions[] = [
 
 export const HeightUnitTypes: SelectOptions[] = [
 	{ desc: 'Centimeters', code: HeightUnitCode.Centimeters },
-	{ desc: 'Feet', code: HeightUnitCode.Inches },
+	{ desc: 'Feet and Inches', code: HeightUnitCode.Inches },
 ];
 
 export const WeightUnitTypes: SelectOptions[] = [

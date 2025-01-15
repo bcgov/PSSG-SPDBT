@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
+import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routes';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,

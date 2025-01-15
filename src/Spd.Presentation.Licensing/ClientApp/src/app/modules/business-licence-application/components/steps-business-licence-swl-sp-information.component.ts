@@ -9,8 +9,8 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 
 @Component({
-	selector: 'app-steps-business-licence-swl-sp-information',
-	template: `
+    selector: 'app-steps-business-licence-swl-sp-information',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="isNew">
@@ -23,9 +23,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CONFIRMATION)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
 			</mat-step>
@@ -37,9 +38,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CONFIRMATION)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
 				></app-wizard-footer>
@@ -50,9 +52,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
@@ -65,9 +68,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_INFORMATION)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_INFORMATION)"
 				></app-wizard-footer>
@@ -78,9 +82,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_ADDRESS)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_ADDRESS)"
 				></app-wizard-footer>
@@ -93,9 +98,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_BRANDING)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BRANDING)"
 				></app-wizard-footer>
@@ -108,17 +114,19 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_LIABILITY)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 0;
@@ -130,6 +138,7 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isSoleProprietorSimultaneousFlow!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceBusinessInformationComponent)

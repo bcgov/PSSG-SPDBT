@@ -13,8 +13,8 @@ export interface BizPortalUserDialogData {
 }
 
 @Component({
-	selector: 'app-modal-business-manager-edit',
-	template: `
+    selector: 'app-modal-business-manager-edit',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -35,9 +35,8 @@ export interface BizPortalUserDialogData {
 
 					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Given Name</mat-label>
+							<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 							<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
-							<mat-error *ngIf="form.get('firstName')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
 
@@ -95,7 +94,8 @@ export interface BizPortalUserDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';

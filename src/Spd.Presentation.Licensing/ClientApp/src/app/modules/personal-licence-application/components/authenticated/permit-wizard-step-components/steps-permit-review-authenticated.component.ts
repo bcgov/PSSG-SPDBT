@@ -2,16 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
-import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-authenticated.component';
-import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
+import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-authenticated.component';
+import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 
 @Component({
-	selector: 'app-steps-permit-review-authenticated',
-	template: `
+    selector: 'app-steps-permit-review-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
-					<app-step-permit-summary-review-update-authenticated></app-step-permit-summary-review-update-authenticated>
+					<app-step-permit-summary-review-update-authenticated
+						[showEmployerInformation]="showEmployerInformation"
+					></app-step-permit-summary-review-update-authenticated>
 				</ng-container>
 				<ng-template #notUpdateReview>
 					<app-step-permit-summary-authenticated
@@ -63,8 +65,9 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/module
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';

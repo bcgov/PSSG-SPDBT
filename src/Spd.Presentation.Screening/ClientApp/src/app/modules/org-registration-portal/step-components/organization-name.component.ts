@@ -6,8 +6,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
-	selector: 'app-organization-name',
-	template: `
+    selector: 'app-organization-name',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Provide us with more organization information"></app-step-title>
@@ -32,7 +32,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class OrganizationNameComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;

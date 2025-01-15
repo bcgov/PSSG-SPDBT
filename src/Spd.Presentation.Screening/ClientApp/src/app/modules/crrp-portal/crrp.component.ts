@@ -3,7 +3,7 @@ import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } fro
 import { lastValueFrom, take } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { CrrpRoutes } from './crrp-routing.module';
+import { CrrpRoutes } from './crrp-routes';
 
 export interface NavigationItemType {
 	label: string;
@@ -23,8 +23,8 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 };
 
 @Component({
-	selector: 'app-crrp',
-	template: `
+    selector: 'app-crrp',
+    template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<!-- Hide the lhs menu when displaying the 'first time user' terms and conditions -->
 			<div
@@ -169,14 +169,15 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.menu-item {
 				top: -5px;
 				position: relative;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CrrpComponent implements OnInit {
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;

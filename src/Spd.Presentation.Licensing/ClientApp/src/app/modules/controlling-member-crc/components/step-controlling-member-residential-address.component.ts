@@ -6,8 +6,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-residential-address',
-	template: `
+    selector: 'app-step-controlling-member-residential-address',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
@@ -21,12 +21,13 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-address [form]="form" [isReadonly]="isLoggedIn" [isWideView]="true"></app-address>
+					<app-form-address [form]="form" [isReadonly]="isLoggedIn" [isWideView]="true"></app-form-address>
 				</div>
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepControllingMemberResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;

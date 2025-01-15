@@ -3,16 +3,16 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { Address } from '@app/shared/components/address-autocomplete.component';
+import { Address } from '@app/shared/components/form-address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-permit-employer-information',
-	template: `
+    selector: 'app-step-permit-employer-information',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-xxl-8 col-xl-6 col-lg-12 col-md-12">
 								<mat-form-field>
@@ -23,7 +23,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="text-minor-heading my-3">Supervisor's Contact Information</div>
+						<div class="text-minor-heading mt-3 mb-2">Supervisor's Contact Information</div>
 						<div class="row">
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
@@ -68,13 +68,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="text-minor-heading my-3">Business's Primary Address</div>
-						<app-address-form-autocomplete
+						<div class="text-minor-heading mt-3 mb-2">Business's Primary Address</div>
+						<app-form-address-autocomplete
 							(autocompleteAddress)="onAddressAutocomplete($event)"
 							(enterAddressManually)="onEnterAddressManually()"
 							[isWideView]="true"
 						>
-						</app-address-form-autocomplete>
+						</app-form-address-autocomplete>
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
@@ -143,7 +143,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitEmployerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

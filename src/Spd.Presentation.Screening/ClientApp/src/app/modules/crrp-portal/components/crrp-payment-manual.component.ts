@@ -5,11 +5,11 @@ import { ApplicationPaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-payment-manual',
-	template: `
+    selector: 'app-crrp-payment-manual',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<app-payment-manual
@@ -18,7 +18,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			></app-payment-manual>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpPaymentManualComponent implements OnInit {
 	applicationData: ApplicationPaymentResponse | null = null;

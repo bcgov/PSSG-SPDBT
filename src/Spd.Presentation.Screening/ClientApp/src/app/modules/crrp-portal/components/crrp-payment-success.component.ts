@@ -3,14 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-payment-success',
-	template: `
+    selector: 'app-crrp-payment-success',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<app-payment-success
@@ -21,7 +21,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			></app-payment-success>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;

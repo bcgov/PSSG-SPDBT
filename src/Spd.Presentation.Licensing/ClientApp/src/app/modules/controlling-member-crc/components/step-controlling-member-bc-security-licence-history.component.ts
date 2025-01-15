@@ -8,8 +8,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-controlling-member-bc-security-licence-history',
-	template: `
+    selector: 'app-step-controlling-member-bc-security-licence-history',
+    template: `
 		<app-step-section [title]="title">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -122,8 +122,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepControllingMemberBcSecurityLicenceHistoryComponent
 	implements OnInit, LicenceChildStepperStepComponent

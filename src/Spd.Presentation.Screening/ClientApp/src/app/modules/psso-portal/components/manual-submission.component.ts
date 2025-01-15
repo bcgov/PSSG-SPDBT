@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 @Component({
-	selector: 'app-manual-submission',
-	template: `
+    selector: 'app-manual-submission',
+    template: `
 		<app-psso-header></app-psso-header>
 
 		<app-manual-submission-common
@@ -15,7 +15,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 			[orgId]="orgId"
 		></app-manual-submission-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ManualSubmissionComponent implements OnInit {
 	orgId: string | null = null;

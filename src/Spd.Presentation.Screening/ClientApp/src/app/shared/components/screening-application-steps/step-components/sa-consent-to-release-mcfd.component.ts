@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-sa-consent-to-release-mcfd',
-	template: `
+    selector: 'app-sa-consent-to-release-mcfd',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<strong>Please read and agree to each of the following statements</strong><br /><br />
 			<strong>Section 1 - Consent to Disclosure of Police Information</strong>
@@ -131,8 +131,8 @@ import { FormGroup } from '@angular/forms';
 			</p>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			p {
 				margin-bottom: 0.5rem !important;
 			}
@@ -145,7 +145,8 @@ import { FormGroup } from '@angular/forms';
 				margin-bottom: 0.5em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaConsentToReleaseMcfdComponent {
 	@Input() form!: FormGroup;

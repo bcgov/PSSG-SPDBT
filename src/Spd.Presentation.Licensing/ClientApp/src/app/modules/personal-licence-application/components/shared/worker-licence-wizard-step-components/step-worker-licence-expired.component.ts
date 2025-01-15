@@ -5,8 +5,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-expired',
-	template: `
+    selector: 'app-step-worker-licence-expired',
+    template: `
 		<app-step-section title="Do you have an expired licence in BC?">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
@@ -16,14 +16,15 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				</div>
 			</div>
 
-			<app-expired-licence
+			<app-form-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
 				[serviceTypeCode]="securityWorkerLicenceCode"
-			></app-expired-licence>
+			></app-form-expired-licence>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.expiredLicenceFormGroup;

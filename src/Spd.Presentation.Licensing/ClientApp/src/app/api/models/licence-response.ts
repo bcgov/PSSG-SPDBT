@@ -13,6 +13,7 @@ import { ServiceTypeCode } from '../models/service-type-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 export interface LicenceResponse {
   armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;
+  bizLegalName?: string | null;
   bizTypeCode?: BizTypeCode;
   bodyArmourPermitReasonCodes?: Array<BodyArmourPermitReasonCode> | null;
   carryAndUseRestraints?: boolean;
@@ -25,6 +26,7 @@ export interface LicenceResponse {
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;
   licenceAppId?: string | null;
+  licenceHolderDateOfBirth?: string | null;
   licenceHolderId?: string | null;
   licenceHolderName?: string | null;
   licenceId?: string | null;
@@ -35,6 +37,7 @@ export interface LicenceResponse {
   linkedSoleProprietorLicenceId?: string | null;
   nameOnCard?: string | null;
   permitOtherRequiredReason?: string | null;
+  photoDocumentInfo?: Document;
   rationalDocumentInfos?: Array<Document> | null;
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;

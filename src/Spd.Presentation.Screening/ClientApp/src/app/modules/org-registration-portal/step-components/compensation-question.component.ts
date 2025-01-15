@@ -5,8 +5,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
-	selector: 'app-compensation-question',
-	template: `
+    selector: 'app-compensation-question',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
@@ -37,7 +37,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CompensationQuestionComponent implements RegistrationFormStepComponent {
 	form: FormGroup = this.formBuilder.group({

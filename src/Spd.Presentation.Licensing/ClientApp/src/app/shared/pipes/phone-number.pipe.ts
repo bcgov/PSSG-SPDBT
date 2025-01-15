@@ -3,7 +3,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { NgxMaskPipe } from 'ngx-mask';
 
 @Pipe({
-	name: 'formatPhoneNumber',
+    name: 'formatPhoneNumber',
+    standalone: false
 })
 export class FormatPhoneNumberPipe implements PipeTransform {
 	constructor(private ngxMaskPipe: NgxMaskPipe) {}

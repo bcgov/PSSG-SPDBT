@@ -15,11 +15,11 @@ import {
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 export interface ApplicantApplicationStatusResponse extends ApplicantApplicationResponse {
 	applicationPortalStatusClass: string;
@@ -28,8 +28,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	isPayNow: boolean;
 }
 @Component({
-	selector: 'app-security-screening-list',
-	template: `
+    selector: 'app-security-screening-list',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xl-8 col-lg-6 col-md-12">
@@ -164,8 +164,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-status {
 				min-width: 275px;
 			}
@@ -190,7 +190,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';

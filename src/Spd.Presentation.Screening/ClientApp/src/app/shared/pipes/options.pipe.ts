@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { UtilService } from 'src/app/core/services/util.service';
 
-@Pipe({ name: 'options', pure: true })
+@Pipe({
+    name: 'options', pure: true,
+    standalone: false
+})
 export class OptionsPipe implements PipeTransform {
 	constructor(private utilService: UtilService) {}
 

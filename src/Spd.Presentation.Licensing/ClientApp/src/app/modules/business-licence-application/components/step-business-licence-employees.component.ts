@@ -4,8 +4,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({
-	selector: 'app-step-business-licence-employees',
-	template: `
+    selector: 'app-step-business-licence-employees',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -14,7 +14,8 @@ import { CommonEmployeesComponent } from './common-employees.component';
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

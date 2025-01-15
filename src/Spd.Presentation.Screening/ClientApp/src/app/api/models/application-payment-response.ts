@@ -4,6 +4,7 @@
 
 import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
 import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
+import { PaymentTypeCode } from '../models/payment-type-code';
 export interface ApplicationPaymentResponse {
   applicationNumber?: string | null;
   contractedCompanyName?: string | null;
@@ -20,6 +21,7 @@ export interface ApplicationPaymentResponse {
   orgId?: string;
   paidOn?: string | null;
   payeeType?: PayerPreferenceTypeCode;
+  paymentTypeCode?: PaymentTypeCode;
   status?: ApplicationPortalStatusCode;
   surname?: string | null;
 }

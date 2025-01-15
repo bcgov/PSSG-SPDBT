@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-crrpa-payment-success',
-	template: `
+    selector: 'app-crrpa-payment-success',
+    template: `
 		<div class="container mt-4">
 			<section class="step-section p-3">
 				<app-payment-success
@@ -20,7 +20,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpaPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;

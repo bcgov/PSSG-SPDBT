@@ -5,6 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
@@ -18,8 +19,8 @@ import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-step-compo
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-components/steps-permit-review-anonymous.component';
 
 @Component({
-	selector: 'app-permit-wizard-anonymous-update',
-	template: `
+    selector: 'app-permit-wizard-anonymous-update',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -101,7 +102,8 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -152,6 +154,11 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -168,19 +175,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
+				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
 				this.updateCompleteStatus();
 			}

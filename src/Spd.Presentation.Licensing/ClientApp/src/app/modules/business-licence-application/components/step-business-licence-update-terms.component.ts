@@ -6,8 +6,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { FormBusinessTermsComponent } from '@app/shared/components/form-business-terms.component';
 
 @Component({
-	selector: 'app-step-business-licence-update-terms',
-	template: `
+    selector: 'app-step-business-licence-update-terms',
+    template: `
 		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
 			<app-form-business-terms
 				[form]="form"
@@ -17,8 +17,9 @@ import { FormBusinessTermsComponent } from '@app/shared/components/form-business
 
 		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepBusinessLicenceUpdateTermsComponent {
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;

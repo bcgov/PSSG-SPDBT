@@ -10,8 +10,8 @@ import { PaymentQuestionComponent } from '../step-components/payment-question.co
 import { ScreeningsQuestionComponent } from '../step-components/screenings-question.component';
 
 @Component({
-	selector: 'app-step-three',
-	template: `
+    selector: 'app-step-three',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-contact-information></app-contact-information>
@@ -125,8 +125,9 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepThreeComponent {
 	readonly STEP_ORGANIZATION_NAME = 8;

@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { jwtDecode } from 'jwt-decode';
@@ -23,11 +23,6 @@ export interface LicenceStepperStepComponent {
 
 export interface LicenceChildStepperStepComponent {
 	isFormValid(): boolean;
-}
-
-export interface LicenceDocument {
-	Documents?: Array<File>;
-	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
 }
 
 export class LicenceDocumentsToSave {
@@ -413,6 +408,16 @@ export class UtilService {
 			(isCanadianCitizen && canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
 			(!isCanadianCitizen && notCanadianCitizenProof != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
+	}
+
+	isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
+		if (!licenceStatusCode) return false;
+
+		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
+			return true;
+		}
+
+		return false;
 	}
 
 	//------------------------------------

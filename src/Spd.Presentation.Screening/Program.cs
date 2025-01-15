@@ -77,6 +77,16 @@ try
     app.UseResponseCaching();
     app.UseRequestDecompression();
     app.UseResponseCompression();
+    app.Use(async (context, next) =>
+    {
+        var isMaintenance = builder.Configuration.GetValue<bool>("MaintenanceMode"); // Get the value from appsettings.json
+        if (isMaintenance && !context.Request.Path.Value.Contains("maintenance"))
+        {
+            context.Response.Redirect("/screening/maintenance/offline.html");
+            return;
+        }
+        await next();
+    });
     app.UseStaticFiles();
     app.MapFallbackToFile("index.html");
     app.UseRouting();

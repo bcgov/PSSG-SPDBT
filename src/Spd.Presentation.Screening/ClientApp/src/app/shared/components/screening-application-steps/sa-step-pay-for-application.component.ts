@@ -3,8 +3,8 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-	selector: 'app-sa-step-pay-for-application',
-	template: `
+    selector: 'app-sa-step-pay-for-application',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<div class="row mt-4">
@@ -15,8 +15,9 @@ import { MatStepper } from '@angular/material/stepper';
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepPayForApplicationComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

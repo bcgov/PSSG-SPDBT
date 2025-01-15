@@ -13,16 +13,16 @@ import {
 	VolunteerOrganizationTypeCode,
 } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-organization-profile',
-	template: `
+    selector: 'app-organization-profile',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
@@ -237,13 +237,14 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class OrganizationProfileComponent implements OnInit {
 	isNotVolunteerOrg = false;

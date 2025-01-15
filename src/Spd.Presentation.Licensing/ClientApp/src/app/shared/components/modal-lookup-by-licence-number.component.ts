@@ -25,6 +25,15 @@ export interface LookupByLicenceNumberDialogData {
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
+				<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
+					<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
+				</ng-container>
+				<ng-template #notLoggedInMsg>
+					<app-alert type="info" icon="info">
+						Enter the Licence Number, perform the reCaptcha and then click the search button.
+					</app-alert>
+				</ng-template>
+
 				<div class="row">
 					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
 						<mat-form-field>
@@ -41,7 +50,8 @@ export interface LookupByLicenceNumberDialogData {
 								mat-button
 								matSuffix
 								mat-flat-button
-								aria-label="search"
+								aria-label="Perform licence search"
+								matTooltip="Perform licence search"
 								(click)="onSearch()"
 								class="search-icon-button"
 							>
@@ -52,7 +62,7 @@ export interface LookupByLicenceNumberDialogData {
 					</div>
 
 					<div class="col-xl-6 col-lg-12" *ngIf="!isLoggedIn">
-						<div formGroupName="captchaFormGroup" class="mb-3">
+						<div [formGroup]="captchaFormGroup" class="mb-3">
 							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 							<mat-error
 								class="mat-option-error-small"
@@ -110,7 +120,7 @@ export interface LookupByLicenceNumberDialogData {
 
 							<ng-template #LicenceSearchNotValid>
 								<div class="mt-3">
-									<app-alert type="warning" icon="">
+									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
 											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}
 										</div>
@@ -141,7 +151,9 @@ export interface LookupByLicenceNumberDialogData {
 					</ng-container>
 
 					<ng-template #IsNotFound>
-						<app-alert type="danger" icon="error"> This licence number does not match any existing licences </app-alert>
+						<app-alert type="danger" icon="error">
+							{{ messageError }}
+						</app-alert>
 					</ng-template>
 				</ng-container>
 			</form>
@@ -159,6 +171,7 @@ export interface LookupByLicenceNumberDialogData {
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class ModalLookupByLicenceNumberComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;
@@ -259,17 +272,18 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	}
 
 	private handleSearchResults(resp: LicenceLookupResult) {
+		this.messageError = this.commonApplicationService.setLicenceLookupMessage(
+			resp.searchResult,
+			this.lookupServiceTypeCode
+		);
+
 		this.isSearchPerformed = true;
 		this.isFound = resp.isFound;
-		this.isFoundValid = resp.isFoundValid;
+		this.messageWarn = null;
 
-		if (resp.searchResult) {
-			if (resp.searchResult.serviceTypeCode !== this.lookupServiceTypeCode) {
-				this.isFoundValid = false;
-			}
+		this.searchResultDisplay = resp.searchResult;
 
-			this.searchResultDisplay = resp.searchResult;
-		}
+		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageError;
 	}
 
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {

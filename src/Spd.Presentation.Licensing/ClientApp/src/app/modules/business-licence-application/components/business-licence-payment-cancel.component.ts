@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppRoutes } from '@app/app-routing.module';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
-	selector: 'app-business-licence-payment-cancel',
-	template: `
+    selector: 'app-business-licence-payment-cancel',
+    template: `
 		<section class="step-section">
 			<app-payment-cancel
 				(payNow)="onPayNow()"
@@ -13,7 +13,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			></app-payment-cancel>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicencePaymentCancelComponent implements OnInit {
 	licenceAppId: string | null = null;
@@ -28,7 +29,7 @@ export class BusinessLicencePaymentCancelComponent implements OnInit {
 		this.licenceAppId = this.route.snapshot.paramMap.get('id');
 		if (!this.licenceAppId) {
 			console.debug('BusinessLicencePaymentCancelComponent - missing licenceAppId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 		}
 	}
 

@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-business-licence-manager-information',
-	template: `
+    selector: 'app-step-business-licence-manager-information',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -34,9 +34,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="row">
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Given Name</mat-label>
+										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 
@@ -99,7 +98,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceManagerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

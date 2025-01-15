@@ -11,7 +11,7 @@ import {
 	ApplicationInviteStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -30,8 +30,8 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 };
 
 @Component({
-	selector: 'app-screening-requests-common',
-	template: `
+    selector: 'app-screening-requests-common',
+    template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
@@ -171,8 +171,8 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-createdOn {
@@ -207,7 +207,8 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ScreeningRequestsCommonComponent implements OnInit {
 	constants = SPD_CONSTANTS;

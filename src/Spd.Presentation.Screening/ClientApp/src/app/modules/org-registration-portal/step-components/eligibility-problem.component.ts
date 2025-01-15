@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-eligibility-problem',
-	template: `
+    selector: 'app-eligibility-problem',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
@@ -29,8 +29,8 @@ import { Component } from '@angular/core';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.eligibility-problem {
 				padding: 1.2em;
 				margin-bottom: 2em;
@@ -45,6 +45,7 @@ import { Component } from '@angular/core';
 				width: 100px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class EligibilityProblemComponent {}

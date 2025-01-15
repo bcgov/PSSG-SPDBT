@@ -282,6 +282,11 @@ namespace Spd.Utilities.Dynamics
                 .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
         }
+
+        public static string LookupPositionKey(Guid? positionId)
+        {
+            return PositionDictionary.FirstOrDefault(s => s.Value == positionId).Key;
+        }
         #endregion
 
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)

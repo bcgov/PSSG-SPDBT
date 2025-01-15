@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { switchMap } from 'rxjs';
 
 @Component({
-	selector: 'app-licence-payment-fail-anonymous',
-	template: `
+    selector: 'app-licence-payment-fail-anonymous',
+    template: `
 		<app-container>
 			<section class="step-section">
 				<app-payment-fail
@@ -20,7 +20,8 @@ import { switchMap } from 'rxjs';
 			</section>
 		</app-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicencePaymentFailAnonymousComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
@@ -37,8 +38,9 @@ export class LicencePaymentFailAnonymousComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('LicencePaymentFailComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
+
 		this.paymentService
 			.apiUnauthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(

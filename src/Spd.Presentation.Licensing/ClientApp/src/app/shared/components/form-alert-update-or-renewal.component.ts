@@ -6,8 +6,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-alert-update-or-renewal',
-	template: `
+    selector: 'app-form-alert-update-or-renewal',
+    template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="alert-confirm mb-3 p-2">
@@ -33,8 +33,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.alert-confirm {
 				color: #0c5460;
 				background-color: #eef8fa;
@@ -42,9 +42,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				border-radius: 0;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
-export class AlertUpdateOrRenewalComponent implements OnInit {
+export class FormAlertUpdateOrRenewalComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	licenceModelData: any = {};

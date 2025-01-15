@@ -4,8 +4,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-bc-driver-licence',
-	template: `
+    selector: 'app-step-controlling-member-bc-driver-licence',
+    template: `
 		<app-step-section title="Do you have a BC Driver's Licence?">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
@@ -18,7 +18,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-bc-driver-licence [form]="form"></app-form-bc-driver-licence>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepControllingMemberBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.controllingMembersService.bcDriversLicenceFormGroup;

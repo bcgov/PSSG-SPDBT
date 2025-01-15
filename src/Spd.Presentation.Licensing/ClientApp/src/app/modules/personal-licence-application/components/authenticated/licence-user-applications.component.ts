@@ -21,8 +21,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-licence-user-applications',
-	template: `
+    selector: 'app-licence-user-applications',
+    template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -54,13 +54,13 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
-					<app-applications-list-current
+					<app-personal-applications-list-current
 						[applicationsDataSource]="applicationsDataSource"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
 						(cancelApplication)="onDelete($event)"
-					></app-applications-list-current>
+					></app-personal-applications-list-current>
 
 					<app-licence-active-swl-permit-licences
 						[activeLicences]="activeLicences"
@@ -163,7 +163,8 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -202,6 +203,9 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.permitApplicationService.reset(); // prevent back button into wizard
+		this.workerApplicationService.reset(); // prevent back button into wizard
+
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TDB';
 
 		this.commonApplicationService.setApplicationTitle();

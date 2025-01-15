@@ -5,12 +5,7 @@ import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha-2';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
-import { AddressAndIsSameFlagComponent } from './components/address-and-is-same-flag.component';
-import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
-import { AddressComponent } from './components/address.component';
-import { AlertUpdateOrRenewalComponent } from './components/alert-update-or-renewal.component';
 import { AlertComponent } from './components/alert.component';
-import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
@@ -18,12 +13,17 @@ import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
-import { ExpiredLicenceComponent } from './components/expired-licence.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { FormAddressAndIsSameFlagComponent } from './components/form-address-and-is-same-flag.component';
+import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
+import { FormAddressSummaryComponent } from './components/form-address-summary.component';
+import { FormAddressComponent } from './components/form-address.component';
+import { FormAlertUpdateOrRenewalComponent } from './components/form-alert-update-or-renewal.component';
 import { FormAliasesComponent } from './components/form-aliases.component';
 import { FormBcDriverLicenceComponent } from './components/form-bc-driver-licence.component';
 import { FormBusinessTermsComponent } from './components/form-business-terms.component';
 import { FormContactInformationComponent } from './components/form-contact-information.component';
+import { FormExpiredLicenceComponent } from './components/form-expired-licence.component';
 import { FormFingerprintsComponent } from './components/form-fingerprints.component';
 import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
 import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
@@ -64,8 +64,6 @@ const SHARED_COMPONENTS = [
 	DialogComponent,
 	DialogOopsComponent,
 	ModalBizSelectionComponent,
-	AddressAutocompleteComponent,
-	ModalAddressComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
 	StepTitleComponent,
@@ -80,12 +78,12 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	AddressComponent,
 	PaymentCancelComponent,
 	PaymentSuccessComponent,
 	PaymentErrorComponent,
 	PaymentFailComponent,
 	BaseFilterComponent,
+	ModalAddressComponent,
 	ModalFingerprintTearOffComponent,
 	WizardFooterComponent,
 	WizardOutsideFooterComponent,
@@ -93,13 +91,15 @@ const SHARED_COMPONENTS = [
 	CollectionNoticeComponent,
 	ModalLookupByLicenceNumberComponent,
 	LicenceListExpiredComponent,
-	ApplicationsListCurrentComponent,
-	AlertUpdateOrRenewalComponent,
+	FormAlertUpdateOrRenewalComponent,
 	LicenceReprintComponent,
-	ExpiredLicenceComponent,
-	AddressAndIsSameFlagComponent,
+	FormExpiredLicenceComponent,
+	FormAddressAndIsSameFlagComponent,
 	ContainerComponent,
 	FileDragNDropDirective,
+	FormAddressAutocompleteComponent,
+	FormAddressComponent,
+	FormAddressSummaryComponent,
 	FormAliasesComponent,
 	FormBusinessTermsComponent,
 	FormFingerprintsComponent,

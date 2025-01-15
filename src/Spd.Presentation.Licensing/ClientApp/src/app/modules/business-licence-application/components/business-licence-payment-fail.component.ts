@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
-import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { switchMap } from 'rxjs';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
-	selector: 'app-business-licence-payment-fail',
-	template: `
+    selector: 'app-business-licence-payment-fail',
+    template: `
 		<section class="step-section">
 			<app-payment-fail
 				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
@@ -19,7 +19,8 @@ import { switchMap } from 'rxjs';
 			></app-payment-fail>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicencePaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
@@ -37,7 +38,7 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			console.debug('BusinessLicencePaymentFailComponent - missing paymentId');
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 		}
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;

@@ -6,8 +6,8 @@ export interface BizSelectionDialogData {
 	bizsList: Array<BizListResponse>;
 }
 @Component({
-	selector: 'app-modal-biz-selection',
-	template: `
+    selector: 'app-modal-biz-selection',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content class="mat-dialog-content">
@@ -18,7 +18,8 @@ export interface BizSelectionDialogData {
 			</ng-container>
 		</mat-dialog-content>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ModalBizSelectionComponent implements OnInit {
 	bizsList: Array<BizListResponse> = [];

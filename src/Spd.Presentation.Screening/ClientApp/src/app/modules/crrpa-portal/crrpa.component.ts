@@ -15,7 +15,7 @@ import {
 	ShareableClearanceResponse,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -32,8 +32,8 @@ import { AppInviteOrgData } from 'src/app/shared/components/screening-applicatio
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 
 @Component({
-	selector: 'app-crrpa',
-	template: `
+    selector: 'app-crrpa',
+    template: `
 		<div class="container mt-4">
 			<mat-stepper
 				linear
@@ -106,7 +106,8 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 			</mat-stepper>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpaComponent implements OnInit {
 	readonly STEP_ELIGIBILITY = 0; // needs to be zero based because 'selectedIndex' is zero based
