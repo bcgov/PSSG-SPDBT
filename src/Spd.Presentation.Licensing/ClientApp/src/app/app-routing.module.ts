@@ -6,6 +6,10 @@ import { AccessDeniedComponent } from './shared/components/access-denied.compone
 
 const routes: Routes = [
 	{
+		path: '',
+		component: LandingComponent,
+	},
+	{
 		path: AppRoutes.PERSONAL_LICENCE_APPLICATION,
 		loadChildren: () =>
 			import('./modules/personal-licence-application/personal-licence-application.module').then(
@@ -46,7 +50,8 @@ const routes: Routes = [
 	},
 	{
 		path: '**',
-		component: LandingComponent,
+		redirectTo: AppRoutes.path(AppRoutes.LANDING),
+		pathMatch: 'full',
 	},
 ];
 
