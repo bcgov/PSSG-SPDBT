@@ -118,6 +118,18 @@ export class FormGroupValidators {
 		};
 	}
 
+	public static branchrequiredValidator(controlArrayName: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control = controls.get(controlArrayName);
+			const value = control?.value;
+			const count = value.length;
+
+			if (count === 0) return { branchrequired: true };
+
+			return null;
+		};
+	}
+
 	public static matchValidator(controlName: string, checkControlName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
 			const control = controls.get(controlName);
