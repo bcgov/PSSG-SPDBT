@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { UtilService } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-metal-dealers-consent',
@@ -11,7 +11,7 @@ import { UtilService } from '@app/core/services/util.service';
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="col-12">
+							<div class="col-12 py-3 hereby">
 								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 									I HEREBY CERTIFY THAT I have read and understand all portions of this application form. The
 									information set out by me in this application is true and correct to the best of my knowledge and
@@ -32,7 +32,7 @@ import { UtilService } from '@app/core/services/util.service';
 						</div>
 
 						<div class="row">
-							<div class="col-12 mt-4">
+							<div class="col-12 mt-3">
 								<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
 									Declaration & Sign Off
 								</mat-checkbox>
@@ -83,10 +83,16 @@ import { UtilService } from '@app/core/services/util.service';
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.hereby {
+				background-color: #f6f6f6 !important;
+			}
+		`,
+	],
 	standalone: false,
 })
-export class StepMetalDealersConsentComponent {
+export class StepMetalDealersConsentComponent implements LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
 	collectionNoticeActNameWithAbbrev = '';
 	check3Name = '';
