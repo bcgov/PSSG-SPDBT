@@ -20,8 +20,15 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 						<div class="row">
+							<div class="col-12 mb-3">
+								<app-alert type="info" icon="info">
+									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
+									categories.
+								</app-alert>
+							</div>
+
 							<div class="col-md-8 col-sm-12">
 								<mat-form-field>
 									<mat-label>Category</mat-label>
@@ -32,7 +39,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									</mat-select>
 								</mat-form-field>
 								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-									At least one category must be added. Click 'Add Category' after selection.
+									At least one category must be added. Click 'Add Category' after selecting a category.
 								</mat-error>
 							</div>
 							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
@@ -617,6 +624,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			}
 		`,
 	],
+	standalone: false,
 })
 export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	isDirtyAndInvalid = false;

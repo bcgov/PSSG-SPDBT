@@ -18,6 +18,7 @@ internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -51,6 +52,7 @@ internal class LicenceManager :
         var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
 
+        await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
@@ -75,6 +77,7 @@ internal class LicenceManager :
         }
         LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
+        await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
@@ -100,7 +103,7 @@ internal class LicenceManager :
         if (!response.Items.Any())
         {
             _logger.LogDebug("No licence found.");
-            return Array.Empty<LicenceResponse>();
+            return Array.Empty<LicenceBasicResponse>();
         }
 
         //only return expired and active ones
@@ -143,6 +146,64 @@ internal class LicenceManager :
             }
         }
         return new FileResponse();
+    }
+
+    public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
+    {
+        LicenceListResp response = new LicenceListResp();
+        if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+        {
+            if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.FirstName) && string.IsNullOrWhiteSpace(search.LastName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
+            if ((!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.FirstName))
+                || (!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.LastName)))
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot search name and licence number together.");
+            response = await _licenceRepository.QueryAsync(
+                new LicenceQry
+                {
+                    LicenceNumber = search.LicenceNumber,
+                    FirstName = search.FirstName,
+                    LastName = search.LastName,
+                    Type = ServiceTypeEnum.SecurityWorkerLicence,
+                    IncludeInactive = true
+                }, cancellationToken);
+        }
+
+        if (search.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+        {
+            if (string.IsNullOrWhiteSpace(search.LicenceNumber) && string.IsNullOrWhiteSpace(search.BizName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Not enough parameter");
+            if (!string.IsNullOrWhiteSpace(search.LicenceNumber) && !string.IsNullOrWhiteSpace(search.BizName))
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot search biz name and licence number together.");
+            if (!string.IsNullOrWhiteSpace(search.BizName) && search.BizName.Length < 3)
+                throw new ApiException(HttpStatusCode.BadRequest, "Business name must have at least 3 chars.");
+
+            response = await _licenceRepository.QueryAsync(
+                new LicenceQry
+                {
+                    LicenceNumber = search.LicenceNumber,
+                    BizName = search.BizName,
+                    IncludeInactive = true,
+                    Type = ServiceTypeEnum.SecurityBusinessLicence,
+                }, cancellationToken);
+        }
+
+        var result = response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview)
+            .GroupBy(r => r.LicenceNumber)
+            .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
+            .ToList();
+        //only return expired and active ones
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
+
+    }
+
+    private async Task GetPhotoDocumentsInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
+    {
+        if (licResp.PhotoDocumentUrlId != null)
+        {
+            var doc = await _documentRepository.GetAsync((Guid)licResp.PhotoDocumentUrlId, cancellationToken);
+            lic.PhotoDocumentInfo = _mapper.Map<Document>(doc);
+        }
     }
 
     private async Task GetSoleProprietorInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
@@ -217,4 +278,5 @@ internal class LicenceManager :
             lic.RestraintsDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items);
         }
     }
+
 }

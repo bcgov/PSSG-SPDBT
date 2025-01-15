@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-permit-application-base-anonymous',
-	template: `
+    selector: 'app-permit-application-base-anonymous',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<!-- hide padding/margin on smaller screens -->
 			<div class="row">
@@ -16,7 +16,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitApplicationBaseAnonymousComponent implements OnInit {
 	constructor(

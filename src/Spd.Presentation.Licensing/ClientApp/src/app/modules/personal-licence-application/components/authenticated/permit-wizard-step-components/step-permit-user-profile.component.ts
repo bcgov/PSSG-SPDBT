@@ -9,8 +9,8 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-step-permit-user-profile',
-	template: `
+    selector: 'app-step-permit-user-profile',
+    template: `
 		<div class="step-section">
 			<div class="step">
 				<div class="row">
@@ -44,9 +44,9 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 							></app-common-user-profile-licence-criminal-history>
 						</section>
 
-						<section class="mb-2" *ngIf="showConfirmation">
+						<section class="mb-3" *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading">Confirmation</div>
+								<div class="text-minor-heading mb-2">Confirmation</div>
 								<mat-checkbox formControlName="isProfileUpToDate">
 									I confirm that this information is up-to-date
 								</mat-checkbox>
@@ -75,7 +75,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';

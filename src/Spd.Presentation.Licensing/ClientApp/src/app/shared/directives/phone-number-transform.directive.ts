@@ -2,7 +2,8 @@ import { Directive, ElementRef, HostListener, OnInit } from '@angular/core';
 import { FormatPhoneNumberPipe } from '@app/shared/pipes/phone-number.pipe';
 
 @Directive({
-	selector: '[formControlName][appPhoneNumberTransform]',
+    selector: '[formControlName][appPhoneNumberTransform]',
+    standalone: false
 })
 export class PhoneNumberTransformDirective implements OnInit {
 	private el: any;

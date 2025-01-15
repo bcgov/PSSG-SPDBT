@@ -18,6 +18,8 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)))
              .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value)))
              .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
+             .ForMember(d => d.BizLegalName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.spd_organizationlegalname : null))
+             .ForMember(d => d.LicenceHolderDateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.birthdate))
              .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.name : s.spd_LicenceHolder_contact.firstname))
              .ForMember(d => d.LicenceStatusCode, opt => opt.MapFrom(s => GetLicenceStatusEnum(s.statuscode)))
              .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.lastname))
@@ -43,7 +45,12 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
              .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
              .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
+             .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition))
              ;
+
+            _ = CreateMap<spd_licencecondition, Condition>()
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_licenceconditionid))
+            .ForMember(d => d.Name, opt => opt.MapFrom(s => s.spd_conditionname));
 
             _ = CreateMap<spd_licence, Addr>()
              .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_employeraddress1))

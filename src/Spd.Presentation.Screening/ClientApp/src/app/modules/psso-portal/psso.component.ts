@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { PssoRoutes } from './psso-routing.module';
+import { PssoRoutes } from './psso-routes';
 
 export interface NavigationItemType {
 	label: string;
@@ -21,8 +21,8 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 };
 
 @Component({
-	selector: 'app-psso',
-	template: `
+    selector: 'app-psso',
+    template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated$ | async">
 			<div class="row flex-nowrap m-0">
 				<div class="col-auto mat-sidenav px-0" style="background-color: var(--color-sidebar);">
@@ -88,14 +88,15 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.menu-item {
 				top: -5px;
 				position: relative;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PssoComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;

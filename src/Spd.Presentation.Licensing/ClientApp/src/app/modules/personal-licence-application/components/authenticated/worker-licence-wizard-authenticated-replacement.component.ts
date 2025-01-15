@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -7,10 +8,11 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routes';
 
 @Component({
-	selector: 'app-worker-licence-wizard-authenticated-replacement',
-	template: `
+    selector: 'app-worker-licence-wizard-authenticated-replacement',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -38,11 +40,13 @@ import { distinctUntilChanged } from 'rxjs';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWizardComponent implements OnInit {
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private workerApplicationService: WorkerApplicationService
@@ -51,6 +55,11 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	}
 
 	ngOnInit(): void {
+		if (!this.workerApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

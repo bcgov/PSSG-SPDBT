@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrgRegistrationStatusCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { CrrpRoutes } from '../crrp-portal/crrp-routing.module';
-import { OrgRegistrationRoutes } from './org-registration-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
+import { CrrpRoutes } from '../crrp-portal/crrp-routes';
+import { OrgRegistrationRoutes } from './org-registration-routes';
 
 @Component({
-	selector: 'app-registration-status',
-	template: `
+    selector: 'app-registration-status',
+    template: `
 		<div class="container mt-4" *ngIf="status">
 			<h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
 			<div class="row">
@@ -63,8 +63,8 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.point {
 				&__active {
 					display: inline-block;
@@ -102,7 +102,8 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 				position: relative;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class RegistrationStatusComponent implements OnInit {
 	status = '';

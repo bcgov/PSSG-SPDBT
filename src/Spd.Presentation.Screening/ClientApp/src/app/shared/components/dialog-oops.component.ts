@@ -8,8 +8,8 @@ export interface DialogOopsOptions {
 }
 
 @Component({
-	selector: 'app-spd-dialog-oops',
-	template: `
+    selector: 'app-spd-dialog-oops',
+    template: `
 		<mat-dialog-content>
 			<ng-container *ngIf="!is400Error">
 				<div class="d-flex justify-content-center">
@@ -43,8 +43,8 @@ export interface DialogOopsOptions {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -63,7 +63,8 @@ export interface DialogOopsOptions {
 				color: var(--color-grey-dark);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class DialogOopsComponent implements OnInit {
 	errorMessage: string | null | undefined = null;

@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
-	selector: 'app-step-worker-licence-police-background',
-	template: `
+    selector: 'app-step-worker-licence-police-background',
+    template: `
 		<app-step-section [title]="title">
 			<app-form-police-background
 				[form]="form"
@@ -17,7 +17,8 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 			></app-form-police-background>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

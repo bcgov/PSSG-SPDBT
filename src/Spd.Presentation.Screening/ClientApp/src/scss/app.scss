@@ -1,6 +1,7 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
+@use './material-overrides';
 
 $spd-blue: (
 	50: #e0e7ed,
@@ -88,7 +89,8 @@ $spd-typography: mat.m2-define-typography-config(
 	$body-2: mat.m2-define-typography-level(16px, 24px, 400),
 );
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 @include mat.all-component-typographies($spd-typography);
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
@@ -149,8 +151,6 @@ $spd-theme: mat.m2-define-light-theme(
 	--size-3: calc(var(--size-1) * 3);
 	--size-6: calc(var(--size-1) * 6);
 }
-
-@import './material-overrides';
 
 html,
 body {

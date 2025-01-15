@@ -7,8 +7,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-step-permit-reason',
-	template: `
+    selector: 'app-step-permit-reason',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
@@ -79,7 +79,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitReasonComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

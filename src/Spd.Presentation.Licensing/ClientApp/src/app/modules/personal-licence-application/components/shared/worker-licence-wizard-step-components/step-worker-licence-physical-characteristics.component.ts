@@ -5,13 +5,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-physical-characteristics',
-	template: `
+    selector: 'app-step-worker-licence-physical-characteristics',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-form-physical-characteristics [form]="form"></app-form-physical-characteristics>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicencePhysicalCharacteristicsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

@@ -94,12 +94,14 @@ export const SPD_CONSTANTS = {
 		securityLicensingProcessAndLicenceConditionsPoliciesUrl:
 			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf',
 		securityServicesActUrl: 'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/07030_01',
+		spdComplaintUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/enforcement#complaints',
 	},
 	files: {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
 		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
 		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
-		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use .pdf',
+		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use.pdf',
 		securityServicesBusinessApplicantUpdateTerms:
 			'./assets/files/Security Services Business Applicant Update Terms of Use.pdf',
 		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',

@@ -7,8 +7,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';
 
 @Component({
-	selector: 'app-user-profile',
-	template: `
+    selector: 'app-user-profile',
+    template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -57,7 +57,8 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class UserProfileComponent {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;

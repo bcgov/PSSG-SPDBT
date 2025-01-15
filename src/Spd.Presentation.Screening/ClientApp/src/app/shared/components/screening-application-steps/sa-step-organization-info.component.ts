@@ -6,8 +6,8 @@ import { SaAgreementOfTermsComponent } from './step-components/sa-agreement-of-t
 import { SaSecurityInformationComponent } from './step-components/sa-security-information.component';
 
 @Component({
-	selector: 'app-sa-step-organization-info',
-	template: `
+    selector: 'app-sa-step-organization-info',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-security-information *ngIf="orgData" [orgData]="orgData"></app-sa-security-information>
@@ -43,8 +43,9 @@ import { SaSecurityInformationComponent } from './step-components/sa-security-in
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepOrganizationInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

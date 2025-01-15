@@ -21,7 +21,7 @@ import {
 	OrgRegDuplicateDialogResponse,
 	OrgRegDuplicateModalComponent,
 } from './org-reg-duplicate-modal.component';
-import { OrgRegistrationRoutes } from './org-registration-routing.module';
+import { OrgRegistrationRoutes } from './org-registration-routes';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
@@ -34,8 +34,8 @@ export interface RegistrationFormStepComponent {
 }
 
 @Component({
-	selector: 'app-org-registration',
-	template: `
+    selector: 'app-org-registration',
+    template: `
 		<div class="container my-4">
 			<mat-stepper
 				linear
@@ -87,7 +87,8 @@ export interface RegistrationFormStepComponent {
 			</mat-stepper>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class OrgRegistrationComponent implements OnInit {
 	readonly STEP_ONE = 0; // needs to be zero based because 'selectedIndex' is zero based

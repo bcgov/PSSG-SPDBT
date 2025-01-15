@@ -21,6 +21,7 @@ import {
 	PermitAppUpsertRequest,
 	PermitLicenceAppResponse,
 	ServiceTypeCode,
+	WeightUnitCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -51,7 +52,7 @@ import {
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
+import { LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
@@ -178,14 +179,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		document: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [document],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [document],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 
@@ -299,6 +298,18 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.mailingAddressFormGroup.valid &&
 			this.contactInformationFormGroup.valid
 		);
+	}
+
+	getShowEmployerInformation(serviceTypeCode: ServiceTypeCode): boolean {
+		const permitRequirementData = this.permitModelFormGroup.get('permitRequirementData')?.value;
+
+		if (serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
+			const bodyArmourRequirement = permitRequirementData.bodyArmourRequirementFormGroup;
+			return !!bodyArmourRequirement.isMyEmployment;
+		} else {
+			const armouredVehicleRequirement = permitRequirementData.armouredVehicleRequirementFormGroup;
+			return !!armouredVehicleRequirement.isMyEmployment;
+		}
 	}
 
 	/**
@@ -493,7 +504,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
-					_resp.applicationTypeData.applicationTypeCode
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
 				);
 			})
 		);
@@ -574,8 +586,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -672,6 +684,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			switchMap((resps: any[]) => {
 				const permitLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
+
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
+				permitLicenceAppl.expiredLicenceId = null;
+				permitLicenceAppl.expiredLicenceNumber = null;
+				permitLicenceAppl.hasExpiredLicence = false;
 
 				return this.applyPermitAndProfileIntoModel({
 					permitLicenceAppl,
@@ -822,12 +839,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private createEmptyPermitAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const characteristicsData = {
+			hairColourCode: null,
+			eyeColourCode: null,
+			height: null,
+			heightUnitCode: HeightUnitCode.Inches,
+			heightInches: null,
+			weight: null,
+			weightUnitCode: WeightUnitCode.Pounds,
+		};
+
 		this.permitModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				permitRequirementData: { serviceTypeCode: serviceTypeCode },
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -932,8 +960,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 							documentsToSaveApis.push(
 								this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 									body: {
-										Documents: newDocumentsOnly,
-										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+										documents: newDocumentsOnly,
+										licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 									},
 								})
 							);
@@ -965,8 +993,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		return this.permitService.apiPermitApplicationGet().pipe(
-			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl: resp, associatedLicence });
+			switchMap((permitLicenceAppl: PermitLicenceAppResponse) => {
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
+				permitLicenceAppl.expiredLicenceId = null;
+				permitLicenceAppl.expiredLicenceNumber = null;
+				permitLicenceAppl.hasExpiredLicence = false;
+
+				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl, associatedLicence });
 			})
 		);
 	}
@@ -1056,10 +1089,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			hairColourCode: applicantProfile.hairColourCode,
 			eyeColourCode: applicantProfile.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode,
+			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
 			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode,
+			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
@@ -1267,9 +1300,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: LicenceDocumentTypeCode | null;
 			proofOfCitizenshipCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
@@ -1278,9 +1313,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			proofOfResidentStatusCode: null,
 			proofOfCitizenshipCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
+			governmentIssuedDocumentIdNumber: null,
 			governmentIssuedAttachments: [],
 		};
 
@@ -1311,6 +1348,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
 					break;
 				}
@@ -1341,13 +1379,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 							? doc.licenceDocumentTypeCode
 							: null;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
-					const aFile = this.fileUtilService.dummyFile(doc);
-					photographOfYourselfAttachments.push(aFile);
+					// If there is a photo on the licence, use that one. See below
+					if (!associatedLicence?.photoDocumentInfo) {
+						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+						const aFile = this.fileUtilService.dummyFile(doc);
+						photographOfYourselfAttachments.push(aFile);
+					}
 					break;
 				}
 				case LicenceDocumentTypeCode.ArmouredVehicleRationale:
@@ -1361,9 +1403,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		});
 
+		if (associatedLicence?.photoDocumentInfo) {
+			const doc: Document = {
+				documentExtension: associatedLicence?.photoDocumentInfo.documentExtension,
+				documentName: associatedLicence?.photoDocumentInfo.documentName,
+				documentUrlId: associatedLicence?.photoDocumentInfo.documentUrlId,
+				expiryDate: associatedLicence?.photoDocumentInfo.expiryDate,
+				licenceAppId: permitLicenceAppl.licenceAppId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				uploadedDateTime: associatedLicence?.photoDocumentInfo.uploadedDateTime,
+			};
+			const aFile = this.fileUtilService.dummyFile(doc);
+			photographOfYourselfAttachments.push(aFile);
+			photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+		}
+
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
 			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
+			updatePhoto: null,
+			updateAttachments: [],
 		};
 
 		const permitRationaleData = {

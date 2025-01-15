@@ -41,8 +41,8 @@ export class Address {
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-address-form-autocomplete',
-	template: `
+    selector: 'app-form-address-autocomplete',
+    template: `
 		<form [formGroup]="form">
 			<div class="row">
 				<div [ngClass]="isWideView ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
@@ -91,8 +91,8 @@ export class Address {
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-option {
 				color: var(--color-primary-light);
 			}
@@ -101,9 +101,10 @@ export class Address {
 				padding-bottom: 12px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
-export class AddressAutocompleteComponent implements OnInit {
+export class FormAddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
 	@Output() enterAddressManually: EventEmitter<boolean> = new EventEmitter<boolean>();
 	// @Input() isWizardStep = true;

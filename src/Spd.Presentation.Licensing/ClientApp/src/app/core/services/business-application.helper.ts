@@ -6,8 +6,8 @@ import {
 	Document,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
+	PrivateInvestigatorSwlContactInfo,
 	ServiceTypeCode,
-	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
@@ -49,6 +49,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			soleProprietorLicenceAppId: new FormControl(''),
 			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
+			soleProprietorLicenceHolderId: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
 			soleProprietorLicenceExpiryDate: new FormControl(''),
 			soleProprietorLicenceStatusCode: new FormControl(''),
@@ -172,7 +173,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	);
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl('', [FormControlValidators.required]),
+		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
@@ -192,10 +193,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'givenName',
-					(form) => form.get('applicantIsBizManager')?.value != true
-				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'surname',
 					(form) => form.get('applicantIsBizManager')?.value != true
@@ -333,7 +330,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
-		branchPhoneNumber: new FormControl(''),
+		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
@@ -344,7 +341,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
 			bizContactId: new FormControl(''),
-			givenName: new FormControl('', [FormControlValidators.required]),
+			givenName: new FormControl(''),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
@@ -365,7 +362,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
 		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
-		firstName: new FormControl('', [FormControlValidators.required]),
+		firstName: new FormControl(''),
 		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
 		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
@@ -493,9 +490,11 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const applicantData = { ...businessModelFormValue.applicantData };
 		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
 
-		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+		const businessInformationData = businessModelFormValue.businessInformationData;
+		const bizTypeCode = businessInformationData.bizTypeCode;
+		const applicantSwlLicenceId = businessInformationData.soleProprietorLicenceId;
 
-		let privateInvestigatorSwlInfo: SwlContactInfo = {};
+		let privateInvestigatorSwlInfo: PrivateInvestigatorSwlContactInfo = {};
 		let securityGuardData: any = {
 			useDogs: null,
 			isDogsPurposeDetectionDrugs: null,
@@ -542,11 +541,20 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 
 		if (categoryData.PrivateInvestigator) {
-			const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
-			privateInvestigatorSwlInfo = {
-				contactId: privateInvestigatorData.managerContactId,
-				licenceId: privateInvestigatorData.managerLicenceId,
-			};
+			const isSoleProprietorSimultaneousFlow = businessModelFormValue.isSoleProprietorSimultaneousFlow;
+			if (!isSoleProprietorSimultaneousFlow && this.isSoleProprietor(bizTypeCode)) {
+				// if sole proprietor, populate the PI info from the associated swl in the profile
+				privateInvestigatorSwlInfo = {
+					contactId: businessInformationData.soleProprietorLicenceHolderId,
+					licenceId: businessInformationData.soleProprietorLicenceId,
+				};
+			} else {
+				const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
+				privateInvestigatorSwlInfo = {
+					contactId: privateInvestigatorData.managerContactId,
+					licenceId: privateInvestigatorData.managerLicenceId,
+				};
+			}
 		} else {
 			this.clearPrivateInvestigatorModelData();
 		}
@@ -563,6 +571,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			licenceAppId,
 			soleProprietorSWLAppId,
 			soleProprietorSWLAppOriginTypeCode,
+			applicantSwlLicenceId,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
@@ -767,6 +776,21 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
 		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	getSummarysoleProprietorLicenceHolderName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceHolderName ?? '';
+	}
+	getSummarysoleProprietorLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceNumber ?? '';
+	}
+	getSummarysoleProprietorLicenceExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorLicenceExpiryDate ?? '';
+	}
+	getSummarysoleProprietorSwlEmailAddress(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlEmailAddress ?? '';
+	}
+	getSummarysoleProprietorSwlPhoneNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessInformationData.soleProprietorSwlPhoneNumber ?? '';
+	}
 
 	getSummarycategoryList(businessLicenceModelData: any): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];
@@ -779,24 +803,59 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 		return list.sort();
 	}
-	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
+	getSummaryisDogs(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+	}
+	getSummaryuseDogs(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.useDogs ?? '';
+	}
+	getSummaryisDogsPurposeProtection(businessLicenceModelData: any): string {
 		return (
-			this.getSummaryshowArmouredCarGuard(businessLicenceModelData) ||
-			this.getSummaryshowSecurityGuard(businessLicenceModelData)
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeProtection ?? false
 		);
 	}
+	getSummaryisDogsPurposeDetectionDrugs(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false
+		);
+	}
+	getSummaryisDogsPurposeDetectionExplosives(businessLicenceModelData: any): string {
+		return (
+			businessLicenceModelData.categorySecurityGuardFormGroup.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ??
+			false
+		);
+	}
+	getSummarydogsPurposeAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
+	}
+
+	getSummaryisPrivateInvestigator(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup?.isInclude ?? false;
+	}
+	getSummaryprivateInvestigatorName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceHolderName ?? '';
+	}
+	getSummaryprivateInvestigatorLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceNumber ?? '';
+	}
+	getSummaryprivateInvestigatorExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.categoryPrivateInvestigatorFormGroup.managerLicenceExpiryDate ?? '';
+	}
+	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
+		return this.getSummaryshowArmouredCarGuard(businessLicenceModelData);
+	}
 	getSummaryshowArmouredCarGuard(businessLicenceModelData: any): boolean {
-		return businessLicenceModelData.categoryArmouredCarGuardData?.isInclude ?? false;
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup?.isInclude ?? false;
 	}
 	getSummaryshowSecurityGuard(businessLicenceModelData: any): boolean {
-		const isInclude = businessLicenceModelData.categorySecurityGuardData?.isInclude ?? false;
-		return isInclude && businessLicenceModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
+		const isInclude = businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
+		return isInclude && businessLicenceModelData.categorySecurityGuardFormGroup?.useDogs === BooleanTypeCode.Yes;
 	}
 	getSummarycategoryArmouredCarGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categoryArmouredCarGuardData.attachments ?? [];
+		return businessLicenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
 	}
 	getSummarycategorySecurityGuardAttachments(businessLicenceModelData: any): File[] {
-		return businessLicenceModelData.categorySecurityGuardData.attachments ?? [];
+		return businessLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
 	}
 
 	getSummarybusinessManagerGivenName(businessLicenceModelData: any): string {
@@ -849,6 +908,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
 		return businessLicenceModelData.employeesData.employees ?? [];
+	}
+
+	getSummaryisAddressTheSame(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.businessAddressData?.isAddressTheSame ?? false;
+	}
+
+	getSummaryisBcBusinessAddress(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.isBcBusinessAddress ?? false;
 	}
 
 	private clearPrivateInvestigatorModelData(): void {

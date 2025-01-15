@@ -10,8 +10,18 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="warning" icon="warning">
-						Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
-						application's processing time.
+						<p>
+							Upload a clear photo of yourself that closely matches the photo on your submitted government-issued ID.
+							This photo will be used for your license or permit if your application is approved. A mismatched or
+							unclear photo may delay your application's processing time.
+						</p>
+
+						Photo Guidelines:
+						<ul>
+							<li>The photo should be in color and well-lit.</li>
+							<li>Ensure your face is fully visible, with no hats, sunglasses, or filters.</li>
+							<li>Use a plain background for better clarity.</li>
+						</ul>
 					</app-alert>
 
 					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
@@ -41,6 +51,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 		</form>
 	`,
 	styles: [],
+	standalone: false,
 })
 export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');

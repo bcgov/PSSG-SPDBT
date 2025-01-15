@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from 'src/app/api/models';
 
 @Component({
-	selector: 'app-login-failure',
-	template: `
+    selector: 'app-login-failure',
+    template: `
 		<div class="container mt-4">
 			<section class="step-section p-3">
 				<div class="row">
@@ -49,7 +49,8 @@ import { IdentityProviderTypeCode } from 'src/app/api/models';
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LoginFailureComponent implements OnInit {
 	isPsso = false;

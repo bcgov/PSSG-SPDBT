@@ -170,6 +170,10 @@ button.mat-red-button {
 	color: rgba(0, 0, 0, 0.9) !important;
 }
 
+.mat-mdc-select-disabled .mat-mdc-select-arrow {
+	display: none;
+}
+
 .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label,
 .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label--float-above {
 	color: rgba(0, 0, 0, 0.9) !important;
@@ -236,6 +240,10 @@ button.mat-red-button {
 
 .expanded-detail-row:has(.mat-column-expandedDetail:empty) {
 	display: none;
+}
+
+.spd-table-tall-row {
+	min-height: 100px;
 }
 
 .mat-table-header-cell {
@@ -319,6 +327,10 @@ button.mat-red-button {
 	.mat-column-action2:empty {
 		/* hide column if empty on small screens */
 		display: none;
+	}
+
+	.spd-table-tall-row {
+		min-height: unset;
 	}
 }
 

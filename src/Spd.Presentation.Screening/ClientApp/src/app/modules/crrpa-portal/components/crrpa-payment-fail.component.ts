@@ -15,8 +15,8 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-crrpa-payment-fail',
-	template: `
+    selector: 'app-crrpa-payment-fail',
+    template: `
 		<div class="container mt-4">
 			<section class="step-section p-3">
 				<app-payment-fail
@@ -30,7 +30,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpaPaymentFailComponent implements OnInit {
 	isCancelledPaymentFlow = false;
@@ -42,7 +43,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 		private route: ActivatedRoute,
 		private authProcessService: AuthProcessService,
 		private paymentService: PaymentService,
-		private utilService: UtilService
+		private utilService: UtilService,
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -61,10 +62,10 @@ export class CrrpaPaymentFailComponent implements OnInit {
 						return this.paymentService.apiCrrpaApplicationIdPaymentAttemptsGet({
 							applicationId: paymentResp.applicationId!,
 						});
-					})
+					}),
 				)
 				.subscribe((numberOfFails) => {
-					this.isPayBySecureLink = this.payment?.paymentType == PaymentTypeCode.PayBcSecurePaymentLink;
+					this.isPayBySecureLink = this.payment?.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
 					if (this.isPayBySecureLink) {
 						this.numberOfAttemptsRemaining = 0;
 					} else {
