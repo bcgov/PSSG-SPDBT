@@ -7,7 +7,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
+import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -21,8 +21,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
-	template: `
+    selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
+    template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
 				[selectedIndex]="3"
@@ -49,6 +49,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -65,7 +66,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
@@ -79,10 +79,12 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Review Business Licence</ng-template>
 					<app-steps-business-licence-review
-						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
+						[showSaveAndExit]="true"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+						[isControllingMembersWithoutSwlExist]="false"
+						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -97,7 +99,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-stepper>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	extends BaseWizardComponent
@@ -142,6 +145,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -230,7 +238,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step + this.STEP_BUSINESS_INFORMATION; // add offset
 	}
 
 	onChildNextStep() {
@@ -261,8 +269,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Cancel application',
-			cancelText: 'Continue application',
+			actionText: 'Cancel Application',
+			cancelText: 'Continue Application',
 			wideButtons: true,
 		};
 

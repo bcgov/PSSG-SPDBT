@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { DialogComponent, DialogOptions } from './dialog.component';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
@@ -20,7 +22,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						</button>
 					</ng-container>
 					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Exit</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">{{ cancelLabel }}</button>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -94,12 +96,16 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						(click)="onCancelAndExit()"
 						*ngIf="isCancelAndExitObserved"
 					>
-						Exit
+						{{ cancelAndExitLabel }}
 					</button>
 				</div>
 			</ng-container>
 			<ng-template #defaultFlow>
-				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+				<div
+					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
+					*ngIf="isFormValid"
+				>
 					<button
 						*ngIf="isNextReviewStepperStepObserved"
 						mat-stroked-button
@@ -120,6 +126,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			}
 		`,
 	],
+	standalone: false,
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;
@@ -130,6 +137,8 @@ export class WizardFooterComponent implements OnInit {
 	isNextReviewStepperStepObserved = false;
 
 	@Input() nextButtonLabel = 'Next';
+	@Input() cancelAndExitLabel = 'Exit';
+	@Input() cancelLabel = 'Exit';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
@@ -144,7 +153,10 @@ export class WizardFooterComponent implements OnInit {
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextReviewStepperStep: EventEmitter<number> = new EventEmitter();
 
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
@@ -156,7 +168,22 @@ export class WizardFooterComponent implements OnInit {
 	}
 
 	onSaveAndExit(): void {
-		this.saveAndExit.emit();
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to save your changes and exit?',
+			actionText: 'Exit',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.saveAndExit.emit();
+				}
+			});
 	}
 
 	onPrevious(): void {
@@ -178,11 +205,6 @@ export class WizardFooterComponent implements OnInit {
 	onCancel(): void {
 		if (this.isCancelObserved) {
 			this.cancelStep.emit();
-			return;
-		}
-
-		if (this.isCancelAndExitObserved) {
-			this.cancelAndExit.emit();
 			return;
 		}
 

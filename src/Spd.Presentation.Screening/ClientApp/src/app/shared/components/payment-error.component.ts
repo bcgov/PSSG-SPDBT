@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-payment-error',
-	template: `
+    selector: 'app-payment-error',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">Payment Error</h3>
@@ -41,7 +41,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PaymentErrorComponent implements OnInit {
 	isBackRoute = false;

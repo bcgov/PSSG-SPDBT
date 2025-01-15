@@ -12,8 +12,8 @@ export class AgreementOfTermsModel {
 }
 
 @Component({
-	selector: 'app-agreement-of-terms',
-	template: `
+    selector: 'app-agreement-of-terms',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Review and agree to the following terms of agreement"></app-step-title>
@@ -118,8 +118,8 @@ export class AgreementOfTermsModel {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			li:not(:last-child) {
 				margin-bottom: 1em;
 			}
@@ -131,7 +131,8 @@ export class AgreementOfTermsModel {
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();

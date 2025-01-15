@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
+	WeightUnitCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
@@ -53,7 +54,7 @@ import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 import { WorkerApplicationHelper } from './worker-application.helper';
 
 @Injectable({
@@ -113,6 +114,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		citizenshipData: this.citizenshipFormGroup,
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
 		characteristicsData: this.characteristicsFormGroup,
+
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 	});
 
@@ -209,14 +211,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		documentCode: LicenceDocumentTypeCode,
 		document: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [document],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.workerModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
+			body: {
+				documents: [document],
+				licenceDocumentTypeCode: documentCode,
+			},
 		});
 	}
 
@@ -675,8 +675,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -766,8 +766,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -845,6 +845,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			switchMap((resps: any[]) => {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
+
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
+				workerLicenceAppl.expiredLicenceId = null;
+				workerLicenceAppl.expiredLicenceNumber = null;
+				workerLicenceAppl.hasExpiredLicence = false;
 
 				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
@@ -1075,11 +1080,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const characteristicsData = {
+			hairColourCode: null,
+			eyeColourCode: null,
+			height: null,
+			heightUnitCode: HeightUnitCode.Inches,
+			heightInches: null,
+			weight: null,
+			weightUnitCode: WeightUnitCode.Pounds,
+		};
+
 		this.workerModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -1139,6 +1155,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					associatedLicence
 				).pipe(
 					switchMap((_resp: any) => {
+						// remove reference to expired licence - data is only used in the Resume authenticated flow.
+						workerLicenceAppl.expiredLicenceId = null;
+						workerLicenceAppl.expiredLicenceNumber = null;
+						workerLicenceAppl.hasExpiredLicence = false;
+
 						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
 					})
 				);
@@ -1173,8 +1194,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1337,10 +1358,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			hairColourCode: applicantProfile.hairColourCode,
 			eyeColourCode: applicantProfile.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode,
+			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
 			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode,
+			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
@@ -1456,35 +1477,35 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
-		const originalLicenceData = this.originalLicenceFormGroup.value;
-		originalLicenceData.originalBizTypeCode = workerLicenceAppl.bizTypeCode;
+		const bizTypeCode = workerLicenceAppl.bizTypeCode ?? BizTypeCode.None;
 
-		const isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(
-			workerLicenceAppl.bizTypeCode!
-		);
+		const originalLicenceData = this.originalLicenceFormGroup.value;
+		originalLicenceData.originalBizTypeCode = bizTypeCode;
+
+		let isSoleProprietor = !!associatedLicence?.linkedSoleProprietorLicenceId;
+		if (!isSoleProprietor) {
+			isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+		}
+
 		const soleProprietorData = {
 			isSoleProprietor: this.utilService.booleanToBooleanType(isSoleProprietor),
-			bizTypeCode: workerLicenceAppl.bizTypeCode,
+			bizTypeCode,
 		};
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
 		if (associatedLicence) {
-			if ('isSimultaneousFlow' in associatedLicence) {
-				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
-			} else {
-				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
-			}
+			isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
 		} else {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
 
-		// console.debug('************* applyLicenceIntoModel');
-		// console.debug('************* workerLicenceAppl', workerLicenceAppl);
-		// console.debug('************* associatedLicence', associatedLicence);
-		// console.debug('************* associatedExpiredLicence', associatedExpiredLicence);
-		// console.debug('************* isSoleProprietor', isSoleProprietor);
-		// console.debug('************* isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
-		// console.debug('************* soleProprietorData', soleProprietorData);
+		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
+		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
+		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
+		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
+		console.debug('[applyLicenceIntoModel] isSoleProprietor', isSoleProprietor);
+		console.debug('[applyLicenceIntoModel] isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
+		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
@@ -1545,19 +1566,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
+			governmentIssuedDocumentIdNumber: null,
 		};
 
 		citizenshipData.isCanadianCitizen =
@@ -1599,8 +1624,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate:
@@ -1626,8 +1651,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						? null
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
@@ -1794,9 +1819,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
-					const aFile = this.fileUtilService.dummyFile(doc);
-					photographOfYourselfAttachments.push(aFile);
+					// If there is a photo on the licence, use that one. See below
+					if (!associatedLicence?.photoDocumentInfo) {
+						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+						const aFile = this.fileUtilService.dummyFile(doc);
+						photographOfYourselfAttachments.push(aFile);
+					}
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {
@@ -1810,6 +1838,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const fingerprintProofData = {
 			attachments: fingerprintProofDataAttachments,
 		};
+
+		if (associatedLicence?.photoDocumentInfo) {
+			const doc: Document = {
+				documentExtension: associatedLicence?.photoDocumentInfo.documentExtension,
+				documentName: associatedLicence?.photoDocumentInfo.documentName,
+				documentUrlId: associatedLicence?.photoDocumentInfo.documentUrlId,
+				expiryDate: associatedLicence?.photoDocumentInfo.expiryDate,
+				licenceAppId: workerLicenceAppl.licenceAppId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				uploadedDateTime: associatedLicence?.photoDocumentInfo.uploadedDateTime,
+			};
+			const aFile = this.fileUtilService.dummyFile(doc);
+			photographOfYourselfAttachments.push(aFile);
+			photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+		}
 
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,

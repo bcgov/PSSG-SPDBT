@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -10,18 +11,18 @@ import {
 	ValidationErr,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-generic-uploads',
-	template: `
+    selector: 'app-generic-uploads',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -30,8 +31,10 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					<app-file-upload
 						accept=".tsv,.txt"
 						[maxNumberOfFiles]="1"
-						(uploadedFile)="onUploadFile($event)"
-						(removeFile)="onRemoveFile($event)"
+						[control]="attachments"
+						[files]="attachments.value"
+						(fileUploaded)="onUploadFile($event)"
+						(fileRemoved)="onRemoveFile($event)"
 						message="Text files ending in '.TSV' or '.TXT' only"
 					></app-file-upload>
 				</div>
@@ -66,7 +69,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ application.uploadedDateTime | formatDate : constants.date.dateTimeFormat }}
+								{{ application.uploadedDateTime | formatDate: constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -111,16 +114,21 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				min-width: 25px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
+
+	form: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([]),
+	});
 
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<BulkHistoryResponse> = new MatTableDataSource<BulkHistoryResponse>([]);
@@ -134,11 +142,12 @@ export class GenericUploadsComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private formBuilder: FormBuilder,
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBceidService,
 		private applicationService: ApplicationService,
 		private utilService: UtilService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
 	) {}
 
 	ngOnInit() {
@@ -158,11 +167,11 @@ export class GenericUploadsComponent implements OnInit {
 		this.loadList();
 	}
 
-	onUploadFile(files: any) {
+	onUploadFile(uploadedFile: any) {
 		this.showUploadMessages = false;
 
 		const body = {
-			File: files[0],
+			File: uploadedFile,
 			RequireDuplicateCheck: true,
 		};
 
@@ -235,7 +244,7 @@ export class GenericUploadsComponent implements OnInit {
 					.afterClosed()
 					.subscribe((response: boolean) => {
 						if (response) {
-							this.saveBulkUpload(files[0]);
+							this.saveBulkUpload(uploadedFile);
 						} else {
 							this.removeFileFromView(); // on cancel, remove file from upload area
 						}
@@ -283,5 +292,9 @@ export class GenericUploadsComponent implements OnInit {
 				this.dataSource.data = res.bulkUploadHistorys as Array<BulkHistoryResponse>;
 				this.tablePaginator = { ...res.pagination };
 			});
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

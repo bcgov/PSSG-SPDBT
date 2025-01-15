@@ -6,8 +6,8 @@ export interface OrgSelectionDialogData {
 	userInfos: Array<UserInfo>;
 }
 @Component({
-	selector: 'app-org-selection-modal',
-	template: `
+    selector: 'app-org-selection-modal',
+    template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content>
@@ -18,7 +18,8 @@ export interface OrgSelectionDialogData {
 			</ng-container>
 		</mat-dialog-content>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class OrgSelectionModalComponent implements OnInit {
 	selectedOrg: any = null;

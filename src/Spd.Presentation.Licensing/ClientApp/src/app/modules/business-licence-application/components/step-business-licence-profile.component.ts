@@ -6,8 +6,8 @@ import { UtilService } from '@app/core/services/util.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({
-	selector: 'app-step-business-licence-profile',
-	template: `
+    selector: 'app-step-business-licence-profile',
+    template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -31,9 +31,9 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[isReadonly]="false"
 					></app-common-business-profile>
 
-					<section class="mb-2" *ngIf="showConfirmation">
+					<section class="mb-3" *ngIf="showConfirmation">
 						<form [formGroup]="profileConfirmationFormGroup" novalidate>
-							<div class="text-minor-heading">Confirmation</div>
+							<div class="text-minor-heading mb-2">Confirmation</div>
 							<mat-checkbox formControlName="isProfileUpToDate">
 								I confirm that this information is up-to-date
 							</mat-checkbox>
@@ -64,7 +64,8 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-	styles: ``,
+    styles: ``,
+    standalone: false
 })
 export class StepBusinessLicenceProfileComponent {
 	applicationTypeCode: ApplicationTypeCode | null = null;

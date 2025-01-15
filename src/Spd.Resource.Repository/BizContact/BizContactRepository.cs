@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -41,6 +40,7 @@ namespace Spd.Resource.Repository.BizContact
         public async Task<IEnumerable<BizContactResp>> QueryBizContactsAsync(BizContactQry qry, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(c => c.spd_position_spd_businesscontact)
                 .Expand(c => c.spd_businesscontact_spd_application)
                 .Expand(c => c.spd_businesscontact_spd_portalinvitation);
 
@@ -101,7 +101,6 @@ namespace Spd.Resource.Repository.BizContact
                 c = await _context.GetContactById((Guid)cmd.BizContact.ContactId, ct);
                 if (c == null)
                     throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {cmd.BizContact.ContactId.Value}");
-                bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
             }
             _context.AddTospd_businesscontacts(bizContact);
             if (c != null)
@@ -145,6 +144,7 @@ namespace Spd.Resource.Repository.BizContact
                 _context.UpdateObject(app);
             }
             bizContact.statecode = DynamicsConstants.StateCode_Inactive;
+            bizContact.statuscode = DynamicsConstants.StatusCode_Inactive;
             _context.UpdateObject(bizContact);
 
             await _context.SaveChangesAsync(ct);
@@ -207,7 +207,6 @@ namespace Spd.Resource.Repository.BizContact
                         contact? c = await _context.GetContactById((Guid)item.ContactId, ct);
                         if (c == null)
                             throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
-                        bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
                         _context.AddTospd_businesscontacts(bizContact);
                         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
                     }

@@ -16,8 +16,8 @@ import { take, takeWhile, tap } from 'rxjs';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
-	selector: 'app-controlling-member-login',
-	template: `
+    selector: 'app-controlling-member-login',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section [title]="title">
 				<div class="row">
@@ -71,8 +71,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 			</app-step-section>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.login-link {
 				font-weight: bold;
 				color: var(--color-primary) !important;
@@ -87,7 +87,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 				height: 3em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ControllingMemberLoginComponent implements OnInit {
 	title!: string;

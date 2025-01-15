@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeWhile } from 'rxjs';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { CrrpRoutes } from './crrp-routing.module';
+import { CrrpRoutes } from './crrp-routes';
 
 @Component({
-	selector: 'app-invitation',
-	template: `
+    selector: 'app-invitation',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon>no_accounts</mat-icon>
 			<h1>Invite Denied</h1>
@@ -19,8 +19,8 @@ import { CrrpRoutes } from './crrp-routing.module';
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -29,7 +29,8 @@ import { CrrpRoutes } from './crrp-routing.module';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class InvitationUserComponent implements OnInit {
 	message = '';

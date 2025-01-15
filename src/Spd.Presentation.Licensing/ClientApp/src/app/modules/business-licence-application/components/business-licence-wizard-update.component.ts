@@ -8,13 +8,15 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 
+import { Router } from '@angular/router';
+import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-updates.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-update',
-	template: `
+    selector: 'app-business-licence-wizard-update',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -51,9 +53,11 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-business-licence-review
-							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
+							[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+							[isSoleProprietorSimultaneousFlow]="false"
+							[isControllingMembersWithoutSwlExist]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
@@ -69,7 +73,8 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeUpdate = ApplicationTypeCode.Update;
@@ -94,6 +99,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -101,6 +107,11 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	}
 
 	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())

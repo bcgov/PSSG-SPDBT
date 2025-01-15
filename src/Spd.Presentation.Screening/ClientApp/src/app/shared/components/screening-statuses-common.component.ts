@@ -12,7 +12,7 @@ import {
 	PayerPreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -32,8 +32,8 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 }
 
 @Component({
-	selector: 'app-screening-statuses-common',
-	template: `
+    selector: 'app-screening-statuses-common',
+    template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
@@ -275,8 +275,8 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-status {
 				min-width: 275px;
 			}
@@ -295,13 +295,14 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				}
 			}
 		`,
-	],
-	animations: [
-		trigger('showHideTriggerAnimation', [
-			transition(':enter', [style({ opacity: 0 }), animate('600ms ease-in', style({ opacity: 1 }))]),
-			transition(':leave', [animate('400ms ease-out', style({ opacity: 0 }))]),
-		]),
-	],
+    ],
+    animations: [
+        trigger('showHideTriggerAnimation', [
+            transition(':enter', [style({ opacity: 0 }), animate('600ms ease-in', style({ opacity: 1 }))]),
+            transition(':leave', [animate('400ms ease-out', style({ opacity: 0 }))]),
+        ]),
+    ],
+    standalone: false
 })
 export class ScreeningStatusesCommonComponent implements OnInit {
 	currentStatuses: any[] = [];
@@ -557,8 +558,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					app.isPayNow =
 						this.portal == 'CRRP'
 							? isNotVolunteerOrg &&
-							  app.payeeType === PayerPreferenceTypeCode.Organization &&
-							  app.status === ApplicationPortalStatusCode.AwaitingPayment
+								app.payeeType === PayerPreferenceTypeCode.Organization &&
+								app.status === ApplicationPortalStatusCode.AwaitingPayment
 							: false;
 					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
 				});

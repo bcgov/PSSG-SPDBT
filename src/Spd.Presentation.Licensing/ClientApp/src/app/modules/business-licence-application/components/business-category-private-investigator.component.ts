@@ -35,14 +35,14 @@ import {
 									<div class="text-primary-color">Name</div>
 									<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
 								</div>
-								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Security Worker Licence Number</div>
 									<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
 								</div>
-								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Expiry Date</div>
 									<div class="text-primary-color fs-5">
-										{{ managerLicenceExpiryDate.value | formatDate : formalDateFormat }}
+										{{ managerLicenceExpiryDate.value | formatDate: formalDateFormat }}
 									</div>
 								</div>
 								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
@@ -71,13 +71,17 @@ import {
 		</form>
 	`,
 	styles: ``,
+	standalone: false,
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	form = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
 
-	constructor(private dialog: MatDialog, private businessApplicationService: BusinessApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

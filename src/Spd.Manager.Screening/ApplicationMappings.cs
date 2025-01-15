@@ -34,7 +34,8 @@ namespace Spd.Manager.Screening
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
-               .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s.ServiceType)));
+               .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s.ServiceType)))
+               .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
                  .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));

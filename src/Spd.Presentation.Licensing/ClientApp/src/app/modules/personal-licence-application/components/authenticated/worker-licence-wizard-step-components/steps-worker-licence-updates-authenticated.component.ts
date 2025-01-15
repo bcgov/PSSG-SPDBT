@@ -8,8 +8,8 @@ import { StepWorkerLicenceRestraintsComponent } from '@app/modules/personal-lice
 import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-updates-authenticated',
-	template: `
+    selector: 'app-steps-worker-licence-updates-authenticated',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
@@ -65,8 +65,9 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

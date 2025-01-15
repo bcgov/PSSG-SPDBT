@@ -62,9 +62,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="city">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef sortActionDescription="Sort by city"
-									>City</mat-header-cell
-								>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>City</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">City:</span>
 									{{ branch.city | default }}
@@ -72,12 +70,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="branchManager">
-								<mat-header-cell
-									class="mat-table-header-cell"
-									*matHeaderCellDef
-									sortActionDescription="Sort by manager name"
-									>Manager</mat-header-cell
-								>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">Manager:</span>
 									{{ branch.branchManager | default }}
@@ -148,6 +141,7 @@ export interface BranchResponse {
 		`,
 	],
 	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;

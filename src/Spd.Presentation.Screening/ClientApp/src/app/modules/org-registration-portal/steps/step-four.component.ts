@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-components/agreement-of-terms.component';
 
 @Component({
-	selector: 'app-step-four',
-	template: `
+    selector: 'app-step-four',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-agreement-of-terms [resetRecaptcha]="resetRecaptcha"></app-agreement-of-terms>
@@ -33,8 +33,9 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepFourComponent {
 	@Input() sendToEmailAddress = '';

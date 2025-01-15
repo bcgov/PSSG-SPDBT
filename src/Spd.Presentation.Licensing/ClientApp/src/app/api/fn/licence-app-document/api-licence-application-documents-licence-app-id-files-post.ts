@@ -13,9 +13,9 @@ import { LicenceDocumentTypeCode } from '../../models/licence-document-type-code
 
 export interface ApiLicenceApplicationDocumentsLicenceAppIdFilesPost$Params {
   licenceAppId: string;
-      body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+      body: {
+'documents'?: Array<Blob>;
+'licenceDocumentTypeCode'?: LicenceDocumentTypeCode;
 }
 }
 

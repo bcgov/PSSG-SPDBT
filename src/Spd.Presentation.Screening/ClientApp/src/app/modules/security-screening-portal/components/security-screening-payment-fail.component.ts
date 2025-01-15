@@ -4,14 +4,14 @@ import { switchMap } from 'rxjs/operators';
 import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
-import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 @Component({
-	selector: 'app-security-screening-payment-fail',
-	template: `
+    selector: 'app-security-screening-payment-fail',
+    template: `
 		<app-payment-fail
 			[payment]="payment"
 			[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
@@ -20,7 +20,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
 		></app-payment-fail>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningPaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;

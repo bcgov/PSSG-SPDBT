@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EmployeeInteractionTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -7,12 +7,12 @@ export class VulnerableSectorQuestionModel {
 }
 
 @Component({
-	selector: 'app-vulnerable-sector-question',
-	template: `
+    selector: 'app-vulnerable-sector-question',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
-					title="Tell us a bit more about your employees"
+					[title]="title"
 					subtitle="To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
 				></app-step-title>
 				<div class="step-container row">
@@ -53,7 +53,7 @@ export class VulnerableSectorQuestionModel {
 								</div>
 								<div class="px-2 pb-3">
 									<div class="icon-container d-none d-md-block"><mat-icon>family_restroom</mat-icon></div>
-									My employees work with <strong>children</strong>
+									My {{ label }} work with <strong>children</strong>
 								</div>
 							</ng-template>
 						</div>
@@ -94,7 +94,7 @@ export class VulnerableSectorQuestionModel {
 								</div>
 								<div class="px-2 pb-3">
 									<div class="icon-container d-none d-md-block"><mat-icon>elderly</mat-icon></div>
-									My employees work with <strong>vulnerable adults</strong>
+									My {{ label }} work with <strong>vulnerable adults</strong>
 								</div>
 							</ng-template>
 						</div>
@@ -107,11 +107,11 @@ export class VulnerableSectorQuestionModel {
 							(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAndAdults)"
 							(keydown)="onKeyDown($event, employeeInteractionTypeCodes.ChildrenAndAdults)"
 							[ngClass]="{
-								'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.ChildrenAndAdults
+								'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.ChildrenAndAdults,
 							}"
 						>
 							<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
-							My employees work with <strong>children and vulnerable adults</strong>
+							My {{ label }} work with <strong>children and vulnerable adults</strong>
 						</div>
 					</div>
 					<div class="col-md-3 col-sm-6 mb-3">
@@ -124,7 +124,7 @@ export class VulnerableSectorQuestionModel {
 							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.Neither }"
 						>
 							<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
-							My employees <strong>do not work</strong> with children or vulnerable adults
+							My {{ label }} <strong>do not work</strong> with children or vulnerable adults
 						</div>
 					</div>
 				</div>
@@ -134,8 +134,8 @@ export class VulnerableSectorQuestionModel {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.icon-container {
 				display: block;
 				text-align: center;
@@ -148,7 +148,8 @@ export class VulnerableSectorQuestionModel {
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
 	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;
@@ -157,6 +158,8 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 	displayHelp2 = false;
 
 	employeeInteractionTypeCodes = EmployeeInteractionTypeCode;
+
+	@Input() isVolunteer!: boolean;
 
 	onDataChange(_val: EmployeeInteractionTypeCode) {
 		this.employeeInteractionFlag = _val;
@@ -204,5 +207,13 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onViewHelp2(event);
+	}
+
+	get title(): string {
+		return this.isVolunteer ? 'Tell us a bit more about your volunteers' : 'Tell us a bit more about your employees';
+	}
+
+	get label(): string {
+		return this.isVolunteer ? 'volunteers' : 'employees';
 	}
 }

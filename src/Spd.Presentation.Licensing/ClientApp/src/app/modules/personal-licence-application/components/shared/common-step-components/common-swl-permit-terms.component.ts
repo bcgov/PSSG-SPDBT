@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
@@ -11,40 +10,20 @@ import { UtilService } from '@app/core/services/util.service';
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 					<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
-						<ng-container *ngIf="isNewOrRenewal; else isUpdate">
-							<div class="fs-5 mt-2 mb-3">
-								Terms of Use for Submitting a New or Renewal Security Worker Licence or Permit Application Online,
-								including Related Prescribed Checks
-							</div>
-							<p>
-								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
-								Security Services Portal (the "Site") on their own behalf to submit a new or renewal online application
-								for a security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal
-								licence or permit application includes authorizations for the British Columbia Registrar of Security
-								Services (Registrar) to carry out a criminal record check, police information check and a correctional
-								service information check on you (Prescribed Checks). These Terms of Use apply to the online application
-								process, including your request to submit to Prescribed Checks administered by the Registrar. You will
-								be directed to a separate page for specific consent language as it relates to the conduct of Prescribed
-								Checks.
-							</p>
-						</ng-container>
-						<ng-template #isUpdate>
-							<div class="fs-5 mt-2 mb-3">
-								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
-								Permit Application Online, including Related Prescribed Checks
-							</div>
-							<p>
-								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
-								Security Services Portal (the "Site") on their own behalf to submit an update to, or request a
-								replacement of, a security worker licence, armoured vehicle permit, or body armour permit. Your new or
-								renewal licence or permit application includes authorizations for the British Columbia Registrar of
-								Security Services (Registrar) to carry out a criminal record check, police information check and a
-								correctional service information check on you (Prescribed Checks). These Terms of Use apply to the
-								online application process, including your request to submit to Prescribed Checks administered by the
-								Registrar. You will be directed to a separate page for specific consent language as it relates to the
-								conduct of Prescribed Checks.
-							</p>
-						</ng-template>
+						<div class="fs-5 mt-2 mb-3">
+							Terms of Use for Submitting a New or Renewal Security Worker Licence or Permit Application Online,
+							including Related Prescribed Checks
+						</div>
+						<p>
+							In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic Security
+							Services Portal (the "Site") on their own behalf to submit a new or renewal online application for a
+							security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal licence or
+							permit application includes authorizations for the British Columbia Registrar of Security Services
+							(Registrar) to carry out a criminal record check, police information check and a correctional service
+							information check on you (Prescribed Checks). These Terms of Use apply to the online application process,
+							including your request to submit to Prescribed Checks administered by the Registrar. You will be directed
+							to a separate page for specific consent language as it relates to the conduct of Prescribed Checks.
+						</p>
 						<p>
 							These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
 							British Columbia, represented by the Minister of Public Safety and Solicitor General (the "Province") and
@@ -80,7 +59,7 @@ import { UtilService } from '@app/core/services/util.service';
 								<ol type="a">
 									<li>
 										THE ACCURACY, COMPLETENESS OR CURRENCY OF SERVICES OR ANY ASSOCIATED INFORMATION, OR THAT ANY ERRORS
-										WILL BE CORRECTED.
+										WILL BE CORRECTED;
 									</li>
 									<li>
 										THE SERVICES WILL FUNCTION IN A TIMELY MANNER OR WILL BE AVAILABLE WITHOUT ERROR, FAILURE OR
@@ -205,7 +184,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</li>
 									<li>
 										the Province or the provider of any Associated Service deems such suspension or cancellation
-										necessary for any good and valid reason
+										necessary for any good and valid reason.
 									</li>
 								</ol>
 							</li>
@@ -250,7 +229,9 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
-						<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
+						<div class="alert alert-danger" role="alert">
+							Scroll to the bottom of the terms and conditions section to proceed
+						</div>
 					</ng-container>
 				</div>
 			</div>
@@ -303,8 +284,9 @@ import { UtilService } from '@app/core/services/util.service';
 			}
 		`,
 	],
+	standalone: false,
 })
-export class CommonSwlPermitTermsComponent implements OnInit {
+export class CommonSwlPermitTermsComponent {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
@@ -314,15 +296,8 @@ export class CommonSwlPermitTermsComponent implements OnInit {
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantTerms;
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService) {}
-
-	ngOnInit(): void {
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			this.downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
-		}
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -353,11 +328,5 @@ export class CommonSwlPermitTermsComponent implements OnInit {
 		} else {
 			this.form.controls['dateSigned'].setValue('');
 		}
-	}
-
-	get isNewOrRenewal(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal || this.applicationTypeCode === ApplicationTypeCode.New
-		);
 	}
 }

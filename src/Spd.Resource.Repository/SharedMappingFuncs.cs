@@ -128,13 +128,13 @@ internal static class SharedMappingFuncs
     internal static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
     {
         if (policeRole == null)
-            return (int)PoliceOfficerRoleOptionSet.None;
+            return null;
         return (int)Enum.Parse<PoliceOfficerRoleOptionSet>(policeRole.ToString());
     }
 
     internal static PoliceOfficerRoleEnum? GetPoliceRoleEnum(int? optionset)
     {
-        if (optionset == null || optionset == (int)PoliceOfficerRoleOptionSet.None) return null;
+        if (optionset == null) return null;
         return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
     }
 
@@ -227,7 +227,7 @@ internal static class SharedMappingFuncs
     }
     internal static bool GetIdentityConfirmed(ApplicationOriginTypeEnum? origin, ApplicationTypeEnum type)
     {
-        bool isNotPortal = origin != ApplicationOriginTypeEnum.Portal;
+        bool isNotPortal = origin == null || origin != ApplicationOriginTypeEnum.Portal;
         bool isNewOrRenewal = type == ApplicationTypeEnum.New ||
                               type == ApplicationTypeEnum.Renewal;
 

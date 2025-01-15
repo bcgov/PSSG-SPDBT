@@ -5,8 +5,8 @@ import { StepBusinessLicenceCategoryComponent } from './step-business-licence-ca
 import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
 
 @Component({
-	selector: 'app-steps-business-licence-selection',
-	template: `
+    selector: 'app-steps-business-licence-selection',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-category
@@ -20,6 +20,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
@@ -40,15 +41,17 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onStepPrevious()"
+					cancelAndExitLabel="Cancel"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;

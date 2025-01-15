@@ -46,7 +46,7 @@ export { ControllingMemberCrcAppUpdateRequest } from './models/controlling-membe
 export { ControllingMemberCrcAppUpsertRequest } from './models/controlling-member-crc-app-upsert-request';
 export { ControllingMemberInvitesCreateResponse } from './models/controlling-member-invites-create-response';
 export { Document } from './models/document';
-export { DocumentExpiredInfo } from './models/document-expired-info';
+export { DocumentRelatedInfo } from './models/document-related-info';
 export { EyeColourCode } from './models/eye-colour-code';
 export { GenderCode } from './models/gender-code';
 export { GoogleRecaptcha } from './models/google-recaptcha';

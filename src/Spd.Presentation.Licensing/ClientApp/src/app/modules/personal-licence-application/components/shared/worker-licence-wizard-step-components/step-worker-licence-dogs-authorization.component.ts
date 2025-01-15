@@ -91,6 +91,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
@@ -107,7 +108,9 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewalOrUpdate
+			? 'Update any information that has changed since your last application'
+			: 'Check with your employer if the use of dogs is required.';
 
 		this.originalDogAuthorizationExists = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalDogAuthorizationExists'

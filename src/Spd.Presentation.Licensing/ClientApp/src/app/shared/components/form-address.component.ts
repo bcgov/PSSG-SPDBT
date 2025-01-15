@@ -2,19 +2,19 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { Address } from './address-autocomplete.component';
+import { Address } from './form-address-autocomplete.component';
 
 @Component({
-	selector: 'app-address',
-	template: `
+    selector: 'app-form-address',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<ng-container *ngIf="!isReadonly">
-				<app-address-form-autocomplete
+				<app-form-address-autocomplete
 					(autocompleteAddress)="onAddressAutocomplete($event)"
 					(enterAddressManually)="onEnterAddressManually()"
 					[isWideView]="isWideView"
 				>
-				</app-address-form-autocomplete>
+				</app-form-address-autocomplete>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
@@ -87,9 +87,10 @@ import { Address } from './address-autocomplete.component';
 			</section>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
-export class AddressComponent implements OnInit {
+export class FormAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	provinceOfBC = SPD_CONSTANTS.address.provinceBC;

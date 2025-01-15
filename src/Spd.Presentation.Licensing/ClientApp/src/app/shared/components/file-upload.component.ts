@@ -74,8 +74,8 @@ export class FileUploadHelper {
 }
 
 @Component({
-	selector: 'app-file-upload',
-	template: `
+    selector: 'app-file-upload',
+    template: `
 		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
 			<div class="row my-2" *ngIf="files && files.length > 0">
 				<ng-container *ngFor="let file of files; let i = index">
@@ -117,8 +117,8 @@ export class FileUploadHelper {
 			</label>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.file-preview {
 				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
 				align-items: center;
@@ -176,7 +176,8 @@ export class FileUploadHelper {
 				outline: 0;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class FileUploadComponent implements OnInit {
 	@Input() control!: FormControl;
@@ -251,7 +252,7 @@ export class FileUploadComponent implements OnInit {
 		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
 
 		if (numberOfPeriods > 1) {
-			this.hotToastService.error('A file name cannot contain multiple periods. Please rename this file and try again.');
+			this.hotToastService.error('A file name cannot contain multiple periods. Rename this file and try again.');
 			return;
 		}
 

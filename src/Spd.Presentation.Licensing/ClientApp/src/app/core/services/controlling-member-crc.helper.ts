@@ -4,7 +4,7 @@ import {
 	ApplicationTypeCode,
 	ControllingMemberCrcAppSubmitRequest,
 	Document,
-	DocumentExpiredInfo,
+	DocumentRelatedInfo,
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 } from '@app/api/models';
@@ -50,7 +50,6 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		check3: new FormControl(null, [Validators.requiredTrue]),
 		check4: new FormControl(null, [Validators.requiredTrue]),
 		check5: new FormControl(null, [Validators.requiredTrue]),
-		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
 			{
@@ -114,9 +113,13 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
+			? policeBackgroundData.policeOfficerRoleCode
+			: PoliceOfficerRoleCode.None;
 		const otherOfficerRole =
-			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
+				? policeBackgroundData.otherOfficerRole
+				: null;
 
 		const documentInfos: Array<Document> = [];
 
@@ -158,6 +161,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
+				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
@@ -181,6 +185,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -195,14 +200,15 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate)
+				.filter((doc) => doc.expiryDate || doc.documentIdNumber)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
+						documentIdNumber: doc.documentIdNumber,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-					} as DocumentExpiredInfo;
+					} as DocumentRelatedInfo;
 				}) ?? [];
 
 		const body = {
@@ -252,8 +258,8 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			policeOfficerRoleCode,
 			otherOfficerRole,
 			//-----------------------------------
-			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: [...documentInfos],
+			documentRelatedInfos: documentRelatedInfos,
+			documentInfos: documentInfos,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);

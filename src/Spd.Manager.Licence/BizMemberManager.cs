@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -37,6 +38,7 @@ internal class BizMemberManager :
     private readonly IBizRepository _bizRepository;
     private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
+    private readonly IControllingMemberCrcRepository _cmCrcRepository;
 
     public BizMemberManager(
         ILicenceRepository licenceRepository,
@@ -47,7 +49,8 @@ internal class BizMemberManager :
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
-        IControllingMemberInviteRepository cmInviteRepository)
+        IControllingMemberInviteRepository cmInviteRepository,
+        IControllingMemberCrcRepository cmCrcRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -58,6 +61,7 @@ internal class BizMemberManager :
     {
         _bizContactRepository = bizContactRepository;
         _cmInviteRepository = cmInviteRepository;
+        _cmCrcRepository = cmCrcRepository;
     }
 
     public async Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
@@ -108,18 +112,40 @@ internal class BizMemberManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the non-swl controlling member.");
         if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl controlling member.");
-        if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
+        if (cmd.InviteTypeCode != ControllingMemberAppInviteTypeCode.CreateShellApp && string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
-        //if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
-        //    contactResp.LatestControllingMemberCrcAppPortalStatusEnum != ApplicationPortalStatusEnum.CompletedCleared)
-        //    throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
 
-        var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
-        createCmd.CreatedByUserId = cmd.UserId;
-        createCmd.HostUrl = cmd.HostUrl;
-        createCmd.InviteTypeCode = Enum.Parse<ControllingMemberAppInviteTypeEnum>(cmd.InviteTypeCode.ToString());
-        await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
-
+        if (cmd.InviteTypeCode == ControllingMemberAppInviteTypeCode.CreateShellApp)
+        {
+            var createShellApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(contactResp);
+            //get biz app id
+            IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+                new LicenceAppQuery(
+                    null,
+                    contactResp.BizId,
+                    new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
+                    new List<ApplicationPortalStatusEnum>
+                    {
+                        ApplicationPortalStatusEnum.Draft,
+                        ApplicationPortalStatusEnum.Incomplete,
+                        ApplicationPortalStatusEnum.VerifyIdentity,
+                        ApplicationPortalStatusEnum.AwaitingPayment
+                    }),
+                cancellationToken);
+            LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+                .OrderByDescending(a => a.CreatedOn)
+                .FirstOrDefault();
+            createShellApp.ParentBizLicApplicationId = app?.LicenceAppId;
+            await _cmCrcRepository.CreateControllingMemberCrcApplicationAsync(createShellApp, cancellationToken);
+        }
+        else
+        {
+            var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
+            createCmd.CreatedByUserId = cmd.UserId;
+            createCmd.HostUrl = cmd.HostUrl;
+            createCmd.InviteTypeCode = Enum.Parse<ControllingMemberAppInviteTypeEnum>(cmd.InviteTypeCode.ToString());
+            await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
+        }
         return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
     }
 
@@ -139,7 +165,7 @@ internal class BizMemberManager :
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => _mapper.Map<NonSwlContactInfo>(c));
         members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee && !c.PositionCodes.Any(c => c == PositionEnum.PrivateInvestigatorManager))
             .Select(c => _mapper.Map<SwlContactInfo>(c));
         return members;
     }

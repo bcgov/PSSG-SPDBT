@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-business-licence-list-current',
-	template: `
+    selector: 'app-business-licence-list-current',
+    template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
 			<div class="text-primary-color fs-5 py-3">Valid Licence</div>
 			<div
@@ -155,8 +155,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.appl-chip-option {
 				height: 35px;
 				width: 125px;
@@ -171,7 +171,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 				color: var(--color-red-dark);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class BusinessLicenceListCurrentComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

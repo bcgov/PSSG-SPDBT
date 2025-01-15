@@ -56,14 +56,14 @@ internal class Mappings : Profile
         CreateMap<SaveBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
-         .IncludeBase<BizLicApplication, spd_application>()
-         .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+         .IncludeBase<BizLicApplication, spd_application>();
+        //.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<CreateBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-         .IncludeBase<BizLicApplication, spd_application>()
-         .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+         .IncludeBase<BizLicApplication, spd_application>();
+        //.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
          .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
@@ -87,6 +87,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+         .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => $"{s.Surname}, {s.GivenName}"))
          .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress));
     }
 

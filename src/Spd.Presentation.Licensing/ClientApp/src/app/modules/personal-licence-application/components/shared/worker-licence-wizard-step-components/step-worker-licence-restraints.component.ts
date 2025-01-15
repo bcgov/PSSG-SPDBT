@@ -85,6 +85,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
@@ -101,7 +102,9 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewalOrUpdate
+			? 'Update any information that has changed since your last application'
+			: 'Check with your employer if restraints, such as handcuffs, are required.';
 	}
 
 	onFileUploaded(file: File): void {
