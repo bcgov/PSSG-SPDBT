@@ -89,7 +89,7 @@ export class MetalDealersRegistrationInformationComponent implements LicenceChil
 
 	matcher = new FormErrorStateMatcher();
 
-	form = this.metalDealersApplicationService.registerFormGroup;
+	form = this.metalDealersApplicationService.registrationFormGroup;
 
 	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
 

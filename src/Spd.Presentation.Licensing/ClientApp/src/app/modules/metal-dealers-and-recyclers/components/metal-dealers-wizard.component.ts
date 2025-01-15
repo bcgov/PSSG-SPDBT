@@ -9,7 +9,9 @@ import { distinctUntilChanged, Subscription } from 'rxjs';
 import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 import { StepMetalDealersBranchesComponent } from './step-metal-dealers-branches.component';
 import { StepMetalDealersBusinessAddressComponent } from './step-metal-dealers-business-address.component';
-import { StepMetalDealersBusinessInformationComponent } from './step-metal-dealers-business-information.component';
+import { StepMetalDealersBusinessManagerComponent } from './step-metal-dealers-business-manager.component';
+import { StepMetalDealersBusinessOwnerComponent } from './step-metal-dealers-business-owner.component';
+import { StepMetalDealersConsentComponent } from './step-metal-dealers-consent.component';
 import { MetalDealersRegistrationInformationComponent } from './step-metal-dealers-registration-information.component';
 import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.component';
 
@@ -37,19 +39,32 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Business<br />Information</ng-template>
+				<ng-template matStepLabel>Business<br />Owner</ng-template>
 
-				<app-step-metal-dealers-business-information></app-step-metal-dealers-business-information>
+				<app-step-metal-dealers-business-owner></app-step-metal-dealers-business-owner>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
 					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_INFORMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_OWNER)"
 				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
+				<ng-template matStepLabel>Business<br />Manager</ng-template>
+
+				<app-step-metal-dealers-business-manager></app-step-metal-dealers-business-manager>
+
+				<app-wizard-footer
+					cancelLabel="Cancel"
+					(cancelStep)="onCancel()"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_MANAGER)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Business<br />Addresses</ng-template>
 
 				<app-step-metal-dealers-business-address></app-step-metal-dealers-business-address>
@@ -62,7 +77,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete">
+			<mat-step [completed]="step5Complete">
 				<ng-template matStepLabel>Branch<br />Offices</ng-template>
 
 				<app-step-metal-dealers-branches></app-step-metal-dealers-branches>
@@ -75,8 +90,8 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Review</ng-template>
+			<mat-step [completed]="step6Complete">
+				<ng-template matStepLabel>Registration<br />Summary</ng-template>
 
 				<app-step-metal-dealers-summary (editStep)="onGoToStep($event)"></app-step-metal-dealers-summary>
 
@@ -89,7 +104,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Consent</ng-template>
+				<ng-template matStepLabel>Consent and<br />Declaration</ng-template>
 
 				<app-step-metal-dealers-consent></app-step-metal-dealers-consent>
 
@@ -98,7 +113,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					nextButtonLabel="Submit"
-					(nextStepperStep)="onFormValidNextStep(STEP_CONSENT)"
+					(nextStepperStep)="onSubmit()"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -111,23 +126,29 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 	step2Complete = false;
 	step3Complete = false;
 	step4Complete = false;
+	step5Complete = false;
+	step6Complete = false;
 
 	readonly STEP_REGISTRATION_INFORMATION = 0;
-	readonly STEP_BUSINESS_INFORMATION = 1;
-	readonly STEP_BUSINESS_ADDRESSES = 2;
-	readonly STEP_BRANCH_OFFICES = 3;
-	readonly STEP_REVIEW = 4;
-	readonly STEP_CONSENT = 5;
+	readonly STEP_BUSINESS_OWNER = 1;
+	readonly STEP_BUSINESS_MANAGER = 2;
+	readonly STEP_BUSINESS_ADDRESSES = 3;
+	readonly STEP_BRANCH_OFFICES = 4;
+	readonly STEP_REVIEW = 5;
+	readonly STEP_CONSENT = 6;
 
 	@ViewChild(MetalDealersRegistrationInformationComponent)
 	stepRegisterInfo!: MetalDealersRegistrationInformationComponent;
-	@ViewChild(StepMetalDealersBusinessInformationComponent)
-	stepBusinessInfo!: StepMetalDealersBusinessInformationComponent;
+	@ViewChild(StepMetalDealersBusinessOwnerComponent)
+	stepBusinessOwner!: StepMetalDealersBusinessOwnerComponent;
+	@ViewChild(StepMetalDealersBusinessManagerComponent)
+	stepBusinessManager!: StepMetalDealersBusinessManagerComponent;
 	@ViewChild(StepMetalDealersBusinessAddressComponent) stepAddresses!: StepMetalDealersBusinessAddressComponent;
 	@ViewChild(StepMetalDealersBranchesComponent) stepBranches!: StepMetalDealersBranchesComponent;
 	@ViewChild(StepMetalDealersSummaryComponent) stepReview!: StepMetalDealersSummaryComponent;
+	@ViewChild(StepMetalDealersConsentComponent) stepConsent!: StepMetalDealersConsentComponent;
 
-	private modelValueChangedSubscription!: Subscription;
+	private metalDealersModelValueChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -139,35 +160,29 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 	}
 
 	ngOnInit(): void {
-		this.commonApplicationService.setApplicationTitleText(
-			'Metal Dealers & Recyclers Business Registration',
-			'Registration'
-		);
-
-		this.breakpointObserver
-			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
-			.pipe(distinctUntilChanged())
-			.subscribe(() => this.breakpointChanged());
-
 		if (!this.metalDealersApplicationService.initialized) {
 			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers());
 			return;
 		}
 
+		this.commonApplicationService.setApplicationTitleText(
+			'Metal Dealers & Recyclers Business Registration',
+			'Business Registration'
+		);
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.modelValueChangedSubscription = this.metalDealersApplicationService.modelValueChanges$.subscribe(
-			(_resp: boolean) => {
+		this.metalDealersModelValueChangedSubscription =
+			this.metalDealersApplicationService.metalDealersModelValueChanges$.subscribe((_resp: boolean) => {
 				this.updateCompleteStatus();
-			}
-		);
+			});
 	}
 
 	ngOnDestroy() {
-		if (this.modelValueChangedSubscription) this.modelValueChangedSubscription.unsubscribe();
+		if (this.metalDealersModelValueChangedSubscription) this.metalDealersModelValueChangedSubscription.unsubscribe();
 	}
 
 	onCancel() {}
@@ -199,31 +214,53 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 		this.stepper.next();
 	}
 
+	onSubmit(): void {
+		if (!this.stepConsent.isFormValid()) return;
+
+		this.router.navigateByUrl(
+			MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers(
+				MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED
+			)
+		);
+	}
+
 	private dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_REGISTRATION_INFORMATION:
 				return this.stepRegisterInfo.isFormValid();
-			case this.STEP_BUSINESS_INFORMATION:
-				return this.stepBusinessInfo.isFormValid();
+			case this.STEP_BUSINESS_OWNER:
+				return this.stepBusinessOwner.isFormValid();
+			case this.STEP_BUSINESS_MANAGER:
+				return this.stepBusinessManager.isFormValid();
 			case this.STEP_BUSINESS_ADDRESSES:
 				return this.stepAddresses.isFormValid();
 			case this.STEP_BRANCH_OFFICES:
 				return this.stepBranches.isFormValid();
 			case this.STEP_REVIEW:
-				return true;
+				return this.stepReview.isFormValid();
 			case this.STEP_CONSENT:
-				return true;
+				return this.stepConsent.isFormValid();
 		}
 		return false;
 	}
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.metalDealersApplicationService.isStepRegistrationInformationComplete();
-		this.step2Complete = this.metalDealersApplicationService.isStepBusinessInformationComplete();
-		this.step3Complete = this.metalDealersApplicationService.isStepBusinessAddressesComplete();
-		this.step4Complete = this.metalDealersApplicationService.isStepBranchOfficesComplete();
+		this.step2Complete = this.metalDealersApplicationService.isStepBusinessOwnerComplete();
+		this.step3Complete = this.metalDealersApplicationService.isStepBusinessManagerComplete();
+		this.step4Complete = this.metalDealersApplicationService.isStepBusinessAddressesComplete();
+		this.step5Complete = this.metalDealersApplicationService.isStepBranchOfficesComplete();
+		this.step6Complete =
+			this.step1Complete && this.step2Complete && this.step3Complete && this.step4Complete && this.step5Complete;
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug(
+			'Complete Status',
+			this.step1Complete,
+			this.step2Complete,
+			this.step3Complete,
+			this.step4Complete,
+			this.step5Complete
+		);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

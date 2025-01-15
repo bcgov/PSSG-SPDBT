@@ -1,11 +1,17 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-branch.component';
 
 @Component({
 	selector: 'app-step-metal-dealers-summary',
 	template: `
-		<app-step-section title="Review" *ngIf="modelData">
+		<app-step-section
+			title="Registration Summary"
+			subtitle="Review your information before submitting your application"
+			*ngIf="metalDealersModelData"
+		>
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
@@ -18,8 +24,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
+											matTooltip="Go to Step 1"
+											aria-label="Go to Step 1"
 											(click)="$event.stopPropagation(); onEditStep(0)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -28,14 +34,25 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<div class="row mt-0">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Registration Type</div>
+										<div class="summary-text-data">Abc</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Registration Number</div>
+										<div class="summary-text-data">Def</div>
+									</div>
+								</div>
+							</div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Business Information</div>
+										<div class="panel-header">Business Owner</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -51,7 +68,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Business Owner</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Owner Name</div>
@@ -66,13 +82,50 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Trade Name or "doing business as" Name</div>
+										<div class="text-label d-block text-muted">Trade or 'Doing Business As' Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatatradeName | default }}
 										</div>
 									</div>
+									<div class="col-12">
+										<div class="text-label d-block text-muted">Business Licence Documents</div>
+										<ng-container *ngIf="attachmentsExist; else noAttachments">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of businessLicenceAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</ng-container>
+										<ng-template #noAttachments>
+											<div class="summary-text-data">There are no business licence documents</div>
+										</ng-template>
+									</div>
 								</div>
-								<div class="text-minor-heading-small mt-4">Business Manager</div>
+							</div>
+						</mat-expansion-panel>
+
+						<mat-expansion-panel class="mb-4" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Business Manager</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(2)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+
+							<div class="panel-body">
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Manager Name</div>
@@ -105,9 +158,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(2)"
+											matTooltip="Go to Step 4"
+											aria-label="Go to Step 4"
+											(click)="$event.stopPropagation(); onEditStep(3)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -115,7 +168,21 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<app-form-address-summary
+									[formData]="metalDealersModelData.businessAddressData"
+									headingLabel="Business Address"
+									[isAddressTheSame]="false"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="metalDealersModelData.businessMailingAddressData"
+									headingLabel="Business Mailing Address"
+									[isAddressTheSame]="isAddressTheSame"
+									isAddressTheSameLabel="The business address and mailing address are the same"
+								></app-form-address-summary>
+							</div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
@@ -127,9 +194,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
+											matTooltip="Go to Step 5"
+											aria-label="Go to Step 5"
+											(click)="$event.stopPropagation(); onEditStep(4)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -137,7 +204,17 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<ng-container *ngIf="branchesExist; else noBranchesExist">
+									<app-form-metal-dealers-branches
+										[form]="branchesFormGroup"
+										[isReadonly]="true"
+									></app-form-metal-dealers-branches>
+								</ng-container>
+								<ng-template #noBranchesExist>
+									<div class="text-minor-heading-small mt-3">No branches have been entered.</div>
+								</ng-template>
+							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
 				</div>
@@ -184,15 +261,21 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
-	modelData: any = {};
+	metalDealersModelData: any = {};
+
+	attachmentsExist!: boolean;
+	branchesExist!: boolean;
+	branchesFormGroup = this.metalDealersApplicationService.branchesFormGroup;
+	dataSource!: MatTableDataSource<MetalDealersAndRecyclersBranchResponse>;
+	columns: string[] = ['addressLine1', 'city', 'branchManager'];
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
 
 	ngOnInit(): void {
-		this.modelData = {
-			...this.metalDealersApplicationService.modelFormGroup.getRawValue(),
+		this.metalDealersModelData = {
+			...this.metalDealersApplicationService.metalDealersModelFormGroup.getRawValue(),
 		};
 	}
 
@@ -201,9 +284,13 @@ export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildSte
 	}
 
 	onUpdateData(): void {
-		this.modelData = {
-			...this.metalDealersApplicationService.modelFormGroup.getRawValue(),
+		this.metalDealersModelData = {
+			...this.metalDealersApplicationService.metalDealersModelFormGroup.getRawValue(),
 		};
+
+		this.dataSource = new MatTableDataSource(this.branchesArray);
+		this.branchesExist = this.dataSource.data.length > 0;
+		this.attachmentsExist = this.businessLicenceAttachments.length > 0;
 	}
 
 	isFormValid(): boolean {
@@ -211,22 +298,34 @@ export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildSte
 	}
 
 	get businessOwnerDataname(): string {
-		return this.metalDealersApplicationService.getSummarybusinessOwnerDataname(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDataname(this.metalDealersModelData);
 	}
 	get businessOwnerDatalegalBusinessName(): string {
-		return this.metalDealersApplicationService.getSummarybusinessOwnerDatalegalBusinessName(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDatalegalBusinessName(this.metalDealersModelData);
 	}
 	get businessOwnerDatatradeName(): string {
-		return this.metalDealersApplicationService.getSummarybusinessOwnerDatatradeName(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDatatradeName(this.metalDealersModelData);
 	}
 
 	get businessManagerDataname(): string {
-		return this.metalDealersApplicationService.getSummarybusinessManagerDataname(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessManagerDataname(this.metalDealersModelData);
 	}
 	get businessManagerDataphoneNumber(): string {
-		return this.metalDealersApplicationService.getSummarybusinessManagerDataphoneNumber(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessManagerDataphoneNumber(this.metalDealersModelData);
 	}
 	get businessManagerDataemailAddress(): string {
-		return this.metalDealersApplicationService.getSummarybusinessManagerDataemailAddress(this.modelData);
+		return this.metalDealersApplicationService.getSummarybusinessManagerDataemailAddress(this.metalDealersModelData);
+	}
+
+	get isAddressTheSame(): boolean {
+		return this.metalDealersApplicationService.getSummaryisAddressTheSame(this.metalDealersModelData);
+	}
+
+	get businessLicenceAttachments(): File[] {
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDataattachments(this.metalDealersModelData);
+	}
+
+	get branchesArray(): Array<any> {
+		return this.metalDealersApplicationService.getSummarybranchesDatabranches(this.metalDealersModelData);
 	}
 }

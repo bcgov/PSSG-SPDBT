@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription } from 'rxjs';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { MetalDealersApplicationHelper } from './metal-dealers-application.helper';
@@ -11,10 +11,10 @@ import { UtilService } from './util.service';
 	providedIn: 'root',
 })
 export class MetalDealersApplicationService extends MetalDealersApplicationHelper {
-	modelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	metalDealersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	modelFormGroup: FormGroup = this.formBuilder.group({
-		registerData: this.registerFormGroup,
+	metalDealersModelFormGroup: FormGroup = this.formBuilder.group({
+		registrationData: this.registrationFormGroup,
 		businessOwnerData: this.businessOwnerFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
@@ -22,6 +22,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		branchesData: this.branchesFormGroup,
 		consentAndDeclarationData: this.consentAndDeclarationFormGroup,
 	});
+
+	metalDealersModelChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
@@ -31,6 +33,25 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		fileUtilService: FileUtilService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+
+		this.metalDealersModelChangedSubscription = this.metalDealersModelFormGroup.valueChanges
+			.pipe(debounceTime(200), distinctUntilChanged())
+			.subscribe((_resp: any) => {
+				if (this.initialized) {
+					const step1Complete = this.isStepRegistrationInformationComplete();
+					const step2Complete = this.isStepBusinessOwnerComplete();
+					const step3Complete = this.isStepBusinessManagerComplete();
+					const step4Complete = this.isStepBusinessAddressesComplete();
+					const step5Complete = this.isStepBranchOfficesComplete();
+					const isValid = step1Complete && step2Complete && step3Complete && step4Complete && step5Complete;
+
+					console.debug('metalDealersModelFormGroup CHANGED', this.metalDealersModelFormGroup.getRawValue());
+
+					this.updateModelChangeFlags();
+
+					this.metalDealersModelValueChanges$.next(isValid);
+				}
+			});
 	}
 
 	/**
@@ -38,17 +59,23 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 * @returns
 	 */
 	isStepRegistrationInformationComplete(): boolean {
-		// return this.registerFormGroup.valid;
-		return true;
+		return this.registrationFormGroup.valid;
 	}
 
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepBusinessInformationComplete(): boolean {
-		// return this.businessOwnerFormGroup.valid && this.businessManagerFormGroup.valid;
-		return true;
+	isStepBusinessOwnerComplete(): boolean {
+		return this.businessOwnerFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepBusinessManagerComplete(): boolean {
+		return this.businessManagerFormGroup.valid;
 	}
 
 	/**
@@ -56,8 +83,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 * @returns
 	 */
 	isStepBusinessAddressesComplete(): boolean {
-		// return this.businessAddressFormGroup.valid;
-		return true;
+		return this.businessAddressFormGroup.valid;
 	}
 
 	/**
@@ -65,8 +91,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 * @returns
 	 */
 	isStepBranchOfficesComplete(): boolean {
-		// return this.branchesFormGroup.valid;
-		return true;
+		return this.branchesFormGroup.valid;
 	}
 
 	/**
@@ -76,28 +101,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	createNewRegistration(): Observable<any> {
 		this.reset();
 
-		// this.modelFormGroup.patchValue(
-		// 	{
-		// 		serviceTypeData: { serviceTypeCode: serviceTypeCode },
-		// 		profileConfirmationData: { isProfileUpToDate: true },
-		// 		mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
-		// 		characteristicsData,
-		// 	},
-		// 	{
-		// 		emitEvent: false,
-		// 	}
-		// );
 		this.initialized = true;
-
-		return of(this.modelFormGroup.value);
-
-		// return this.getLicenceEmptyAnonymous(serviceTypeCode).pipe(
-		// 	tap((_resp: any) => {
-		// 		this.initialized = true;
-
-		// 		this.commonApplicationService.setApplicationTitle(serviceTypeCode);
-		// 	})
-		// );
+		return of(this.metalDealersModelFormGroup.value);
 	}
 
 	/**
@@ -109,14 +114,14 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
-		this.modelFormGroup.reset();
+		this.metalDealersModelFormGroup.reset();
 
 		// clear the branches data - this does not seem to get reset during a formgroup reset
-		const branchesArray = this.modelFormGroup.get('branchesData.branches') as FormArray;
+		const branchesArray = this.metalDealersModelFormGroup.get('branchesData.branches') as FormArray;
 		while (branchesArray.length) {
 			branchesArray.removeAt(0);
 		}
 
-		console.debug('RESET', this.initialized, this.modelFormGroup.value);
+		console.debug('RESET', this.initialized, this.metalDealersModelFormGroup.value);
 	}
 }
