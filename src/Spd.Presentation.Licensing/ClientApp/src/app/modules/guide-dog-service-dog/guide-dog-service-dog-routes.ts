@@ -5,7 +5,6 @@ export class GuideDogServiceDogRoutes {
 
 	// AUTHENTICATED
 	public static readonly GDSD_AUTHENTICATED_BASE = 'application';
-	public static readonly GDSD_USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
 
 	// ANONYMOUS
 	public static readonly GDSD_APPLICATION_ANONYMOUS = 'gdsd-application-anonymous';
@@ -13,6 +12,10 @@ export class GuideDogServiceDogRoutes {
 
 	public static path(route: string | null = null): string {
 		return route ? `/${GuideDogServiceDogRoutes.MODULE_PATH}/${route}` : `/${GuideDogServiceDogRoutes.MODULE_PATH}`;
+	}
+
+	public static pathGdsdUserApplications(): string {
+		return `/${GuideDogServiceDogRoutes.MODULE_PATH}/${GuideDogServiceDogRoutes.GDSD_AUTHENTICATED_BASE}`;
 	}
 
 	public static pathGdsdAuthenticated(route: string | null = null): string {

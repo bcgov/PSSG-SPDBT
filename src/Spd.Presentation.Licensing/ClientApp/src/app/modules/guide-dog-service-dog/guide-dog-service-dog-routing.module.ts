@@ -9,6 +9,10 @@ import { GuideDogServiceDogRoutes } from './guide-dog-service-dog-routes';
 
 const routes: Routes = [
 	{
+		path: '',
+		component: GuideDogServiceDogLandingComponent,
+	},
+	{
 		/**************************************************** */
 		// ANONYMOUS
 		/**************************************************** */
@@ -29,31 +33,16 @@ const routes: Routes = [
 		component: GuideDogServiceDogAuthenticatedBaseComponent,
 		children: [
 			{
-				path: GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED,
+				path: '',
 				component: GuideDogServiceDogMainComponent,
 			},
-		],
-	},
-	{
-		path: '',
-		component: GuideDogServiceDogBaseComponent,
-		children: [
 			{
-				path: '',
-				component: GuideDogServiceDogLandingComponent,
+				path: '**',
+				redirectTo: GuideDogServiceDogRoutes.pathGdsdUserApplications(),
+				pathMatch: 'full',
 			},
-			// 		{
-			// 			path: GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED,
-			// 			component: GuideDogServiceDogMainComponent,
-			// 		},
 		],
 	},
-	/**************************************************** */
-	// ANONYMOUS
-	/**************************************************** */
-	/**************************************************** */
-	// AUTHENTICATED
-	/**************************************************** */
 	{
 		path: '**',
 		redirectTo: GuideDogServiceDogRoutes.path(),

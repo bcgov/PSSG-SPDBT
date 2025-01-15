@@ -51,7 +51,7 @@ export enum GuideDogTypeCode {
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dog Certification" />
+									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dogs/Service Dogs Team Certification" />
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
@@ -184,21 +184,15 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onRegisterGuideDog(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED)
-		);
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterDogTrainer(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED)
-		);
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterRetiredServiceDog(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_USER_APPLICATIONS_AUTHENTICATED)
-		);
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onContinue(_guideDogTypeCode: GuideDogTypeCode): void {
