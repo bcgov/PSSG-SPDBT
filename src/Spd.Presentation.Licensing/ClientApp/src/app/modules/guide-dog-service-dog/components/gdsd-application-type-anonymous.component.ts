@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-gdsd-application-type-anonymous',
@@ -65,7 +66,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 			</div>
 		</app-step-section>
 
-		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
+		<app-wizard-footer (cancelStep)="onCancel()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
 	styles: [],
 	standalone: false,
@@ -83,6 +84,10 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 
 	ngOnInit() {
 		// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
+	}
+
+	onCancel(): void {
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAnonymous());
 	}
 
 	onStepNext(): void {
