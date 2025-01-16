@@ -1,4 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -9,12 +10,30 @@ import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
+	registrationFormGroup: FormGroup = this.formBuilder.group(
+		{
+			applicationTypeCode: new FormControl('', [FormControlValidators.required]),
+			registrationNumber: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'registrationNumber',
+					(_form) =>
+						_form.get('applicationTypeCode')?.value === ApplicationTypeCode.Update ||
+						_form.get('applicationTypeCode')?.value === ApplicationTypeCode.Renewal
+				),
+			],
+		}
+	);
+
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		legalBusinessName: new FormControl('', [FormControlValidators.required]),
 		tradeName: new FormControl('', [FormControlValidators.required]),
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
+		attachments: new FormControl([]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
@@ -26,13 +45,13 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false),
-		addressLine1: new FormControl(''),
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),
-		city: new FormControl(''),
-		postalCode: new FormControl(''),
-		province: new FormControl(''),
-		country: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
 	});
 
 	businessMailingAddressFormGroup: FormGroup = this.formBuilder.group(
@@ -76,9 +95,14 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		}
 	);
 
-	branchesFormGroup: FormGroup = this.formBuilder.group({
-		branches: this.formBuilder.array([]),
-	});
+	branchesFormGroup: FormGroup = this.formBuilder.group(
+		{
+			branches: this.formBuilder.array([]),
+		},
+		{
+			validators: [FormGroupValidators.branchrequiredValidator('branches')],
+		}
+	);
 
 	branchFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -135,31 +159,41 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		return userNameArray.join(' ');
 	}
 
-	getSummarybusinessOwnerDataname(modelData: any): string {
+	getSummarybusinessOwnerDataname(metalDealersModelData: any): string {
 		return this.getFullNameWithMiddle(
-			modelData.businessOwnerData.givenName,
-			modelData.businessOwnerData.middleName,
-			modelData.businessOwnerData.surname
+			metalDealersModelData.businessOwnerData.givenName,
+			metalDealersModelData.businessOwnerData.middleName,
+			metalDealersModelData.businessOwnerData.surname
 		);
 	}
-	getSummarybusinessOwnerDatalegalBusinessName(modelData: any): string {
-		return modelData.businessOwnerData.legalBusinessName ?? '';
+	getSummarybusinessOwnerDatalegalBusinessName(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.legalBusinessName ?? '';
 	}
-	getSummarybusinessOwnerDatatradeName(modelData: any): string {
-		return modelData.businessOwnerData.tradeName ?? '';
+	getSummarybusinessOwnerDatatradeName(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.tradeName ?? '';
+	}
+	getSummarybusinessOwnerDataattachments(metalDealersModelData: any): File[] {
+		return metalDealersModelData.businessOwnerData.attachments ?? [];
 	}
 
-	getSummarybusinessManagerDataname(modelData: any): string {
+	getSummarybusinessManagerDataname(metalDealersModelData: any): string {
 		return this.getFullNameWithMiddle(
-			modelData.businessManagerData.givenName,
-			modelData.businessManagerData.middleName,
-			modelData.businessManagerData.surname
+			metalDealersModelData.businessManagerData.givenName,
+			metalDealersModelData.businessManagerData.middleName,
+			metalDealersModelData.businessManagerData.surname
 		);
 	}
-	getSummarybusinessManagerDataphoneNumber(modelData: any): string {
-		return modelData.businessManagerData.phoneNumber ?? '';
+	getSummarybusinessManagerDataphoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.phoneNumber ?? '';
 	}
-	getSummarybusinessManagerDataemailAddress(modelData: any): string {
-		return modelData.businessManagerData.emailAddress ?? '';
+	getSummarybusinessManagerDataemailAddress(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.emailAddress ?? '';
+	}
+	getSummarybranchesDatabranches(metalDealersModelData: any): Array<any> {
+		return metalDealersModelData.branchesData.branches ?? [];
+	}
+
+	getSummaryisAddressTheSame(metalDealersModelData: any): boolean {
+		return metalDealersModelData.businessMailingAddressData?.isAddressTheSame ?? false;
 	}
 }

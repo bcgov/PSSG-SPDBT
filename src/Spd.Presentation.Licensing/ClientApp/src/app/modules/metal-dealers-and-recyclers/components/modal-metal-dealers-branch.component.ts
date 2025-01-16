@@ -28,35 +28,36 @@ export interface MetalDealersAndRecyclersBranchResponse {
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
 				<div class="text-minor-heading mb-3">Branch Manager</div>
-				<div class="fw-semibold fs-6 mb-3">
-					The Branch Manager is the person responsible for the day to day management of the business
+				<div class="fs-6 mb-3">
+					The branch manager is the person responsible for the day to day management of the business
 				</div>
+
 				<div class="row">
 					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Manager's Given Name <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName" maxlength="100" [errorStateMatcher]="matcher" />
+							<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+							<input matInput formControlName="givenName" maxlength="40" />
 						</mat-form-field>
 					</div>
 
 					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Manager's Middle Name <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="givenName" maxlength="100" [errorStateMatcher]="matcher" />
+							<mat-label>Middle Name <span class="optional-label">(optional)</span></mat-label>
+							<input matInput formControlName="middleName" maxlength="40" />
 						</mat-form-field>
 					</div>
 
 					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Manager's Surname</mat-label>
-							<input matInput formControlName="surname" maxlength="100" [errorStateMatcher]="matcher" />
+							<mat-label>Surname</mat-label>
+							<input matInput formControlName="surname" maxlength="40" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('surname')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 
 					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Manager's Phone Number</mat-label>
+							<mat-label>Phone Number</mat-label>
 							<input
 								matInput
 								formControlName="phoneNumber"
@@ -71,7 +72,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 
 					<div class="col-xl-4 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Manager's Email <span class="optional-label">(optional)</span></mat-label>
+							<mat-label>Email <span class="optional-label">(if any)</span></mat-label>
 							<input
 								matInput
 								formControlName="emailAddress"
@@ -129,9 +130,9 @@ export class ModalMetalDealersBranchComponent implements OnInit {
 		this.isCreate = this.dialogData.isCreate ?? false;
 
 		if (this.isCreate) {
-			this.title = 'Add Branch';
+			this.title = 'Add Branch Office';
 		} else {
-			this.title = 'Edit Branch';
+			this.title = 'Edit Branch Office';
 			this.form.patchValue({ addressSelected: true });
 		}
 	}
