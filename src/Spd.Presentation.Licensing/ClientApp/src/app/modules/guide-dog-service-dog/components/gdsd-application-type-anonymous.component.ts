@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 
@@ -66,7 +65,7 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 			</div>
 		</app-step-section>
 
-		<app-wizard-footer (cancelStep)="onCancel()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
+		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
 	styles: [],
 	standalone: false,
@@ -78,16 +77,12 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private gdsdApplicationService: GdsdApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private gdsdApplicationService: GdsdApplicationService
+		// private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit() {
 		// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
-	}
-
-	onCancel(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAnonymous());
 	}
 
 	onStepNext(): void {
@@ -96,26 +91,19 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 
 			// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence, applicationTypeCode);
 
-			// switch (applicationTypeCode) {
-			// 	case ApplicationTypeCode.New: {
-			// 		this.router.navigateByUrl(
-			// 			PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-			// 				PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS
-			// 			)
-			// 		);
-			// 		break;
-			// 	}
-			// 	case ApplicationTypeCode.Update:
-			// 	case ApplicationTypeCode.Replacement:
-			// 	case ApplicationTypeCode.Renewal: {
-			// 		this.router.navigateByUrl(
-			// 			PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-			// 				PersonalLicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-			// 			)
-			// 		);
-			// 		break;
-			// 	}
-			// }
+			switch (applicationTypeCode) {
+				case ApplicationTypeCode.New: {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_ANONYMOUS)
+					);
+					break;
+				}
+				case ApplicationTypeCode.Replacement:
+				case ApplicationTypeCode.Renewal: {
+					// TODO gdsd replace, renew
+					break;
+				}
+			}
 		}
 	}
 

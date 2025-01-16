@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@app/shared/shared.module';
+import { GdsdWizardAnonymousNewComponent } from './components/anonymous/gdsd-wizard-anonymous-new.component';
 import { GdsdActiveCertificationsComponent } from './components/gdsd-active-certifications.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogAuthenticatedBaseComponent } from './components/guide-dog-service-dog-authenticated-base.component';
@@ -17,6 +18,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GuideDogServiceDogMainComponent,
 		GdsdActiveCertificationsComponent,
 		GdsdApplicationTypeAnonymousComponent,
+		GdsdWizardAnonymousNewComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

@@ -253,7 +253,13 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			// TODO handle logout from various applications
+			const currentPath = location.pathname;
+			if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+				this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
+			} else {
+				this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+			}
 		}
 	}
 

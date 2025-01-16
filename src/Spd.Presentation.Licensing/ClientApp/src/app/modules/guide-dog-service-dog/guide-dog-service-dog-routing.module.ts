@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { GdsdWizardAnonymousNewComponent } from './components/anonymous/gdsd-wizard-anonymous-new.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogAuthenticatedBaseComponent } from './components/guide-dog-service-dog-authenticated-base.component';
 import { GuideDogServiceDogBaseComponent } from './components/guide-dog-service-dog-base.component';
@@ -22,6 +23,10 @@ const routes: Routes = [
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS,
 				component: GdsdApplicationTypeAnonymousComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_ANONYMOUS,
+				component: GdsdWizardAnonymousNewComponent,
 			},
 		],
 	},

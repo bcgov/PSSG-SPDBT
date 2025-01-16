@@ -197,8 +197,8 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 
 	onContinue(_guideDogTypeCode: GuideDogTypeCode): void {
 		// make sure the user is not logged in.
-		this.authProcessService.logoutBceid();
-		this.authProcessService.logoutBcsc();
+		this.authProcessService.logoutBceid(GuideDogServiceDogRoutes.path());
+		this.authProcessService.logoutBcsc(GuideDogServiceDogRoutes.path());
 
 		this.router.navigateByUrl(
 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
