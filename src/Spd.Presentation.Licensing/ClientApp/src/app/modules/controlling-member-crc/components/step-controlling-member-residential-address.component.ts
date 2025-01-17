@@ -6,12 +6,12 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-controlling-member-residential-address',
-    template: `
+	selector: 'app-step-controlling-member-residential-address',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-alert type="info" icon="" [showBorder]="false">
+					<app-alert type="info" icon="">
 						Has your residential address changed?
 						<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information on
 						your BC Services Card. Any changes you make will then be updated here.
@@ -26,8 +26,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
