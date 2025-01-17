@@ -9,18 +9,18 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="warning" icon="warning">
+					<app-alert type="warning" icon="">
 						<p>
-							Upload a clear photo of yourself that closely matches the photo on your submitted government-issued ID.
-							This photo will be used for your license or permit if your application is approved. A mismatched or
-							unclear photo may delay your application's processing time.
+							Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
+							photo will be used for your security worker licence if your application is approved. Submitting a photo
+							that does not meet these requirements will delay your application’s processing time.
 						</p>
 
 						Photo Guidelines:
 						<ul>
-							<li>The photo should be in color and well-lit.</li>
-							<li>Ensure your face is fully visible, with no hats, sunglasses, or filters.</li>
-							<li>Use a plain background for better clarity.</li>
+							<li>The photo must be in colour and well-lit.</li>
+							<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
+							<li>Use a plain, white background.</li>
 						</ul>
 					</app-alert>
 
