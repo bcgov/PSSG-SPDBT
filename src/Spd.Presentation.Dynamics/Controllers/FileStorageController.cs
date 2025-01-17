@@ -35,7 +35,7 @@ public class FileStorageController : SpdControllerBase
     /// Upload  or overwrite file
     /// If the file guid exists, the file content is overwritten by the new file
     /// all the tags must be sent in the requests, tags that do not exist will be removed from the file storage
-    /// The maximum file size would be 30M.
+    /// The maximum file size would be 25M.
     /// </summary>
     /// <param name="request">File with selected file data.</param>
     /// <param name="fileId">the GUID of the file</param>
@@ -50,7 +50,7 @@ public class FileStorageController : SpdControllerBase
     /// </returns>
     [HttpPost]
     [Route("api/files/{fileId}")]
-    [RequestSizeLimit(100_000_000)]
+    [RequestSizeLimit(26214400)]
     public async Task<IActionResult> UploadFileAsync(
         [FromForm] UploadFileRequest request,
         [FromRoute] Guid fileId,
