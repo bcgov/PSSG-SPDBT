@@ -74,8 +74,8 @@ export class FileUploadHelper {
 }
 
 @Component({
-    selector: 'app-file-upload',
-    template: `
+	selector: 'app-file-upload',
+	template: `
 		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
 			<div class="row my-2" *ngIf="files && files.length > 0">
 				<ng-container *ngFor="let file of files; let i = index">
@@ -117,8 +117,8 @@ export class FileUploadHelper {
 			</label>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.file-preview {
 				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
 				align-items: center;
@@ -176,8 +176,8 @@ export class FileUploadHelper {
 				outline: 0;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class FileUploadComponent implements OnInit {
 	@Input() control!: FormControl;
@@ -295,6 +295,11 @@ export class FileUploadComponent implements OnInit {
 		if (FileUploadHelper.getFileDocumentType(file) != DocumentTypeCode.Image || file.size === 0) return null;
 
 		const objectUrl = URL.createObjectURL(file);
+
+		if (!this.isValidObjectUrl(objectUrl)) {
+			return null;
+		}
+
 		const previewFile = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
 			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
@@ -361,5 +366,18 @@ export class FileUploadComponent implements OnInit {
 	private filesUpdated(): void {
 		const files = this.files && this.files.length > 0 ? this.files : [];
 		this.control.setValue(files);
+	}
+
+	private isValidObjectUrl(objectUrl: string): boolean {
+		const allowedDomains = ['localhost', 'gov.bc.ca'];
+		try {
+			// objectUrl starts with 'blob:' - find the start of the url
+			const index = objectUrl.indexOf('http');
+			const url = objectUrl.substring(index);
+			const parsedUrl = new URL(url);
+			return allowedDomains.some((domain) => parsedUrl.hostname.endsWith(domain));
+		} catch {
+			return false; // Invalid URL format
+		}
 	}
 }
