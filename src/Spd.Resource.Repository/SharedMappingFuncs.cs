@@ -294,7 +294,7 @@ internal static class SharedMappingFuncs
         if (str == null) return null;
         try
         {
-            string temp = Regex.Replace(str, @"\d", string.Empty);
+            string temp = Regex.Replace(str, @"\d", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(3));
             if (temp == "kg") return WeightUnitEnum.Kilograms;
             if (temp == "lb") return WeightUnitEnum.Pounds;
             else
@@ -344,7 +344,7 @@ internal static class SharedMappingFuncs
         if (str == null) return null;
         try
         {
-            string temp = Regex.Replace(str, @"\d", string.Empty);
+            string temp = Regex.Replace(str, @"\d", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(3));
             if (temp == "in") return HeightUnitEnum.Inches;
             if (temp == "cm") return HeightUnitEnum.Centimeters;
             else
