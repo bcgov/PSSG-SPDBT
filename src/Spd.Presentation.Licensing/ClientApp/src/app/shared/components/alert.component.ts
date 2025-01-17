@@ -57,6 +57,10 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				color: #a12622;
 				line-height: 1.5 !important;
 			}
+
+			.alert-noborder {
+				border: none !important;
+			}
 		`,
 	],
 	standalone: false,
@@ -71,9 +75,9 @@ export class AlertComponent {
 
 	public getType(): string {
 		if (this.showBorder) {
-			return `alert-${this.type} alert-${this.type}-border`;
+			return `alert-${this.type}`;
 		}
-		return `alert-${this.type}`;
+		return `alert-${this.type} alert-noborder`;
 	}
 
 	public getText(): string {
