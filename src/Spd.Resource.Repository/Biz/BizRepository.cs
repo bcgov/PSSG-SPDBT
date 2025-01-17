@@ -100,7 +100,7 @@ namespace Spd.Resource.Repository.Biz
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
-            if (updateBizCmd.UpdateSoleProprietor)
+            if (updateBizCmd.UpdateSoleProprietor && IsSoleProprietor(updateBizCmd.BizType))
             {
                 UpdateSPLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
                 await UpdateSPBizContact(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, ct);
@@ -201,6 +201,7 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task UpdateSPBizContact(account account, Guid? licenceId, CancellationToken ct)
         {
+            if (licenceId == null) return;
             IQueryable<spd_businesscontact> bizExistingContacts = _context.spd_businesscontacts
                 .Where(b => b._spd_organizationid_value == account.accountid)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
