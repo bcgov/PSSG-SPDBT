@@ -979,7 +979,9 @@ export class CommonApplicationService {
 
 		if (matchingLicence) {
 			// expiry dates of both licences must match to be simultaneous
-			licence.isSimultaneousFlow = matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
+			licence.isSimultaneousFlow =
+				!!matchingLicence.linkedSoleProprietorLicenceId &&
+				matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
 
 			if (licence.hasSecurityGuardCategory) {
 				licence.dogAuthorization = matchingLicence.useDogs ?? false;
