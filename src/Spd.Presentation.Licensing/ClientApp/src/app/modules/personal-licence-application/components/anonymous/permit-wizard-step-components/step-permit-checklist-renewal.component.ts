@@ -13,15 +13,14 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Photograph of yourself for the permit</div>
 							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking straight at the camera against a
-								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
-								processing time. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s
+								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
+								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
+								application. For more details on passport-quality photos, please refer to the
 								<a
-									aria-label="Passport Quality Photographs information"
+									aria-label="Government of Canada's passport photograph guidelines"
 									[href]="canadianPassportPhotoUrl"
 									target="_blank"
-									>passport photograph requirements</a
+									>Government of Canada's passport photograph guidelines</a
 								>.
 							</p>
 						</li>

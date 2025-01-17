@@ -3,10 +3,11 @@ import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-confirmation',
-    template: `
+	selector: 'app-step-business-licence-confirmation',
+	template: `
 		<app-step-section title="Confirm your current business licence information">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -59,8 +60,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceConfirmationComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -73,6 +74,7 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 	private businessLicenceModelData: any = {};
 
 	constructor(
+		private utilService: UtilService,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -118,6 +120,6 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		const selected = workerCategoryTypeCodes.filter((item: string) => {
 			return categoryData.find((cat: WorkerCategoryTypeCode) => cat === item);
 		});
-		return selected.sort() ?? [];
+		return selected.sort((a, b) => this.utilService.sortByDirection(a.toUpperCase(), b.toUpperCase()));
 	}
 }
