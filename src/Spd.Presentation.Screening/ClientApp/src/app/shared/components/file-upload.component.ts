@@ -9,8 +9,8 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-helper';
 
 @Component({
-    selector: 'app-file-upload',
-    template: `
+	selector: 'app-file-upload',
+	template: `
 		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
 			<div class="row my-2" *ngIf="files && files.length > 0">
 				<ng-container *ngFor="let file of files; let i = index">
@@ -43,8 +43,10 @@ import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-help
 
 				<input
 					type="file"
+					#fileInput
 					[id]="id"
 					(change)="onFileAddChange($event)"
+					(click)="fileInput.value = ''"
 					[multiple]="false"
 					[hidden]="true"
 					[accept]="accept"
@@ -52,8 +54,8 @@ import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-help
 			</label>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.file-preview {
 				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
 				align-items: center;
@@ -111,8 +113,8 @@ import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-help
 				outline: 0;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class FileUploadComponent implements OnInit {
 	@Input() control!: FormControl;
