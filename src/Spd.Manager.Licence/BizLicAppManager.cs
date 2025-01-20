@@ -188,6 +188,7 @@ internal class BizLicAppManager :
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
             cmd.LicAppFileInfos.ToList(),
+            existingFiles.ToList(),
             cancellationToken);
 
         // Create new app
@@ -375,21 +376,9 @@ internal class BizLicAppManager :
 
     private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
+        IList<LicAppFileInfo> existingFileInfos,
         CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.LatestApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-        if (request.PreviousDocumentIds != null)
-        {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
-            {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
-        }
-
         if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
         {
