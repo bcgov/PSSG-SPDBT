@@ -41,6 +41,11 @@ const routes: Routes = [
 			),
 	},
 	{
+		path: AppRoutes.GUIDE_DOG_SERVICE_DOG,
+		loadChildren: () =>
+			import('./modules/guide-dog-service-dog/guide-dog-service-dog.module').then((m) => m.GuideDogServiceDogModule),
+	},
+	{
 		path: AppRoutes.ACCESS_DENIED,
 		component: AccessDeniedComponent,
 	},
