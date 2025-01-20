@@ -108,8 +108,10 @@ export class FileUploadHelper {
 
 				<input
 					type="file"
+					#fileInput
 					[id]="id"
 					(change)="onFileAddChange($event)"
+					(click)="fileInput.value = ''"
 					[multiple]="false"
 					[hidden]="true"
 					[accept]="accept"
