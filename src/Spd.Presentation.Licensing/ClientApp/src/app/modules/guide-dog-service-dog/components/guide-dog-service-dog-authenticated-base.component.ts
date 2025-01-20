@@ -35,7 +35,7 @@ export class GuideDogServiceDogAuthenticatedBaseComponent implements OnInit {
 
 		// to handle relative urls, look for '/personal-licence/' to get the default route
 		const startOfRoute = currentPath.indexOf('/' + GuideDogServiceDogRoutes.MODULE_PATH + '/');
-		let redirectComponentRoute = currentPath.substring(startOfRoute);
+		const redirectComponentRoute = currentPath.substring(startOfRoute);
 
 		this.authProcessService.logoutBceid(redirectComponentRoute);
 

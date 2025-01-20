@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
@@ -167,7 +167,8 @@ export enum GuideDogTypeCode {
 	],
 	standalone: false,
 })
-export class GuideDogServiceDogLandingComponent implements OnInit {
+export class GuideDogServiceDogLandingComponent {
+	//implements OnInit
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	guideDogTypes = GuideDogTypeCode;
@@ -179,9 +180,9 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 		private commonApplicationService: CommonApplicationService
 	) {}
 
-	ngOnInit(): void {
-		// this.commonApplicationService.setApplicationTitle();
-	}
+	// ngOnInit(): void {
+	// this.commonApplicationService.setApplicationTitle();
+	// }
 
 	onRegisterGuideDog(): void {
 		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());

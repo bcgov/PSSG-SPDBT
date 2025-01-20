@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
@@ -70,7 +70,8 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 	styles: [],
 	standalone: false,
 })
-export class GdsdApplicationTypeAnonymousComponent implements OnInit {
+export class GdsdApplicationTypeAnonymousComponent {
+	//implements OnInit
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.gdsdApplicationService.applicationTypeFormGroup;
@@ -81,9 +82,9 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 		// private commonApplicationService: CommonApplicationService
 	) {}
 
-	ngOnInit() {
-		// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
-	}
+	// ngOnInit() {
+	// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
+	// }
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
