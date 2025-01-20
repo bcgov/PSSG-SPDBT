@@ -36,6 +36,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -153,9 +154,15 @@ export class CommonApplicationService {
 	}
 
 	public onGoToHome(): void {
+		const currentPath = location.pathname;
+
 		if (this.isLoggedIn) {
 			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
-				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+				if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+				} else {
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+				}
 				return;
 			} else if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BusinessBceId) {
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
@@ -163,7 +170,11 @@ export class CommonApplicationService {
 			}
 		}
 
-		this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
+		} else {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		}
 	}
 
 	public onGotoBusinessProfile(applicationTypeCode: ApplicationTypeCode): void {
@@ -509,6 +520,8 @@ export class CommonApplicationService {
 					break;
 				}
 			}
+
+			// TODO add support for GDSD title setting
 
 			if (applicationTypeCode) {
 				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
