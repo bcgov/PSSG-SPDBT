@@ -706,6 +706,8 @@ export class CommonApplicationService {
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
+				(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+					item.applicationTypeCode != ApplicationTypeCode.New) ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
