@@ -186,10 +186,9 @@ internal class BizLicAppManager :
             cmd.LicenceRequest.LatestApplicationId,
             cmd.LicenceRequest.PreviousDocumentIds,
             cancellationToken);
-        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
+        ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
             cmd.LicAppFileInfos.ToList(),
-            existingFiles.ToList(),
-            cancellationToken);
+            existingFiles.ToList());
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
@@ -374,10 +373,9 @@ internal class BizLicAppManager :
         return default;
     }
 
-    private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
+    private static void ValidateFilesForRenewUpdateApp(BizLicAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
-        IList<LicAppFileInfo> existingFileInfos,
-        CancellationToken ct)
+        IList<LicAppFileInfo> existingFileInfos)
     {
         if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
