@@ -13,7 +13,8 @@ namespace Spd.Resource.Repository.Document
             _ = CreateMap<bcgov_documenturl, DocumentResp>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType(s)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2(s)))
-            .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.createdon))
+            .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.bcgov_receiveddate))
+            .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.DocumentUrlId, opt => opt.MapFrom(s => s.bcgov_documenturlid))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value))
             .ForMember(d => d.CaseId, opt => opt.MapFrom(s => s._bcgov_caseid_value))
@@ -21,8 +22,10 @@ namespace Spd.Resource.Repository.Document
             .ForMember(d => d.ReportId, opt => opt.MapFrom(s => s._spd_pdfreportid_value))
             .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.bcgov_filename))
             .ForMember(d => d.Folder, opt => opt.MapFrom(s => s.bcgov_url))
+            .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_licenceid_value))
             .ForMember(d => d.FileExtension, opt => opt.MapFrom(s => FileHelper.GetFileExtensionWithoutDot(s.bcgov_fileextension)))
-            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)));
+            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)))
+            .ForMember(d => d.DocumentIdNumber, opt => opt.MapFrom(s => s.spd_documentid));
 
             _ = CreateMap<SpdTempFile, bcgov_documenturl>()
             .ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))

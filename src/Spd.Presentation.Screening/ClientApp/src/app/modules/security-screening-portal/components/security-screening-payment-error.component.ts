@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { SecurityScreeningRoutes } from '../security-screening-routes';
 
 @Component({
-	selector: 'app-security-screening-payment-manual',
-	template: ` <app-payment-error (backRoute)="onBackRoute()"></app-payment-error> `,
-	styles: [],
+    selector: 'app-security-screening-payment-manual',
+    template: ` <app-payment-error (backRoute)="onBackRoute()"></app-payment-error> `,
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningPaymentErrorComponent {
 	constructor(private router: Router) {}

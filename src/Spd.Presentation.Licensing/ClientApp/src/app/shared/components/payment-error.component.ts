@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-payment-error',
-	template: `
+    selector: 'app-payment-error',
+    template: `
 		<div class="row">
 			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<h2 class="fs-3 mt-0 mt-md-3">Payment Error</h2>
@@ -32,7 +32,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PaymentErrorComponent {
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();

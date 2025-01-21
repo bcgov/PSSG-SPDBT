@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
 @Component({
-	selector: 'app-worker-licence-wizard-anonymous-new',
-	template: `
+    selector: 'app-worker-licence-wizard-anonymous-new',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -108,7 +108,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</ng-template>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based

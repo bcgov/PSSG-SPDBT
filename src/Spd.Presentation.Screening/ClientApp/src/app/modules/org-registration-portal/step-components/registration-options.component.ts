@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-registration-options',
-	template: `
+    selector: 'app-registration-options',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="What is your preferred log in option?"></app-step-title>
@@ -102,8 +102,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.badge {
 				background-color: var(--color-yellow);
 				border: 1px solid var(--color-primary);
@@ -136,7 +136,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class RegistrationOptionsComponent {
 	@Output() clickNext: EventEmitter<boolean> = new EventEmitter<boolean>();

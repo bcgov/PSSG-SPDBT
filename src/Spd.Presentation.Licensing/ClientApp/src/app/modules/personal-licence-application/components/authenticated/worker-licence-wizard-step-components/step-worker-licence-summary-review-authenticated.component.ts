@@ -12,144 +12,138 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-summary-review-authenticated',
-	template: `
+    selector: 'app-step-worker-licence-summary-review-authenticated',
+    template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
-				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row mb-3">
-						<div class="col-12">
-							<mat-accordion multi="true">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Licence Selection</div>
-												<button
-													mat-mini-fab
-													color="primary"
-													class="go-to-step-button"
-													matTooltip="Go to Step 1"
-													aria-label="Go to Step 1"
-													(click)="$event.stopPropagation(); onEditStep(0)"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-									<div class="panel-body">
-										<div class="text-minor-heading-small mt-4">Licence Information</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Licence Type</div>
-												<div class="summary-text-data">
-													{{ serviceTypeCode | options: 'ServiceTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Application Type</div>
-												<div class="summary-text-data">
-													{{ applicationTypeCode | options: 'ApplicationTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
-												<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
-												<div class="summary-text-data">
-													{{ soleProprietorBizTypeCode | options: 'BizTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Licence Term</div>
-												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Fee</div>
-												<div class="summary-text-data">
-													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">Licence Categories</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let category of categoryList; let i = index">
-															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-										</div>
-
-										<app-worker-summary-document-uploaded
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-document-uploaded>
-
-										<app-worker-summary-dogs-restraints
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-dogs-restraints>
-
-										<app-worker-summary-expired-licence
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-expired-licence>
-									</div>
-								</mat-expansion-panel>
-
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Identification</div>
-												<button
-													mat-mini-fab
-													color="primary"
-													class="go-to-step-button"
-													matTooltip="Go to Step 3"
-													aria-label="Go to Step 3"
-													(click)="$event.stopPropagation(); onEditStep(1)"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-									<div class="panel-body">
-										<div class="text-minor-heading-small">Identification</div>
-										<app-worker-summary-citizenship
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-citizenship>
-
-										<app-worker-summary-photo-of-yourself
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-photo-of-yourself>
-
-										<app-worker-summary-bc-drivers-licence
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-bc-drivers-licence>
-
-										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
-												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
+				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
+					<mat-accordion multi="true">
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Licence Selection</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 1"
+											aria-label="Go to Step 1"
+											(click)="$event.stopPropagation(); onEditStep(0)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								<div class="text-minor-heading-small mt-4">Licence Information</div>
+								<div class="row mt-0">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Licence Type</div>
+										<div class="summary-text-data">
+											{{ serviceTypeCode | options: 'ServiceTypes' }}
 										</div>
 									</div>
-								</mat-expansion-panel>
-							</mat-accordion>
-						</div>
-					</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Application Type</div>
+										<div class="summary-text-data">
+											{{ applicationTypeCode | options: 'ApplicationTypes' }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
+										<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
+										<div class="summary-text-data">
+											{{ soleProprietorBizTypeCode | options: 'BizTypes' }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Licence Term</div>
+										<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Fee</div>
+										<div class="summary-text-data">
+											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+										</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Licence Categories</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let category of categoryList; let i = index">
+													<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<app-worker-summary-document-uploaded
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-document-uploaded>
+
+								<app-worker-summary-dogs-restraints
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-dogs-restraints>
+
+								<app-worker-summary-expired-licence
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-expired-licence>
+							</div>
+						</mat-expansion-panel>
+
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Identification</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(1)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								<div class="text-minor-heading-small">Identification</div>
+								<app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
+
+								<app-worker-summary-photo-of-yourself
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-photo-of-yourself>
+
+								<app-worker-summary-bc-drivers-licence
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-bc-drivers-licence>
+
+								<div class="row mt-0">
+									<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
+										<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
 				</div>
 			</div>
 		</app-step-section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -184,7 +178,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				height: 35px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};

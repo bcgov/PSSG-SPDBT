@@ -5,13 +5,14 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-aliases',
-	template: `
+    selector: 'app-step-controlling-member-aliases',
+    template: `
 		<app-step-section title="Do you have any previous names or aliases?">
 			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepControllingMemberAliasesComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.controllingMembersService.aliasesFormGroup;

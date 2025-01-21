@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-payment-manual',
-	template: `
+    selector: 'app-payment-manual',
+    template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">Manual Payment</h3>
@@ -47,13 +47,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PaymentManualComponent implements OnInit {
 	isBackRoute = false;

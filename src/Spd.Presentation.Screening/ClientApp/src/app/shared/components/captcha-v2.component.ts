@@ -6,8 +6,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-captcha-v2',
-	template: `
+    selector: 'app-captcha-v2',
+    template: `
 		<div [formGroup]="captchaForm">
 			<div class="row mt-3">
 				<div class="col-sm-12 mb-2">
@@ -22,7 +22,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CaptchaV2Component implements OnInit {
 	@Input() resetControl: Subject<void> = new Subject<void>();

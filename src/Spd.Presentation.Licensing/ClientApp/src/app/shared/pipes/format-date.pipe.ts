@@ -4,7 +4,8 @@ import moment from 'moment';
 import { Moment } from 'moment';
 
 @Pipe({
-	name: 'formatDate',
+    name: 'formatDate',
+    standalone: false
 })
 export class FormatDatePipe implements PipeTransform {
 	public transform(date: string | Moment | undefined | null, format: string = SPD_CONSTANTS.date.dateFormat): string {

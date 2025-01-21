@@ -7,8 +7,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-licence-application-base-authenticated',
-	template: `
+    selector: 'app-licence-application-base-authenticated',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3" *ngIf="isAuthenticated$ | async">
 			<!-- hide padding/margin on smaller screens -->
 			<div class="row">
@@ -18,7 +18,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;

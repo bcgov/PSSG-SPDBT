@@ -22,7 +22,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						</button>
 					</ng-container>
 					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Exit</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">{{ cancelLabel }}</button>
 					</ng-template>
 				</ng-container>
 			</div>
@@ -126,6 +126,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			}
 		`,
 	],
+	standalone: false,
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;
@@ -137,6 +138,7 @@ export class WizardFooterComponent implements OnInit {
 
 	@Input() nextButtonLabel = 'Next';
 	@Input() cancelAndExitLabel = 'Exit';
+	@Input() cancelLabel = 'Exit';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;

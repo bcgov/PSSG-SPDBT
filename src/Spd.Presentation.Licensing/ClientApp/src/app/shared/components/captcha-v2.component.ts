@@ -18,6 +18,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 		</div>
 	`,
 	styles: [],
+	standalone: false,
 })
 export class CaptchaV2Component implements OnInit {
 	@Input() captchaFormGroup!: FormGroup;
@@ -26,11 +27,7 @@ export class CaptchaV2Component implements OnInit {
 	siteKey = '';
 
 	constructor(private configService: ConfigService) {
-		if (configService.isDevelopment()) {
-			this.siteKey = 'REMOVED';
-		} else {
-			this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
-		}
+		this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
 	}
 
 	ngOnInit() {

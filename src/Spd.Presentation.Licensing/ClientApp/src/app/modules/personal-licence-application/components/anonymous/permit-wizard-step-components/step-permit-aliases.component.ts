@@ -5,13 +5,14 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-permit-aliases',
-	template: `
+    selector: 'app-step-permit-aliases',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

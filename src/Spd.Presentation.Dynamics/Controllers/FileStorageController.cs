@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Presentation.Dynamics.Helper;
 using Spd.Presentation.Dynamics.Models;
+using Spd.Utilities.FileScanning;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -19,11 +20,15 @@ public class FileStorageController : SpdControllerBase
 {
     private readonly IMainFileStorageService _storageService;
     private readonly ITransientFileStorageService _tranientFileStorageService;
+    private readonly IFileScanProvider _fileScanProvider;
 
-    public FileStorageController(IMainFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
+    public FileStorageController(IMainFileStorageService storageService,
+        ITransientFileStorageService tranientFileStorageService,
+        IFileScanProvider fileScanProvider) : base()
     {
         _storageService = storageService;
         _tranientFileStorageService = tranientFileStorageService;
+        _fileScanProvider = fileScanProvider;
     }
 
     /// <summary>
@@ -54,6 +59,10 @@ public class FileStorageController : SpdControllerBase
         [FromHeader(Name = "file-folder")] string? folder,
         CancellationToken ct)
     {
+        var result = await _fileScanProvider.ScanAsync(request.File.OpenReadStream(), ct);
+        if (result.Result != ScanResult.Clean)
+            throw new ApiException(HttpStatusCode.BadRequest, "The uploaded file is not clean.");
+
         //check if file already exists
         FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
             new FileMetadataQuery { Key = fileId.ToString(), Folder = folder },

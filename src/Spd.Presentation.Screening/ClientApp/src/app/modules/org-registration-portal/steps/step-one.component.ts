@@ -11,8 +11,8 @@ import {
 import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable-sector-question.component';
 
 @Component({
-	selector: 'app-step-one',
-	template: `
+    selector: 'app-step-one',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-registration-path-selection (clearData)="onClearStepData()"></app-registration-path-selection>
@@ -116,8 +116,9 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepOneComponent {
 	readonly STEP_REGISTRATION_PATH = 0;

@@ -17,8 +17,8 @@ import { StepsPermitPurposeAuthenticatedComponent } from './permit-wizard-step-c
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-review-authenticated.component';
 
 @Component({
-	selector: 'app-permit-wizard-authenticated-renewal',
-	template: `
+    selector: 'app-permit-wizard-authenticated-renewal',
+    template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -91,7 +91,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeCodeRenewal = ApplicationTypeCode.Renewal;

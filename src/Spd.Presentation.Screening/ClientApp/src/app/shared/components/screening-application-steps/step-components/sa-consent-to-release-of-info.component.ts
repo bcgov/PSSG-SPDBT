@@ -8,8 +8,8 @@ import { CaptchaResponse } from '../../captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-consent-to-release-of-info',
-	template: `
+    selector: 'app-sa-consent-to-release-of-info',
+    template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -71,14 +71,15 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaConsentToReleaseOfInfoComponent implements OnInit, CrcFormStepComponent {
 	matcher = new FormErrorStateMatcher();

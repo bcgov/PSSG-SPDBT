@@ -9,8 +9,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-licence-category-security-guard',
-	template: `
+    selector: 'app-licence-category-security-guard',
+    template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -83,9 +83,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;

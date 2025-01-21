@@ -42,8 +42,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 };
 
 @Component({
-	selector: 'app-expiring-checks',
-	template: `
+    selector: 'app-expiring-checks',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -190,8 +190,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.days-remaining-red {
 				color: var(--color-red);
 			}
@@ -225,7 +225,8 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;

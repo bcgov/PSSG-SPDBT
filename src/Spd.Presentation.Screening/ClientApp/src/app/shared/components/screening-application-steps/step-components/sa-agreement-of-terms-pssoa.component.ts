@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-sa-agreement-of-terms-pssoa',
-	template: `
+    selector: 'app-sa-agreement-of-terms-pssoa',
+    template: `
 		<p style="margin-top: .6rem;">
 			<strong>Terms of Use for Submitting a Criminal Record Check Online</strong>
 		</p>
@@ -209,6 +209,7 @@ import { Component } from '@angular/core';
 			</li>
 		</ol>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SaAgreementOfTermsPssoaComponent {}

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Presentation.Dynamics.Helper;
 using Spd.Presentation.Dynamics.Models;
+using Spd.Utilities.FileScanning;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -18,9 +19,12 @@ namespace Spd.Presentation.Dynamics.Controllers;
 public class TransientFileStorageController : SpdControllerBase
 {
     private readonly ITransientFileStorageService _storageService;
-    public TransientFileStorageController(ITransientFileStorageService storageService) : base()
+    private readonly IFileScanProvider _fileScanProvider;
+
+    public TransientFileStorageController(ITransientFileStorageService storageService, IFileScanProvider fileScanProvider) : base()
     {
         _storageService = storageService;
+        _fileScanProvider = fileScanProvider;
     }
 
     /// <summary>
@@ -50,6 +54,10 @@ public class TransientFileStorageController : SpdControllerBase
         [FromHeader(Name = "file-folder")] string? folder,
         CancellationToken ct)
     {
+        var result = await _fileScanProvider.ScanAsync(request.File.OpenReadStream(), ct);
+        if (result.Result != ScanResult.Clean)
+            throw new ApiException(HttpStatusCode.BadRequest, "The uploaded file is not clean.");
+
         //check if file already exists
         FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
             new FileMetadataQuery { Key = fileId.ToString(), Folder = folder },
@@ -200,6 +208,5 @@ public class TransientFileStorageController : SpdControllerBase
 
         return StatusCode(StatusCodes.Status201Created);
     }
-
 
 }

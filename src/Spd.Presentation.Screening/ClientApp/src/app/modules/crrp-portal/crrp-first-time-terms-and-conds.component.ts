@@ -6,8 +6,8 @@ import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.serv
 import { CrrpRoutes } from './crrp-routes';
 
 @Component({
-	selector: 'app-crrp-first-time-terms-and-conds',
-	template: `
+    selector: 'app-crrp-first-time-terms-and-conds',
+    template: `
 		<div class="container">
 			<section class="step-section my-4">
 				<div class="row m-4">
@@ -22,7 +22,8 @@ import { CrrpRoutes } from './crrp-routes';
 			</section>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CrrpFirstTimeTermsAndCondsComponent implements OnInit {
 	constructor(

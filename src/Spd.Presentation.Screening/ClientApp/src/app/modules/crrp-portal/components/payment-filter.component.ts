@@ -21,8 +21,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 };
 
 @Component({
-	selector: 'app-payment-filter',
-	template: `
+    selector: 'app-payment-filter',
+    template: `
 		<div class="filter-panel">
 			<form [formGroup]="formGroup" novalidate>
 				<mat-toolbar>
@@ -67,8 +67,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 			</form>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.filter-panel {
 				border: 2px solid var(--color-sidebar);
 			}
@@ -89,7 +89,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 				justify-content: space-between;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
 	minDate = moment().subtract(1, 'year');

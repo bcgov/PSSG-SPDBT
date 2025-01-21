@@ -13,8 +13,8 @@ import { WorkerApplicationService } from './core/services/worker-application.ser
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
 
 @Component({
-	selector: 'app-landing',
-	template: `
+    selector: 'app-landing',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section title="Log in to manage your security licence or permit">
 				<div class="row">
@@ -159,8 +159,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 			</app-step-section>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.login-link {
 				font-weight: bold;
 				color: var(--color-primary) !important;
@@ -175,7 +175,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 				height: 3em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class LandingComponent implements OnInit {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
