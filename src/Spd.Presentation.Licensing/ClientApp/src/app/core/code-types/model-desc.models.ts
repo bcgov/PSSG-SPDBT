@@ -250,50 +250,50 @@ export const BooleanTypes: SelectOptions[] = [
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Canadian Birth Certificate', code: LicenceDocumentTypeCode.BirthCertificate },
 	{ desc: 'Canadian Citizenship Certificate', code: LicenceDocumentTypeCode.CanadianCitizenship },
-	{ desc: 'Canadian Passport', code: LicenceDocumentTypeCode.CanadianPassport },
 	{ desc: 'Secure certificate of Indian Status', code: LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen },
+	{ desc: 'Valid Canadian Passport', code: LicenceDocumentTypeCode.CanadianPassport },
 ];
 
 export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
-	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{
 		desc: 'Confirmation of Permanent Residence Document (IMM 5292)',
 		code: LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
 	},
 	{ desc: 'Record of Landing (IMM1000)', code: LicenceDocumentTypeCode.RecordOfLandingDocument },
-	{ desc: 'Study Permit', code: LicenceDocumentTypeCode.StudyPermit },
+	{ desc: 'Valid Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{ desc: 'Valid document to verify legal work status', code: LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus },
-	{ desc: 'Work Permit', code: LicenceDocumentTypeCode.WorkPermit },
+	{ desc: 'Valid Study Permit', code: LicenceDocumentTypeCode.StudyPermit },
+	{ desc: 'Valid Work Permit', code: LicenceDocumentTypeCode.WorkPermit },
 ];
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
 	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
-	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
 	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicenceAdditional },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.PassportAdditional },
 	{
 		desc: 'Secure certificate of Indian Status (with photo)',
 		code: LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional,
 	},
+	{ desc: 'Valid Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
 ];
 
 export const PermitProofOfResidenceStatusTypes: SelectOptions[] = [
-	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{
 		desc: 'Confirmation of Permanent Residence Document (IMM 5292)',
 		code: LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
 	},
 	{ desc: 'Record of Landing (IMM1000)', code: LicenceDocumentTypeCode.RecordOfLandingDocument },
-	{ desc: 'Study Permit', code: LicenceDocumentTypeCode.StudyPermit },
-	{ desc: 'Work Permit', code: LicenceDocumentTypeCode.WorkPermit },
+	{ desc: 'Valid Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
+	{ desc: 'Valid Study Permit', code: LicenceDocumentTypeCode.StudyPermit },
+	{ desc: 'Valid Work Permit', code: LicenceDocumentTypeCode.WorkPermit },
 ];
 
 export const PermitProofOfCitizenshipTypes: SelectOptions[] = [
 	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicence },
-	{ desc: 'Valid Government Issued Photo ID', code: LicenceDocumentTypeCode.GovernmentIssuedPhotoId },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
+	{ desc: 'Valid Government Issued Photo ID', code: LicenceDocumentTypeCode.GovernmentIssuedPhotoId },
 ];
 
 export const ServiceTypes: SelectOptions[] = [
