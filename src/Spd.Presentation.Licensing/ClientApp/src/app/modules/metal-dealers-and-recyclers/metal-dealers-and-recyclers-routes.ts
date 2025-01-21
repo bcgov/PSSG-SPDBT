@@ -5,7 +5,7 @@ export class MetalDealersAndRecyclersRoutes {
 	public static readonly METAL_DEALERS_AND_RECYCLERS_REGISTER = 'register';
 	public static readonly METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED = 'received';
 
-	public static pathMetalDealersAndRecyclers(route: string | null = null): string {
+	public static path(route: string | null = null): string {
 		return route
 			? `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}/${route}`
 			: `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}`;

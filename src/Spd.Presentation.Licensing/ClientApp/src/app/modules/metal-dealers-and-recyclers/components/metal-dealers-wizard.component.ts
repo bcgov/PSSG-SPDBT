@@ -32,7 +32,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					[isWideNext]="true"
 					(nextStepperStep)="onFormValidNextStep(STEP_REGISTRATION_INFORMATION)"
 				></app-wizard-footer>
@@ -45,7 +44,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_OWNER)"
 				></app-wizard-footer>
@@ -58,7 +56,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_MANAGER)"
 				></app-wizard-footer>
@@ -71,7 +68,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_ADDRESSES)"
 				></app-wizard-footer>
@@ -84,7 +80,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_BRANCH_OFFICES)"
 				></app-wizard-footer>
@@ -97,7 +92,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_REVIEW)"
 				></app-wizard-footer>
@@ -110,7 +104,6 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					(cancelStep)="onCancel()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					nextButtonLabel="Submit"
 					(nextStepperStep)="onSubmit()"
@@ -161,7 +154,7 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 
 	ngOnInit(): void {
 		if (!this.metalDealersApplicationService.initialized) {
-			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers());
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
 			return;
 		}
 
@@ -184,8 +177,6 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 	ngOnDestroy() {
 		if (this.metalDealersModelValueChangedSubscription) this.metalDealersModelValueChangedSubscription.unsubscribe();
 	}
-
-	onCancel() {}
 
 	onGoToStep(step: number) {
 		this.stepper.selectedIndex = step;
@@ -218,7 +209,7 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 		if (!this.stepConsent.isFormValid()) return;
 
 		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers(
+			MetalDealersAndRecyclersRoutes.path(
 				MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED
 			)
 		);

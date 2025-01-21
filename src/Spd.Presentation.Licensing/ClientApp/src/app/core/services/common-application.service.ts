@@ -37,6 +37,7 @@ import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
+import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -170,7 +171,9 @@ export class CommonApplicationService {
 			}
 		}
 
-		if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+		if (currentPath.includes(MetalDealersAndRecyclersRoutes.MODULE_PATH)) {
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
+		} else if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 		} else {
 			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
