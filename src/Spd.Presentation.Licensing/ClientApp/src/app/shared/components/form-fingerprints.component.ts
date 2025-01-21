@@ -10,7 +10,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
-				<app-alert type="info" icon="info">
+				<app-alert type="warning" icon="warning">
 					<div>
 						All applicants must include proof they have completed their fingerprinting. Once your fingerprints have been
 						taken and the
