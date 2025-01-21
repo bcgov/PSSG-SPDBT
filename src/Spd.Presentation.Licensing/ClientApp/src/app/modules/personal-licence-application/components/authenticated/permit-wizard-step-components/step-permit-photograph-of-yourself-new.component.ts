@@ -8,7 +8,7 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-new',
 	template: `
-		<app-step-section title="Upload a passport quality photo of yourself">
+		<app-step-section title="Upload a passport-quality photo of yourself">
 			<app-common-photograph-of-yourself
 				[form]="form"
 				name="permit"
