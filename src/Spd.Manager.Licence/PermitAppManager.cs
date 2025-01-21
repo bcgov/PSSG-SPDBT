@@ -120,7 +120,7 @@ internal class PermitAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -191,13 +191,14 @@ internal class PermitAppManager :
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
+            existingFiles,
             cancellationToken);
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         LicenceApplicationCmdResp response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
@@ -250,18 +251,17 @@ internal class PermitAppManager :
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
             updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            //clean up old files
+            await CleanUpOldFiles(request, originalLic, cancellationToken);
+
+            //update lic, it is used to update the permit additional infos which will be used when user do update, renew, replace etc again.
+            await _licenceRepository.ManageAsync(
+                new UpdateLicenceCmd(_mapper.Map<PermitLicence>(cmd.LicenceAnonymousRequest), (Guid)originalLic.LicenceId),
+                cancellationToken);
         }
 
-        //clean up old files
-        await CleanUpOldFiles(request, originalLic, cancellationToken);
-
-        //update lic
-        await _licenceRepository.ManageAsync(
-            new UpdateLicenceCmd(_mapper.Map<PermitLicence>(cmd.LicenceAnonymousRequest), (Guid)originalLic.LicenceId),
-            cancellationToken);
-
         //upload new files
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalLic.LicenceHolderId,
@@ -299,6 +299,17 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(licAppFileInfos, new List<LicAppFileInfo>());
         var createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+
+        //copying all old files to new application in PreviousFileIds 
+        if (request.PreviousDocumentIds != null && request.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in request.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, createLicResponse.LicenceAppId, createLicResponse.ContactId),
+                    cancellationToken);
+            }
+        }
         return createLicResponse;
     }
     private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
@@ -394,21 +405,9 @@ internal class PermitAppManager :
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
+        IList<LicAppFileInfo> existingFileInfos,
         CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-        if (request.PreviousDocumentIds != null)
-        {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
-            {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
-        }
-
         if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");

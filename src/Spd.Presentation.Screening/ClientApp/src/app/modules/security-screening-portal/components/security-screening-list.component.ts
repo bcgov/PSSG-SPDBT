@@ -28,8 +28,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	isPayNow: boolean;
 }
 @Component({
-	selector: 'app-security-screening-list',
-	template: `
+    selector: 'app-security-screening-list',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xl-8 col-lg-6 col-md-12">
@@ -164,8 +164,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-column-status {
 				min-width: 275px;
 			}
@@ -190,7 +190,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';

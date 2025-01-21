@@ -9,8 +9,8 @@ import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.serv
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-crrp-home',
-	template: `
+    selector: 'app-crrp-home',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -253,8 +253,8 @@ import { CrrpRoutes } from '../crrp-routes';
 			</ng-container>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.box-text-height {
 				height: 110px;
 			}
@@ -366,7 +366,8 @@ import { CrrpRoutes } from '../crrp-routes';
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class CrrpHomeComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;

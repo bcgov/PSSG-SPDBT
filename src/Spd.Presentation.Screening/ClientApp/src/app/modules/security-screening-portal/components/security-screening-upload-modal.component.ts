@@ -11,8 +11,8 @@ export interface CrcUploadDialogData {
 }
 
 @Component({
-	selector: 'app-security-screening-upload-modal',
-	template: `
+    selector: 'app-security-screening-upload-modal',
+    template: `
 		<div mat-dialog-title>Upload Additional Document</div>
 		<mat-dialog-content class="mb-2">
 			<div class="row">
@@ -37,7 +37,8 @@ export interface CrcUploadDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SecurityScreeningUploadModalComponent implements OnInit {
 	maxNumberOfFiles = 1;

@@ -8,8 +8,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 
 
 @Component({
-	selector: 'app-business-manager-invitation',
-	template: `
+    selector: 'app-business-manager-invitation',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon class="my-4">error</mat-icon>
 			<h1>Business Manager Invitation</h1>
@@ -19,8 +19,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -29,7 +29,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class BusinessManagerInvitationComponent implements OnInit {
 	message = '';

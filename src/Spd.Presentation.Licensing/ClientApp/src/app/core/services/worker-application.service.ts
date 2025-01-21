@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
+	WeightUnitCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
@@ -115,7 +116,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		characteristicsData: this.characteristicsFormGroup,
 
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
-		photoDocumentUrlId: new FormControl(), // placeholder photo on the licence
 	});
 
 	workerModelChangedSubscription!: Subscription;
@@ -846,6 +846,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
+				// remove reference to expired licence - data is only used in the Resume authenticated flow.
+				workerLicenceAppl.expiredLicenceId = null;
+				workerLicenceAppl.expiredLicenceNumber = null;
+				workerLicenceAppl.hasExpiredLicence = false;
+
 				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
@@ -1075,11 +1080,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const characteristicsData = {
+			hairColourCode: null,
+			eyeColourCode: null,
+			height: null,
+			heightUnitCode: HeightUnitCode.Inches,
+			heightInches: null,
+			weight: null,
+			weightUnitCode: WeightUnitCode.Pounds,
+		};
+
 		this.workerModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -1139,6 +1155,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					associatedLicence
 				).pipe(
 					switchMap((_resp: any) => {
+						// remove reference to expired licence - data is only used in the Resume authenticated flow.
+						workerLicenceAppl.expiredLicenceId = null;
+						workerLicenceAppl.expiredLicenceNumber = null;
+						workerLicenceAppl.hasExpiredLicence = false;
+
 						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
 					})
 				);
@@ -1337,10 +1358,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			hairColourCode: applicantProfile.hairColourCode,
 			eyeColourCode: applicantProfile.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode,
+			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
 			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode,
+			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
@@ -1473,11 +1494,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
 		if (associatedLicence) {
-			if ('isSimultaneousFlow' in associatedLicence) {
-				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
-			} else {
-				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
-			}
+			isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
 		} else {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
@@ -1549,19 +1566,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
+			documentIdNumber: string | null;
 			attachments: File[];
 			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
 			governmentIssuedExpiryDate: string | null;
+			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
+			documentIdNumber: null,
 			attachments: [],
 			governmentIssuedPhotoTypeCode: null,
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
+			governmentIssuedDocumentIdNumber: null,
 		};
 
 		citizenshipData.isCanadianCitizen =
@@ -1603,8 +1624,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
 					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate:
@@ -1630,8 +1651,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						? null
 						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.documentIdNumber = doc.documentIdNumber ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
-
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
@@ -1799,7 +1820,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
 					// If there is a photo on the licence, use that one. See below
-					if (!associatedLicence?.photoDocumentUrlId) {
+					if (!associatedLicence?.photoDocumentInfo) {
 						photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
 						const aFile = this.fileUtilService.dummyFile(doc);
 						photographOfYourselfAttachments.push(aFile);
@@ -1818,19 +1839,19 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			attachments: fingerprintProofDataAttachments,
 		};
 
-		if (associatedLicence?.photoDocumentUrlId) {
+		if (associatedLicence?.photoDocumentInfo) {
 			const doc: Document = {
-				documentExtension: null,
-				documentName: null,
-				documentUrlId: associatedLicence?.photoDocumentUrlId,
-				expiryDate: null,
+				documentExtension: associatedLicence?.photoDocumentInfo.documentExtension,
+				documentName: associatedLicence?.photoDocumentInfo.documentName,
+				documentUrlId: associatedLicence?.photoDocumentInfo.documentUrlId,
+				expiryDate: associatedLicence?.photoDocumentInfo.expiryDate,
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-				uploadedDateTime: undefined,
+				uploadedDateTime: associatedLicence?.photoDocumentInfo.uploadedDateTime,
 			};
 			const aFile = this.fileUtilService.dummyFile(doc);
 			photographOfYourselfAttachments.push(aFile);
-			photographOfYourselfLastUploadedDateTime = '';
+			photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
 		}
 
 		const photographOfYourselfData = {
@@ -1892,7 +1913,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				fingerprintProofData,
 				citizenshipData,
 				photographOfYourselfData,
-				photoDocumentUrlId: associatedLicence?.photoDocumentUrlId,
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
 				categoryClosedCircuitTelevisionInstallerFormGroup,

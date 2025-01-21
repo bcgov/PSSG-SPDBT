@@ -6,7 +6,7 @@ import { Alias } from '../models/alias';
 import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
 import { HairColourCode } from '../models/hair-colour-code';
@@ -29,8 +29,8 @@ export interface WorkerLicenceAppSubmitRequest {
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   criminalChargeDescription?: string | null;
   dateOfBirth?: string | null;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentKeyCodes?: Array<string> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   emailAddress?: string | null;
   expiredLicenceId?: string | null;
   eyeColourCode?: EyeColourCode;

@@ -6,7 +6,7 @@ import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { ServiceTypeCode } from '../models/service-type-code';
@@ -21,8 +21,8 @@ export interface ControllingMemberCrcAppSubmitRequest {
   controllingMemberAppId?: string | null;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentKeyCodes?: Array<string> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   emailAddress?: string | null;
   genderCode?: GenderCode;
   givenName?: string | null;

@@ -37,8 +37,8 @@ import {
 } from './modal-member-without-swl-edit.component';
 
 @Component({
-	selector: 'app-common-controlling-members',
-	template: `
+    selector: 'app-common-controlling-members',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<mat-accordion multi="true">
 				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
@@ -292,8 +292,8 @@ import {
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.invitation-row {
 				min-height: 64px !important;
 			}
@@ -325,8 +325,9 @@ import {
 				}
 			}
 		`,
-	],
-	animations: [showHideTriggerSlideAnimation],
+    ],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class CommonControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
@@ -536,7 +537,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	isAllowUpdateInvitation(inviteStatusCode?: ApplicationInviteStatusCode): boolean {
-		return inviteStatusCode === ApplicationInviteStatusCode.Completed;
+		return this.canSendUpdateInvitations && inviteStatusCode === ApplicationInviteStatusCode.Completed;
 	}
 
 	onSendUpdateInvitation(member: NonSwlContactInfo): void {

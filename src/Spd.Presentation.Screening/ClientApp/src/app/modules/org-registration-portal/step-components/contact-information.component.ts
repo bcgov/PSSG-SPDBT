@@ -7,8 +7,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
-	selector: 'app-contact-information',
-	template: `
+    selector: 'app-contact-information',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Provide your work contact information"></app-step-title>
@@ -74,7 +74,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ContactInformationComponent implements RegistrationFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;

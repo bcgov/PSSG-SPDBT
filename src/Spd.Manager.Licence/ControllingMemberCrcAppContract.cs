@@ -57,7 +57,7 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
     public Guid BizContactId { get; set; }
     public Guid InviteId { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
-    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 };
 #endregion
 #region anonymous user
@@ -68,7 +68,7 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
     public Guid InviteId { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 
 };
 
@@ -100,7 +100,7 @@ public record ControllingMemberCrcAppUpdateRequest
     public DateOnly? DateOfBirth { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
-    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 
 }
 

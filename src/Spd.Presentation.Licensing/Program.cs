@@ -64,7 +64,7 @@ try
 
     // Configure the HTTP request pipeline.
     app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
-    if (app.Environment.IsDevelopment())
+    if (!app.Environment.IsProduction())
     {
         app.UseSwagger();
         app.UseSwaggerUI();

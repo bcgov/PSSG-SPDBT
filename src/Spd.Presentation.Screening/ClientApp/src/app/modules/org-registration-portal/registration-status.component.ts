@@ -7,8 +7,8 @@ import { CrrpRoutes } from '../crrp-portal/crrp-routes';
 import { OrgRegistrationRoutes } from './org-registration-routes';
 
 @Component({
-	selector: 'app-registration-status',
-	template: `
+    selector: 'app-registration-status',
+    template: `
 		<div class="container mt-4" *ngIf="status">
 			<h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
 			<div class="row">
@@ -63,8 +63,8 @@ import { OrgRegistrationRoutes } from './org-registration-routes';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.point {
 				&__active {
 					display: inline-block;
@@ -102,7 +102,8 @@ import { OrgRegistrationRoutes } from './org-registration-routes';
 				position: relative;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class RegistrationStatusComponent implements OnInit {
 	status = '';

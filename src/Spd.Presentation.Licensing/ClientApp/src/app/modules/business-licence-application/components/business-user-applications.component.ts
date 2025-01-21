@@ -117,7 +117,11 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
 							<div class="col-xl-7 col-lg-6">
-								<div class="text-data">You don't have an active business licence</div>
+								<div class="text-data">You don't have an active business licence.</div>
+								<div class="d-block text-muted mt-3 mb-2">
+									Apply for a new business licence if you have a never held a licence or you have a previously expired
+									one.
+								</div>
 							</div>
 							<div class="col-xl-5 col-lg-6 text-end">
 								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBusinessLicence()">
@@ -133,6 +137,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 		</section>
 	`,
 	styles: [],
+	standalone: false,
 })
 export class BusinessUserApplicationsComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

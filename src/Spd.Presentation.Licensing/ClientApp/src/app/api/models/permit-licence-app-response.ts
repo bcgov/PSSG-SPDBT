@@ -11,7 +11,7 @@ import { ArmouredVehiclePermitReasonCode } from '../models/armoured-vehicle-perm
 import { BizTypeCode } from '../models/biz-type-code';
 import { BodyArmourPermitReasonCode } from '../models/body-armour-permit-reason-code';
 import { Document } from '../models/document';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
 import { HairColourCode } from '../models/hair-colour-code';
@@ -33,8 +33,8 @@ export interface PermitLicenceAppResponse {
   bodyArmourPermitReasonCodes?: Array<BodyArmourPermitReasonCode> | null;
   caseNumber?: string | null;
   dateOfBirth?: string | null;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentInfos?: Array<Document> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   emailAddress?: string | null;
   employerName?: string | null;
   employerPrimaryAddress?: Address;

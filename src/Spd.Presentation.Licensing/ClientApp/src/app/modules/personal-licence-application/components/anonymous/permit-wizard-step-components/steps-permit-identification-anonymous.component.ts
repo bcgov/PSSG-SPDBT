@@ -11,8 +11,8 @@ import { StepPermitPersonalInformationComponent } from './step-permit-personal-i
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
 
 @Component({
-	selector: 'app-steps-permit-identification-anonymous',
-	template: `
+    selector: 'app-steps-permit-identification-anonymous',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-personal-information
@@ -104,8 +104,9 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 1;

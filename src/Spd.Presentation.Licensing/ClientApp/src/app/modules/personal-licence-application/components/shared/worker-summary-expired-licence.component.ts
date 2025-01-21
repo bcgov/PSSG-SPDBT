@@ -3,8 +3,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-worker-summary-expired-licence',
-	template: `
+    selector: 'app-worker-summary-expired-licence',
+    template: `
 		<ng-container *ngIf="hasExpiredLicence === booleanTypeYes">
 			<mat-divider class="mt-3 mb-2"></mat-divider>
 			<div class="text-minor-heading-small">Expired Licence</div>
@@ -22,7 +22,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerSummaryExpiredLicenceComponent {
 	booleanTypeYes = BooleanTypeCode.Yes;

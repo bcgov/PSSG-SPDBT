@@ -8,8 +8,8 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { CrrpRoutes } from './crrp-routes';
 
 @Component({
-	selector: 'app-invitation-link-organization',
-	template: `
+    selector: 'app-invitation-link-organization',
+    template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon>no_accounts</mat-icon>
 			<h1>Invite Denied</h1>
@@ -19,8 +19,8 @@ import { CrrpRoutes } from './crrp-routes';
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -29,7 +29,8 @@ import { CrrpRoutes } from './crrp-routes';
 				margin-right: 4px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class InvitationLinkOrganizationComponent implements OnInit {
 	message = '';

@@ -151,7 +151,7 @@ internal class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
 
         if (IsSoleProprietorComboApp(request)) //for sole proprietor, we only commit application until user submit the biz liz app. spdbt-2936 item 3
         {
@@ -252,7 +252,7 @@ internal class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
@@ -360,7 +360,7 @@ internal class SecurityWorkerAppManager :
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalLic.LicenceHolderId,

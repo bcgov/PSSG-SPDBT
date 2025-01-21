@@ -10,8 +10,8 @@ export class DeclarationModel {
 }
 
 @Component({
-	selector: 'app-sa-declaration',
-	template: `
+    selector: 'app-sa-declaration',
+    template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step mb-4">
@@ -67,7 +67,8 @@ export class DeclarationModel {
 			</form>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SaDeclarationComponent implements CrcFormStepComponent {
 	appConstants = SPD_CONSTANTS;

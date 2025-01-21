@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-business-licence-manager-information',
-	template: `
+    selector: 'app-step-business-licence-manager-information',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -98,7 +98,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepBusinessLicenceManagerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

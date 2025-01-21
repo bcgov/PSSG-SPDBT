@@ -14,8 +14,8 @@ import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-common-access-code-anonymous',
-	template: `
+    selector: 'app-common-access-code-anonymous',
+    template: `
 		<div class="row">
 			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
 				<form [formGroup]="form" novalidate>
@@ -79,7 +79,8 @@ import { Subject, take, tap } from 'rxjs';
 			</div>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class CommonAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
