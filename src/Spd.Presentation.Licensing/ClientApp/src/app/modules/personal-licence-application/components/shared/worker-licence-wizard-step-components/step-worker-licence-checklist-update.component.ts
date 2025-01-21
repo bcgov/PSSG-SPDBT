@@ -27,8 +27,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								If you want to replace the photograph on your licence, provide a new photograph
 							</div>
 							<p class="checklist-info">
-								You can upload a new passport-quality photo of your face looking straight at the camera against a plain,
-								white background.
+								You can upload a new passport-quality photo of your face looking at the camera, with a plain, white
+								background.
 							</p>
 						</li>
 
