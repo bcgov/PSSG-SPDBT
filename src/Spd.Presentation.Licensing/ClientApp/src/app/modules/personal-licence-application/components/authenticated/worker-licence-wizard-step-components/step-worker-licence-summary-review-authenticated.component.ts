@@ -12,8 +12,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-summary-review-authenticated',
-    template: `
+	selector: 'app-step-worker-licence-summary-review-authenticated',
+	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
@@ -102,8 +102,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
 											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -142,8 +142,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -178,8 +178,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				height: 35px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
