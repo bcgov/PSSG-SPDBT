@@ -13,8 +13,8 @@ export interface BizPortalUserDialogData {
 }
 
 @Component({
-	selector: 'app-modal-business-manager-edit',
-	template: `
+    selector: 'app-modal-business-manager-edit',
+    template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -94,7 +94,8 @@ export interface BizPortalUserDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';

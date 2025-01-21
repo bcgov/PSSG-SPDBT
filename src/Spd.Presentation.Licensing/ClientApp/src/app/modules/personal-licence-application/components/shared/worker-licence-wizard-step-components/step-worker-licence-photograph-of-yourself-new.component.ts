@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-step-worker-licence-photograph-of-yourself-new',
-	template: `
+    selector: 'app-step-worker-licence-photograph-of-yourself-new',
+    template: `
 		<app-step-section title="Upload a photo of yourself">
 			<app-common-photograph-of-yourself
 				[form]="form"
@@ -16,7 +16,8 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 			></app-common-photograph-of-yourself>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicencePhotographOfYourselfNewComponent implements LicenceChildStepperStepComponent {
 	@Input() form!: FormGroup;

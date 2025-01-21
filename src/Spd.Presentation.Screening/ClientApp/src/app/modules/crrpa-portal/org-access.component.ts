@@ -6,8 +6,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { CrrpaRoutes } from './crrpa-routes';
 
 @Component({
-	selector: 'app-org-access',
-	template: `
+    selector: 'app-org-access',
+    template: `
 		<div class="container">
 			<section class="step-section my-4">
 				<div class="row m-4">
@@ -75,13 +75,14 @@ import { CrrpaRoutes } from './crrpa-routes';
 			</section>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.subheading {
 				color: grey;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class OrgAccessComponent {
 	form: FormGroup = this.formBuilder.group({

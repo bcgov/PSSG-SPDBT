@@ -5,8 +5,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-confirmation',
-	template: `
+    selector: 'app-step-worker-licence-confirmation',
+    template: `
 		<app-step-section title="Confirm your current licence information">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -59,7 +59,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

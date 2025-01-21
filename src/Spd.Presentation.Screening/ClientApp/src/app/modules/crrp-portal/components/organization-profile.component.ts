@@ -21,8 +21,8 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-organization-profile',
-	template: `
+    selector: 'app-organization-profile',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
@@ -237,13 +237,14 @@ import { CrrpRoutes } from '../crrp-routes';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class OrganizationProfileComponent implements OnInit {
 	isNotVolunteerOrg = false;

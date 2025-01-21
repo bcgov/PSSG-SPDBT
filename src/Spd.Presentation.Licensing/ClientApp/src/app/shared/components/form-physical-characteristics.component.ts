@@ -14,7 +14,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xl-8 mx-auto' : ''">
+				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
 					<div class="row">
 						<div class="col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
@@ -43,7 +43,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="text-primary-color fs-6 mb-1">Height</div>
 						<div
 							class="col-lg-6 col-md-12 col-sm-12"
-							[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+							[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-3' : 'col-xl-6'"
 						>
 							<mat-form-field>
 								<mat-label>
@@ -57,9 +57,19 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-error>
 							</mat-form-field>
 						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="heightUnitCode.value === heightUnitCodes.Inches">
+							<mat-form-field>
+								<mat-label>Number of Inches</mat-label>
+								<input matInput formControlName="heightInches" [errorStateMatcher]="matcher" mask="09" />
+								<mat-error *ngIf="form.get('heightInches')?.hasError('max')"> This must be less than 12 </mat-error
+								><mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
+									This must be a 1 or 2 digit whole number
+								</mat-error>
+							</mat-form-field>
+						</div>
 						<div
-							class="col-lg-6 col-md-12 col-sm-12"
-							[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+							class="col-xl-6 col-md-12 col-sm-12"
+							[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-lg-12' : 'col-lg-6'"
 						>
 							<mat-form-field>
 								<mat-label>Units</mat-label>
@@ -69,16 +79,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</mat-option>
 								</mat-select>
 								<mat-error *ngIf="form.get('heightUnitCode')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="heightUnitCode.value === heightUnitCodes.Inches">
-							<mat-form-field>
-								<mat-label>Number of Inches</mat-label>
-								<input matInput formControlName="heightInches" [errorStateMatcher]="matcher" mask="09" />
-								<mat-error *ngIf="form.get('heightInches')?.hasError('max')"> This must be less than 12 </mat-error
-								><mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
-									This must be a 1 or 2 digit whole number
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -111,6 +111,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		</form>
 	`,
 	styles: [],
+	standalone: false,
 })
 export class FormPhysicalCharacteristicsComponent implements OnInit {
 	hairColourTypes = HairColourTypes;

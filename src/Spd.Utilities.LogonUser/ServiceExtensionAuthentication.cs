@@ -203,7 +203,7 @@ namespace Spd.Utilities.LogonUser
                             JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(token);
                             //idir and bceid and bcsc have the same authoritiy and audience.
                             var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
-                            if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+                            if (identityProviderClaim != null && identityProviderClaim.Value.Equals(idirConfig.IdentityProvider, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 return IdirAuthenticationConfiguration.AuthSchemeName;
                             }

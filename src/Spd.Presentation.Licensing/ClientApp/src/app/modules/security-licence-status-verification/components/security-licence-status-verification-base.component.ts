@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-security-licence-status-verification-base',
-	template: `
+    selector: 'app-security-licence-status-verification-base',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<!-- hide padding/margin on smaller screens -->
 			<div class="row">
@@ -13,7 +13,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</div>
 	`,
-	styles: ``,
+    styles: ``,
+    standalone: false
 })
 export class SecurityLicenceStatusVerificationBaseComponent implements OnInit {
 	constructor(private commonApplicationService: CommonApplicationService) {}

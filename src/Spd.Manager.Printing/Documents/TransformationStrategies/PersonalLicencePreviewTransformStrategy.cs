@@ -51,10 +51,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
 
         //conditions
-        IncidentListResp resp = await incidentRepository.QueryAsync(
-            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
-            cancellationToken);
-        preview.Conditions = resp.Items.First().Conditions.Select(c => c.Name);
+        preview.Conditions = lic.Conditions.Select(c => c.Name);
 
         return preview;
     }

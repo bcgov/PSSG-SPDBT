@@ -9,8 +9,8 @@ export class RegistrationPathSelectionModel {
 }
 
 @Component({
-	selector: 'app-registration-path-selection',
-	template: `
+    selector: 'app-registration-path-selection',
+    template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Who are you requesting criminal record checks for?"></app-step-title>
@@ -127,8 +127,8 @@ export class RegistrationPathSelectionModel {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.main-icon {
 				color: var(--color-grey-light);
 				font-size: 30px !important;
@@ -136,7 +136,8 @@ export class RegistrationPathSelectionModel {
 				width: 30px !important;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class RegistrationPathSelectionComponent implements RegistrationFormStepComponent {
 	registrationTypeCode: RegistrationTypeCode | null = null;

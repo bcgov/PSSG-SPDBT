@@ -5,8 +5,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-licence-list-expired',
-	template: `
+    selector: 'app-licence-list-expired',
+    template: `
 		<div class="mb-3" *ngIf="expiredLicences.length > 0">
 			<div class="text-primary-color fs-5 py-3">Expired Licences/Permits</div>
 			<div
@@ -47,8 +47,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 			</div>
 		</div>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.appl-chip-option {
 				height: 35px;
 			}
@@ -57,7 +57,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 				vertical-align: text-bottom;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class LicenceListExpiredComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

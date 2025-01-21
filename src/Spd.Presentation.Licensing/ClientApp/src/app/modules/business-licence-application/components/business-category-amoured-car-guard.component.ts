@@ -8,8 +8,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-	selector: 'app-business-category-amoured-car-guard',
-	template: `
+    selector: 'app-business-category-amoured-car-guard',
+    template: `
 		<div class="text-minor-heading mt-3 mb-2">You must provide the Registrar with:</div>
 		<div class="alert alert-category d-flex" role="alert">
 			<ul class="m-0">
@@ -47,7 +47,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-	styles: ``,
+    styles: ``,
+    standalone: false
 })
 export class BusinessCategoryAmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	safetyCertificateChecklistUrl = SPD_CONSTANTS.urls.safetyCertificateChecklistUrl;

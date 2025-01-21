@@ -7,8 +7,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-	selector: 'app-step-permit-type-anonymous',
-	template: `
+    selector: 'app-step-permit-type-anonymous',
+    template: `
 		<app-step-section title="What type of permit are you applying for?">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -72,7 +72,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 
 		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepPermitTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;

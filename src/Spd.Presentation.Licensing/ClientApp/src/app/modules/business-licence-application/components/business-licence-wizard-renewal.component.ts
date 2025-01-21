@@ -15,8 +15,8 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-renewal',
-	template: `
+    selector: 'app-business-licence-wizard-renewal',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -100,12 +100,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-review>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" *ngIf="showPayStep">
 				<ng-template matStepLabel>Pay</ng-template>
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -127,6 +128,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
+	showPayStep!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -179,6 +181,10 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'
 				)?.value;
+
+				this.showPayStep =
+					this.isBusinessLicenceSoleProprietor ||
+					(!this.isBusinessLicenceSoleProprietor && !this.isControllingMembersWithoutSwlExist);
 
 				this.isFormValid = _resp;
 

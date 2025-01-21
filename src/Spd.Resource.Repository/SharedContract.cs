@@ -117,6 +117,7 @@ public enum PoliceOfficerRoleEnum
     PoliceOfficer,
     PoliceOfficerRetired,
     Other,
+    None
 }
 
 public enum ServiceTypeCategoryEnum

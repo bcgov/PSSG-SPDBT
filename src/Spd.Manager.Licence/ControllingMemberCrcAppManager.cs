@@ -104,7 +104,7 @@ internal class ControllingMemberCrcAppManager :
         //update applicant
         await UpdateApplicantProfile(request, contact, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        await UploadNewDocsAsync(request.DocumentRelatedInfos,
             cmd.LicAppFileInfos,
             //set link to applicant only, application Id should be null
             null,
@@ -139,7 +139,7 @@ internal class ControllingMemberCrcAppManager :
         //create the application and create or update contact
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
+        await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
         await CommitApplicationAsync(
@@ -198,15 +198,16 @@ internal class ControllingMemberCrcAppManager :
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
         updateCmd.Id = (Guid)request.ApplicantId;
 
-        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false
-        if (contact.HasCriminalHistory == true)
-            updateCmd.HasCriminalHistory = true;
-        if (contact.IsTreatedForMHC == true)
-            updateCmd.IsTreatedForMHC = true;
+        //Jan.14, 2025 Open door session, we decide: contact always updated with the latest application info, no need to keep history.
+        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false - not valid anymore
+        //if (contact.HasCriminalHistory == true)
+        //    updateCmd.HasCriminalHistory = true;
+        //if (contact.IsTreatedForMHC == true)
+        //    updateCmd.IsTreatedForMHC = true;
 
-        //concat new crminal history detail with old ones.
-        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
-            updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+        ////concat new crminal history detail with old ones. - not valid any more.
+        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
 
         await _contactRepository.ManageAsync(updateCmd, ct);
     }

@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-step-business-licence-company-branding',
-	template: `
+    selector: 'app-step-business-licence-company-branding',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -44,15 +44,16 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
 
 						<div class="mt-3" *ngIf="isNoLogoOrBranding">
-							<app-alert type="info" icon="info">SPD will follow-up</app-alert>
+							<app-alert type="info" icon="info">SPD will follow-up.</app-alert>
 						</div>
 					</div>
 				</div>
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	title = '';

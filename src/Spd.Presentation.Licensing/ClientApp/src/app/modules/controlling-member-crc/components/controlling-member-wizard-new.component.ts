@@ -21,8 +21,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 
 @Component({
-	selector: 'app-controlling-member-wizard-new',
-	template: `
+    selector: 'app-controlling-member-wizard-new',
+    template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<mat-stepper
 				linear
@@ -100,7 +100,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			</mat-stepper>
 		</div>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ControllingMemberWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based

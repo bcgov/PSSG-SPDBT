@@ -19,8 +19,8 @@ export enum DialogCloseCode {
 }
 
 @Component({
-	selector: 'app-spd-dialog',
-	template: `
+    selector: 'app-spd-dialog',
+    template: `
 		<h2 mat-dialog-title class="mt-4" *ngIf="data.icon || data.title">
 			<mat-icon *ngIf="data.icon" [color]="data.type">{{ data.icon }}</mat-icon>
 			<strong *ngIf="data.title" style="position: relative; top: -10px;">
@@ -53,8 +53,8 @@ export enum DialogCloseCode {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -77,7 +77,8 @@ export enum DialogCloseCode {
 				text-decoration: underline;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class DialogComponent {
 	constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogOptions) {}

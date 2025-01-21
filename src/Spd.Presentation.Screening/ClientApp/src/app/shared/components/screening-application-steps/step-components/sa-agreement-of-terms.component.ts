@@ -7,8 +7,8 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-agreement-of-terms',
-	template: `
+    selector: 'app-sa-agreement-of-terms',
+    template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -95,8 +95,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				max-height: 400px;
@@ -104,7 +104,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 	@Input() orgData: AppInviteOrgData | null = null;

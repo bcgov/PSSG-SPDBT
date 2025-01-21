@@ -5,8 +5,8 @@ import { ApiConfiguration } from './api/api-configuration';
 import { ConfigService } from './core/services/config.service';
 
 @Component({
-	selector: 'app-root',
-	template: `
+    selector: 'app-root',
+    template: `
 		<body class="mat-typography d-flex flex-column h-100">
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
 			<app-spd-header></app-spd-header>
@@ -20,7 +20,8 @@ import { ConfigService } from './core/services/config.service';
 			</ng-container>
 		</body>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class AppComponent {
 	configs$: Observable<any>;

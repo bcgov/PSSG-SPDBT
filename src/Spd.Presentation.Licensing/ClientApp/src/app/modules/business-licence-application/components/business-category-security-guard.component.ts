@@ -8,8 +8,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-business-category-security-guard',
-	template: `
+    selector: 'app-business-category-security-guard',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="fs-5 lh-base mt-3 mb-2">
@@ -83,8 +83,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</div>
 		</form>
 	`,
-	styles: [],
-	animations: [showHideTriggerSlideAnimation],
+    styles: [],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class BusinessCategorySecurityGuardComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categorySecurityGuardFormGroup;
