@@ -25,7 +25,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
-									aria-label="Back"
+									aria-label="Back to main page"
 									(click)="onBack()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back

@@ -37,8 +37,8 @@ import {
 } from './modal-member-without-swl-edit.component';
 
 @Component({
-    selector: 'app-common-controlling-members',
-    template: `
+	selector: 'app-common-controlling-members',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<mat-accordion multi="true">
 				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
@@ -192,7 +192,7 @@ import {
 												<a
 													tabindex="0"
 													class="w-100 invitation-button"
-													aria-label="Send Update Invitation"
+													aria-label="Send update invitation"
 													(click)="onSendUpdateInvitation(member)"
 													(keydown)="onKeydownSendUpdateInvitation($event, member)"
 												>
@@ -204,9 +204,9 @@ import {
 											<ng-container *ngIf="allowNewInvitationsToBeSent">
 												<a
 													class="w-100 invitation-button"
-													aria-label="Download Consent to Criminal Record Check"
+													aria-label="Download Consent to Criminal Record Check document"
 													download="business-memberauthconsent"
-													matTooltip="Download Consent to Criminal Record Check"
+													matTooltip="Download Consent to Criminal Record Check document"
 													[href]="downloadFilePath"
 												>
 													Download Manual Form
@@ -292,8 +292,8 @@ import {
 			</div>
 		</form>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.invitation-row {
 				min-height: 64px !important;
 			}
@@ -325,9 +325,9 @@ import {
 				}
 			}
 		`,
-    ],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class CommonControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;

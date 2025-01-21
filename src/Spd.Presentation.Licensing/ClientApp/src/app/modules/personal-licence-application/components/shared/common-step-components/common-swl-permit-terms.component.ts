@@ -256,7 +256,7 @@ import { UtilService } from '@app/core/services/util.service';
 						mat-stroked-button
 						color="primary"
 						class="large w-100"
-						aria-label="Download Terms of Use"
+						aria-label="Download Terms of Use document"
 						download="Security Services Applicant Terms"
 						[href]="downloadFilePath"
 					>

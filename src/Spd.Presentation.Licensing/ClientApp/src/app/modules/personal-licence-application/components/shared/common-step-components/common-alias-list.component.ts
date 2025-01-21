@@ -9,8 +9,8 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-common-alias-list',
-    template: `
+	selector: 'app-common-alias-list',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="py-2" *ngIf="aliasesArray.length === 0">No past aliases or previous names</div>
 
@@ -53,7 +53,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							class="delete-row-button ms-1 mb-3"
 							matTooltip="Remove previous name"
 							(click)="onDeleteRow(i)"
-							aria-label="Remove row"
+							aria-label="Remove this previous name"
 						>
 							<mat-icon>delete_outline</mat-icon>
 						</button>
@@ -70,8 +70,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</form>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;
@@ -91,8 +91,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				max-width: 85%;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class CommonAliasListComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();

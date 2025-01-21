@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-    selector: 'app-payment-fail',
-    template: `
+	selector: 'app-payment-fail',
+	template: `
 		<div class="row">
 			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
@@ -18,7 +18,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 								color="primary"
 								class="large w-auto m-2"
 								*ngIf="numberOfAttemptsRemaining > 0"
-								aria-label="Try again"
+								aria-label="Try payment again"
 								(click)="onPayNow()"
 							>
 								<mat-icon>payment</mat-icon>Try Again
@@ -71,7 +71,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 						mat-stroked-button
 						color="primary"
 						class="large w-auto m-2"
-						aria-label="Back"
+						aria-label="Back to main page"
 						(click)="onBackToHome()"
 					>
 						<mat-icon>arrow_back</mat-icon>Back to Home
@@ -80,14 +80,14 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class PaymentFailComponent {
 	payBySecureLink = true;

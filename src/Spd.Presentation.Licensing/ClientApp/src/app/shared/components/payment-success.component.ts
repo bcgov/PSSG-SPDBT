@@ -119,7 +119,13 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 						</button>
 					</div>
 					<div class="offset-md-4 col-md-4 col-sm-12">
-						<button mat-stroked-button color="primary" class="large m-2" aria-label="Back" (click)="onBackToHome()">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large m-2"
+							aria-label="Back to main page"
+							(click)="onBackToHome()"
+						>
 							<mat-icon>arrow_back</mat-icon>Back to Home
 						</button>
 					</div>

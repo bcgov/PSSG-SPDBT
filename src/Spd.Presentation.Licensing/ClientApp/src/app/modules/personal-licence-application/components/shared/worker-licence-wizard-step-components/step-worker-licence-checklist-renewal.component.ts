@@ -14,7 +14,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								You must submit a proof of fingerprinting request. Download the
 								<a
-									aria-label="Request for Fingerprinting form"
+									aria-label="Download Request for Fingerprinting form"
 									download="Request For Fingerprinting Form"
 									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
@@ -70,7 +70,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
 								application. For more details on passport-quality photos, please refer to the
 								<a
-									aria-label="Government of Canada's passport photograph guidelines"
+									aria-label="Download Government of Canada's passport photograph guidelines"
 									[href]="canadianPassportPhotoUrl"
 									target="_blank"
 									>Government of Canada's passport photograph guidelines</a
@@ -98,7 +98,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</div>
 							<p class="checklist-info">
 								Download the
-								<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
+								<a
+									aria-label="Download Mental Health Condition form"
+									[href]="mentalHealthConditionsFormUrl"
+									target="_blank"
+								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>

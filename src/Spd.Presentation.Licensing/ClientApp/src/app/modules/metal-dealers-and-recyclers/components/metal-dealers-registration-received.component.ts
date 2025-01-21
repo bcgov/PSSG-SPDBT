@@ -19,7 +19,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 										mat-flat-button
 										color="primary"
 										class="large w-auto m-2"
-										aria-label="Print"
+										aria-label="Print screen"
 										(click)="onPrint()"
 									>
 										<mat-icon class="d-none d-md-block">print</mat-icon>Print

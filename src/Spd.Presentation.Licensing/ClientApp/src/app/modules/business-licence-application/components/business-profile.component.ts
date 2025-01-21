@@ -8,8 +8,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({
-    selector: 'app-business-profile',
-    template: `
+	selector: 'app-business-profile',
+	template: `
 		<div class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -25,7 +25,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 										mat-stroked-button
 										color="primary"
 										class="large w-auto mb-3"
-										aria-label="Back"
+										aria-label="Back to main page"
 										(click)="onCancel()"
 									>
 										<mat-icon>arrow_back</mat-icon>Back
@@ -58,8 +58,8 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessProfileComponent implements OnInit {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;

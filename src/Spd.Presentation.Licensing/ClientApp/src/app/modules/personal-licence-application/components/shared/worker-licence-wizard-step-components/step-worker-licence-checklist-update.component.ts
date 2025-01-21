@@ -43,7 +43,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</div>
 							<p class="checklist-info">
 								Download the
-								<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
+								<a
+									aria-label="Download Mental Health Condition form"
+									[href]="mentalHealthConditionsFormUrl"
+									target="_blank"
+								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>
