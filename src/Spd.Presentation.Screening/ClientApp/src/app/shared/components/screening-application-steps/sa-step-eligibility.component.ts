@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { AppInviteOrgData } from './screening-application.model';
 
 @Component({
-	selector: 'app-sa-step-eligibility',
-	template: `
+    selector: 'app-sa-step-eligibility',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-sa-checklist *ngIf="orgData" [payeeType]="orgData.payeeType"></app-sa-checklist>
@@ -17,8 +17,9 @@ import { AppInviteOrgData } from './screening-application.model';
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SaStepEligibilityComponent {
 	@Input() orgData: AppInviteOrgData | null = null;

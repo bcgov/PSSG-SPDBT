@@ -5,8 +5,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { Address } from './form-address-autocomplete.component';
 
 @Component({
-	selector: 'app-form-address',
-	template: `
+    selector: 'app-form-address',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<ng-container *ngIf="!isReadonly">
 				<app-form-address-autocomplete
@@ -87,7 +87,8 @@ import { Address } from './form-address-autocomplete.component';
 			</section>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class FormAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();

@@ -11,8 +11,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
-	selector: 'app-licence-access-code-authorized',
-	template: `
+    selector: 'app-licence-access-code-authorized',
+    template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -97,7 +97,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 			</div>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

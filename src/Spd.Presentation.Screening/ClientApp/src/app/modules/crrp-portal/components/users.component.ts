@@ -13,8 +13,8 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
-	selector: 'app-users',
-	template: `
+    selector: 'app-users',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
@@ -153,8 +153,8 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.info-icon {
 				color: var(--color-primary-light);
 				cursor: pointer;
@@ -174,7 +174,8 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 				}
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class UsersComponent implements OnInit {
 	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;

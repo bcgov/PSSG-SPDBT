@@ -9,8 +9,8 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 
 @Component({
-	selector: 'app-steps-business-licence-swl-sp-information',
-	template: `
+    selector: 'app-steps-business-licence-swl-sp-information',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="isNew">
@@ -124,8 +124,9 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 0;

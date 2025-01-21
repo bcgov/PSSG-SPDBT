@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-licence-reprint',
-	template: `
+    selector: 'app-licence-reprint',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -26,7 +26,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 			</div>
 		</form>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceReprintComponent {
 	booleanTypeCodes = BooleanTypeCode;

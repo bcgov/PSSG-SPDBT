@@ -12,20 +12,6 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Received</h2>
 					</div>
-
-					<div class="col-xl-6 col-lg-4 col-md-12 col-sm-6">
-						<div class="d-flex justify-content-end">
-							<button
-								mat-flat-button
-								color="primary"
-								class="large w-auto m-2"
-								aria-label="Download Receipt"
-								(click)="onDownloadReceipt()"
-							>
-								<mat-icon class="d-none d-md-block">file_download</mat-icon>Download Receipt
-							</button>
-						</div>
-					</div>
 				</div>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
@@ -120,21 +106,29 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 					</div>
 				</div>
 
-				<div class="d-flex justify-content-end">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto m-2"
-						aria-label="Back"
-						(click)="onBackToHome()"
-					>
-						<mat-icon>arrow_back</mat-icon>Back to Home
-					</button>
+				<div class="row mt-4">
+					<div class="col-md-4 col-sm-12">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large m-2"
+							aria-label="Download Receipt"
+							(click)="onDownloadReceipt()"
+						>
+							<mat-icon class="d-none d-md-block">file_download</mat-icon>Download Receipt
+						</button>
+					</div>
+					<div class="offset-md-4 col-md-4 col-sm-12">
+						<button mat-stroked-button color="primary" class="large m-2" aria-label="Back" (click)="onBackToHome()">
+							<mat-icon>arrow_back</mat-icon>Back to Home
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	`,
 	styles: [],
+	standalone: false,
 })
 export class PaymentSuccessComponent {
 	appConstants = SPD_CONSTANTS;

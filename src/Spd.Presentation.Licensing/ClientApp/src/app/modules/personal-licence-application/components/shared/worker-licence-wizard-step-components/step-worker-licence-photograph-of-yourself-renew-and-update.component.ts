@@ -7,8 +7,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-step-worker-licence-photograph-of-yourself-renew-and-update',
-	template: `
+    selector: 'app-step-worker-licence-photograph-of-yourself-renew-and-update',
+    template: `
 		<app-step-section [title]="title">
 			<div [formGroup]="form" class="row">
 				<ng-container *ngIf="!originalPhotoOfYourselfExpired">
@@ -73,7 +73,8 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	implements OnInit, LicenceChildStepperStepComponent

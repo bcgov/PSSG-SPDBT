@@ -64,7 +64,7 @@ import { UtilService } from '@app/core/services/util.service';
 								<ol type="a">
 									<li>
 										THE ACCURACY, COMPLETENESS OR CURRENCY OF SERVICES OR ANY ASSOCIATED INFORMATION, OR THAT ANY ERRORS
-										WILL BE CORRECTED.
+										WILL BE CORRECTED;
 									</li>
 									<li>
 										THE SERVICES WILL FUNCTION IN A TIMELY MANNER OR WILL BE AVAILABLE WITHOUT ERROR, FAILURE OR
@@ -237,7 +237,9 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
-						<div class="alert alert-warning" role="alert">Scroll to the bottom</div>
+						<div class="alert alert-danger" role="alert">
+							Scroll to the bottom of the terms and conditions section to proceed
+						</div>
 					</ng-container>
 				</div>
 			</div>
@@ -290,6 +292,7 @@ import { UtilService } from '@app/core/services/util.service';
 			}
 		`,
 	],
+	standalone: false,
 })
 export class CommonSwlPermitTermsUpdateReplaceComponent {
 	hasScrolledToBottom = false;

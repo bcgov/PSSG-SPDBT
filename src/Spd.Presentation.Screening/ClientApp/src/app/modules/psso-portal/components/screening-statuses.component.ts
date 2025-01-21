@@ -9,8 +9,8 @@ import { PssoRoutes } from '../psso-routes';
 import { DelegateManageDialogData, DelegateManageModalComponent } from './delegate-manage-modal.component';
 
 @Component({
-	selector: 'app-screening-statuses',
-	template: `
+    selector: 'app-screening-statuses',
+    template: `
 		<app-psso-header></app-psso-header>
 
 		<app-screening-statuses-common
@@ -23,7 +23,8 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
 		></app-screening-statuses-common>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class ScreeningStatusesComponent implements OnInit {
 	orgId: string | null = null;

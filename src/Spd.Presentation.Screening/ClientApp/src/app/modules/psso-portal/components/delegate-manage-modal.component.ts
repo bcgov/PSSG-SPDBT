@@ -14,8 +14,8 @@ export interface DelegateManageDialogData {
 }
 
 @Component({
-	selector: 'app-delegate-manage-modal',
-	template: `
+    selector: 'app-delegate-manage-modal',
+    template: `
 		<div mat-dialog-title>Manage Delegates for {{ data.application.applicationNumber }}</div>
 		<mat-dialog-content>
 			<div class="row">
@@ -80,8 +80,8 @@ export interface DelegateManageDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.initiator-icon {
 				cursor: pointer;
 				font-size: small;
@@ -89,7 +89,8 @@ export interface DelegateManageDialogData {
 				margin-left: 0.2rem;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class DelegateManageModalComponent implements OnInit {
 	dataSource: MatTableDataSource<DelegateResponse> = new MatTableDataSource<DelegateResponse>([]);

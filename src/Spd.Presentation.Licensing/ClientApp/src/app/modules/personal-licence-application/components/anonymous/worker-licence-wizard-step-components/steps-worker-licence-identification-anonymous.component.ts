@@ -12,8 +12,8 @@ import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/perso
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-worker-licence-personal-information-anonymous.component';
 
 @Component({
-	selector: 'app-steps-worker-licence-identification-anonymous',
-	template: `
+    selector: 'app-steps-worker-licence-identification-anonymous',
+    template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-worker-licence-personal-information-anonymous
@@ -131,8 +131,9 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 0;

@@ -21,8 +21,8 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 import { CrrpRoutes } from '../crrp-routes';
 
 @Component({
-	selector: 'app-generic-uploads',
-	template: `
+    selector: 'app-generic-uploads',
+    template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -114,13 +114,14 @@ import { CrrpRoutes } from '../crrp-routes';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-icon {
 				min-width: 25px;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();

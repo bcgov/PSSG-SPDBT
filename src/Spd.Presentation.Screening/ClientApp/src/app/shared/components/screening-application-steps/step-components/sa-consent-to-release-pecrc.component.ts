@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-sa-consent-to-release-pecrc',
-	template: `
+    selector: 'app-sa-consent-to-release-pecrc',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<strong>PERMISSION, WAIVER and RELEASE</strong><br />
 			<div>
@@ -117,8 +117,8 @@ import { FormGroup } from '@angular/forms';
 			</p>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			p {
 				margin-bottom: 0.5rem !important;
 			}
@@ -131,7 +131,8 @@ import { FormGroup } from '@angular/forms';
 				margin-bottom: 0.5em;
 			}
 		`,
-	],
+    ],
+    standalone: false
 })
 export class SaConsentToReleasePecrcComponent {
 	@Input() form!: FormGroup;

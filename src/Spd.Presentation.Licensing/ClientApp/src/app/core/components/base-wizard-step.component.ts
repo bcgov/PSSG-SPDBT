@@ -4,9 +4,10 @@ import { MatStepper } from '@angular/material/stepper';
 import { LicenceStepperStepComponent } from '../services/util.service';
 
 @Component({
-	selector: 'app-base-wizard-step',
-	template: '',
-	styles: [],
+    selector: 'app-base-wizard-step',
+    template: '',
+    styles: [],
+    standalone: false
 })
 export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

@@ -15,8 +15,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-updates-authenticated.component';
 
 @Component({
-	selector: 'app-permit-wizard-authenticated-update',
-	template: `
+    selector: 'app-permit-wizard-authenticated-update',
+    template: `
 		<div class="row">
 			<div class="offset-xl-1 col-xl-10 col-lg-12">
 				<mat-stepper
@@ -71,8 +71,9 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 			</div>
 		</div>
 	`,
-	styles: [],
-	encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;

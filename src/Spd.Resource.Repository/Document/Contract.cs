@@ -32,12 +32,14 @@ namespace Spd.Resource.Repository.Document
         public DocumentTypeEnum? DocumentType { get; set; }
         public DocumentTypeEnum? DocumentType2 { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public Guid DocumentUrlId { get; set; }
         public Guid? ClearanceId { get; set; }
         public Guid? ApplicationId { get; set; }
         public Guid? CaseId { get; set; }
         public Guid? ReportId { get; set; }
         public DateOnly? ExpiryDate { get; set; }
+        public string? DocumentIdNumber { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? LicenceId { get; set; }
         public string? Folder { get; set; }
@@ -57,7 +59,8 @@ namespace Spd.Resource.Repository.Document
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
         public DateOnly? ExpiryDate { get; set; }
-        public bool ToTransientBucket { get; set; } = false;
+        public string? DocumentIdNumber { get; set; }
+        public bool ToTransientBucket { get; set; }
     }
 
     public record CreateStreamDocumentCmd : CreateDocumentCmd
@@ -66,7 +69,7 @@ namespace Spd.Resource.Repository.Document
     //this is to deactivate documentUrl record and remove it from transient bucket.
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-    public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
+    public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null, string? DocumentIdNumber = null) : DocumentCmd;
     //copy the sourceDocument to the new application
     public record CopyDocumentCmd(Guid SourceDocumentUrlId, Guid DestApplicationId, Guid? SubmittedByApplicantId) : DocumentCmd;
     public record DeactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;

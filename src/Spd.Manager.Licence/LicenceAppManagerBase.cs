@@ -83,7 +83,7 @@ internal abstract class LicenceAppManagerBase
             //spdbt-3194: update swl term with bl term
             await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId,
                 ApplicationStatusEnum.PaymentPending,
-                null,
+                0,
                 ct,
                 Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
         }
@@ -94,7 +94,7 @@ internal abstract class LicenceAppManagerBase
     }
 
     //upload file from cache to main bucket
-    protected async Task UploadNewDocsAsync(IEnumerable<DocumentExpiredInfo>? documentExpiredInfos,
+    protected async Task UploadNewDocsAsync(IEnumerable<DocumentRelatedInfo>? documentRelatedInfos,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
         Guid? contactId,
@@ -127,18 +127,21 @@ internal abstract class LicenceAppManagerBase
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
                 fileCmd.AccountId = accountId;
-                fileCmd.ExpiryDate = documentExpiredInfos?
+                fileCmd.ExpiryDate = documentRelatedInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
                 fileCmd.SubmittedByApplicantId = contactId ?? accountId;
+                fileCmd.DocumentIdNumber = documentRelatedInfos?
+                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                        .DocumentIdNumber;
                 //create bcgov_documenturl and file
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }
         }
     }
 
-    //for auth, update doc expired date and remove old files
+    //for auth, update doc expired date, documentIdNumber and remove old files
     protected async Task UpdateDocumentsAsync(Guid licenceAppId, List<Document>? documentInfos, CancellationToken ct)
     {
         //for all files under this application, if it is not in request.DocumentInfos, deactivate it.
@@ -162,11 +165,11 @@ internal abstract class LicenceAppManagerBase
                     //update expiredDate  and doc type
                     DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode);
                     DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode);
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate, docType1, docType2), ct);
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate, docType1, docType2, doc.DocumentIdNumber), ct);
                 }
                 else
                 {
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate), ct);
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate, null, null, doc.DocumentIdNumber), ct);
                 }
             }
         }
@@ -312,17 +315,19 @@ internal abstract class LicenceAppManagerBase
 
     protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(Guid? originalApplicationId, IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(originalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+        IList<LicAppFileInfo> existingFileInfos = new List<LicAppFileInfo>();
 
-        if (previousDocumentIds != null && docListResps != null)
+        if (previousDocumentIds != null && previousDocumentIds.Any())
         {
-            existingFileInfos = docListResps.Items.Where(d => previousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
+            foreach (var documentId in previousDocumentIds)
             {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
+                var resp = await _documentRepository.GetAsync(documentId, ct);
+                existingFileInfos.Add(new LicAppFileInfo()
+                {
+                    FileName = resp.FileName ?? String.Empty,
+                    LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(resp.DocumentType, resp.DocumentType2),
+                });
+            }
         }
         return existingFileInfos;
     }

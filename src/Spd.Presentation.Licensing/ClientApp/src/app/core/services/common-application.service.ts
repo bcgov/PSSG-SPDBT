@@ -670,8 +670,7 @@ export class CommonApplicationService {
 		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
 		if (licence) {
 			if (licence.serviceTypeCode !== serviceTypeCode) {
-				//   ServiceTypeCode does not match
-				messageError = `This licence number is not a ${selServiceTypeCodeDesc}.`;
+				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
 			} else {
 				if (!isExpired) {
 					const securityIndustryLicensingUrl = SPD_CONSTANTS.urls.securityIndustryLicensingUrl;
@@ -683,14 +682,25 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
-			} else {
-				messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
-			}
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
 		}
 
 		return [messageWarn, messageError];
+	}
+
+	setLicenceLookupMessage(licence: LicenceResponse | null, serviceTypeCode: ServiceTypeCode): string | null {
+		let messageError = null;
+
+		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		if (licence) {
+			if (licence.serviceTypeCode !== serviceTypeCode) {
+				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
+			}
+		} else {
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
+		}
+
+		return messageError;
 	}
 
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
@@ -872,6 +882,21 @@ export class CommonApplicationService {
 		}
 	}
 
+	private getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc: string): string {
+		return `This licence number is not a ${selServiceTypeCodeDesc}.`;
+	}
+
+	private getLicenceLookupNoMatchErrorMessage(
+		serviceTypeCode: ServiceTypeCode,
+		selServiceTypeCodeDesc: string
+	): string {
+		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
+			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
+		} else {
+			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+		}
+	}
+
 	private setApplicationFlags(item: MainApplicationResponse) {
 		const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
 		const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
@@ -906,7 +931,7 @@ export class CommonApplicationService {
 			isFoundValid = this.isLicenceActive(licence.licenceStatusCode);
 		}
 
-		const isExpired = !isFoundValid;
+		const isExpired = isFound && !isFoundValid;
 		const isInRenewalPeriod = !isFoundValid
 			? false
 			: this.getIsInRenewalPeriod(licence.expiryDate, licence.licenceTermCode);

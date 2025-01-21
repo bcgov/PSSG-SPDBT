@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 
 @Component({
-	selector: 'app-step-worker-licence-contact-information',
-	template: `
+    selector: 'app-step-worker-licence-contact-information',
+    template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-12 mx-auto">
@@ -16,7 +16,8 @@ import { FormContactInformationComponent } from '@app/shared/components/form-con
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class StepWorkerLicenceContactInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

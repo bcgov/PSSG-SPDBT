@@ -24,6 +24,7 @@ internal class LicenceRepository : ILicenceRepository
             licence = await _context.spd_licences
                 .Expand(i => i.spd_LicenceHolder_contact)
                 .Expand(i => i.spd_LicenceHolder_account)
+                .Expand(i => i.spd_spd_licence_spd_licencecondition)
                 .Expand(i => i.spd_CaseId)
                 .Expand(i => i.spd_SoleProprietorId)
                 .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
@@ -45,6 +46,7 @@ internal class LicenceRepository : ILicenceRepository
     {
         IQueryable<spd_licence> lics = _context.spd_licences
             .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
+            .Expand(i => i.spd_spd_licence_spd_licencecondition)
             .Expand(i => i.spd_LicenceHolder_contact)
             .Expand(i => i.spd_LicenceHolder_account)
             .Expand(i => i.spd_CaseId);

@@ -107,16 +107,20 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    //if the documents are in the same application, then we use applicationId to indicate its set. Or we use uploadedDatetime
+    //if the documents are in the same application, then we use applicationId to indicate its set.
+    //if the documents are in the same licence, then we use licenceId to indicate its set.
+    //Or we use uploadedDatetime
     private IEnumerable<DocumentResp> GetLatestSet(IEnumerable<DocumentResp> resp)
     {
         if (resp.Any())
         {
             DocumentResp? doc = resp.FirstOrDefault();
-            if (doc?.ApplicationId == null)
-                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
-            else
+            if (doc?.LicenceId != null)
+                return resp.Where(i => i.LicenceId == doc.LicenceId).ToList();
+            else if (doc?.ApplicationId != null)
                 return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
+            else
+                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
         }
         return resp;
     }
@@ -128,6 +132,7 @@ internal class DocumentRepository : IDocumentRepository
         if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
             throw new ArgumentException("Invalid Document Expiry Date");
         if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
+        documenturl.spd_documentid = cmd.DocumentIdNumber;
         _context.AddTobcgov_documenturls(documenturl);
         if (cmd.ApplicationId != null)
         {
@@ -200,6 +205,7 @@ internal class DocumentRepository : IDocumentRepository
         destDoc.bcgov_receiveddate = sourceDoc.bcgov_receiveddate;
         destDoc.bcgov_fileextension = sourceDoc.bcgov_fileextension;
         destDoc.spd_expirydate = sourceDoc.spd_expirydate;
+        destDoc.spd_documentid = sourceDoc.spd_documentid;
         _context.AddTobcgov_documenturls(destDoc);
         _context.SetLink(destDoc, nameof(destDoc.spd_ApplicationId), application);
         if (sourceDoc._bcgov_tag1id_value != null)
@@ -259,6 +265,7 @@ internal class DocumentRepository : IDocumentRepository
             throw new ArgumentException("Invalid Document Expiry Date");
         documenturl.spd_expirydate = cmd.ExpiryDate == null ? null :
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
+        documenturl.spd_documentid = cmd.DocumentIdNumber;
         if (cmd.Tag1 != null)
         {
             // Have to detach and save, then do update again because of "The version of the existing record doesn't match the RowVersion property provided."

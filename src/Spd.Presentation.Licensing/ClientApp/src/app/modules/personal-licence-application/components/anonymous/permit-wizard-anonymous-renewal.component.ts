@@ -18,8 +18,8 @@ import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-step-compo
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-components/steps-permit-review-anonymous.component';
 
 @Component({
-	selector: 'app-permit-wizard-anonymous-renewal',
-	template: `
+    selector: 'app-permit-wizard-anonymous-renewal',
+    template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -101,7 +101,8 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based

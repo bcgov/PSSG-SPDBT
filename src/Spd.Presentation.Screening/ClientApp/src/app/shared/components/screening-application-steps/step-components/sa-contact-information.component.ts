@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-sa-contact-information',
-	template: `
+    selector: 'app-sa-contact-information',
+    template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
@@ -94,7 +94,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class SaContactInformationComponent implements CrcFormStepComponent {
 	private _orgData: AppInviteOrgData | null = null;

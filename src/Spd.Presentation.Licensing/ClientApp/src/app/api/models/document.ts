@@ -5,6 +5,7 @@
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 export interface Document {
   documentExtension?: string | null;
+  documentIdNumber?: string | null;
   documentName?: string | null;
   documentUrlId?: string;
   expiryDate?: string | null;

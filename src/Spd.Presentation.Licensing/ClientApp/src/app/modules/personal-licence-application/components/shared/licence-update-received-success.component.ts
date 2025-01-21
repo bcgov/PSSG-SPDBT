@@ -4,8 +4,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-licence-update-received-success',
-	template: `
+    selector: 'app-licence-update-received-success',
+    template: `
 		<app-container>
 			<section class="step-section">
 				<div class="row">
@@ -74,7 +74,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</section>
 		</app-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	licenceModelData: any = {};

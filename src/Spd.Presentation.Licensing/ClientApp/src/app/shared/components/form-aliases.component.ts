@@ -9,8 +9,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { DialogComponent, DialogOptions } from './dialog.component';
 
 @Component({
-	selector: 'app-form-aliases',
-	template: `
+    selector: 'app-form-aliases',
+    template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
@@ -97,8 +97,8 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 			</div>
 		</form>
 	`,
-	styles: [
-		`
+    styles: [
+        `
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;
@@ -118,8 +118,9 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 				max-width: 85%;
 			}
 		`,
-	],
-	animations: [showHideTriggerSlideAnimation],
+    ],
+    animations: [showHideTriggerSlideAnimation],
+    standalone: false
 })
 export class FormAliasesComponent {
 	booleanTypeCodes = BooleanTypeCode;

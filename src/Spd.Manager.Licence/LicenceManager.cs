@@ -52,6 +52,7 @@ internal class LicenceManager :
         var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
 
+        await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
@@ -76,6 +77,7 @@ internal class LicenceManager :
         }
         LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
+        await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
@@ -193,6 +195,15 @@ internal class LicenceManager :
         //only return expired and active ones
         return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
 
+    }
+
+    private async Task GetPhotoDocumentsInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
+    {
+        if (licResp.PhotoDocumentUrlId != null)
+        {
+            var doc = await _documentRepository.GetAsync((Guid)licResp.PhotoDocumentUrlId, cancellationToken);
+            lic.PhotoDocumentInfo = _mapper.Map<Document>(doc);
+        }
     }
 
     private async Task GetSoleProprietorInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)

@@ -3,8 +3,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-worker-summary-dogs-restraints',
-	template: `
+    selector: 'app-worker-summary-dogs-restraints',
+    template: `
 		<ng-container *ngIf="showDogsAndRestraints">
 			<mat-divider class="mt-3 mb-2"></mat-divider>
 			<div class="text-minor-heading-small">Restraints Authorization</div>
@@ -65,7 +65,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+    styles: [],
+    standalone: false
 })
 export class WorkerSummaryDogsRestraintsComponent {
 	booleanTypeYes = BooleanTypeCode.Yes;

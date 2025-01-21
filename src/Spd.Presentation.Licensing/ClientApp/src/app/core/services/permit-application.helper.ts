@@ -7,7 +7,7 @@ import {
 	BizTypeCode,
 	BodyArmourPermitReasonCode,
 	Document,
-	DocumentExpiredInfo,
+	DocumentRelatedInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
@@ -112,9 +112,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
+			documentIdNumber: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 			governmentIssuedPhotoTypeCode: new FormControl(''),
 			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedDocumentIdNumber: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
@@ -241,9 +243,13 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
+			? policeBackgroundData.policeOfficerRoleCode
+			: PoliceOfficerRoleCode.None;
 		const otherOfficerRole =
-			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
+				? policeBackgroundData.otherOfficerRole
+				: null;
 
 		let hasNewMentalHealthCondition: boolean | null = null;
 		let hasNewCriminalRecordCharge: boolean | null = null;
@@ -515,6 +521,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				expiryDate: citizenshipData.expiryDate
 					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
+				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode,
 			});
 		});
@@ -537,6 +544,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 								SPD_CONSTANTS.date.backendDateFormat
 							)
 						: null,
+					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
@@ -640,14 +648,15 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate)
+				.filter((doc) => doc.expiryDate || doc.documentIdNumber)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
+						documentIdNumber: doc.documentIdNumber,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-					} as DocumentExpiredInfo;
+					} as DocumentRelatedInfo;
 				}) ?? [];
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
@@ -723,8 +732,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			bodyArmourPermitReasonCodes,
 			permitOtherRequiredReason,
 			//-----------------------------------
-			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: isAuthenticated ? [...documentInfos] : undefined,
+			documentRelatedInfos: documentRelatedInfos,
+			documentInfos: isAuthenticated ? documentInfos : undefined,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
