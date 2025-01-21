@@ -12,8 +12,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					<app-alert type="warning" icon="">
 						<p>
 							Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-							photo will be used for your security worker licence if your application is approved. Submitting a photo
-							that does not meet these requirements will delay your application’s processing time.
+							photo will be used for your licence or permit if your application is approved. Submitting a photo that
+							does not meet these requirements will delay your application’s processing time.
 						</p>
 
 						Photo Guidelines:
