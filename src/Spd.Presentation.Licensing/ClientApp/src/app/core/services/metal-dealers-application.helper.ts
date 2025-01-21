@@ -33,7 +33,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([]),
+		attachments: new FormControl([], [FormControlValidators.required]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
