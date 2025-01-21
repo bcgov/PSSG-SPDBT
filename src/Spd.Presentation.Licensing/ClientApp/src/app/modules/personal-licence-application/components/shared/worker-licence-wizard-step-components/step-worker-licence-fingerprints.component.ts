@@ -9,7 +9,7 @@ import { FormFingerprintsComponent } from '@app/shared/components/form-fingerpri
 	selector: 'app-step-worker-licence-fingerprints',
 	template: `
 		<app-step-section
-			title="Upload proof of fingerprinting request"
+			title="Upload proof of fingerprinting"
 			subtitle="Provide confirmation that you have completed fingerprinting at your local police detachment or accredited fingerprinting agency."
 		>
 			<app-form-fingerprints
