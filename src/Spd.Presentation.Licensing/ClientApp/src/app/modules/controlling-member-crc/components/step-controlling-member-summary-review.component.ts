@@ -5,8 +5,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-controlling-member-summary-review',
-    template: `
+	selector: 'app-step-controlling-member-summary-review',
+	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
@@ -20,8 +20,8 @@ import { UtilService } from '@app/core/services/util.service';
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
+											matTooltip="Go to Step 1"
+											aria-label="Go to Step 1"
 											(click)="$event.stopPropagation(); onEditStep(0)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -115,8 +115,8 @@ import { UtilService } from '@app/core/services/util.service';
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
 											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -181,7 +181,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</div>
 								</div>
 
-								<ng-container *ngIf="isNew">
+								<ng-container *ngIf="isNew && bcDriversLicenceNumber">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
 									<div class="text-minor-heading-small">BC Driver's Licence</div>
@@ -204,8 +204,8 @@ import { UtilService } from '@app/core/services/util.service';
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
 											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -296,8 +296,8 @@ import { UtilService } from '@app/core/services/util.service';
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -334,8 +334,8 @@ import { UtilService } from '@app/core/services/util.service';
 				height: 35px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	controllingMemberModelData: any = {};

@@ -162,7 +162,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 							// if the sole proprietor flag is 'No', then set the bizTypeCode. This is not user selected.
 							const soleProprietorData = {
 								isSoleProprietor: isSoleProprietorYesNo,
-								bizTypeCode: BizTypeCode.None,
+								bizTypeCode: null,
 							};
 
 							this.workerModelFormGroup.patchValue(
@@ -1477,34 +1477,33 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
-		const bizTypeCode = workerLicenceAppl.bizTypeCode ?? BizTypeCode.None;
+		let bizTypeCode = workerLicenceAppl.bizTypeCode ?? BizTypeCode.None;
+
+		let soleProprietorData = {};
+
+		// Check if in a simultaneous flow
+		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(bizTypeCode, associatedLicence);
+		if (isSoleProprietorSimultaneousFlow) {
+			soleProprietorData = {
+				isSoleProprietor: BooleanTypeCode.Yes,
+				bizTypeCode,
+			};
+		} else {
+			// Check not a simultaneous flow, clear out any bad data
+			bizTypeCode = BizTypeCode.None;
+			soleProprietorData = {
+				isSoleProprietor: BooleanTypeCode.No,
+				bizTypeCode: null,
+			};
+		}
 
 		const originalLicenceData = this.originalLicenceFormGroup.value;
 		originalLicenceData.originalBizTypeCode = bizTypeCode;
-
-		let isSoleProprietor = !!associatedLicence?.linkedSoleProprietorLicenceId;
-		if (!isSoleProprietor) {
-			isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
-		}
-
-		const soleProprietorData = {
-			isSoleProprietor: this.utilService.booleanToBooleanType(isSoleProprietor),
-			bizTypeCode,
-		};
-
-		let isSoleProprietorSimultaneousFlow: boolean | null = null;
-		if (associatedLicence) {
-			isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
-		} else {
-			isSoleProprietorSimultaneousFlow = isSoleProprietor;
-		}
 
 		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
 		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
 		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
 		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
-		console.debug('[applyLicenceIntoModel] isSoleProprietor', isSoleProprietor);
-		console.debug('[applyLicenceIntoModel] isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
 		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
@@ -1901,7 +1900,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
-				soleProprietorBizAppId: workerLicenceAppl.soleProprietorBizAppId,
+				soleProprietorBizAppId: isSoleProprietorSimultaneousFlow ? workerLicenceAppl.soleProprietorBizAppId : null,
 				isSoleProprietorSimultaneousFlow,
 				serviceTypeData,
 				applicationTypeData,
@@ -2046,14 +2045,28 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
-		// Remove data that should be re-prompted for
-		const soleProprietorData = {
-			isSoleProprietor: null,
-			bizTypeCode: resp.soleProprietorData.bizTypeCode,
-		};
 		const licenceTermData = {
-			licenceTermCode: null,
+			licenceTermCode: null, // Remove data that should be re-prompted for
 		};
+
+		// Check if in a simultaneous flow
+		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
+			resp.soleProprietorData.bizTypeCode,
+			associatedLicence
+		);
+
+		let soleProprietorData = {};
+		if (isSoleProprietorSimultaneousFlow) {
+			soleProprietorData = {
+				isSoleProprietor: null, // Remove data that should be re-prompted for
+				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+			};
+		} else {
+			soleProprietorData = {
+				isSoleProprietor: null, // Remove data that should be re-prompted for
+				bizTypeCode: null,
+			};
+		}
 
 		const [
 			categoryArmouredCarGuardFormGroup,
@@ -2141,6 +2154,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		}
 
+		// If not a simultaneous flow, clear out any bad data
+		if (!isSoleProprietorSimultaneousFlow) {
+			originalLicenceData.originalBizTypeCode = BizTypeCode.None;
+			originalLicenceData.linkedSoleProprietorExpiryDate = null;
+			originalLicenceData.linkedSoleProprietorLicenceId = null;
+		}
+
 		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -2198,6 +2218,30 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
+		// Check if in a simultaneous flow
+		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
+			resp.soleProprietorData.bizTypeCode,
+			associatedLicence
+		);
+
+		let soleProprietorData = {};
+		if (isSoleProprietorSimultaneousFlow) {
+			soleProprietorData = {
+				isSoleProprietor: BooleanTypeCode.Yes,
+				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+			};
+		} else {
+			// If not a simultaneous flow, clear out any bad data
+			originalLicenceData.originalBizTypeCode = BizTypeCode.None;
+			originalLicenceData.linkedSoleProprietorExpiryDate = null;
+			originalLicenceData.linkedSoleProprietorLicenceId = null;
+
+			soleProprietorData = {
+				isSoleProprietor: BooleanTypeCode.No,
+				bizTypeCode: null,
+			};
+		}
 
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
@@ -2264,6 +2308,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				categorySecurityAlarmResponseFormGroup,
 				categorySecurityAlarmSalesFormGroup,
 				categorySecurityConsultantFormGroup,
+				soleProprietorData,
 			},
 			{
 				emitEvent: false,
@@ -2344,5 +2389,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
+	}
+
+	private isSimultaneousFlow(
+		bizTypeCode: BizTypeCode | undefined,
+		associatedLicence: MainLicenceResponse | LicenceResponse | undefined
+	): boolean {
+		if (!bizTypeCode && !associatedLicence) return false;
+
+		if (!associatedLicence) {
+			return this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode!);
+		}
+
+		return (
+			!!associatedLicence?.linkedSoleProprietorLicenceId &&
+			associatedLicence.linkedSoleProprietorExpiryDate === associatedLicence.expiryDate
+		);
 	}
 }
