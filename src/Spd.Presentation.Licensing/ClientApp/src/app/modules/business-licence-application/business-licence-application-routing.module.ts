@@ -98,7 +98,7 @@ const routes: Routes = [
 		component: BusinessFirstTimeUserTermsOfUseComponent,
 	},
 	{
-		path: '',
+		path: '**',
 		redirectTo: BusinessLicenceApplicationRoutes.path(),
 		pathMatch: 'full',
 	},
