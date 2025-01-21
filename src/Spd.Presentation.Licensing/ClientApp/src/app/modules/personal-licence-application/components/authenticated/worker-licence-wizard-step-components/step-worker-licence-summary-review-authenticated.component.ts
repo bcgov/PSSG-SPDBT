@@ -250,7 +250,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
 		if (this.applicationTypeCode === ApplicationTypeCode.New) {
-			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
+			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode ?? BizTypeCode.None;
 		}
 
 		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;

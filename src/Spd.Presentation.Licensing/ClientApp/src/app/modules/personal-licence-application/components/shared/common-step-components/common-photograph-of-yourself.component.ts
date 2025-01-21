@@ -9,15 +9,15 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="warning" icon="">
+					<app-alert type="info" icon="info">
 						<p>
 							Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-							photo will be used for your security worker licence if your application is approved. Submitting a photo
-							that does not meet these requirements will delay your application’s processing time.
+							photo will be used for your licence or permit if your application is approved. Submitting a photo that
+							does not meet these requirements will delay your application’s processing time.
 						</p>
 
 						Photo Guidelines:
-						<ul>
+						<ul class="mb-0">
 							<li>The photo must be in colour and well-lit.</li>
 							<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
 							<li>Use a plain, white background.</li>
