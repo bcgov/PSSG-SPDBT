@@ -27,8 +27,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">Proof of training and experience</div>
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
-								experience. <a [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the types of documents we
-								accept for each security worker category.
+								experience. <a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the
+								types of documents we accept for each security worker category.
 							</p>
 						</li>
 
@@ -59,7 +59,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">Proof of ability to work in Canada</div>
 							<p class="checklist-info">
 								You must supply proof of ability to work in Canada. See all accepted forms of identification on the
-								<a [href]="bcGovHomeUrl" target="_blank">Security Worker Licence requirements page</a>.
+								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"
+									>Security Worker Licence requirements page</a
+								>.
 							</p>
 						</li>
 
@@ -70,7 +72,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
 								application. For more details on passport-quality photos, please refer to the
 								<a
-									aria-label="Download Government of Canada's passport photograph guidelines"
+									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
 									[href]="canadianPassportPhotoUrl"
 									target="_blank"
 									>Government of Canada's passport photograph guidelines</a
@@ -99,7 +101,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								Download the
 								<a
-									aria-label="Download Mental Health Condition form"
+									aria-label="Navigate to Mental Health Condition form site"
 									[href]="mentalHealthConditionsFormUrl"
 									target="_blank"
 								>

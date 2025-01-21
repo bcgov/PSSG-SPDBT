@@ -21,8 +21,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-licence-user-applications',
-    template: `
+	selector: 'app-licence-user-applications',
+	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -152,6 +152,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							<a
 								class="fw-normal"
 								tabindex="0"
+								aria-label="Connect a current or expired licence or permit to your account"
 								(click)="onConnectToExpiredLicence()"
 								(keydown)="onKeydownConnectToExpiredLicence($event)"
 								>Connect a current or expired licence or permit</a
@@ -163,8 +164,8 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

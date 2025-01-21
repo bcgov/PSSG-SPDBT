@@ -43,7 +43,14 @@ export enum GuideDogTypeCode {
 								</table>
 								<div class="mt-3">
 									Don't have BC Services Card?
-									<a class="large login-link" [href]="setupAccountUrl" target="_blank"> Set up your account today </a>
+									<a
+										class="large login-link"
+										aria-label="Navigate to BC Service Card site"
+										[href]="setupAccountUrl"
+										target="_blank"
+									>
+										Set up your account today
+									</a>
 								</div>
 							</div>
 						</div>
@@ -70,6 +77,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card"
 											(click)="onContinue(guideDogTypes.GuideDog)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.GuideDog)"
 										>
@@ -102,6 +110,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card"
 											(click)="onContinue(guideDogTypes.DogTrainer)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.DogTrainer)"
 										>
@@ -134,6 +143,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card"
 											(click)="onContinue(guideDogTypes.RetiredServiceDog)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.RetiredServiceDog)"
 										>

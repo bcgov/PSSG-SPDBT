@@ -17,7 +17,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
 								experience.
-								<a [href]="bcGovHomeUrl" target="_blank">Learn more</a>
+								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a>
 								about the types of documents we accept for each security worker category.
 							</p>
 						</li>
@@ -44,7 +44,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								Download the
 								<a
-									aria-label="Download Mental Health Condition form"
+									aria-label="Navigate to Mental Health Condition form site"
 									[href]="mentalHealthConditionsFormUrl"
 									target="_blank"
 								>

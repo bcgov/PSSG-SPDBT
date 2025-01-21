@@ -59,7 +59,14 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 				<div class="row mt-4 no-print">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<a mat-flat-button color="primary" class="large w-100" [href]="contactSpdUrl">Close</a>
+						<a
+							mat-flat-button
+							aria-label="Close and navigate to Contact SPD site"
+							color="primary"
+							class="large w-100"
+							[href]="contactSpdUrl"
+							>Close</a
+						>
 					</div>
 				</div>
 			</section>

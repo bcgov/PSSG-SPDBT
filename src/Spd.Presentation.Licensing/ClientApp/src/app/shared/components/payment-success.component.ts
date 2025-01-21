@@ -112,7 +112,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 							mat-flat-button
 							color="primary"
 							class="large m-2"
-							aria-label="Download Receipt"
+							aria-label="Download payment receipt"
 							(click)="onDownloadReceipt()"
 						>
 							<mat-icon class="d-none d-md-block">file_download</mat-icon>Download Receipt

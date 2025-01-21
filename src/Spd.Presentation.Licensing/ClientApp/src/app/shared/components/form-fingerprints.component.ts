@@ -58,7 +58,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 						>Your fingerprints must be taken to continue to verify your identity.<br /><br />
 						Download the
 						<a
-							aria-label="Download Request for Fingerprinting form"
+							aria-label="Download the Request for Fingerprinting form"
 							download="Request For Fingerprinting Form"
 							[href]="downloadFilePath"
 							>Request for Fingerprinting form</a

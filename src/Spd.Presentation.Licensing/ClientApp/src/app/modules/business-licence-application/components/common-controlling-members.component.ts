@@ -250,6 +250,7 @@ import {
 								<a
 									class="large"
 									tabindex="0"
+									aria-label="Add a Member without a Security Worker Licence"
 									(click)="onAddMemberWithoutSWL()"
 									(keydown)="onKeydownAddMemberWithoutSWL($event)"
 									*ngIf="!isReadonly"

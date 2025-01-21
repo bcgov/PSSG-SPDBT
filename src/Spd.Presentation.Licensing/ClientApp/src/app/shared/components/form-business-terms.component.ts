@@ -90,7 +90,9 @@ import { UtilService } from '@app/core/services/util.service';
 									When you visit the Site or use the Services, certain types of information are automatically collected
 									from you, through the use of audit logs or cookies. This information is collected, used and disclosed
 									in accordance with the Province’s
-									<a [href]="bcGovPrivacyUrl" target="_blank">Privacy Policy</a>.
+									<a aria-label="Navigate to Privacy Policy site" [href]="bcGovPrivacyUrl" target="_blank"
+										>Privacy Policy</a
+									>.
 								</li>
 								<li>
 									The date and time of your acceptance of these Terms of Use will be logged. This will enable you to
@@ -122,9 +124,11 @@ import { UtilService } from '@app/core/services/util.service';
 								<li>
 									Your identity will be verified each time you access the Site, and depending on the authentication
 									method used, you may be required to follow a link to an external site, including the,
-									<a [href]="bceidBluePagesUrl" target="_blank">BCeID Site</a> or
-									<a [href]="bcServicesCardUrl" target="_blank">BC Services Card Site</a>, following which you will be
-									returned to, and allowed to access the application portions of, the Site.
+									<a aria-label="Navigate to BCeID site" [href]="bceidBluePagesUrl" target="_blank">BCeID Site</a> or
+									<a aria-label="Navigate to BC Services Card site" [href]="bcServicesCardUrl" target="_blank"
+										>BC Services Card Site</a
+									>, following which you will be returned to, and allowed to access the application portions of, the
+									Site.
 								</li>
 								<div class="fs-5 terms-subtitle">Payment:</div>
 								<li>
@@ -220,17 +224,18 @@ import { UtilService } from '@app/core/services/util.service';
 								<div class="fs-5 terms-subtitle">Limitation of Liability:</div>
 								<li>
 									In addition to the Province’s general
-									<a [href]="bcGovDisclaimerUrl" target="_blank"> Limitation of Liabilities</a>, you agree that under no
-									circumstances will the Province or the provider of any Associated Service be liable to you or to any
-									other individual or entity for any direct, indirect, special, incidental, consequential or other loss,
-									claim, injury or damage, whether foreseeable or unforeseeable (including without limitation claims for
-									damages for loss of profits or business opportunities, use of or inability to use the Services,
-									interruptions, deletion or corruption of files, loss of programs or information, errors, defects or
-									delays) arising out of or in any way connected with your or their access to or use of the Services or
-									any failure by you or them to abide by these Terms of Use and whether based on contract, tort, strict
-									liability or any other legal theory. The previous sentence will apply even if the Province or the
-									provider of any Associated Service has been specifically advised of the possibility of any such loss,
-									claim, injury or damage.
+									<a aria-label="Navigate to Limitation of Liabilities site" [href]="bcGovDisclaimerUrl" target="_blank"
+										>Limitation of Liabilities</a
+									>, you agree that under no circumstances will the Province or the provider of any Associated Service
+									be liable to you or to any other individual or entity for any direct, indirect, special, incidental,
+									consequential or other loss, claim, injury or damage, whether foreseeable or unforeseeable (including
+									without limitation claims for damages for loss of profits or business opportunities, use of or
+									inability to use the Services, interruptions, deletion or corruption of files, loss of programs or
+									information, errors, defects or delays) arising out of or in any way connected with your or their
+									access to or use of the Services or any failure by you or them to abide by these Terms of Use and
+									whether based on contract, tort, strict liability or any other legal theory. The previous sentence
+									will apply even if the Province or the provider of any Associated Service has been specifically
+									advised of the possibility of any such loss, claim, injury or damage.
 								</li>
 								<div class="fs-5 terms-subtitle">Enforceability and Jurisdiction:</div>
 								<li>
@@ -342,7 +347,9 @@ import { UtilService } from '@app/core/services/util.service';
 									When you visit the Site or use the Services, certain types of information are automatically collected
 									from you, through the use of audit logs or cookies. This information is collected, used and disclosed
 									in accordance with the Province’s
-									<a [href]="bcGovPrivacyUrl" target="_blank">Privacy Policy</a>.
+									<a aria-label="Navigate to Privacy Policy site" [href]="bcGovPrivacyUrl" target="_blank"
+										>Privacy Policy</a
+									>.
 								</li>
 								<li>
 									The date and time of your acceptance of these Terms of Use will be logged. This will enable you to
@@ -375,9 +382,11 @@ import { UtilService } from '@app/core/services/util.service';
 								<li>
 									Your identity will be verified each time you access the Site, and depending on the authentication
 									method used, you may be required to follow a link to an external site, including the,
-									<a [href]="bceidBluePagesUrl" target="_blank">BCeID Site</a> or
-									<a [href]="bcServicesCardUrl" target="_blank">BC Services Card Site</a>, following which you will be
-									returned to, and allowed to access the application or update portions of, the Site.
+									<a aria-label="Navigate to BCeID site" [href]="bceidBluePagesUrl" target="_blank">BCeID Site</a> or
+									<a aria-label="Navigate to BC Services card site" [href]="bcServicesCardUrl" target="_blank"
+										>BC Services Card Site</a
+									>, following which you will be returned to, and allowed to access the application or update portions
+									of, the Site.
 								</li>
 								<div class="fs-5 terms-subtitle">Payment:</div>
 								<li>
@@ -474,17 +483,18 @@ import { UtilService } from '@app/core/services/util.service';
 								<div class="fs-5 terms-subtitle">Limitation of Liability:</div>
 								<li>
 									In addition to the Province’s general
-									<a [href]="bcGovDisclaimerUrl" target="_blank"> Limitation of Liabilities</a>, you agree that under no
-									circumstances will the Province or the provider of any Associated Service be liable to you or to any
-									other individual or entity for any direct, indirect, special, incidental, consequential or other loss,
-									claim, injury or damage, whether foreseeable or unforeseeable (including without limitation claims for
-									damages for loss of profits or business opportunities, use of or inability to use the Services,
-									interruptions, deletion or corruption of files, loss of programs or information, errors, defects or
-									delays) arising out of or in any way connected with your or their access to or use of the Services or
-									any failure by you or them to abide by these Terms of Use and whether based on contract, tort, strict
-									liability or any other legal theory. The previous sentence will apply even if the Province or the
-									provider of any Associated Service has been specifically advised of the possibility of any such loss,
-									claim, injury or damage.
+									<a aria-label="Navigate to Limitation of Liabilities site" [href]="bcGovDisclaimerUrl" target="_blank"
+										>Limitation of Liabilities</a
+									>, you agree that under no circumstances will the Province or the provider of any Associated Service
+									be liable to you or to any other individual or entity for any direct, indirect, special, incidental,
+									consequential or other loss, claim, injury or damage, whether foreseeable or unforeseeable (including
+									without limitation claims for damages for loss of profits or business opportunities, use of or
+									inability to use the Services, interruptions, deletion or corruption of files, loss of programs or
+									information, errors, defects or delays) arising out of or in any way connected with your or their
+									access to or use of the Services or any failure by you or them to abide by these Terms of Use and
+									whether based on contract, tort, strict liability or any other legal theory. The previous sentence
+									will apply even if the Province or the provider of any Associated Service has been specifically
+									advised of the possibility of any such loss, claim, injury or damage.
 								</li>
 								<div class="fs-5 terms-subtitle">Enforceability and Jurisdiction:</div>
 								<li>
@@ -532,7 +542,7 @@ import { UtilService } from '@app/core/services/util.service';
 						mat-stroked-button
 						color="primary"
 						class="large w-100"
-						aria-label="Download Terms of Use document"
+						aria-label="Download the Security Services Business Applicant Terms of Use document"
 						download="Security Services Business Applicant Terms of Use"
 						[href]="downloadFilePath"
 					>

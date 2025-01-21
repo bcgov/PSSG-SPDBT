@@ -42,6 +42,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 						Please download and complete the
 						<a
 							tabindex="0"
+							aria-label="Download the Manual Payment form"
 							(click)="onDownloadManualPaymentForm()"
 							(keydown)="onKeydownDownloadManualPaymentForm($event)"
 							>Manual Payment Form</a
@@ -59,6 +60,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 						Alternatively, you can download the
 						<a
 							tabindex="0"
+							aria-label="Download the Manual Payment form"
 							(click)="onDownloadManualPaymentForm()"
 							(keydown)="onKeydownDownloadManualPaymentForm($event)"
 							>Manual Payment Form</a
