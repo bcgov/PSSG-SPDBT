@@ -1,9 +1,10 @@
+import { AppRoutes } from '@app/app-routes';
+
 export class PersonalLicenceApplicationRoutes {
 	public static readonly LICENCE_APPLICATION = 'personal-licence';
 
 	// AUTHENTICATED
 	public static readonly LICENCE_BASE = 'application';
-	public static readonly LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
 
 	public static readonly LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR = 'return-user-applications';
 	public static readonly LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS = 'return-user-applications-anonymous';
@@ -55,6 +56,10 @@ export class PersonalLicenceApplicationRoutes {
 
 	public static readonly MODULE_PATH = PersonalLicenceApplicationRoutes.LICENCE_APPLICATION;
 
+	public static defaultLanding(): string {
+		return AppRoutes.path(AppRoutes.LANDING);
+	}
+
 	public static path(route: string | null = null): string {
 		return route
 			? `/${PersonalLicenceApplicationRoutes.MODULE_PATH}/${route}`
@@ -62,7 +67,7 @@ export class PersonalLicenceApplicationRoutes {
 	}
 
 	public static pathUserApplications(): string {
-		return `/${PersonalLicenceApplicationRoutes.MODULE_PATH}/${PersonalLicenceApplicationRoutes.LICENCE_BASE}/${PersonalLicenceApplicationRoutes.LICENCE_USER_APPLICATIONS_AUTHENTICATED}`;
+		return `/${PersonalLicenceApplicationRoutes.MODULE_PATH}/${PersonalLicenceApplicationRoutes.LICENCE_BASE}`;
 	}
 
 	public static pathReturnFromBusinessLicenceSoleProprietor(): string {

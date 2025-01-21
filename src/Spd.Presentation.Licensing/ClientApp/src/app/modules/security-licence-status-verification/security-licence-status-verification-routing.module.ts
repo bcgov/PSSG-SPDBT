@@ -26,7 +26,7 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: '',
+		path: '**',
 		redirectTo: SecurityLicenceStatusVerificationRoutes.path(),
 		pathMatch: 'full',
 	},
