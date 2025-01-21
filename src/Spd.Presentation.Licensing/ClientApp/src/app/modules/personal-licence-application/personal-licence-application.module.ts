@@ -45,12 +45,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './compon
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-summary-review-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
-import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
-import { LicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/licence-application-base-authenticated.component';
-import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
-import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
-import { LicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/licence-return-from-bl-sole-proprietor.component';
-import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
+import { WorkerLicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/worker-licence-return-from-bl-sole-proprietor.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
@@ -88,7 +83,11 @@ import { CommonCriminalHistoryComponent } from './components/shared/common-step-
 import { CommonPhotographOfYourselfComponent } from './components/shared/common-step-components/common-photograph-of-yourself.component';
 import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
+import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
 import { LicenceActiveSwlPermitLicencesComponent } from './components/shared/licence-active-swl-permit-licences.component';
+import { LicenceApplicationBaseAuthenticatedComponent } from './components/shared/licence-application-base-authenticated.component';
+import { LicenceFirstTimeUserSelectionComponent } from './components/shared/licence-first-time-user-selection.component';
+import { LicenceFirstTimeUserTermsOfUseComponent } from './components/shared/licence-first-time-user-terms-of-use.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
@@ -98,6 +97,7 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
+import { LicenceUserApplicationsComponent } from './components/shared/licence-user-applications.component';
 import { PermitSummaryCharacteristicsComponent } from './components/shared/permit-summary-characteristics.component';
 import { PermitSummaryEmployerInformationComponent } from './components/shared/permit-summary-employer-information.component';
 import { PermitSummaryPurposeComponent } from './components/shared/permit-summary-purpose.component';
@@ -159,7 +159,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 
 @NgModule({
 	declarations: [
-		LicenceReturnFromBlSoleProprietorComponent,
+		WorkerLicenceReturnFromBlSoleProprietorComponent,
 		PermitSummaryCharacteristicsComponent,
 		PermitSummaryPurposeComponent,
 		PermitSummaryRationaleComponent,

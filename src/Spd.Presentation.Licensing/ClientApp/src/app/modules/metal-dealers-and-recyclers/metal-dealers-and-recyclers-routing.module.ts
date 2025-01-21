@@ -26,7 +26,7 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: '',
+		path: '**',
 		redirectTo: MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers(),
 		pathMatch: 'full',
 	},
