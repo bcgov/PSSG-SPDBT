@@ -13,6 +13,7 @@ import {
 } from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -206,6 +207,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private configService: ConfigService,
 		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private dialog: MatDialog,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
@@ -531,7 +533,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 				// Swl Licences/ Permits
 				const activeLicencesList = userPersonLicencesList.filter((item: MainLicenceResponse) =>
-					this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
+					this.utilService.isLicenceActive(item.licenceStatusCode)
 				);
 
 				const expiredLicences = userPersonLicencesList.filter(
