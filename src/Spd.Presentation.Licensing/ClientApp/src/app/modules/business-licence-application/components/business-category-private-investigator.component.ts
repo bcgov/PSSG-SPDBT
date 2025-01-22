@@ -22,7 +22,13 @@ import {
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-12 col-sm-12 text-end">
-					<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupManager()">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto"
+						aria-label="Search for manager"
+						(click)="onLookupManager()"
+					>
 						Search for Manager
 					</button>
 				</div>

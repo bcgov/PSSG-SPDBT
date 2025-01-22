@@ -14,10 +14,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<ul>
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
 								experience.
-								<a [href]="bcGovHomeUrl" target="_blank">Learn more</a>
+								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a>
 								about the types of documents we accept for each security worker category.
 							</p>
 						</li>
@@ -43,7 +44,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</div>
 							<p class="checklist-info">
 								Download the
-								<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
+								<a
+									aria-label="Navigate to Mental Health Condition form site"
+									[href]="mentalHealthConditionsFormUrl"
+									target="_blank"
+								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>

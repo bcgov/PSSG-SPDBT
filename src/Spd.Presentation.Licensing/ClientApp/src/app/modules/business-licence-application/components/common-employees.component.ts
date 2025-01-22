@@ -17,8 +17,8 @@ import {
 } from '../../../shared/components/modal-lookup-by-licence-number.component';
 
 @Component({
-    selector: 'app-common-employees',
-    template: `
+	selector: 'app-common-employees',
+	template: `
 		<mat-accordion multi="false">
 			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 				<mat-expansion-panel-header>
@@ -70,7 +70,7 @@ import {
 											mat-flat-button
 											class="table-button w-auto"
 											style="color: var(--color-red);"
-											aria-label="Remove controlling member"
+											aria-label="Remove the employee"
 											(click)="onRemoveEmployee(member.bizContactId, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
@@ -99,6 +99,7 @@ import {
 								<a
 									class="large"
 									tabindex="0"
+									aria-label="Add an Employee"
 									(click)="onAddEmployee()"
 									(keydown)="onKeydownAddEmployee($event)"
 									*ngIf="!isReadonly"
@@ -112,8 +113,8 @@ import {
 			</mat-expansion-panel>
 		</mat-accordion>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -122,8 +123,8 @@ import {
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;

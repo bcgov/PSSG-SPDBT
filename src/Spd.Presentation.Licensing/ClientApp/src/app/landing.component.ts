@@ -13,8 +13,8 @@ import { WorkerApplicationService } from './core/services/worker-application.ser
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
 
 @Component({
-    selector: 'app-landing',
-    template: `
+	selector: 'app-landing',
+	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section title="Log in to manage your security licence or permit">
 				<div class="row">
@@ -44,7 +44,14 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 								</table>
 								<div class="mt-3">
 									Don't have BC Services Card?
-									<a class="large login-link" [href]="setupAccountUrl" target="_blank"> Set up your account today </a>
+									<a
+										class="large login-link"
+										aria-label="Register for a BC Services Card"
+										[href]="setupAccountUrl"
+										target="_blank"
+									>
+										Set up your account today
+									</a>
 								</div>
 							</div>
 						</div>
@@ -57,7 +64,13 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<div class="my-auto"><strong>Security Worker</strong> licence:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-2"
+										aria-label="Log In with BC Services Card to manage your security worker licence"
+										(click)="onRegisterWithBcServicesCard()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -67,6 +80,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card to manage your security worker licence"
 											(click)="onContinue(serviceTypeCodes.SecurityWorkerLicence)"
 											(keydown)="onKeydownContinue($event, serviceTypeCodes.SecurityWorkerLicence)"
 										>
@@ -85,7 +99,13 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<div class="my-auto"><strong>Security Business</strong> licence:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBceid()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-2"
+										aria-label="Log In with Business BCeID to manage your security business licence"
+										(click)="onRegisterWithBceid()"
+									>
 										Log In with <span class="fw-bold">Business BCeID</span>
 									</button>
 								</div>
@@ -93,7 +113,14 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
 										Don't have Business BCeID?<br />
-										<a class="large login-link" [href]="bceidGettingStartedUrl" target="_blank"> Register today </a>
+										<a
+											class="large login-link"
+											aria-label="Register for a Business BCeID"
+											[href]="bceidGettingStartedUrl"
+											target="_blank"
+										>
+											Register today
+										</a>
 									</div>
 								</div>
 							</div>
@@ -107,7 +134,13 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<div class="my-auto"><strong>Body Armour</strong> permit:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-2"
+										aria-label="Log In with BC Services Card to manage your body armour permit"
+										(click)="onRegisterWithBcServicesCard()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -117,6 +150,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card to manage your body armour permit"
 											(click)="onContinue(serviceTypeCodes.BodyArmourPermit)"
 											(keydown)="onKeydownContinue($event, serviceTypeCodes.BodyArmourPermit)"
 										>
@@ -135,7 +169,13 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<div class="my-auto"><strong>Armoured Vehicle</strong> permit:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-2"
+										aria-label="Log In with BC Services Card to manage your armoured vehicle permit"
+										(click)="onRegisterWithBcServicesCard()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -145,6 +185,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
+											aria-label="Continue without a BC Services Card to manage your armoured vehicle permit"
 											(click)="onContinue(serviceTypeCodes.ArmouredVehiclePermit)"
 											(keydown)="onKeydownContinue($event, serviceTypeCodes.ArmouredVehiclePermit)"
 										>
@@ -159,8 +200,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 			</app-step-section>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.login-link {
 				font-weight: bold;
 				color: var(--color-primary) !important;
@@ -175,8 +216,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 				height: 3em;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class LandingComponent implements OnInit {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;

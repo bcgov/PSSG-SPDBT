@@ -6,20 +6,26 @@ export interface BizSelectionDialogData {
 	bizsList: Array<BizListResponse>;
 }
 @Component({
-    selector: 'app-modal-biz-selection',
-    template: `
+	selector: 'app-modal-biz-selection',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content class="mat-dialog-content">
 			<ng-container *ngFor="let bizItem of bizsList; let i = index">
-				<button mat-stroked-button color="primary" class="large my-2" (click)="onSelectBiz(bizItem)">
+				<button
+					mat-stroked-button
+					color="primary"
+					class="large my-2"
+					aria-label="Click on a business to select it and close the popup"
+					(click)="onSelectBiz(bizItem)"
+				>
 					{{ bizItem.bizName ?? bizItem.bizLegalName }}
 				</button>
 			</ng-container>
 		</mat-dialog-content>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class ModalBizSelectionComponent implements OnInit {
 	bizsList: Array<BizListResponse> = [];

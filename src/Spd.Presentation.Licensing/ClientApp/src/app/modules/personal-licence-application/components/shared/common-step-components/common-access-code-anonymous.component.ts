@@ -14,8 +14,8 @@ import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-common-access-code-anonymous',
-    template: `
+	selector: 'app-common-access-code-anonymous',
+	template: `
 		<div class="row">
 			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
 				<form [formGroup]="form" novalidate>
@@ -71,7 +71,13 @@ import { Subject, take, tap } from 'rxjs';
 					</div>
 
 					<div class="mt-3" *ngIf="isExpired">
-						<a class="w-auto" tabindex="0" (click)="onCreateNewLicence()" (keydown)="onKeydownCreateNewLicence($event)">
+						<a
+							class="w-auto"
+							tabindex="0"
+							aria-label="Apply for a new licence"
+							(click)="onCreateNewLicence()"
+							(keydown)="onKeydownCreateNewLicence($event)"
+						>
 							Apply for a New Licence
 						</a>
 					</div>
@@ -79,8 +85,8 @@ import { Subject, take, tap } from 'rxjs';
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CommonAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();

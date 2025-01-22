@@ -42,12 +42,19 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 									color="primary"
 									*ngIf="!isSoleProprietorAppSimultaneousFlow"
 									class="large w-auto me-2 mb-3"
+									aria-label="Manage the business profile"
 									(click)="onBusinessProfile()"
 								>
 									<mat-icon class="d-none d-md-block">storefront</mat-icon>
 									{{ businessProfileLabel }}
 								</button>
-								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large w-auto ms-2 mb-3"
+									aria-label="Manage the business managers"
+									(click)="onBusinessManagers()"
+								>
 									<mat-icon class="d-none d-md-block">people</mat-icon>
 									Business Managers
 								</button>

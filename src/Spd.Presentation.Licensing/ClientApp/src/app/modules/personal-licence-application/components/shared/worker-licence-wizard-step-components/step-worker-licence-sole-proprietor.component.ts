@@ -7,14 +7,20 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-sole-proprietor',
-    template: `
+	selector: 'app-step-worker-licence-sole-proprietor',
+	template: `
 		<app-step-section [title]="title" [subtitle]="infoTitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="warning">
 						If you want to apply for both at the same time, you will need your
-						<a class="large" [href]="bceidGettingStartedUrl" target="_blank">Business BCeID</a>
+						<a
+							aria-label="Navigate to getting start with BCeid site"
+							class="large"
+							[href]="bceidGettingStartedUrl"
+							target="_blank"
+							>Business BCeID</a
+						>
 					</app-alert>
 				</div>
 			</div>
@@ -66,8 +72,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;

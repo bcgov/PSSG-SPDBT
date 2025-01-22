@@ -7,8 +7,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-    selector: 'app-form-mental-health-conditions',
-    template: `
+	selector: 'app-form-mental-health-conditions',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
@@ -38,8 +38,9 @@ import { FileUploadComponent } from './file-upload.component';
 						If you don't have a completed form, you can download and provide it to your physician to fill out, or your
 						physician may download it and fill the form out on a computer if you provide them with the required
 						information. See the
-						<a [href]="securityServicesActUrl" target="_blank"> Security Services Act</a>, s. 3, Security Services
-						Regulation, s. 4(1)(e) for more information
+						<a aria-label="Navigate to Security Services Act site" [href]="securityServicesActUrl" target="_blank">
+							Security Services Act</a
+						>, s. 3, Security Services Regulation, s. 4(1)(e) for more information
 					</p>
 					<div class="text-minor-heading my-2">Upload your mental health condition form</div>
 					<app-file-upload
@@ -62,9 +63,9 @@ import { FileUploadComponent } from './file-upload.component';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class FormMentalHealthConditionsComponent {
 	securityServicesActUrl = SPD_CONSTANTS.urls.securityServicesActUrl;
