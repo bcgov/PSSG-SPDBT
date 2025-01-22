@@ -15,7 +15,6 @@ import {
 	LicenceBasicResponse,
 	LicenceFeeResponse,
 	LicenceResponse,
-	LicenceStatusCode,
 	LicenceTermCode,
 	Members,
 	NonSwlContactInfo,
@@ -127,12 +126,6 @@ export class CommonApplicationService {
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);
-	}
-
-	public isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
-		if (!licenceStatusCode) return false;
-
-		return licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview;
 	}
 
 	public cancelAndLoseChanges() {
@@ -315,7 +308,7 @@ export class CommonApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.isLicenceActive(resp.licenceStatusCode)) {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -442,7 +435,7 @@ export class CommonApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.isLicenceActive(resp.licenceStatusCode)) {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -946,7 +939,7 @@ export class CommonApplicationService {
 		let isFoundValid = false;
 
 		if (isFound) {
-			isFoundValid = this.isLicenceActive(licence.licenceStatusCode);
+			isFoundValid = this.utilService.isLicenceActive(licence.licenceStatusCode);
 		}
 
 		const isExpired = isFound && !isFoundValid;
@@ -1026,7 +1019,7 @@ export class CommonApplicationService {
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (
-				this.isLicenceActive(licence.licenceStatusCode) &&
+				this.utilService.isLicenceActive(licence.licenceStatusCode) &&
 				today.isBefore(moment(licence.expiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days'))
 			) {
 				licence.isUpdatePeriod = true;
