@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
-    selector: 'app-business-licence-list-current',
-    template: `
+	selector: 'app-business-licence-list-current',
+	template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
 			<div class="text-primary-color fs-5 py-3">Valid Licence</div>
 			<div
@@ -98,12 +98,19 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									color="primary"
 									class="large my-2"
 									(click)="onRenew(licence)"
+									aria-label="Renew the licence"
 									*ngIf="licence.isRenewalPeriod && !licence.isSimultaneousFlow"
 								>
 									<mat-icon>restore</mat-icon>Renew
 								</button>
 
-								<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large my-2"
+									aria-label="Update the licence"
+									(click)="onUpdate(licence)"
+								>
 									<mat-icon>update</mat-icon>Update
 								</button>
 							</div>
@@ -155,8 +162,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.appl-chip-option {
 				height: 35px;
 				width: 125px;
@@ -171,8 +178,8 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 				color: var(--color-red-dark);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class BusinessLicenceListCurrentComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

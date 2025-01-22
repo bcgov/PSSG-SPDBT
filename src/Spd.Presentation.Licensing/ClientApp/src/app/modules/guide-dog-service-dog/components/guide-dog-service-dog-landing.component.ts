@@ -66,7 +66,13 @@ export enum GuideDogTypeCode {
 										<div class="text-start"><strong>Guide Dogs/Service Dogs Team</strong> Certification:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterGuideDog()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-3"
+										aria-label="Log in with your BC Services Card and manage certifications"
+										(click)="onRegisterGuideDog()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -77,7 +83,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
-											aria-label="Continue without a BC Services Card"
+											aria-label="Continue without a BC Services Card and manage certifications"
 											(click)="onContinue(guideDogTypes.GuideDog)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.GuideDog)"
 										>
@@ -110,7 +116,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
-											aria-label="Continue without a BC Services Card"
+											aria-label="Continue without a BC Services Card and manage certifications"
 											(click)="onContinue(guideDogTypes.DogTrainer)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.DogTrainer)"
 										>
@@ -132,7 +138,13 @@ export enum GuideDogTypeCode {
 										<div class="text-start"><strong>Retired Service Dog</strong> Certification:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterRetiredServiceDog()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-3"
+										aria-label="Log in with your BC Services Card and manage certifications"
+										(click)="onRegisterRetiredServiceDog()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -143,7 +155,7 @@ export enum GuideDogTypeCode {
 										<a
 											tabindex="0"
 											class="large login-link"
-											aria-label="Continue without a BC Services Card"
+											aria-label="Continue without a BC Services Card and manage certifications"
 											(click)="onContinue(guideDogTypes.RetiredServiceDog)"
 											(keydown)="onKeydownContinue($event, guideDogTypes.RetiredServiceDog)"
 										>

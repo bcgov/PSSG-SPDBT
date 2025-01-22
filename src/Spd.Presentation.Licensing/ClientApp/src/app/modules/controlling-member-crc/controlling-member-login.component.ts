@@ -37,7 +37,13 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 											<td class="pb-2">Save your progress</td>
 										</tr>
 									</table>
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterWithBcServicesCard()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-3"
+										aria-label="Log in with your BC Services Card"
+										(click)="onRegisterWithBcServicesCard()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 									<div class="mt-3">

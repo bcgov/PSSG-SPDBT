@@ -110,6 +110,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										color="primary"
 										*ngIf="licence.isRenewalPeriod"
 										class="large my-2"
+										aria-label="Renew the licence"
 										(click)="onRenew(licence)"
 									>
 										<mat-icon>restore</mat-icon>Renew
@@ -119,6 +120,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										color="primary"
 										*ngIf="licence.isUpdatePeriod"
 										class="large my-2"
+										aria-label="Update the licence"
 										(click)="onUpdate(licence)"
 									>
 										<mat-icon>update</mat-icon>Update
@@ -149,6 +151,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										color="primary"
 										*ngIf="licence.isRenewalPeriod"
 										class="large my-2"
+										aria-label="Renew the permit"
 										(click)="onRenew(licence)"
 									>
 										<mat-icon>restore</mat-icon>Renew
@@ -158,6 +161,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										color="primary"
 										*ngIf="licence.isUpdatePeriod"
 										class="large my-2"
+										aria-label="Update the permit"
 										(click)="onUpdate(licence)"
 									>
 										<mat-icon>update</mat-icon>Update

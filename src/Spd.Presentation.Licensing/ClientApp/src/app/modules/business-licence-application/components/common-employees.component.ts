@@ -70,7 +70,7 @@ import {
 											mat-flat-button
 											class="table-button w-auto"
 											style="color: var(--color-red);"
-											aria-label="Remove the controlling member"
+											aria-label="Remove the employee"
 											(click)="onRemoveEmployee(member.bizContactId, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove

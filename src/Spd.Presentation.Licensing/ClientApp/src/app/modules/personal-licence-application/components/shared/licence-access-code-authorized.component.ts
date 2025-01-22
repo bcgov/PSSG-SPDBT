@@ -82,7 +82,13 @@ import { HotToastService } from '@ngxpert/hot-toast';
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-12">
-								<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mt-2"
+									aria-label="Link the selected licence to your account"
+									(click)="onLink()"
+								>
 									<mat-icon>link</mat-icon>Link to your Account
 								</button>
 							</div>

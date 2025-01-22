@@ -32,10 +32,24 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 									</button>
 								</ng-container>
 								<ng-template #IsEditable>
-									<button mat-stroked-button color="primary" class="large mx-3 mb-3" (click)="onCancel()">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large mx-3 mb-3"
+										aria-label="Cancel and return to main page"
+										(click)="onCancel()"
+									>
 										Cancel
 									</button>
-									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">Save</button>
+									<button
+										mat-flat-button
+										color="primary"
+										class="large mx-3 mb-3"
+										aria-label="Save and return to main page"
+										(click)="onSave()"
+									>
+										Save
+									</button>
 								</ng-template>
 							</div>
 						</div>
