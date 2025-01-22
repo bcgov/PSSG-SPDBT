@@ -25,7 +25,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
-									aria-label="Back"
+									aria-label="Back to main page"
 									(click)="onBack()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
@@ -137,7 +137,10 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 												<app-alert type="warning" icon="warn">
 													<strong>{{ licence.licenceNumber }} - {{ licence.licenceHolderName }}</strong> does not hold a
 													valid licence. If you believe they are working in security in B.C., please consider submitting
-													a <a [href]="spdComplaintUrl" target="_blank">complaint</a>.
+													a
+													<a aria-label="Navigate to SPD complaint site" [href]="spdComplaintUrl" target="_blank"
+														>complaint</a
+													>.
 												</app-alert>
 											</div>
 										</div>
@@ -166,7 +169,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									<app-alert type="danger" icon="error">
 										<strong>{{ searchResultsErrorName }}</strong> does not hold a valid licence. If you believe they are
 										working in security in B.C., please consider submitting a
-										<a [href]="spdComplaintUrl" target="_blank">complaint</a>.
+										<a aria-label="Navigate to SPD complaint site" [href]="spdComplaintUrl" target="_blank">complaint</a
+										>.
 									</app-alert>
 								</ng-template>
 							</div>

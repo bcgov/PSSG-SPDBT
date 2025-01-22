@@ -45,7 +45,14 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<a mat-flat-button color="primary" class="large w-100" [href]="contactSpdUrl">Close</a>
+						<a
+							mat-flat-button
+							color="primary"
+							aria-label="Close and navigate to SPD contact site"
+							class="large w-100"
+							[href]="contactSpdUrl"
+							>Close</a
+						>
 					</div>
 				</div>
 			</section>

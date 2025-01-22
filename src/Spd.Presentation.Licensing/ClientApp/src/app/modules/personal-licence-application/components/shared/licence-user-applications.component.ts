@@ -21,8 +21,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-licence-user-applications',
-    template: `
+	selector: 'app-licence-user-applications',
+	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -33,7 +33,13 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large w-auto mb-3"
+									(click)="onUserProfile()"
+									aria-label="Manage your user profile"
+								>
 									<mat-icon>person</mat-icon>
 									{{ yourProfileLabel }}
 								</button>
@@ -83,6 +89,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 									class="large mt-2 mt-lg-0"
 									(click)="onNewSecurityWorkerLicence()"
 									*ngIf="!applicationIsInProgress"
+									aria-label="Apply for a new Security Worker Licence"
 								>
 									<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
 								</button>
@@ -107,6 +114,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 									class="large mt-2 mt-lg-0"
 									(click)="onNewBodyArmourPermit()"
 									*ngIf="!applicationIsInProgress"
+									aria-label="Apply for a new Body Amour Permit"
 								>
 									<mat-icon>add</mat-icon>Apply for a New Body Amour Permit
 								</button>
@@ -131,6 +139,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 									class="large mt-2 mt-lg-0"
 									(click)="onNewArmouredVehiclePermit()"
 									*ngIf="!applicationIsInProgress"
+									aria-label="Apply for a new Armoured Vehicle Permit"
 								>
 									<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 								</button>
@@ -152,6 +161,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							<a
 								class="fw-normal"
 								tabindex="0"
+								aria-label="Connect a current or expired licence or permit to your account"
 								(click)="onConnectToExpiredLicence()"
 								(keydown)="onKeydownConnectToExpiredLicence($event)"
 								>Connect a current or expired licence or permit</a
@@ -163,8 +173,8 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

@@ -16,8 +16,8 @@ import { take, takeWhile, tap } from 'rxjs';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
-    selector: 'app-controlling-member-login',
-    template: `
+	selector: 'app-controlling-member-login',
+	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section [title]="title">
 				<div class="row">
@@ -37,12 +37,24 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 											<td class="pb-2">Save your progress</td>
 										</tr>
 									</table>
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterWithBcServicesCard()">
+									<button
+										mat-flat-button
+										color="primary"
+										class="xlarge mt-3"
+										aria-label="Log in with your BC Services Card"
+										(click)="onRegisterWithBcServicesCard()"
+									>
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 									<div class="mt-3">
 										Don't have BC Services Card?
-										<a class="large login-link" [href]="setupAccountUrl" target="_blank">Set up your account today</a>
+										<a
+											class="large login-link"
+											aria-label="Navigate to BC Services Card site"
+											[href]="setupAccountUrl"
+											target="_blank"
+											>Set up your account today</a
+										>
 									</div>
 								</div>
 							</div>
@@ -58,6 +70,7 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 									<a
 										tabindex="0"
 										class="large login-link"
+										aria-label="Continue without a BC Services Card"
 										(click)="onContinueAnonymous()"
 										(keydown)="onKeydownContinueAnonymous($event)"
 									>
@@ -71,8 +84,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 			</app-step-section>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.login-link {
 				font-weight: bold;
 				color: var(--color-primary) !important;
@@ -87,8 +100,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 				height: 3em;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class ControllingMemberLoginComponent implements OnInit {
 	title!: string;

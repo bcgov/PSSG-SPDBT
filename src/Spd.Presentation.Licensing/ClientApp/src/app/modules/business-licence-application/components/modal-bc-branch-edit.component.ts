@@ -5,8 +5,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { BranchResponse } from './business-bc-branches.component';
 
 @Component({
-    selector: 'app-modal-bc-branch-edit',
-    template: `
+	selector: 'app-modal-bc-branch-edit',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -57,10 +57,24 @@ import { BranchResponse } from './business-bc-branches.component';
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+					<button
+						mat-stroked-button
+						mat-dialog-close
+						class="large"
+						color="primary"
+						aria-label="Cancel changes and close the popup"
+					>
+						Cancel
+					</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large"
+						(click)="onSave()"
+						aria-label="Save and close the popup"
+					>
 						<span *ngIf="isCreate">Add</span>
 						<span *ngIf="!isCreate">Update</span>
 					</button>
@@ -68,8 +82,8 @@ import { BranchResponse } from './business-bc-branches.component';
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class ModalBcBranchEditComponent implements OnInit {
 	title = '';
