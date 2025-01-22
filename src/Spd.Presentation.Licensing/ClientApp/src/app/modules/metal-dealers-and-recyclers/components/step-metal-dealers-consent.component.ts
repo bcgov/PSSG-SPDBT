@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									belief. I have read and understand the Metal Dealers and Recyclers Act and Regulations and I am aware
 									of and understand the
 									<a
-										aria-label="Terms and Conditions"
+										aria-label="Navigate to Terms and Conditions site"
 										href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_11022_01#section11"
 										target="_blank"
 										>terms and conditions</a

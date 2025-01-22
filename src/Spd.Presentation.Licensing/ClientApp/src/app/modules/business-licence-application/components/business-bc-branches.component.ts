@@ -113,7 +113,13 @@ export interface BranchResponse {
 							<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 						</mat-table>
 
-						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto" *ngIf="!isReadonly">
+						<button
+							mat-stroked-button
+							(click)="onAddBranch()"
+							class="large mt-3 w-auto"
+							aria-label="Add branch"
+							*ngIf="!isReadonly"
+						>
 							<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
 						</button>
 					</div>

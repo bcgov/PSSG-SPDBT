@@ -4,8 +4,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-    selector: 'app-permit-update-received-success',
-    template: `
+	selector: 'app-permit-update-received-success',
+	template: `
 		<app-container>
 			<section class="step-section">
 				<div class="row">
@@ -21,7 +21,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										mat-flat-button
 										color="primary"
 										class="large w-auto m-2"
-										aria-label="Print"
+										aria-label="Print screen"
 										(click)="onPrint()"
 									>
 										<mat-icon class="d-none d-md-block">print</mat-icon>Print
@@ -63,7 +63,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								mat-stroked-button
 								color="primary"
 								class="large w-auto m-2"
-								aria-label="Back"
+								aria-label="Back to main page"
 								(click)="onBackToHome()"
 							>
 								<mat-icon>arrow_back</mat-icon>Back to Home
@@ -74,8 +74,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</section>
 		</app-container>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	permitModelData: any = {};

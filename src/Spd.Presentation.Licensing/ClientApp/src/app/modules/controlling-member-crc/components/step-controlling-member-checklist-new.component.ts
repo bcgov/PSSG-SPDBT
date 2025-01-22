@@ -26,7 +26,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								If you reside in Canada, you must submit a proof of fingerprinting request. Download the
 								<a
-									aria-label="Request for Fingerprinting form"
+									aria-label="Download Request for Fingerprinting form"
 									download="Request For Fingerprinting Form"
 									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
@@ -46,7 +46,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">If you have a mental health condition, provide a physician's assessment</div>
 							<p class="checklist-info">
 								Download the
-								<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
+								<a
+									aria-label="Navigate to Mental Health Condition form"
+									[href]="mentalHealthConditionsFormUrl"
+									target="_blank"
+								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>
