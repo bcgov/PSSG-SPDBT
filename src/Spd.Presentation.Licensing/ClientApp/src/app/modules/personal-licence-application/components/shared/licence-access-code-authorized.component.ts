@@ -11,8 +11,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
-    selector: 'app-licence-access-code-authorized',
-    template: `
+	selector: 'app-licence-access-code-authorized',
+	template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -27,7 +27,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
-									aria-label="Back"
+									aria-label="Back to main page"
 									(click)="onBack()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
@@ -82,7 +82,13 @@ import { HotToastService } from '@ngxpert/hot-toast';
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-12">
-								<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mt-2"
+									aria-label="Link the selected licence to your account"
+									(click)="onLink()"
+								>
 									<mat-icon>link</mat-icon>Link to your Account
 								</button>
 							</div>
@@ -97,8 +103,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 			</div>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

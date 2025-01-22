@@ -7,8 +7,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';
 
 @Component({
-    selector: 'app-user-profile',
-    template: `
+	selector: 'app-user-profile',
+	template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -24,17 +24,31 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 										mat-stroked-button
 										color="primary"
 										class="large w-auto mb-3"
-										aria-label="Back"
+										aria-label="Back to main page"
 										(click)="onCancel()"
 									>
 										<mat-icon>arrow_back</mat-icon>Back
 									</button>
 								</ng-container>
 								<ng-template #IsEditable>
-									<button mat-stroked-button color="primary" class="large mx-3 mb-3" (click)="onCancel()">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large mx-3 mb-3"
+										(click)="onCancel()"
+										aria-label="Cancel changes and go back to main page"
+									>
 										Cancel
 									</button>
-									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">Save</button>
+									<button
+										mat-flat-button
+										color="primary"
+										class="large mx-3 mb-3"
+										(click)="onSave()"
+										aria-label="Save changes and go back to main page"
+									>
+										Save
+									</button>
 								</ng-template>
 							</div>
 						</div>
@@ -57,8 +71,8 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 			</div>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class UserProfileComponent {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;

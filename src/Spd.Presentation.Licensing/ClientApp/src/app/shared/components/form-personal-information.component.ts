@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-form-personal-information',
-    template: `
+	selector: 'app-form-personal-information',
+	template: `
 		<div [formGroup]="personalInformationFormGroup">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
@@ -20,7 +20,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<ng-template #hasNameChanged>
 						<div class="fs-6 fw-bold mb-4">
 							Have you changed your name?
-							<a [href]="changeNameOrAddressUrl" target="_blank">Visit ICBC</a>
+							<a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
+								>Visit ICBC</a
+							>
 							to update this information on your BC Services Card. Any changes you make will then be updated here.
 						</div>
 					</ng-template>
@@ -96,8 +98,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class FormPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	changeNameOrAddressUrl = SPD_CONSTANTS.urls.changeNameOrAddressUrl;

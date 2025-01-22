@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-modal-fingerprint-tear-off',
-    template: `
+	selector: 'app-modal-fingerprint-tear-off',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">
 			Sample Tear-off Section
 			<mat-divider></mat-divider>
@@ -13,18 +13,20 @@ import { Component } from '@angular/core';
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="offset-lg-9 col-lg-3 offset-md-8 col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
+					<button mat-stroked-button mat-dialog-close class="large" color="primary" aria-label="Close the popup">
+						Close
+					</button>
 				</div>
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.image {
 				width: 100%;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class ModalFingerprintTearOffComponent {}
