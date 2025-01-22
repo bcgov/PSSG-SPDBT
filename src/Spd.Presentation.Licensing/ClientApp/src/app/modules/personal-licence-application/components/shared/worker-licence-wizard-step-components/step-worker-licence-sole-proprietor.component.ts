@@ -14,7 +14,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="warning">
 						If you want to apply for both at the same time, you will need your
-						<a aria-label="Navigate to " class="large" [href]="bceidGettingStartedUrl" target="_blank"
+						<a
+							aria-label="Navigate to getting start with BCeid site"
+							class="large"
+							[href]="bceidGettingStartedUrl"
+							target="_blank"
 							>Business BCeID</a
 						>
 					</app-alert>

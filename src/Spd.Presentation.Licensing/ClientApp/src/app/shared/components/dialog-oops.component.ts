@@ -6,8 +6,8 @@ export interface DialogOopsOptions {
 }
 
 @Component({
-    selector: 'app-spd-dialog-oops',
-    template: `
+	selector: 'app-spd-dialog-oops',
+	template: `
 		<mat-dialog-content class="mat-dialog-content">
 			<div class="d-flex justify-content-center">
 				<img
@@ -26,13 +26,21 @@ export interface DialogOopsOptions {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">Close</button>
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large"
+						[mat-dialog-close]="false"
+						aria-label="Close the popup"
+					>
+						Close
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -51,8 +59,8 @@ export interface DialogOopsOptions {
 				color: var(--color-grey-dark);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class DialogOopsComponent {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}

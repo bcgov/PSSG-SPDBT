@@ -14,6 +14,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<ul>
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
 								experience.

@@ -25,6 +25,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
 								experience. <a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the
@@ -57,6 +58,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Proof of ability to work in Canada</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								You must supply proof of ability to work in Canada. See all accepted forms of identification on the
 								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"

@@ -63,7 +63,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 			<div class="row mb-2" *ngIf="isAllowAliasAdd">
 				<div class="col-12">
-					<button mat-stroked-button (click)="onAddRow()" class="w-auto">
+					<button mat-stroked-button (click)="onAddRow()" class="w-auto" aria-label="Add an alias">
 						<mat-icon class="add-icon">add_circle</mat-icon>Add Name
 					</button>
 				</div>
