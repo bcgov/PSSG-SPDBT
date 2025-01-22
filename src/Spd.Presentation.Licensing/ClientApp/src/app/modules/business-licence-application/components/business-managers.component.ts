@@ -49,8 +49,18 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 							<div class="mt-2">
 								<ul>
 									<li class="mb-1">
-										Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary business managers and
-										up to {{ maximumNumberOfContacts }} business managers.
+										Your organization may have up to {{ maximumNumberOfPrimaryContacts }}
+										primary business managers
+										<mat-icon
+											matTooltip="Primary Business Manager has additional privileges to manage Business Manager
+						accounts on behalf of the business."
+										>
+											info
+										</mat-icon>
+										and up to {{ maximumNumberOfContacts }} business managers
+										<mat-icon matTooltip="Business Manager has basic privileges such as accessing Online Services.">
+											info </mat-icon
+										>.
 									</li>
 									<li class="mb-1">Invitations will expire 7 days after being sent.</li>
 								</ul>
