@@ -3,17 +3,17 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
+import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-new',
 	template: `
 		<app-step-section title="Upload a passport-quality photo of yourself">
-			<app-common-photograph-of-yourself
+			<app-form-photograph-of-yourself
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
-			></app-common-photograph-of-yourself>
+			></app-form-photograph-of-yourself>
 		</app-step-section>
 	`,
 	styles: [],
@@ -23,8 +23,7 @@ export class StepWorkerLicencePhotographOfYourselfNewComponent implements Licenc
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
+	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
@@ -43,7 +42,7 @@ export class StepWorkerLicencePhotographOfYourselfNewComponent implements Licenc
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
 
-				this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
+				this.formPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
 			},
 		});
 	}

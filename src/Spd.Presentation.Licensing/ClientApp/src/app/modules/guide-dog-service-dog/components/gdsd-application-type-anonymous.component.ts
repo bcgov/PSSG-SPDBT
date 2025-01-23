@@ -82,6 +82,7 @@ export class GdsdApplicationTypeAnonymousComponent {
 		// private commonApplicationService: CommonApplicationService
 	) {}
 
+	// TODO gdsd set title
 	// ngOnInit() {
 	// this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
 	// }

@@ -10,6 +10,7 @@ export class GuideDogServiceDogRoutes {
 	public static readonly GDSD_APPLICATION_ANONYMOUS = 'gdsd-application-anonymous';
 	public static readonly GDSD_APPLICATION_TYPE_ANONYMOUS = 'gdsd-application-type';
 	public static readonly GDSD_APPLICATION_NEW_ANONYMOUS = 'gdsd-application-new';
+	public static readonly GDSD_APPLICATION_RECEIVED = 'gdsd-application-received';
 
 	public static path(route: string | null = null): string {
 		return route ? `/${GuideDogServiceDogRoutes.MODULE_PATH}/${route}` : `/${GuideDogServiceDogRoutes.MODULE_PATH}`;
