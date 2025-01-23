@@ -208,11 +208,6 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
-export const GenderMFTypes: SelectOptions[] = [
-	{ desc: 'F', code: GenderCode.F },
-	{ desc: 'M', code: GenderCode.M },
-];
-
 export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },

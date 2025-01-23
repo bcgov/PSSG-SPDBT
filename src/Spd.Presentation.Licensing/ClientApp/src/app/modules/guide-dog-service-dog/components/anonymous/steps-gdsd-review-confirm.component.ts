@@ -66,7 +66,7 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 		this.nextSubmitStep.emit();
 	}
 
-	override dirtyForm(step: number): boolean {
+	override dirtyForm(_step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_TERMS:
 		// 		return this.summaryComponent.isFormValid();

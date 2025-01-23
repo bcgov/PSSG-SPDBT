@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepGdsdChecklistNewComponent } from '../shared/common-step-components/step-gdsd-checklist-new.component';
 import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/step-gdsd-terms-of-use.component';
 
@@ -45,15 +44,11 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 
 	@ViewChild(StepGdsdChecklistNewComponent) checklistComponent!: StepGdsdChecklistNewComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
-	onGotoUserProfile(): void {
-		this.commonApplicationService.onGotoSwlUserProfile(this.applicationTypeCode!);
-	}
-
-	override dirtyForm(step: number): boolean {
+	override dirtyForm(_step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_TERMS:
 		// 		return this.termsOfUseComponent.isFormValid();

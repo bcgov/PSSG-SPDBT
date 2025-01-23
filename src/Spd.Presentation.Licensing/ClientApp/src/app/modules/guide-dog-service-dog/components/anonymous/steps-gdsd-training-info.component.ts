@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepGdsdAccreditedGraduationComponent } from '../shared/common-step-components/step-gdsd-accredited-graduation.component';
 
 @Component({
@@ -39,11 +38,11 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 
 	@ViewChild(StepGdsdAccreditedGraduationComponent) accreditedComponent!: StepGdsdAccreditedGraduationComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
-	override dirtyForm(step: number): boolean {
+	override dirtyForm(_step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_ACCREDITED:
 		// 		return this.accreditedComponent.isFormValid();

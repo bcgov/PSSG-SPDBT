@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
-import { GenderMFTypes } from '@app/core/code-types/model-desc.models';
+import { ApplicationTypeCode, GenderCode } from '@app/api/models';
+import { GenderTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -84,7 +84,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	title = '';
 	subtitle = '';
 
-	genderMfTypes = GenderMFTypes;
+	genderMfTypes: SelectOptions[] = [];
 	matcher = new FormErrorStateMatcher();
 
 	maxBirthDate = this.utilService.getBirthDateMax();
@@ -104,6 +104,10 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 		this.subtitle = this.isRenewal
 			? 'Update any information that has changed since your last application'
 			: 'Provide information about your dog';
+
+		this.genderMfTypes = GenderTypes.filter(
+			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M
+		);
 	}
 
 	isFormValid(): boolean {

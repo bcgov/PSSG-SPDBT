@@ -26,7 +26,7 @@ export class StepGdsdPhotographOfYourselfComponent implements LicenceChildSteppe
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
-	onFileUploaded(file: File): void {
+	onFileUploaded(_file: File): void {
 		this.gdsdApplicationService.hasValueChanged = true;
 	}
 

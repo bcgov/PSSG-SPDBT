@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepGdsdGovermentPhotoIdComponent } from '../shared/common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdMailingAddressComponent } from './step-components/step-gdsd-mailing-address.component';
@@ -90,11 +89,11 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
-	override dirtyForm(step: number): boolean {
+	override dirtyForm(_step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_PERSONAL_INFO:
 		// 		return this.personalInfoComponent.isFormValid();

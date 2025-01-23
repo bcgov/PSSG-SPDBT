@@ -32,18 +32,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">
-								<!-- <div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Registration Type</div>
-										<div class="summary-text-data">Abc</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Registration Number</div>
-										<div class="summary-text-data">Def</div>
-									</div>
-								</div> -->
-							</div>
+							<div class="panel-body"></div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
@@ -66,41 +55,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<!-- <div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Business Owner Name</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDataname | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Legal Business Name</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDatalegalBusinessName | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Trade or 'Doing Business As' Name</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDatatradeName | default }}
-										</div>
-									</div>
-									<div class="col-12">
-										<div class="text-label d-block text-muted">Business Licence Documents</div>
-										<ng-container *ngIf="attachmentsExist; else noAttachments">
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of businessLicenceAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</ng-container>
-										<ng-template #noAttachments>
-											<div class="summary-text-data">There are no business licence documents</div>
-										</ng-template>
-									</div>
-								</div> -->
 								<app-form-address-summary
 									[formData]="gdsdModelData.mailingAddressData"
 									headingLabel="Mailing Address"
@@ -128,28 +82,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">
-								<!-- <div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Business Manager Name</div>
-										<div class="summary-text-data">
-											{{ businessManagerDataname | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
-										<div class="summary-text-data">
-											{{ businessManagerDataname | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">
-											{{ businessManagerDataname | default }}
-										</div>
-									</div>
-								</div> -->
-							</div>
+							<div class="panel-body"></div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
@@ -171,21 +104,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">
-								<!-- <app-form-address-summary
-									[formData]="gdsdModelData.mailingAddressData"
-									headingLabel="Business Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-								<app-form-address-summary
-									[formData]="gdsdModelData.businessMailingAddressData"
-									headingLabel="Business Mailing Address"
-									[isAddressTheSame]="isAddressTheSame"
-									isAddressTheSameLabel="The business address and mailing address are the same"
-								></app-form-address-summary> -->
-							</div>
+							<div class="panel-body"></div>
 						</mat-expansion-panel>
 					</mat-accordion>
 				</div>
@@ -257,36 +176,4 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 	isFormValid(): boolean {
 		return true;
 	}
-
-	// get businessOwnerDataname(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessOwnerDataname(this.gdsdModelData);
-	// }
-	// get businessOwnerDatalegalBusinessName(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessOwnerDatalegalBusinessName(this.gdsdModelData);
-	// }
-	// get businessOwnerDatatradeName(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessOwnerDatatradeName(this.gdsdModelData);
-	// }
-
-	// get businessManagerDataname(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessManagerDataname(this.gdsdModelData);
-	// }
-	// get businessManagerDataphoneNumber(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessManagerDataphoneNumber(this.gdsdModelData);
-	// }
-	// get businessManagerDataemailAddress(): string {
-	// 	return this.gdsdApplicationService.getSummarybusinessManagerDataemailAddress(this.gdsdModelData);
-	// }
-
-	// get isAddressTheSame(): boolean {
-	// 	return this.gdsdApplicationService.getSummaryisAddressTheSame(this.gdsdModelData);
-	// }
-
-	// get businessLicenceAttachments(): File[] {
-	// 	return this.gdsdApplicationService.getSummarybusinessOwnerDataattachments(this.gdsdModelData);
-	// }
-
-	// get branchesArray(): Array<any> {
-	// 	return this.gdsdApplicationService.getSummarybranchesDatabranches(this.gdsdModelData);
-	// }
 }
