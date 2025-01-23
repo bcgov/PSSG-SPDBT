@@ -13,6 +13,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 export interface UserDialogData {
 	user: OrgUserResponse;
 	isAllowedPrimary: boolean;
+	isAllowedAuthorized: boolean;
 	emails: string[]; // used to determine if email is unique within the set
 }
 
@@ -107,10 +108,7 @@ export class UserEditModalComponent implements OnInit {
 			jobTitle: new FormControl('', [FormControlValidators.required]),
 		},
 		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('phoneNumber', () => this.isEdit),
-				FormGroupValidators.conditionalRequiredValidator('jobTitle', () => this.isEdit),
-			],
+			validators: [FormGroupValidators.conditionalRequiredValidator('jobTitle', () => this.isEdit)],
 		},
 	);
 
@@ -128,11 +126,13 @@ export class UserEditModalComponent implements OnInit {
 		this.isEdit = !!this.dialogData.user.id;
 		this.title = this.dialogData.user.id ? 'Edit User' : 'Add User';
 
-		if (!this.dialogData.isAllowedPrimary) {
-			this.authorizationTypes = ContactAuthorizationTypes.filter(
-				(item) => item.code != ContactAuthorizationTypeCode.Primary,
-			);
-		}
+		this.authorizationTypes = ContactAuthorizationTypes.filter((item) => {
+			if (item.code === ContactAuthorizationTypeCode.Primary) {
+				return this.dialogData.isAllowedPrimary;
+			} else {
+				return this.dialogData.isAllowedAuthorized;
+			}
+		});
 	}
 
 	onSave(): void {

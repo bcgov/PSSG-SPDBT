@@ -13,8 +13,8 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
-    selector: 'app-users',
-    template: `
+	selector: 'app-users',
+	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
@@ -25,7 +25,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<ul>
 								<li class="mb-1">
 									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
-									up to {{ maximumNumberOfContacts }} authorized contacts
+									up to {{ maximumNumberOfAuthorizedContacts }} authorized contacts
 								</li>
 								<li class="mb-1">Invitations will expire 7 days after being sent</li>
 							</ul>
@@ -33,7 +33,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 					</h2>
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
-					<div class="text-end" *ngIf="isAllowedAddContact === true; else addNotAllowed">
+					<div class="text-end" *ngIf="isAllowedAddAuthorized || isAllowedAddPrimary; else addNotAllowed">
 						<button mat-flat-button class="large w-auto mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</div>
 					<ng-template #addNotAllowed>
@@ -89,7 +89,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
 							<mat-cell *matCellDef="let user">
 								<span class="mobile-label">Phone Number:</span>
-								{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
+								{{ user.phoneNumber || '' | mask: appConstants.phone.displayMask | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -153,8 +153,8 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.info-icon {
 				color: var(--color-primary-light);
 				cursor: pointer;
@@ -174,11 +174,11 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class UsersComponent implements OnInit {
-	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;
+	readonly DEFAULT_MAX_NUMBER_OF_AUTHORIZED_CONTACTS = 6;
 	readonly DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS = 2;
 
 	dataSource: MatTableDataSource<OrgUserResponse> = new MatTableDataSource<OrgUserResponse>([]);
@@ -193,14 +193,14 @@ export class UsersComponent implements OnInit {
 		'action2',
 	];
 
-	maximumNumberOfContacts = this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+	maximumNumberOfAuthorizedContacts = this.DEFAULT_MAX_NUMBER_OF_AUTHORIZED_CONTACTS;
 	maximumNumberOfPrimaryContacts = this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
 
 	appConstants = SPD_CONSTANTS;
 	authorizationTypes = ContactAuthorizationTypes;
 
 	showAddArea = false;
-	isAllowedAddContact = false;
+	isAllowedAddAuthorized = false;
 	isAllowedAddPrimary = false;
 
 	usersList: OrgUserResponse[] = [];
@@ -210,7 +210,7 @@ export class UsersComponent implements OnInit {
 		private dialog: MatDialog,
 		private orgUserService: OrgUserService,
 		private authUserService: AuthUserBceidService,
-		private hotToast: HotToastService
+		private hotToast: HotToastService,
 	) {}
 
 	ngOnInit(): void {
@@ -229,6 +229,7 @@ export class UsersComponent implements OnInit {
 		const dialogOptions: UserDialogData = {
 			user: newUser,
 			isAllowedPrimary: this.isAllowedAddPrimary,
+			isAllowedAuthorized: this.isAllowedAddAuthorized,
 			emails: this.dataSource.data.map((item: OrgUserResponse) => item.email!),
 		};
 		this.userDialog(dialogOptions, true);
@@ -239,9 +240,14 @@ export class UsersComponent implements OnInit {
 		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary) {
 			isAllowedPrimary = true;
 		}
+		let isAllowedAuthorized = this.isAllowedAddAuthorized;
+		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Contact) {
+			isAllowedAuthorized = true;
+		}
 		const dialogOptions: UserDialogData = {
 			user,
 			isAllowedPrimary,
+			isAllowedAuthorized,
 			emails: this.dataSource.data
 				.filter((item: OrgUserResponse) => item.id != user.id)
 				.map((item: OrgUserResponse) => item.email!),
@@ -379,7 +385,7 @@ export class UsersComponent implements OnInit {
 						.subscribe((_res) => {
 							this.usersList.splice(
 								this.usersList.findIndex((item) => item.id == params.user.id!),
-								1
+								1,
 							);
 							this.setFlags();
 							this.hotToast.success(params.success);
@@ -394,7 +400,8 @@ export class UsersComponent implements OnInit {
 			.apiOrgsOrgIdUsersGet({ orgId: this.authUserService.bceidUserInfoProfile?.orgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
-				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+				this.maximumNumberOfAuthorizedContacts =
+					res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_AUTHORIZED_CONTACTS;
 				this.maximumNumberOfPrimaryContacts =
 					res.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
 
@@ -407,12 +414,16 @@ export class UsersComponent implements OnInit {
 
 	private setFlags(): void {
 		this.showAddArea = this.isUserPrimaryAuthorizedUser();
-		this.isAllowedAddContact = this.usersList.length < this.maximumNumberOfContacts;
+
+		const numberOfAuthorized = this.usersList.filter(
+			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Contact,
+		)?.length;
+		this.isAllowedAddAuthorized = numberOfAuthorized < this.maximumNumberOfAuthorizedContacts;
 
 		const numberOfPrimary = this.usersList.filter(
-			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary
+			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary,
 		)?.length;
-		this.isAllowedAddPrimary = !(numberOfPrimary >= this.maximumNumberOfPrimaryContacts);
+		this.isAllowedAddPrimary = numberOfPrimary < this.maximumNumberOfPrimaryContacts;
 	}
 
 	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
