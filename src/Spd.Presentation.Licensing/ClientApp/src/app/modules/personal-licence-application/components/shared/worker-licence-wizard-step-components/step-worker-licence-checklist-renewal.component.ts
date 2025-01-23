@@ -14,7 +14,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								You must submit a proof of fingerprinting request. Download the
 								<a
-									aria-label="Request for Fingerprinting form"
+									aria-label="Download Request for Fingerprinting form"
 									download="Request For Fingerprinting Form"
 									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
@@ -25,10 +25,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
-								experience. <a [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the types of documents we
-								accept for each security worker category.
+								experience. <a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the
+								types of documents we accept for each security worker category.
 							</p>
 						</li>
 
@@ -57,20 +58,27 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Proof of ability to work in Canada</div>
+							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								You must supply proof of ability to work in Canada. See all accepted forms of identification on the
-								<a [href]="bcGovHomeUrl" target="_blank">Security Worker Licence requirements page</a>.
+								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"
+									>Security Worker Licence requirements page</a
+								>.
 							</p>
 						</li>
 
 						<li>
 							<div class="checklist-label">Photograph of yourself for the licence</div>
 							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking straight at the camera against a
-								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
-								processing time. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s
-								<a [href]="canadianPassportPhotoUrl" target="_blank">passport photograph requirements</a>.
+								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
+								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
+								application. For more details on passport-quality photos, please refer to the
+								<a
+									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
+									[href]="canadianPassportPhotoUrl"
+									target="_blank"
+									>Government of Canada's passport photograph guidelines</a
+								>.
 							</p>
 						</li>
 
@@ -94,7 +102,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</div>
 							<p class="checklist-info">
 								Download the
-								<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
+								<a
+									aria-label="Navigate to Mental Health Condition form site"
+									[href]="mentalHealthConditionsFormUrl"
+									target="_blank"
+								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>

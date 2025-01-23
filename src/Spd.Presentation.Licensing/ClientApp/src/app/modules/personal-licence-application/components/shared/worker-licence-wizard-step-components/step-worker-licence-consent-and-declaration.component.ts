@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-consent-and-declaration',
-    template: `
+	selector: 'app-step-worker-licence-consent-and-declaration',
+	template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -110,12 +110,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</div>
 									<div class="my-3">
 										<mat-checkbox formControlName="check4" (click)="onCheckboxChange()">
-											For greater certainty, if I am not a first-time licence applicant, I will not need to re-submit my
-											fingerprints to the Registrar to verify my identity. However, upon renewal of my security licence
-											application on the Electronic Security Services Portal, if I choose not to use my BC Services Card
-											or other approved government-issued ID as an authentication method, I understand that I may still
-											be required to submit my fingerprints for the specific purpose of authenticating my access to the
-											Portal.
+											If I am not a first-time licence applicant, I do not need to re-submit my fingerprints to the
+											Registrar to verify my identity. However, when renewing my security licence application through
+											the Electronic Security Services Portal, I may need to provide fingerprints to authenticate my
+											access to the Portal if I choose not to use my BC Services Card or other approved
+											government-issued ID for authentication.
 										</mat-checkbox>
 										<mat-error
 											class="mat-option-error"
@@ -216,8 +215,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

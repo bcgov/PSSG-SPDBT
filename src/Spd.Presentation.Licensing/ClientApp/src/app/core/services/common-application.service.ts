@@ -15,7 +15,6 @@ import {
 	LicenceBasicResponse,
 	LicenceFeeResponse,
 	LicenceResponse,
-	LicenceStatusCode,
 	LicenceTermCode,
 	Members,
 	NonSwlContactInfo,
@@ -36,6 +35,8 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
+import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -127,12 +128,6 @@ export class CommonApplicationService {
 		);
 	}
 
-	public isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
-		if (!licenceStatusCode) return false;
-
-		return licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview;
-	}
-
 	public cancelAndLoseChanges() {
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -153,9 +148,15 @@ export class CommonApplicationService {
 	}
 
 	public onGoToHome(): void {
+		const currentPath = location.pathname;
+
 		if (this.isLoggedIn) {
 			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
-				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+				if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+				} else {
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+				}
 				return;
 			} else if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BusinessBceId) {
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
@@ -163,7 +164,13 @@ export class CommonApplicationService {
 			}
 		}
 
-		this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		if (currentPath.includes(MetalDealersAndRecyclersRoutes.MODULE_PATH)) {
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
+		} else if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
+			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
+		} else {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		}
 	}
 
 	public onGotoBusinessProfile(applicationTypeCode: ApplicationTypeCode): void {
@@ -301,7 +308,7 @@ export class CommonApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.isLicenceActive(resp.licenceStatusCode)) {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -428,7 +435,7 @@ export class CommonApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.isLicenceActive(resp.licenceStatusCode)) {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -509,6 +516,8 @@ export class CommonApplicationService {
 					break;
 				}
 			}
+
+			// TODO add support for GDSD title setting
 
 			if (applicationTypeCode) {
 				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
@@ -706,6 +715,8 @@ export class CommonApplicationService {
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
+				(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+					item.applicationTypeCode != ApplicationTypeCode.New) ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
@@ -928,7 +939,7 @@ export class CommonApplicationService {
 		let isFoundValid = false;
 
 		if (isFound) {
-			isFoundValid = this.isLicenceActive(licence.licenceStatusCode);
+			isFoundValid = this.utilService.isLicenceActive(licence.licenceStatusCode);
 		}
 
 		const isExpired = isFound && !isFoundValid;
@@ -979,7 +990,9 @@ export class CommonApplicationService {
 
 		if (matchingLicence) {
 			// expiry dates of both licences must match to be simultaneous
-			licence.isSimultaneousFlow = matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
+			licence.isSimultaneousFlow =
+				!!matchingLicence.linkedSoleProprietorLicenceId &&
+				matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
 
 			if (licence.hasSecurityGuardCategory) {
 				licence.dogAuthorization = matchingLicence.useDogs ?? false;
@@ -1006,7 +1019,7 @@ export class CommonApplicationService {
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (
-				this.isLicenceActive(licence.licenceStatusCode) &&
+				this.utilService.isLicenceActive(licence.licenceStatusCode) &&
 				today.isBefore(moment(licence.expiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days'))
 			) {
 				licence.isUpdatePeriod = true;

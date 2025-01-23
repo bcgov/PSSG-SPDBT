@@ -161,10 +161,26 @@ export interface LookupByLicenceNumberDialogData {
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+					<button
+						mat-stroked-button
+						mat-dialog-close
+						class="large"
+						color="primary"
+						aria-label="Cancel and close the popup"
+					>
+						Cancel
+					</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundValid">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">{{ selectButtonLabel }}</button>
+					<button
+						mat-flat-button
+						color="primary"
+						class="large"
+						aria-label="Save and close the popup"
+						(click)="onSave()"
+					>
+						{{ selectButtonLabel }}
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>

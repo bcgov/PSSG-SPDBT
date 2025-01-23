@@ -35,7 +35,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">Business type</div>
 							<p class="checklist-info">
 								You will need to know if your business is registered with
-								<a aria-label="B.C. Corporate Registries" [href]="bcCorporateRegistriesUrl" target="_blank"
+								<a
+									aria-label="Navigate to B.C. Corporate Registries site"
+									[href]="bcCorporateRegistriesUrl"
+									target="_blank"
 									>B.C. Corporate Registries</a
 								>, and if the business is a Sole Proprietor, Partnership, or Corporation.
 							</p>
@@ -61,7 +64,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								You will need to provide a valid Security Worker Licence for each
 								<a
-									aria-label="controlling member of your business"
+									aria-label="Navigate to controlling member of your business site"
 									[href]="controllingMemberChecklistUrl"
 									target="_blank"
 									>controlling member of your business</a
@@ -76,7 +79,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								You will need to provide proof you own, lease or rent an approved armoured car; proof of liability
 								insurance; and a
-								<a aria-label="safety certificate" [href]="safetyCertificateChecklistUrl" target="_blank"
+								<a
+									aria-label="Navigate to safety certificate site"
+									[href]="safetyCertificateChecklistUrl"
+									target="_blank"
 									>safety certificate</a
 								>.
 							</p>

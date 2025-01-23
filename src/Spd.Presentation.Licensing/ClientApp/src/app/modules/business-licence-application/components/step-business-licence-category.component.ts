@@ -43,7 +43,13 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								</mat-error>
 							</div>
 							<div class="col-md-4 col-sm-12">
-								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large my-2"
+									aria-label="Add a category"
+									(click)="onAddCategory()"
+								>
 									Add Category
 								</button>
 							</div>

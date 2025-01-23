@@ -263,6 +263,9 @@ internal class SecurityWorkerAppManager :
                 null,
                 cancellationToken);
 
+        if (response == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "Create security worker licence application failed.");
+
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {

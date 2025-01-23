@@ -5,8 +5,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-    selector: 'app-step-permit-summary-authenticated',
-    template: `
+	selector: 'app-step-permit-summary-authenticated',
+	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
@@ -184,7 +184,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										</div>
 									</div>
 
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-6 col-md-12" *ngIf="bcDriversLicenceNumber">
 										<div class="text-label d-block text-muted">BC Driver's Licence</div>
 										<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
 									</div>
@@ -196,8 +196,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -232,8 +232,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 				height: 35px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	permitModelData: any = {};
