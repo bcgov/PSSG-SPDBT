@@ -45,7 +45,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 					<mat-divider class="mat-divider-main my-3"></mat-divider>
 
 					<div class="row mb-3">
-						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
+						<div class="col-xl-10 col-lg-9 col-md-12 my-auto">
 							<div class="mt-2">
 								<ul>
 									<li class="mb-1">
@@ -57,16 +57,16 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 										>
 											info
 										</mat-icon>
-										and up to {{ maximumNumberOfContacts }} business managers
+										and up to {{ maximumNumberOfContacts }} business managers.
 										<mat-icon matTooltip="Business Manager has basic privileges such as accessing Online Services.">
-											info </mat-icon
-										>.
+											info
+										</mat-icon>
 									</li>
 									<li class="mb-1">Invitations will expire 7 days after being sent.</li>
 								</ul>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-4 col-md-12" *ngIf="showAdd">
+						<div class="col-xl-2 col-lg-3 col-md-12" *ngIf="showAdd">
 							<div class="d-flex justify-content-end" *ngIf="isAllowedAddManager === true; else addNotAllowed">
 								<button
 									mat-flat-button
