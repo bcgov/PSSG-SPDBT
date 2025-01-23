@@ -1,7 +1,9 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { StepGdsdChecklistNewComponent } from '../shared/common-step-components/step-gdsd-checklist-new.component';
+import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/step-gdsd-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-gdsd-selection',
@@ -39,11 +41,9 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 
 	applicationTypeCodes = ApplicationTypeCode;
 
-	// @ViewChild(StepWorkerLicenceTermsOfUseComponent)
-	// termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
+	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
 
-	// @ViewChild(StepWorkerLicenceSoleProprietorComponent)
-	// soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
+	@ViewChild(StepGdsdChecklistNewComponent) checklistComponent!: StepGdsdChecklistNewComponent;
 
 	constructor(private commonApplicationService: CommonApplicationService) {
 		super();
@@ -53,17 +53,12 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 		this.commonApplicationService.onGotoSwlUserProfile(this.applicationTypeCode!);
 	}
 
-	// isStepToSave(): boolean {
-	// 	const index = this.childstepper.selectedIndex;
-	// 	return index >= 2;
-	// }
-
 	override dirtyForm(step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_TERMS:
 		// 		return this.termsOfUseComponent.isFormValid();
-		// 	case this.STEP_SOLE_PROPRIETOR:
-		// 		return this.soleProprietorComponent.isFormValid();
+		// 	case this.STEP_CHECKLIST:
+		// 		return this.checklistComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }
@@ -75,11 +70,4 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 		// anonymous: agree everytime for all
 		return !this.isLoggedIn;
 	}
-
-	// get isRenewalOrUpdate(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-	// 		this.applicationTypeCode === ApplicationTypeCode.Update
-	// 	);
-	// }
 }

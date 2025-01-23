@@ -7,6 +7,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 import { StepsGdsdDogInfoComponent } from './steps-gdsd-dog-info.component';
 import { StepsGdsdPersonalInfoComponent } from './steps-gdsd-personal-info.component';
 import { StepsGdsdReviewConfirmComponent } from './steps-gdsd-review-confirm.component';
@@ -92,7 +93,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
+					(nextSubmitStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-steps-gdsd-review-confirm>
 			</mat-step>
@@ -174,6 +175,12 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 	ngOnDestroy() {
 		if (this.gdsdModelChangedSubscription) this.gdsdModelChangedSubscription.unsubscribe();
+	}
+
+	onSubmit(): void {
+		this.router.navigateByUrl(
+			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+		);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

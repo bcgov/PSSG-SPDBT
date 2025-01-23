@@ -1,7 +1,8 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { StepGdsdConsentComponent } from '../shared/common-step-components/step-gdsd-consent.component';
+import { StepGdsdSummaryComponent } from './step-components/step-gdsd-summary.component';
 
 @Component({
 	selector: 'app-steps-gdsd-review-confirm',
@@ -27,6 +28,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_CONSENT)"
 					(previousStepperStep)="onGoToPreviousStep()"
+					nextButtonLabel="Submit"
 					(nextStepperStep)="onSubmitNow()"
 				></app-wizard-footer>
 			</mat-step>
@@ -48,13 +50,11 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 
 	applicationTypeCodes = ApplicationTypeCode;
 
-	// @ViewChild(StepWorkerLicenceTermsOfUseComponent)
-	// termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
+	@ViewChild(StepGdsdSummaryComponent) summaryComponent!: StepGdsdSummaryComponent;
 
-	// @ViewChild(StepWorkerLicenceSoleProprietorComponent)
-	// soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
+	@ViewChild(StepGdsdConsentComponent) consentComponent!: StepGdsdConsentComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
@@ -69,20 +69,13 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	override dirtyForm(step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_TERMS:
-		// 		return this.termsOfUseComponent.isFormValid();
+		// 		return this.summaryComponent.isFormValid();
 		// 	case this.STEP_SOLE_PROPRIETOR:
-		// 		return this.soleProprietorComponent.isFormValid();
+		// 		return this.consentComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }
 		// return false;
 		return true;
 	}
-
-	// get isRenewalOrUpdate(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-	// 		this.applicationTypeCode === ApplicationTypeCode.Update
-	// 	);
-	// }
 }

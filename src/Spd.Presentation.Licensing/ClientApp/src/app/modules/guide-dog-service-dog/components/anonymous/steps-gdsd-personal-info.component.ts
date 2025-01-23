@@ -1,7 +1,11 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { StepGdsdGovermentPhotoIdComponent } from '../shared/common-step-components/step-gdsd-goverment-photo-id.component';
+import { StepGdsdPhotographOfYourselfComponent } from '../shared/common-step-components/step-gdsd-photograph-of-yourself.component';
+import { StepGdsdMailingAddressComponent } from './step-components/step-gdsd-mailing-address.component';
+import { StepGdsdPersonalInformationAnonymousComponent } from './step-components/step-gdsd-personal-information-anonymous.component';
 
 @Component({
 	selector: 'app-steps-gdsd-personal-info',
@@ -77,48 +81,33 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 
 	applicationTypeCodes = ApplicationTypeCode;
 
-	// @ViewChild(StepWorkerLicenceTermsOfUseComponent)
-	// termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
+	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
+	personalInfoComponent!: StepGdsdPersonalInformationAnonymousComponent;
 
-	// @ViewChild(StepWorkerLicenceSoleProprietorComponent)
-	// soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
+	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
 
-	// @ViewChild(StepWorkerLicenceExpiredComponent)
-	// licenceExpiredComponent!: StepWorkerLicenceExpiredComponent;
+	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
 
-	// @ViewChild(StepWorkerLicenceCategoryComponent)
-	// licenceCategoryComponent!: StepWorkerLicenceCategoryComponent;
+	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
 
 	constructor(private commonApplicationService: CommonApplicationService) {
 		super();
 	}
 
-	// isStepToSave(): boolean {
-	// 	const index = this.childstepper.selectedIndex;
-	// 	return index >= 2;
-	// }
-
 	override dirtyForm(step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_PERSONAL_INFO:
-		// 		return this.termsOfUseComponent.isFormValid();
+		// 		return this.personalInfoComponent.isFormValid();
 		// 	case this.STEP_PHOTO_OF_YOURSELF:
-		// 		return this.soleProprietorComponent.isFormValid();
+		// 		return this.photoComponent.isFormValid();
 		// 	case this.STEP_GOV_ID:
-		// 		return true;
+		// 		return this.govPhotoIdComponent.isFormValid();
 		// 	case this.STEP_MAILING_ADDRESS:
-		// 		return this.licenceExpiredComponent.isFormValid();
+		// 		return this.mailingAddressComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }
 		// return false;
 		return true;
 	}
-
-	// get isRenewalOrUpdate(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-	// 		this.applicationTypeCode === ApplicationTypeCode.Update
-	// 	);
-	// }
 }

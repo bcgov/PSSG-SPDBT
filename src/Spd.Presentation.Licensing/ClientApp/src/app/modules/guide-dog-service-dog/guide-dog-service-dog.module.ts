@@ -24,6 +24,7 @@ import { StepGdsdDogTrainingInformationComponent } from './components/shared/com
 import { StepGdsdGovermentPhotoIdComponent } from './components/shared/common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdPhotographOfYourselfComponent } from './components/shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdTermsOfUseComponent } from './components/shared/common-step-components/step-gdsd-terms-of-use.component';
+import { GdsdApplicationReceivedSuccessComponent } from './components/shared/gdsd-application-received-success.component';
 import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing.module';
 
 @NgModule({
@@ -35,6 +36,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GdsdActiveCertificationsComponent,
 		GdsdApplicationTypeAnonymousComponent,
 		GdsdWizardAnonymousNewComponent,
+		GdsdApplicationReceivedSuccessComponent,
 		StepsGdsdSelectionComponent,
 		StepsGdsdPersonalInfoComponent,
 		StepsGdsdDogInfoComponent,

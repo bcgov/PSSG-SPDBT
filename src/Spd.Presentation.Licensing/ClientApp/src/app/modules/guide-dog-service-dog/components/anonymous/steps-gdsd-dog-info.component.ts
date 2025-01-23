@@ -1,7 +1,9 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { StepGdsdDogInformationComponent } from '../shared/common-step-components/step-gdsd-dog-information.component';
+import { StepGdsdDogTrainingInformationComponent } from '../shared/common-step-components/step-gdsd-dog-training-information.component';
 
 @Component({
 	selector: 'app-steps-gdsd-dog-info',
@@ -49,43 +51,24 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 
 	applicationTypeCodes = ApplicationTypeCode;
 
-	// @ViewChild(StepWorkerLicenceTermsOfUseComponent)
-	// termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
+	@ViewChild(StepGdsdDogTrainingInformationComponent) dogTrainingComponent!: StepGdsdDogTrainingInformationComponent;
 
-	// @ViewChild(StepWorkerLicenceSoleProprietorComponent)
-	// soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
-
-	// @ViewChild(StepWorkerLicenceExpiredComponent)
-	// licenceExpiredComponent!: StepWorkerLicenceExpiredComponent;
+	@ViewChild(StepGdsdDogInformationComponent) dogInformationComponent!: StepGdsdDogInformationComponent;
 
 	constructor(private commonApplicationService: CommonApplicationService) {
 		super();
 	}
 
-	// isStepToSave(): boolean {
-	// 	const index = this.childstepper.selectedIndex;
-	// 	return index >= 2;
-	// }
-
 	override dirtyForm(step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_TRAINING_INFO:
-		// 		return this.termsOfUseComponent.isFormValid();
+		// 		return this.dogTrainingComponent.isFormValid();
 		// 	case this.STEP_DOG_INFO:
-		// 		return this.soleProprietorComponent.isFormValid();
-		// 	case this.STEP_ACCREDITED_GRADUATION_INFO:
-		// 		return true;
+		// 		return this.dogInformationComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }
 		// return false;
 		return true;
 	}
-
-	// get isRenewalOrUpdate(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-	// 		this.applicationTypeCode === ApplicationTypeCode.Update
-	// 	);
-	// }
 }

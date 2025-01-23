@@ -91,6 +91,9 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 		if (!this.workerApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
 		}
+
+		// do not allow the back button into the wizard
+		this.workerApplicationService.initialized = false;
 	}
 
 	onPrint(): void {
