@@ -7,15 +7,21 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-    selector: 'app-step-business-licence-liability',
-    template: `
+	selector: 'app-step-business-licence-liability',
+	template: `
 		<app-step-section title="Provide proof of insurance">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 						<app-alert type="warning" icon="warning">
 							Provide
-							<a class="large" [href]="proofOfInsuranceUrl" target="_blank">proof of insurance</a>
+							<a
+								class="large"
+								aria-label="Navigate to proof of insurance site"
+								[href]="proofOfInsuranceUrl"
+								target="_blank"
+								>proof of insurance</a
+							>
 							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability
 						</app-alert>
 
@@ -49,8 +55,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceLiabilityComponent implements LicenceChildStepperStepComponent {
 	proofOfInsuranceUrl = SPD_CONSTANTS.urls.proofOfInsuranceUrl;

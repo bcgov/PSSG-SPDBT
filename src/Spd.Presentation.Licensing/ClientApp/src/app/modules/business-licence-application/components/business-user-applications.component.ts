@@ -19,6 +19,7 @@ import {
 	MainLicenceResponse,
 } from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
+import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -42,12 +43,19 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 									color="primary"
 									*ngIf="!isSoleProprietorAppSimultaneousFlow"
 									class="large w-auto me-2 mb-3"
+									aria-label="Manage the business profile"
 									(click)="onBusinessProfile()"
 								>
 									<mat-icon class="d-none d-md-block">storefront</mat-icon>
 									{{ businessProfileLabel }}
 								</button>
-								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large w-auto ms-2 mb-3"
+									aria-label="Manage the business managers"
+									(click)="onBusinessManagers()"
+								>
 									<mat-icon class="d-none d-md-block">people</mat-icon>
 									Business Managers
 								</button>
@@ -172,6 +180,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private configService: ConfigService,
+		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -405,7 +414,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 						// User Licences/Permits
 						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
-							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
+							this.utilService.isLicenceActive(item.licenceStatusCode)
 						);
 
 						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.

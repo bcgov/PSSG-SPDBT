@@ -32,6 +32,11 @@ const routes: Routes = [
 		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE,
 		component: ControllingMemberWizardUpdateComponent,
 	},
+	{
+		path: '**',
+		redirectTo: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION,
+		pathMatch: 'full',
+	},
 ];
 
 @NgModule({

@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-    selector: 'app-form-police-background',
-    template: `
+	selector: 'app-form-police-background',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
@@ -89,7 +89,11 @@ import { FileUploadComponent } from './file-upload.component';
 							The letter from your supervisor must confirm any access you have to justice, court or police information
 							systems (PRIME/PIRS/PROS/CPIC or other police or corrections database). You cannot utilize information
 							from these systems while acting in the capacity of a security worker. See Section 2.5.4 of the
-							<a [href]="securityLicensingProcessAndLicenceConditionsPoliciesUrl" target="_blank">
+							<a
+								aria-label="Navigate to Security Licensing Process and Licence Conditions Policies site"
+								[href]="securityLicensingProcessAndLicenceConditionsPoliciesUrl"
+								target="_blank"
+							>
 								Security Licensing Process and Licence Conditions Policies</a
 							>
 							for more information.
@@ -120,9 +124,9 @@ import { FileUploadComponent } from './file-upload.component';
 			licence.
 		</ng-template>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class FormPoliceBackgroundComponent {
 	securityLicensingProcessAndLicenceConditionsPoliciesUrl =

@@ -16,8 +16,14 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									I HEREBY CERTIFY THAT I have read and understand all portions of this application form. The
 									information set out by me in this application is true and correct to the best of my knowledge and
 									belief. I have read and understand the Metal Dealers and Recyclers Act and Regulations and I am aware
-									of and understand the terms and conditions of registration and the conditions that may be placed on me
-									as a registered business under the Act.
+									of and understand the
+									<a
+										aria-label="Navigate to Terms and Conditions site"
+										href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_11022_01#section11"
+										target="_blank"
+										>terms and conditions</a
+									>
+									of registration and the conditions that may be placed on me as a registered business under the Act.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"

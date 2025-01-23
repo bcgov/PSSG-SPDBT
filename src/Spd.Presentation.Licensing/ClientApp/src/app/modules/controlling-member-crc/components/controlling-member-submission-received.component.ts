@@ -7,8 +7,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routes';
 
 @Component({
-    selector: 'app-controlling-member-submission-received',
-    template: `
+	selector: 'app-controlling-member-submission-received',
+	template: `
 		<app-container>
 			<section class="step-section">
 				<div class="row">
@@ -45,14 +45,21 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<a mat-flat-button color="primary" class="large w-100" [href]="contactSpdUrl">Close</a>
+						<a
+							mat-flat-button
+							color="primary"
+							aria-label="Close and navigate to SPD contact site"
+							class="large w-100"
+							[href]="contactSpdUrl"
+							>Close</a
+						>
 					</div>
 				</div>
 			</section>
 		</app-container>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class ControllingMemberSubmissionReceivedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -87,9 +94,5 @@ export class ControllingMemberSubmissionReceivedComponent implements OnInit {
 		this.isSubmit = isSubmit === BooleanTypeCode.Yes;
 
 		this.controllingMembersService.reset();
-	}
-
-	onPrint(): void {
-		window.print();
 	}
 }
