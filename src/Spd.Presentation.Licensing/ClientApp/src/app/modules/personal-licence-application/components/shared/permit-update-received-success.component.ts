@@ -91,6 +91,9 @@ export class PermitUpdateReceivedSuccessComponent implements OnInit {
 		if (!this.permitApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
 		}
+
+		// do not allow the back button into the wizard
+		this.permitApplicationService.initialized = false;
 	}
 
 	onPrint(): void {
