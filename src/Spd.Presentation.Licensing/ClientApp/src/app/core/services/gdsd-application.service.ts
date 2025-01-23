@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -17,6 +18,14 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		licenceAppId: new FormControl(),
 		applicantId: new FormControl(), // when authenticated, the applicant id
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
+		termsAndConditionsData: this.termsAndConditionsFormGroup,
+		personalInformationData: this.gdsdPersonalInformationFormGroup,
+		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
+		dogTrainingInformationData: this.dogTrainingInformationFormGroup,
+		dogInformationData: this.dogInformationFormGroup,
+		accreditedGraduationData: this.accreditedGraduationFormGroup,
 	});
 
 	gdsdModelChangedSubscription!: Subscription;
@@ -33,22 +42,73 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.gdsdModelChangedSubscription = this.gdsdModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				if (this.initialized) {
-					// const step1Complete = this.isStepLicenceSelectionComplete();
-					// const step2Complete = this.isStepBackgroundComplete();
-					// const step3Complete = this.isStepIdentificationComplete();
-					// const isValid = step1Complete && step2Complete && step3Complete;
-					// console.debug(
-					// 	'gdsdModelFormGroup CHANGED',
+				// if (this.initialized) {
+				const step1Complete = this.isStepSelectionComplete();
+				const step2Complete = this.isStepPersonalInformationComplete();
+				const step3Complete = this.isStepDogInformationComplete();
+				const step4Complete = this.isStepTrainingInformationComplete();
+				const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
+
+				console.debug(
+					'gdsdModelFormGroup CHANGED',
 					// 	step1Complete,
 					// 	step2Complete,
 					// 	step3Complete,
-					// 	this.gdsdModelFormGroup.getRawValue()
-					// );
-					// this.updateModelChangeFlags();
-					// this.gdsdModelValueChanges$.next(isValid);
-				}
+					this.gdsdModelFormGroup.getRawValue()
+				);
+				this.updateModelChangeFlags();
+				this.gdsdModelValueChanges$.next(isValid);
+				// }
 			});
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
+
+		return this.hasValueChanged;
+	}
+
+	/**
+	 * Determine if the Save & Exit process can occur
+	 * @returns
+	 */
+	isSaveAndExit(): boolean {
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
+
+		return true;
+	}
+
+	isStepSelectionComplete(): boolean {
+		return this.termsAndConditionsFormGroup.valid;
+	}
+
+	isStepPersonalInformationComplete(): boolean {
+		return (
+			this.gdsdPersonalInformationFormGroup.valid &&
+			this.photographOfYourselfFormGroup.valid &&
+			this.governmentPhotoIdFormGroup.valid &&
+			this.mailingAddressFormGroup.valid
+		);
+	}
+
+	isStepDogInformationComplete(): boolean {
+		return (
+			this.dogTrainingInformationFormGroup.valid &&
+			this.dogInformationFormGroup.valid &&
+			this.accreditedGraduationFormGroup.valid
+		);
+	}
+
+	isStepTrainingInformationComplete(): boolean {
+		return false;
 	}
 
 	/**

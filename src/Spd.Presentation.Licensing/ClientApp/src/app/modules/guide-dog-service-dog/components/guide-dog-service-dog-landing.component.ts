@@ -101,29 +101,22 @@ export enum GuideDogTypeCode {
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
-									<div class="d-flex justify-content-start py-2">
+									<div class="d-flex justify-content-start py-2 mb-3">
 										<div class="text-start"><strong>Dog Trainer</strong> Certification:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterDogTrainer()">
-										Log In with <span class="fw-bold">BC Services Card</span>
-									</button>
+									<a
+										tabindex="0"
+										class="large login-link"
+										aria-label="Continue without a BC Services Card and manage certifications"
+										(click)="onContinue(guideDogTypes.DogTrainer)"
+										(keydown)="onKeydownContinue($event, guideDogTypes.DogTrainer)"
+									>
+										Continue without a BC Services Card
+									</a>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<div class="pb-0 pb-lg-3">&nbsp;</div>
-									<div class="mt-0 mt-lg-4">
-										<a
-											tabindex="0"
-											class="large login-link"
-											aria-label="Continue without a BC Services Card and manage certifications"
-											(click)="onContinue(guideDogTypes.DogTrainer)"
-											(keydown)="onKeydownContinue($event, guideDogTypes.DogTrainer)"
-										>
-											Continue without a BC Services Card
-										</a>
-									</div>
-								</div>
+								<div class="col-xl-3 col-lg-4 col-md-12 col-12">&nbsp;</div>
 							</div>
 						</div>
 

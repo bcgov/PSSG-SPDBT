@@ -203,8 +203,8 @@ export const ApplicationInviteStatuses: SelectOptions[] = [
 ];
 
 export const GenderTypes: SelectOptions[] = [
-	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'X', code: GenderCode.U },
 ];
 

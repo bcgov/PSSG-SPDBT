@@ -1,10 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-renew-and-update',
@@ -88,9 +87,6 @@ export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements On
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	photographOfYourself = this.permitApplicationService.photographOfYourself;
-
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
