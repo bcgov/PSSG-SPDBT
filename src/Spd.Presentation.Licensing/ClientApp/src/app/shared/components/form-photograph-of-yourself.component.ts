@@ -4,25 +4,34 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-common-photograph-of-yourself',
+	selector: 'app-form-photograph-of-yourself',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info">
-						<p>
-							Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-							photo will be used for your licence or permit if your application is approved. Submitting a photo that
-							does not meet these requirements will delay your application’s processing time.
-						</p>
+					<div class="mb-3">
+						<app-alert type="info" icon="info">
+							<p>
+								Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
+								photo will be used for your licence or permit if your application is approved. Submitting a photo that
+								does not meet these requirements will delay your application’s processing time.
+							</p>
 
-						Photo Guidelines:
-						<ul class="mb-0">
-							<li>The photo must be in colour and well-lit.</li>
-							<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
-							<li>Use a plain, white background.</li>
-						</ul>
-					</app-alert>
+							Photo Guidelines:
+							<ul class="mb-0">
+								<li>The photo must be in colour and well-lit.</li>
+								<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
+								<li>Use a plain, white background.</li>
+							</ul>
+						</app-alert>
+					</div>
+
+					<div class="mb-3" *ngIf="showDissimilarWarning">
+						<app-alert type="warning" icon="warning">
+							Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
+							application's processing time.
+						</app-alert>
+					</div>
 
 					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
 						We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
@@ -53,12 +62,13 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	standalone: false,
 })
-export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+export class FormPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
+	@Input() showDissimilarWarning = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
