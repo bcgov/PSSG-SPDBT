@@ -1,12 +1,12 @@
 using AutoMapper;
 using MediatR;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Manager.Shared;
 using System.Net;
 
 namespace Spd.Manager.Screening
@@ -113,7 +113,10 @@ namespace Spd.Manager.Screening
             newUsers.Remove(toDeleteUser);
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrganizationId), ct);
             int primaryUserNo = newUsers.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
+            if (primaryUserNo < 1)
+            {
+                throw new ArgumentException("There must be at least one primary user");
+            }
 
             await _orgUserRepository.ManageOrgUserAsync(
                 new UserDeleteCmd(request.UserId),

@@ -801,7 +801,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 				list.push(key as WorkerCategoryTypeCode);
 			}
 		}
-		return list.sort();
+
+		return list.sort((a, b) => this.utilService.sortByDirection(a.toUpperCase(), b.toUpperCase()));
 	}
 	getSummaryisDogs(businessLicenceModelData: any): boolean {
 		return businessLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;

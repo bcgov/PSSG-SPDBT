@@ -20,8 +20,8 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 }
 
 @Component({
-    selector: 'app-modal-member-without-swl-edit',
-    template: `
+	selector: 'app-modal-member-without-swl-edit',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
@@ -70,9 +70,9 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 						<app-alert type="danger" icon="error">
 							Download the
 							<a
-								aria-label="Download Consent to Criminal Record Check"
+								aria-label="Download Consent to Criminal Record Check document"
 								download="business-memberauthconsent"
-								matTooltip="Download Consent to Criminal Record Check"
+								matTooltip="Download Consent to Criminal Record Check document"
 								[href]="downloadFilePath"
 							>
 								Consent to Criminal Record Check
@@ -86,17 +86,33 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+					<button
+						mat-stroked-button
+						mat-dialog-close
+						class="large"
+						color="primary"
+						aria-label="Cancel changes and close the popup"
+					>
+						Cancel
+					</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
+					<button
+						mat-flat-button
+						color="primary"
+						class="large"
+						(click)="onSave()"
+						aria-label="Save and close the popup"
+					>
+						Save
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class ModalMemberWithoutSwlEditComponent implements OnInit {
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;

@@ -35,6 +35,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						color="primary"
 						class="large mb-2"
 						(click)="onPrevious()"
+						aria-label="Go to the previous step"
 					>
 						Previous
 					</button>
@@ -55,6 +56,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						color="primary"
 						class="large mb-2"
 						(click)="onNext()"
+						aria-label="Go to the next step"
 					>
 						{{ nextButtonLabel }}
 					</button>
@@ -73,6 +75,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						color="primary"
 						class="large mb-2"
 						(click)="onNext()"
+						aria-label="Go to the next step"
 					>
 						{{ nextButtonLabel }}
 					</button>

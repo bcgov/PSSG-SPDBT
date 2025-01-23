@@ -4,8 +4,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-business-address',
-    template: `
+	selector: 'app-step-business-licence-business-address',
+	template: `
 		<app-step-section title="Do you need to update any of the following address information?">
 			<div class="row">
 				<div class="col-lg-6 col-md-12">
@@ -19,7 +19,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="mt-3">
 									<div class="mb-4 text-primary-color">
 										This address is from your Business BCeID. If you need to make any updates, please
-										<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
+										<a aria-label="Navigate to BCeID site" [href]="bceidUrl" target="_blank">visit BCeID</a>.
 									</div>
 
 									<app-form-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-form-address>
@@ -74,8 +74,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceBusinessAddressComponent implements LicenceChildStepperStepComponent {
 	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;

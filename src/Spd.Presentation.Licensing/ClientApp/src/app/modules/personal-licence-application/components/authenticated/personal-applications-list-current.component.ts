@@ -6,8 +6,8 @@ import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/model
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-    selector: 'app-personal-applications-list-current',
-    template: `
+	selector: 'app-personal-applications-list-current',
+	template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
 
@@ -71,7 +71,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									mat-flat-button
 									color="primary"
 									class="large w-auto"
-									aria-label="Resume"
+									aria-label="Resume application"
 									(click)="onResume(application)"
 									[disabled]="isDraftAndNotResumable(application)"
 									*ngIf="isNewDraft(application)"
@@ -83,7 +83,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									mat-flat-button
 									color="primary"
 									class="large w-auto"
-									aria-label="Pay now"
+									aria-label="Pay for application now"
 									(click)="onPayNow(application)"
 									*ngIf="isPaymentPending(application)"
 								>
@@ -114,8 +114,8 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
@@ -144,8 +144,8 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 				background-color: #f6f6f6 !important;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class PersonalApplicationsListCurrentComponent {
 	applicationColumns: string[] = [

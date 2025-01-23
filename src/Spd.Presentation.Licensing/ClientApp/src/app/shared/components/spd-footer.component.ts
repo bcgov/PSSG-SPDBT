@@ -5,23 +5,25 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { ConfigService } from '@app/core/services/config.service';
 
 @Component({
-    selector: 'app-spd-footer',
-    template: `
+	selector: 'app-spd-footer',
+	template: `
 		<mat-toolbar color="primary" class="no-print footer">
-			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
-			<a [href]="bcGovDisclaimerUrl">Disclaimer</a>
-			<a [href]="bcGovPrivacyUrl">Privacy</a>
-			<a [href]="bcGovAccessibilityUrl">Accessibility</a>
-			<a [href]="bcGovCopyrightUrl">Copyright</a>
-			<a [href]="bcGovContactUrl">Contact Us</a>
+			<a aria-label="Navigate to home page" tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)">
+				Home
+			</a>
+			<a aria-label="Navigate to disclaimer page" [href]="bcGovDisclaimerUrl">Disclaimer</a>
+			<a aria-label="Navigate to privacy page" [href]="bcGovPrivacyUrl">Privacy</a>
+			<a aria-label="Navigate to accessibility page" [href]="bcGovAccessibilityUrl">Accessibility</a>
+			<a aria-label="Navigate to copyright page" [href]="bcGovCopyrightUrl">Copyright</a>
+			<a aria-label="Navigate to contact us page" [href]="bcGovContactUrl">Contact Us</a>
 
 			<span style="flex: 1 1 auto;"></span>
 
 			<span class="fs-7 p-2 text-env" *ngIf="env">{{ env }}</span>
 		</mat-toolbar>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.footer {
 				border-top: 2px solid var(--color-yellow);
 			}
@@ -51,8 +53,8 @@ import { ConfigService } from '@app/core/services/config.service';
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class SpdFooterComponent implements OnInit {
 	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;

@@ -8,8 +8,8 @@ export interface AddressDialogData {
 }
 
 @Component({
-    selector: 'app-modal-address',
-    template: `
+	selector: 'app-modal-address',
+	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
 			<div class="row">
@@ -30,7 +30,12 @@ export interface AddressDialogData {
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns" (click)="onRowClick(row)"></mat-row>
+						<mat-row
+							class="mat-data-row"
+							*matRowDef="let row; columns: columns"
+							aria-label="Click on a row to select it and close the popup"
+							(click)="onRowClick(row)"
+						></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -38,13 +43,15 @@ export interface AddressDialogData {
 		<mat-dialog-actions>
 			<div class="row m-0 mt-4 w-100">
 				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close color="primary">Cancel</button>
+					<button mat-stroked-button mat-dialog-close color="primary" aria-label="Cancel and close the popup">
+						Cancel
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class ModalAddressComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
