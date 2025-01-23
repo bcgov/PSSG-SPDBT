@@ -12,8 +12,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({
-    selector: 'app-business-managers',
-    template: `
+	selector: 'app-business-managers',
+	template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -28,7 +28,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
-									aria-label="Back"
+									aria-label="Back to main page"
 									(click)="onCancel()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
@@ -45,25 +45,35 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 					<mat-divider class="mat-divider-main my-3"></mat-divider>
 
 					<div class="row mb-3">
-						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
+						<div class="col-xl-10 col-lg-9 col-md-12 my-auto">
 							<div class="mt-2">
 								<ul>
 									<li class="mb-1">
-										Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary business managers and
-										up to {{ maximumNumberOfContacts }} business managers.
+										Your organization may have up to {{ maximumNumberOfPrimaryContacts }}
+										primary business managers
+										<mat-icon
+											matTooltip="Primary Business Manager has additional privileges to manage Business Manager
+						accounts on behalf of the business."
+										>
+											info
+										</mat-icon>
+										and up to {{ maximumNumberOfContacts }} business managers.
+										<mat-icon matTooltip="Business Manager has basic privileges such as accessing Online Services.">
+											info
+										</mat-icon>
 									</li>
 									<li class="mb-1">Invitations will expire 7 days after being sent.</li>
 								</ul>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-4 col-md-12" *ngIf="showAdd">
+						<div class="col-xl-2 col-lg-3 col-md-12" *ngIf="showAdd">
 							<div class="d-flex justify-content-end" *ngIf="isAllowedAddManager === true; else addNotAllowed">
 								<button
 									mat-flat-button
 									type="button"
 									color="primary"
 									class="large w-auto mb-2"
-									aria-label="Add user"
+									aria-label="Add manager"
 									(click)="onAddUser()"
 									*ngIf="showAdd"
 								>
@@ -85,11 +95,15 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
 									<mat-cell *matCellDef="let user">
 										<span class="mobile-label">Status:</span>
-										<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="user.isActive; else notactive">
+										<mat-chip-row
+											aria-label="Status is active"
+											class="mat-chip-green"
+											*ngIf="user.isActive; else notactive"
+										>
 											Active
 										</mat-chip-row>
 										<ng-template #notactive>
-											<mat-chip-row aria-label="Status" class="mat-chip-yellow"> Pending </mat-chip-row>
+											<mat-chip-row aria-label="Status is pending" class="mat-chip-yellow"> Pending </mat-chip-row>
 										</ng-template>
 									</mat-cell>
 								</ng-container>
@@ -133,7 +147,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 											mat-flat-button
 											class="table-button"
 											style="color: var(--color-green);"
-											aria-label="Edit user"
+											aria-label="Edit manager"
 											*ngIf="allowEditRow(user)"
 											(click)="onMaintainUser(user)"
 										>
@@ -151,7 +165,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 													mat-flat-button
 													class="table-button"
 													style="color: var(--color-red);"
-													aria-label="Remove user"
+													aria-label="Remove manager"
 													(click)="onDeleteUser(user)"
 													*ngIf="allowDeleteRow(user)"
 												>
@@ -182,8 +196,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-status {
@@ -208,8 +222,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class BusinessManagersComponent implements OnInit {
 	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;

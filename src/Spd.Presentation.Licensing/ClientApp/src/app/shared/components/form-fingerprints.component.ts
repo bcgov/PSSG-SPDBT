@@ -10,16 +10,17 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
-				<app-alert type="info" icon="info">
+				<app-alert type="warning" icon="warning">
 					<div>
-						All applicants must submit a proof of fingerprinting request. After the
+						All applicants must include proof they have completed their fingerprinting. Once your fingerprints have been
+						taken and the
 						<a
-							aria-label="Request for Fingerprinting form"
+							aria-label="Download Request for Fingerprinting form"
 							download="Request For Fingerprinting Form"
 							[href]="downloadFilePath"
-							>Request for Fingerprinting form</a
+							>form</a
 						>
-						is complete, scan or take a photo of the tear-off section on page 2 of the form.
+						has been completed, scan or take a photo of the tear-off section located on page 2 of the form.
 					</div>
 
 					<div class="text-end">
@@ -57,13 +58,12 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 						>Your fingerprints must be taken to continue to verify your identity.<br /><br />
 						Download the
 						<a
-							aria-label="Request for Fingerprinting form"
+							aria-label="Download the Request for Fingerprinting form"
 							download="Request For Fingerprinting Form"
 							[href]="downloadFilePath"
 							>Request for Fingerprinting form</a
-						>
-						form, take it to a fingerprinting agency (such as your local police department), and complete this
-						application when you have documentation.
+						>, take it to a fingerprinting agency (such as your local police department), and complete this application
+						when you have documentation.
 					</mat-error>
 				</form>
 			</div>

@@ -49,7 +49,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 					</ng-container>
 
 					<div class="mt-3">
-						<app-alert type="info" [showBorder]="false" icon="info">
+						<app-alert type="info" icon="info">
 							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
 								<div class="mb-3">
 									We will contact you if we need more information, and we will send you a temporary copy of your updated
@@ -112,14 +112,20 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 							mat-flat-button
 							color="primary"
 							class="large m-2"
-							aria-label="Download Receipt"
+							aria-label="Download payment receipt"
 							(click)="onDownloadReceipt()"
 						>
 							<mat-icon class="d-none d-md-block">file_download</mat-icon>Download Receipt
 						</button>
 					</div>
 					<div class="offset-md-4 col-md-4 col-sm-12">
-						<button mat-stroked-button color="primary" class="large m-2" aria-label="Back" (click)="onBackToHome()">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large m-2"
+							aria-label="Back to main page"
+							(click)="onBackToHome()"
+						>
 							<mat-icon>arrow_back</mat-icon>Back to Home
 						</button>
 					</div>

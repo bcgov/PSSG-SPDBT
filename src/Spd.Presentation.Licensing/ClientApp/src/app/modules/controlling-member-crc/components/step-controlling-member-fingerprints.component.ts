@@ -6,11 +6,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormFingerprintsComponent } from '@app/shared/components/form-fingerprints.component';
 
 @Component({
-    selector: 'app-step-controlling-member-fingerprints',
-    template: `
+	selector: 'app-step-controlling-member-fingerprints',
+	template: `
 		<app-step-section
-			title="Upload proof of fingerprinting request"
-			subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
+			title="Upload proof of fingerprinting"
+			subtitle="Provide confirmation that you have completed fingerprinting at your local police detachment or accredited fingerprinting agency."
 		>
 			<app-form-fingerprints
 				[form]="form"
@@ -19,8 +19,8 @@ import { FormFingerprintsComponent } from '@app/shared/components/form-fingerpri
 			></app-form-fingerprints>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.controllingMembersService.fingerprintProofFormGroup;

@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
-    selector: 'app-step-permit-photograph-of-yourself-renew-and-update',
-    template: `
+	selector: 'app-step-permit-photograph-of-yourself-renew-and-update',
+	template: `
 		<app-step-section [title]="title">
 			<div [formGroup]="form" class="row">
 				<ng-container *ngIf="!originalPhotoOfYourselfExpired">
@@ -73,8 +73,8 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements OnInit, LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
@@ -102,7 +102,7 @@ export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements On
 		if (!this.originalPhotoOfYourselfExpired) {
 			this.title = 'Do you want to update your photo?';
 		} else {
-			this.title = 'Upload a photo of yourself';
+			this.title = 'Upload a passport-quality photo of yourself';
 		}
 	}
 

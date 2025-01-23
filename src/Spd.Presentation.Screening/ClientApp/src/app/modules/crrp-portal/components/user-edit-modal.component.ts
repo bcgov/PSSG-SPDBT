@@ -17,8 +17,8 @@ export interface UserDialogData {
 }
 
 @Component({
-    selector: 'app-user-edit-modal',
-    template: `
+	selector: 'app-user-edit-modal',
+	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
@@ -31,6 +31,9 @@ export interface UserDialogData {
 									{{ auth.desc }}
 								</mat-option>
 							</mat-select>
+							<mat-error *ngIf="form.get('contactAuthorizationTypeCode')?.hasError('required')"
+								>This is required</mat-error
+							>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
@@ -85,8 +88,8 @@ export interface UserDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class UserEditModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;
@@ -108,7 +111,7 @@ export class UserEditModalComponent implements OnInit {
 				FormGroupValidators.conditionalRequiredValidator('phoneNumber', () => this.isEdit),
 				FormGroupValidators.conditionalRequiredValidator('jobTitle', () => this.isEdit),
 			],
-		}
+		},
 	);
 
 	constructor(
@@ -117,7 +120,7 @@ export class UserEditModalComponent implements OnInit {
 		private orgUserService: OrgUserService,
 		private maskPipe: NgxMaskPipe,
 		private authUserService: AuthUserBceidService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
+		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData,
 	) {}
 
 	ngOnInit(): void {
@@ -127,7 +130,7 @@ export class UserEditModalComponent implements OnInit {
 
 		if (!this.dialogData.isAllowedPrimary) {
 			this.authorizationTypes = ContactAuthorizationTypes.filter(
-				(item) => item.code != ContactAuthorizationTypeCode.Primary
+				(item) => item.code != ContactAuthorizationTypeCode.Primary,
 			);
 		}
 	}

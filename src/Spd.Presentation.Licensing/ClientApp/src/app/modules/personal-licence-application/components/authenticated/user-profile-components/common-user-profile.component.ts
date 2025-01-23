@@ -9,8 +9,8 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/form-physical-characteristics.component';
 
 @Component({
-    selector: 'app-common-user-profile',
-    template: `
+	selector: 'app-common-user-profile',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-accordion>
@@ -76,8 +76,10 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 						<div class="my-3">
 							<div class="fs-6 fw-bold mb-4">
 								Has your residential address changed?
-								<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information
-								on your BC Services Card. Any changes you make will then be updated here.
+								<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
+									>Change your address online</a
+								>
+								to update this information on your BC Services Card. Any changes you make will then be updated here.
 							</div>
 
 							<section>
@@ -113,8 +115,8 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;

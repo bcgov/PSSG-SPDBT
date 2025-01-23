@@ -6,6 +6,10 @@ import { AccessDeniedComponent } from './shared/components/access-denied.compone
 
 const routes: Routes = [
 	{
+		path: '',
+		component: LandingComponent,
+	},
+	{
 		path: AppRoutes.PERSONAL_LICENCE_APPLICATION,
 		loadChildren: () =>
 			import('./modules/personal-licence-application/personal-licence-application.module').then(
@@ -41,12 +45,18 @@ const routes: Routes = [
 			),
 	},
 	{
+		path: AppRoutes.GUIDE_DOG_SERVICE_DOG,
+		loadChildren: () =>
+			import('./modules/guide-dog-service-dog/guide-dog-service-dog.module').then((m) => m.GuideDogServiceDogModule),
+	},
+	{
 		path: AppRoutes.ACCESS_DENIED,
 		component: AccessDeniedComponent,
 	},
 	{
 		path: '**',
-		component: LandingComponent,
+		redirectTo: AppRoutes.path(AppRoutes.LANDING),
+		pathMatch: 'full',
 	},
 ];
 

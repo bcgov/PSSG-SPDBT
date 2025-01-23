@@ -80,6 +80,7 @@ import { take, tap } from 'rxjs';
 								<p>
 									Further information regarding the <i>Metal Dealers and Recyclers Act</i> can be found on
 									<a
+										aria-label="Navigate to Metal Dealers and Recyclers Act site"
 										href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/metal-recycling/the-act-and-regulations"
 										>our website</a
 									>.
@@ -119,9 +120,7 @@ export class MetalDealersMainComponent {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						MetalDealersAndRecyclersRoutes.pathMetalDealersAndRecyclers(
-							MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER
-						)
+						MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER)
 					);
 				}),
 				take(1)
