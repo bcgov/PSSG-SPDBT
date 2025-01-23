@@ -13,8 +13,8 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
-    selector: 'app-users',
-    template: `
+	selector: 'app-users',
+	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
@@ -25,7 +25,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<ul>
 								<li class="mb-1">
 									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
-									up to {{ maximumNumberOfContacts }} authorized contacts
+									up to {{ maximumNumberOfContacts }} contacts in total
 								</li>
 								<li class="mb-1">Invitations will expire 7 days after being sent</li>
 							</ul>
@@ -153,8 +153,8 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.info-icon {
 				color: var(--color-primary-light);
 				cursor: pointer;
