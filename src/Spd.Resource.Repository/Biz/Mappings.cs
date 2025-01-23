@@ -45,7 +45,7 @@ namespace Spd.Resource.Repository.Biz
             .IncludeBase<account, Biz>()
             .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.BizLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
-            .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
+            .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts + s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.ParentBizId, opt => opt.MapFrom(s => s._parentaccountid_value))
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnums(s.spd_account_spd_servicetype)))
