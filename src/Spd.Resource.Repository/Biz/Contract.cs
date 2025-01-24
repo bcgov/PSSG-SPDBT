@@ -41,7 +41,7 @@
 
     public record BizResult : Biz
     {
-        public int MaxContacts { get; set; } = 4;
+        public int MaxContacts { get; set; } = 6;
         public int MaxPrimaryContacts { get; set; } = 2;
         public string? AccessCode { get; set; }
         public bool IsActive { get; set; } = true;
