@@ -41,9 +41,7 @@ jobs:
           artifact_name: "licensing_portal_ui_zap_scan"
           issue_title: "licensing_portal_ui_zap_scan"
           cmd_options: >
-            -z "-config api.addrs.addr.name=https://justice.gov.bc.ca/licensing/
-              -config api.addrs.addr.regex=true
-              -config target.scope.strict=true"
+            -z "-config target.scope.strict=true"
 
   # licensing-portal-api-zap-scan:
   #   runs-on: ubuntu-latest
