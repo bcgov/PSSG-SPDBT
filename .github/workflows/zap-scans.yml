@@ -17,6 +17,7 @@ jobs:
           target: "https://spd-train.justice.gov.bc.ca/screening/"
           artifact_name: "screening_portal_ui_zap_scan"
           issue_title: "screening_portal_ui_zap_scan"
+          cmd_options: "-r https://spd-train.justice.gov.bc.ca/screening/.*"
 
   screening-portal-api-zap-scan:
     runs-on: ubuntu-latest
@@ -39,6 +40,7 @@ jobs:
           target: "https://justice.gov.bc.ca/licensing/"
           artifact_name: "licensing_portal_ui_zap_scan"
           issue_title: "licensing_portal_ui_zap_scan"
+          cmd_options: "-r https://justice.gov.bc.ca/licensing/.*"
 
   licensing-portal-api-zap-scan:
     runs-on: ubuntu-latest
