@@ -40,7 +40,7 @@ jobs:
           target: "https://justice.gov.bc.ca/licensing/"
           artifact_name: "licensing_portal_ui_zap_scan"
           issue_title: "licensing_portal_ui_zap_scan"
-          cmd_options: "--include https://justice.gov.bc.ca/licensing/.*"
+          context_file: ".github/workflows/zap-contexts/licensing.context"
 
   # licensing-portal-api-zap-scan:
   #   runs-on: ubuntu-latest

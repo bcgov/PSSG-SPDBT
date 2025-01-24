@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context>
+    <includeRegex>https://justice.gov.bc.ca/licensing/.*</includeRegex>
+    <excludeRegex>https://justice.gov.bc.ca/((?!licensing).)*</excludeRegex>
+</context>
