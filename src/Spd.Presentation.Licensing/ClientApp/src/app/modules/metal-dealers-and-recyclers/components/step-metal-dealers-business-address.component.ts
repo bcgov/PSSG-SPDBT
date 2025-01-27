@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										</mat-expansion-panel-header>
 
 										<div class="mt-3">
-											<div class="mb-4 text-primary-color">This address is your business address.</div>
+											<div class="mb-4 text-primary-color">This is your business location address.</div>
 
 											<app-form-address [form]="businessAddressForm" [isWideView]="false"></app-form-address>
 										</div>

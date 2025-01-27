@@ -20,13 +20,13 @@ import { take, tap } from 'rxjs';
 
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-12 my-auto">
-							<div class="text-minor-heading mb-4">Registering as a Metal Recycling Dealer</div>
+							<div class="text-minor-heading mb-4">Registering as a Metal Dealer or Recycler</div>
 						</div>
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end mb-4">
 								<button mat-flat-button color="primary" class="large w-auto" (click)="onRegister()">
-									Register as a Metal Recycling Dealer
+									Register as a Metal Dealer or Recycler
 								</button>
 							</div>
 						</div>
@@ -35,40 +35,38 @@ import { take, tap } from 'rxjs';
 					<div class="row">
 						<div class="col-12">
 							<p>
-								Metal theft puts public safety at risk because it interferes with telephone services, emergency
-								communications and transportation systems, and may expose the public to electrocution from live wires.
+								British Columbia introduced the <i>Metal Dealers and Recyclers Act</i> (the Act) to help prevent metal
+								theft, which poses a public safety risk, while protecting the personal information of metal sellers. The
+								Act holds dealers and sellers accountable and sets consistent provincial standards.
 							</p>
 							<p>
-								The Province passed the <i>Metal Dealers and Recyclers Act</i> and
-								<i>Metal Dealers Recyclers Regulation</i>. The act and regulation help deter and track metal theft, and
-								protect the personal information of scrap metal sellers. They also increase the accountability of
-								dealers and sellers and create consistent, minimum requirements across the province.
+								There are no fees for registering, renewing, or updating registration information. Registration is
+								legally required for metal dealers and recyclers in most cases.
 							</p>
-							<p>There is no fee for registration, renewal or updating registration information.</p>
 
 							<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
 							<ul>
 								<li class="metal-dealers-checklist-label">No registration fee</li>
-								<li class="metal-dealers-checklist-label">Term of registration is 3 years</li>
+								<li class="metal-dealers-checklist-label">3-year registration term</li>
 								<li class="metal-dealers-checklist-label">
 									Must provide business name, address, telephone number, and email address (if any)
 								</li>
-								<li class="metal-dealers-checklist-label">Must provide address of additional business locations</li>
+								<li class="metal-dealers-checklist-label">Must provide the address of all business locations</li>
 								<li class="metal-dealers-checklist-label">
-									Must provide the identity of person(s) responsible for the daily management of the business
+									Must provide the identity of the person(s) responsible for the daily management of the business
 								</li>
 								<li class="metal-dealers-checklist-label">
-									Must provide copies of business licence registration documents
+									Must provide copies of the business licence registration documents
 								</li>
 								<li class="metal-dealers-checklist-label">
-									Must display registration certificate in a conspicuous place at each of the business locations
+									Must display the registration certificate in a visible place at each business location
 								</li>
 								<li class="metal-dealers-checklist-label">
-									Registration must not be transferred unless the Registrar consents in writing to the transfer
+									Registration cannot be transferred without the Registrar’s written consent
 								</li>
 								<li class="metal-dealers-checklist-label">
-									On the expiry, cancellation, suspension or refusal of a renewal of a registration, the registrant must
-									immediately surrender the registration and all duplicates to the registrar
+									The registrant must immediately return the registration and all duplicates to the Registrar upon the
+									expiry, cancellation, suspension, or refusal of a registration renewal
 								</li>
 								<li class="metal-dealers-checklist-label">
 									The registrant must not carry on a business using a name other than the name specified in the
