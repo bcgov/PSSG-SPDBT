@@ -1481,7 +1481,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 
 	getSummarybcDriversLicenceNumber(workerLicenceModelData: any): string {
 		if (workerLicenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes) {
-			if (!!workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber) {
+			const hasLicenceNumber = !!workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			if (hasLicenceNumber) {
 				return workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			} else {
 				return 'Not supplied';

@@ -900,7 +900,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSummarybcDriversLicenceNumber(permitModelData: any): string {
 		if (permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes) {
-			if (!!permitModelData.bcDriversLicenceData.bcDriversLicenceNumber) {
+			const hasLicenceNumber = !!permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			if (hasLicenceNumber) {
 				return permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			} else {
 				return 'Not supplied';
