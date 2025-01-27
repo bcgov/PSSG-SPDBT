@@ -904,9 +904,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			if (hasLicenceNumber) {
 				return permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			}
-			return 'Not supplied';
+			return BooleanTypeCode.Yes;
 		}
-		return 'No';
+		return BooleanTypeCode.No;
 	}
 
 	getSummaryhairColourCode(permitModelData: any): string {

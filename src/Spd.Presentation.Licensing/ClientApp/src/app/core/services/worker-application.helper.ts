@@ -1485,9 +1485,9 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			if (hasLicenceNumber) {
 				return workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			}
-			return 'Not supplied';
+			return BooleanTypeCode.Yes;
 		}
-		return 'No';
+		return BooleanTypeCode.No;
 	}
 
 	getSummaryhairColourCode(workerLicenceModelData: any): string {
