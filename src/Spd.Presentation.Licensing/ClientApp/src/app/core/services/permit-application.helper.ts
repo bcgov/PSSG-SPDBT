@@ -903,9 +903,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			const hasLicenceNumber = !!permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			if (hasLicenceNumber) {
 				return permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
-			} else {
-				return 'Not supplied';
 			}
+			return 'Not supplied';
 		}
 		return 'No';
 	}

@@ -1484,9 +1484,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			const hasLicenceNumber = !!workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
 			if (hasLicenceNumber) {
 				return workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
-			} else {
-				return 'Not supplied';
 			}
+			return 'Not supplied';
 		}
 		return 'No';
 	}
