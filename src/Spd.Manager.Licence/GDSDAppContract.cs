@@ -1,115 +1,136 @@
 using MediatR;
-using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
-public interface IPermitAppManager
+public interface IGDSDAppManager
 {
-    public Task<PermitAppCommandResponse> Handle(PermitAppNewCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(PermitAppUpdateCommand command, CancellationToken ct);
-    public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(PermitUpsertCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(PermitSubmitCommand command, CancellationToken ct);
-    public Task<Guid> Handle(GetLatestPermitApplicationIdQuery query, CancellationToken ct);
+    //anonymous
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
+
+    //auth
+    public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct);
 }
 
-public record PermitLicenceAppBase : PersonalLicenceAppBase
+#region authenticated
+public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequest<GDSDTeamLicenceAppResponse>;
+#endregion
+
+#region anonymous
+public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest) : IRequest<GDSDAppCommandResponse>;
+#endregion
+
+public record GDSDTeamLicenceAppBase : LicenceAppBase
 {
-    public string? PermitOtherRequiredReason { get; set; }
-    public string? EmployerName { get; set; }
-    public string? SupervisorName { get; set; }
-    public string? SupervisorEmailAddress { get; set; }
-    public string? SupervisorPhoneNumber { get; set; }
-    public Address? EmployerPrimaryAddress { get; set; }
-    public string? Rationale { get; set; }
-    public bool? IsCanadianResident { get; set; }
-    public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
-    public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
+    //personal info
+    public string Surname { get; set; }
+    public string LegalGivenName { get; set; }
+    public string MiddleName { get; set; }
+    public MailingAddress MailingAddress { get; set; }
+    public DateOnly DateOfBirth { get; set; }
+    public string ContactPhoneNumber { get; set; }
+    public string ContactEmail { get; set; }
+
+    public bool DogTrainedByAccreditSchool { get; set; }
+    public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
+
+    //for app with accredit school
+    public DogInfoNewCreditSchool? DogInfoNewCreditSchool { get; set; } //not null if it is New
+    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
+
+    //for app without accredit school
+    public DogInfoNewWithoutCreditSchool? DogInfoNewWithoutCreditSchool { get; set; } //not null if it is New
+    public TraningInfo? TraingInfo { get; set; } //not null if it is New
 }
 
-#region authenticated user
-public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitAppCommandResponse>;
-public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest)
-    : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitAppCommandResponse>;
-public record GetLatestPermitApplicationIdQuery(Guid ApplicantId, ServiceTypeCode ServiceTypeCode) : IRequest<Guid>;
-public record PermitAppUpsertRequest : PermitLicenceAppBase
+public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
-};
+}
 
-#endregion
-
-#region anonymous user
-public record PermitAppNewCommand(
-    PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
-    : IRequest<PermitAppCommandResponse>;
-
-public record PermitAppReplaceCommand(
-    PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
-    : IRequest<PermitAppCommandResponse>;
-
-public record PermitAppRenewCommand(
-    PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
-    : IRequest<PermitAppCommandResponse>;
-
-public record PermitAppUpdateCommand(
-    PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
-    : IRequest<PermitAppCommandResponse>;
-
-public record GetPermitApplicationQuery(Guid LicenceApplicationId) : IRequest<PermitLicenceAppResponse>;
-
-public record PermitAppSubmitRequest : PermitLicenceAppBase
+public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
-    public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
-    public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
-    public bool? Reprint { get; set; }
-    public string? CriminalChargeDescription { get; set; }
 }
 
-public record PermitAppCommandResponse : LicenceAppUpsertResponse
+public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppBase
 {
-    public decimal? Cost { get; set; }
-};
-
-public record PermitLicenceAppResponse : PermitLicenceAppBase
-{
-    public Guid LicenceAppId { get; set; }
-    public DateOnly? ExpiryDate { get; set; }
-    public string? CaseNumber { get; set; }
-    public string? ExpiredLicenceNumber { get; set; }
-    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+    public Guid? LicenceAppId { get; set; }
+    public string? CaseNumber { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
-public enum BodyArmourPermitReasonCode
+public record GDSDAppCommandResponse
 {
-    PersonalProtection,
-    MyEmployment,
-    OutdoorRecreation,
-    TravelInResponseToInternationalConflict,
-    Other
+    public Guid? LicenceAppId { get; set; }
 }
 
-public enum ArmouredVehiclePermitReasonCode
+public record DogInfoNew
 {
-    ProtectionOfPersonalProperty, //armoured vehicle
-    ProtectionOfOtherProperty, //armoured vehicle
-    ProtectionOfAnotherPerson, //armoured vehicle
-    PersonalProtection, //armoured vehicle
-    MyEmployment,//armoured vehicle
-    Other
+    // Dog Information (New)
+    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public string DogName { get; set; }
+    public DateTime DogDateOfBirth { get; set; }
+    public string DogBreed { get; set; }
+    public string DogColorAndMarkings { get; set; }
+    public string DogGender { get; set; }
+    public string MicrochipNumber { get; set; }
+    public string ServiceDogTasks { get; set; }
 }
-#endregion
+public record DogInfoNewCreditSchool : DogInfoNew
+{
+    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public string ServiceDogTasks { get; set; }
+}
+public record DogInfoNewWithoutCreditSchool : DogInfoNew
+{
+    public bool AreInoculationsUpToDate { get; set; }
+}
+public record GraduationInfo
+{
+    public string AccreditedSchoolName { get; set; }
+    public string SchoolContactSurname { get; set; }
+    public string SchoolContactFirstName { get; set; }
+    public string SchoolContactEmail { get; set; }
+    public string SchoolContactPhone { get; set; }
+}
+public record TraningInfo
+{
+    public string SpecializedTasks { get; set; }
+    public string WhenPerform { get; set; }
 
+    //If you attended a training school(s) and/or program(s),
+    public string TrainingBizName { get; set; }
+    public MailingAddress TrainingBizMailingAddress { get; set; }
+    public string TrainingBizContactSurname { get; set; }
+    public string TrainingBizContactFirstName { get; set; }
+    public string TrainingBizContactEmail { get; set; }
+    public string TrainingBizContactPhone { get; set; }
+    public int TotalTrainingHours { get; set; }
+    public string TrainingDates { get; set; } //?
+    public string TrainingName { get; set; } //Name and/or type of training program
+    public string WhatLearned { get; set; }
 
-
+    //If you did not attend a training school or formalized training program,
+    public string TrainingDetail { get; set; }
+    public bool UsePersonalDogTrainer { get; set; }
+    public string DogTrainerCredential { get; set; }
+    public string TrainingTime { get; set; } //? //How much time was spent training?
+    public string TrainerSurname { get; set; }
+    public string TrainerFirstName { get; set; }
+    public string TrainerEmail { get; set; }
+    public string TrainerPhone { get; set; }
+    public string HoursPractisingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
+}
+public record DogInfoRenew
+{
+    public string DogName { get; set; }
+    public string CurrentDogCertificate { get; set; }
+    public bool AssistanceStillRequired { get; set; }
+}
 
