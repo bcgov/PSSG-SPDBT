@@ -1,23 +1,29 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class GDSDCertificationController : SpdLicenceControllerBase
+    public class GDSDLicensingController : SpdLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        private readonly IConfiguration _configuration;
+        private readonly IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> _teamAppAnonymousSubmitRequestValidator;
+        private readonly IValidator<GDSDTeamLicenceAppUpsertRequest> _teamAppUpsertValidator;
 
-        public GDSDCertificationController(IPrincipal currentUser,
+        public GDSDLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -26,7 +32,6 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             _currentUser = currentUser;
             _mediator = mediator;
-            _configuration = configuration;
         }
 
         #region authenticated
@@ -34,18 +39,17 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Create/partial save gdsd team certification application
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="licenceUpsertRequest"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-certification-app")]
+        [Route("api/gdsd-team-app")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
+        public async Task<GDSDAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest licenceUpsertRequest)
         {
-            //if (licenceCreateRequest.ApplicantId == Guid.Empty)
-            //    throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
-            //licenceCreateRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
-            //return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest));
-            return null;
+            if (licenceUpsertRequest.ApplicantId == Guid.Empty)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            licenceUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+            return await _mediator.Send(new GDSDTeamLicenceAppUpsertCommand(licenceUpsertRequest));
         }
 
         /// <summary>
@@ -53,13 +57,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-certification-app/{certificationAppId}")]
+        [Route("api/gdsd-team-app/{certificationAppId}")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<PermitLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid certificationAppId)
+        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid certificationAppId)
         {
-            // return await _mediator.Send(new GetPermitApplicationQuery(certificationAppId));
-            return null;
+            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(certificationAppId));
         }
         #endregion authenticated
 
@@ -69,9 +72,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
         /// </summary>
         /// <returns></returns>
-        [Route("api/gdsd-team-certification-app")]
+        [Route("api/gdsd-team-app")]
         [HttpGet]
-        public async Task<PermitLicenceAppResponse> GetGDSDTeamCertAppAnonymous()
+        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamAppAnonymous()
         {
             return null;
             //string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
@@ -93,37 +96,37 @@ namespace Spd.Presentation.Licensing.Controllers
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
-        /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="anonymousSubmitRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-certification-app/anonymous/submit-change")]
+        [Route("api/gdsd-team-app/anonymous/submit-change")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            //await VerifyKeyCode();
+            await VerifyKeyCode();
 
-            //IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
-            //var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
-            //if (!validateResult.IsValid)
-            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-            //jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
+            var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            anonymousSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            //PermitAppCommandResponse? response = null;
-            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            GDSDAppCommandResponse? response = null;
+            if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                GDSDTeamLicenceAppAnonymousSubmitCommand command = new(anonymousSubmitRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             //{
-            //    PermitAppNewCommand command = new(jsonRequest, newDocInfos);
+            //    PermitAppRenewCommand command = new(anonymousSubmitRequest, newDocInfos);
             //    response = await _mediator.Send(command, ct);
             //}
 
-            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             //{
-            //    PermitAppRenewCommand command = new(jsonRequest, newDocInfos);
-            //    response = await _mediator.Send(command, ct);
-            //}
-
-            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
-            //{
-            //    PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
+            //    PermitAppUpdateCommand command = new(anonymousSubmitRequest, newDocInfos);
             //    response = await _mediator.Send(command, ct);
             //}
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
