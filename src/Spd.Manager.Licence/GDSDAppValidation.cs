@@ -35,23 +35,23 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
         RuleFor(r => r.DogInfoNewAccreditedSchool).NotEmpty()
-            .When(r => r.DogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.DogInfoNewAccreditedSchool)
             .SetValidator(new DogInfoNewAccreditedSchoolValidator())
             .When(r => r.DogInfoNewAccreditedSchool != null);
         RuleFor(r => r.GraduationInfo).NotEmpty()
-            .When(r => r.DogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.GraduationInfo)
             .SetValidator(new GraduationInfoValidator())
             .When(r => r.GraduationInfo != null);
 
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool).NotEmpty()
-            .When(r => !r.DogTrainedByAccreditedSchool);
+            .When(r => !r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool)
             .SetValidator(new DogInfoNewWithoutAccreditedSchoolValidator())
             .When(r => r.DogInfoNewWithoutAccreditedSchool != null);
         RuleFor(r => r.TrainingInfo).NotEmpty()
-            .When(r => !r.DogTrainedByAccreditedSchool);
+            .When(r => !r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.TrainingInfo)
             .SetValidator(new TrainingInfoValidator())
             .When(r => r.TrainingInfo != null);

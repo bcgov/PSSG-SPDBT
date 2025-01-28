@@ -219,7 +219,7 @@ public class GDSDAppValidationTest
         // Arrange
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
-            DogTrainedByAccreditedSchool = true,
+            IsDogTrainedByAccreditedSchool = true,
             DogInfoNewAccreditedSchool = null
         };
 
@@ -237,7 +237,7 @@ public class GDSDAppValidationTest
         // Arrange
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
-            DogTrainedByAccreditedSchool = true,
+            IsDogTrainedByAccreditedSchool = true,
             DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { DogName = "Buddy" }
         };
 
@@ -254,7 +254,7 @@ public class GDSDAppValidationTest
         // Arrange
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
-            DogTrainedByAccreditedSchool = true,
+            IsDogTrainedByAccreditedSchool = true,
             DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { ServiceDogTasks = new string('A', 1001) }
         };
 
@@ -272,7 +272,7 @@ public class GDSDAppValidationTest
         // Arrange
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
-            DogTrainedByAccreditedSchool = true,
+            IsDogTrainedByAccreditedSchool = true,
             GraduationInfo = null
         };
 

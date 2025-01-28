@@ -34,7 +34,7 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? ContactPhoneNumber { get; set; }
     public string? ContactEmailAddress { get; set; }
 
-    public bool DogTrainedByAccreditedSchool { get; set; }
+    public bool IsDogTrainedByAccreditedSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
 
     //for app with accredited school
