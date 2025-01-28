@@ -73,6 +73,8 @@ public class DogInfoNewValidator : AbstractValidator<DogInfoNew>
         RuleFor(r => r.DogDateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.DogBreed).NotEmpty().MaximumLength(50);
         RuleFor(r => r.DogGender).Must(t => t == GenderCode.M || t == GenderCode.F);
+        RuleFor(x => x.MicrochipNumber).MaximumLength(50);
+        RuleFor(r => r.DogColorAndMarkings).MaximumLength(50);
     }
 }
 
