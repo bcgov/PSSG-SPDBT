@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
 @Component({
-    selector: 'app-worker-licence-wizard-anonymous-new',
-    template: `
+	selector: 'app-worker-licence-wizard-anonymous-new',
+	template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -64,7 +64,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="true"
+					[showCitizenshipStep]="showCitizenshipStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -77,6 +77,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
+					[showCitizenshipStep]="showCitizenshipStep"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -108,8 +109,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</ng-template>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -120,6 +121,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
+
+	readonly showCitizenshipStep = true;
 
 	licenceAppId: string | null = null;
 

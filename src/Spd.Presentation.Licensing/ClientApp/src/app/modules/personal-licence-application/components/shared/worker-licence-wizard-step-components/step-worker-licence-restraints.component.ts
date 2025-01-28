@@ -10,7 +10,10 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-worker-licence-restraints',
 	template: `
-		<app-step-section title="Do you want to request authorization to use restraints?" [subtitle]="subtitle">
+		<app-step-section
+			title="Are you requesting authorization to use restraints (such has handcuffs)?"
+			[subtitle]="subtitle"
+		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -102,9 +105,7 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.subtitle = this.isRenewalOrUpdate
-			? 'Update any information that has changed since your last application'
-			: 'Check with your employer if restraints, such as handcuffs, are required.';
+		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 	}
 
 	onFileUploaded(file: File): void {
