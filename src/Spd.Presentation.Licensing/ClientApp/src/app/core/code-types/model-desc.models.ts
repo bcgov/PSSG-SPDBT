@@ -233,11 +233,11 @@ export const RestraintDocumentTypes: SelectOptions[] = [
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
 	},
 	{
-		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months. This letter should be signed on official letterhead and include the exact date of the training for our records.',
+		desc: 'If you are a peace officer, a letter from your employer showing use of force training within the last 12 months. This letter should be signed on official letterhead and include the exact date of the training for our records.',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
 	},
 	{
-		desc: 'Must be able to demonstrate, to the satisfaction of the registrar that he or she has training equivalent to the training referred above.',
+		desc: 'Equivalent training as approved by the registrar',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
 	},
 ];

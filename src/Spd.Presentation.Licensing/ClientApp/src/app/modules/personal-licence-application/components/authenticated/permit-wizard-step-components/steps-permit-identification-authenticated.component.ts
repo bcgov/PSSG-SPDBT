@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
@@ -7,8 +7,8 @@ import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-ap
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
-    selector: 'app-steps-permit-identification-authenticated',
-    template: `
+	selector: 'app-steps-permit-identification-authenticated',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
@@ -41,6 +41,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 			<mat-step *ngIf="showPhotographOfYourself">
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 				></app-step-permit-photograph-of-yourself>
 
 				<app-wizard-footer
@@ -54,9 +55,9 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;
@@ -64,6 +65,7 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 3;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 

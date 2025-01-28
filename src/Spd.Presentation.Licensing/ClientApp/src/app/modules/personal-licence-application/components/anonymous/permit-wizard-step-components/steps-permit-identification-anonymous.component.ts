@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
@@ -11,8 +11,8 @@ import { StepPermitPersonalInformationComponent } from './step-permit-personal-i
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
 
 @Component({
-    selector: 'app-steps-permit-identification-anonymous',
-    template: `
+	selector: 'app-steps-permit-identification-anonymous',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-personal-information
@@ -93,6 +93,7 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 			<mat-step *ngIf="showPhotographOfYourself">
 				<app-step-permit-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 				></app-step-permit-photograph-of-yourself-anonymous>
 
 				<app-wizard-footer
@@ -104,9 +105,9 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 1;
@@ -120,6 +121,8 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
+
 	@Input() isFormValid = false;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
