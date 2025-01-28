@@ -41,21 +41,21 @@ internal class GDSDAppManager :
     //anonymous
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand command, CancellationToken ct)
     {
-        return null;
+        return Task.FromResult<GDSDAppCommandResponse>(null);
     }
 
     //auth
     public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
     {
-        return null;
+        return Task.FromResult<GDSDTeamLicenceAppResponse>(null);
     }
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct)
     {
-        return null;
+        return Task.FromResult<GDSDAppCommandResponse>(null);
     }
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct)
     {
-        return null;
+        return Task.FromResult<GDSDAppCommandResponse>(null);
     }
 
 }
