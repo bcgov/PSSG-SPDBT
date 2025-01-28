@@ -515,9 +515,19 @@ export class CommonApplicationService {
 					mobileTitle = 'BAP';
 					break;
 				}
+				case ServiceTypeCode.GdsdTeamCertification: {
+					mobileTitle = 'GDSDTC';
+					break;
+				}
+				case ServiceTypeCode.DogTrainerCertification: {
+					mobileTitle = 'DTC';
+					break;
+				}
+				case ServiceTypeCode.RetiredServiceDogCertification: {
+					mobileTitle = 'RSDC';
+					break;
+				}
 			}
-
-			// TODO add support for GDSD title setting
 
 			if (applicationTypeCode) {
 				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
@@ -531,6 +541,52 @@ export class CommonApplicationService {
 			}
 		} else {
 			mobileTitle = title = 'Licensing Application';
+		}
+
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	setGdsdApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
+	) {
+		let title = 'Guide Dog Service Dog';
+		let mobileTitle = 'GDSD';
+
+		if (serviceTypeCode) {
+			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+
+			if (applicationTypeCode) {
+				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+				title += ` - ${applicationTypeDesc}`;
+				mobileTitle += ` ${applicationTypeDesc}`;
+			}
+
+			if (originalLicenceNumber) {
+				title += ` - ${originalLicenceNumber}`;
+				mobileTitle += ` ${originalLicenceNumber}`;
+			}
+		}
+
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	setMetalDealersApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined
+	) {
+		let title = 'Metal Dealers & Recyclers';
+		let mobileTitle = 'MD&R';
+
+		if (serviceTypeCode) {
+			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+
+			if (applicationTypeCode) {
+				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+				title += ` - ${applicationTypeDesc}`;
+				mobileTitle += ` ${applicationTypeDesc}`;
+			}
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);

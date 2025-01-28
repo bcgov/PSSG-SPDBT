@@ -48,10 +48,7 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdSummaryComponent) summaryComponent!: StepGdsdSummaryComponent;
-
 	@ViewChild(StepGdsdConsentComponent) consentComponent!: StepGdsdConsentComponent;
 
 	constructor() {

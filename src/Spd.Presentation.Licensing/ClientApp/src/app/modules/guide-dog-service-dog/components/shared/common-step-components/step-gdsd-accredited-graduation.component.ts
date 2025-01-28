@@ -19,19 +19,29 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										>Name of Assistance Dogs International or International Guide Dog Federation accredited
 										school</mat-label
 									>
-									<input matInput formControlName="schoolName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input
+										matInput
+										formControlName="accreditedSchoolName"
+										[errorStateMatcher]="matcher"
+										maxlength="250"
+									/>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Contact Given Name</mat-label>
-									<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input
+										matInput
+										formControlName="schoolContactGivenName"
+										[errorStateMatcher]="matcher"
+										maxlength="40"
+									/>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Contact Surname</mat-label>
-									<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="schoolContactSurname" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
@@ -39,12 +49,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="contactPhoneNumber"
+										formControlName="schoolContactPhoneNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="30"
 										appPhoneNumberTransform
 									/>
-									<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('schoolContactPhoneNumber')?.hasError('required')"
+										>This is required</mat-error
+									>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
@@ -52,18 +64,18 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Email Address</mat-label>
 									<input
 										matInput
-										formControlName="contactEmailAddress"
+										formControlName="schoolContactEmailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('schoolContactEmailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>
 							</div>
 
-							<div class="text-minor-heading mb-2">
+							<div class="text-minor-heading mt-3 mb-2">
 								Attached written confirmation from the accredited training school that my dog and I have successfully
 								completed the training program
 							</div>

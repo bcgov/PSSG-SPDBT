@@ -34,8 +34,6 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdAccreditedGraduationComponent) accreditedComponent!: StepGdsdAccreditedGraduationComponent;
 
 	constructor() {

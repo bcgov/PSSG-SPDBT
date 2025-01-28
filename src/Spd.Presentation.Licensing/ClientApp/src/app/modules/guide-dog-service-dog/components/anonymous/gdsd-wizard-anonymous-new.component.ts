@@ -3,8 +3,10 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
@@ -146,6 +148,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -178,9 +181,22 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onSubmit(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		);
+		this.gdsdApplicationService.submitAnonymous().subscribe({
+			next: (resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+				// 	this.serviceTypeCode,
+				// 	this.applicationTypeCode
+				// );
+				// this.hotToastService.success(successMessage);
+
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

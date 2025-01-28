@@ -12,8 +12,8 @@ import { StepsGdsdSelectionComponent } from './components/anonymous/steps-gdsd-s
 import { StepsGdsdTrainingInfoComponent } from './components/anonymous/steps-gdsd-training-info.component';
 import { GdsdActiveCertificationsComponent } from './components/gdsd-active-certifications.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
-import { GuideDogServiceDogAuthenticatedBaseComponent } from './components/guide-dog-service-dog-authenticated-base.component';
-import { GuideDogServiceDogBaseComponent } from './components/guide-dog-service-dog-base.component';
+import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
+import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
 import { GuideDogServiceDogMainComponent } from './components/guide-dog-service-dog-main.component';
 import { StepGdsdAccreditedGraduationComponent } from './components/shared/common-step-components/step-gdsd-accredited-graduation.component';
@@ -29,8 +29,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 
 @NgModule({
 	declarations: [
-		GuideDogServiceDogBaseComponent,
-		GuideDogServiceDogAuthenticatedBaseComponent,
+		GuideDogServiceDogBaseAnonymousComponent,
+		GuideDogServiceDogBaseAuthenticatedComponent,
 		GuideDogServiceDogLandingComponent,
 		GuideDogServiceDogMainComponent,
 		GdsdActiveCertificationsComponent,

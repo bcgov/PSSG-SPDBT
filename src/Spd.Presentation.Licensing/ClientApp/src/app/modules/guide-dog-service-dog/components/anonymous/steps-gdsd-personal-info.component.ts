@@ -78,15 +78,10 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
 	personalInfoComponent!: StepGdsdPersonalInformationAnonymousComponent;
-
 	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
-
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
-
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
 
 	constructor() {

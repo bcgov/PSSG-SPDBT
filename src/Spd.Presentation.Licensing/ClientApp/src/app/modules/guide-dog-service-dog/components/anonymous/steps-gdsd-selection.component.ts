@@ -38,10 +38,7 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
-
 	@ViewChild(StepGdsdChecklistNewComponent) checklistComponent!: StepGdsdChecklistNewComponent;
 
 	constructor() {

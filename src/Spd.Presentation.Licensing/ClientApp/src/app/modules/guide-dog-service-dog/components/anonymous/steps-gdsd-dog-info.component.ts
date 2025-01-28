@@ -48,10 +48,7 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdDogTrainingInformationComponent) dogTrainingComponent!: StepGdsdDogTrainingInformationComponent;
-
 	@ViewChild(StepGdsdDogInformationComponent) dogInformationComponent!: StepGdsdDogInformationComponent;
 
 	constructor() {

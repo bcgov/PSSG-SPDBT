@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 
 @Component({
-	selector: 'app-guide-dog-service-dog-authenticated-base',
+	selector: 'app-guide-dog-service-dog-base-authenticated',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3" *ngIf="isAuthenticated$ | async">
 			<!-- hide padding/margin on smaller screens -->
@@ -19,7 +19,7 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 	styles: ``,
 	standalone: false,
 })
-export class GuideDogServiceDogAuthenticatedBaseComponent implements OnInit {
+export class GuideDogServiceDogBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
 	constructor(
