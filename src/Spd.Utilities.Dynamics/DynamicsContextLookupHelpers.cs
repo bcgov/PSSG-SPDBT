@@ -200,6 +200,9 @@ namespace Spd.Utilities.Dynamics
             {"BodyArmourPermit", Guid.Parse("f504b223-4c32-ee11-b845-00505683fbf4")}, //BAP
             {"MDRA", Guid.Parse("b212c347-4c32-ee11-b845-00505683fbf4")},
             {"SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC", Guid.Parse("9c7cf246-c942-ee11-b845-00505683fbf4")},
+            {"GDSDTeamCertification",Guid.Parse("36f14f8a-a3da-ef11-b856-00505683fbf4") },
+            {"DogTrainerCertification",Guid.Parse("785f0797-a3da-ef11-b856-00505683fbf4") },
+            {"RetiredServiceDogCertification", Guid.Parse("77d1a69e-a3da-ef11-b856-00505683fbf4") }
         }.ToImmutableDictionary();
 
         public static spd_servicetype? LookupServiceType(this DynamicsContext context, string? key)
