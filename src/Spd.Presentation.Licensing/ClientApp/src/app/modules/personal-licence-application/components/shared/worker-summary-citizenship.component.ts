@@ -2,9 +2,9 @@ import { Component, Input } from '@angular/core';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-worker-summary-citizenship',
-    template: `
-		<div class="row mt-0">
+	selector: 'app-worker-summary-citizenship',
+	template: `
+		<div class="row mt-0" *ngIf="showCitizenshipStep">
 			<div class="col-lg-6 col-md-12">
 				<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
 				<div class="summary-text-data">{{ isCanadianCitizen }}</div>
@@ -40,13 +40,14 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerSummaryCitizenshipComponent {
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	@Input() workerModelData: any;
+	@Input() showCitizenshipStep = true;
 
 	get isCanadianCitizen(): string {
 		return this.workerApplicationService.getSummaryisCanadianCitizen(this.workerModelData);

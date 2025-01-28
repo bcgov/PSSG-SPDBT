@@ -1480,9 +1480,14 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	}
 
 	getSummarybcDriversLicenceNumber(workerLicenceModelData: any): string {
-		return workerLicenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
-			? (workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '')
-			: '';
+		if (workerLicenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes) {
+			const hasLicenceNumber = !!workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			if (hasLicenceNumber) {
+				return workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			}
+			return BooleanTypeCode.Yes;
+		}
+		return BooleanTypeCode.No;
 	}
 
 	getSummaryhairColourCode(workerLicenceModelData: any): string {

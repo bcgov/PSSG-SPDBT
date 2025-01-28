@@ -19,8 +19,8 @@ import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-step-compo
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-components/steps-permit-review-anonymous.component';
 
 @Component({
-    selector: 'app-permit-wizard-anonymous-update',
-    template: `
+	selector: 'app-permit-wizard-anonymous-update',
+	template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -62,6 +62,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 				<app-steps-permit-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -98,12 +99,12 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Pay</ng-template>
+				<ng-template matStepLabel>Submit</ng-template>
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based

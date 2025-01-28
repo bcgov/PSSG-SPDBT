@@ -11,8 +11,8 @@ import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.compo
 import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-terms-of-use.component';
 
 @Component({
-    selector: 'app-steps-worker-licence-selection',
-    template: `
+	selector: 'app-steps-worker-licence-selection',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-worker-licence-terms-of-use
@@ -43,8 +43,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGotoUserProfile()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
@@ -145,20 +147,20 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_TERMS = 0;
-	readonly STEP_SOLE_PROPRIETOR = 1;
-	readonly STEP_LICENCE_CONFIRMATION = 2;
-	readonly STEP_LICENCE_EXPIRED = 3;
-	readonly STEP_LICENCE_CATEGORY = 4;
-	readonly STEP_DOGS = 5;
-	readonly STEP_RESTRAINTS = 6;
-	readonly STEP_LICENCE_TERM = 7;
+	readonly STEP_CHECKLIST = 1;
+	readonly STEP_SOLE_PROPRIETOR = 2;
+	readonly STEP_LICENCE_CONFIRMATION = 3;
+	readonly STEP_LICENCE_EXPIRED = 4;
+	readonly STEP_LICENCE_CATEGORY = 5;
+	readonly STEP_DOGS = 6;
+	readonly STEP_RESTRAINTS = 7;
+	readonly STEP_LICENCE_TERM = 8;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -231,6 +233,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 		switch (step) {
 			case this.STEP_TERMS:
 				return this.termsOfUseComponent.isFormValid();
+			case this.STEP_CHECKLIST:
+				return true;
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_LICENCE_CONFIRMATION:
