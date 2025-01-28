@@ -1,17 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
 
 @Component({
-    selector: 'app-steps-worker-licence-review-anonymous',
-    template: `
+	selector: 'app-steps-worker-licence-review-anonymous',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-worker-licence-summary-review-anonymous
 					(editStep)="onGoToStep($event)"
+					[showCitizenshipStep]="showCitizenshipStep"
 				></app-step-worker-licence-summary-review-anonymous>
 
 				<app-wizard-footer
@@ -55,9 +55,9 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
@@ -66,6 +66,7 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() licenceCost = 0;
 	@Input() isSoleProprietorSimultaneousFlow = false;
+	@Input() showCitizenshipStep = true;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -74,7 +75,7 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
+	constructor() {
 		super();
 	}
 
