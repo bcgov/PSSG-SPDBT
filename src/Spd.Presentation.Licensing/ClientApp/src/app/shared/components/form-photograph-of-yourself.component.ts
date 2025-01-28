@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { OptionsPipe } from '../pipes/options.pipe';
 
 @Component({
 	selector: 'app-form-photograph-of-yourself',
@@ -13,8 +15,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<app-alert type="info" icon="info">
 							<p>
 								Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-								photo will be used for your licence or permit if your application is approved. Submitting a photo that
-								does not meet these requirements will delay your application’s processing time.
+								photo will be used for your {{ serviceTypeDesc }} if your application is approved. Submitting a photo
+								that does not meet these requirements will delay your application’s processing time.
 							</p>
 
 							Photo Guidelines:
@@ -62,18 +64,26 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	standalone: false,
 })
-export class FormPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+export class FormPhotographOfYourselfComponent implements OnInit, LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
+	serviceTypeDesc = 'licence';
 
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() showDissimilarWarning = false;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(private optionsPipe: OptionsPipe) {}
+
+	ngOnInit(): void {
+		this.serviceTypeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes').toLowerCase();
+	}
 
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);

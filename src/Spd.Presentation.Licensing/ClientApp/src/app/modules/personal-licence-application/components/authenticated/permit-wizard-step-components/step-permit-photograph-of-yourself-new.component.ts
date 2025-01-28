@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
@@ -10,8 +10,9 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	template: `
 		<app-step-section title="Upload a passport-quality photo of yourself">
 			<app-form-photograph-of-yourself
+				[serviceTypeCode]="serviceTypeCode"
 				[form]="form"
-				name="permit"
+				label="permit"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 			></app-form-photograph-of-yourself>
@@ -22,6 +23,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 })
 export class StepPermitPhotographOfYourselfNewComponent implements LicenceChildStepperStepComponent {
 	@Input() form!: FormGroup;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 

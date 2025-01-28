@@ -899,9 +899,14 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	}
 
 	getSummarybcDriversLicenceNumber(permitModelData: any): string {
-		return permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
-			? (permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '')
-			: '';
+		if (permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes) {
+			const hasLicenceNumber = !!permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			if (hasLicenceNumber) {
+				return permitModelData.bcDriversLicenceData.bcDriversLicenceNumber;
+			}
+			return BooleanTypeCode.Yes;
+		}
+		return BooleanTypeCode.No;
 	}
 
 	getSummaryhairColourCode(permitModelData: any): string {
