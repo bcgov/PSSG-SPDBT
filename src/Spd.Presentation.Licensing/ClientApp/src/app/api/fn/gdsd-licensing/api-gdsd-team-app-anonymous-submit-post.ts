@@ -11,7 +11,7 @@ import { RequestBuilder } from '../../request-builder';
 import { GdsdAppCommandResponse } from '../../models/gdsd-app-command-response';
 import { GdsdTeamLicenceAppAnonymousSubmitRequest } from '../../models/gdsd-team-licence-app-anonymous-submit-request';
 
-export interface ApiGdsdTeamAppAnonymousSubmitChangePost$Params {
+export interface ApiGdsdTeamAppAnonymousSubmitPost$Params {
   
     /**
      * PermitAppAnonymousSubmitRequest data
@@ -19,8 +19,8 @@ export interface ApiGdsdTeamAppAnonymousSubmitChangePost$Params {
     body?: GdsdTeamLicenceAppAnonymousSubmitRequest
 }
 
-export function apiGdsdTeamAppAnonymousSubmitChangePost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppAnonymousSubmitChangePost.PATH, 'post');
+export function apiGdsdTeamAppAnonymousSubmitPost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppAnonymousSubmitPost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -35,4 +35,4 @@ export function apiGdsdTeamAppAnonymousSubmitChangePost(http: HttpClient, rootUr
   );
 }
 
-apiGdsdTeamAppAnonymousSubmitChangePost.PATH = '/api/gdsd-team-app/anonymous/submit-change';
+apiGdsdTeamAppAnonymousSubmitPost.PATH = '/api/gdsd-team-app/anonymous/submit';

@@ -5,10 +5,10 @@
 import { GenderCode } from '../models/gender-code';
 export interface DogInfoNewWithoutAccreditedSchool {
   areInoculationsUpToDate?: boolean;
-  dogBreed: string | null;
-  dogColorAndMarkings: string | null;
+  dogBreed?: string | null;
+  dogColorAndMarkings?: string | null;
   dogDateOfBirth?: string | null;
   dogGender?: GenderCode;
-  dogName: string | null;
+  dogName?: string | null;
   microchipNumber?: string | null;
 }

@@ -19,7 +19,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								schools?
 							</div>
 							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-								<mat-radio-group aria-label="Select an option" formControlName="dogTrainedByAccreditedSchool">
+								<mat-radio-group aria-label="Select an option" formControlName="isDogTrainedByAccreditedSchool">
 									<div class="d-flex justify-content-start">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -28,10 +28,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('dogTrainedByAccreditedSchool')?.dirty ||
-											form.get('dogTrainedByAccreditedSchool')?.touched) &&
-										form.get('dogTrainedByAccreditedSchool')?.invalid &&
-										form.get('dogTrainedByAccreditedSchool')?.hasError('required')
+										(form.get('isDogTrainedByAccreditedSchool')?.dirty ||
+											form.get('isDogTrainedByAccreditedSchool')?.touched) &&
+										form.get('isDogTrainedByAccreditedSchool')?.invalid &&
+										form.get('isDogTrainedByAccreditedSchool')?.hasError('required')
 									"
 									>This is required</mat-error
 								>

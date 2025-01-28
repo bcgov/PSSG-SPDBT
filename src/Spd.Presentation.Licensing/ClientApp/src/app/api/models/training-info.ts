@@ -8,9 +8,9 @@ export interface TrainingInfo {
   hoursPracticingSkill?: string | null;
   specializedTasks?: string | null;
   totalTrainingHours?: number;
-  trainerEmail?: string | null;
+  trainerEmailAddress?: string | null;
   trainerGivenName?: string | null;
-  trainerPhone?: string | null;
+  trainerPhoneNumber?: string | null;
   trainerSurname?: string | null;
   trainingBizContactEmailAddress?: string | null;
   trainingBizContactGivenName?: string | null;

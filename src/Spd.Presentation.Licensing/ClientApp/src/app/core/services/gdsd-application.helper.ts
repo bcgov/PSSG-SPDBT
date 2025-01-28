@@ -36,7 +36,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	});
 
 	dogTrainingInformationFormGroup: FormGroup = this.formBuilder.group({
-		dogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
+		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
 		isGuideDog: new FormControl('', [Validators.required]),
 	});
 
@@ -142,8 +142,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogInfoNewAccreditedSchool: dogInfoNewAccreditedSchoolData,
 			dogInfoNewWithoutAccreditedSchool: null,
 			dogInfoRenew: null,
-			dogTrainedByAccreditedSchool: this.utilService.booleanTypeToBoolean(
-				dogTrainingInformationData.dogTrainedByAccreditedSchool
+			isDogTrainedByAccreditedSchool: this.utilService.booleanTypeToBoolean(
+				dogTrainingInformationData.isDogTrainedByAccreditedSchool
 			),
 			graduationInfo: graduationInfoData,
 			mailingAddress: mailingAddressData,

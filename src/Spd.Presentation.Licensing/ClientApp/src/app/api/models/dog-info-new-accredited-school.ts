@@ -4,12 +4,12 @@
 
 import { GenderCode } from '../models/gender-code';
 export interface DogInfoNewAccreditedSchool {
-  dogBreed: string | null;
-  dogColorAndMarkings: string | null;
+  dogBreed?: string | null;
+  dogColorAndMarkings?: string | null;
   dogDateOfBirth?: string | null;
   dogGender?: GenderCode;
-  dogName: string | null;
-  isGuideDog: boolean;
+  dogName?: string | null;
+  isGuideDog?: boolean;
   microchipNumber?: string | null;
   serviceDogTasks?: string | null;
 }

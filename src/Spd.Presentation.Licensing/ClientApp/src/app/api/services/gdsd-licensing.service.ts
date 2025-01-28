@@ -11,8 +11,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { apiGdsdTeamAppAnonymousSubmitChangePost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-change-post';
-import { ApiGdsdTeamAppAnonymousSubmitChangePost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-change-post';
+import { apiGdsdTeamAppAnonymousSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
+import { ApiGdsdTeamAppAnonymousSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
 import { apiGdsdTeamAppCertificationAppIdGet } from '../fn/gdsd-licensing/api-gdsd-team-app-certification-app-id-get';
 import { ApiGdsdTeamAppCertificationAppIdGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-certification-app-id-get';
 import { apiGdsdTeamAppGet } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
@@ -127,8 +127,8 @@ export class GdsdLicensingService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiGdsdTeamAppAnonymousSubmitChangePost()` */
-  static readonly ApiGdsdTeamAppAnonymousSubmitChangePostPath = '/api/gdsd-team-app/anonymous/submit-change';
+  /** Path part for operation `apiGdsdTeamAppAnonymousSubmitPost()` */
+  static readonly ApiGdsdTeamAppAnonymousSubmitPostPath = '/api/gdsd-team-app/anonymous/submit';
 
   /**
    * Submit GDSD Team Certification application Anonymously
@@ -138,12 +138,12 @@ export class GdsdLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiGdsdTeamAppAnonymousSubmitChangePost()` instead.
+   * To access only the response body, use `apiGdsdTeamAppAnonymousSubmitPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousSubmitChangePost$Response(params?: ApiGdsdTeamAppAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-    return apiGdsdTeamAppAnonymousSubmitChangePost(this.http, this.rootUrl, params, context);
+  apiGdsdTeamAppAnonymousSubmitPost$Response(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppAnonymousSubmitPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -154,12 +154,12 @@ export class GdsdLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiGdsdTeamAppAnonymousSubmitChangePost$Response()` instead.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppAnonymousSubmitPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousSubmitChangePost(params?: ApiGdsdTeamAppAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
-    return this.apiGdsdTeamAppAnonymousSubmitChangePost$Response(params, context).pipe(
+  apiGdsdTeamAppAnonymousSubmitPost(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppAnonymousSubmitPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
     );
   }

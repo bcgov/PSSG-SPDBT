@@ -24,13 +24,13 @@ export interface GdsdTeamLicenceAppAnonymousSubmitRequest {
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
   dogInfoNewWithoutAccreditedSchool?: DogInfoNewWithoutAccreditedSchool;
   dogInfoRenew?: DogInfoRenew;
-  dogTrainedByAccreditedSchool?: boolean;
   givenName?: string | null;
   graduationInfo?: GraduationInfo;
+  isDogTrainedByAccreditedSchool?: boolean;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;
   middleName?: string | null;
   serviceTypeCode?: ServiceTypeCode;
-  surname: string | null;
+  surname?: string | null;
   trainingInfo?: TrainingInfo;
 }
