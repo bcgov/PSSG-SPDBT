@@ -1,4 +1,5 @@
 using MediatR;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public interface IGDSDAppManager
@@ -25,13 +26,13 @@ public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymo
 public record GDSDTeamLicenceAppBase : LicenceAppBase
 {
     //personal info
-    public string Surname { get; set; }
-    public string LegalGivenName { get; set; }
-    public string MiddleName { get; set; }
-    public MailingAddress MailingAddress { get; set; }
+    public required string Surname { get; set; }
+    public string? LegalGivenName { get; set; }
+    public string? MiddleName { get; set; }
+    public MailingAddress? MailingAddress { get; set; }
     public DateOnly DateOfBirth { get; set; }
-    public string ContactPhoneNumber { get; set; }
-    public string ContactEmail { get; set; }
+    public string? ContactPhoneNumber { get; set; }
+    public string? ContactEmail { get; set; }
 
     public bool DogTrainedByAccreditSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
@@ -42,7 +43,7 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
 
     //for app without accredit school
     public DogInfoNewWithoutCreditSchool? DogInfoNewWithoutCreditSchool { get; set; } //not null if it is New
-    public TraningInfo? TraingInfo { get; set; } //not null if it is New
+    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 
 public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppBase
@@ -73,19 +74,17 @@ public record GDSDAppCommandResponse
 public record DogInfoNew
 {
     // Dog Information (New)
-    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
-    public string DogName { get; set; }
-    public DateOnly DogDateOfBirth { get; set; }
-    public string DogBreed { get; set; }
-    public string DogColorAndMarkings { get; set; }
-    public string DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
-    public string MicrochipNumber { get; set; }
-    public string ServiceDogTasks { get; set; }
+    public required string DogName { get; set; }
+    public DateOnly? DogDateOfBirth { get; set; }
+    public required string DogBreed { get; set; }
+    public required string DogColorAndMarkings { get; set; }
+    public GenderCode DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
+    public string? MicrochipNumber { get; set; }
 }
 public record DogInfoNewCreditSchool : DogInfoNew
 {
-    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
-    public string ServiceDogTasks { get; set; }
+    public required bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public string? ServiceDogTasks { get; set; }
 }
 public record DogInfoNewWithoutCreditSchool : DogInfoNew
 {
@@ -93,13 +92,13 @@ public record DogInfoNewWithoutCreditSchool : DogInfoNew
 }
 public record GraduationInfo
 {
-    public string AccreditedSchoolName { get; set; }
-    public string SchoolContactSurname { get; set; }
-    public string SchoolContactFirstName { get; set; }
-    public string SchoolContactEmail { get; set; }
-    public string SchoolContactPhone { get; set; }
+    public string? AccreditedSchoolName { get; set; }
+    public string? SchoolContactSurname { get; set; }
+    public string? SchoolContactFirstName { get; set; }
+    public string? SchoolContactEmail { get; set; }
+    public string? SchoolContactPhone { get; set; }
 }
-public record TraningInfo
+public record TrainingInfo
 {
     public string SpecializedTasks { get; set; }
     public string WhenPerform { get; set; }
