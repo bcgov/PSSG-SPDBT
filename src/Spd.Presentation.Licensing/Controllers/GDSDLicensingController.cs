@@ -26,12 +26,16 @@ namespace Spd.Presentation.Licensing.Controllers
         public GDSDLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
+            IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> teamAppAnonymousSubmitRequestValidator,
+            IValidator<GDSDTeamLicenceAppUpsertRequest> teamAppUpsertValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _currentUser = currentUser;
             _mediator = mediator;
+            _teamAppAnonymousSubmitRequestValidator = teamAppAnonymousSubmitRequestValidator;
+            _teamAppUpsertValidator = teamAppUpsertValidator;
         }
 
         #region authenticated
@@ -99,11 +103,11 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="anonymousSubmitRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/anonymous/submit-change")]
+        [Route("api/gdsd-team-app/anonymous/submit")]
         [HttpPost]
         public async Task<GDSDAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            await VerifyKeyCode();
+            //await VerifyKeyCode(); //temp remove
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
             var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);

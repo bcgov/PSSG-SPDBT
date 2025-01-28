@@ -26,7 +26,7 @@ public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymo
 public record GDSDTeamLicenceAppBase : LicenceAppBase
 {
     //personal info
-    public required string Surname { get; set; }
+    public string Surname { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName { get; set; }
     public MailingAddress? MailingAddress { get; set; }
@@ -34,7 +34,7 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? ContactPhoneNumber { get; set; }
     public string? ContactEmailAddress { get; set; }
 
-    public bool DogTrainedByAccreditedSchool { get; set; }
+    public bool IsDogTrainedByAccreditedSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
 
     //for app with accredited school
@@ -74,16 +74,16 @@ public record GDSDAppCommandResponse
 public record DogInfoNew
 {
     // Dog Information (New)
-    public required string DogName { get; set; }
+    public string DogName { get; set; }
     public DateOnly? DogDateOfBirth { get; set; }
-    public required string DogBreed { get; set; }
-    public required string DogColorAndMarkings { get; set; }
+    public string DogBreed { get; set; }
+    public string DogColorAndMarkings { get; set; }
     public GenderCode DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
     public string? MicrochipNumber { get; set; }
 }
 public record DogInfoNewAccreditedSchool : DogInfoNew
 {
-    public required bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
     public string? ServiceDogTasks { get; set; }
 }
 public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
@@ -123,8 +123,8 @@ public record TrainingInfo
     public string TrainingTime { get; set; } //? //How much time was spent training?
     public string TrainerSurname { get; set; }
     public string TrainerGivenName { get; set; }
-    public string TrainerEmail { get; set; }
-    public string TrainerPhone { get; set; }
+    public string TrainerEmailAddress { get; set; }
+    public string TrainerPhoneNumber { get; set; }
     public string HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
 public record DogInfoRenew
