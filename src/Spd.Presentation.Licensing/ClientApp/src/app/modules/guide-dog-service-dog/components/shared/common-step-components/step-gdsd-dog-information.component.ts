@@ -71,21 +71,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<input matInput formControlName="microchipNumber" maxlength="50" />
 								</mat-form-field>
 							</div>
-
-							<div class="col-12">
-								<div class="text-minor-heading mt-3 mb-2">Tasks the dog does to assist you with daily living</div>
-								<mat-form-field>
-									<textarea
-										matInput
-										formControlName="serviceDogTasks"
-										style="min-height: 200px"
-										[errorStateMatcher]="matcher"
-										maxlength="1000"
-									></textarea>
-									<mat-hint>Maximum 1000 characters</mat-hint>
-									<mat-error *ngIf="form.get('serviceDogTasks')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
 						</div>
 					</div>
 				</div>

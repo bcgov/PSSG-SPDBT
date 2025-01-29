@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
 	selector: 'app-step-gdsd-dog-medical',
@@ -10,7 +11,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		<app-step-section title="Medical information">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="fs-5 lh-base mt-3 mb-2">
 								Are your dog's inoculations (rabies, distemper, parvovirus) up-to-date?
@@ -31,6 +32,33 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									>This is required</mat-error
 								>
 							</div>
+
+							<div class="text-minor-heading mt-3">
+								<app-alert type="warning" icon="warning">
+									Your dog must be spayed or neutered to be certified.
+								</app-alert>
+							</div>
+
+							<div class="text-minor-heading mb-2">
+								Attach certification from a BC veterinarian or equivalent that my dog has been spayed or neutered
+							</div>
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[control]="attachments"
+								[maxNumberOfFiles]="1"
+								[files]="attachments.value"
+								[previewImage]="true"
+							></app-file-upload>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
 					</div>
 				</div>
@@ -43,12 +71,29 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepGdsdDogMedicalComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
+	form: FormGroup = this.gdsdApplicationService.dogMedicalFormGroup;
+
+	@Output() fileUploaded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter();
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+
+	onFileUploaded(file: File): void {
+		this.fileUploaded.emit(file);
+	}
+
+	onFileRemoved(): void {
+		this.fileRemoved.emit();
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

@@ -35,9 +35,17 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		attachments: new FormControl([], [Validators.required]),
 	});
 
-	dogTrainingInformationFormGroup: FormGroup = this.formBuilder.group({
+	medicalInformationFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]),
+	});
+
+	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
 		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
 		isGuideDog: new FormControl('', [Validators.required]),
+	});
+
+	dogTasksFormGroup: FormGroup = this.formBuilder.group({
+		tasks: new FormControl('', [Validators.required]),
 	});
 
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
@@ -47,7 +55,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		dogColorAndMarkings: new FormControl('', [Validators.required]),
 		dogGender: new FormControl('', [Validators.required]),
 		microchipNumber: new FormControl(''),
-		serviceDogTasks: new FormControl('', [Validators.required]),
 	});
 
 	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
@@ -67,44 +74,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
-		trainingSchoolContactInfos: this.formBuilder.array([]),
+		schoolTrainings: this.formBuilder.array([]),
 		otherTrainings: this.formBuilder.array([]),
-	});
-
-	trainingSchoolFormGroup: FormGroup = this.formBuilder.group({
-		trainingBizName: new FormControl(null, [FormControlValidators.required]),
-		contactGivenName: new FormControl(''),
-		contactSurname: new FormControl('', [FormControlValidators.required]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
-		contactEmailAddress: new FormControl(''),
-		trainingDateFrom: new FormControl(''),
-		trainingDateTo: new FormControl(''),
-		nameOfTrainingProgram: new FormControl(''),
-		hoursOfTraining: new FormControl(''),
-		learnedDesc: new FormControl(''),
-	});
-
-	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-	});
-
-	otherTrainingFormGroup: FormGroup = this.formBuilder.group({
-		trainingDetail: new FormControl(null, [FormControlValidators.required]),
-		usePersonalDogTrainer: new FormControl(''),
-		dogTrainerCredential: new FormControl(''),
-		trainingTime: new FormControl('', [FormControlValidators.required]),
-		trainerGivenName: new FormControl(''),
-		trainerSurname: new FormControl('', [FormControlValidators.required]),
-		trainerPhoneNumber: new FormControl('', [Validators.required]),
-		trainerEmailAddress: new FormControl(''),
-		hoursPracticingSkill: new FormControl(''),
-		attachments: new FormControl([], [Validators.required]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
@@ -168,7 +139,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogName: dogInformationData.dogName,
 			isGuideDog: this.utilService.booleanTypeToBoolean(dogTrainingInformationData.isGuideDog),
 			microchipNumber: dogInformationData.microchipNumber,
-			serviceDogTasks: dogInformationData.serviceDogTasks,
 		};
 
 		const graduationInfoData = {

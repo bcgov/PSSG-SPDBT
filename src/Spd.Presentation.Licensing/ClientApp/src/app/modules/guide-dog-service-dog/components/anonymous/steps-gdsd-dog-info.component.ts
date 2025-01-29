@@ -2,24 +2,12 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepGdsdDogInformationComponent } from '../shared/common-step-components/step-gdsd-dog-information.component';
-import { StepGdsdDogTrainingInformationComponent } from '../shared/common-step-components/step-gdsd-dog-training-information.component';
+import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/step-gdsd-dog-medical.component';
 
 @Component({
 	selector: 'app-steps-gdsd-dog-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-gdsd-dog-training-information></app-step-gdsd-dog-training-information>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_TRAINING_INFO)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_TRAINING_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
 			<mat-step>
 				<app-step-gdsd-dog-information></app-step-gdsd-dog-information>
 
@@ -27,24 +15,39 @@ import { StepGdsdDogTrainingInformationComponent } from '../shared/common-step-c
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onStepNextDogInfo()"
 					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="!isTrainedByAccreditedSchools">
-				<app-step-gdsd-dog-medical></app-step-gdsd-dog-medical>
+			<ng-container *ngIf="!isTrainedByAccreditedSchools">
+				<mat-step>
+					<app-step-gdsd-dog-medical></app-step-gdsd-dog-medical>
 
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOG_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
-				></app-wizard-footer>
-			</mat-step>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_DOG_INFO)"
+						(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step>
+					<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
+
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_DOG_INFO)"
+						(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+					></app-wizard-footer>
+				</mat-step>
+			</ng-container>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -53,8 +56,8 @@ import { StepGdsdDogTrainingInformationComponent } from '../shared/common-step-c
 })
 export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	// If step ordering changes, crucial  to update this <- look for this comment below
-	readonly STEP_TRAINING_INFO = 0;
-	readonly STEP_DOG_INFO = 1;
+	readonly STEP_DOG_INFO = 0;
+	readonly STEP_DOG_MEDICAL = 1;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -62,8 +65,8 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
-	@ViewChild(StepGdsdDogTrainingInformationComponent) dogTrainingComponent!: StepGdsdDogTrainingInformationComponent;
-	@ViewChild(StepGdsdDogInformationComponent) dogInformationComponent!: StepGdsdDogInformationComponent;
+	@ViewChild(StepGdsdDogInformationComponent) dogInfoComponent!: StepGdsdDogInformationComponent;
+	@ViewChild(StepGdsdDogMedicalComponent) dogMedicalComponent!: StepGdsdDogMedicalComponent;
 
 	constructor() {
 		super();

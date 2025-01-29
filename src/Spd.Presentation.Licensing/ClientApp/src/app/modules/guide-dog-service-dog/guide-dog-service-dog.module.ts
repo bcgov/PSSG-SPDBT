@@ -19,10 +19,12 @@ import { GuideDogServiceDogMainComponent } from './components/guide-dog-service-
 import { StepGdsdAccreditedGraduationComponent } from './components/shared/common-step-components/step-gdsd-accredited-graduation.component';
 import { StepGdsdChecklistNewComponent } from './components/shared/common-step-components/step-gdsd-checklist-new.component';
 import { StepGdsdConsentComponent } from './components/shared/common-step-components/step-gdsd-consent.component';
+import { StepGdsdDogCertificationSelectionComponent } from './components/shared/common-step-components/step-gdsd-dog-certification-selection.component';
 import { StepGdsdDogInformationComponent } from './components/shared/common-step-components/step-gdsd-dog-information.component';
 import { StepGdsdDogMedicalComponent } from './components/shared/common-step-components/step-gdsd-dog-medical.component';
-import { StepGdsdDogTrainingInformationComponent } from './components/shared/common-step-components/step-gdsd-dog-training-information.component';
+import { StepGdsdDogTasksComponent } from './components/shared/common-step-components/step-gdsd-dog-tasks.component';
 import { StepGdsdGovermentPhotoIdComponent } from './components/shared/common-step-components/step-gdsd-goverment-photo-id.component';
+import { StepGdsdMedicalInformationComponent } from './components/shared/common-step-components/step-gdsd-medical-information.component';
 import { StepGdsdOtherTrainingsComponent } from './components/shared/common-step-components/step-gdsd-other-trainings.component';
 import { StepGdsdPhotographOfYourselfComponent } from './components/shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdSchoolTrainingsComponent } from './components/shared/common-step-components/step-gdsd-school-trainings.component';
@@ -52,7 +54,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepGdsdPhotographOfYourselfComponent,
 		StepGdsdGovermentPhotoIdComponent,
 		StepGdsdMailingAddressComponent,
-		StepGdsdDogTrainingInformationComponent,
+		StepGdsdDogCertificationSelectionComponent,
 		StepGdsdDogInformationComponent,
 		StepGdsdAccreditedGraduationComponent,
 		StepGdsdConsentComponent,
@@ -61,6 +63,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepGdsdSchoolTrainingsComponent,
 		StepGdsdOtherTrainingsComponent,
 		StepGdsdDogMedicalComponent,
+		StepGdsdMedicalInformationComponent,
+		StepGdsdDogTasksComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

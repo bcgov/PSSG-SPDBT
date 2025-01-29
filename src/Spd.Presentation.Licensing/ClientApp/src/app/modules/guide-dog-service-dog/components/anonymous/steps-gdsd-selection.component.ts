@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepGdsdChecklistNewComponent } from '../shared/common-step-components/step-gdsd-checklist-new.component';
+import { StepGdsdDogCertificationSelectionComponent } from '../shared/common-step-components/step-gdsd-dog-certification-selection.component';
 import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/step-gdsd-terms-of-use.component';
 
 @Component({
@@ -19,7 +20,16 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-gdsd-dog-certification-selection></app-step-gdsd-dog-certification-selection>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_CERTIFICATION)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -32,6 +42,7 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_TERMS = 0;
 	readonly STEP_CHECKLIST = 1;
+	readonly STEP_CERTIFICATION = 2;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -40,6 +51,8 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 
 	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
 	@ViewChild(StepGdsdChecklistNewComponent) checklistComponent!: StepGdsdChecklistNewComponent;
+	@ViewChild(StepGdsdDogCertificationSelectionComponent)
+	certificationComponent!: StepGdsdDogCertificationSelectionComponent;
 
 	constructor() {
 		super();
@@ -51,6 +64,8 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 		// 		return this.termsOfUseComponent.isFormValid();
 		// 	case this.STEP_CHECKLIST:
 		// 		return this.checklistComponent.isFormValid();
+		// 	case this.STEP_CERTIFICATION:
+		// 		return this.certificationComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }

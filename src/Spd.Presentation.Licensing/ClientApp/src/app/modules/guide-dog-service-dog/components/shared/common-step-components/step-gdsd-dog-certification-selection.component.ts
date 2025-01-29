@@ -6,9 +6,9 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-gdsd-dog-training-information',
+	selector: 'app-step-gdsd-dog-certification-selection',
 	template: `
-		<app-step-section title="Dog information">
+		<app-step-section title="Dog certification selection">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								schools?
 							</div>
 
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="isDogTrainedByAccreditedSchool">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -34,15 +34,19 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									>This is required</mat-error
 								>
 							</div>
-							<mat-divider class="mt-4 mb-2"></mat-divider>
+							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
 						</div>
 						<div class="row">
 							<div class="fs-5 lh-base mt-3 mb-2">Is your dog trained as a Guide Dog or a Service Dog?</div>
 
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<div class="col-xxl-10 col-xl-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
+										Guide dog (Trained as a guide for a blind person)
+									</mat-radio-button>
+									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
+										Service dog (Trained to perform specific tasks to assist a person with a disability)
+									</mat-radio-button>
 								</mat-radio-group>
 								<mat-error
 									class="mat-option-error"
@@ -63,10 +67,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdDogTrainingInformationComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdDogCertificationSelectionComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.gdsdApplicationService.dogTrainingInformationFormGroup;
+	form: FormGroup = this.gdsdApplicationService.dogCertificationSelectionFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

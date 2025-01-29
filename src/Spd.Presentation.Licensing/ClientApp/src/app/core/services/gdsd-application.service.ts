@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
@@ -25,6 +25,8 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
@@ -49,10 +51,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 		personalInformationData: this.gdsdPersonalInformationFormGroup,
+		medicalInformationData: this.medicalInformationFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
-		dogTrainingInformationData: this.dogTrainingInformationFormGroup,
+		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
 		dogInformationData: this.dogInformationFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,
 		accreditedGraduationData: this.accreditedGraduationFormGroup,
@@ -135,7 +138,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	isStepDogInformationComplete(): boolean {
 		return (
-			this.dogTrainingInformationFormGroup.valid &&
+			this.dogCertificationSelectionFormGroup.valid &&
 			this.dogInformationFormGroup.valid &&
 			this.accreditedGraduationFormGroup.valid
 		);
@@ -156,11 +159,15 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.consentAndDeclarationFormGroup.reset();
 		this.gdsdModelFormGroup.reset();
 
-		// clear the alias data - this does not seem to get reset during a formgroup reset
-		// const aliasesArray = this.gdsdModelFormGroup.get('aliasesData.aliases') as FormArray;
-		// while (aliasesArray.length) {
-		// 	aliasesArray.removeAt(0); // TODO gdsd any arrays to clear?
-		// }
+		// clear the array data - this does not seem to get reset during a formgroup reset
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		while (otherTrainingsArray.length) {
+			otherTrainingsArray.removeAt(0);
+		}
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		while (schoolTrainingsArray.length) {
+			schoolTrainingsArray.removeAt(0);
+		}
 
 		console.debug('RESET', this.initialized, this.gdsdModelFormGroup.value);
 	}
@@ -190,6 +197,17 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private createEmptyGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const dogCertificationSelectionData = {
+			isDogTrainedByAccreditedSchool: BooleanTypeCode.No,
+			isGuideDog: BooleanTypeCode.No,
+		};
+
+		const trainingHistoryData = {
+			hasAttendedTrainingSchool: BooleanTypeCode.Yes,
+			trainingSchoolContactInfos: [],
+			otherTrainings: [],
+		};
+
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
@@ -198,30 +216,79 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				serviceTypeCode,
 				licenceTermCode: LicenceTermCode.TwoYears,
 
-				//   //gdsdPersonalInformationFormGroup:
-				//   contactEmail?: string | null;
-				//   contactPhoneNumber?: string | null;
-				//   dateOfBirth?: string;
-				//   legalGivenName?: string | null;
-				//   middleName?: string | null;
-				//   surname: string | null;
-				// //mailingAddressFormGroup
-				// mailingAddress?: MailingAddress;
-
-				//   documentKeyCodes?: Array<string> | null;
-				//   dogInfoNewCreditSchool?: DogInfoNewCreditSchool;
-				//   dogInfoNewWithoutCreditSchool?: DogInfoNewWithoutCreditSchool;
-				//   dogInfoRenew?: DogInfoRenew;
-				//   dogTrainedByAccreditSchool?: boolean;
-				//   graduationInfo?: GraduationInfo;
-				//   trainingInfo?: TrainingInfo;
+				// TODO temp
+				dogCertificationSelectionData,
+				trainingHistoryData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
+		this.schoolTrainingRowAdd();
+		this.otherTrainingRowAdd();
+
 		return of(this.gdsdModelFormGroup.value);
+	}
+
+	otherTrainingRowUsePersonalTraining(index: number): boolean {
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingItem = otherTrainingsArray.at(index);
+		const ctrl = otherTrainingItem.get('usePersonalDogTrainer') as FormControl;
+		return ctrl?.value === BooleanTypeCode.Yes;
+	}
+
+	otherTrainingRowRemove(index: number): void {
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		otherTrainingsArray.removeAt(index);
+	}
+
+	otherTrainingRowAdd(): void {
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		otherTrainingsArray.push(
+			new FormGroup({
+				trainingDetail: new FormControl('', [FormControlValidators.required]),
+				usePersonalDogTrainer: new FormControl('', [Validators.required]),
+				dogTrainerCredential: new FormControl('', [Validators.required]),
+				trainingTime: new FormControl('', [FormControlValidators.required]),
+				trainerGivenName: new FormControl(''),
+				trainerSurname: new FormControl('', [FormControlValidators.required]),
+				trainerPhoneNumber: new FormControl('', [Validators.required]),
+				trainerEmailAddress: new FormControl(''),
+				hoursPracticingSkill: new FormControl('', [Validators.required]),
+				attachments: new FormControl([]),
+			})
+		);
+	}
+
+	schoolTrainingRowRemove(index: number): void {
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		schoolTrainingsArray.removeAt(index);
+	}
+
+	schoolTrainingRowAdd(): void {
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		schoolTrainingsArray.push(
+			new FormGroup({
+				trainingBizName: new FormControl(null, [FormControlValidators.required]),
+				contactGivenName: new FormControl(''),
+				contactSurname: new FormControl('', [FormControlValidators.required]),
+				contactPhoneNumber: new FormControl('', [Validators.required]),
+				contactEmailAddress: new FormControl(''),
+				trainingDateFrom: new FormControl('', [Validators.required]),
+				trainingDateTo: new FormControl('', [Validators.required]),
+				nameOfTrainingProgram: new FormControl('', [Validators.required]),
+				hoursOfTraining: new FormControl('', [Validators.required]),
+				learnedDesc: new FormControl('', [Validators.required]),
+				addressSelected: new FormControl(false, [Validators.requiredTrue]),
+				addressLine1: new FormControl('', [FormControlValidators.required]),
+				addressLine2: new FormControl(''),
+				city: new FormControl('', [FormControlValidators.required]),
+				postalCode: new FormControl('', [FormControlValidators.required]),
+				province: new FormControl('', [FormControlValidators.required]),
+				country: new FormControl('', [FormControlValidators.required]),
+			})
+		);
 	}
 
 	/**

@@ -94,32 +94,6 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/dog-trainer.svg" alt="Dog Trainer Certification" />
-								</div>
-
-								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
-									<div class="d-flex justify-content-start py-2 mb-3">
-										<div class="text-start"><strong>Dog Trainer</strong> Certification:</div>
-									</div>
-
-									<a
-										tabindex="0"
-										class="large login-link"
-										aria-label="Continue without a BC Services Card and manage certifications"
-										(click)="onContinue(serviceTypes.DogTrainerCertification)"
-										(keydown)="onKeydownContinue($event, serviceTypes.DogTrainerCertification)"
-									>
-										Continue without a BC Services Card
-									</a>
-								</div>
-
-								<div class="col-xl-3 col-lg-4 col-md-12 col-12">&nbsp;</div>
-							</div>
-						</div>
-
-						<div class="login-selection-container my-4 my-lg-5">
-							<div class="row m-3">
-								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
 									<img class="image" src="./assets/retired-service-dog.svg" alt="Retired Service Dog Certification" />
 								</div>
 
@@ -153,6 +127,32 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 										</a>
 									</div>
 								</div>
+							</div>
+						</div>
+
+						<div class="login-selection-container my-4 my-lg-5">
+							<div class="row m-3">
+								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
+									<img class="image" src="./assets/dog-trainer.svg" alt="Dog Trainer Certification" />
+								</div>
+
+								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
+									<div class="d-flex justify-content-start py-2 mb-3">
+										<div class="text-start"><strong>Dog Trainer</strong> Certification:</div>
+									</div>
+
+									<a
+										tabindex="0"
+										class="large login-link"
+										aria-label="Continue without a BC Services Card and manage certifications"
+										(click)="onContinue(serviceTypes.DogTrainerCertification)"
+										(keydown)="onKeydownContinue($event, serviceTypes.DogTrainerCertification)"
+									>
+										Continue without a BC Services Card
+									</a>
+								</div>
+
+								<div class="col-xl-3 col-lg-4 col-md-12 col-12">&nbsp;</div>
 							</div>
 						</div>
 					</div>
