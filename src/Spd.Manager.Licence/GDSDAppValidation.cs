@@ -134,10 +134,10 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
 {
     public TrainingInfoValidator()
     {
-        RuleFor(r => r.TrainingSchoolContactInfos).NotNull().NotEmpty()
+        RuleFor(r => r.SchoolTrainings).NotNull().NotEmpty()
        .ForEach(child =>
        {
-           child.SetValidator(new TrainingSchoolContactInfoValidator());
+           child.SetValidator(new TrainingSchoolInfoValidator());
        })
        .When(r => r.HasAttendedTrainingSchool);
 
@@ -147,21 +147,26 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
             child.SetValidator(new OtherTrainingValidator());
         })
         .When(r => !r.HasAttendedTrainingSchool);
+
+        RuleFor(r => r.SpecializedTasks).MaximumLength(100)
+            .When(r => !r.HasAttendedTrainingSchool);  //tbd if only 1 big block, then needs to be much larger
+        RuleFor(r => r.WhenPerformed).MaximumLength(100)
+            .When(r => !r.HasAttendedTrainingSchool);  //tbd
     }
 }
 
-public class TrainingSchoolContactInfoValidator : AbstractValidator<TrainingSchoolContactInfo>
+public class TrainingSchoolInfoValidator : AbstractValidator<TrainingSchoolInfo>
 {
-    public TrainingSchoolContactInfoValidator()
+    public TrainingSchoolInfoValidator()
     {
         RuleFor(x => x.TrainingBizName).MaximumLength(500);
         RuleFor(r => r.TrainingBizMailingAddress)
             .SetValidator(new MailingAddressValidator())
             .When(r => r.TrainingBizMailingAddress != null);
-        RuleFor(r => r.TrainingBizContactGivenName).MaximumLength(40);
-        RuleFor(r => r.TrainingBizContactSurname).MaximumLength(40);
-        RuleFor(r => r.TrainingBizContactEmailAddress).MaximumLength(75).EmailAddress().When(r => r.TrainingBizContactEmailAddress != null);
-        RuleFor(r => r.TrainingBizContactPhoneNumber).MaximumLength(30);
+        RuleFor(r => r.ContactGivenName).MaximumLength(40);
+        RuleFor(r => r.ContactSurname).MaximumLength(40);
+        RuleFor(r => r.ContactEmailAddress).MaximumLength(75).EmailAddress().When(r => r.ContactEmailAddress != null);
+        RuleFor(r => r.ContactPhoneNumber).MaximumLength(30);
         RuleFor(r => r.TrainingDateFrom).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateFrom != null);
         RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
         RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
@@ -182,9 +187,6 @@ public class OtherTrainingValidator : AbstractValidator<OtherTraining>
         RuleFor(r => r.TrainerEmailAddress).MaximumLength(75).EmailAddress().When(r => r.TrainerEmailAddress != null);
         RuleFor(r => r.TrainerPhoneNumber).MaximumLength(30);
         RuleFor(r => r.HoursPracticingSkill).MaximumLength(100);
-
-        RuleFor(r => r.SpecializedTasks).MaximumLength(100); //tbd if only 1 big block, then needs to be much larger
-        RuleFor(r => r.WhenPerformed).MaximumLength(100); //tbd
     }
 }
 

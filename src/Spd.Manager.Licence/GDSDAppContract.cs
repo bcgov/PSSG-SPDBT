@@ -102,18 +102,20 @@ public record GraduationInfo
 public record TrainingInfo
 {
     public bool HasAttendedTrainingSchool { get; set; }
-    public IEnumerable<TrainingSchoolContactInfo> TrainingSchoolContactInfos { get; set; } //have value when HasAttendedTrainingSchool=true
+    public IEnumerable<TrainingSchoolInfo> SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
     public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
+    public string SpecializedTasks { get; set; } //have value when HasAttendedTrainingSchool=false
+    public string WhenPerformed { get; set; } //have value when HasAttendedTrainingSchool=false
 }
 
-public record TrainingSchoolContactInfo
+public record TrainingSchoolInfo
 {
     public string TrainingBizName { get; set; }
     public MailingAddress TrainingBizMailingAddress { get; set; }
-    public string TrainingBizContactSurname { get; set; }
-    public string TrainingBizContactGivenName { get; set; }
-    public string TrainingBizContactEmailAddress { get; set; }
-    public string TrainingBizContactPhoneNumber { get; set; }
+    public string ContactSurname { get; set; }
+    public string ContactGivenName { get; set; }
+    public string ContactEmailAddress { get; set; }
+    public string ContactPhoneNumber { get; set; }
     public decimal TotalTrainingHours { get; set; }
     public DateOnly? TrainingDateFrom { get; set; }
     public DateOnly? TrainingDateTo { get; set; }
@@ -132,8 +134,6 @@ public record OtherTraining
     public string TrainerEmailAddress { get; set; }
     public string TrainerPhoneNumber { get; set; }
     public string HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
-    public string SpecializedTasks { get; set; }
-    public string WhenPerformed { get; set; }
 }
 public record DogInfoRenew
 {

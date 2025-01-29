@@ -371,14 +371,14 @@ public class GDSDAppValidationTest
         var trainingInfo = new TrainingInfo
         {
             HasAttendedTrainingSchool = true,
-            TrainingSchoolContactInfos = null
+            SchoolTrainings = null
         };
 
         // Act
         var result = _trainingValidator.TestValidate(trainingInfo);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
+        result.ShouldHaveValidationErrorFor(x => x.SchoolTrainings);
     }
 
     [Fact]
@@ -388,14 +388,14 @@ public class GDSDAppValidationTest
         var trainingInfo = new TrainingInfo
         {
             HasAttendedTrainingSchool = true,
-            TrainingSchoolContactInfos = new List<TrainingSchoolContactInfo>()
+            SchoolTrainings = new List<TrainingSchoolInfo>()
         };
 
         // Act
         var result = _trainingValidator.TestValidate(trainingInfo);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
+        result.ShouldHaveValidationErrorFor(x => x.SchoolTrainings);
     }
 
     [Fact]
@@ -405,14 +405,14 @@ public class GDSDAppValidationTest
         var trainingInfo = new TrainingInfo
         {
             HasAttendedTrainingSchool = true,
-            TrainingSchoolContactInfos = new List<TrainingSchoolContactInfo>
+            SchoolTrainings = new List<TrainingSchoolInfo>
             {
                 new() {
                     TrainingBizName = "Valid Business Name",
                     TrainingBizMailingAddress = new MailingAddress(),
-                    TrainingBizContactGivenName = "John",
-                    TrainingBizContactSurname = "Doe",
-                    TrainingBizContactEmailAddress = "john.doe@example.com",
+                    ContactGivenName = "John",
+                    ContactSurname = "Doe",
+                    ContactEmailAddress = "john.doe@example.com",
                     TrainingDateFrom = new DateOnly(2020, 1, 1),
                     TrainingDateTo = new DateOnly(2021, 1, 1),
                     TrainingName = "Valid Training",
@@ -425,7 +425,7 @@ public class GDSDAppValidationTest
         var result = _trainingValidator.TestValidate(trainingInfo);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
+        result.ShouldNotHaveValidationErrorFor(x => x.SchoolTrainings);
     }
 
     [Fact]
@@ -480,8 +480,6 @@ public class GDSDAppValidationTest
                     TrainerEmailAddress = "john.doe@example.com",
                     TrainerPhoneNumber = "123-456-7890",
                     HoursPracticingSkill = "100 hours",
-                    SpecializedTasks = "Task details",
-                    WhenPerformed = "Recently"
                 }
             }
         };
