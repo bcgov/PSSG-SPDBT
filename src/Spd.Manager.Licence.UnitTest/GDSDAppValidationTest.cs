@@ -399,7 +399,7 @@ public class GDSDAppValidationTest
     }
 
     [Fact]
-    public void Should_Not_Have_Error_When_TrainingSchoolContactInfos_Is_Valid_And_HasAttendedTrainingSchool_True()
+    public void Should_Not_Have_Error_When_TrainingSchoolInfos_Is_Valid_And_HasAttendedTrainingSchool_True()
     {
         // Arrange
         var trainingInfo = new TrainingInfo
@@ -413,8 +413,8 @@ public class GDSDAppValidationTest
                     ContactGivenName = "John",
                     ContactSurname = "Doe",
                     ContactEmailAddress = "john.doe@example.com",
-                    TrainingDateFrom = new DateOnly(2020, 1, 1),
-                    TrainingDateTo = new DateOnly(2021, 1, 1),
+                    TrainingStratDate = new DateOnly(2020, 1, 1),
+                    TrainingEndDate = new DateOnly(2021, 1, 1),
                     TrainingName = "Valid Training",
                     WhatLearned = "Skill details"
                 }
@@ -426,6 +426,36 @@ public class GDSDAppValidationTest
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.SchoolTrainings);
+    }
+
+    [Fact]
+    public void Should_Have_Error_When_TrainingSchoolInfos_withTrainingEndDateEarlierThanStartDate_And_HasAttendedTrainingSchool_True()
+    {
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = true,
+            SchoolTrainings = new List<TrainingSchoolInfo>
+            {
+                new() {
+                    TrainingBizName = "Valid Business Name",
+                    TrainingBizMailingAddress = new MailingAddress(),
+                    ContactGivenName = "John",
+                    ContactSurname = "Doe",
+                    ContactEmailAddress = "john.doe@example.com",
+                    TrainingStratDate = new DateOnly(2020, 1, 1),
+                    TrainingEndDate = new DateOnly(2019, 1, 1),
+                    TrainingName = "Valid Training",
+                    WhatLearned = "Skill details"
+                }
+            }
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.SchoolTrainings);
     }
 
     [Fact]

@@ -167,9 +167,9 @@ public class TrainingSchoolInfoValidator : AbstractValidator<TrainingSchoolInfo>
         RuleFor(r => r.ContactSurname).MaximumLength(40);
         RuleFor(r => r.ContactEmailAddress).MaximumLength(75).EmailAddress().When(r => r.ContactEmailAddress != null);
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(30);
-        RuleFor(r => r.TrainingDateFrom).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateFrom != null);
-        RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
-        RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
+        RuleFor(r => r.TrainingStratDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingStratDate != null);
+        RuleFor(r => r.TrainingEndDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingEndDate != null);
+        RuleFor(r => r).Must(d => d.TrainingEndDate > d.TrainingStratDate).When(r => r.TrainingEndDate != null && r.TrainingStratDate != null);
         RuleFor(r => r.TrainingName).MaximumLength(100);
         RuleFor(r => r.WhatLearned).MaximumLength(1000);
     }
