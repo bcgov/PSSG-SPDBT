@@ -33,6 +33,7 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public DateOnly DateOfBirth { get; set; }
     public string? ContactPhoneNumber { get; set; }
     public string? ContactEmailAddress { get; set; }
+    public string? ApplicantOrLegalGuardianName { get; set; }
 
     public bool IsDogTrainedByAccreditedSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
@@ -100,10 +101,13 @@ public record GraduationInfo
 }
 public record TrainingInfo
 {
-    public string SpecializedTasks { get; set; }
-    public string WhenPerformed { get; set; }
+    public bool HasAttendedTrainingSchool { get; set; }
+    public IEnumerable<TrainingSchoolContactInfo> TrainingSchoolContactInfos { get; set; } //have value when HasAttendedTrainingSchool=true
+    public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
+}
 
-    //If you attended a training school(s) and/or program(s), //is training school repeating?
+public record TrainingSchoolContactInfo
+{
     public string TrainingBizName { get; set; }
     public MailingAddress TrainingBizMailingAddress { get; set; }
     public string TrainingBizContactSurname { get; set; }
@@ -115,8 +119,10 @@ public record TrainingInfo
     public DateOnly? TrainingDateTo { get; set; }
     public string TrainingName { get; set; } //Name and/or type of training program
     public string WhatLearned { get; set; }
+}
 
-    //If you did not attend a training school or formalized training program, is other repeating?
+public record OtherTraining
+{
     public string TrainingDetail { get; set; }
     public bool UsePersonalDogTrainer { get; set; }
     public string DogTrainerCredential { get; set; }
@@ -126,6 +132,8 @@ public record TrainingInfo
     public string TrainerEmailAddress { get; set; }
     public string TrainerPhoneNumber { get; set; }
     public string HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
+    public string SpecializedTasks { get; set; }
+    public string WhenPerformed { get; set; }
 }
 public record DogInfoRenew
 {
