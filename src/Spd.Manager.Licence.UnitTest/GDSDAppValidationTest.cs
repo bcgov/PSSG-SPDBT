@@ -365,162 +365,131 @@ public class GDSDAppValidationTest
     }
 
     [Fact]
-    public void Should_Have_Valid_TrainingBizName()
+    public void Should_Have_Error_When_TrainingSchoolContactInfos_Is_Null_And_HasAttendedTrainingSchool_True()
     {
-        var model = new TrainingInfo { TrainingBizName = new string('a', 500) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingBizName);
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = true,
+            TrainingSchoolContactInfos = null
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
     }
 
     [Fact]
-    public void Should_Have_Validation_Error_For_TrainingBizName_Too_Long()
+    public void Should_Have_Error_When_TrainingSchoolContactInfos_Is_Empty_And_HasAttendedTrainingSchool_True()
     {
-        var model = new TrainingInfo { TrainingBizName = new string('a', 501) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingBizName);
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = true,
+            TrainingSchoolContactInfos = new List<TrainingSchoolContactInfo>()
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
     }
 
     [Fact]
-    public void Should_Validate_TrainingBizMailingAddress_When_Not_Null()
+    public void Should_Not_Have_Error_When_TrainingSchoolContactInfos_Is_Valid_And_HasAttendedTrainingSchool_True()
     {
-        var model = new TrainingInfo { TrainingBizMailingAddress = new MailingAddress() }; // Assuming MailingAddress is a valid object.
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingBizMailingAddress);
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = true,
+            TrainingSchoolContactInfos = new List<TrainingSchoolContactInfo>
+            {
+                new() {
+                    TrainingBizName = "Valid Business Name",
+                    TrainingBizMailingAddress = new MailingAddress(),
+                    TrainingBizContactGivenName = "John",
+                    TrainingBizContactSurname = "Doe",
+                    TrainingBizContactEmailAddress = "john.doe@example.com",
+                    TrainingDateFrom = new DateOnly(2020, 1, 1),
+                    TrainingDateTo = new DateOnly(2021, 1, 1),
+                    TrainingName = "Valid Training",
+                    WhatLearned = "Skill details"
+                }
+            }
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.TrainingSchoolContactInfos);
     }
 
     [Fact]
-    public void Should_Not_Validate_TrainingBizMailingAddress_When_Null()
+    public void Should_Have_Error_When_OtherTrainings_Is_Null_And_HasAttendedTrainingSchool_False()
     {
-        var model = new TrainingInfo { TrainingBizMailingAddress = null };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingBizMailingAddress);
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = false,
+            OtherTrainings = null
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.OtherTrainings);
     }
 
     [Fact]
-    public void Should_Have_Valid_TrainingBizContactGivenName()
+    public void Should_Have_Error_When_OtherTrainings_Is_Empty_And_HasAttendedTrainingSchool_False()
     {
-        var model = new TrainingInfo { TrainingBizContactGivenName = new string('a', 40) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingBizContactGivenName);
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = false,
+            OtherTrainings = new List<OtherTraining>()
+        };
+
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.OtherTrainings);
     }
 
     [Fact]
-    public void Should_Have_Validation_Error_For_TrainingBizContactGivenName_Too_Long()
+    public void Should_Not_Have_Error_When_OtherTrainings_Is_Valid_And_HasAttendedTrainingSchool_False()
     {
-        var model = new TrainingInfo { TrainingBizContactGivenName = new string('a', 41) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingBizContactGivenName);
-    }
+        // Arrange
+        var trainingInfo = new TrainingInfo
+        {
+            HasAttendedTrainingSchool = false,
+            OtherTrainings = new List<OtherTraining>
+            {
+                new() {
+                    TrainingDetail = "Valid detail",
+                    DogTrainerCredential = "Valid credential",
+                    TrainingTime = "10 hours",
+                    TrainerGivenName = "John",
+                    TrainerSurname = "Doe",
+                    TrainerEmailAddress = "john.doe@example.com",
+                    TrainerPhoneNumber = "123-456-7890",
+                    HoursPracticingSkill = "100 hours",
+                    SpecializedTasks = "Task details",
+                    WhenPerformed = "Recently"
+                }
+            }
+        };
 
-    [Fact]
-    public void Should_Have_Valid_TrainingBizContactEmailAddress()
-    {
-        var model = new TrainingInfo { TrainingBizContactEmailAddress = "email@example.com" };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingBizContactEmailAddress);
-    }
+        // Act
+        var result = _trainingValidator.TestValidate(trainingInfo);
 
-    [Fact]
-    public void Should_Have_Validation_Error_For_Invalid_TrainingBizContactEmailAddress()
-    {
-        var model = new TrainingInfo { TrainingBizContactEmailAddress = "invalid-email" };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingBizContactEmailAddress);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_TrainingDateFrom()
-    {
-        var model = new TrainingInfo { TrainingDateFrom = new DateOnly(2023, 1, 1) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingDateFrom);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_TrainingDateFrom_Before_1800()
-    {
-        var model = new TrainingInfo { TrainingDateFrom = new DateOnly(1799, 12, 31) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingDateFrom);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_TrainingDateTo()
-    {
-        var model = new TrainingInfo { TrainingDateTo = new DateOnly(2023, 12, 31) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingDateTo);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_TrainingDateTo_Before_1800()
-    {
-        var model = new TrainingInfo { TrainingDateTo = new DateOnly(1799, 12, 31) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingDateTo);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_TrainingName()
-    {
-        var model = new TrainingInfo { TrainingName = new string('a', 100) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainingName);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_TrainingName_Too_Long()
-    {
-        var model = new TrainingInfo { TrainingName = new string('a', 101) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainingName);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_WhatLearned()
-    {
-        var model = new TrainingInfo { WhatLearned = new string('a', 1000) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.WhatLearned);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_WhatLearned_Too_Long()
-    {
-        var model = new TrainingInfo { WhatLearned = new string('a', 1001) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.WhatLearned);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_TrainerEmailAddress_When_Not_Null()
-    {
-        var model = new TrainingInfo { TrainerEmailAddress = "trainer@example.com" };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.TrainerEmailAddress);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_Invalid_TrainerEmailAddress()
-    {
-        var model = new TrainingInfo { TrainerEmailAddress = "invalid-email" };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.TrainerEmailAddress);
-    }
-
-    [Fact]
-    public void Should_Have_Valid_HoursPracticingSkill()
-    {
-        var model = new TrainingInfo { HoursPracticingSkill = new string('a', 100) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldNotHaveValidationErrorFor(x => x.HoursPracticingSkill);
-    }
-
-    [Fact]
-    public void Should_Have_Validation_Error_For_HoursPracticingSkill_Too_Long()
-    {
-        var model = new TrainingInfo { HoursPracticingSkill = new string('a', 101) };
-        var result = _trainingValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.HoursPracticingSkill);
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.OtherTrainings);
     }
 }
