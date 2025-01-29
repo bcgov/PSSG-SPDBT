@@ -96,7 +96,7 @@ export { ResidentialAddress } from './models/residential-address';
 export { ServiceTypeCode } from './models/service-type-code';
 export { SwlContactInfo } from './models/swl-contact-info';
 export { TrainingInfo } from './models/training-info';
-export { TrainingSchoolContactInfo } from './models/training-school-contact-info';
+export { TrainingSchoolInfo } from './models/training-school-info';
 export { WeightUnitCode } from './models/weight-unit-code';
 export { WorkerCategoryTypeCode } from './models/worker-category-type-code';
 export { WorkerLicenceAppResponse } from './models/worker-licence-app-response';

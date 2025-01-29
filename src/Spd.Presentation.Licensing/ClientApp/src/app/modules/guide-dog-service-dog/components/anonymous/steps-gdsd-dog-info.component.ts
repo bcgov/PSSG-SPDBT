@@ -28,6 +28,19 @@ import { StepGdsdDogTrainingInformationComponent } from '../shared/common-step-c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
 					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNextDogInfo()"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step *ngIf="!isTrainedByAccreditedSchools">
+				<app-step-gdsd-dog-medical></app-step-gdsd-dog-medical>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_DOG_INFO)"
 					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
 				></app-wizard-footer>
@@ -47,12 +60,25 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	@ViewChild(StepGdsdDogTrainingInformationComponent) dogTrainingComponent!: StepGdsdDogTrainingInformationComponent;
 	@ViewChild(StepGdsdDogInformationComponent) dogInformationComponent!: StepGdsdDogInformationComponent;
 
 	constructor() {
 		super();
+	}
+
+	onStepNextDogInfo(): void {
+		const isValid = this.dirtyForm(this.STEP_DOG_INFO);
+		if (!isValid) return;
+
+		if (this.isTrainedByAccreditedSchools) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+
+		this.childNextStep.emit(true);
 	}
 
 	override dirtyForm(_step: number): boolean {

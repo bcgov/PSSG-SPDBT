@@ -5,8 +5,8 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
@@ -62,6 +62,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -77,6 +78,8 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -140,6 +143,8 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	stepsReviewConfirm!: StepsGdsdReviewConfirmComponent;
 
 	isFormValid = false;
+	isTrainedByAccreditedSchools = false;
+	hasAttendedTrainingSchool = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -148,7 +153,6 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -168,9 +172,13 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
 
-			// this.applicationTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			// 	'applicationTypeData.applicationTypeCode'
-			// )?.value;
+			this.isTrainedByAccreditedSchools =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('dogTrainingInformationData.isDogTrainedByAccreditedSchool')
+					?.value === BooleanTypeCode.Yes;
+
+			this.hasAttendedTrainingSchool =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
+				BooleanTypeCode.Yes;
 
 			this.updateCompleteStatus();
 		});

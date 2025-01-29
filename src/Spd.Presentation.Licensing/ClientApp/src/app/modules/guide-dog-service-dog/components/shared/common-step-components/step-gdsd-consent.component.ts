@@ -34,8 +34,10 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="col-xl-6 col-lg-6 col-md-12 mt-4">
 							<mat-form-field>
 								<mat-label>Name of Applicant or Legal Guardian</mat-label>
-								<input matInput formControlName="consentName" maxlength="80" />
-								<mat-error *ngIf="form.get('consentName')?.hasError('required')"> This is required </mat-error>
+								<input matInput formControlName="applicantOrLegalGuardianName" maxlength="80" />
+								<mat-error *ngIf="form.get('applicantOrLegalGuardianName')?.hasError('required')">
+									This is required
+								</mat-error>
 							</mat-form-field>
 						</div>
 

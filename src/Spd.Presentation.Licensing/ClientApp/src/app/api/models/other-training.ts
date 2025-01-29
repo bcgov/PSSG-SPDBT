@@ -5,7 +5,6 @@
 export interface OtherTraining {
   dogTrainerCredential?: string | null;
   hoursPracticingSkill?: string | null;
-  specializedTasks?: string | null;
   trainerEmailAddress?: string | null;
   trainerGivenName?: string | null;
   trainerPhoneNumber?: string | null;
@@ -13,5 +12,4 @@ export interface OtherTraining {
   trainingDetail?: string | null;
   trainingTime?: string | null;
   usePersonalDogTrainer?: boolean;
-  whenPerformed?: string | null;
 }

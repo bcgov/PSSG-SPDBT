@@ -36,7 +36,7 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 			</mat-step>
 
 			<mat-step>
-				<app-step-gdsd-government-id-anonymous></app-step-gdsd-government-id-anonymous>
+				<app-step-gdsd-government-id></app-step-gdsd-government-id>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

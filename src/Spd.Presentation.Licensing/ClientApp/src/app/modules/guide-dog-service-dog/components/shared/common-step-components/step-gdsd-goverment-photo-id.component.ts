@@ -7,7 +7,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-gdsd-government-id-anonymous',
+	selector: 'app-step-gdsd-government-id',
 	template: `
 		<app-step-section title="A piece of your government-issued photo ID">
 			<form [formGroup]="form" novalidate>

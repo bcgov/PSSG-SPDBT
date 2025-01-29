@@ -54,7 +54,9 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogTrainingInformationData: this.dogTrainingInformationFormGroup,
 		dogInformationData: this.dogInformationFormGroup,
+		dogMedicalData: this.dogMedicalFormGroup,
 		accreditedGraduationData: this.accreditedGraduationFormGroup,
+		trainingHistoryData: this.trainingHistoryFormGroup,
 	});
 
 	gdsdModelChangedSubscription!: Subscription;
