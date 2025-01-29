@@ -14,6 +14,7 @@ import { MailingAddress } from '../models/mailing-address';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { TrainingInfo } from '../models/training-info';
 export interface GdsdTeamLicenceAppAnonymousSubmitRequest {
+  applicantOrLegalGuardianName?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;

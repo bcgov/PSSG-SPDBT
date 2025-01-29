@@ -59,6 +59,48 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		attachments: new FormControl([], [Validators.required]),
 	});
 
+	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
+		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
+		trainingSchools: this.formBuilder.array([]),
+		otherTrainings: this.formBuilder.array([]),
+	});
+
+	trainingSchoolFormGroup: FormGroup = this.formBuilder.group({
+		businessName: new FormControl(null, [FormControlValidators.required]),
+		contactGivenName: new FormControl(''),
+		contactSurname: new FormControl('', [FormControlValidators.required]),
+		contactPhoneNumber: new FormControl('', [Validators.required]),
+		contactEmailAddress: new FormControl(''),
+		startDate: new FormControl(''),
+		endDate: new FormControl(''),
+		nameOfTrainingProgram: new FormControl(''),
+		hoursOfTraining: new FormControl(''),
+		learnedDesc: new FormControl(''),
+	});
+
+	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+	});
+
+	otherTrainingFormGroup: FormGroup = this.formBuilder.group({
+		otherTrainingDetail: new FormControl(null, [FormControlValidators.required]),
+		usedDogTrainer: new FormControl(''),
+		dogTrainerCredentials: new FormControl(''),
+		timeSpentTraining: new FormControl('', [FormControlValidators.required]),
+		trainerGivenName: new FormControl(''),
+		trainerSurname: new FormControl('', [FormControlValidators.required]),
+		trainerPhoneNumber: new FormControl('', [Validators.required]),
+		trainerEmailAddress: new FormControl(''),
+		hoursPracticingPerWeek: new FormControl(''),
+		attachments: new FormControl([], [Validators.required]),
+	});
+
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		consentName: new FormControl('', [Validators.required]),
@@ -118,7 +160,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogDateOfBirth: dogInformationData.dogDateOfBirth,
 			dogGender: dogInformationData.dogGender,
 			dogName: dogInformationData.dogName,
-			isGuideDog: this.utilService.booleanTypeToBoolean(dogInformationData.isGuideDog),
+			isGuideDog: this.utilService.booleanTypeToBoolean(dogTrainingInformationData.isGuideDog),
 			microchipNumber: dogInformationData.microchipNumber,
 			serviceDogTasks: dogInformationData.serviceDogTasks,
 		};

@@ -16,6 +16,7 @@ import { MailingAddress } from '../models/mailing-address';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { TrainingInfo } from '../models/training-info';
 export interface GdsdTeamLicenceAppResponse {
+  applicantOrLegalGuardianName?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;

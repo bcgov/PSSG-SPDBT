@@ -278,7 +278,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					// application and are still being used
 					// body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitChangePost$Response({
+					return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
 						body,
 					});
 				})

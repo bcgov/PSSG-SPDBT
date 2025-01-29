@@ -16,6 +16,7 @@ import { ServiceTypeCode } from '../models/service-type-code';
 import { TrainingInfo } from '../models/training-info';
 export interface GdsdTeamLicenceAppUpsertRequest {
   applicantId?: string;
+  applicantOrLegalGuardianName?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
