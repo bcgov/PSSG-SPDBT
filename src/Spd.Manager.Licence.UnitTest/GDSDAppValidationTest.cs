@@ -445,7 +445,7 @@ public class GDSDAppValidationTest
                     ContactEmailAddress = "john.doe@example.com",
                     TrainingStratDate = new DateOnly(2020, 1, 1),
                     TrainingEndDate = new DateOnly(2019, 1, 1),
-                    TrainingName = "Valid Training",
+                    TrainingName = "Invalid Training",
                     WhatLearned = "Skill details"
                 }
             }
