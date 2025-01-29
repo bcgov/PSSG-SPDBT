@@ -31,6 +31,7 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.DateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.ContactEmailAddress).EmailAddress().MaximumLength(75).When(r => r.ContactEmailAddress != null);
+        RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty();
 
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
@@ -133,6 +134,26 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
 {
     public TrainingInfoValidator()
     {
+        RuleFor(r => r.TrainingSchoolContactInfos).NotNull().NotEmpty()
+       .ForEach(child =>
+       {
+           child.SetValidator(new TrainingSchoolContactInfoValidator());
+       })
+       .When(r => r.HasAttendedTrainingSchool);
+
+        RuleFor(r => r.OtherTrainings).NotNull().NotEmpty()
+        .ForEach(child =>
+        {
+            child.SetValidator(new OtherTrainingValidator());
+        })
+        .When(r => !r.HasAttendedTrainingSchool);
+    }
+}
+
+public class TrainingSchoolContactInfoValidator : AbstractValidator<TrainingSchoolContactInfo>
+{
+    public TrainingSchoolContactInfoValidator()
+    {
         RuleFor(x => x.TrainingBizName).MaximumLength(500);
         RuleFor(r => r.TrainingBizMailingAddress)
             .SetValidator(new MailingAddressValidator())
@@ -146,7 +167,13 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
         RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
         RuleFor(r => r.TrainingName).MaximumLength(100);
         RuleFor(r => r.WhatLearned).MaximumLength(1000);
+    }
+}
 
+public class OtherTrainingValidator : AbstractValidator<OtherTraining>
+{
+    public OtherTrainingValidator()
+    {
         RuleFor(r => r.TrainingDetail).MaximumLength(1000);
         RuleFor(r => r.DogTrainerCredential).MaximumLength(100);
         RuleFor(r => r.TrainingTime).MaximumLength(15);
@@ -156,8 +183,8 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
         RuleFor(r => r.TrainerPhoneNumber).MaximumLength(30);
         RuleFor(r => r.HoursPracticingSkill).MaximumLength(100);
 
-        RuleFor(r => r.SpecializedTasks).MaximumLength(100);
-        RuleFor(r => r.WhenPerformed).MaximumLength(100);
+        RuleFor(r => r.SpecializedTasks).MaximumLength(100); //tbd if only 1 big block, then needs to be much larger
+        RuleFor(r => r.WhenPerformed).MaximumLength(100); //tbd
     }
 }
 
