@@ -26,18 +26,18 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<input
 										matInput
 										[matDatepicker]="picker"
-										formControlName="dateOfBirth"
+										formControlName="dogDateOfBirth"
 										[max]="maxBirthDate"
 										[min]="minDate"
 										[errorStateMatcher]="matcher"
 									/>
 									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-									<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-									<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMin')">
+									<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('matDatepickerMin')">
 										Invalid date of birth
 									</mat-error>
-									<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
+									<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('matDatepickerMax')">
 										This must be on or before {{ maxBirthDate | formatDate }}
 									</mat-error>
 								</mat-form-field>
@@ -45,24 +45,24 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Breed</mat-label>
-									<input matInput formControlName="breed" [errorStateMatcher]="matcher" maxlength="50" />
+									<input matInput formControlName="dogBreed" [errorStateMatcher]="matcher" maxlength="50" />
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Colour And Markings</mat-label>
-									<input matInput formControlName="colourAndMarkings" [errorStateMatcher]="matcher" maxlength="50" />
+									<input matInput formControlName="dogColorAndMarkings" [errorStateMatcher]="matcher" maxlength="50" />
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Gender</mat-label>
-									<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
+									<mat-select formControlName="dogGender" [errorStateMatcher]="matcher">
 										<mat-option *ngFor="let gdr of genderMfTypes; let i = index" [value]="gdr.code">
 											{{ gdr.desc }}
 										</mat-option>
 									</mat-select>
-									<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('dogGender')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -100,10 +100,8 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your dog information' : 'Your dog information';
-		this.subtitle = this.isRenewal
-			? 'Update any information that has changed since your last application'
-			: 'Provide information about your dog';
+		this.title = this.isRenewal ? 'Confirm your Dog Information' : 'Your Dog Information';
+		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 
 		this.genderMfTypes = GenderTypes.filter(
 			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M

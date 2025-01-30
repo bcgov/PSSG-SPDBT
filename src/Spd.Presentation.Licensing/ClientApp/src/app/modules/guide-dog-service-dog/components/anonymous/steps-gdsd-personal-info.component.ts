@@ -23,6 +23,32 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 			</mat-step>
 
 			<mat-step>
+				<app-step-gdsd-mailing-address></app-step-gdsd-mailing-address>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-gdsd-medical-information></app-step-gdsd-medical-information>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_MEDICAL)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MEDICAL)"
+					(nextReviewStepperStep)="onNextReview(STEP_MEDICAL)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
 				<app-step-gdsd-photograph-of-yourself></app-step-gdsd-photograph-of-yourself>
 
 				<app-wizard-footer
@@ -36,28 +62,15 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 			</mat-step>
 
 			<mat-step>
-				<app-step-gdsd-government-id-anonymous></app-step-gdsd-government-id-anonymous>
+				<app-step-gdsd-government-id></app-step-gdsd-government-id>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_GOV_ID)"
+					(nextStepperStep)="onStepNext(STEP_GOV_ID)"
 					(nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-gdsd-mailing-address></app-step-gdsd-mailing-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -67,26 +80,21 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 	standalone: false,
 })
 export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_PERSONAL_INFO = 0;
-	readonly STEP_PHOTO_OF_YOURSELF = 1;
-	readonly STEP_GOV_ID = 2;
-	readonly STEP_MAILING_ADDRESS = 7;
+	readonly STEP_MAILING_ADDRESS = 1;
+	readonly STEP_MEDICAL = 2;
+	readonly STEP_PHOTO_OF_YOURSELF = 3;
+	readonly STEP_GOV_ID = 4;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
 	personalInfoComponent!: StepGdsdPersonalInformationAnonymousComponent;
-
 	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
-
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
-
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
 
 	constructor() {

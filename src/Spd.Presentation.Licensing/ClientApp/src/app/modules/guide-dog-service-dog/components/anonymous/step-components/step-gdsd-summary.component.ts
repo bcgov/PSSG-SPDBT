@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	template: `
 		<app-step-section
 			title="Registration Summary"
-			subtitle="Review your information before submitting your application"
+			subtitle="Review your information before submitting your application."
 			*ngIf="gdsdModelData"
 		>
 			<div class="row">
