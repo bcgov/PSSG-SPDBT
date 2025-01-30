@@ -86,7 +86,7 @@ public record TrainingSchoolInfo
     public string ContactEmailAddress { get; set; }
     public string ContactPhoneNumber { get; set; }
     public decimal TotalTrainingHours { get; set; }
-    public DateOnly? TrainingStratDate { get; set; }
+    public DateOnly? TrainingStartDate { get; set; }
     public DateOnly? TrainingEndDate { get; set; }
     public string TrainingName { get; set; } //Name and/or type of training program
     public string WhatLearned { get; set; }
