@@ -19,66 +19,31 @@ internal class GDSDAppRepository : IGDSDAppRepository
 
     public async Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct)
     {
-        //spd_application? originalApp;
-        //Guid applicantId;
-        //var app = _mapper.Map<spd_application>(cmd);
-        //app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        var app = _mapper.Map<spd_application>(cmd);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        _context.AddTospd_applications(app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
 
-        //if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
-        //    throw new ArgumentException("New application type is not supported for business licence.");
-
-        //if (cmd.OriginalApplicationId == null)
-        //    throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
-
-        //try
-        //{
-        //    originalApp = await _context.spd_applications
-        //        .Expand(a => a.spd_ApplicantId_account)
-        //        .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
-        //        .FirstOrDefaultAsync(ct);
-
-        //    if (originalApp == null)
-        //        throw new ArgumentException("Original business licence application was not found.");
-        //}
-        //catch (DataServiceQueryException ex)
-        //{
-        //    if (ex.Response.StatusCode == 404)
-        //        throw new ArgumentException("Original business licence application was not found.");
-        //    throw;
-        //}
-
-        //app.spd_businesstype = originalApp.spd_businesstype;
-        //_context.AddTospd_applications(app);
-
-        //if (originalApp?.spd_ApplicantId_account?.accountid == null)
-        //    throw new ArgumentException("There is no account linked to the application found.");
-
-        //SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
-
-        //applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
-        //var biz = await _context.GetOrgById(applicantId, ct);
-        //if (biz == null || biz.statecode != DynamicsConstants.StateCode_Active) throw new ApiException(HttpStatusCode.NotFound);
-
-        //await SetInfoFromBiz(biz, app, cmd.ApplicantIsBizManager ?? false, ct);
-        //await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
-        //await SetApplicantSwlLicenceId(app, cmd.ApplicantSwlLicenceId, ct);
-        //SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-        //SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
-
-        //if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && cmd.PrivateInvestigatorSwlInfo != null)
-        //{
-        //    var businessContact = await UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app, ct);
-        //    _context.SetLink(businessContact, nameof(spd_businesscontact.spd_OrganizationId), biz);
-        //}
-        //else
-        //    DeletePrivateInvestigatorLink(app);
-
-        ////Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
-        ////then update category.
-        //SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        //await _context.SaveChangesAsync(ct);
-        //return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, applicantId);
-        return null;
+        contact? contact = _mapper.Map<contact>(cmd);
+        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        {
+            contact = await _context.CreateContact(contact, null, null, ct);
+        }
+        else
+        {
+            if (cmd.OriginalLicenceId != null)
+            {
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+            }
+            else
+            {
+                throw new ArgumentException("for replace, renew or update, original licence id cannot be null");
+            }
+        }
+        _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
+        SharedRepositoryFuncs.LinkOwner(_context, app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid));
+        await _context.SaveChangesAsync(ct);
+        return new GDSDAppCmdResp((Guid)app.spd_applicationid, contact.contactid.Value);
     }
 
     public async Task<GDSDAppCmdResp> SaveGDSDAppAsync(SaveGDSDAppCmd cmd, CancellationToken ct)
@@ -171,6 +136,5 @@ internal class GDSDAppRepository : IGDSDAppRepository
         var response = _mapper.Map<GDSDAppResp>(app);
         return response;
     }
-
 
 }
