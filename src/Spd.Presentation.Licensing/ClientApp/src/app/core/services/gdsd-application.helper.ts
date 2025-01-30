@@ -59,7 +59,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
 		areInoculationsUpToDate: new FormControl('', [Validators.required]),
-		spayOrNeuterAttachments: new FormControl([], [Validators.required]),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
@@ -74,7 +73,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
+	});
+
+	schoolTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		schoolTrainings: this.formBuilder.array([]),
+	});
+
+	otherTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		otherTrainings: this.formBuilder.array([]),
 	});
 

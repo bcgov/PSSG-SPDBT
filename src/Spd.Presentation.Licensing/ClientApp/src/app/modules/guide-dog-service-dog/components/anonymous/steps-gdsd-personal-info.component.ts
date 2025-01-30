@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepGdsdGovermentPhotoIdComponent } from '../shared/common-step-components/step-gdsd-goverment-photo-id.component';
+import { StepGdsdMedicalInformationComponent } from '../shared/common-step-components/step-gdsd-medical-information.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdMailingAddressComponent } from './step-components/step-gdsd-mailing-address.component';
 import { StepGdsdPersonalInformationAnonymousComponent } from './step-components/step-gdsd-personal-information-anonymous.component';
@@ -92,10 +93,11 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
-	personalInfoComponent!: StepGdsdPersonalInformationAnonymousComponent;
+	personComponent!: StepGdsdPersonalInformationAnonymousComponent;
 	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
+	@ViewChild(StepGdsdMedicalInformationComponent) medicalComponent!: StepGdsdMedicalInformationComponent;
 
 	constructor() {
 		super();
@@ -104,13 +106,15 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	override dirtyForm(_step: number): boolean {
 		// switch (step) {
 		// 	case this.STEP_PERSONAL_INFO:
-		// 		return this.personalInfoComponent.isFormValid();
+		// 		return this.personComponent.isFormValid();
+		// 	case this.STEP_MAILING_ADDRESS:
+		// 		return this.mailingAddressComponent.isFormValid();
+		// 	case this.STEP_MEDICAL:
+		// 		return this.medicalComponent.isFormValid();
 		// 	case this.STEP_PHOTO_OF_YOURSELF:
 		// 		return this.photoComponent.isFormValid();
 		// 	case this.STEP_GOV_ID:
 		// 		return this.govPhotoIdComponent.isFormValid();
-		// 	case this.STEP_MAILING_ADDRESS:
-		// 		return this.mailingAddressComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }

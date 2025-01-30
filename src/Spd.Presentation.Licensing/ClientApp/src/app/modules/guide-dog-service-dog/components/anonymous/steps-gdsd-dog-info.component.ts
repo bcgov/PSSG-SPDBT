@@ -72,10 +72,10 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 
 	override dirtyForm(_step: number): boolean {
 		// switch (step) {
-		// 	case this.STEP_TRAINING_INFO:
-		// 		return this.dogTrainingComponent.isFormValid();
 		// 	case this.STEP_DOG_INFO:
-		// 		return this.dogInformationComponent.isFormValid();
+		// 		return this.dogInfoComponent.isFormValid();
+		// 	case this.STEP_DOG_MEDICAL:
+		// 		return this.dogMedicalComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }

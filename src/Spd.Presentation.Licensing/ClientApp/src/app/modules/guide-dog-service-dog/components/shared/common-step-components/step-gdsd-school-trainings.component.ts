@@ -49,7 +49,9 @@ import moment from 'moment';
 										<mat-form-field>
 											<mat-label>Contact Surname</mat-label>
 											<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" maxlength="40" />
-											<mat-error *ngIf="form.get('contactSurname')?.hasError('required')"> This is required </mat-error>
+											<mat-error *ngIf="group.get('contactSurname')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -62,7 +64,7 @@ import moment from 'moment';
 												maxlength="30"
 												appPhoneNumberTransform
 											/>
-											<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')"
+											<mat-error *ngIf="group.get('contactPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
 											>
 										</mat-form-field>
@@ -77,7 +79,7 @@ import moment from 'moment';
 												placeholder="name@domain.com"
 												maxlength="75"
 											/>
-											<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
+											<mat-error *ngIf="group.get('contactEmailAddress')?.hasError('email')">
 												Must be a valid email address
 											</mat-error>
 										</mat-form-field>
@@ -96,11 +98,13 @@ import moment from 'moment';
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
 											<mat-datepicker #picker1 startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('trainingDateFrom')?.hasError('required')">This is required</mat-error>
-											<mat-error *ngIf="form.get('trainingDateFrom')?.hasError('matDatepickerMin')">
+											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('required')"
+												>This is required</mat-error
+											>
+											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('matDatepickerMin')">
 												Invalid date of birth
 											</mat-error>
-											<mat-error *ngIf="form.get('trainingDateFrom')?.hasError('matDatepickerMax')">
+											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('matDatepickerMax')">
 												This must be on or before {{ maxDate | formatDate }}
 											</mat-error>
 										</mat-form-field>
@@ -118,11 +122,11 @@ import moment from 'moment';
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
 											<mat-datepicker #picker2 startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('trainingDateTo')?.hasError('required')">This is required</mat-error>
-											<mat-error *ngIf="form.get('trainingDateTo')?.hasError('matDatepickerMin')">
+											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('required')">This is required</mat-error>
+											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('matDatepickerMin')">
 												Invalid date of birth
 											</mat-error>
-											<mat-error *ngIf="form.get('trainingDateTo')?.hasError('matDatepickerMax')">
+											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('matDatepickerMax')">
 												This must be on or before {{ maxDate | formatDate }}
 											</mat-error>
 										</mat-form-field>
@@ -137,6 +141,9 @@ import moment from 'moment';
 												maxlength="100"
 											/>
 											<mat-hint>Name and/or type of training program</mat-hint>
+											<mat-error *ngIf="group.get('nameOfTrainingProgram')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -151,15 +158,18 @@ import moment from 'moment';
 												maxlength="10"
 											/>
 											<mat-hint>Total number of training hours</mat-hint>
-											<mat-error *ngIf="form.get('hoursOfTraining')?.hasError('mask')">
+											<mat-error *ngIf="group.get('hoursOfTraining')?.hasError('required')">
+												This is required
+											</mat-error>
+											<mat-error *ngIf="group.get('hoursOfTraining')?.hasError('mask')">
 												This must be a decimal
 											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-12">
-										<div class="fs-5 mb-2">Curriculum Description</div>
-										<div class="mb-2">What did you and your dog learn to do?</div>
+										<div class="fs-5 mt-3 mb-2">What did you and your dog learn to do?</div>
 										<mat-form-field>
+											<mat-label>Curriculum Description</mat-label>
 											<textarea
 												matInput
 												aria-label="Curriculum Description"
@@ -169,7 +179,7 @@ import moment from 'moment';
 												maxlength="1000"
 											></textarea>
 											<mat-hint>Maximum 1000 characters</mat-hint>
-											<mat-error *ngIf="form.get('learnedDesc')?.hasError('required')"> This is required </mat-error>
+											<mat-error *ngIf="group.get('learnedDesc')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 								</div>
@@ -219,7 +229,7 @@ import moment from 'moment';
 	standalone: false,
 })
 export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.trainingHistoryFormGroup;
+	form: FormGroup = this.gdsdApplicationService.schoolTrainingHistoryFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -261,10 +271,7 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 	}
 
 	getSchoolTrainingFormGroup(index: number): FormGroup {
-		const schoolTrainingsArray = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			'trainingHistoryData.schoolTrainings'
-		) as FormArray;
-		return schoolTrainingsArray.at(index) as FormGroup;
+		return this.gdsdApplicationService.getSchoolTrainingFormGroup(index);
 	}
 
 	get schoolTrainingsArray(): FormArray {
