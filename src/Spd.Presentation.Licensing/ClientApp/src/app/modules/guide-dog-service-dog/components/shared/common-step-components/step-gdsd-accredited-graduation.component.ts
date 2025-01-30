@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -8,7 +8,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-gdsd-accredited-graduation',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section
+			title="Accredited Graduation Information"
+			subtitle="Provide information about the accredited school your dog attended"
+		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -19,19 +22,29 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										>Name of Assistance Dogs International or International Guide Dog Federation accredited
 										school</mat-label
 									>
-									<input matInput formControlName="schoolName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input
+										matInput
+										formControlName="accreditedSchoolName"
+										[errorStateMatcher]="matcher"
+										maxlength="250"
+									/>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Contact Given Name</mat-label>
-									<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input
+										matInput
+										formControlName="schoolContactGivenName"
+										[errorStateMatcher]="matcher"
+										maxlength="40"
+									/>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Contact Surname</mat-label>
-									<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="schoolContactSurname" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
@@ -39,12 +52,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="contactPhoneNumber"
+										formControlName="schoolContactPhoneNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="30"
 										appPhoneNumberTransform
 									/>
-									<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('schoolContactPhoneNumber')?.hasError('required')"
+										>This is required</mat-error
+									>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
@@ -52,18 +67,18 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Email Address</mat-label>
 									<input
 										matInput
-										formControlName="contactEmailAddress"
+										formControlName="schoolContactEmailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('schoolContactEmailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>
 							</div>
 
-							<div class="text-minor-heading mb-2">
+							<div class="text-minor-heading mt-3 mb-2">
 								Attached written confirmation from the accredited training school that my dog and I have successfully
 								completed the training program
 							</div>
@@ -93,10 +108,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdAccreditedGraduationComponent implements OnInit, LicenceChildStepperStepComponent {
-	title = '';
-	subtitle = '';
-
+export class StepGdsdAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.gdsdApplicationService.accreditedGraduationFormGroup;
@@ -107,15 +119,6 @@ export class StepGdsdAccreditedGraduationComponent implements OnInit, LicenceChi
 	@Output() fileRemoved = new EventEmitter();
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
-
-	ngOnInit(): void {
-		this.title = this.isRenewal
-			? 'Confirm your accredited graduation information'
-			: 'Accredited graduation information';
-		this.subtitle = this.isRenewal
-			? 'Update any information that has changed since your last application'
-			: 'Provide information about the accredited school your dog attended';
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -132,9 +135,5 @@ export class StepGdsdAccreditedGraduationComponent implements OnInit, LicenceChi
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-
-	get isRenewal(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
 	}
 }

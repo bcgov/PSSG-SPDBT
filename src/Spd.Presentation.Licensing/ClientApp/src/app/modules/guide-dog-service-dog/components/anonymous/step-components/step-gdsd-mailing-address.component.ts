@@ -8,7 +8,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-gdsd-mailing-address',
 	template: `
-		<app-step-section title="Your mailing address" subtitle="This is the address where you currently live">
+		<app-step-section
+			title="Your Mailing Address"
+			subtitle="This is the address where you will receive your certification."
+		>
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="info" icon="">

@@ -3,7 +3,9 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -60,6 +62,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -75,6 +78,8 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -138,6 +143,8 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	stepsReviewConfirm!: StepsGdsdReviewConfirmComponent;
 
 	isFormValid = false;
+	isTrainedByAccreditedSchools = false;
+	hasAttendedTrainingSchool = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -165,9 +172,14 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
 
-			// this.applicationTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			// 	'applicationTypeData.applicationTypeCode'
-			// )?.value;
+			this.isTrainedByAccreditedSchools =
+				this.gdsdApplicationService.gdsdModelFormGroup.get(
+					'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
+				)?.value === BooleanTypeCode.Yes;
+
+			this.hasAttendedTrainingSchool =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
+				BooleanTypeCode.Yes;
 
 			this.updateCompleteStatus();
 		});
@@ -178,9 +190,22 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onSubmit(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		);
+		this.gdsdApplicationService.submitAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+				// 	this.serviceTypeCode,
+				// 	this.applicationTypeCode
+				// );
+				// this.hotToastService.success(successMessage);
+
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

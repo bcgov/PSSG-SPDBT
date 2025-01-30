@@ -13,17 +13,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="row">
 							<div class="col-12 py-3 hereby">
 								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-									I HEREBY CERTIFY THAT I have read and understand all portions of this application form. The
-									information set out by me in this application is true and correct to the best of my knowledge and
-									belief. I have read and understand the Metal Dealers and Recyclers Act and Regulations and I am aware
-									of and understand the
-									<a
-										aria-label="Navigate to Terms and Conditions site"
-										href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_11022_01#section11"
-										target="_blank"
-										>terms and conditions</a
-									>
-									of registration and the conditions that may be placed on me as a registered business under the Act.
+									I certify that the information I have provided above is, to the best of my knowledge, true and
+									complete. I understand that inaccurate, misleading, missing or false information may lead to denial or
+									cancellation of my guide or service dog certificate. I agree to adhere to any terms and conditions of
+									certification. I agree to the release of the information above to the Justice Institute for the
+									purposes of the BC Guide dog and service dog assessment.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -35,6 +29,16 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									>This is required
 								</mat-error>
 							</div>
+						</div>
+
+						<div class="col-xl-6 col-lg-6 col-md-12 mt-4">
+							<mat-form-field>
+								<mat-label>Name of Applicant or Legal Guardian</mat-label>
+								<input matInput formControlName="applicantOrLegalGuardianName" maxlength="80" />
+								<mat-error *ngIf="form.get('applicantOrLegalGuardianName')?.hasError('required')">
+									This is required
+								</mat-error>
+							</mat-form-field>
 						</div>
 
 						<div class="row">
@@ -83,7 +87,37 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
+						<app-alert type="success" icon="">
+							<div class="mb-2">COLLECTION NOTICE</div>
+							<p>
+								All information regarding this application is collected under s. 26(a) and (c) of the Freedom of
+								Information and Protection of Privacy Act as per the Guide Dog and Service Dog Act and its Regulation
+								and will be used for the purpose of certifying guide and service dog teams in BC. If you have questions
+								regarding the collection or use of this information, please contact a Policy Analyst at 1-855-587-0185
+								or the address below:
+							</p>
+
+							<div>Ministry of Public Safety and Solicitor General</div>
+							<div>Policing and Security Branch, Security Programs Division</div>
+							<div>PO Box 9217 Stn Prov Govt, Victoria BC V8W 9J1</div>
+							<div>Phone: toll-free 1-855-587-0185</div>
+							<div>Fax: 250 387-4454</div>
+							<div>
+								Email:
+								<a
+									aria-label="Send email to guide dog service dogs"
+									href="mailto:guideandservicedogs@gov.bc.ca "
+									class="email-address-link"
+									>guideandservicedogs&#64;gov.bc.ca</a
+								>
+							</div>
+							<div>
+								Website:
+								<a href=" http://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank">
+									Guide Dog Service Dog</a
+								>
+							</div>
+						</app-alert>
 					</div>
 				</div>
 			</form>
@@ -99,9 +133,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	standalone: false,
 })
 export class StepGdsdConsentComponent implements LicenceChildStepperStepComponent {
-	collectionNoticeActName = '';
-	collectionNoticeActNameWithAbbrev = '';
-	check3Name = '';
 	check1Name = '';
 
 	form: FormGroup = this.gdsdApplicationService.consentAndDeclarationFormGroup;
