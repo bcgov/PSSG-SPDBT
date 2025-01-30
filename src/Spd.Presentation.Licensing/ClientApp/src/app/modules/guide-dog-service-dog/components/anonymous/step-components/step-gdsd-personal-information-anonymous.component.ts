@@ -59,12 +59,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="phoneNumber"
+										formControlName="contactPhoneNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="30"
 										appPhoneNumberTransform
 									/>
-									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -72,12 +72,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Email Address</mat-label>
 									<input
 										matInput
-										formControlName="emailAddress"
+										formControlName="contactEmailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>
@@ -111,7 +111,7 @@ export class StepGdsdPersonalInformationAnonymousComponent implements OnInit, Li
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your personal information' : 'Your personal information';
+		this.title = this.isRenewal ? 'Confirm your Personal Information' : 'Your Personal Information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 	}
 

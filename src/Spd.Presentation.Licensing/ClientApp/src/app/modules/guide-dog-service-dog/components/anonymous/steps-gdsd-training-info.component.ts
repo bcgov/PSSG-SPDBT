@@ -7,18 +7,66 @@ import { StepGdsdAccreditedGraduationComponent } from '../shared/common-step-com
 	selector: 'app-steps-gdsd-training-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-gdsd-accredited-graduation></app-step-gdsd-accredited-graduation>
+			<ng-container *ngIf="isTrainedByAccreditedSchools; else notTrainedByAccreditedSchools">
+				<mat-step>
+					<app-step-gdsd-accredited-graduation></app-step-gdsd-accredited-graduation>
 
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onStepNext(STEP_ACCREDITED)"
-					(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
-				></app-wizard-footer>
-			</mat-step>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onStepNext(STEP_ACCREDITED)"
+						(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
+					></app-wizard-footer>
+				</mat-step>
+			</ng-container>
+
+			<ng-template #notTrainedByAccreditedSchools>
+				<mat-step>
+					<app-step-gdsd-training-history></app-step-gdsd-training-history>
+
+					<app-wizard-footer
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onFormValidNextStep(STEP_ACCREDITED)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<ng-container *ngIf="hasAttendedTrainingSchool; else notAttendedTrainingSchool">
+					<mat-step>
+						<app-step-gdsd-school-trainings></app-step-gdsd-school-trainings>
+
+						<app-wizard-footer
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onFormValidNextStep(STEP_SCHOOL_TRAINING)"
+						></app-wizard-footer>
+					</mat-step>
+				</ng-container>
+
+				<ng-template #notAttendedTrainingSchool>
+					<mat-step>
+						<app-step-gdsd-other-trainings></app-step-gdsd-other-trainings>
+
+						<app-wizard-footer
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onFormValidNextStep(STEP_OTHER_TRAINING)"
+						></app-wizard-footer>
+					</mat-step>
+				</ng-template>
+
+				<mat-step>
+					<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
+
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_TASKS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_TASKS)"
+						(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+					></app-wizard-footer>
+				</mat-step>
+			</ng-template>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -26,15 +74,17 @@ import { StepGdsdAccreditedGraduationComponent } from '../shared/common-step-com
 	standalone: false,
 })
 export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_ACCREDITED = 0;
+	readonly STEP_SCHOOL_TRAINING = 1;
+	readonly STEP_OTHER_TRAINING = 2;
+	readonly STEP_TASKS = 3;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	applicationTypeCodes = ApplicationTypeCode;
+	@Input() isTrainedByAccreditedSchools!: boolean;
+	@Input() hasAttendedTrainingSchool!: boolean;
 
 	@ViewChild(StepGdsdAccreditedGraduationComponent) accreditedComponent!: StepGdsdAccreditedGraduationComponent;
 
