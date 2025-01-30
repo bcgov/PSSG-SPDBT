@@ -36,7 +36,7 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="!isTrainedByAccreditedSchools">
 				<app-step-gdsd-medical-information></app-step-gdsd-medical-information>
 
 				<app-wizard-footer
@@ -91,6 +91,7 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
 	personComponent!: StepGdsdPersonalInformationAnonymousComponent;
