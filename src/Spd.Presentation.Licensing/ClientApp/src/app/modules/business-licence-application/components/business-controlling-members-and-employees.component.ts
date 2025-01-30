@@ -28,14 +28,13 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 						</div>
 						<div class="col-12 mb-3">
 							<p>
-								Your business must have valid security worker licence holders in B.C. that support the various licence
-								categories the business wishes to be licensed for. If your controlling members don't meet this
-								requirement, add employees who do.
+								Your business must have valid licence holders in B.C. for the licence categories you need. If your
+								current controlling members do not meet these requirements, add employees who do.
 							</p>
 
 							<p>
-								If your controlling members or your employees, who are licence holders for the business, change during
-								the business licence term, update their information here.
+								If the license holders associated with your business change during the business licence term, update
+								their information here.
 							</p>
 						</div>
 					</div>
@@ -51,11 +50,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 					></app-common-controlling-members>
 
 					<div class="mt-3">
-						<app-common-employees
-							[defaultExpanded]="true"
-							[isWizard]="false"
-							[isReadonly]="isReadonly"
-						></app-common-employees>
+						<app-common-employees [defaultExpanded]="true" [isReadonly]="isReadonly"></app-common-employees>
 					</div>
 				</div>
 			</div>
