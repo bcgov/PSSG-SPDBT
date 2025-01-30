@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-gdsd-government-id',
 	template: `
-		<app-step-section title="A piece of your government-issued photo ID" subtitle="Applicant vs Guardian ID??">
+		<app-step-section title="Government-Issued Photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">

@@ -8,7 +8,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	selector: 'app-step-gdsd-photograph-of-yourself',
 	template: `
 		<app-step-section
-			title="Passport-quality photo of yourself"
+			title="Passport-Quality Photo of Yourself"
 			subtitle="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself

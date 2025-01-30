@@ -8,7 +8,10 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-gdsd-medical-information',
 	template: `
-		<app-step-section title="Medical information" subtitle="Confirm your need of a guide or service dog.">
+		<app-step-section
+			title="Medical Information"
+			subtitle="Confirm your need of a guide or service dog by providing a medical form."
+		>
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">

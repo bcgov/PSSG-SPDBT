@@ -39,7 +39,6 @@ import { StepGdsdSummaryComponent } from './step-components/step-gdsd-summary.co
 	standalone: false,
 })
 export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_CONSENT = 1;
 

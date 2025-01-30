@@ -80,7 +80,6 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 	standalone: false,
 })
 export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_PERSONAL_INFO = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
 	readonly STEP_MEDICAL = 2;

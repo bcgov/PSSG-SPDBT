@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -19,7 +19,7 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 	styles: ``,
 	standalone: false,
 })
-export class GuideDogServiceDogBaseAnonymousComponent {
+export class GuideDogServiceDogBaseAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,

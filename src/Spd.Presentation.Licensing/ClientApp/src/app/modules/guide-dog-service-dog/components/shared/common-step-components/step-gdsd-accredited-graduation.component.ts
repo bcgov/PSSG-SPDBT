@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-gdsd-accredited-graduation',
 	template: `
 		<app-step-section
-			title="Accredited graduation information"
+			title="Accredited Graduation Information"
 			subtitle="Provide information about the accredited school your dog attended"
 		>
 			<form [formGroup]="form" novalidate>

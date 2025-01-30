@@ -28,23 +28,10 @@ import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/st
 					<app-wizard-footer
 						[isFormValid]="isFormValid"
 						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+						(saveAndExit)="onSaveAndExit(STEP_DOG_MEDICAL)"
 						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_DOG_INFO)"
-						(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
-					></app-wizard-footer>
-				</mat-step>
-
-				<mat-step>
-					<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
-
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_DOG_INFO)"
-						(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+						(nextStepperStep)="onStepNext(STEP_DOG_MEDICAL)"
+						(nextReviewStepperStep)="onNextReview(STEP_DOG_MEDICAL)"
 					></app-wizard-footer>
 				</mat-step>
 			</ng-container>
@@ -55,7 +42,6 @@ import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/st
 	standalone: false,
 })
 export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_DOG_INFO = 0;
 	readonly STEP_DOG_MEDICAL = 1;
 

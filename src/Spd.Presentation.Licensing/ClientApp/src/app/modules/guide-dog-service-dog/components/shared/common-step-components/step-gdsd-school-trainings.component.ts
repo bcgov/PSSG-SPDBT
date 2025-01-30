@@ -12,16 +12,17 @@ import moment from 'moment';
 @Component({
 	selector: 'app-step-gdsd-school-trainings',
 	template: `
-		<app-step-section title="Training schools">
+		<app-step-section title="Training Schools" subtitle="List the formal training that have received.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
 						<ng-container
 							formArrayName="schoolTrainings"
-							*ngFor="let group of schoolTrainingsArray.controls; track: group; let i = index"
+							*ngFor="let group of schoolTrainingsArray.controls; let i = index"
 						>
-							<div [formGroupName]="i" @showHideTriggerSlideAnimation>
+							<div class="school-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
+									<div class="fs-5 mb-2">Training School Name</div>
 									<div class="col-12">
 										<mat-form-field>
 											<mat-label>Business Name</mat-label>
@@ -87,14 +88,14 @@ import moment from 'moment';
 											<mat-label>Training Start Date</mat-label>
 											<input
 												matInput
-												[matDatepicker]="picker"
+												[matDatepicker]="picker1"
 												formControlName="trainingDateFrom"
 												[max]="maxDate"
 												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+											<mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+											<mat-datepicker #picker1 startView="multi-year"></mat-datepicker>
 											<mat-error *ngIf="form.get('trainingDateFrom')?.hasError('required')">This is required</mat-error>
 											<mat-error *ngIf="form.get('trainingDateFrom')?.hasError('matDatepickerMin')">
 												Invalid date of birth
@@ -109,14 +110,14 @@ import moment from 'moment';
 											<mat-label>Training End Date</mat-label>
 											<input
 												matInput
-												[matDatepicker]="picker"
+												[matDatepicker]="picker2"
 												formControlName="trainingDateTo"
 												[max]="maxDate"
 												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+											<mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+											<mat-datepicker #picker2 startView="multi-year"></mat-datepicker>
 											<mat-error *ngIf="form.get('trainingDateTo')?.hasError('required')">This is required</mat-error>
 											<mat-error *ngIf="form.get('trainingDateTo')?.hasError('matDatepickerMin')">
 												Invalid date of birth
@@ -126,28 +127,49 @@ import moment from 'moment';
 											</mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+									<div class="col-xxl-8 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Name and/or Type of Training Program</mat-label>
+											<mat-label>Program Name</mat-label>
 											<input
 												matInput
 												formControlName="nameOfTrainingProgram"
 												[errorStateMatcher]="matcher"
 												maxlength="100"
 											/>
+											<mat-hint>Name and/or type of training program</mat-hint>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Name and/or Type of Training Program</mat-label>
-											<input matInput formControlName="hoursOfTraining" [errorStateMatcher]="matcher" maxlength="100" />
+											<mat-label>Number of Hours</mat-label>
+											<input
+												matInput
+												formControlName="hoursOfTraining"
+												[errorStateMatcher]="matcher"
+												mask="separator.2"
+												thousandSeparator=","
+												maxlength="10"
+											/>
+											<mat-hint>Total number of training hours</mat-hint>
+											<mat-error *ngIf="form.get('hoursOfTraining')?.hasError('mask')">
+												This must be a decimal
+											</mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+									<div class="col-12">
+										<div class="fs-5 mb-2">Curriculum Description</div>
+										<div class="mb-2">What did you and your dog learn to do?</div>
 										<mat-form-field>
-											<mat-label>Curriculum Description</mat-label>
-											<input matInput formControlName="learnedDesc" [errorStateMatcher]="matcher" maxlength="1000" />
-											<mat-hint>What did you and your dog learn to do?</mat-hint>
+											<textarea
+												matInput
+												aria-label="Curriculum Description"
+												formControlName="learnedDesc"
+												style="min-height: 80px"
+												[errorStateMatcher]="matcher"
+												maxlength="1000"
+											></textarea>
+											<mat-hint>Maximum 1000 characters</mat-hint>
+											<mat-error *ngIf="form.get('learnedDesc')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 								</div>
@@ -156,16 +178,15 @@ import moment from 'moment';
 									<button
 										mat-flat-button
 										type="button"
-										color="accent"
+										color="primary"
 										class="large w-auto"
 										aria-label="Remove this training"
 										(click)="onRemoveSchoolTrainingRow(i)"
 									>
-										Remove this Training
+										Remove this Training School
 									</button>
 								</div>
 							</div>
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						</ng-container>
 
 						<div class="d-flex justify-content-center">
@@ -176,7 +197,7 @@ import moment from 'moment';
 								class="large w-auto mt-2 mt-md-0"
 								(click)="onAddSchoolTraining()"
 							>
-								Add Another Training
+								Add Another Training School
 							</button>
 						</div>
 					</div>
@@ -184,7 +205,16 @@ import moment from 'moment';
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.school-entry {
+				border: 2px solid var(--color-yellow);
+				border-left: 4px solid var(--color-yellow);
+				padding: 16px;
+				margin-bottom: 20px;
+			}
+		`,
+	],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })

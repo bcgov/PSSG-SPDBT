@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-gdsd-dog-certification-selection',
 	template: `
-		<app-step-section title="Dog certification selection">
+		<app-step-section title="Dog Certification Selection">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">

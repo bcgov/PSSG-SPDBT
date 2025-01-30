@@ -100,7 +100,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your dog information' : 'Your dog information';
+		this.title = this.isRenewal ? 'Confirm your Dog Information' : 'Your Dog Information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 
 		this.genderMfTypes = GenderTypes.filter(

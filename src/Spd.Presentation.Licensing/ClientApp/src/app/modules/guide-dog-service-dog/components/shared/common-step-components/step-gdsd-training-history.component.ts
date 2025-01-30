@@ -8,8 +8,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-gdsd-training-history',
 	template: `
 		<app-step-section
-			title="Training history information"
-			subtitle="Please provide as much information as you can with regard to your dog's training history as well as you & your dog's combined 
+			title="Training History Information"
+			subtitle="Provide as much information as you can with regard to your dog's training history as well as you & your dog's combined 
 training history."
 		>
 			<form [formGroup]="form" novalidate>

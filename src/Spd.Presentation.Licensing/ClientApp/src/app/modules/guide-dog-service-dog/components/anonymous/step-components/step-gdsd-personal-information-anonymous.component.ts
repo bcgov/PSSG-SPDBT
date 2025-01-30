@@ -111,7 +111,7 @@ export class StepGdsdPersonalInformationAnonymousComponent implements OnInit, Li
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your personal information' : 'Your personal information';
+		this.title = this.isRenewal ? 'Confirm your Personal Information' : 'Your Personal Information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 	}
 

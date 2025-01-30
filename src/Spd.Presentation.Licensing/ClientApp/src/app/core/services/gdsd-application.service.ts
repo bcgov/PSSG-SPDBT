@@ -216,7 +216,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				serviceTypeCode,
 				licenceTermCode: LicenceTermCode.TwoYears,
 
-				// TODO temp
+				// TODO temp hardcode data
 				dogCertificationSelectionData,
 				trainingHistoryData,
 			},
@@ -231,6 +231,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		return of(this.gdsdModelFormGroup.value);
 	}
 
+	// OTHER TRAINING array
 	otherTrainingRowUsePersonalTraining(index: number): boolean {
 		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
 		const otherTrainingItem = otherTrainingsArray.at(index);
@@ -238,11 +239,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		return ctrl?.value === BooleanTypeCode.Yes;
 	}
 
+	// OTHER TRAINING array
 	otherTrainingRowRemove(index: number): void {
 		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
 		otherTrainingsArray.removeAt(index);
 	}
 
+	// OTHER TRAINING array
 	otherTrainingRowAdd(): void {
 		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
 		otherTrainingsArray.push(
@@ -261,11 +264,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		);
 	}
 
+	// SCHOOL TRAINING array
 	schoolTrainingRowRemove(index: number): void {
 		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.removeAt(index);
 	}
 
+	// SCHOOL TRAINING array
 	schoolTrainingRowAdd(): void {
 		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.push(

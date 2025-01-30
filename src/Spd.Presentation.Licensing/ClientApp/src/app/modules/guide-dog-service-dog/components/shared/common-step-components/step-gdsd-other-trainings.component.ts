@@ -13,8 +13,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-gdsd-other-trainings',
 	template: `
 		<app-step-section
-			title="Other training"
-			subtitle="If you did not attend a training school or formalized training program, please supply the following information."
+			title="Other Training"
+			subtitle="If you did not attend a training school or formalized training program, list the informal training that have received."
 		>
 			<div [formGroup]="form">
 				<div class="row my-2">
@@ -23,7 +23,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							formArrayName="otherTrainings"
 							*ngFor="let group of otherTrainingsArray.controls; let i = index"
 						>
-							<div [formGroupName]="i" @showHideTriggerSlideAnimation>
+							<div class="other-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
 									<div class="col-12">
 										<div class="fs-5 mb-2">Training Details</div>
@@ -32,7 +32,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												matInput
 												aria-label="Training details"
 												formControlName="trainingDetail"
-												style="min-height: 100px"
+												style="min-height: 80px"
 												[errorStateMatcher]="matcher"
 												maxlength="1000"
 											></textarea>
@@ -40,7 +40,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											<mat-error *ngIf="form.get('trainingDetail')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-12">
+									<div class="col-12">
 										<div class="fs-5 mt-3 mb-2">Did you use a personal dog trainer?</div>
 										<mat-radio-group aria-label="Select an option" formControlName="usePersonalDogTrainer">
 											<div class="d-flex justify-content-start">
@@ -128,7 +128,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</div>
 
 									<div class="col-12 mt-3 mb-2">
-										<div class="fs-5 mb-2">Log of practice hours</div>
+										<div class="fs-5 mb-2">Upload log of practice hours</div>
 										<app-file-upload
 											(fileUploaded)="onFileUploaded($event, i)"
 											(fileRemoved)="onFileRemoved()"
@@ -153,7 +153,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<button
 										mat-flat-button
 										type="button"
-										color="accent"
+										color="primary"
 										class="large w-auto"
 										aria-label="Remove this training"
 										(click)="onRemoveOtherTrainingRow(i)"
@@ -162,7 +162,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</button>
 								</div>
 							</div>
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						</ng-container>
 
 						<div class="d-flex justify-content-center">
@@ -181,7 +180,16 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.other-entry {
+				border: 2px solid var(--color-yellow);
+				border-left: 4px solid var(--color-yellow);
+				padding: 16px;
+				margin-bottom: 20px;
+			}
+		`,
+	],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
@@ -221,7 +229,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 		this.gdsdApplicationService.otherTrainingRowAdd();
 	}
 
-	onFileUploaded(file: File, index: number): void {
+	onFileUploaded(_file: File, _index: number): void {
 		this.gdsdApplicationService.hasValueChanged = true;
 	}
 

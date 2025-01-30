@@ -39,7 +39,6 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 	standalone: false,
 })
 export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
-	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_TERMS = 0;
 	readonly STEP_CHECKLIST = 1;
 	readonly STEP_CERTIFICATION = 2;

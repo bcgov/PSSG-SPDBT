@@ -8,7 +8,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-gdsd-dog-medical',
 	template: `
-		<app-step-section title="Medical information">
+		<app-step-section title="Dog Medical Information">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

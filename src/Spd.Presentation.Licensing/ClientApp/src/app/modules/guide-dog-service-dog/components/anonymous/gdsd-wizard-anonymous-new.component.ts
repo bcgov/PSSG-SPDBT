@@ -173,8 +173,9 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 			this.isFormValid = _resp;
 
 			this.isTrainedByAccreditedSchools =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('dogTrainingInformationData.isDogTrainedByAccreditedSchool')
-					?.value === BooleanTypeCode.Yes;
+				this.gdsdApplicationService.gdsdModelFormGroup.get(
+					'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
+				)?.value === BooleanTypeCode.Yes;
 
 			this.hasAttendedTrainingSchool =
 				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
@@ -190,7 +191,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 	onSubmit(): void {
 		this.gdsdApplicationService.submitAnonymous().subscribe({
-			next: (resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 				// 	this.serviceTypeCode,
 				// 	this.applicationTypeCode
