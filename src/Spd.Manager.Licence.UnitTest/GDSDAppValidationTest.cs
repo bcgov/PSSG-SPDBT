@@ -413,7 +413,7 @@ public class GDSDAppValidationTest
                     ContactGivenName = "John",
                     ContactSurname = "Doe",
                     ContactEmailAddress = "john.doe@example.com",
-                    TrainingStratDate = new DateOnly(2020, 1, 1),
+                    TrainingStartDate = new DateOnly(2020, 1, 1),
                     TrainingEndDate = new DateOnly(2021, 1, 1),
                     TrainingName = "Valid Training",
                     WhatLearned = "Skill details"
@@ -443,7 +443,7 @@ public class GDSDAppValidationTest
                     ContactGivenName = "John",
                     ContactSurname = "Doe",
                     ContactEmailAddress = "john.doe@example.com",
-                    TrainingStratDate = new DateOnly(2020, 1, 1),
+                    TrainingStartDate = new DateOnly(2020, 1, 1),
                     TrainingEndDate = new DateOnly(2019, 1, 1),
                     TrainingName = "Invalid Training",
                     WhatLearned = "Skill details"

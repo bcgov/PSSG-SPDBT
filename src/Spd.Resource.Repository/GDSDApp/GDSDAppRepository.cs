@@ -56,62 +56,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
 
     public async Task<GDSDAppCmdResp> SaveGDSDAppAsync(SaveGDSDAppCmd cmd, CancellationToken ct)
     {
-        //spd_application? app;
-        //if (cmd.LicenceAppId != null)
-        //{
-        //    app = _context.spd_applications
-        //        .Expand(a => a.spd_application_spd_licencecategory)
-        //        .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-        //        .Where(a => a.spd_applicationid == cmd.LicenceAppId)
-        //        .FirstOrDefault();
-        //    if (app == null)
-        //        throw new ArgumentException("Application Id was not found.");
-        //    _mapper.Map(cmd, app);
-        //    app.spd_applicationid = (Guid)cmd.LicenceAppId;
-        //    _context.UpdateObject(app);
-        //}
-        //else
-        //{
-        //    app = _mapper.Map<spd_application>(cmd);
-        //    _context.AddTospd_applications(app);
-        //}
-        //// Save changes done to the application, given that these are lost further down the logic (method "DeletePrivateInvestigatorLink")
-        //// when the business contact table is joined with application
-        //await _context.SaveChangesAsync(ct);
-
-        //var biz = await _context.GetOrgById(cmd.ApplicantId, ct);
-        //if (biz == null || biz.statecode != DynamicsConstants.StateCode_Active) throw new ApiException(HttpStatusCode.NotFound);
-
-        //await SetInfoFromBiz(biz, app, cmd.ApplicantIsBizManager ?? false, ct);
-        //await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
-        //SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-        //if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-        //    SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
-        //else
-        //    _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-
-        //await SetApplicantSwlLicenceId(app, cmd.ApplicantSwlLicenceId, ct);
-
-        //SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
-
-        //if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
-        //    cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
-        //    cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
-        //{
-        //    var businessContact = await UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app, ct);
-        //    _context.SetLink(businessContact, nameof(spd_businesscontact.spd_OrganizationId), biz);
-        //}
-        //else
-        //    DeletePrivateInvestigatorLink(app);
-
-        //await _context.SaveChangesAsync(ct);
-
-        ////Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
-        ////then update category.
-        //SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        //await _context.SaveChangesAsync(ct);
-        //return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
-        return null;
+        throw new NotImplementedException();
     }
 
     public async Task<GDSDAppResp> GetGDSDAppAsync(Guid licenceApplicationId, CancellationToken ct)
