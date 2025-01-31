@@ -27,6 +27,7 @@ import {
 } from 'rxjs';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
+import { FormGroupValidators } from '../validators/form-group.validators';
 import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
@@ -60,6 +61,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		dogMedicalData: this.dogMedicalFormGroup,
 		accreditedGraduationData: this.accreditedGraduationFormGroup,
 		trainingHistoryData: this.trainingHistoryFormGroup,
+		schoolTrainingHistoryData: this.schoolTrainingHistoryFormGroup,
+		otherTrainingHistoryData: this.otherTrainingHistoryFormGroup,
 	});
 
 	gdsdModelChangedSubscription!: Subscription;
@@ -160,11 +163,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.gdsdModelFormGroup.reset();
 
 		// clear the array data - this does not seem to get reset during a formgroup reset
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		while (otherTrainingsArray.length) {
 			otherTrainingsArray.removeAt(0);
 		}
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
 		while (schoolTrainingsArray.length) {
 			schoolTrainingsArray.removeAt(0);
 		}
@@ -197,16 +200,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private createEmptyGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
-		const dogCertificationSelectionData = {
-			isDogTrainedByAccreditedSchool: BooleanTypeCode.No,
-			isGuideDog: BooleanTypeCode.No,
-		};
+		// const dogCertificationSelectionData = {
+		// 	isDogTrainedByAccreditedSchool: BooleanTypeCode.No,
+		// 	isGuideDog: BooleanTypeCode.No,
+		// };
 
-		const trainingHistoryData = {
-			hasAttendedTrainingSchool: BooleanTypeCode.Yes,
-			trainingSchoolContactInfos: [],
-			otherTrainings: [],
-		};
+		// const trainingHistoryData = {
+		// 	hasAttendedTrainingSchool: BooleanTypeCode.Yes,
+		// 	// trainingSchoolContactInfos: [],
+		// 	// otherTrainings: [],
+		// };
 
 		this.gdsdModelFormGroup.patchValue(
 			{
@@ -217,8 +220,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				licenceTermCode: LicenceTermCode.TwoYears,
 
 				// TODO temp hardcode data
-				dogCertificationSelectionData,
-				trainingHistoryData,
+				// dogCertificationSelectionData,
+				// trainingHistoryData,
 			},
 			{
 				emitEvent: false,
@@ -233,7 +236,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// OTHER TRAINING array
 	otherTrainingRowUsePersonalTraining(index: number): boolean {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		const otherTrainingItem = otherTrainingsArray.at(index);
 		const ctrl = otherTrainingItem.get('usePersonalDogTrainer') as FormControl;
 		return ctrl?.value === BooleanTypeCode.Yes;
@@ -241,38 +244,79 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// OTHER TRAINING array
 	otherTrainingRowRemove(index: number): void {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		otherTrainingsArray.removeAt(index);
 	}
 
 	// OTHER TRAINING array
 	otherTrainingRowAdd(): void {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		otherTrainingsArray.push(
-			new FormGroup({
-				trainingDetail: new FormControl('', [FormControlValidators.required]),
-				usePersonalDogTrainer: new FormControl('', [Validators.required]),
-				dogTrainerCredential: new FormControl('', [Validators.required]),
-				trainingTime: new FormControl('', [FormControlValidators.required]),
-				trainerGivenName: new FormControl(''),
-				trainerSurname: new FormControl('', [FormControlValidators.required]),
-				trainerPhoneNumber: new FormControl('', [Validators.required]),
-				trainerEmailAddress: new FormControl(''),
-				hoursPracticingSkill: new FormControl('', [Validators.required]),
-				attachments: new FormControl([]),
-			})
+			new FormGroup(
+				{
+					trainingDetail: new FormControl('', [FormControlValidators.required]),
+					usePersonalDogTrainer: new FormControl('', [Validators.required]),
+					dogTrainerCredential: new FormControl(''),
+					trainingTime: new FormControl(''),
+					trainerGivenName: new FormControl(''),
+					trainerSurname: new FormControl(''),
+					trainerPhoneNumber: new FormControl(''),
+					trainerEmailAddress: new FormControl(''),
+					hoursPracticingSkill: new FormControl(''),
+					attachments: new FormControl([]),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalDefaultRequiredValidator(
+							'dogTrainerCredential',
+							(form) => form.get('usePersonalDogTrainer')?.value == BooleanTypeCode.Yes
+						),
+						FormGroupValidators.conditionalDefaultRequiredValidator(
+							'trainingTime',
+							(form) => form.get('usePersonalDogTrainer')?.value == BooleanTypeCode.Yes
+						),
+						FormGroupValidators.conditionalDefaultRequiredValidator(
+							'trainerSurname',
+							(form) => form.get('usePersonalDogTrainer')?.value == BooleanTypeCode.Yes
+						),
+						FormGroupValidators.conditionalDefaultRequiredValidator(
+							'trainerPhoneNumber',
+							(form) => form.get('usePersonalDogTrainer')?.value == BooleanTypeCode.Yes
+						),
+						FormGroupValidators.conditionalDefaultRequiredValidator(
+							'hoursPracticingSkill',
+							(form) => form.get('usePersonalDogTrainer')?.value == BooleanTypeCode.Yes
+						),
+					],
+				}
+			)
 		);
+	}
+
+	// OTHER TRAINING array
+	otherTrainingAttachmentsItemControl(index: number): FormControl {
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingItem = otherTrainingsArray.at(index);
+		return otherTrainingItem.get('attachments') as FormControl;
+	}
+
+	// OTHER TRAINING array
+	otherTrainingAttachmentsItemValue(index: number): File[] {
+		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingItem = otherTrainingsArray.at(index);
+		const ctrl = otherTrainingItem.get('attachments') as FormControl;
+		return ctrl?.value ?? [];
 	}
 
 	// SCHOOL TRAINING array
 	schoolTrainingRowRemove(index: number): void {
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.removeAt(index);
 	}
 
 	// SCHOOL TRAINING array
 	schoolTrainingRowAdd(): void {
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('trainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.push(
 			new FormGroup({
 				trainingBizName: new FormControl(null, [FormControlValidators.required]),
@@ -294,6 +338,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				country: new FormControl('', [FormControlValidators.required]),
 			})
 		);
+	}
+
+	// SCHOOL TRAINING array
+	getSchoolTrainingFormGroup(index: number): FormGroup {
+		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
+		return schoolTrainingsArray.at(index) as FormGroup;
 	}
 
 	/**
