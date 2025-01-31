@@ -17,7 +17,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Cerificate Selection</div>
+										<div class="panel-header">Certificate Selection</div>
 										<button
 											mat-mini-fab
 											color="primary"
