@@ -6,6 +6,7 @@ public interface IGDSDAppRepository
     public Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct);
     public Task<GDSDAppCmdResp> SaveGDSDAppAsync(SaveGDSDAppCmd cmd, CancellationToken ct);
     public Task<GDSDAppResp> GetGDSDAppAsync(Guid licenceAppId, CancellationToken ct);
+    public Task CommitGDSDAppAsync(CommitGDSDAppCmd cmd, CancellationToken ct);
 }
 
 public record GDSDAppCmdResp(Guid LicenceAppId, Guid ContactId);
@@ -73,8 +74,7 @@ public record TrainingInfo
     public bool HasAttendedTrainingSchool { get; set; }
     public IEnumerable<TrainingSchoolInfo> SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
     public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string SpecializedTasks { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string WhenPerformed { get; set; } //have value when HasAttendedTrainingSchool=false
+    public string SpecializedTasksWhenPerformed { get; set; }
 }
 
 public record TrainingSchoolInfo
@@ -126,6 +126,12 @@ public record CreateGDSDAppCmd() : GDSDApp
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
 };
+
+public record CommitGDSDAppCmd()
+{
+    public Guid LicenceAppId { get; set; }
+    public ApplicationStatusEnum ApplicationStatusCode { get; set; } = ApplicationStatusEnum.Submitted;
+}
 
 public record GDSDAppResp() : GDSDApp
 {

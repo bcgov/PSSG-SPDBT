@@ -135,7 +135,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //}
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return null;
+            return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
 
         #endregion anonymous

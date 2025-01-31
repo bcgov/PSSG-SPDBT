@@ -85,6 +85,7 @@ public class DogInfoNewAccreditedSchoolValidator : AbstractValidator<DogInfoNewA
     {
         Include(new DogInfoNewValidator());
         RuleFor(r => r.ServiceDogTasks).MaximumLength(1000);
+        RuleFor(r => r.IsGuideDog).NotEmpty();
     }
 }
 
@@ -148,10 +149,7 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
         })
         .When(r => !r.HasAttendedTrainingSchool);
 
-        RuleFor(r => r.SpecializedTasks).MaximumLength(100)
-            .When(r => !r.HasAttendedTrainingSchool);  //tbd if only 1 big block, then needs to be much larger
-        RuleFor(r => r.WhenPerformed).MaximumLength(100)
-            .When(r => !r.HasAttendedTrainingSchool);  //tbd
+        RuleFor(r => r.SpecializedTasksWhenPerformed).MaximumLength(1000);  //tbd if only 1 big block, then needs to be much larger
     }
 }
 

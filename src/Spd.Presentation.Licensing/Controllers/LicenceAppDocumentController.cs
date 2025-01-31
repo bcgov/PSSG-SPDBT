@@ -108,7 +108,7 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
     [RequestSizeLimit(26214400)] //25M
     public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
     {
-        await VerifyKeyCode();
+        //await VerifyKeyCode();
         VerifyFiles(fileUploadRequest.Documents);
         await FileVirusScanAsync(fileUploadRequest.Documents, ct);
 

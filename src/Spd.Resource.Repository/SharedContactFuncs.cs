@@ -13,7 +13,7 @@ internal static class SharedContactFuncs
         context.AddTocontacts(contact);
         if (identity != null)
             context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
-        if (aliases.Any())
+        if (aliases != null && aliases.Any())
         {
             foreach (var alias in aliases)
             {

@@ -19,29 +19,37 @@ internal class GDSDAppRepository : IGDSDAppRepository
 
     public async Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct)
     {
-        var app = _mapper.Map<spd_application>(cmd);
-        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        _context.AddTospd_applications(app);
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
 
+        var app = _mapper.Map<spd_application>(cmd);
+        //process contact
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
             contact = await _context.CreateContact(contact, null, null, ct);
-        }
-        else
-        {
-            if (cmd.OriginalLicenceId != null)
+            //process graduation info
+            if (cmd.IsDogTrainedByAccreditedSchool)
             {
-                SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+                _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(cmd.DogInfoNewAccreditedSchool, app);
+                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+                _context.AddTospd_applications(app);
+                spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(cmd.GraduationInfo);
+                graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
+                _context.AddTospd_dogtrainingschools(graduation);
+                _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
             }
             else
             {
-                throw new ArgumentException("for replace, renew or update, original licence id cannot be null");
+                _mapper.Map<DogInfoNewWithoutAccreditedSchool, spd_application>(cmd.DogInfoNewWithoutAccreditedSchool, app);
+                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+                _context.AddTospd_applications(app);
+                //todo:
+                //spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(cmd.TrainingInfo);
             }
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
+            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+            _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
         }
-        _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-        SharedRepositoryFuncs.LinkOwner(_context, app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid));
+
         await _context.SaveChangesAsync(ct);
         return new GDSDAppCmdResp((Guid)app.spd_applicationid, contact.contactid.Value);
     }
@@ -137,4 +145,24 @@ internal class GDSDAppRepository : IGDSDAppRepository
         return response;
     }
 
+    public async Task CommitGDSDAppAsync(CommitGDSDAppCmd cmd, CancellationToken ct)
+    {
+        spd_application? app = await _context.GetApplicationById(cmd.LicenceAppId, ct);
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
+
+        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(cmd.ApplicationStatusCode.ToString());
+
+        if (cmd.ApplicationStatusCode == ApplicationStatusEnum.Submitted)
+        {
+            app.statecode = DynamicsConstants.StateCode_Inactive;
+
+            app.spd_submittedon = DateTimeOffset.Now;
+            app.spd_portalmodifiedon = DateTimeOffset.Now;
+            app.spd_licencefee = 0;
+
+            _context.UpdateObject(app);
+            await _context.SaveChangesAsync(ct);
+        }
+    }
 }

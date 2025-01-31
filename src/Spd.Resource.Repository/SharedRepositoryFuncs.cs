@@ -28,16 +28,6 @@ internal static class SharedRepositoryFuncs
             }
         }
     }
-
-    public static void LinkOwner(DynamicsContext _context, spd_application app, Guid ownerId)
-    {
-        team? serviceTeam = _context.teams.Where(t => t.teamid == ownerId).FirstOrDefault();
-
-        if (serviceTeam == null)
-            throw new ArgumentException("service team not found");
-
-        _context.SetLink(app, nameof(app.ownerid), serviceTeam);
-    }
     public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
     {
         Guid teamGuid = Guid.Parse(teamGuidStr);

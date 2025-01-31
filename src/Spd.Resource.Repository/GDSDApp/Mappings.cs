@@ -14,6 +14,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
         .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName))
+        .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
         .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
         .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<ApplicationOriginTypeEnum, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
@@ -42,6 +43,24 @@ internal class Mappings : Profile
         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)));
         //.ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber));
 
+        _ = CreateMap<GDSDApp, contact>()
+        .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
+        .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
+        .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName)))
+        .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
+        .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
+        .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
+        .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.ContactPhoneNumber))
+        .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.AddressLine1)))
+        .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.AddressLine2)))
+        .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.City)))
+        .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.PostalCode)))
+        .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.Province)))
+        .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.Country)))
+        .ReverseMap()
+        .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
+        .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)));
+
         _ = CreateMap<DogInfoRenew, spd_application>()
         .ForMember(d => d.spd_dogname, opt => opt.MapFrom(s => s.DogName))
         // .ForMember(d => d.spd_do, opt => opt.MapFrom(s => s.IsAssistanceStillRequired))
@@ -49,7 +68,7 @@ internal class Mappings : Profile
         ;
 
         _ = CreateMap<DogInfoNewAccreditedSchool, spd_application>()
-        .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => s.IsGuideDog)) //refine
+        .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => s.IsGuideDog ? DogTypeOptionSet.GuideDog : DogTypeOptionSet.ServiceDog))
         .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => s.ServiceDogTasks)) //refine
         .IncludeBase<DogInfoNew, spd_application>();
         ;
@@ -69,7 +88,7 @@ internal class Mappings : Profile
         ;
 
         _ = CreateMap<GraduationInfo, spd_dogtrainingschool>()
-         .ForMember(d => d.spd_name, opt => opt.MapFrom(s => s.AccreditedSchoolName))
+         .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.AccreditedSchoolName))
          .ForMember(d => d.spd_contactsurname, opt => opt.MapFrom(s => s.SchoolContactSurname))
          .ForMember(d => d.spd_contactfirstname, opt => opt.MapFrom(s => s.SchoolContactGivenName))
          .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.SchoolContactPhoneNumber))
