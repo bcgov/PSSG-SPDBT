@@ -37,7 +37,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												maxlength="1000"
 											></textarea>
 											<mat-hint>Maximum 1000 characters</mat-hint>
-											<mat-error *ngIf="form.get('trainingDetail')?.hasError('required')"> This is required </mat-error>
+											<mat-error *ngIf="group.get('trainingDetail')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-12">
@@ -53,9 +55,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('usePersonalDogTrainer')?.dirty || form.get('usePersonalDogTrainer')?.touched) &&
-												form.get('usePersonalDogTrainer')?.invalid &&
-												form.get('usePersonalDogTrainer')?.hasError('required')
+												(group.get('usePersonalDogTrainer')?.dirty || group.get('usePersonalDogTrainer')?.touched) &&
+												group.get('usePersonalDogTrainer')?.invalid &&
+												group.get('usePersonalDogTrainer')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -72,12 +74,16 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[errorStateMatcher]="matcher"
 												maxlength="100"
 											/>
+											<mat-error *ngIf="group.get('dogTrainerCredential')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Time Spent Training</mat-label>
 											<input matInput formControlName="trainingTime" [errorStateMatcher]="matcher" maxlength="15" />
+											<mat-error *ngIf="group.get('trainingTime')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -90,6 +96,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-form-field>
 											<mat-label>Trainer Surname</mat-label>
 											<input matInput formControlName="trainerSurname" [errorStateMatcher]="matcher" maxlength="40" />
+											<mat-error *ngIf="group.get('trainerSurname')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -101,6 +110,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[errorStateMatcher]="matcher"
 												maxlength="30"
 											/>
+											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -124,6 +136,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												maxlength="100"
 											/>
 											<mat-hint>e.g. 20 hours/week for 8 weeks</mat-hint>
+											<mat-error *ngIf="group.get('hoursPracticingSkill')?.hasError('required')">
+												This is required
+											</mat-error>
 										</mat-form-field>
 									</div>
 
@@ -140,9 +155,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-												form.get('attachments')?.invalid &&
-												form.get('attachments')?.hasError('required')
+												(group.get('attachments')?.dirty || group.get('attachments')?.touched) &&
+												group.get('attachments')?.invalid &&
+												group.get('attachments')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -194,7 +209,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.trainingHistoryFormGroup;
+	form: FormGroup = this.gdsdApplicationService.otherTrainingHistoryFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -247,20 +262,11 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	}
 
 	attachmentsItemControl(index: number): FormControl {
-		const otherTrainingsArray = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			'trainingHistoryData.otherTrainings'
-		) as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		return otherTrainingItem.get('attachments') as FormControl;
+		return this.gdsdApplicationService.otherTrainingAttachmentsItemControl(index);
 	}
 
 	attachmentsItemValue(index: number): File[] {
-		const otherTrainingsArray = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			'trainingHistoryData.otherTrainings'
-		) as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		const ctrl = otherTrainingItem.get('attachments') as FormControl;
-		return ctrl?.value ?? [];
+		return this.gdsdApplicationService.otherTrainingAttachmentsItemValue(index);
 	}
 
 	get otherTrainingsArray(): FormArray {

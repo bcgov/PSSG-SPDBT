@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepGdsdChecklistNewComponent } from '../shared/common-step-components/step-gdsd-checklist-new.component';
 import { StepGdsdDogCertificationSelectionComponent } from '../shared/common-step-components/step-gdsd-dog-certification-selection.component';
 import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/step-gdsd-terms-of-use.component';
 
@@ -49,9 +48,7 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
-	@ViewChild(StepGdsdChecklistNewComponent) checklistComponent!: StepGdsdChecklistNewComponent;
-	@ViewChild(StepGdsdDogCertificationSelectionComponent)
-	certificationComponent!: StepGdsdDogCertificationSelectionComponent;
+	@ViewChild(StepGdsdDogCertificationSelectionComponent) certComponent!: StepGdsdDogCertificationSelectionComponent;
 
 	constructor() {
 		super();
@@ -62,9 +59,9 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 		// 	case this.STEP_TERMS:
 		// 		return this.termsOfUseComponent.isFormValid();
 		// 	case this.STEP_CHECKLIST:
-		// 		return this.checklistComponent.isFormValid();
+		// 		return true;
 		// 	case this.STEP_CERTIFICATION:
-		// 		return this.certificationComponent.isFormValid();
+		// 		return this.certComponent.isFormValid();
 		// 	default:
 		// 		console.error('Unknown Form', step);
 		// }
