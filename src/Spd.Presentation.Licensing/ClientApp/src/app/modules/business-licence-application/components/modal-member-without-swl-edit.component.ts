@@ -136,8 +136,8 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 		this.form.patchValue(this.dialogData);
 		this.isEdit = !!this.dialogData.bizContactId;
 		this.title = this.isEdit
-			? 'Edit Member without Security Worker Licence'
-			: 'Add Member without Security Worker Licence';
+			? 'Edit Controlling Member without Security Worker Licence'
+			: 'Add Controlling Member without Security Worker Licence';
 	}
 
 	onSave(): void {

@@ -84,25 +84,26 @@ import {
 						</div>
 					</div>
 
-					<div class="row mt-3">
-						<ng-container *ngIf="!employeesExist">
-							<div class="fs-5 mb-3">No employees exist</div>
+					<div class="row">
+						<ng-container *ngIf="!employeesExist && isReadonly">
+							<div class="fs-5 mt-4 mb-2">No employees</div>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">
-							<app-alert type="warning" icon="warning">
-								<div>The maximum number of employees has been reached</div>
-							</app-alert>
+							<div class="mt-4">
+								<app-alert type="warning" icon="warning">
+									<div>The maximum number of employees has been reached</div>
+								</app-alert>
+							</div>
 						</ng-container>
 						<ng-template #CanAddEmployee>
-							<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-4 col-xl-4' : 'col-lg-6 col-xl-5'">
+							<div class="col-12 mt-4 mb-2" *ngIf="!isReadonly">
 								<a
 									class="large"
 									tabindex="0"
 									aria-label="Add an Employee"
 									(click)="onAddEmployee()"
 									(keydown)="onKeydownAddEmployee($event)"
-									*ngIf="!isReadonly"
 								>
 									Add Employee
 								</a>
@@ -134,7 +135,6 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
 
 	@Input() defaultExpanded = false;
-	@Input() isWizard = false;
 	@Input() isReadonly = false;
 
 	dataSource!: MatTableDataSource<any>;
@@ -194,7 +194,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 
 	onAddEmployee(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
-			title: 'Add Member with Security Worker Licence',
+			title: 'Add Employee with Security Worker Licence',
 			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
