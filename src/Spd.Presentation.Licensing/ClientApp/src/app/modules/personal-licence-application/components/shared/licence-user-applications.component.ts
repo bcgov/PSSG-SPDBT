@@ -115,14 +115,14 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 									class="large mt-2 mt-lg-0"
 									(click)="onNewBodyArmourPermit()"
 									*ngIf="!applicationIsInProgress"
-									aria-label="Apply for a new Body Amour Permit"
+									aria-label="Apply for a new Body Armour Permit"
 								>
-									<mat-icon>add</mat-icon>Apply for a New Body Amour Permit
+									<mat-icon>add</mat-icon>Apply for a New Body Armour Permit
 								</button>
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									A Body Amour Permit cannot be created while an application is in progress
+									A Body Armour Permit cannot be created while an application is in progress
 								</app-alert>
 							</div>
 						</div>

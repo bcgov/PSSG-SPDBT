@@ -15,7 +15,7 @@ import { StepsBusinessLicenceUpdatesComponent } from '../business-licence-applic
 import { BusinessLicenceApplicationRoutingModule } from './business-licence-application-routing.module';
 import { BusinessApplicationsListCurrentComponent } from './components/business-applications-list-current.component';
 import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
-import { BusinessCategoryAmouredCarGuardComponent } from './components/business-category-amoured-car-guard.component';
+import { BusinessCategoryArmouredCarGuardComponent } from './components/business-category-armoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business-category-private-investigator.component';
 import { BusinessCategorySecurityGuardComponent } from './components/business-category-security-guard.component';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
@@ -115,7 +115,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepsBusinessLicenceContactInformationComponent,
 		StepsBusinessLicenceControllingMembersComponent,
 		BusinessUserApplicationsComponent,
-		BusinessCategoryAmouredCarGuardComponent,
+		BusinessCategoryArmouredCarGuardComponent,
 		BusinessCategoryPrivateInvestigatorComponent,
 		BusinessCategorySecurityGuardComponent,
 		BusinessManagersComponent,
