@@ -11,6 +11,7 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
@@ -440,6 +441,18 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddressData.City))
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddressData.Country))
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
+
+        CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
+        CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
+         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
+        CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
+         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
+        CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>();
+        CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>();
+        CreateMap<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
+        CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>();
+        CreateMap<TrainingSchoolInfo, Spd.Resource.Repository.GDSDApp.TrainingSchoolInfo>();
+        CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -723,7 +736,10 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.ArmourCarGuardRegistrar, DocumentTypeEnum.ArmouredCarGuard },
         {LicenceDocumentTypeCode.BizSecurityDogCertificate, DocumentTypeEnum.DogCertificate },
         {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
-        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
+        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument },
+        {LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool, DocumentTypeEnum.IdCardIssuedByAccreditedDogTrainingSchool },
+        {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
+        {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -785,7 +801,10 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.ArmourCarGuardRegistrar, DocumentTypeEnum.ArmouredCarGuard },
         {LicenceDocumentTypeCode.BizSecurityDogCertificate, DocumentTypeEnum.DogCertificate },
         {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
-        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
+        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument },
+        {LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool, DocumentTypeEnum.IdCardIssuedByAccreditedDogTrainingSchool },
+        {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
+        {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

@@ -417,4 +417,17 @@ namespace Spd.Utilities.Dynamics
         L2 = 100000001,
         L3 = 100000002
     }
+
+    public enum DogTypeOptionSet
+    {
+        GuideDog = 100000000,
+        ServiceDog = 100000001
+    }
+
+    public enum DogTrainingSchoolTypeOptionSet
+    {
+        AccreditedSchool = 100000000,
+        UnAccreditedSchool = 100000001,
+        DogTrainerAccreditedSchool = 100000002
+    }
 }

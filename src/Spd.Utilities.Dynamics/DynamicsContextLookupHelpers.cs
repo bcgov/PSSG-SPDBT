@@ -171,7 +171,10 @@ namespace Spd.Utilities.Dynamics
             {"BCID",  Guid.Parse("b55a2223-dec9-ee11-b84a-00505683fbf4")},
             {"CompanyBranding",  Guid.Parse("88a53b43-89aa-ee11-b849-00505683fbf4")},
             {"CorporateSummary",  Guid.Parse("89d46d5e-ff03-ef11-b84b-00505683fbf4")},
-            {"CorporateRegistryDocument",  Guid.Parse("01b5a2a7-7923-ef11-b850-00505683fbf4")}
+            {"CorporateRegistryDocument",  Guid.Parse("01b5a2a7-7923-ef11-b850-00505683fbf4")},
+            {"IdCardIssuedByAccreditedDogTrainingSchool",  Guid.Parse("85005f7d-76df-ef11-b857-00505683fbf4")},
+            {"MedicalFormConfirmingNeedDog",  Guid.Parse("319cdc9e-76df-ef11-b857-00505683fbf4")},
+            {"VeterinarianConfirmationForSpayedNeuteredDog",  Guid.Parse("f1f90bbd-76df-ef11-b857-00505683fbf4")}
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)

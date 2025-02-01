@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Spd.Utilities.Shared.Tools;
+﻿namespace Spd.Utilities.Shared.Tools;
 
 public static class FileHelper
 {
@@ -9,7 +7,7 @@ public static class FileHelper
         int dot = fileName.LastIndexOf('.');
         if (dot > 0)
         {
-            return fileName.Substring(dot, fileName.Length - dot);
+            return fileName.Substring(dot);
         }
         return null;
     }

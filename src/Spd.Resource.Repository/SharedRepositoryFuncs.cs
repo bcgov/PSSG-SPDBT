@@ -28,6 +28,12 @@ internal static class SharedRepositoryFuncs
             }
         }
     }
+    public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
+    }
 
     public static void LinkServiceType(DynamicsContext _context, ServiceTypeEnum? licenceType, spd_application app)
     {
@@ -58,14 +64,6 @@ internal static class SharedRepositoryFuncs
             _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), portaluser);
         }
     }
-
-    public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
-    {
-        Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
-        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
-    }
-
     public static List<spd_alias>? GetAliases(Guid contactId, DynamicsContext _context)
     {
         var matchingAliases = _context.spd_aliases.Where(o =>

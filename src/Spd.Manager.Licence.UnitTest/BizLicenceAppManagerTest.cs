@@ -768,8 +768,8 @@ public class BizLicenceAppManagerTest
         BizLicApplicationResp bizLicAppResp = new()
         {
             LicenceAppId = appId,
-            ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.Draft,
-            ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
+            ApplicationPortalStatus = ApplicationPortalStatusEnum.Draft,
+            ApplicationTypeCode = ApplicationTypeEnum.New
         };
         FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);
 
@@ -805,7 +805,7 @@ public class BizLicenceAppManagerTest
         BizLicApplicationResp bizLicAppResp = new()
         {
             LicenceAppId = appId,
-            ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.AwaitingThirdParty,
+            ApplicationPortalStatus = ApplicationPortalStatusEnum.AwaitingThirdParty,
             ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
         };
         FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);

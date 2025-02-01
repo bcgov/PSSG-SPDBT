@@ -34,6 +34,7 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? ContactPhoneNumber { get; set; }
     public string? ContactEmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 
     public bool IsDogTrainedByAccreditedSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
@@ -104,8 +105,7 @@ public record TrainingInfo
     public bool HasAttendedTrainingSchool { get; set; }
     public IEnumerable<TrainingSchoolInfo> SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
     public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string SpecializedTasks { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string WhenPerformed { get; set; } //have value when HasAttendedTrainingSchool=false
+    public string SpecializedTasksWhenPerformed { get; set; }
 }
 
 public record TrainingSchoolInfo
@@ -117,8 +117,8 @@ public record TrainingSchoolInfo
     public string ContactEmailAddress { get; set; }
     public string ContactPhoneNumber { get; set; }
     public decimal TotalTrainingHours { get; set; }
-    public DateOnly? TrainingDateFrom { get; set; }
-    public DateOnly? TrainingDateTo { get; set; }
+    public DateOnly? TrainingStartDate { get; set; }
+    public DateOnly? TrainingEndDate { get; set; }
     public string TrainingName { get; set; } //Name and/or type of training program
     public string WhatLearned { get; set; }
 }
