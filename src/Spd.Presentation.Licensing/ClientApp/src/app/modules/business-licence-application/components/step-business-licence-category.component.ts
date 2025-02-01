@@ -136,7 +136,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 												</div>
 											</div>
 
-											<app-business-category-amoured-car-guard></app-business-category-amoured-car-guard>
+											<app-business-category-armoured-car-guard></app-business-category-armoured-car-guard>
 										</mat-expansion-panel>
 									</div>
 
