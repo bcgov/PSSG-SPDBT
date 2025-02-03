@@ -4,6 +4,7 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	BizTypeCode,
+	Document,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GoogleRecaptcha,
@@ -20,6 +21,7 @@ import {
 	Subscription,
 	debounceTime,
 	distinctUntilChanged,
+	forkJoin,
 	of,
 	switchMap,
 	take,
@@ -32,7 +34,7 @@ import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { GdsdApplicationHelper } from './gdsd-application.helper';
-import { UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -355,32 +357,47 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		console.debug('[submitAnonymous] gdsdModelFormValue', gdsdModelFormValue);
 
 		const body = this.getSaveBodyBase(gdsdModelFormValue);
-		// const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-		// let newDocumentsExist = false;
-		// documentsToSave.forEach((docPermit: PermitDocumentsToSave) => {
-		// 	docPermit.documents.forEach((doc: any) => {
-		// 		if (doc.documentUrlId) {
-		// 			existingDocumentIds.push(doc.documentUrlId);
-		// 		} else {
-		// 			newDocumentsExist = true;
-		// 		}
-		// 	});
-		// });
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
+						body: {
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		const existingDocumentIds: Array<string> = body.documentInfos
+			.filter((item: Document) => !!item.documentUrlId)
+			.map((item: Document) => item.documentUrlId!);
+
+		delete body.documentInfos;
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		// console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
-
-		// if (newDocumentsExist) {
-		// 	return this.postPermitAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
-		// } else {
-		return this.postAnonymous(googleRecaptcha, body); //, existingDocumentIds
-		// }
+		return this.postAnonymous(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
 	}
 
 	/**
@@ -389,24 +406,47 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	private postAnonymous(
 		googleRecaptcha: GoogleRecaptcha,
-		// existingDocumentIds: Array<string>,
+		existingDocumentIds: Array<string>,
+		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppAnonymousSubmitRequest
 	) {
 		console.debug('[postAnonymous]');
 
-		return this.licenceAppDocumentService
-			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					// body.previousDocumentIds = [...existingDocumentIds];
+		if (documentsToSaveApis) {
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						return forkJoin(documentsToSaveApis);
+					}),
+					switchMap((resps: string[]) => {
+						// pass in the list of document key codes
+						body.documentKeyCodes = [...resps];
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
 
-					return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
+						return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
+							body,
+						});
+					})
+				)
+				.pipe(take(1));
+		} else {
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
+
+						return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
+							body,
+						});
+					})
+				)
+				.pipe(take(1));
+		}
 	}
 }

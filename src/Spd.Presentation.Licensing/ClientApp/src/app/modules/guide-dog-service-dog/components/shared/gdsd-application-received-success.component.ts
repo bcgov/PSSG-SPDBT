@@ -11,7 +11,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-6">
-								<h2 class="fs-3 mt-0 mt-md-3">Application Received</h2>
+								<h2 class="fs-3 mt-0 mt-md-3">Submission Received</h2>
 							</div>
 
 							<div class="no-print col-6">
