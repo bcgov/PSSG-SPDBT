@@ -101,6 +101,36 @@ public enum ApplicationTypeEnum
     Update,
 }
 
+public enum ApplicationStatusEnum
+{
+    Draft,
+    PaymentPending,
+    Incomplete,
+    ApplicantVerification,
+    Submitted,
+    Cancelled
+}
+
+public enum ApplicationPortalStatusEnum
+{
+    Draft,
+    VerifyIdentity,
+    InProgress,
+    AwaitingPayment,
+    AwaitingThirdParty,
+    AwaitingApplicant,
+    UnderAssessment,
+    Incomplete,
+    CompletedCleared,
+    RiskFound,
+    ClosedNoResponse,
+    ClosedNoConsent,
+    CancelledByApplicant,
+    CancelledByOrganization,
+    Completed,
+    RefundRequested
+}
+
 public enum LicenceTermEnum
 {
     NinetyDays,

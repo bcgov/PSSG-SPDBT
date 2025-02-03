@@ -110,7 +110,8 @@ internal partial class LicenceAppDocumentManager :
         return cacheFileInfos;
     }
 
-    public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new()
+    {
             LicenceDocumentTypeCode.PermanentResidentCard,
             LicenceDocumentTypeCode.RecordOfLandingDocument,
             LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
@@ -119,13 +120,15 @@ internal partial class LicenceAppDocumentManager :
             LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
         };
 
-    public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new()
+    {
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
             LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
             LicenceDocumentTypeCode.CanadianCitizenship
         };
-    public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
+    public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new()
+    {
             WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
             WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
             WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
@@ -137,7 +140,8 @@ internal partial class LicenceAppDocumentManager :
             WorkerCategoryTypeCode.BodyArmourSales
         };
 
-    public static readonly List<LicenceDocumentTypeCode> CanadianResidencyProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> CanadianResidencyProofCodes = new()
+    {
             LicenceDocumentTypeCode.PermanentResidentCard,
             LicenceDocumentTypeCode.RecordOfLandingDocument,
             LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
@@ -145,9 +149,22 @@ internal partial class LicenceAppDocumentManager :
             LicenceDocumentTypeCode.StudyPermit,
         };
 
-    public static readonly List<LicenceDocumentTypeCode> NonCanadianCitizenProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> NonCanadianCitizenProofCodes = new()
+    {
             LicenceDocumentTypeCode.DriversLicence,
             LicenceDocumentTypeCode.GovernmentIssuedPhotoId,
             LicenceDocumentTypeCode.NonCanadianPassport
+        };
+
+    //todo: need to get requirements confirmed
+    public static readonly List<LicenceDocumentTypeCode> ValidGovIssuedPhotoIdCodes = new()
+    {
+            LicenceDocumentTypeCode.CanadianPassport,
+            LicenceDocumentTypeCode.BCID,
+            LicenceDocumentTypeCode.DriversLicence,
+            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.BcServicesCard,
+            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
+            LicenceDocumentTypeCode.CanadianFirearmsLicence,
         };
 }
