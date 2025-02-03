@@ -11,7 +11,6 @@ import {
 	LicenceStatusCode,
 	ServiceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import {
 	CommonApplicationService,
@@ -148,8 +147,6 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 	standalone: false,
 })
 export class BusinessUserApplicationsComponent implements OnInit {
-	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-
 	results$!: Observable<any>;
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];

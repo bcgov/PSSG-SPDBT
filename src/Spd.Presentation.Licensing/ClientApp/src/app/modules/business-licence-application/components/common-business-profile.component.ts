@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
-    selector: 'app-common-business-profile',
-    template: `
+	selector: 'app-common-business-profile',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<section>
@@ -138,12 +138,11 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
 	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
-	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	businessTypes = BusinessLicenceTypes;
 

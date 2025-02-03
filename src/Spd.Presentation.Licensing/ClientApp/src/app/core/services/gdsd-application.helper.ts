@@ -58,7 +58,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		schoolContactGivenName: new FormControl(''),
 		schoolContactSurname: new FormControl('', [FormControlValidators.required]),
 		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
-		schoolContactEmailAddress: new FormControl('', [Validators.required]),
+		schoolContactEmailAddress: new FormControl(''),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
@@ -114,11 +114,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const personalInformationData = gdsdModelFormValue.personalInformationData;
 		const dogCertificationSelectionData = gdsdModelFormValue.dogCertificationSelectionData;
+		const dogTasksData = gdsdModelFormValue.dogTasksData;
 		const dogInformationData = gdsdModelFormValue.dogInformationData;
 		const accreditedGraduationData = gdsdModelFormValue.accreditedGraduationData;
-		const governmentPhotoIdData = { ...gdsdModelFormValue.governmentPhotoIdData };
-		const medicalInformationData = { ...gdsdModelFormValue.medicalInformationData };
-		const dogMedicalData = { ...gdsdModelFormValue.dogMedicalData };
+		const governmentPhotoIdData = gdsdModelFormValue.governmentPhotoIdData;
+		const medicalInformationData = gdsdModelFormValue.medicalInformationData;
+		const dogMedicalData = gdsdModelFormValue.dogMedicalData;
+		const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
 
 		const documentInfos: Array<Document> = [];
 
@@ -132,14 +134,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		const dogInfoNewAccreditedSchoolData = {
-			dogBreed: dogInformationData.dogBreed,
-			dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
-			dogDateOfBirth: dogInformationData.dogDateOfBirth,
-			dogGender: dogInformationData.dogGender,
-			dogName: dogInformationData.dogName,
-			isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
-			microchipNumber: dogInformationData.microchipNumber,
+		let dogInfoNewAccreditedSchoolData: any = {};
+		let dogInfoNewWithoutAccreditedSchoolData: any = {};
+		let trainingInfoData: any = {
+			hasAttendedTrainingSchool: this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool),
+			otherTrainings: null,
+			schoolTrainings: null,
+			specializedTasksWhenPerformed: null,
 		};
 
 		const graduationInfoData = {
@@ -172,6 +173,17 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogCertificationSelectionData.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
 
 		if (isTrainedByAccreditedSchools) {
+			dogInfoNewAccreditedSchoolData = {
+				dogBreed: dogInformationData.dogBreed,
+				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
+				dogDateOfBirth: dogInformationData.dogDateOfBirth,
+				dogGender: dogInformationData.dogGender,
+				dogName: dogInformationData.dogName,
+				isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
+				microchipNumber: dogInformationData.microchipNumber,
+				serviceDogTasks: dogTasksData.tasks,
+			};
+
 			accreditedGraduationData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -179,6 +191,24 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				});
 			});
 		} else {
+			dogInfoNewWithoutAccreditedSchoolData = {
+				areInoculationsUpToDate: this.utilService.booleanTypeToBoolean(dogMedicalData.areInoculationsUpToDate),
+				dogBreed: dogInformationData.dogBreed,
+				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
+				dogDateOfBirth: dogInformationData.dogDateOfBirth,
+				dogGender: dogInformationData.dogGender,
+				dogName: dogInformationData.dogName,
+				isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
+				microchipNumber: dogInformationData.microchipNumber,
+			};
+
+			trainingInfoData = {
+				hasAttendedTrainingSchool: this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool),
+				otherTrainings: null,
+				schoolTrainings: null,
+				specializedTasksWhenPerformed: dogTasksData.tasks,
+			};
+
 			medicalInformationData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -214,14 +244,14 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			...personalInformationData,
 			documentKeyCodes: [],
 			dogInfoNewAccreditedSchool: dogInfoNewAccreditedSchoolData,
-			dogInfoNewWithoutAccreditedSchool: null,
+			dogInfoNewWithoutAccreditedSchool: dogInfoNewWithoutAccreditedSchoolData,
 			dogInfoRenew: null,
 			isDogTrainedByAccreditedSchool: this.utilService.booleanTypeToBoolean(
 				dogCertificationSelectionData.isDogTrainedByAccreditedSchool
 			),
 			graduationInfo: graduationInfoData,
 			mailingAddress: mailingAddressData,
-			trainingInfo: null,
+			trainingInfo: trainingInfoData,
 			documentInfos,
 			documentRelatedInfos,
 		};

@@ -1,4 +1,7 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 
@@ -11,51 +14,41 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-6">
-								<h2 class="fs-3 mt-0 mt-md-3">Submission Received</h2>
-							</div>
-
-							<div class="no-print col-6">
-								<div class="d-flex justify-content-end">
-									<button
-										mat-flat-button
-										color="primary"
-										class="large w-auto m-2"
-										aria-label="Print screen"
-										(click)="onPrint()"
-									>
-										<mat-icon class="d-none d-md-block">print</mat-icon>Print
-									</button>
-								</div>
+								<ng-container *ngIf="isSubmit; else isPartialSaveTitle">
+									<h2 class="fs-3 mt-0 mt-md-3">Submission Received</h2>
+								</ng-container>
+								<ng-template #isPartialSaveTitle>
+									<h2 class="fs-3 mt-0 mt-md-3">Application Saved</h2>
+								</ng-template>
 							</div>
 						</div>
-						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						<mat-divider class="mat-divider-main mb-4"></mat-divider>
 
-						<div class="mt-4 text-center fs-5">
-							Application for a Guide Dog or Service Dog Certificate has been received.
-						</div>
+						<ng-container *ngIf="isSubmit; else isPartialSave">
+							<app-alert type="info" icon="info">
+								<p>Your application for a Guide Dog or Service Dog Certificate has been received.</p>
+								<p>We will contact you if we need more information.</p>
+							</app-alert>
+						</ng-container>
+						<ng-template #isPartialSave>
+							<app-alert type="info" icon="info">
+								<p>Your application for a criminal record check has been saved.</p>
+								<p>Click on the invitation link again to continue working on and submitting your application.</p>
+							</app-alert>
+						</ng-template>
+					</div>
+				</div>
 
-						<div class="my-4 text-center">We will contact you if we need more information.</div>
-
-						<div class="row mb-3">
-							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Certificate Number</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">xxx</div>
-							</div>
-						</div>
-
-						<div class="no-print d-flex justify-content-end">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large w-auto m-2"
-								aria-label="Back to main page"
-								(click)="onBackToHome()"
-							>
-								<mat-icon>arrow_back</mat-icon>Back to Home
-							</button>
-						</div>
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<a
+							mat-flat-button
+							color="primary"
+							aria-label="Close and navigate to SPD contact site"
+							class="large w-100"
+							[href]="contactSpdUrl"
+							>Close</a
+						>
 					</div>
 				</div>
 			</section>
@@ -65,23 +58,34 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 	standalone: false,
 })
 export class GdsdApplicationReceivedSuccessComponent implements OnInit {
+	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 	gdsdModelData: any = {};
 
+	isSubmit: boolean | null = null;
+
 	constructor(
+		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private location: Location
 	) {}
 
 	ngOnInit(): void {
-		this.gdsdModelData = { ...this.gdsdApplicationService.gdsdModelFormGroup.getRawValue() };
+		if (!this.gdsdApplicationService.initialized) {
+			this.commonApplicationService.onGoToHome();
+			return;
+		}
 
-		// if (!this.gdsdApplicationService.initialized) {
-		// 	this.commonApplicationService.onGoToHome();
-		// }
+		const isSubmit = (this.location.getState() as any).isSubmit;
 
-		// TODO gdsd handle receive appl
-		// do not allow the back button into the wizard
-		// this.gdsdApplicationService.initialized = false;
+		if (!isSubmit) {
+			console.debug('GdsdApplicationReceivedSuccessComponent - missing isSubmit');
+			this.commonApplicationService.onGoToHome();
+			return;
+		}
+
+		this.isSubmit = isSubmit === BooleanTypeCode.Yes;
+
+		this.gdsdApplicationService.reset();
 	}
 
 	onPrint(): void {

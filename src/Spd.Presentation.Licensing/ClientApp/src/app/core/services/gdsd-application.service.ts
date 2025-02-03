@@ -58,6 +58,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
+		dogTasksData: this.dogTasksFormGroup,
 		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
 		dogInformationData: this.dogInformationFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,

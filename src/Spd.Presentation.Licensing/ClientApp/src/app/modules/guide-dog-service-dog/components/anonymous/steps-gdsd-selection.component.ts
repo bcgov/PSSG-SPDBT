@@ -54,19 +54,18 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 		super();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_TERMS:
-		// 		return this.termsOfUseComponent.isFormValid();
-		// 	case this.STEP_CHECKLIST:
-		// 		return true;
-		// 	case this.STEP_CERTIFICATION:
-		// 		return this.certComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_TERMS:
+				return this.termsOfUseComponent.isFormValid();
+			case this.STEP_CHECKLIST:
+				return true;
+			case this.STEP_CERTIFICATION:
+				return this.certComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 
 	get showTermsOfUse(): boolean {

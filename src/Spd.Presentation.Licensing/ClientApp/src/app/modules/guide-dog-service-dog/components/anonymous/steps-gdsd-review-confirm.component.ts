@@ -55,23 +55,18 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	}
 
 	onSubmitNow(): void {
-		// if (!this.consentAndDeclarationComponent.isFormValid()) {
-		// 	return;
-		// }
-
 		this.nextSubmitStep.emit();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_TERMS:
-		// 		return this.summaryComponent.isFormValid();
-		// 	case this.STEP_SOLE_PROPRIETOR:
-		// 		return this.consentComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_SUMMARY:
+				return true;
+			case this.STEP_CONSENT:
+				return this.consentComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

@@ -160,10 +160,10 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	ngOnInit(): void {
-		// if (!this.gdsdApplicationService.initialized) {
-		// 	this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
-		// 	return;
-		// }
+		if (!this.gdsdApplicationService.initialized) {
+			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
+			return;
+		}
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -193,14 +193,15 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	onSubmit(): void {
 		this.gdsdApplicationService.submitAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(// TODO gdsd uncomment
 				// 	this.serviceTypeCode,
 				// 	this.applicationTypeCode
 				// );
 				// this.hotToastService.success(successMessage);
 
 				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED),
+					{ state: { isSubmit: BooleanTypeCode.Yes } }
 				);
 			},
 			error: (error: any) => {
@@ -289,10 +290,10 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = true; //this.gdsdApplicationService.isStepSelectionComplete();
-		this.step2Complete = true; //this.gdsdApplicationService.isStepPersonalInformationComplete();
-		this.step3Complete = true; //this.gdsdApplicationService.isStepDogInformationComplete();
-		this.step4Complete = true; //this.gdsdApplicationService.isStepTrainingInformationComplete();
+		this.step1Complete = this.gdsdApplicationService.isStepSelectionComplete();
+		this.step2Complete = this.gdsdApplicationService.isStepPersonalInformationComplete();
+		this.step3Complete = this.gdsdApplicationService.isStepDogInformationComplete();
+		this.step4Complete = this.gdsdApplicationService.isStepTrainingInformationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}

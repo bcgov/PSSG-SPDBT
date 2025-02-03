@@ -113,22 +113,21 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 		super();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_ACCREDITED:
-		// 		return this.accreditedComponent.isFormValid();
-		// 	case this.STEP_TRAINING_HISTORY:
-		// 		return this.trainingComponent.isFormValid();
-		// 	case this.STEP_SCHOOL_TRAINING:
-		// 		return this.schoolComponent.isFormValid();
-		// 	case this.STEP_OTHER_TRAINING:
-		// 		return this.otherComponent.isFormValid();
-		// 	case this.STEP_TASKS:
-		// 		return this.tasksComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_ACCREDITED:
+				return this.accreditedComponent.isFormValid();
+			case this.STEP_TRAINING_HISTORY:
+				return this.trainingComponent.isFormValid();
+			case this.STEP_SCHOOL_TRAINING:
+				return this.schoolComponent.isFormValid();
+			case this.STEP_OTHER_TRAINING:
+				return this.otherComponent.isFormValid();
+			case this.STEP_TASKS:
+				return this.tasksComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }
