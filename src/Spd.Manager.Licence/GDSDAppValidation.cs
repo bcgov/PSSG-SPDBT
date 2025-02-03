@@ -85,6 +85,7 @@ public class DogInfoNewAccreditedSchoolValidator : AbstractValidator<DogInfoNewA
     {
         Include(new DogInfoNewValidator());
         RuleFor(r => r.ServiceDogTasks).MaximumLength(1000);
+        RuleFor(r => r.IsGuideDog).NotEmpty();
     }
 }
 
@@ -148,10 +149,7 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
         })
         .When(r => !r.HasAttendedTrainingSchool);
 
-        RuleFor(r => r.SpecializedTasks).MaximumLength(100)
-            .When(r => !r.HasAttendedTrainingSchool);  //tbd if only 1 big block, then needs to be much larger
-        RuleFor(r => r.WhenPerformed).MaximumLength(100)
-            .When(r => !r.HasAttendedTrainingSchool);  //tbd
+        RuleFor(r => r.SpecializedTasksWhenPerformed).MaximumLength(1000);  //tbd if only 1 big block, then needs to be much larger
     }
 }
 
@@ -167,9 +165,9 @@ public class TrainingSchoolInfoValidator : AbstractValidator<TrainingSchoolInfo>
         RuleFor(r => r.ContactSurname).MaximumLength(40);
         RuleFor(r => r.ContactEmailAddress).MaximumLength(75).EmailAddress().When(r => r.ContactEmailAddress != null);
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(30);
-        RuleFor(r => r.TrainingDateFrom).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateFrom != null);
-        RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
-        RuleFor(r => r.TrainingDateTo).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingDateTo != null);
+        RuleFor(r => r.TrainingStartDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingStartDate != null);
+        RuleFor(r => r.TrainingEndDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingEndDate != null);
+        RuleFor(r => r).Must(d => d.TrainingEndDate >= d.TrainingStartDate).When(r => r.TrainingEndDate != null && r.TrainingStartDate != null);
         RuleFor(r => r.TrainingName).MaximumLength(100);
         RuleFor(r => r.WhatLearned).MaximumLength(1000);
     }
