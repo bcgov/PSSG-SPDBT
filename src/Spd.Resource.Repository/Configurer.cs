@@ -14,6 +14,7 @@ using Spd.Resource.Repository.Delegates;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
 using Spd.Resource.Repository.Event;
+using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Invoice;
@@ -72,5 +73,6 @@ public class Configurer : IConfigureComponents
         configurationServices.Services.AddTransient<IEventRepository, EventRepository>();
         configurationServices.Services.AddTransient<IControllingMemberCrcRepository, ControllingMemberCrcRepository>();
         configurationServices.Services.AddTransient<IControllingMemberInviteRepository, ControllingMemberInviteRepository>();
+        configurationServices.Services.AddTransient<IGDSDAppRepository, GDSDAppRepository>();
     }
 }
