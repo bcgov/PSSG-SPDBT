@@ -2,6 +2,8 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -51,12 +53,24 @@ public class GDSDLicensingControllerTests
             _mockCache.Object,
             _mockDataProtectionProvider.Object
         );
+
     }
 
     [Fact]
     public async Task SubmitGDSDTeamAppAnonymous_ShouldReturnLicenceAppId_WhenRequestIsValid()
     {
         // Arrange
+        // Mock cookie collection
+        var cookies = new Mock<IRequestCookieCollection>();
+        cookies.Setup(c => c[SessionConstants.AnonymousApplicationSubmitKeyCode]).Returns("MockedSessionKeyValue");
+
+        // Mock HttpContext and set cookies
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["Cookie"] = $"{SessionConstants.AnonymousApplicationSubmitKeyCode}=Value"; ;
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
         var request = new GDSDTeamLicenceAppAnonymousSubmitRequest
         {
             ApplicationTypeCode = ApplicationTypeCode.New,

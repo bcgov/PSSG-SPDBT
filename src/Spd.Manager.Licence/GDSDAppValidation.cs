@@ -167,7 +167,7 @@ public class TrainingSchoolInfoValidator : AbstractValidator<TrainingSchoolInfo>
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(30);
         RuleFor(r => r.TrainingStartDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingStartDate != null);
         RuleFor(r => r.TrainingEndDate).Must(d => d > new DateOnly(1800, 1, 1)).When(r => r.TrainingEndDate != null);
-        RuleFor(r => r).Must(d => d.TrainingEndDate > d.TrainingStartDate).When(r => r.TrainingEndDate != null && r.TrainingStartDate != null);
+        RuleFor(r => r).Must(d => d.TrainingEndDate >= d.TrainingStartDate).When(r => r.TrainingEndDate != null && r.TrainingStartDate != null);
         RuleFor(r => r.TrainingName).MaximumLength(100);
         RuleFor(r => r.WhatLearned).MaximumLength(1000);
     }
