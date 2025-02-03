@@ -158,6 +158,9 @@ namespace Spd.Resource.Repository.Document
         BCID,
         CompanyBranding,
         CorporateSummary,
-        CorporateRegistryDocument
+        CorporateRegistryDocument,
+        IdCardIssuedByAccreditedDogTrainingSchool,
+        MedicalFormConfirmingNeedDog,
+        VeterinarianConfirmationForSpayedNeuteredDog
     }
 }
