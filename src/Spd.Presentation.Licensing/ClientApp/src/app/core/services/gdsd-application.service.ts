@@ -358,7 +358,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		// const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		// // Get the keyCode for the existing documents to save.
 		// const existingDocumentIds: Array<string> = [];
