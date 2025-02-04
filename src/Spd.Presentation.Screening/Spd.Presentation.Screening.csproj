@@ -18,6 +18,7 @@
 				<PackageReference Include="IdentityModel" />
 				<PackageReference Include="MediatR" />
 				<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+				<PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" />
 				<PackageReference Include="Swashbuckle.AspNetCore" />
 		</ItemGroup>
 

@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
-using Spd.Utilities.LogonUser;
 using Spd.Manager.Shared;
+using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Screening
 {
@@ -66,33 +66,42 @@ namespace Spd.Manager.Screening
     public record InvitationRequest(string InviteEncryptedCode);
     public record InvitationResponse(Guid OrgId);
 
-    public class OrgUserCreateRequestValidator<T> : AbstractValidator<T> where T : OrgUserUpsertRequest
+    public class OrgUserUpsertRequestValidator : AbstractValidator<OrgUserUpsertRequest>
     {
-        public OrgUserCreateRequestValidator()
+        public OrgUserUpsertRequestValidator()
         {
             RuleFor(r => r.ContactAuthorizationTypeCode)
                         .IsInEnum();
 
             RuleFor(r => r.FirstName)
-                .NotEmpty()
-                .MaximumLength(40);
+                    .NotEmpty()
+                    .MaximumLength(40);
 
             RuleFor(r => r.LastName)
-                .NotEmpty()
-                .MaximumLength(40);
+                    .NotEmpty()
+                    .MaximumLength(40);
 
             RuleFor(r => r.Email)
-                .NotEmpty()
-                .EmailAddress()
-                .MaximumLength(75);
+                    .NotEmpty()
+                    .EmailAddress()
+                    .MaximumLength(75);
         }
     }
 
+    public class OrgUserCreateRequestValidator : AbstractValidator<OrgUserCreateRequest>
+    {
+        public OrgUserCreateRequestValidator()
+        {
+            Include(new OrgUserUpsertRequestValidator());
 
-    public class OrgUserUpdateRequestValidator : OrgUserCreateRequestValidator<OrgUserUpdateRequest>
+        }
+    }
+
+    public class OrgUserUpdateRequestValidator : AbstractValidator<OrgUserUpdateRequest>
     {
         public OrgUserUpdateRequestValidator()
         {
+            Include(new OrgUserUpsertRequestValidator());
 
             RuleFor(r => r.PhoneNumber)
                 .NotEmpty()
