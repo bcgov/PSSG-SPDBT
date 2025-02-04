@@ -31,6 +31,9 @@ import { StepGdsdSchoolTrainingsComponent } from './components/shared/common-ste
 import { StepGdsdTermsOfUseComponent } from './components/shared/common-step-components/step-gdsd-terms-of-use.component';
 import { StepGdsdTrainingHistoryComponent } from './components/shared/common-step-components/step-gdsd-training-history.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/gdsd-application-received-success.component';
+import { GdsdSummaryAccreditedTrainingComponent } from './components/shared/gdsd-summary-accredited-training.component';
+import { GdsdSummaryOtherTrainingComponent } from './components/shared/gdsd-summary-other-training.component';
+import { GdsdSummarySchoolTrainingComponent } from './components/shared/gdsd-summary-school-training.component';
 import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing.module';
 
 @NgModule({
@@ -65,6 +68,9 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepGdsdDogMedicalComponent,
 		StepGdsdMedicalInformationComponent,
 		StepGdsdDogTasksComponent,
+		GdsdSummaryAccreditedTrainingComponent,
+		GdsdSummarySchoolTrainingComponent,
+		GdsdSummaryOtherTrainingComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

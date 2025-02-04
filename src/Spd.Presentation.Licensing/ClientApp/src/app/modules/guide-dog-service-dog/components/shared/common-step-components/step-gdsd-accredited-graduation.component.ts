@@ -88,7 +88,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								(fileUploaded)="onFileUploaded($event)"
 								(fileRemoved)="onFileRemoved()"
 								[control]="attachments"
-								[maxNumberOfFiles]="1"
+								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 								[previewImage]="true"
 							></app-file-upload>

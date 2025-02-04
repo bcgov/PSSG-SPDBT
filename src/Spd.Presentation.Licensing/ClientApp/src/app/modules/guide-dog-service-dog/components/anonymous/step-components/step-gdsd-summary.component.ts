@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -32,7 +33,27 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<div class="row mt-0">
+									<div class="col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">
+											Is your dog trained by Assistance Dogs International or International Guide Dog Federation
+											accredited schools?
+										</div>
+										<div class="summary-text-data">
+											{{ isDogTrainedByAccreditedSchool | default }}
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">
+											Is your dog trained as a Guide Dog or a Service Dog?
+										</div>
+										<div class="summary-text-data">
+											{{ isGuideDog | default }}
+										</div>
+									</div>
+								</div>
+							</div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
@@ -55,11 +76,85 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
+								<div class="text-minor-heading-small mt-4">Personal Information</div>
+								<div class="row mt-0">
+									<div class="col-lg-12 col-md-12">
+										<div class="text-label d-block text-muted">Applicant Name</div>
+										<div class="summary-text-data">{{ givenName }} {{ middleName }} {{ surname }}</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Date of Birth</div>
+										<div class="summary-text-data">
+											{{ dateOfBirth | formatDate | default }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Phone Number</div>
+										<div class="summary-text-data">
+											{{ phoneNumber | formatPhoneNumber }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Email Address</div>
+										<div class="summary-text-data">{{ emailAddress | default }}</div>
+									</div>
+								</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+
 								<app-form-address-summary
 									[formData]="gdsdModelData.mailingAddressData"
 									headingLabel="Mailing Address"
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
+
+								<ng-container *ngIf="!isTrainedByAccreditedSchools">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small mt-4">Medical Information</div>
+									<div class="row mt-0">
+										<div class="col-lg-6 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of medicalInformationAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+
+								<div class="text-minor-heading-small mt-4">Photo of Yourself</div>
+								<div class="row mt-0">
+									<div class="col-lg-6 col-md-12">
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+
+								<div class="text-minor-heading-small mt-4">
+									{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
+								</div>
+								<div class="row mt-0">
+									<div class="col-lg-6 col-md-12">
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
 							</div>
 						</mat-expansion-panel>
 
@@ -82,7 +177,59 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<div class="text-minor-heading-small mt-4">Dog Information</div>
+								<div class="row mt-0">
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Dog Name</div>
+										<div class="summary-text-data">{{ dogName | default }}</div>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Date of Birth</div>
+										<div class="summary-text-data">
+											{{ dogDateOfBirth | formatDate | default }}
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Breed</div>
+										<div class="summary-text-data">
+											{{ dogBreed | default }}
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Colour And Markings</div>
+										<div class="summary-text-data">{{ colourAndMarkings | default }}</div>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Gender</div>
+										<div class="summary-text-data">{{ genderCode | options: 'GenderTypes' | default }}</div>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<div class="text-label d-block text-muted">Microchip Number</div>
+										<div class="summary-text-data">{{ microchipNumber | default }}</div>
+									</div>
+								</div>
+
+								<ng-container *ngIf="!isTrainedByAccreditedSchools">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small mt-4">Dog Medical Information</div>
+									<div class="row mt-0">
+										<div class="col-lg-12 col-md-12">
+											<div class="text-label d-block text-muted">
+												Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered
+											</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of dogMedicalAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
+							</div>
 						</mat-expansion-panel>
 
 						<mat-expansion-panel class="mb-4" [expanded]="true">
@@ -104,7 +251,38 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body"></div>
+							<div class="panel-body">
+								<ng-container *ngIf="isTrainedByAccreditedSchools; else NonAccreditedTraining">
+									<app-gdsd-summary-accredited-training
+										[gdsdModelData]="gdsdModelData"
+									></app-gdsd-summary-accredited-training>
+								</ng-container>
+
+								<ng-template #NonAccreditedTraining>
+									<ng-container *ngIf="hasAttendedTrainingSchool; else NotAttendedTrainingSchool">
+										<app-gdsd-summary-school-training
+											[gdsdModelData]="gdsdModelData"
+										></app-gdsd-summary-school-training>
+									</ng-container>
+
+									<ng-template #NotAttendedTrainingSchool>
+										<app-gdsd-summary-other-training [gdsdModelData]="gdsdModelData"></app-gdsd-summary-other-training>
+									</ng-template>
+								</ng-template>
+
+								<ng-container *ngIf="(isTrainedByAccreditedSchools && isServiceDog) || !isTrainedByAccreditedSchools">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small mt-4">Specialized Tasks</div>
+									<div class="row mt-0">
+										<div class="col-lg-12 col-md-12">
+											<div class="summary-text-data">
+												{{ specializedTaskDetails }}
+											</div>
+										</div>
+									</div>
+								</ng-container>
+							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
 				</div>
@@ -153,6 +331,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
 	gdsdModelData: any = {};
 
+	@Input() isTrainedByAccreditedSchools!: boolean;
+	@Input() hasAttendedTrainingSchool!: boolean;
+	@Input() isServiceDog!: boolean;
+
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
@@ -175,5 +357,75 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	isFormValid(): boolean {
 		return true;
+	}
+
+	get isDogTrainedByAccreditedSchool(): string {
+		return this.gdsdApplicationService.getSummaryisDogTrainedByAccreditedSchool(this.gdsdModelData);
+	}
+	get isGuideDog(): string {
+		return this.gdsdApplicationService.getSummaryisGuideDog(this.gdsdModelData);
+	}
+	get givenName(): string {
+		return this.gdsdApplicationService.getSummarygivenName(this.gdsdModelData);
+	}
+	get middleName(): string {
+		return this.gdsdApplicationService.getSummarymiddleName(this.gdsdModelData);
+	}
+	get surname(): string {
+		return this.gdsdApplicationService.getSummarysurname(this.gdsdModelData);
+	}
+	get dateOfBirth(): string {
+		return this.gdsdApplicationService.getSummarydateOfBirth(this.gdsdModelData);
+	}
+	get emailAddress(): string {
+		return this.gdsdApplicationService.getSummaryemailAddress(this.gdsdModelData);
+	}
+	get phoneNumber(): string {
+		return this.gdsdApplicationService.getSummaryphoneNumber(this.gdsdModelData);
+	}
+
+	get dogName(): string {
+		return this.gdsdApplicationService.getSummarydogName(this.gdsdModelData);
+	}
+	get dogDateOfBirth(): string {
+		return this.gdsdApplicationService.getSummarydogDateOfBirth(this.gdsdModelData);
+	}
+	get dogBreed(): string {
+		return this.gdsdApplicationService.getSummarydogBreed(this.gdsdModelData);
+	}
+	get colourAndMarkings(): string {
+		return this.gdsdApplicationService.getSummarycolourAndMarkings(this.gdsdModelData);
+	}
+	get genderCode(): string {
+		return this.gdsdApplicationService.getSummarygenderCode(this.gdsdModelData);
+	}
+	get microchipNumber(): string {
+		return this.gdsdApplicationService.getSummarymicrochipNumber(this.gdsdModelData);
+	}
+
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.gdsdApplicationService.getSummaryphotoOfYourselfAttachments(this.gdsdModelData);
+	}
+
+	get medicalInformationAttachments(): File[] | null {
+		return this.gdsdApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
+	}
+
+	get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {
+		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.gdsdModelData);
+	}
+	get governmentIssuedPhotoExpiryDate(): string {
+		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.gdsdModelData);
+	}
+	get governmentIssuedPhotoAttachments(): File[] | null {
+		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.gdsdModelData);
+	}
+
+	get dogMedicalAttachments(): File[] | null {
+		return this.gdsdApplicationService.getSummarydogMedicalAttachments(this.gdsdModelData);
+	}
+
+	get specializedTaskDetails(): string {
+		return this.gdsdApplicationService.getSummaryspecializedTaskDetails(this.gdsdModelData);
 	}
 }

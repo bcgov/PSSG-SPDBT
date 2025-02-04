@@ -361,7 +361,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					trainerGivenName: new FormControl(''),
 					trainerSurname: new FormControl(''),
 					trainerPhoneNumber: new FormControl(''),
-					trainerEmailAddress: new FormControl(''),
+					trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
 					hoursPracticingSkill: new FormControl(''),
 				},
 				{
@@ -407,7 +407,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				contactGivenName: new FormControl(''),
 				contactSurname: new FormControl('', [FormControlValidators.required]),
 				contactPhoneNumber: new FormControl('', [Validators.required]),
-				contactEmailAddress: new FormControl(''),
+				contactEmailAddress: new FormControl('', [FormControlValidators.email]),
 				trainingDateFrom: new FormControl('', [Validators.required]),
 				trainingDateTo: new FormControl('', [Validators.required]),
 				nameOfTrainingProgram: new FormControl('', [Validators.required]),

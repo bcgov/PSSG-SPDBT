@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepGdsdConsentComponent } from '../shared/common-step-components/step-gdsd-consent.component';
@@ -9,7 +9,12 @@ import { StepGdsdSummaryComponent } from './step-components/step-gdsd-summary.co
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-summary></app-step-gdsd-summary>
+				<app-step-gdsd-summary
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
+					(editStep)="onGoToStep($event)"
+				></app-step-gdsd-summary>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -46,6 +51,11 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isTrainedByAccreditedSchools!: boolean;
+	@Input() hasAttendedTrainingSchool!: boolean;
+	@Input() isServiceDog!: boolean;
+
+	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepGdsdSummaryComponent) summaryComponent!: StepGdsdSummaryComponent;
 	@ViewChild(StepGdsdConsentComponent) consentComponent!: StepGdsdConsentComponent;
@@ -56,6 +66,15 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 
 	onSubmitNow(): void {
 		this.nextSubmitStep.emit();
+	}
+
+	onGoToStep(step: number): void {
+		this.goToStep.emit(step);
+	}
+
+	override onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+		this.summaryComponent.onUpdateData();
 	}
 
 	override dirtyForm(step: number): boolean {

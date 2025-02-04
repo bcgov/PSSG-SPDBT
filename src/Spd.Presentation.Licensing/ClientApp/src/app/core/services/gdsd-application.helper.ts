@@ -17,7 +17,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		surname: new FormControl('', [FormControlValidators.required]),
 		dateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
-		contactEmailAddress: new FormControl(''),
+		contactEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	governmentPhotoIdFormGroup: FormGroup = this.formBuilder.group({
@@ -72,7 +72,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			schoolContactGivenName: new FormControl(''),
 			schoolContactSurname: new FormControl(''),
 			schoolContactPhoneNumber: new FormControl(''),
-			schoolContactEmailAddress: new FormControl(''),
+			schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 			attachments: new FormControl([]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 		},
 		{
@@ -152,7 +152,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	}
 
 	/**
-	 * Get the form group data into the correct structure
+	 * getSummarythe form group data into the correct structure
 	 * @returns
 	 */
 	getSaveBodyBase(gdsdModelFormValue: any): any {
@@ -369,5 +369,113 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		}
 
 		return documents;
+	}
+
+	getSummaryisDogTrainedByAccreditedSchool(gdsdModelData: any): string {
+		return gdsdModelData.dogCertificationSelectionData.isDogTrainedByAccreditedSchool ?? '';
+	}
+	getSummaryisGuideDog(gdsdModelData: any): string {
+		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes ? 'Guide Dog' : 'Service Dog';
+	}
+	getSummarygivenName(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.givenName ?? '';
+	}
+	getSummarymiddleName(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.middleName ?? '';
+	}
+	getSummarysurname(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.surname ?? '';
+	}
+	getSummarydateOfBirth(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.dateOfBirth ?? '';
+	}
+	getSummaryemailAddress(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.contactEmailAddress ?? '';
+	}
+	getSummaryphoneNumber(gdsdModelData: any): string {
+		return gdsdModelData.personalInformationData.contactPhoneNumber ?? '';
+	}
+
+	getSummaryaccreditedSchoolName(gdsdModelData: any): string {
+		return gdsdModelData.accreditedGraduationData.accreditedSchoolName ?? '';
+	}
+	getSummaryaccreditedContactName(gdsdModelData: any): string {
+		return (
+			gdsdModelData.accreditedGraduationData.schoolContactGivenName +
+			' ' +
+			gdsdModelData.accreditedGraduationData.schoolContactSurname
+		);
+	}
+	getSummaryaccreditedPhoneNumber(gdsdModelData: any): string {
+		return gdsdModelData.accreditedGraduationData.schoolContactPhoneNumber ?? '';
+	}
+	getSummaryaccreditedEmailAddress(gdsdModelData: any): string {
+		return gdsdModelData.accreditedGraduationData.schoolContactEmailAddress ?? '';
+	}
+	getSummaryaccreditedAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.accreditedGraduationData.attachments ?? [];
+	}
+
+	getSummarysupportingDocumenTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.schoolTrainingHistoryData.attachments ?? [];
+	}
+
+	getSummaryotherTrainings(gdsdModelData: any): Array<any> {
+		return gdsdModelData.otherTrainingHistoryData.otherTrainings ?? [];
+	}
+	getSummarysupportingDocumentOtherTrainingAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.otherTrainingHistoryData.attachments ?? [];
+	}
+	getSummaryisPracticeLogsOtherTrainingAttachments(gdsdModelData: any): boolean {
+		const attachments = gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];
+		return attachments.length > 0;
+	}
+	getSummarypracticeLogsOtherTrainingAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];
+	}
+
+	getSummaryspecializedTaskDetails(gdsdModelData: any): string {
+		return gdsdModelData.dogTasksData.tasks ?? '';
+	}
+
+	getSummarydogName(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.dogName ?? '';
+	}
+	getSummarydogDateOfBirth(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.dogDateOfBirth ?? '';
+	}
+	getSummarydogBreed(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.dogBreed ?? '';
+	}
+	getSummarycolourAndMarkings(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.dogColorAndMarkings ?? '';
+	}
+	getSummarygenderCode(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.dogGender ?? '';
+	}
+	getSummarymicrochipNumber(gdsdModelData: any): string {
+		return gdsdModelData.dogInformationData.microchipNumber ?? '';
+	}
+
+	getSummaryphotoOfYourselfAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.photographOfYourselfData.attachments ?? [];
+	}
+
+	getSummarydogMedicalAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.photographOfYourselfData.attachments ?? [];
+	}
+
+	getSummarymedicalInformationAttachments(gdsdModelData: any): File[] | null {
+		return gdsdModelData.dogMedicalData.attachments ?? [];
+	}
+
+	getSummarygovernmentIssuedPhotoTypeCode(gdsdModelData: any): LicenceDocumentTypeCode | null {
+		return gdsdModelData.governmentPhotoIdData.photoTypeCode ?? null;
+	}
+	getSummarygovernmentIssuedPhotoExpiryDate(gdsdModelData: any): string {
+		return gdsdModelData.governmentPhotoIdData.expiryDate ?? '';
+	}
+	getSummarygovernmentIssuedPhotoAttachments(gdsdModelData: any): File[] {
+		return gdsdModelData.governmentPhotoIdData.attachments ?? [];
 	}
 }
