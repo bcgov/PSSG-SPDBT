@@ -85,7 +85,7 @@ public class DogInfoNewAccreditedSchoolValidator : AbstractValidator<DogInfoNewA
     {
         Include(new DogInfoNewValidator());
         RuleFor(r => r.ServiceDogTasks).MaximumLength(1000);
-        RuleFor(r => r.IsGuideDog).NotEmpty();
+        RuleFor(r => r.IsGuideDog).NotNull();
     }
 }
 
