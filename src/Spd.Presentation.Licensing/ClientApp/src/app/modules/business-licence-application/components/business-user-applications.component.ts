@@ -80,7 +80,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 					<div class="mt-4" *ngIf="isAlertsExist()">
 						<ng-container *ngFor="let msg of errorMessages; let i = index">
-							<app-alert type="danger" icon="error">
+							<app-alert type="danger" icon="dangerous">
 								<div [innerHTML]="msg"></div>
 							</app-alert>
 						</ng-container>
