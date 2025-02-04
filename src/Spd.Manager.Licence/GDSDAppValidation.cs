@@ -44,13 +44,13 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
             .When(r => r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.GraduationInfo)
             .SetValidator(new GraduationInfoValidator())
-            .When(r => r.GraduationInfo != null);
+            .When(r => r.GraduationInfo != null && r.IsDogTrainedByAccreditedSchool);
 
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool).NotEmpty()
             .When(r => !r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool)
             .SetValidator(new DogInfoNewWithoutAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewWithoutAccreditedSchool != null);
+            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.TrainingInfo).NotEmpty()
             .When(r => !r.IsDogTrainedByAccreditedSchool);
         RuleFor(r => r.TrainingInfo)
@@ -93,8 +93,8 @@ public class DogInfoNewWithoutAccreditedSchoolValidator : AbstractValidator<DogI
 {
     public DogInfoNewWithoutAccreditedSchoolValidator()
     {
-        RuleFor(r => r.AreInoculationsUpToDate).NotEmpty();
         Include(new DogInfoNewValidator());
+        RuleFor(r => r.AreInoculationsUpToDate).NotEmpty();
     }
 }
 
