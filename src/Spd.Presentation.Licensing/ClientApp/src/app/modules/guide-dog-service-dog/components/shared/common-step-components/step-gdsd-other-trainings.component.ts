@@ -117,13 +117,16 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
-											<mat-label>Trainer Email Address</mat-label>
+											<mat-label>Trainer Email Address <span class="optional-label">(optional)</span></mat-label>
 											<input
 												matInput
 												formControlName="trainerEmailAddress"
 												[errorStateMatcher]="matcher"
 												maxlength="75"
 											/>
+											<mat-error *ngIf="group.get('trainerEmailAddress')?.hasError('email')">
+												Must be a valid email address
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -141,27 +144,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											</mat-error>
 										</mat-form-field>
 									</div>
-
-									<div class="col-12 mt-3 mb-2">
-										<div class="fs-5 mb-2">Upload log of practice hours</div>
-										<app-file-upload
-											(fileUploaded)="onFileUploaded($event, i)"
-											(fileRemoved)="onFileRemoved()"
-											[control]="attachmentsItemControl(i)"
-											[maxNumberOfFiles]="10"
-											#attachmentsRef
-											[files]="attachmentsItemValue(i)"
-										></app-file-upload>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(group.get('attachments')?.dirty || group.get('attachments')?.touched) &&
-												group.get('attachments')?.invalid &&
-												group.get('attachments')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
-									</div>
 								</div>
 
 								<div class="d-flex justify-content-end">
@@ -172,6 +154,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										class="large w-auto"
 										aria-label="Remove this training"
 										(click)="onRemoveOtherTrainingRow(i)"
+										*ngIf="isAllowDelete()"
 									>
 										Remove this Training
 									</button>
@@ -179,7 +162,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</ng-container>
 
-						<div class="d-flex justify-content-center">
+						<div class="mb-4 d-flex justify-content-center">
 							<button
 								mat-flat-button
 								type="button"
@@ -189,6 +172,43 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							>
 								Add Another Training
 							</button>
+						</div>
+
+						<div class="mb-4">
+							<div class="fs-5">
+								Upload any supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+							</div>
+							<div class="mt-2">
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[maxNumberOfFiles]="10"
+									[control]="attachments"
+									#attachmentsRef
+									[files]="attachments.value"
+								></app-file-upload>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
+									"
+									>This is required</mat-error
+								>
+							</div>
+						</div>
+
+						<div class="fs-5">Upload logs of practice hours <span class="optional-label">(optional)</span></div>
+						<div class="mt-2">
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[maxNumberOfFiles]="10"
+								[control]="practiceLogAttachments"
+								#practiceLogAttachmentsRef
+								[files]="practiceLogAttachments.value"
+							></app-file-upload>
 						</div>
 					</div>
 				</div>
@@ -214,7 +234,8 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
+	@ViewChild('practiceLogAttachmentsRef') practiceLogFileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private dialog: MatDialog,
@@ -244,7 +265,11 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 		this.gdsdApplicationService.otherTrainingRowAdd();
 	}
 
-	onFileUploaded(_file: File, _index: number): void {
+	isAllowDelete(): boolean {
+		return this.otherTrainingsArray.length > 1;
+	}
+
+	onFileUploaded(_file: File): void {
 		this.gdsdApplicationService.hasValueChanged = true;
 	}
 
@@ -261,15 +286,13 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 		return this.gdsdApplicationService.otherTrainingRowUsePersonalTraining(index);
 	}
 
-	attachmentsItemControl(index: number): FormControl {
-		return this.gdsdApplicationService.otherTrainingAttachmentsItemControl(index);
-	}
-
-	attachmentsItemValue(index: number): File[] {
-		return this.gdsdApplicationService.otherTrainingAttachmentsItemValue(index);
-	}
-
 	get otherTrainingsArray(): FormArray {
 		return <FormArray>this.form.get('otherTrainings');
+	}
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+	public get practiceLogAttachments(): FormControl {
+		return this.form.get('practiceLogAttachments') as FormControl;
 	}
 }

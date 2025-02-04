@@ -35,9 +35,22 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		isGuideDog: new FormControl('', [Validators.required]),
 	});
 
-	dogTasksFormGroup: FormGroup = this.formBuilder.group({
-		tasks: new FormControl('', [Validators.required]),
-	});
+	dogTasksFormGroup: FormGroup = this.formBuilder.group(
+		{
+			tasks: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'tasks',
+					(_form) =>
+						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
+							this.booleanTypeCodes.No ||
+						this.dogCertificationSelectionFormGroup.get('isGuideDog')?.value == this.booleanTypeCodes.No
+				),
+			],
+		}
+	);
 
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
 		dogName: new FormControl('', [Validators.required]),
@@ -53,14 +66,44 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
 	});
 
-	accreditedGraduationFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolName: new FormControl('', [Validators.required]),
-		schoolContactGivenName: new FormControl(''),
-		schoolContactSurname: new FormControl('', [FormControlValidators.required]),
-		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
-		schoolContactEmailAddress: new FormControl(''),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
-	});
+	accreditedGraduationFormGroup: FormGroup = this.formBuilder.group(
+		{
+			accreditedSchoolName: new FormControl(''),
+			schoolContactGivenName: new FormControl(''),
+			schoolContactSurname: new FormControl(''),
+			schoolContactPhoneNumber: new FormControl(''),
+			schoolContactEmailAddress: new FormControl(''),
+			attachments: new FormControl([]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'accreditedSchoolName',
+					(_form) =>
+						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
+						this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'schoolContactSurname',
+					(_form) =>
+						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
+						this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'schoolContactPhoneNumber',
+					(_form) =>
+						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
+						this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(_form) =>
+						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
+						this.booleanTypeCodes.Yes
+				),
+			],
+		}
+	);
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
@@ -68,10 +111,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	schoolTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		schoolTrainings: this.formBuilder.array([]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
 	});
 
 	otherTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		otherTrainings: this.formBuilder.array([]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
+		practiceLogAttachments: new FormControl([]), // TODO  LicenceDocumentTypeCode.
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({

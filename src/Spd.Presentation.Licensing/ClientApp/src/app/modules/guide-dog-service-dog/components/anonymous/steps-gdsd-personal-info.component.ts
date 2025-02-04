@@ -20,6 +20,7 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 

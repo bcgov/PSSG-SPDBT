@@ -94,9 +94,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 				console.debug(
 					'gdsdModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
+					step1Complete,
+					step2Complete,
+					step3Complete,
+					step4Complete,
 					this.gdsdModelFormGroup.getRawValue()
 				);
 				this.updateModelChangeFlags();
@@ -134,8 +135,31 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepPersonalInformationComplete(): boolean {
+		const hasAttendedTrainingSchool =
+			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+
+		console.debug(
+			'isStepPersonalInformationComplete',
+			hasAttendedTrainingSchool,
+			this.gdsdPersonalInformationFormGroup.valid,
+			this.medicalInformationFormGroup.valid,
+			this.photographOfYourselfFormGroup.valid,
+			this.governmentPhotoIdFormGroup.valid,
+			this.mailingAddressFormGroup.valid
+		);
+
+		if (hasAttendedTrainingSchool) {
+			return (
+				this.gdsdPersonalInformationFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid &&
+				this.governmentPhotoIdFormGroup.valid &&
+				this.mailingAddressFormGroup.valid
+			);
+		}
+
 		return (
 			this.gdsdPersonalInformationFormGroup.valid &&
+			this.medicalInformationFormGroup.valid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.governmentPhotoIdFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
@@ -143,6 +167,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepDogInformationComplete(): boolean {
+		console.debug(
+			'isStepDogInformationComplete',
+			this.dogCertificationSelectionFormGroup.valid,
+			this.dogInformationFormGroup.valid,
+			this.accreditedGraduationFormGroup.valid
+		);
+
 		return (
 			this.dogCertificationSelectionFormGroup.valid &&
 			this.dogInformationFormGroup.valid &&
@@ -151,7 +182,55 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepTrainingInformationComplete(): boolean {
-		return false;
+		const isTrainedByAccreditedSchools =
+			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			BooleanTypeCode.Yes;
+
+		if (isTrainedByAccreditedSchools) {
+			const isServiceDog =
+				this.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value === BooleanTypeCode.No;
+
+			console.debug(
+				'isStepTrainingInformationComplete',
+				this.accreditedGraduationFormGroup.valid,
+				this.dogTasksFormGroup.valid
+			);
+
+			if (isServiceDog) {
+				return this.accreditedGraduationFormGroup.valid && this.dogTasksFormGroup.valid;
+			}
+
+			return this.accreditedGraduationFormGroup.valid;
+		}
+
+		const hasAttendedTrainingSchool =
+			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+
+		console.debug(
+			'isStepTrainingInformationComplete',
+			hasAttendedTrainingSchool,
+			this.dogMedicalFormGroup.valid,
+			this.trainingHistoryFormGroup.valid,
+			this.schoolTrainingHistoryFormGroup.valid,
+			this.otherTrainingHistoryFormGroup.valid,
+			this.dogTasksFormGroup.valid
+		);
+
+		if (hasAttendedTrainingSchool) {
+			return (
+				this.dogMedicalFormGroup.valid &&
+				this.trainingHistoryFormGroup.valid &&
+				this.schoolTrainingHistoryFormGroup.valid &&
+				this.dogTasksFormGroup.valid
+			);
+		}
+
+		return (
+			this.dogMedicalFormGroup.valid &&
+			this.trainingHistoryFormGroup.valid &&
+			this.otherTrainingHistoryFormGroup.valid &&
+			this.dogTasksFormGroup.valid
+		);
 	}
 
 	/**
@@ -210,8 +289,24 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		// const trainingHistoryData = {
 		// 	hasAttendedTrainingSchool: BooleanTypeCode.Yes,
-		// 	// trainingSchoolContactInfos: [],
-		// 	// otherTrainings: [],
+		// };
+
+		// const personalInformationData = {
+		// 	givenName: 'Aaa',
+		// 	middleName: 'Aaa',
+		// 	surname: 'Aaa',
+		// 	dateOfBirth: '2000-01-01',
+		// 	contactPhoneNumber: '2508879797',
+		// 	contactEmailAddress: 'Aaa@gov.bccc.ca',
+		// };
+
+		// const dogInformationData = {
+		// 	dogName: 'Aaa',
+		// 	dogDateOfBirth: '2020-01-01',
+		// 	dogBreed: 'Aaa',
+		// 	dogColorAndMarkings: 'Aaa',
+		// 	dogGender: 'F',
+		// 	microchipNumber: 'Aaa',
 		// };
 
 		this.gdsdModelFormGroup.patchValue(
@@ -225,6 +320,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				// TODO temp hardcode data
 				// dogCertificationSelectionData,
 				// trainingHistoryData,
+				// personalInformationData,
+				// dogInformationData,
 			},
 			{
 				emitEvent: false,
@@ -266,7 +363,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					trainerPhoneNumber: new FormControl(''),
 					trainerEmailAddress: new FormControl(''),
 					hoursPracticingSkill: new FormControl(''),
-					attachments: new FormControl([]),
 				},
 				{
 					validators: [
@@ -294,21 +390,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				}
 			)
 		);
-	}
-
-	// OTHER TRAINING array
-	otherTrainingAttachmentsItemControl(index: number): FormControl {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		return otherTrainingItem.get('attachments') as FormControl;
-	}
-
-	// OTHER TRAINING array
-	otherTrainingAttachmentsItemValue(index: number): File[] {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		const ctrl = otherTrainingItem.get('attachments') as FormControl;
-		return ctrl?.value ?? [];
 	}
 
 	// SCHOOL TRAINING array

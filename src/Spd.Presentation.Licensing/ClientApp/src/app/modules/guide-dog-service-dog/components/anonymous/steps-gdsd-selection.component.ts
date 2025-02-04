@@ -11,15 +11,21 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-gdsd-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-gdsd-terms-of-use>
 
-				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+					(nextReviewStepperStep)="onNextReview(STEP_TERMS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-gdsd-checklist-new></app-step-gdsd-checklist-new>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -27,8 +33,10 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 				<app-step-gdsd-dog-certification-selection></app-step-gdsd-dog-certification-selection>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_CERTIFICATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_CERTIFICATION)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
