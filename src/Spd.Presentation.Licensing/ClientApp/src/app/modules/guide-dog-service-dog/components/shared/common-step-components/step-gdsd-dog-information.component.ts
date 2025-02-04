@@ -90,8 +90,8 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	genderMfTypes: SelectOptions[] = [];
 	matcher = new FormErrorStateMatcher();
 
-	maxBirthDate = this.utilService.getBirthDateMax();
-	minDate = this.utilService.getDateMin();
+	maxBirthDate = this.utilService.getDogBirthDateMax();
+	minDate = this.utilService.getDogDateMin();
 
 	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
 

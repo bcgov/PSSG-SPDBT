@@ -132,11 +132,11 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 		if (!isValid) return;
 
 		if (this.isServiceDog) {
-			this.nextStepperStep.emit(true);
+			this.childNextStep.emit(true);
 			return;
 		}
 
-		this.childNextStep.emit(true);
+		this.nextStepperStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {

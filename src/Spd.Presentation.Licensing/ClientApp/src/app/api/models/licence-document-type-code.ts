@@ -63,5 +63,6 @@ export enum LicenceDocumentTypeCode {
   CorporateRegistryDocument = 'CorporateRegistryDocument',
   IdCardIssuedByAccreditedDogTrainingSchool = 'IdCardIssuedByAccreditedDogTrainingSchool',
   MedicalFormConfirmingNeedDog = 'MedicalFormConfirmingNeedDog',
-  VeterinarianConfirmationForSpayedNeuteredDog = 'VeterinarianConfirmationForSpayedNeuteredDog'
+  VeterinarianConfirmationForSpayedNeuteredDog = 'VeterinarianConfirmationForSpayedNeuteredDog',
+  DogTrainingCurriculumCertificateSupportingDocument = 'DogTrainingCurriculumCertificateSupportingDocument'
 }

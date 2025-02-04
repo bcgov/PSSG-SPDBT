@@ -27,7 +27,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	});
 
 	medicalInformationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
 	});
 
 	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
@@ -50,7 +50,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
 		areInoculationsUpToDate: new FormControl('', [Validators.required]),
-		attachments: new FormControl([], [Validators.required]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
 	});
 
 	accreditedGraduationFormGroup: FormGroup = this.formBuilder.group({
@@ -59,7 +59,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		schoolContactSurname: new FormControl('', [FormControlValidators.required]),
 		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
 		schoolContactEmailAddress: new FormControl(''),
-		attachments: new FormControl([], [Validators.required]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
@@ -134,23 +134,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		let dogInfoNewAccreditedSchoolData: any = {};
-		let dogInfoNewWithoutAccreditedSchoolData: any = {};
-		let trainingInfoData: any = {
-			hasAttendedTrainingSchool: this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool),
-			otherTrainings: null,
-			schoolTrainings: null,
-			specializedTasksWhenPerformed: null,
-		};
-
-		const graduationInfoData = {
-			accreditedSchoolName: accreditedGraduationData.accreditedSchoolName,
-			schoolContactEmailAddress: accreditedGraduationData.schoolContactEmailAddress,
-			schoolContactGivenName: accreditedGraduationData.schoolContactGivenName,
-			schoolContactPhoneNumber: accreditedGraduationData.schoolContactPhoneNumber,
-			schoolContactSurname: accreditedGraduationData.schoolContactSurname,
-		};
-
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
@@ -172,7 +155,21 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const isTrainedByAccreditedSchools =
 			dogCertificationSelectionData.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
 
+		let dogInfoNewAccreditedSchoolData: any = null;
+		let dogInfoNewWithoutAccreditedSchoolData: any = null;
+		let trainingInfoData: any = null;
+		let graduationInfoData: any = null;
+		const dogInfoRenewData: any = null;
+
 		if (isTrainedByAccreditedSchools) {
+			graduationInfoData = {
+				accreditedSchoolName: accreditedGraduationData.accreditedSchoolName,
+				schoolContactEmailAddress: accreditedGraduationData.schoolContactEmailAddress,
+				schoolContactGivenName: accreditedGraduationData.schoolContactGivenName,
+				schoolContactPhoneNumber: accreditedGraduationData.schoolContactPhoneNumber,
+				schoolContactSurname: accreditedGraduationData.schoolContactSurname,
+			};
+
 			const isGuideDog = this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog);
 			dogInfoNewAccreditedSchoolData = {
 				dogBreed: dogInformationData.dogBreed,
@@ -246,7 +243,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			documentKeyCodes: [],
 			dogInfoNewAccreditedSchool: dogInfoNewAccreditedSchoolData,
 			dogInfoNewWithoutAccreditedSchool: dogInfoNewWithoutAccreditedSchoolData,
-			dogInfoRenew: null,
+			dogInfoRenew: dogInfoRenewData,
 			isDogTrainedByAccreditedSchool: this.utilService.booleanTypeToBoolean(
 				dogCertificationSelectionData.isDogTrainedByAccreditedSchool
 			),
