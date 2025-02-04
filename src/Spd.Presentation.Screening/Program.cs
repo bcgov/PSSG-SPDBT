@@ -1,5 +1,6 @@
 using FluentValidation;
 using Serilog;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Spd.Presentation.Screening;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Hosting;
@@ -39,6 +40,7 @@ try
     //});
 
     builder.Services.AddValidatorsFromAssemblies(assemblies);
+    builder.Services.AddFluentValidationAutoValidation();
     builder.Services.ConfigureAuthentication(builder.Configuration);
     builder.Services.ConfigureAuthorization();
     builder.Services.AddHttpContextAccessor();
