@@ -93,7 +93,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 								</button>
 							</div>
 							<div class="col-12" *ngIf="isLinkErrorMessage">
-								<app-alert type="danger" icon="error">
+								<app-alert type="danger" icon="dangerous">
 									{{ isLinkErrorMessage }}
 								</app-alert>
 							</div>

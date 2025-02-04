@@ -43,6 +43,7 @@ import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { BusinessLicenceCategoryTypes, SelectOptions } from '../code-types/model-desc.models';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -766,6 +767,14 @@ export class CommonApplicationService {
 		}
 
 		return messageError;
+	}
+
+	isValidSoleProprietorSwlCategories(availableCategoryCodes: WorkerCategoryTypeCode[]): boolean {
+		return (
+			BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
+				return availableCategoryCodes.includes(item.code as WorkerCategoryTypeCode);
+			}).length > 0
+		);
 	}
 
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
