@@ -78,7 +78,7 @@ import { FileUploadComponent } from './file-upload.component';
 						</div>
 					</div>
 
-					<app-alert type="danger" icon="error" *ngIf="form.hasError('nopoliceofficer')">
+					<app-alert type="danger" icon="dangerous" *ngIf="form.hasError('nopoliceofficer')">
 						A member of a police force may not hold a security worker licence. Your application for a security worker
 						licence will NOT be accepted.
 					</app-alert>

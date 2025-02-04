@@ -8,7 +8,9 @@ import {
 	SelectOptions,
 	WorkerCategoryTypes,
 } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -26,6 +28,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<app-alert type="info" icon="info">
 									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
 									categories.
+								</app-alert>
+							</div>
+
+							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
+								<app-alert type="danger" icon="dangerous">
+									{{ invalidSoleProprietorCategoriesMsg }}
 								</app-alert>
 							</div>
 
@@ -418,6 +426,9 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	showSecurityAlarmResponseMessage = false;
 	showSecurityGuardMessage = false;
 
+	showInvalidSoleProprietorCategories = false;
+	readonly invalidSoleProprietorCategoriesMsg = SPD_CONSTANTS.messages.invalidSoleProprietorCategories;
+
 	expandArmouredCarGuard = false;
 	expandBodyArmourSales = false;
 	expandClosedCircuitTelevisionInstaller = false;
@@ -465,6 +476,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	constructor(
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -491,6 +503,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
 			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
 			this.availableCategoryCodes = businessInformationData.soleProprietorCategoryCodes ?? [];
+
+			this.showInvalidSoleProprietorCategories = !this.commonApplicationService.isValidSoleProprietorSwlCategories(
+				this.availableCategoryCodes
+			);
 		} else {
 			const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
 			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;

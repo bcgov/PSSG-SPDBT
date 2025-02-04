@@ -72,7 +72,8 @@ public enum LicenceDocumentTypeCode
     CorporateRegistryDocument,
     IdCardIssuedByAccreditedDogTrainingSchool,
     MedicalFormConfirmingNeedDog,
-    VeterinarianConfirmationForSpayedNeuteredDog
+    VeterinarianConfirmationForSpayedNeuteredDog,
+    DogTrainingCurriculumCertificateSupportingDocument
 }
 
 public enum PoliceOfficerRoleCode

@@ -65,7 +65,7 @@ import { Subject, take, tap } from 'rxjs';
 					</div>
 
 					<div class="mt-3" *ngIf="errorMessage">
-						<app-alert type="danger" icon="error">
+						<app-alert type="danger" icon="dangerous">
 							{{ errorMessage }}
 						</app-alert>
 					</div>
