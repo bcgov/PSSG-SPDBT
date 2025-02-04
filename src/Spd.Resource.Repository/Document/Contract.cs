@@ -161,6 +161,7 @@ namespace Spd.Resource.Repository.Document
         CorporateRegistryDocument,
         IdCardIssuedByAccreditedDogTrainingSchool,
         MedicalFormConfirmingNeedDog,
-        VeterinarianConfirmationForSpayedNeuteredDog
+        VeterinarianConfirmationForSpayedNeuteredDog,
+        DogTrainingCurriculumCertificateSupportingDocument
     }
 }
