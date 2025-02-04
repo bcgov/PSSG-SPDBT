@@ -32,6 +32,7 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.ContactEmailAddress).EmailAddress().MaximumLength(75).When(r => r.ContactEmailAddress != null);
         RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty();
+        RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull();
 
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
@@ -94,11 +95,7 @@ public class DogInfoNewWithoutAccreditedSchoolValidator : AbstractValidator<DogI
     public DogInfoNewWithoutAccreditedSchoolValidator()
     {
         Include(new DogInfoNewValidator());
-<<<<<<< HEAD
         RuleFor(r => r.AreInoculationsUpToDate).NotNull();
-=======
-        RuleFor(r => r.AreInoculationsUpToDate).NotEmpty();
->>>>>>> origin/develop
     }
 }
 
