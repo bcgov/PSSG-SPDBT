@@ -173,15 +173,16 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogCertificationSelectionData.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
 
 		if (isTrainedByAccreditedSchools) {
+			const isGuideDog = this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog);
 			dogInfoNewAccreditedSchoolData = {
 				dogBreed: dogInformationData.dogBreed,
 				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
 				dogDateOfBirth: dogInformationData.dogDateOfBirth,
 				dogGender: dogInformationData.dogGender,
 				dogName: dogInformationData.dogName,
-				isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
+				isGuideDog,
 				microchipNumber: dogInformationData.microchipNumber,
-				serviceDogTasks: dogTasksData.tasks,
+				serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
 			};
 
 			accreditedGraduationData.attachments?.forEach((doc: any) => {

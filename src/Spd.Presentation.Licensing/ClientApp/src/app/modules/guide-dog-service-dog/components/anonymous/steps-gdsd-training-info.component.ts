@@ -20,9 +20,22 @@ import { StepGdsdTrainingHistoryComponent } from '../shared/common-step-componen
 						[showSaveAndExit]="showSaveAndExit"
 						(saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
 						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onStepNext(STEP_ACCREDITED)"
+						(nextStepperStep)="onStepNextServiceTasks()"
 						(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
 					></app-wizard-footer>
+
+					<mat-step *ngIf="isServiceDog">
+						<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
+
+						<app-wizard-footer
+							[isFormValid]="isFormValid"
+							[showSaveAndExit]="showSaveAndExit"
+							(saveAndExit)="onSaveAndExit(STEP_TASKS)"
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onStepNext(STEP_TASKS)"
+							(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+						></app-wizard-footer>
+					</mat-step>
 				</mat-step>
 			</ng-container>
 
@@ -102,6 +115,7 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 	@Input() hasAttendedTrainingSchool!: boolean;
+	@Input() isServiceDog!: boolean;
 
 	@ViewChild(StepGdsdAccreditedGraduationComponent) accreditedComponent!: StepGdsdAccreditedGraduationComponent;
 	@ViewChild(StepGdsdTrainingHistoryComponent) trainingComponent!: StepGdsdTrainingHistoryComponent;
@@ -111,6 +125,18 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 
 	constructor() {
 		super();
+	}
+
+	onStepNextServiceTasks(): void {
+		const isValid = this.dirtyForm(this.STEP_ACCREDITED);
+		if (!isValid) return;
+
+		if (this.isServiceDog) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+
+		this.childNextStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {

@@ -81,6 +81,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -146,6 +147,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	isFormValid = false;
 	isTrainedByAccreditedSchools = false;
 	hasAttendedTrainingSchool = false;
+	isServiceDog = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -172,6 +174,10 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
+
+			this.isServiceDog =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value ===
+				BooleanTypeCode.Yes;
 
 			this.isTrainedByAccreditedSchools =
 				this.gdsdApplicationService.gdsdModelFormGroup.get(
