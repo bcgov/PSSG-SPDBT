@@ -22,9 +22,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New">New</mat-radio-button>
 											</div>
 											<div class="col-lg-8">
-												<app-alert type="info" icon="">
-													Apply for a new registration if you've never registered before.
-												</app-alert>
+												<app-alert type="info" icon=""> Apply for a new registration </app-alert>
 											</div>
 										</div>
 										<mat-divider class="mb-3"></mat-divider>
@@ -36,7 +34,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											</div>
 											<div class="col-lg-8">
 												<app-alert type="info" icon="">
-													Renew your existing registration before it expires, within 90 days of the expiry date.
+													Renew your existing registration (within 90 days before it expires)
 												</app-alert>
 											</div>
 										</div>
@@ -48,7 +46,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												>
 											</div>
 											<div class="col-lg-8">
-												<app-alert type="info" icon=""> Update registration information. </app-alert>
+												<app-alert type="info" icon=""> Update registration information </app-alert>
 											</div>
 										</div>
 									</mat-radio-group>
