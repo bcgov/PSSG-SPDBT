@@ -126,9 +126,9 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						<div class="row">
 							<div class="col-xl-7 col-lg-6">
 								<div class="text-data">You don't have an active business licence.</div>
-								<div class="d-block text-muted mt-3 mb-2">
-									Apply for a new business licence if you have a never held a licence or you have a previously expired
-									one.
+								<div class="d-block fw-bold mt-3 mb-2">
+									Apply for a new business licence if you have never held one before or if your previous licence has
+									expired.
 								</div>
 							</div>
 							<div class="col-xl-5 col-lg-6 text-end">

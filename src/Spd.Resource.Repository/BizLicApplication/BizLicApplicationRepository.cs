@@ -61,7 +61,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (biz == null || biz.statecode != DynamicsConstants.StateCode_Active) throw new ApiException(HttpStatusCode.NotFound);
 
         await SetInfoFromBiz(biz, app, cmd.ApplicantIsBizManager ?? false, ct);
-        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await SetApplicantSwlLicenceId(app, cmd.ApplicantSwlLicenceId, ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
@@ -110,7 +110,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (biz == null || biz.statecode != DynamicsConstants.StateCode_Active) throw new ApiException(HttpStatusCode.NotFound);
 
         await SetInfoFromBiz(biz, app, cmd.ApplicantIsBizManager ?? false, ct);
-        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
@@ -366,16 +366,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), biz);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), biz);
         await _context.SaveChangesAsync(ct);
-    }
-
-    private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
-    {
-        team? serviceTeam = await _context.teams.Where(t => t.teamid == ownerId).FirstOrDefaultAsync(ct);
-
-        if (serviceTeam == null)
-            throw new ArgumentException("service team not found");
-
-        _context.SetLink(app, nameof(app.ownerid), serviceTeam);
     }
 
     private spd_licence GetLicence(Guid licenceId)

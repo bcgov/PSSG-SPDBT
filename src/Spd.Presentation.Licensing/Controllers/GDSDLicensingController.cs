@@ -107,7 +107,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<GDSDAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            //await VerifyKeyCode(); //temp remove
+            await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
             var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
@@ -135,7 +135,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //}
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return null;
+            return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
 
         #endregion anonymous
