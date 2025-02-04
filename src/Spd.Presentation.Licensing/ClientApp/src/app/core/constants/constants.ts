@@ -58,6 +58,10 @@ export const SPD_CONSTANTS = {
 		controllingMembers: 20,
 		employees: 20,
 	},
+	messages: {
+		invalidSoleProprietorCategories:
+			'Sole proprietors must hold a valid Security Worker Licence in the same category as the business licence they are applying for.',
+	},
 	urls: {
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
 		bcCorporateRegistriesUrl: 'https://www.bcregistry.gov.bc.ca/',
