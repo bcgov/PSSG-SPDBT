@@ -45,7 +45,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								application's processing time.
 							</app-alert>
 
-							<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
+							<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
 								We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
 							</app-alert>
 
