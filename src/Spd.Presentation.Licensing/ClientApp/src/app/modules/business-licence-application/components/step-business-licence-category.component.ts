@@ -504,9 +504,9 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
 			this.availableCategoryCodes = businessInformationData.soleProprietorCategoryCodes ?? [];
 
-			if (!this.commonApplicationService.isValidSoleProprietorSwlCategories(this.availableCategoryCodes)) {
-				this.showInvalidSoleProprietorCategories = true;
-			}
+			this.showInvalidSoleProprietorCategories = !this.commonApplicationService.isValidSoleProprietorSwlCategories(
+				this.availableCategoryCodes
+			);
 		} else {
 			const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
 			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
