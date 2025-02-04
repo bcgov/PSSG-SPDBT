@@ -94,7 +94,7 @@ public class DogInfoNewWithoutAccreditedSchoolValidator : AbstractValidator<DogI
     public DogInfoNewWithoutAccreditedSchoolValidator()
     {
         Include(new DogInfoNewValidator());
-        RuleFor(r => r.AreInoculationsUpToDate).NotEmpty();
+        RuleFor(r => r.AreInoculationsUpToDate).NotNull();
     }
 }
 
