@@ -50,7 +50,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngFor="let msg of errorMessages; let i = index">
-						<app-alert type="danger" icon="error">
+						<app-alert type="danger" icon="dangerous">
 							<div [innerHTML]="msg"></div>
 						</app-alert>
 					</ng-container>
