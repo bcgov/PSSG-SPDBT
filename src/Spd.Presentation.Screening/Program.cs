@@ -32,12 +32,8 @@ try
         .AddJsonOptions(x =>
         {
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            x.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
         });
-    //.AddFluentValidation(fv =>
-    //{
-    //    fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
-    //    fv.ImplicitlyValidateChildProperties = true;
-    //});
 
     builder.Services.AddValidatorsFromAssemblies(assemblies);
     builder.Services.AddFluentValidationAutoValidation();

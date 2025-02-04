@@ -856,7 +856,7 @@ namespace Spd.Manager.Screening
         public DelegateCreateRequestValidator()
         {
             RuleFor(r => r.FirstName)
-                 .NotEmpty()
+                .NotEmpty()
                     .MaximumLength(40);
 
             RuleFor(r => r.EmailAddress)
