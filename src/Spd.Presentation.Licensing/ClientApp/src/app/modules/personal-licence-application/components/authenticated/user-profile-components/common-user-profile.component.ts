@@ -77,8 +77,9 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 							<div class="fs-6 fw-bold mb-4">
 								Have you moved?
 								<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
-									>Update your address online</a
-								>. Any changes you make will automatically be updated here.
+									>Update your address online.</a
+								>
+								Any changes you make will automatically be updated here.
 							</div>
 
 							<section>
