@@ -220,8 +220,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
 										<div class="summary-text-data">
-											{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-											{{ surname }}
+											{{ applicantName }}
 										</div>
 									</div>
 									<div class="col-lg-3 col-md-12">
@@ -492,17 +491,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.workerApplicationService.getSummaryletterOfNoConflictAttachments(this.licenceModelData);
 	}
 
-	get givenName(): string {
-		return this.workerApplicationService.getSummarygivenName(this.licenceModelData);
-	}
-	get middleName1(): string {
-		return this.workerApplicationService.getSummarymiddleName1(this.licenceModelData);
-	}
-	get middleName2(): string {
-		return this.workerApplicationService.getSummarymiddleName2(this.licenceModelData);
-	}
-	get surname(): string {
-		return this.workerApplicationService.getSummarysurname(this.licenceModelData);
+	get applicantName(): string {
+		return this.workerApplicationService.getSummaryapplicantName(this.licenceModelData);
 	}
 	get genderCode(): string {
 		return this.workerApplicationService.getSummarygenderCode(this.licenceModelData);
