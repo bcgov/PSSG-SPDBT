@@ -196,18 +196,20 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onRegisterGuideDog(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterDogTrainer(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterRetiredServiceDog(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onContinue(serviceTypeCode: ServiceTypeCode): void {
+		if (serviceTypeCode != ServiceTypeCode.GdsdTeamCertification) return;
+
 		// make sure the user is not logged in.
 		this.authProcessService.logoutBceid(GuideDogServiceDogRoutes.path());
 		this.authProcessService.logoutBcsc(GuideDogServiceDogRoutes.path());
