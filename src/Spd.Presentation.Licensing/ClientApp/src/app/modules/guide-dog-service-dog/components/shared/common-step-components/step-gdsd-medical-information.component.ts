@@ -34,19 +34,22 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							(fileUploaded)="onFileUploaded($event)"
 							(fileRemoved)="onFileRemoved()"
 							[control]="attachments"
-							[maxNumberOfFiles]="1"
+							[maxNumberOfFiles]="10"
 							[files]="attachments.value"
 							[previewImage]="true"
 						></app-file-upload>
 						<mat-error
-							class="mat-option-error"
+							class="mt-3 mat-option-error"
 							*ngIf="
 								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
 								form.get('attachments')?.invalid &&
 								form.get('attachments')?.hasError('required')
 							"
-							>This is required</mat-error
 						>
+							<app-alert type="danger" icon="dangerous">
+								This is required. You must have a Medical Form confirming requirement for Guide Dog or Service Dog.
+							</app-alert>
+						</mat-error>
 					</div>
 				</div>
 			</form>

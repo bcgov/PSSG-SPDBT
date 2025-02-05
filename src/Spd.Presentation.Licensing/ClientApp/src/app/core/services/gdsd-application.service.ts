@@ -4,6 +4,7 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	BizTypeCode,
+	Document,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GoogleRecaptcha,
@@ -20,6 +21,7 @@ import {
 	Subscription,
 	debounceTime,
 	distinctUntilChanged,
+	forkJoin,
 	of,
 	switchMap,
 	take,
@@ -32,7 +34,7 @@ import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { GdsdApplicationHelper } from './gdsd-application.helper';
-import { UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -56,6 +58,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
+		dogTasksData: this.dogTasksFormGroup,
 		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
 		dogInformationData: this.dogInformationFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,
@@ -91,9 +94,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 				console.debug(
 					'gdsdModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
+					step1Complete,
+					step2Complete,
+					step3Complete,
+					step4Complete,
 					this.gdsdModelFormGroup.getRawValue()
 				);
 				this.updateModelChangeFlags();
@@ -127,12 +131,35 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepSelectionComplete(): boolean {
-		return this.termsAndConditionsFormGroup.valid;
+		return this.termsAndConditionsFormGroup.valid && this.dogCertificationSelectionFormGroup.valid;
 	}
 
 	isStepPersonalInformationComplete(): boolean {
+		const hasAttendedTrainingSchool =
+			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+
+		// console.debug(
+		// 	'isStepPersonalInformationComplete',
+		// 	hasAttendedTrainingSchool,
+		// 	this.gdsdPersonalInformationFormGroup.valid,
+		// 	this.medicalInformationFormGroup.valid,
+		// 	this.photographOfYourselfFormGroup.valid,
+		// 	this.governmentPhotoIdFormGroup.valid,
+		// 	this.mailingAddressFormGroup.valid
+		// );
+
+		if (hasAttendedTrainingSchool) {
+			return (
+				this.gdsdPersonalInformationFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid &&
+				this.governmentPhotoIdFormGroup.valid &&
+				this.mailingAddressFormGroup.valid
+			);
+		}
+
 		return (
 			this.gdsdPersonalInformationFormGroup.valid &&
+			this.medicalInformationFormGroup.valid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.governmentPhotoIdFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
@@ -140,15 +167,62 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepDogInformationComplete(): boolean {
-		return (
-			this.dogCertificationSelectionFormGroup.valid &&
-			this.dogInformationFormGroup.valid &&
-			this.accreditedGraduationFormGroup.valid
-		);
+		const isTrainedByAccreditedSchools =
+			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			BooleanTypeCode.Yes;
+
+		// console.debug('isStepDogInformationComplete', this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
+
+		if (isTrainedByAccreditedSchools) {
+			return this.dogInformationFormGroup.valid;
+		}
+
+		return this.dogInformationFormGroup.valid && this.dogMedicalFormGroup.valid;
 	}
 
 	isStepTrainingInformationComplete(): boolean {
-		return false;
+		const isTrainedByAccreditedSchools =
+			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			BooleanTypeCode.Yes;
+
+		if (isTrainedByAccreditedSchools) {
+			const isServiceDog =
+				this.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value === BooleanTypeCode.No;
+
+			// console.debug(
+			// 	'isStepTrainingInformationComplete',
+			// 	this.accreditedGraduationFormGroup.valid,
+			// 	this.dogTasksFormGroup.valid
+			// );
+
+			if (isServiceDog) {
+				return this.accreditedGraduationFormGroup.valid && this.dogTasksFormGroup.valid;
+			}
+
+			return this.accreditedGraduationFormGroup.valid;
+		}
+
+		const hasAttendedTrainingSchool =
+			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+
+		// console.debug(
+		// 	'isStepTrainingInformationComplete',
+		// 	hasAttendedTrainingSchool,
+		// 	this.trainingHistoryFormGroup.valid,
+		// 	this.schoolTrainingHistoryFormGroup.valid,
+		// 	this.otherTrainingHistoryFormGroup.valid,
+		// 	this.dogTasksFormGroup.valid
+		// );
+
+		if (hasAttendedTrainingSchool) {
+			return (
+				this.trainingHistoryFormGroup.valid && this.schoolTrainingHistoryFormGroup.valid && this.dogTasksFormGroup.valid
+			);
+		}
+
+		return (
+			this.trainingHistoryFormGroup.valid && this.otherTrainingHistoryFormGroup.valid && this.dogTasksFormGroup.valid
+		);
 	}
 
 	/**
@@ -207,8 +281,24 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		// const trainingHistoryData = {
 		// 	hasAttendedTrainingSchool: BooleanTypeCode.Yes,
-		// 	// trainingSchoolContactInfos: [],
-		// 	// otherTrainings: [],
+		// };
+
+		// const personalInformationData = {
+		// 	givenName: 'Aaa',
+		// 	middleName: 'Aaa',
+		// 	surname: 'Aaa',
+		// 	dateOfBirth: '2000-01-01',
+		// 	contactPhoneNumber: '2508879797',
+		// 	contactEmailAddress: 'Aaa@gov.bccc.ca',
+		// };
+
+		// const dogInformationData = {
+		// 	dogName: 'Aaa',
+		// 	dogDateOfBirth: '2020-01-01',
+		// 	dogBreed: 'Aaa',
+		// 	dogColorAndMarkings: 'Aaa',
+		// 	dogGender: 'F',
+		// 	microchipNumber: 'Aaa',
 		// };
 
 		this.gdsdModelFormGroup.patchValue(
@@ -222,6 +312,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				// TODO temp hardcode data
 				// dogCertificationSelectionData,
 				// trainingHistoryData,
+				// personalInformationData,
+				// dogInformationData,
 			},
 			{
 				emitEvent: false,
@@ -261,9 +353,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					trainerGivenName: new FormControl(''),
 					trainerSurname: new FormControl(''),
 					trainerPhoneNumber: new FormControl(''),
-					trainerEmailAddress: new FormControl(''),
+					trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
 					hoursPracticingSkill: new FormControl(''),
-					attachments: new FormControl([]),
 				},
 				{
 					validators: [
@@ -293,21 +384,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		);
 	}
 
-	// OTHER TRAINING array
-	otherTrainingAttachmentsItemControl(index: number): FormControl {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		return otherTrainingItem.get('attachments') as FormControl;
-	}
-
-	// OTHER TRAINING array
-	otherTrainingAttachmentsItemValue(index: number): File[] {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
-		const otherTrainingItem = otherTrainingsArray.at(index);
-		const ctrl = otherTrainingItem.get('attachments') as FormControl;
-		return ctrl?.value ?? [];
-	}
-
 	// SCHOOL TRAINING array
 	schoolTrainingRowRemove(index: number): void {
 		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
@@ -318,25 +394,30 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	schoolTrainingRowAdd(): void {
 		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.push(
-			new FormGroup({
-				trainingBizName: new FormControl(null, [FormControlValidators.required]),
-				contactGivenName: new FormControl(''),
-				contactSurname: new FormControl('', [FormControlValidators.required]),
-				contactPhoneNumber: new FormControl('', [Validators.required]),
-				contactEmailAddress: new FormControl(''),
-				trainingDateFrom: new FormControl('', [Validators.required]),
-				trainingDateTo: new FormControl('', [Validators.required]),
-				nameOfTrainingProgram: new FormControl('', [Validators.required]),
-				hoursOfTraining: new FormControl('', [Validators.required]),
-				learnedDesc: new FormControl('', [Validators.required]),
-				addressSelected: new FormControl(false, [Validators.requiredTrue]),
-				addressLine1: new FormControl('', [FormControlValidators.required]),
-				addressLine2: new FormControl(''),
-				city: new FormControl('', [FormControlValidators.required]),
-				postalCode: new FormControl('', [FormControlValidators.required]),
-				province: new FormControl('', [FormControlValidators.required]),
-				country: new FormControl('', [FormControlValidators.required]),
-			})
+			new FormGroup(
+				{
+					trainingBizName: new FormControl(null, [FormControlValidators.required]),
+					contactGivenName: new FormControl(''),
+					contactSurname: new FormControl('', [FormControlValidators.required]),
+					contactPhoneNumber: new FormControl('', [Validators.required]),
+					contactEmailAddress: new FormControl('', [FormControlValidators.email]),
+					trainingDateFrom: new FormControl('', [Validators.required]),
+					trainingDateTo: new FormControl('', [Validators.required]),
+					nameOfTrainingProgram: new FormControl('', [Validators.required]),
+					hoursOfTraining: new FormControl('', [Validators.required]),
+					learnedDesc: new FormControl('', [Validators.required]),
+					addressSelected: new FormControl(false, [Validators.requiredTrue]),
+					addressLine1: new FormControl('', [FormControlValidators.required]),
+					addressLine2: new FormControl(''),
+					city: new FormControl('', [FormControlValidators.required]),
+					postalCode: new FormControl('', [FormControlValidators.required]),
+					province: new FormControl('', [FormControlValidators.required]),
+					country: new FormControl('', [FormControlValidators.required]),
+				},
+				{
+					validators: [FormGroupValidators.daterangeValidator('trainingDateFrom', 'trainingDateTo')],
+				}
+			)
 		);
 	}
 
@@ -355,32 +436,47 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		console.debug('[submitAnonymous] gdsdModelFormValue', gdsdModelFormValue);
 
 		const body = this.getSaveBodyBase(gdsdModelFormValue);
-		// const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-		// let newDocumentsExist = false;
-		// documentsToSave.forEach((docPermit: PermitDocumentsToSave) => {
-		// 	docPermit.documents.forEach((doc: any) => {
-		// 		if (doc.documentUrlId) {
-		// 			existingDocumentIds.push(doc.documentUrlId);
-		// 		} else {
-		// 			newDocumentsExist = true;
-		// 		}
-		// 	});
-		// });
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
+						body: {
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		const existingDocumentIds: Array<string> = body.documentInfos
+			.filter((item: Document) => !!item.documentUrlId)
+			.map((item: Document) => item.documentUrlId!);
+
+		delete body.documentInfos;
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		// console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
-
-		// if (newDocumentsExist) {
-		// 	return this.postPermitAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
-		// } else {
-		return this.postAnonymous(googleRecaptcha, body); //, existingDocumentIds
-		// }
+		return this.postAnonymous(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
 	}
 
 	/**
@@ -389,24 +485,47 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	private postAnonymous(
 		googleRecaptcha: GoogleRecaptcha,
-		// existingDocumentIds: Array<string>,
+		existingDocumentIds: Array<string>,
+		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppAnonymousSubmitRequest
 	) {
 		console.debug('[postAnonymous]');
 
-		return this.licenceAppDocumentService
-			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					// body.previousDocumentIds = [...existingDocumentIds];
+		if (documentsToSaveApis) {
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						return forkJoin(documentsToSaveApis);
+					}),
+					switchMap((resps: string[]) => {
+						// pass in the list of document key codes
+						body.documentKeyCodes = [...resps];
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
 
-					return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
+						return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
+							body,
+						});
+					})
+				)
+				.pipe(take(1));
+		} else {
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
+
+						return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({
+							body,
+						});
+					})
+				)
+				.pipe(take(1));
+		}
 	}
 }

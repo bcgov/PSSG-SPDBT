@@ -7,6 +7,7 @@ import { ApplicationPortalStatusCode } from '../models/application-portal-status
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
 import { Document } from '../models/document';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { DogInfoNewAccreditedSchool } from '../models/dog-info-new-accredited-school';
 import { DogInfoNewWithoutAccreditedSchool } from '../models/dog-info-new-without-accredited-school';
 import { DogInfoRenew } from '../models/dog-info-renew';
@@ -26,6 +27,7 @@ export interface GdsdTeamLicenceAppResponse {
   contactPhoneNumber?: string | null;
   dateOfBirth?: string;
   documentInfos?: Array<Document> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
   dogInfoNewWithoutAccreditedSchool?: DogInfoNewWithoutAccreditedSchool;
   dogInfoRenew?: DogInfoRenew;
