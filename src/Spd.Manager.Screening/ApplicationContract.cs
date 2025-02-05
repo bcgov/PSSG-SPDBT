@@ -437,6 +437,18 @@ namespace Spd.Manager.Screening
     #endregion
 
     #region validator
+    public class ApplicationInvitesCreateRequestValidator : AbstractValidator<ApplicationInvitesCreateRequest>
+    {
+        public ApplicationInvitesCreateRequestValidator()
+        {
+            RuleFor(r => r.ApplicationInviteCreateRequests).NotNull()
+           .ForEach(child =>
+           {
+               child.SetValidator(new ApplicationInviteCreateRequestValidator());
+           });
+        }
+    }
+
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
         public ApplicationInviteCreateRequestValidator()
@@ -844,7 +856,7 @@ namespace Spd.Manager.Screening
         public DelegateCreateRequestValidator()
         {
             RuleFor(r => r.FirstName)
-                 .NotEmpty()
+                .NotEmpty()
                     .MaximumLength(40);
 
             RuleFor(r => r.EmailAddress)

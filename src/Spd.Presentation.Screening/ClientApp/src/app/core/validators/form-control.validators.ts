@@ -145,32 +145,11 @@ export class FormControlValidators {
 		if (!control.value) {
 			return null;
 		}
-		const regExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+		const regExp = /^[a-z0-9._'%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 		// Affixed spaces does not invalidate the entry, and should
 		// be sanitized by on submission and by the server
 		const valid = control.valid && regExp.test(control.value);
 		return valid ? null : { email: true, ...FormControlValidators.trim(control) };
-	}
-
-	/**
-	 * @description
-	 * Checks the form control value is an email address.
-	 */
-	public static govEmail(control: AbstractControl): ValidationErrors | null {
-		if (!control.value) {
-			return null;
-		}
-		const regExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-		// Affixed spaces does not invalidate the entry, and should
-		// be sanitized by on submission and by the server
-		let valid = control.valid && regExp.test(control.value);
-
-		// email must end with 'gov.bc.ca'
-		if (valid) {
-			valid = (control.value as string).toLowerCase().endsWith('gov.bc.ca');
-		}
-
-		return valid ? null : { govEmail: true, ...FormControlValidators.trim(control) };
 	}
 
 	/**
