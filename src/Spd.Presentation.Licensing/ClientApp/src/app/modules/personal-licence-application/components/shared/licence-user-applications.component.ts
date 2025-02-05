@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationPortalStatusCode, ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
 	CommonApplicationService,
 	MainApplicationResponse,
@@ -178,8 +177,6 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 	standalone: false,
 })
 export class LicenceUserApplicationsComponent implements OnInit {
-	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 	yourProfileLabel = '';

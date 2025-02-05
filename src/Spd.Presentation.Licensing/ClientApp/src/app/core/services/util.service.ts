@@ -86,6 +86,24 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
+	getFullNameWithOneMiddle(
+		givenName: string | null | undefined,
+		middleName: string | null | undefined,
+		surname: string | null | undefined
+	): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName) {
+			userNameArray.push(middleName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
 	getFullNameWithMiddle(
 		givenName: string | null | undefined,
 		middleName1: string | null | undefined,
@@ -114,6 +132,14 @@ export class UtilService {
 
 	getDateMin(): moment.Moment {
 		return moment('1800-01-01');
+	}
+
+	getDogBirthDateMax(): moment.Moment {
+		return moment().startOf('day').subtract(6, 'months');
+	}
+
+	getDogDateMin(): moment.Moment {
+		return moment().startOf('day').subtract(50, 'years');
 	}
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {

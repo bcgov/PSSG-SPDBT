@@ -18,6 +18,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-form-field>
 									<mat-label>Dog Name</mat-label>
 									<input matInput formControlName="dogName" [errorStateMatcher]="matcher" maxlength="50" />
+									<mat-error *ngIf="form.get('dogName')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -46,12 +47,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-form-field>
 									<mat-label>Breed</mat-label>
 									<input matInput formControlName="dogBreed" [errorStateMatcher]="matcher" maxlength="50" />
+									<mat-error *ngIf="form.get('dogBreed')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Colour And Markings</mat-label>
 									<input matInput formControlName="dogColorAndMarkings" [errorStateMatcher]="matcher" maxlength="50" />
+									<mat-error *ngIf="form.get('dogColorAndMarkings')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -87,8 +90,8 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	genderMfTypes: SelectOptions[] = [];
 	matcher = new FormErrorStateMatcher();
 
-	maxBirthDate = this.utilService.getBirthDateMax();
-	minDate = this.utilService.getDateMin();
+	maxBirthDate = this.utilService.getDogBirthDateMax();
+	minDate = this.utilService.getDogDateMin();
 
 	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
 

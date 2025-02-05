@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -39,6 +39,16 @@ import moment from 'moment';
 
 								<div class="row">
 									<div class="fs-5 my-2">Training School Contact Information</div>
+
+									<div
+										class="mt-3"
+										*ngIf="(group.dirty || group.touched) && group.invalid && group.hasError('daterange')"
+									>
+										<app-alert type="danger" icon="dangerous">
+											Training Start Date must be on or before the Training End Date
+										</app-alert>
+									</div>
+
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
@@ -71,7 +81,7 @@ import moment from 'moment';
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Contact Email Address</mat-label>
+											<mat-label>Contact Email Address <span class="optional-label">(optional)</span></mat-label>
 											<input
 												matInput
 												formControlName="contactEmailAddress"
@@ -192,6 +202,7 @@ import moment from 'moment';
 										class="large w-auto"
 										aria-label="Remove this training"
 										(click)="onRemoveSchoolTrainingRow(i)"
+										*ngIf="isAllowDelete()"
 									>
 										Remove this Training School
 									</button>
@@ -199,7 +210,7 @@ import moment from 'moment';
 							</div>
 						</ng-container>
 
-						<div class="d-flex justify-content-center">
+						<div class="mb-4 d-flex justify-content-center">
 							<button
 								mat-flat-button
 								type="button"
@@ -209,6 +220,28 @@ import moment from 'moment';
 							>
 								Add Another Training School
 							</button>
+						</div>
+
+						<div class="fs-5">
+							Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+						</div>
+						<div class="mt-2">
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[maxNumberOfFiles]="10"
+								[control]="attachments"
+								[files]="attachments.value"
+							></app-file-upload>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
 					</div>
 				</div>
@@ -265,9 +298,21 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 		this.gdsdApplicationService.schoolTrainingRowAdd();
 	}
 
+	isAllowDelete(): boolean {
+		return this.schoolTrainingsArray.length > 1;
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onFileUploaded(_file: File): void {
+		this.gdsdApplicationService.hasValueChanged = true;
+	}
+
+	onFileRemoved(): void {
+		this.gdsdApplicationService.hasValueChanged = true;
 	}
 
 	getSchoolTrainingFormGroup(index: number): FormGroup {
@@ -276,5 +321,8 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 
 	get schoolTrainingsArray(): FormArray {
 		return <FormArray>this.form.get('schoolTrainings');
+	}
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }
