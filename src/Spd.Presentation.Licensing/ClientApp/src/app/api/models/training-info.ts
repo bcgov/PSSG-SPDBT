@@ -8,6 +8,5 @@ export interface TrainingInfo {
   hasAttendedTrainingSchool?: boolean;
   otherTrainings?: Array<OtherTraining> | null;
   schoolTrainings?: Array<TrainingSchoolInfo> | null;
-  specializedTasks?: string | null;
-  whenPerformed?: string | null;
+  specializedTasksWhenPerformed?: string | null;
 }
