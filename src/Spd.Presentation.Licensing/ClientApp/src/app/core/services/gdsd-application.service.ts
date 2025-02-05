@@ -131,7 +131,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepSelectionComplete(): boolean {
-		return this.termsAndConditionsFormGroup.valid;
+		return this.termsAndConditionsFormGroup.valid && this.dogCertificationSelectionFormGroup.valid;
 	}
 
 	isStepPersonalInformationComplete(): boolean {
@@ -167,18 +167,17 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepDogInformationComplete(): boolean {
-		console.debug(
-			'isStepDogInformationComplete',
-			this.dogCertificationSelectionFormGroup.valid,
-			this.dogInformationFormGroup.valid,
-			this.accreditedGraduationFormGroup.valid
-		);
+		const isTrainedByAccreditedSchools =
+			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			BooleanTypeCode.Yes;
 
-		return (
-			this.dogCertificationSelectionFormGroup.valid &&
-			this.dogInformationFormGroup.valid &&
-			this.accreditedGraduationFormGroup.valid
-		);
+		console.debug('isStepDogInformationComplete', this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
+
+		if (isTrainedByAccreditedSchools) {
+			return this.dogInformationFormGroup.valid;
+		}
+
+		return this.dogInformationFormGroup.valid && this.dogMedicalFormGroup.valid;
 	}
 
 	isStepTrainingInformationComplete(): boolean {
@@ -209,7 +208,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		console.debug(
 			'isStepTrainingInformationComplete',
 			hasAttendedTrainingSchool,
-			this.dogMedicalFormGroup.valid,
 			this.trainingHistoryFormGroup.valid,
 			this.schoolTrainingHistoryFormGroup.valid,
 			this.otherTrainingHistoryFormGroup.valid,
@@ -218,18 +216,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		if (hasAttendedTrainingSchool) {
 			return (
-				this.dogMedicalFormGroup.valid &&
-				this.trainingHistoryFormGroup.valid &&
-				this.schoolTrainingHistoryFormGroup.valid &&
-				this.dogTasksFormGroup.valid
+				this.trainingHistoryFormGroup.valid && this.schoolTrainingHistoryFormGroup.valid && this.dogTasksFormGroup.valid
 			);
 		}
 
 		return (
-			this.dogMedicalFormGroup.valid &&
-			this.trainingHistoryFormGroup.valid &&
-			this.otherTrainingHistoryFormGroup.valid &&
-			this.dogTasksFormGroup.valid
+			this.trainingHistoryFormGroup.valid && this.otherTrainingHistoryFormGroup.valid && this.dogTasksFormGroup.valid
 		);
 	}
 
@@ -402,10 +394,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	schoolTrainingRowAdd(): void {
 		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
 		schoolTrainingsArray.push(
-			new FormGroup({
-				trainingBizName: new FormControl(null, [FormControlValidators.required]),
-				contactGivenName: new FormControl(''),
-				contactSurname: new FormControl('', [FormControlValidators.required]),
+			new FormGroup(
+				{
+					trainingBizName: new FormControl(null, [FormControlValidators.required]),
+					contactGivenName: new FormControl(''),
+					contactSurname: new FormControl('', [FormControlValidators.required]),
 				contactPhoneNumber: new FormControl('', [Validators.required]),
 				contactEmailAddress: new FormControl('', [FormControlValidators.email]),
 				trainingDateFrom: new FormControl('', [Validators.required]),
@@ -417,10 +410,14 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				addressLine1: new FormControl('', [FormControlValidators.required]),
 				addressLine2: new FormControl(''),
 				city: new FormControl('', [FormControlValidators.required]),
-				postalCode: new FormControl('', [FormControlValidators.required]),
-				province: new FormControl('', [FormControlValidators.required]),
-				country: new FormControl('', [FormControlValidators.required]),
-			})
+					postalCode: new FormControl('', [FormControlValidators.required]),
+					province: new FormControl('', [FormControlValidators.required]),
+					country: new FormControl('', [FormControlValidators.required]),
+				},
+				{
+					validators: [FormGroupValidators.daterangeValidator('trainingDateFrom', 'trainingDateTo')],
+				}
+			)
 		);
 	}
 

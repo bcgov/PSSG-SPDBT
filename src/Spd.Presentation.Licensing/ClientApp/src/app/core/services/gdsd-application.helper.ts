@@ -35,22 +35,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		isGuideDog: new FormControl('', [Validators.required]),
 	});
 
-	dogTasksFormGroup: FormGroup = this.formBuilder.group(
-		{
-			tasks: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'tasks',
-					(_form) =>
-						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
-							this.booleanTypeCodes.No ||
-						this.dogCertificationSelectionFormGroup.get('isGuideDog')?.value == this.booleanTypeCodes.No
-				),
-			],
-		}
-	);
+	dogTasksFormGroup: FormGroup = this.formBuilder.group({
+		tasks: new FormControl('', [Validators.required]),
+	});
 
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
 		dogName: new FormControl('', [Validators.required]),
@@ -66,44 +53,14 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
 	});
 
-	accreditedGraduationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			accreditedSchoolName: new FormControl(''),
-			schoolContactGivenName: new FormControl(''),
-			schoolContactSurname: new FormControl(''),
-			schoolContactPhoneNumber: new FormControl(''),
-			schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
-			attachments: new FormControl([]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'accreditedSchoolName',
-					(_form) =>
-						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
-						this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'schoolContactSurname',
-					(_form) =>
-						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
-						this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'schoolContactPhoneNumber',
-					(_form) =>
-						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
-						this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(_form) =>
-						this.dogCertificationSelectionFormGroup.get('isDogTrainedByAccreditedSchool')?.value ==
-						this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
+	accreditedGraduationFormGroup: FormGroup = this.formBuilder.group({
+		accreditedSchoolName: new FormControl('', [Validators.required]),
+		schoolContactGivenName: new FormControl(''),
+		schoolContactSurname: new FormControl('', [Validators.required]),
+		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
+		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
+	});
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
@@ -416,6 +373,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return gdsdModelData.accreditedGraduationData.attachments ?? [];
 	}
 
+	getSummaryschoolTrainings(gdsdModelData: any): Array<any> {
+		return gdsdModelData.schoolTrainingHistoryData.schoolTrainings ?? [];
+	}
 	getSummarysupportingDocumenTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.schoolTrainingHistoryData.attachments ?? [];
 	}
@@ -461,12 +421,15 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return gdsdModelData.photographOfYourselfData.attachments ?? [];
 	}
 
+	getSummaryareInoculationsUpToDate(gdsdModelData: any): string {
+		return gdsdModelData.dogMedicalData.areInoculationsUpToDate ?? '';
+	}
 	getSummarydogMedicalAttachments(gdsdModelData: any): File[] | null {
-		return gdsdModelData.photographOfYourselfData.attachments ?? [];
+		return gdsdModelData.dogMedicalData.attachments ?? [];
 	}
 
 	getSummarymedicalInformationAttachments(gdsdModelData: any): File[] | null {
-		return gdsdModelData.dogMedicalData.attachments ?? [];
+		return gdsdModelData.medicalInformationData.attachments ?? [];
 	}
 
 	getSummarygovernmentIssuedPhotoTypeCode(gdsdModelData: any): LicenceDocumentTypeCode | null {

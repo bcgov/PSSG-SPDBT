@@ -176,7 +176,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 						<div class="mb-4">
 							<div class="fs-5">
-								Upload any supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+								Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
 							</div>
 							<div class="mt-2">
 								<app-file-upload

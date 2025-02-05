@@ -39,6 +39,16 @@ import moment from 'moment';
 
 								<div class="row">
 									<div class="fs-5 my-2">Training School Contact Information</div>
+
+									<div
+										class="mt-3"
+										*ngIf="(group.dirty || group.touched) && group.invalid && group.hasError('daterange')"
+									>
+										<app-alert type="danger" icon="dangerous">
+											Training Start Date must be on or before the Training End Date
+										</app-alert>
+									</div>
+
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
@@ -213,7 +223,7 @@ import moment from 'moment';
 						</div>
 
 						<div class="fs-5">
-							Upload any supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+							Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
 						</div>
 						<div class="mt-2">
 							<app-file-upload

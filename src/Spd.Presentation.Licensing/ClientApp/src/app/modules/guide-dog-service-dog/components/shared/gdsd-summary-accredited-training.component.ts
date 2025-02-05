@@ -4,12 +4,10 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 @Component({
 	selector: 'app-gdsd-summary-accredited-training',
 	template: `
-		<div class="text-minor-heading-small mt-4">Accredited Graduation Information</div>
+		<div class="text-minor-heading-small mt-2">Accredited Graduation Information</div>
 		<div class="row mt-0">
 			<div class="col-lg-4 col-md-12">
-				<div class="text-label d-block text-muted">
-					Name of Assistance Dogs International or International Guide Dog Federation accredited school
-				</div>
+				<div class="text-label d-block text-muted">Name of Accredited School</div>
 				<div class="summary-text-data">{{ accreditedSchoolName | default }}</div>
 			</div>
 			<div class="col-lg-4 col-md-12">

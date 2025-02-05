@@ -5,8 +5,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 @Component({
 	selector: 'app-gdsd-summary-other-training',
 	template: `
-		<div class="text-minor-heading-small mt-4">Other Training</div>
-
+		<div class="text-minor-heading-small mt-2">Other Training</div>
 		<div *ngFor="let train of otherTrainings; let i = index">
 			<div class="row mt-0">
 				<div class="col-lg-4 col-md-12">
@@ -14,7 +13,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					<div class="summary-text-data">{{ train.trainingDetail | default }}</div>
 				</div>
 				<div class="col-lg-4 col-md-12">
-					<div class="text-label d-block text-muted">Did you use a personal dog trainer?</div>
+					<div class="text-label d-block text-muted">Used a Personal Dog Trainer</div>
 					<div class="summary-text-data">{{ train.usePersonalDogTrainer | default }}</div>
 				</div>
 				<ng-container *ngIf="train.usePersonalDogTrainer === booleanTypeYes">
@@ -39,7 +38,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 						<div class="summary-text-data">{{ train.trainerEmailAddress | default }}</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
-						<div class="text-label d-block text-muted">Hours spent practicing the skills learned</div>
+						<div class="text-label d-block text-muted">Hours Practicing Skills</div>
 						<div class="summary-text-data">{{ train.hoursPracticingSkill | default }}</div>
 					</div>
 				</ng-container>
@@ -49,7 +48,7 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 
 		<div class="row mt-0">
 			<div class="col-12">
-				<div class="text-label d-block text-muted">Supporting Documents</div>
+				<div class="text-minor-heading-small">Supporting Documents</div>
 				<div class="summary-text-data">
 					<ul class="m-0">
 						<ng-container *ngFor="let doc of supportingDocumentOtherTrainingAttachments; let i = index">
@@ -57,8 +56,13 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 						</ng-container>
 					</ul>
 				</div>
-				<div class="col-12" *ngIf="isPracticeLogsOtherTrainingAttachments">
-					<div class="text-label d-block text-muted">Practice Logs</div>
+			</div>
+
+			<div class="row mt-0" *ngIf="isPracticeLogsOtherTrainingAttachments">
+				<mat-divider class="mt-3 mb-2"></mat-divider>
+
+				<div class="col-12">
+					<div class="text-minor-heading-small">Practice Logs</div>
 					<div class="summary-text-data">
 						<ul class="m-0">
 							<ng-container *ngFor="let doc of practiceLogsOtherTrainingAttachments; let i = index">

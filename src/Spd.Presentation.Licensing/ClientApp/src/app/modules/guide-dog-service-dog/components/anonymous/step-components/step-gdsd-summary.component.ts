@@ -35,7 +35,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 							<div class="panel-body">
 								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">
 											Is your dog trained by Assistance Dogs International or International Guide Dog Federation
 											accredited schools?
@@ -44,7 +44,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											{{ isDogTrainedByAccreditedSchool | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">
 											Is your dog trained as a Guide Dog or a Service Dog?
 										</div>
@@ -76,7 +76,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Personal Information</div>
+								<div class="text-minor-heading-small mt-2">Personal Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
@@ -110,9 +110,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-container *ngIf="!isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<div class="text-minor-heading-small mt-4">Medical Information</div>
+									<div class="text-minor-heading-small">
+										Medical Form Confirming Requirement for Guide Dog or Service Dog
+									</div>
 									<div class="row mt-0">
-										<div class="col-lg-6 col-md-12">
+										<div class="col-lg-8 col-md-12">
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of medicalInformationAttachments; let i = index">
@@ -126,7 +128,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small mt-4">Photo of Yourself</div>
+								<div class="text-minor-heading-small">Photo of Yourself</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
 										<div class="summary-text-data">
@@ -141,7 +143,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small mt-4">
+								<div class="text-minor-heading-small">
 									{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
 								</div>
 								<div class="row mt-0">
@@ -178,33 +180,33 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Dog Information</div>
+								<div class="text-minor-heading-small mt-2">Dog Information</div>
 								<div class="row mt-0">
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Dog Name</div>
 										<div class="summary-text-data">{{ dogName | default }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
 											{{ dogDateOfBirth | formatDate | default }}
 										</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Breed</div>
 										<div class="summary-text-data">
 											{{ dogBreed | default }}
 										</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Colour And Markings</div>
 										<div class="summary-text-data">{{ colourAndMarkings | default }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Gender</div>
 										<div class="summary-text-data">{{ genderCode | options: 'GenderTypes' | default }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
 									</div>
@@ -213,12 +215,16 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-container *ngIf="!isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<div class="text-minor-heading-small mt-4">Dog Medical Information</div>
+									<div class="text-minor-heading-small">Dog Medical Information</div>
 									<div class="row mt-0">
-										<div class="col-lg-12 col-md-12">
-											<div class="text-label d-block text-muted">
-												Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Inoculations Up-to-date</div>
+											<div class="summary-text-data">
+												{{ areInoculationsUpToDate | options: 'BooleanTypes' | default }}
 											</div>
+										</div>
+										<div class="col-lg-8 col-md-12">
+											<div class="text-label d-block text-muted">Certification from a BC Veterinarian</div>
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of dogMedicalAttachments; let i = index">
@@ -273,7 +279,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-container *ngIf="(isTrainedByAccreditedSchools && isServiceDog) || !isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<div class="text-minor-heading-small mt-4">Specialized Tasks</div>
+									<div class="text-minor-heading-small">Specialized Tasks</div>
 									<div class="row mt-0">
 										<div class="col-lg-12 col-md-12">
 											<div class="summary-text-data">
@@ -405,6 +411,10 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get photoOfYourselfAttachments(): File[] | null {
 		return this.gdsdApplicationService.getSummaryphotoOfYourselfAttachments(this.gdsdModelData);
+	}
+
+	get areInoculationsUpToDate(): string {
+		return this.gdsdApplicationService.getSummaryareInoculationsUpToDate(this.gdsdModelData);
 	}
 
 	get medicalInformationAttachments(): File[] | null {
