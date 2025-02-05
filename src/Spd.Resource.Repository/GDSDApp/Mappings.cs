@@ -98,7 +98,7 @@ internal class Mappings : Profile
         //.ForMember(d => d.spd_name, opt => opt.MapFrom(s => s.HasAttendedTrainingSchool));
 
         _ = CreateMap<TrainingSchoolInfo, spd_dogtrainingschool>()
-           .ForMember(d => d.spd_name, opt => opt.MapFrom(s => s.TrainingBizName))
+           .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.TrainingBizName))
            .ForMember(d => d.spd_contactfirstname, opt => opt.MapFrom(s => s.ContactGivenName))
            .ForMember(d => d.spd_contactsurname, opt => opt.MapFrom(s => s.ContactSurname))
            .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.ContactEmailAddress))
@@ -106,14 +106,14 @@ internal class Mappings : Profile
            .ForMember(d => d.spd_traininghours, opt => opt.MapFrom(s => s.TotalTrainingHours))
            .ForMember(d => d.spd_startdate, opt => opt.MapFrom(s => s.TrainingStartDate))
            .ForMember(d => d.spd_enddate, opt => opt.MapFrom(s => s.TrainingEndDate))
-            //.ForMember(d => d.spd_w, opt => opt.MapFrom(s => s.WhatLearned))
-            //.ForMember(d => d.spd_w, opt => opt.MapFrom(s => s.TrainingName))
-            //.ForMember(d => d.spd, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.AddressLine1)))
-            // .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.AddressLine2)))
-            // .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.City)))
-            // .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.PostalCode)))
-            // .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.Province)))
-            // .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : StringHelper.SanitizeEmpty(s.MailingAddress.Country)))
+           .ForMember(d => d.spd_name, opt => opt.MapFrom(s => s.TrainingName))
+           .ForMember(d => d.spd_trainingdetails, opt => opt.MapFrom(s => s.WhatLearned))
+           .ForMember(d => d.spd_street1, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.AddressLine1)))
+            .ForMember(d => d.spd_street2, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.AddressLine2)))
+            .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.City)))
+            .ForMember(d => d.spd_postalzipcode, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.PostalCode)))
+            .ForMember(d => d.spd_provincestate, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.Province)))
+            .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.Country)))
             ;
 
         _ = CreateMap<OtherTraining, spd_dogtrainingschool>()
