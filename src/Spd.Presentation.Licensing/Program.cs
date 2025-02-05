@@ -1,6 +1,5 @@
 using FluentValidation;
 using Serilog;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
@@ -36,7 +35,6 @@ try
         });
 
     builder.Services.ConfigureAuthentication(builder.Configuration);
-    builder.Services.AddFluentValidationAutoValidation();
     builder.Services.ConfigureAuthorization();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);

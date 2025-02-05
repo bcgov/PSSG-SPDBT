@@ -1379,17 +1379,15 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		return workerLicenceModelData.policeBackgroundData.attachments ?? [];
 	}
 
-	getSummarygivenName(workerLicenceModelData: any): string {
-		return workerLicenceModelData.personalInformationData.givenName ?? '';
-	}
-	getSummarymiddleName1(workerLicenceModelData: any): string {
-		return workerLicenceModelData.personalInformationData.middleName1 ?? '';
-	}
-	getSummarymiddleName2(workerLicenceModelData: any): string {
-		return workerLicenceModelData.personalInformationData.middleName2 ?? '';
-	}
-	getSummarysurname(workerLicenceModelData: any): string {
-		return workerLicenceModelData.personalInformationData.surname ?? '';
+	getSummaryapplicantName(workerLicenceModelData: any): string {
+		return (
+			this.utilService.getFullNameWithMiddle(
+				workerLicenceModelData.personalInformationData.givenName,
+				workerLicenceModelData.personalInformationData.middleName1,
+				workerLicenceModelData.personalInformationData.middleName2,
+				workerLicenceModelData.personalInformationData.surname
+			) ?? ''
+		);
 	}
 	getSummarygenderCode(workerLicenceModelData: any): string {
 		return workerLicenceModelData.personalInformationData.genderCode ?? '';

@@ -16,7 +16,6 @@
 				<PackageReference Include="AutoMapper" />
 				<PackageReference Include="MediatR" />
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-				<PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" />
 				<PackageReference Include="Swashbuckle.AspNetCore" />
 				<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 				<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
