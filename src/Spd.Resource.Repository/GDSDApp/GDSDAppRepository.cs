@@ -50,7 +50,6 @@ internal class GDSDAppRepository : IGDSDAppRepository
                     foreach (TrainingSchoolInfo schoolInfo in cmd.TrainingInfo.SchoolTrainings)
                     {
                         spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
-                        school.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.UnAccreditedSchool;
                         _context.AddTospd_dogtrainingschools(school);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
                     }
@@ -60,7 +59,6 @@ internal class GDSDAppRepository : IGDSDAppRepository
                     foreach (OtherTraining other in cmd.TrainingInfo.OtherTrainings)
                     {
                         spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
-                        otherTraining.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.UnAccreditedSchool; //what the type should be?
                         _context.AddTospd_dogtrainingschools(otherTraining);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
                     }
