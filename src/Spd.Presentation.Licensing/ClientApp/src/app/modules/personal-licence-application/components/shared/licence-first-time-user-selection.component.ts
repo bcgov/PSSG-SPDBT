@@ -8,16 +8,16 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-licence-first-time-user-selection',
-    template: `
+	selector: 'app-licence-first-time-user-selection',
+	template: `
 		<section class="step-section" *ngIf="options">
 			<div class="step">
-				<app-step-title title="First Time User Selection"></app-step-title>
+				<app-step-title title="Getting Started"></app-step-title>
 
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="fs-5 lh-base">We found {{ infoLine1 }} in our system with your name and date of birth.</div>
-						<div class="mt-3 lh-base">If {{ infoLine2 }}, select it to link it to your portal account:</div>
+						<div class="mt-3 lh-base">{{ infoLine2 }}:</div>
 						<div class="row">
 							<ng-container *ngFor="let option of options; let i = index">
 								<div class="col-lg-4 col-md-6 col-sm-12 my-3">
@@ -32,13 +32,13 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 										<div class="summary-text-data">{{ getFullName(option) }}</div>
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
-											{{ option.birthDate | formatDate : formalDateFormat }}
+											{{ option.birthDate | formatDate: formalDateFormat }}
 										</div>
 										<div class="text-label d-block text-muted">Licence Number</div>
 										<div class="summary-text-data">{{ option.licenceNumber }}</div>
 										<div class="text-label d-block text-muted">Expiry Date</div>
 										<div class="summary-text-data">
-											{{ option.licenceExpiryDate | formatDate : formalDateFormat }}
+											{{ option.licenceExpiryDate | formatDate: formalDateFormat }}
 										</div>
 									</div>
 								</div>
@@ -62,16 +62,19 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.user-option {
 				border-radius: 4px;
 				border: 1px solid grey;
-				box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+				box-shadow:
+					0 3px 1px -2px #0003,
+					0 2px 2px #00000024,
+					0 1px 5px #0000001f;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -106,11 +109,11 @@ export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceCh
 					return;
 				} else if (resp.length === 1) {
 					this.infoLine1 = 'an existing record';
-					this.infoLine2 = 'this is you';
+					this.infoLine2 = 'If this record is yours, you can link it to your security services account';
 					this.noneButtonLabel = 'This is not me';
 				} else {
 					this.infoLine1 = 'existing records';
-					this.infoLine2 = 'any one of these are you';
+					this.infoLine2 = 'If any of these records are yours, you can link them to your security services account';
 					this.noneButtonLabel = 'None of these are me';
 				}
 
