@@ -150,7 +150,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				expiryDate: governmentPhotoIdData.expiryDate
 					? this.formatDatePipe.transform(governmentPhotoIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 					: null,
-				documentIdNumber: null, // TODO GDSD document ID?  governmentPhotoIdData.governmentIssuedDocumentIdNumber,
 				licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode,
 			});
 		});
@@ -226,11 +225,10 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate || doc.documentIdNumber)
+				.filter((doc) => doc.expiryDate)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
-						documentIdNumber: doc.documentIdNumber,
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 					} as DocumentRelatedInfo;
 				}) ?? [];
@@ -334,14 +332,14 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getSummaryisGuideDog(gdsdModelData: any): string {
 		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes ? 'Guide Dog' : 'Service Dog';
 	}
-	getSummarygivenName(gdsdModelData: any): string {
-		return gdsdModelData.personalInformationData.givenName ?? '';
-	}
-	getSummarymiddleName(gdsdModelData: any): string {
-		return gdsdModelData.personalInformationData.middleName ?? '';
-	}
-	getSummarysurname(gdsdModelData: any): string {
-		return gdsdModelData.personalInformationData.surname ?? '';
+	getSummaryapplicantName(gdsdModelData: any): string {
+		return (
+			this.utilService.getFullNameWithOneMiddle(
+				gdsdModelData.personalInformationData.givenName,
+				gdsdModelData.personalInformationData.middleName,
+				gdsdModelData.personalInformationData.surname
+			) ?? ''
+		);
 	}
 	getSummarydateOfBirth(gdsdModelData: any): string {
 		return gdsdModelData.personalInformationData.dateOfBirth ?? '';
@@ -358,9 +356,10 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	}
 	getSummaryaccreditedContactName(gdsdModelData: any): string {
 		return (
-			gdsdModelData.accreditedGraduationData.schoolContactGivenName +
-			' ' +
-			gdsdModelData.accreditedGraduationData.schoolContactSurname
+			this.utilService.getFullName(
+				gdsdModelData.accreditedGraduationData.schoolContactGivenName,
+				gdsdModelData.accreditedGraduationData.schoolContactSurname
+			) ?? ''
 		);
 	}
 	getSummaryaccreditedPhoneNumber(gdsdModelData: any): string {

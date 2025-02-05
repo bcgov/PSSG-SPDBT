@@ -80,7 +80,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="row mt-0">
 									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
-										<div class="summary-text-data">{{ givenName }} {{ middleName }} {{ surname }}</div>
+										<div class="summary-text-data">{{ applicantName }}</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Date of Birth</div>
@@ -371,14 +371,8 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 	get isGuideDog(): string {
 		return this.gdsdApplicationService.getSummaryisGuideDog(this.gdsdModelData);
 	}
-	get givenName(): string {
-		return this.gdsdApplicationService.getSummarygivenName(this.gdsdModelData);
-	}
-	get middleName(): string {
-		return this.gdsdApplicationService.getSummarymiddleName(this.gdsdModelData);
-	}
-	get surname(): string {
-		return this.gdsdApplicationService.getSummarysurname(this.gdsdModelData);
+	get applicantName(): string {
+		return this.gdsdApplicationService.getSummaryapplicantName(this.gdsdModelData);
 	}
 	get dateOfBirth(): string {
 		return this.gdsdApplicationService.getSummarydateOfBirth(this.gdsdModelData);

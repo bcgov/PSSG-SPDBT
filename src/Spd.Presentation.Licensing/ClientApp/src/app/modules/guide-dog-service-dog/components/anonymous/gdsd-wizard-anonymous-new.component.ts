@@ -3,11 +3,13 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 import { StepsGdsdDogInfoComponent } from './steps-gdsd-dog-info.component';
@@ -158,7 +160,9 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private hotToastService: HotToastService,
 		private router: Router,
+		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -202,11 +206,11 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	onSubmit(): void {
 		this.gdsdApplicationService.submitAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(// TODO gdsd uncomment
-				// 	this.serviceTypeCode,
-				// 	this.applicationTypeCode
-				// );
-				// this.hotToastService.success(successMessage);
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.GdsdTeamCertification,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
 
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED),

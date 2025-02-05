@@ -86,6 +86,24 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
+	getFullNameWithOneMiddle(
+		givenName: string | null | undefined,
+		middleName: string | null | undefined,
+		surname: string | null | undefined
+	): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName) {
+			userNameArray.push(middleName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
 	getFullNameWithMiddle(
 		givenName: string | null | undefined,
 		middleName1: string | null | undefined,

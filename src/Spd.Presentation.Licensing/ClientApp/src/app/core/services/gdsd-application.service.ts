@@ -138,15 +138,15 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const hasAttendedTrainingSchool =
 			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
 
-		console.debug(
-			'isStepPersonalInformationComplete',
-			hasAttendedTrainingSchool,
-			this.gdsdPersonalInformationFormGroup.valid,
-			this.medicalInformationFormGroup.valid,
-			this.photographOfYourselfFormGroup.valid,
-			this.governmentPhotoIdFormGroup.valid,
-			this.mailingAddressFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepPersonalInformationComplete',
+		// 	hasAttendedTrainingSchool,
+		// 	this.gdsdPersonalInformationFormGroup.valid,
+		// 	this.medicalInformationFormGroup.valid,
+		// 	this.photographOfYourselfFormGroup.valid,
+		// 	this.governmentPhotoIdFormGroup.valid,
+		// 	this.mailingAddressFormGroup.valid
+		// );
 
 		if (hasAttendedTrainingSchool) {
 			return (
@@ -171,7 +171,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		console.debug('isStepDogInformationComplete', this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
+		// console.debug('isStepDogInformationComplete', this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
 
 		if (isTrainedByAccreditedSchools) {
 			return this.dogInformationFormGroup.valid;
@@ -189,11 +189,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			const isServiceDog =
 				this.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value === BooleanTypeCode.No;
 
-			console.debug(
-				'isStepTrainingInformationComplete',
-				this.accreditedGraduationFormGroup.valid,
-				this.dogTasksFormGroup.valid
-			);
+			// console.debug(
+			// 	'isStepTrainingInformationComplete',
+			// 	this.accreditedGraduationFormGroup.valid,
+			// 	this.dogTasksFormGroup.valid
+			// );
 
 			if (isServiceDog) {
 				return this.accreditedGraduationFormGroup.valid && this.dogTasksFormGroup.valid;
@@ -205,14 +205,14 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const hasAttendedTrainingSchool =
 			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
 
-		console.debug(
-			'isStepTrainingInformationComplete',
-			hasAttendedTrainingSchool,
-			this.trainingHistoryFormGroup.valid,
-			this.schoolTrainingHistoryFormGroup.valid,
-			this.otherTrainingHistoryFormGroup.valid,
-			this.dogTasksFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepTrainingInformationComplete',
+		// 	hasAttendedTrainingSchool,
+		// 	this.trainingHistoryFormGroup.valid,
+		// 	this.schoolTrainingHistoryFormGroup.valid,
+		// 	this.otherTrainingHistoryFormGroup.valid,
+		// 	this.dogTasksFormGroup.valid
+		// );
 
 		if (hasAttendedTrainingSchool) {
 			return (
@@ -399,17 +399,17 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					trainingBizName: new FormControl(null, [FormControlValidators.required]),
 					contactGivenName: new FormControl(''),
 					contactSurname: new FormControl('', [FormControlValidators.required]),
-				contactPhoneNumber: new FormControl('', [Validators.required]),
-				contactEmailAddress: new FormControl('', [FormControlValidators.email]),
-				trainingDateFrom: new FormControl('', [Validators.required]),
-				trainingDateTo: new FormControl('', [Validators.required]),
-				nameOfTrainingProgram: new FormControl('', [Validators.required]),
-				hoursOfTraining: new FormControl('', [Validators.required]),
-				learnedDesc: new FormControl('', [Validators.required]),
-				addressSelected: new FormControl(false, [Validators.requiredTrue]),
-				addressLine1: new FormControl('', [FormControlValidators.required]),
-				addressLine2: new FormControl(''),
-				city: new FormControl('', [FormControlValidators.required]),
+					contactPhoneNumber: new FormControl('', [Validators.required]),
+					contactEmailAddress: new FormControl('', [FormControlValidators.email]),
+					trainingDateFrom: new FormControl('', [Validators.required]),
+					trainingDateTo: new FormControl('', [Validators.required]),
+					nameOfTrainingProgram: new FormControl('', [Validators.required]),
+					hoursOfTraining: new FormControl('', [Validators.required]),
+					learnedDesc: new FormControl('', [Validators.required]),
+					addressSelected: new FormControl(false, [Validators.requiredTrue]),
+					addressLine1: new FormControl('', [FormControlValidators.required]),
+					addressLine2: new FormControl(''),
+					city: new FormControl('', [FormControlValidators.required]),
 					postalCode: new FormControl('', [FormControlValidators.required]),
 					province: new FormControl('', [FormControlValidators.required]),
 					country: new FormControl('', [FormControlValidators.required]),
