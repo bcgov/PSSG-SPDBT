@@ -20,43 +20,40 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 				<div class="row">
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="row">
-							<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-								<div class="fw-bold mb-3">Benefits of logging in with your BC Service Card:</div>
+							<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12 mx-auto">
+								<div class="fw-bold mb-3">Use your BC Services Card Login:</div>
 								<table>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">Save your application</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Manage and update your licence or permit with ease online</td>
 									</tr>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">See the progress of your application</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Verify your identity securely online</td>
 									</tr>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">Manage your licence renewal and updates</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Save your application and return to finish it at your convenience</td>
+									</tr>
+									<tr>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Track the progress of your application</td>
 									</tr>
 								</table>
-								<div class="mt-3">
-									Don't have BC Services Card?
+								<div class="mt-4">
 									<a
 										class="large login-link"
 										aria-label="Register for a BC Services Card"
 										[href]="setupAccountUrl"
 										target="_blank"
 									>
-										Set up your account today
+										Learn how to set up the BC Services Card Login
 									</a>
 								</div>
 							</div>
 						</div>
 
-						<div class="login-selection-container my-4 my-lg-5">
+						<div class="login-selection-container my-3 my-lg-5">
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
@@ -80,11 +77,11 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
-											aria-label="Continue without a BC Services Card to manage your security worker licence"
+											aria-label="Continue without BC Services Card to manage your security worker licence"
 											(click)="onContinue(serviceTypeCodes.SecurityWorkerLicence)"
 											(keydown)="onKeydownContinue($event, serviceTypeCodes.SecurityWorkerLicence)"
 										>
-											Continue without a BC Services Card
+											Continue without BC Services Card
 										</a>
 									</div>
 								</div>
@@ -147,15 +144,12 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
+										If you cannot obtain a BC Services Card, please
 										<a
-											tabindex="0"
-											class="large login-link"
-											aria-label="Continue without a BC Services Card to manage your body armour permit"
-											(click)="onContinue(serviceTypeCodes.BodyArmourPermit)"
-											(keydown)="onKeydownContinue($event, serviceTypeCodes.BodyArmourPermit)"
-										>
-											Continue without a BC Services Card
-										</a>
+											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
+											target="_blank"
+											>contact our office</a
+										>.
 									</div>
 								</div>
 							</div>
@@ -182,15 +176,12 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
+										If you cannot obtain a BC Services Card, please
 										<a
-											tabindex="0"
-											class="large login-link"
-											aria-label="Continue without a BC Services Card to manage your armoured vehicle permit"
-											(click)="onContinue(serviceTypeCodes.ArmouredVehiclePermit)"
-											(keydown)="onKeydownContinue($event, serviceTypeCodes.ArmouredVehiclePermit)"
-										>
-											Continue without a BC Services Card
-										</a>
+											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
+											target="_blank"
+											>contact our office</a
+										>.
 									</div>
 								</div>
 							</div>
