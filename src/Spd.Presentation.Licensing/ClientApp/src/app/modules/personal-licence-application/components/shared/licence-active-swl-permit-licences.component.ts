@@ -98,10 +98,10 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									The following updates have a
 									{{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 									<ul class="m-0">
-										<li>changes to licence category</li>
-										<li>requests for authorization for dogs or restraints</li>
-										<li>changing your name</li>
-										<li>replacing your photo</li>
+										<li>Licence category change</li>
+										<li>Authorization for dogs or restraints (e.g., handcuffs)</li>
+										<li>Name change</li>
+										<li>Licence replacement</li>
 									</ul>
 								</div>
 								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -139,10 +139,10 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								<div class="col-lg-9">
 									Permit updates include the following changes:
 									<ul class="m-0">
-										<li>changing your name</li>
-										<li>changing your reasons or rationale</li>
-										<li>changing your employer information</li>
-										<li>replacing your photo or permit</li>
+										<li>Name change</li>
+										<li>Reason or rationale change</li>
+										<li>Employer information change</li>
+										<li>Permit replacement</li>
 									</ul>
 								</div>
 								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -188,7 +188,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitFooter"
 						>
 							<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
-								<div class="col-12" *ngIf="lostLicenceDaysText">
+								<div class="col-12">
 									<mat-divider class="my-2"></mat-divider>
 									<span class="fw-semibold">Lost your licence? </span>
 									<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
@@ -201,7 +201,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										(keydown)="onKeydownRequestReplacement($event, licence)"
 										>Request a replacement</a
 									>
-									and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
 								</div>
 							</ng-container>
 							<ng-template #IsNotReplacementPeriod>
@@ -218,7 +217,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 
 						<ng-template #IsPermitFooter>
 							<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
-								<div class="col-12" *ngIf="lostLicenceDaysText">
+								<div class="col-12">
 									<mat-divider class="my-2"></mat-divider>
 									<span class="fw-semibold">Lost or stolen permit? </span>
 									<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
@@ -231,7 +230,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 										(keydown)="onKeydownRequestReplacement($event, licence)"
 										>Request a replacement</a
 									>
-									and we'll send you one in {{ lostLicenceDaysText }} business days.
 								</div>
 							</ng-container>
 							<ng-template #IsNotReplacementPeriod>
@@ -276,7 +274,6 @@ export class LicenceActiveSwlPermitLicencesComponent {
 
 	@Input() activeLicences!: Array<MainLicenceResponse>;
 	@Input() applicationIsInProgress!: boolean;
-	@Input() lostLicenceDaysText!: string;
 
 	@Output() replaceLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() updateLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();

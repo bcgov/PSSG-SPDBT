@@ -92,8 +92,8 @@ export class CommonApplicationService {
 	private uniqueId = 1;
 
 	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
-		'Licensing Application',
-		'Licensing Application',
+		'Security Services Application',
+		'Security Services Application',
 	]);
 
 	constructor(
@@ -541,7 +541,7 @@ export class CommonApplicationService {
 				mobileTitle += ` ${originalLicenceNumber}`;
 			}
 		} else {
-			mobileTitle = title = 'Licensing Application';
+			mobileTitle = title = 'Security Services Application';
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
@@ -930,14 +930,14 @@ export class CommonApplicationService {
 					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
 				} else if (item.licenceExpiryNumberOfDays > 7) {
 					warningMessages.push(
-						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
 					);
 				} else if (item.licenceExpiryNumberOfDays === 0) {
 					errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
 				} else {
 					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
 					errorMessages.push(
-						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
 					);
 				}
 			}
