@@ -175,7 +175,8 @@ namespace Spd.Utilities.Dynamics
             {"IdCardIssuedByAccreditedDogTrainingSchool",  Guid.Parse("85005f7d-76df-ef11-b857-00505683fbf4")},
             {"MedicalFormConfirmingNeedDog",  Guid.Parse("319cdc9e-76df-ef11-b857-00505683fbf4")},
             {"VeterinarianConfirmationForSpayedNeuteredDog",  Guid.Parse("f1f90bbd-76df-ef11-b857-00505683fbf4")},
-            {"DogTrainingCurriculumCertificateSupportingDocument",  Guid.Parse("8e73071a-95e2-ef11-b857-00505683fbf4")} //todo: change to correct value when wade completes
+            {"DogTrainingCurriculumCertificateSupportingDocument",  Guid.Parse("8e73071a-95e2-ef11-b857-00505683fbf4")},
+            {"GDSDPracticeHoursLog",  Guid.Parse("5dbbe893-f2e3-ef11-b857-00505683fbf4")},
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)
