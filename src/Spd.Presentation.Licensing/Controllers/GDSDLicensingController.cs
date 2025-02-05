@@ -107,7 +107,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<GDSDAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            //await VerifyKeyCode();
+            await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
             var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);

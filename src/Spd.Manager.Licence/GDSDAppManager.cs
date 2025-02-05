@@ -47,7 +47,7 @@ internal class GDSDAppManager :
     public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
     {
         GDSDTeamLicenceAppAnonymousSubmitRequest request = cmd.SubmitRequest;
-        //ValidateFilesForNewApp(cmd); //temp remove
+        ValidateFilesForNewApp(cmd);
 
         //save the application
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
