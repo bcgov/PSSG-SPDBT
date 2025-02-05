@@ -428,6 +428,7 @@ namespace Spd.Utilities.Dynamics
     {
         AccreditedSchool = 100000000,
         UnAccreditedSchool = 100000001,
-        DogTrainerAccreditedSchool = 100000002
+        DogTrainerAccreditedSchool = 100000002,
+        Other = 100000003
     }
 }

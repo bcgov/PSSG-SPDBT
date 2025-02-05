@@ -26,9 +26,9 @@ internal class GDSDAppRepository : IGDSDAppRepository
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
             contact = await _context.CreateContact(contact, null, null, ct);
-            //process graduation info
             if (cmd.IsDogTrainedByAccreditedSchool)
             {
+                //accredited school
                 _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(cmd.DogInfoNewAccreditedSchool, app);
                 app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
                 _context.AddTospd_applications(app);
@@ -39,11 +39,30 @@ internal class GDSDAppRepository : IGDSDAppRepository
             }
             else
             {
+                //non-accredited school
                 _mapper.Map<DogInfoNewWithoutAccreditedSchool, spd_application>(cmd.DogInfoNewWithoutAccreditedSchool, app);
+                app.spd_dogsassistanceindailyliving = cmd.TrainingInfo.SpecializedTasksWhenPerformed;
                 app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
                 _context.AddTospd_applications(app);
-                //todo:
-                //spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(cmd.TrainingInfo);
+
+                if (cmd.TrainingInfo.HasAttendedTrainingSchool)
+                {
+                    foreach (TrainingSchoolInfo schoolInfo in cmd.TrainingInfo.SchoolTrainings)
+                    {
+                        spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
+                        _context.AddTospd_dogtrainingschools(school);
+                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                    }
+                }
+                else
+                {
+                    foreach (OtherTraining other in cmd.TrainingInfo.OtherTrainings)
+                    {
+                        spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
+                        _context.AddTospd_dogtrainingschools(otherTraining);
+                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
+                    }
+                }
             }
             SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
             SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
