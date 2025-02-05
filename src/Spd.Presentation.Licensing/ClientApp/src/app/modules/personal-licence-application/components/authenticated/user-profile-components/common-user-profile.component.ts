@@ -75,11 +75,10 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 
 						<div class="my-3">
 							<div class="fs-6 fw-bold mb-4">
-								Has your residential address changed?
+								Have you moved?
 								<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
-									>Change your address online</a
-								>
-								to update this information on your BC Services Card. Any changes you make will then be updated here.
+									>Update your address online</a
+								>. Any changes you make will automatically be updated here.
 							</div>
 
 							<section>
@@ -99,8 +98,8 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 
 						<div class="my-3">
 							<div class="fs-6 fw-bold mb-4" *ngIf="!isReadonlyMailingAddress">
-								Provide your mailing address, if different from your residential address. This cannot be a company
-								address.
+								Please provide your mailing address if it differs from your residential address. Note that a company
+								address cannot be used.
 							</div>
 
 							<app-form-address-and-is-same-flag
