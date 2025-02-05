@@ -10,7 +10,6 @@ import {
 	MainApplicationResponse,
 	MainLicenceResponse,
 } from '@app/core/services/common-application.service';
-import { ConfigService } from '@app/core/services/config.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -71,7 +70,6 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 					<app-licence-active-swl-permit-licences
 						[activeLicences]="activeLicences"
 						[applicationIsInProgress]="applicationIsInProgress"
-						[lostLicenceDaysText]="lostLicenceDaysText"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenew($event)"
@@ -156,15 +154,15 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 
 					<div class="mt-4">
 						<app-alert type="info" icon="info">
-							Do you have a security licence, body armour permit, or armoured vehicle permit but it's not showing here?
+							Do you have a security licence, body armour permit, or armoured vehicle permit that isn’t displayed here?
 
 							<a
 								class="fw-normal"
 								tabindex="0"
-								aria-label="Connect a current or expired licence or permit to your account"
+								aria-label="Link a current or expired licence or permit to your account"
 								(click)="onConnectToExpiredLicence()"
 								(keydown)="onKeydownConnectToExpiredLicence($event)"
-								>Connect a current or expired licence or permit</a
+								>Link a current or expired licence or permit</a
 							>
 							to your account.
 						</app-alert>
@@ -180,7 +178,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 	yourProfileLabel = '';
-	lostLicenceDaysText = 'TDB';
 
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
@@ -202,7 +199,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private configService: ConfigService,
 		private hotToastService: HotToastService,
 		private utilService: UtilService,
 		private dialog: MatDialog,
@@ -214,8 +210,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	ngOnInit(): void {
 		this.permitApplicationService.reset(); // prevent back button into wizard
 		this.workerApplicationService.reset(); // prevent back button into wizard
-
-		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TDB';
 
 		this.commonApplicationService.setApplicationTitle();
 

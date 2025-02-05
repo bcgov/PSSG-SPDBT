@@ -794,17 +794,15 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		return permitModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
-	getSummarygivenName(permitModelData: any): string {
-		return permitModelData.personalInformationData.givenName ?? '';
-	}
-	getSummarymiddleName1(permitModelData: any): string {
-		return permitModelData.personalInformationData.middleName1 ?? '';
-	}
-	getSummarymiddleName2(permitModelData: any): string {
-		return permitModelData.personalInformationData.middleName2 ?? '';
-	}
-	getSummarysurname(permitModelData: any): string {
-		return permitModelData.personalInformationData.surname ?? '';
+	getSummaryapplicantName(permitModelData: any): string {
+		return (
+			this.utilService.getFullNameWithMiddle(
+				permitModelData.personalInformationData.givenName,
+				permitModelData.personalInformationData.middleName1,
+				permitModelData.personalInformationData.middleName2,
+				permitModelData.personalInformationData.surname
+			) ?? ''
+		);
 	}
 	getSummarygenderCode(permitModelData: any): string {
 		return permitModelData.personalInformationData.genderCode ?? '';
