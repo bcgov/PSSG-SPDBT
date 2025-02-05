@@ -70,16 +70,15 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 		this.childNextStep.emit(true);
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_DOG_INFO:
-		// 		return this.dogInfoComponent.isFormValid();
-		// 	case this.STEP_DOG_MEDICAL:
-		// 		return this.dogMedicalComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_DOG_INFO:
+				return this.dogInfoComponent.isFormValid();
+			case this.STEP_DOG_MEDICAL:
+				return this.dogMedicalComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

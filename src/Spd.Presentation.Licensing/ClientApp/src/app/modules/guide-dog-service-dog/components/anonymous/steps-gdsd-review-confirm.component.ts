@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepGdsdConsentComponent } from '../shared/common-step-components/step-gdsd-consent.component';
@@ -9,7 +9,12 @@ import { StepGdsdSummaryComponent } from './step-components/step-gdsd-summary.co
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-summary></app-step-gdsd-summary>
+				<app-step-gdsd-summary
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
+					(editStep)="onGoToStep($event)"
+				></app-step-gdsd-summary>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -46,6 +51,11 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isTrainedByAccreditedSchools!: boolean;
+	@Input() hasAttendedTrainingSchool!: boolean;
+	@Input() isServiceDog!: boolean;
+
+	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepGdsdSummaryComponent) summaryComponent!: StepGdsdSummaryComponent;
 	@ViewChild(StepGdsdConsentComponent) consentComponent!: StepGdsdConsentComponent;
@@ -55,23 +65,27 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	}
 
 	onSubmitNow(): void {
-		// if (!this.consentAndDeclarationComponent.isFormValid()) {
-		// 	return;
-		// }
-
 		this.nextSubmitStep.emit();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_TERMS:
-		// 		return this.summaryComponent.isFormValid();
-		// 	case this.STEP_SOLE_PROPRIETOR:
-		// 		return this.consentComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	onGoToStep(step: number): void {
+		this.goToStep.emit(step);
+	}
+
+	override onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+		this.summaryComponent.onUpdateData();
+	}
+
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_SUMMARY:
+				return true;
+			case this.STEP_CONSENT:
+				return this.consentComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

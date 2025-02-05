@@ -5,6 +5,7 @@
 import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
+import { DocumentRelatedInfo } from '../models/document-related-info';
 import { DogInfoNewAccreditedSchool } from '../models/dog-info-new-accredited-school';
 import { DogInfoNewWithoutAccreditedSchool } from '../models/dog-info-new-without-accredited-school';
 import { DogInfoRenew } from '../models/dog-info-renew';
@@ -22,6 +23,7 @@ export interface GdsdTeamLicenceAppAnonymousSubmitRequest {
   contactPhoneNumber?: string | null;
   dateOfBirth?: string;
   documentKeyCodes?: Array<string> | null;
+  documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
   dogInfoNewWithoutAccreditedSchool?: DogInfoNewWithoutAccreditedSchool;
   dogInfoRenew?: DogInfoRenew;
