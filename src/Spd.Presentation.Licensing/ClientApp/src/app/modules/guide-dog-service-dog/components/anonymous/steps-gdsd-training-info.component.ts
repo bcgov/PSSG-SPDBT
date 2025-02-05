@@ -20,9 +20,22 @@ import { StepGdsdTrainingHistoryComponent } from '../shared/common-step-componen
 						[showSaveAndExit]="showSaveAndExit"
 						(saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
 						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onStepNext(STEP_ACCREDITED)"
+						(nextStepperStep)="onStepNextServiceTasks()"
 						(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
 					></app-wizard-footer>
+
+					<mat-step *ngIf="isServiceDog">
+						<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
+
+						<app-wizard-footer
+							[isFormValid]="isFormValid"
+							[showSaveAndExit]="showSaveAndExit"
+							(saveAndExit)="onSaveAndExit(STEP_TASKS)"
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onStepNext(STEP_TASKS)"
+							(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+						></app-wizard-footer>
+					</mat-step>
 				</mat-step>
 			</ng-container>
 
@@ -102,6 +115,7 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 	@Input() hasAttendedTrainingSchool!: boolean;
+	@Input() isServiceDog!: boolean;
 
 	@ViewChild(StepGdsdAccreditedGraduationComponent) accreditedComponent!: StepGdsdAccreditedGraduationComponent;
 	@ViewChild(StepGdsdTrainingHistoryComponent) trainingComponent!: StepGdsdTrainingHistoryComponent;
@@ -113,22 +127,33 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 		super();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_ACCREDITED:
-		// 		return this.accreditedComponent.isFormValid();
-		// 	case this.STEP_TRAINING_HISTORY:
-		// 		return this.trainingComponent.isFormValid();
-		// 	case this.STEP_SCHOOL_TRAINING:
-		// 		return this.schoolComponent.isFormValid();
-		// 	case this.STEP_OTHER_TRAINING:
-		// 		return this.otherComponent.isFormValid();
-		// 	case this.STEP_TASKS:
-		// 		return this.tasksComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	onStepNextServiceTasks(): void {
+		const isValid = this.dirtyForm(this.STEP_ACCREDITED);
+		if (!isValid) return;
+
+		if (this.isServiceDog) {
+			this.childNextStep.emit(true);
+			return;
+		}
+
+		this.nextStepperStep.emit(true);
+	}
+
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_ACCREDITED:
+				return this.accreditedComponent.isFormValid();
+			case this.STEP_TRAINING_HISTORY:
+				return this.trainingComponent.isFormValid();
+			case this.STEP_SCHOOL_TRAINING:
+				return this.schoolComponent.isFormValid();
+			case this.STEP_OTHER_TRAINING:
+				return this.otherComponent.isFormValid();
+			case this.STEP_TASKS:
+				return this.tasksComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

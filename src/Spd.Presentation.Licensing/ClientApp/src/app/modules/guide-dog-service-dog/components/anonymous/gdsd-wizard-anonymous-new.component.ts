@@ -3,11 +3,13 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 import { StepsGdsdDogInfoComponent } from './steps-gdsd-dog-info.component';
@@ -81,6 +83,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -96,6 +99,9 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -146,6 +152,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	isFormValid = false;
 	isTrainedByAccreditedSchools = false;
 	hasAttendedTrainingSchool = false;
+	isServiceDog = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -153,17 +160,19 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private hotToastService: HotToastService,
 		private router: Router,
+		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
-		// if (!this.gdsdApplicationService.initialized) {
-		// 	this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
-		// 	return;
-		// }
+		if (!this.gdsdApplicationService.initialized) {
+			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
+			return;
+		}
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -172,6 +181,10 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
+
+			this.isServiceDog =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value ===
+				BooleanTypeCode.No;
 
 			this.isTrainedByAccreditedSchools =
 				this.gdsdApplicationService.gdsdModelFormGroup.get(
@@ -193,14 +206,15 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	onSubmit(): void {
 		this.gdsdApplicationService.submitAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-				// 	this.serviceTypeCode,
-				// 	this.applicationTypeCode
-				// );
-				// this.hotToastService.success(successMessage);
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.GdsdTeamCertification,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
 
 				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED),
+					{ state: { isSubmit: BooleanTypeCode.Yes } }
 				);
 			},
 			error: (error: any) => {
@@ -289,10 +303,10 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = true; //this.gdsdApplicationService.isStepSelectionComplete();
-		this.step2Complete = true; //this.gdsdApplicationService.isStepPersonalInformationComplete();
-		this.step3Complete = true; //this.gdsdApplicationService.isStepDogInformationComplete();
-		this.step4Complete = true; //this.gdsdApplicationService.isStepTrainingInformationComplete();
+		this.step1Complete = this.gdsdApplicationService.isStepSelectionComplete();
+		this.step2Complete = this.gdsdApplicationService.isStepPersonalInformationComplete();
+		this.step3Complete = this.gdsdApplicationService.isStepDogInformationComplete();
+		this.step4Complete = this.gdsdApplicationService.isStepTrainingInformationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}

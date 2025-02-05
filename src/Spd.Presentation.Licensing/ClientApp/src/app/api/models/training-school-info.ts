@@ -11,8 +11,8 @@ export interface TrainingSchoolInfo {
   totalTrainingHours?: number;
   trainingBizMailingAddress?: MailingAddress;
   trainingBizName?: string | null;
-  trainingDateFrom?: string | null;
-  trainingDateTo?: string | null;
+  trainingEndDate?: string | null;
   trainingName?: string | null;
+  trainingStartDate?: string | null;
   whatLearned?: string | null;
 }

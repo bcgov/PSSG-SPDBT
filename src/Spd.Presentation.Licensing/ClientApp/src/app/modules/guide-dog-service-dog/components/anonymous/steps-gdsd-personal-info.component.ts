@@ -20,6 +20,7 @@ import { StepGdsdPersonalInformationAnonymousComponent } from './step-components
 					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -104,22 +105,21 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 		super();
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// switch (step) {
-		// 	case this.STEP_PERSONAL_INFO:
-		// 		return this.personComponent.isFormValid();
-		// 	case this.STEP_MAILING_ADDRESS:
-		// 		return this.mailingAddressComponent.isFormValid();
-		// 	case this.STEP_MEDICAL:
-		// 		return this.medicalComponent.isFormValid();
-		// 	case this.STEP_PHOTO_OF_YOURSELF:
-		// 		return this.photoComponent.isFormValid();
-		// 	case this.STEP_GOV_ID:
-		// 		return this.govPhotoIdComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_PERSONAL_INFO:
+				return this.personComponent.isFormValid();
+			case this.STEP_MAILING_ADDRESS:
+				return this.mailingAddressComponent.isFormValid();
+			case this.STEP_MEDICAL:
+				return this.medicalComponent.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF:
+				return this.photoComponent.isFormValid();
+			case this.STEP_GOV_ID:
+				return this.govPhotoIdComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

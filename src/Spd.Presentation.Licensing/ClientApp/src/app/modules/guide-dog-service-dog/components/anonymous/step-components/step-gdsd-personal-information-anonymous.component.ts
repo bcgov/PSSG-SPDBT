@@ -69,7 +69,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Email Address</mat-label>
+									<mat-label>Email Address <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
 										formControlName="contactEmailAddress"
