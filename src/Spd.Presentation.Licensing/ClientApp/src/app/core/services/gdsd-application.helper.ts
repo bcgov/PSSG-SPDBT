@@ -1,5 +1,12 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Document, DocumentRelatedInfo, LicenceDocumentTypeCode } from '@app/api/models';
+import {
+	Document,
+	DocumentRelatedInfo,
+	LicenceDocumentTypeCode,
+	MailingAddress,
+	OtherTraining,
+	TrainingSchoolInfo,
+} from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -74,7 +81,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	otherTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		otherTrainings: this.formBuilder.array([]),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
-		practiceLogAttachments: new FormControl([]), // TODO  LicenceDocumentTypeCode.
+		practiceLogAttachments: new FormControl([]), // LicenceDocumentTypeCode.GdsdPracticeHoursLog
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
@@ -202,10 +209,46 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				microchipNumber: dogInformationData.microchipNumber,
 			};
 
+			const hasAttendedTrainingSchool =
+				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
+
+			const schoolTrainingHistoryData = gdsdModelFormValue.schoolTrainingHistoryData;
+			let schoolTrainingsData = null;
+
+			const otherTrainingHistoryData = gdsdModelFormValue.otherTrainingHistoryData;
+			let otherTrainingsData = null;
+
+			if (hasAttendedTrainingSchool) {
+				schoolTrainingsData = this.getSchoolTrainings(
+					hasAttendedTrainingSchool,
+					schoolTrainingHistoryData.schoolTrainings
+				);
+				schoolTrainingHistoryData.attachments?.forEach((doc: any) => {
+					documentInfos.push({
+						documentUrlId: doc.documentUrlId,
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+					});
+				});
+			} else {
+				otherTrainingsData = this.getOtherTrainings(hasAttendedTrainingSchool, otherTrainingHistoryData.otherTrainings);
+				otherTrainingHistoryData.attachments?.forEach((doc: any) => {
+					documentInfos.push({
+						documentUrlId: doc.documentUrlId,
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+					});
+				});
+				otherTrainingHistoryData.practiceLogAttachments?.forEach((doc: any) => {
+					documentInfos.push({
+						documentUrlId: doc.documentUrlId,
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+					});
+				});
+			}
+
 			trainingInfoData = {
-				hasAttendedTrainingSchool: this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool),
-				otherTrainings: null,
-				schoolTrainings: null,
+				hasAttendedTrainingSchool,
+				schoolTrainings: schoolTrainingsData,
+				otherTrainings: otherTrainingsData,
 				specializedTasksWhenPerformed: dogTasksData.tasks,
 			};
 
@@ -257,6 +300,69 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
+	}
+
+	private getSchoolTrainings(
+		hasAttendedTrainingSchool: boolean,
+		schoolTrainingArrayData: any
+	): Array<TrainingSchoolInfo> {
+		console.log('********** getSchoolTrainings ', hasAttendedTrainingSchool, schoolTrainingArrayData);
+		if (!hasAttendedTrainingSchool) return [];
+
+		const trainingArray: Array<TrainingSchoolInfo> = [];
+		schoolTrainingArrayData.forEach((train: any) => {
+			const mailingAddress: MailingAddress = {
+				addressLine1: train.addressLine1,
+				addressLine2: train.addressLine2,
+				city: train.city,
+				country: train.country,
+				postalCode: train.postalCode,
+				province: train.province,
+			};
+
+			const trainingStartDate = this.formatDatePipe.transform(
+				train.trainingDateFrom,
+				SPD_CONSTANTS.date.backendDateFormat
+			);
+			const trainingEndDate = this.formatDatePipe.transform(train.trainingDateTo, SPD_CONSTANTS.date.backendDateFormat);
+
+			trainingArray.push({
+				contactEmailAddress: train.contactEmailAddress,
+				contactGivenName: train.contactGivenName,
+				contactPhoneNumber: train.contactPhoneNumber,
+				contactSurname: train.contactSurname,
+				totalTrainingHours: train.hoursOfTraining,
+				trainingBizMailingAddress: mailingAddress,
+				trainingBizName: train.trainingBizName,
+				trainingEndDate,
+				trainingStartDate,
+				trainingName: train.nameOfTrainingProgram,
+				whatLearned: train.learnedDesc,
+			});
+		});
+		return trainingArray;
+	}
+
+	private getOtherTrainings(hasAttendedTrainingSchool: boolean, otherTrainingArrayData: any): Array<OtherTraining> {
+		console.log('********** getOtherTrainings ', hasAttendedTrainingSchool, otherTrainingArrayData);
+		if (hasAttendedTrainingSchool) return [];
+
+		const trainingArray: Array<OtherTraining> = [];
+		otherTrainingArrayData.forEach((train: any) => {
+			const usePersonalDogTrainer = this.utilService.booleanTypeToBoolean(train.usePersonalDogTrainer) ?? false;
+			trainingArray.push({
+				dogTrainerCredential: train.dogTrainerCredential,
+				hoursPracticingSkill: train.hoursPracticingSkill,
+				trainerEmailAddress: train.trainerEmailAddress,
+				trainerGivenName: train.trainerGivenName,
+				trainerPhoneNumber: train.trainerPhoneNumber,
+				trainerSurname: train.trainerSurname,
+				trainingDetail: train.trainingDetail,
+				trainingTime: train.trainingTime,
+				usePersonalDogTrainer,
+			});
+		});
+		return trainingArray;
 	}
 
 	getDocsToSaveBlobs(gdsdModelFormValue: any): Array<LicenceDocumentsToSave> {

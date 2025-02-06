@@ -5,8 +5,8 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 	selector: 'app-gdsd-summary-school-training',
 	template: `
 		<div class="row mt-0">
-			<div class="text-minor-heading-small mt-2">Training Schools</div>
 			<div *ngFor="let train of schoolTrainings; let i = index">
+				<div class="text-minor-heading-small mt-2">Training Schools</div>
 				<div class="row mt-0 mb-3">
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Training School Name</div>
