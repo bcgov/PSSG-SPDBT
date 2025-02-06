@@ -11,9 +11,7 @@ import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
-import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { CommonApplicationHelper } from './common-application.helper';
 
@@ -108,7 +106,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe,
 		protected utilService: UtilService,
 		protected fileUtilService: FileUtilService
 	) {
@@ -134,15 +131,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 		const documentInfos: Array<Document> = [];
 
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
-
-		dogInformationData.dogDateOfBirth = this.formatDatePipe.transform(
-			dogInformationData.dogDateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
+		personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
+		personalInformationData.dogDateOfBirth = this.utilService.dateToDbDate(personalInformationData.dogDateOfBirth);
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -154,9 +144,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		governmentPhotoIdData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
-				expiryDate: governmentPhotoIdData.expiryDate
-					? this.formatDatePipe.transform(governmentPhotoIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
+				expiryDate: this.utilService.dateToDbDate(governmentPhotoIdData.expiryDate),
 				licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode,
 			});
 		});
@@ -305,9 +293,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	private getSchoolTrainings(
 		hasAttendedTrainingSchool: boolean,
 		schoolTrainingArrayData: any
-	): Array<TrainingSchoolInfo> {
-		console.log('********** getSchoolTrainings ', hasAttendedTrainingSchool, schoolTrainingArrayData);
-		if (!hasAttendedTrainingSchool) return [];
+	): Array<TrainingSchoolInfo> | null {
+		if (!hasAttendedTrainingSchool) return null;
 
 		const trainingArray: Array<TrainingSchoolInfo> = [];
 		schoolTrainingArrayData.forEach((train: any) => {
@@ -320,11 +307,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				province: train.province,
 			};
 
-			const trainingStartDate = this.formatDatePipe.transform(
-				train.trainingDateFrom,
-				SPD_CONSTANTS.date.backendDateFormat
-			);
-			const trainingEndDate = this.formatDatePipe.transform(train.trainingDateTo, SPD_CONSTANTS.date.backendDateFormat);
+			const trainingStartDate = this.utilService.dateToDbDate(train.trainingDateFrom);
+			const trainingEndDate = this.utilService.dateToDbDate(train.trainingDateTo);
 
 			trainingArray.push({
 				contactEmailAddress: train.contactEmailAddress,
@@ -343,9 +327,11 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return trainingArray;
 	}
 
-	private getOtherTrainings(hasAttendedTrainingSchool: boolean, otherTrainingArrayData: any): Array<OtherTraining> {
-		console.log('********** getOtherTrainings ', hasAttendedTrainingSchool, otherTrainingArrayData);
-		if (hasAttendedTrainingSchool) return [];
+	private getOtherTrainings(
+		hasAttendedTrainingSchool: boolean,
+		otherTrainingArrayData: any
+	): Array<OtherTraining> | null {
+		if (hasAttendedTrainingSchool) return null;
 
 		const trainingArray: Array<OtherTraining> = [];
 		otherTrainingArrayData.forEach((train: any) => {

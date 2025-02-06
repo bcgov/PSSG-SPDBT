@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription } from 'rxjs';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
@@ -28,11 +27,10 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.metalDealersModelChangedSubscription = this.metalDealersModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

@@ -6,6 +6,7 @@ import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -34,7 +35,10 @@ export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	constructor(@Inject(DOCUMENT) private document: Document) {}
+	constructor(
+		@Inject(DOCUMENT) private document: Document,
+		private formatDatePipe: FormatDatePipe
+	) {}
 
 	//------------------------------------
 	// Session storage
@@ -372,6 +376,31 @@ export class UtilService {
 			(province === SPD_CONSTANTS.address.provinceBC || province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
 			(country === SPD_CONSTANTS.address.countryCA || country === SPD_CONSTANTS.address.countryCanada)
 		);
+	}
+
+	/**
+	 * Convert date to format for DB
+	 * @param value
+	 * @returns
+	 */
+	public dateToDbDate(value: string | null | undefined): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, SPD_CONSTANTS.date.backendDateFormat);
+	}
+
+	/**
+	 * Convert date to format
+	 * @param value
+	 * @returns
+	 */
+	public dateToDateFormat(
+		value: string | null | undefined,
+		format = SPD_CONSTANTS.date.formalDateFormat
+	): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, format);
 	}
 
 	public getPermitShowAdditionalGovIdData(

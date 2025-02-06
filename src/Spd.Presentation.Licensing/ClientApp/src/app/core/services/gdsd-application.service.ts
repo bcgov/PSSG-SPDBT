@@ -14,7 +14,6 @@ import {
 } from '@app/api/models';
 import { GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import {
 	BehaviorSubject,
 	Observable,
@@ -73,14 +72,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private gdsdLicensingService: GdsdLicensingService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.gdsdModelChangedSubscription = this.gdsdModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

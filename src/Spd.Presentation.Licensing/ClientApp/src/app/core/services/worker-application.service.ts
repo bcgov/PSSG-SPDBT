@@ -30,11 +30,9 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
@@ -123,7 +121,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private router: Router,
@@ -136,7 +133,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.workerModelChangedSubscription = this.workerModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -1655,17 +1652,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
-					const armouredCarGuardExpiryDate = this.formatDatePipe.transform(
-						doc.expiryDate,
-						SPD_CONSTANTS.date.backendDateFormat
-					);
-
 					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsArmouredCarGuard.push(aFile);
 
 					categoryArmouredCarGuardFormGroup = {
 						isInclude: true,
-						expiryDate: armouredCarGuardExpiryDate,
+						expiryDate: this.utilService.dateToDbDate(doc.expiryDate),
 						attachments: attachmentsArmouredCarGuard,
 					};
 					break;
