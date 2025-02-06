@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anonymous.component';
 
 @Component({
-    selector: 'app-steps-permit-review-anonymous',
-    template: `
+	selector: 'app-steps-permit-review-anonymous',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-summary-anonymous
@@ -51,8 +52,8 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	ngOnInit(): void {

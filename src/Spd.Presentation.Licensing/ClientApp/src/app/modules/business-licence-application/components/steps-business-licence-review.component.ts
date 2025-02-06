@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { UtilService } from '@app/core/services/util.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
 
 @Component({
-    selector: 'app-steps-business-licence-review',
-    template: `
+	selector: 'app-steps-business-licence-review',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-summary
@@ -108,8 +109,8 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onInviteAndSubmitStep(): void {
