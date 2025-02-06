@@ -26,17 +26,17 @@ public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymo
 public record GDSDTeamLicenceAppBase : LicenceAppBase
 {
     //personal info
-    public string Surname { get; set; }
+    public string? Surname { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName { get; set; }
     public MailingAddress? MailingAddress { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     public string? ContactPhoneNumber { get; set; }
     public string? ContactEmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 
-    public bool IsDogTrainedByAccreditedSchool { get; set; }
+    public bool? IsDogTrainedByAccreditedSchool { get; set; }
     public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
 
     //for app with accredited school
@@ -76,21 +76,21 @@ public record GDSDAppCommandResponse
 public record DogInfoNew
 {
     // Dog Information (New)
-    public string DogName { get; set; }
+    public string? DogName { get; set; }
     public DateOnly? DogDateOfBirth { get; set; }
-    public string DogBreed { get; set; }
-    public string DogColorAndMarkings { get; set; }
-    public GenderCode DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
+    public string? DogBreed { get; set; }
+    public string? DogColorAndMarkings { get; set; }
+    public GenderCode? DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
     public string? MicrochipNumber { get; set; }
 }
 public record DogInfoNewAccreditedSchool : DogInfoNew
 {
-    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public bool? IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
     public string? ServiceDogTasks { get; set; }
 }
 public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
 {
-    public bool AreInoculationsUpToDate { get; set; }
+    public bool? AreInoculationsUpToDate { get; set; }
 }
 public record GraduationInfo
 {
@@ -102,43 +102,43 @@ public record GraduationInfo
 }
 public record TrainingInfo
 {
-    public bool HasAttendedTrainingSchool { get; set; }
+    public bool? HasAttendedTrainingSchool { get; set; }
     public IEnumerable<TrainingSchoolInfo>? SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
     public IEnumerable<OtherTraining>? OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string SpecializedTasksWhenPerformed { get; set; }
+    public string? SpecializedTasksWhenPerformed { get; set; }
 }
 
 public record TrainingSchoolInfo
 {
-    public string TrainingBizName { get; set; }
-    public MailingAddress TrainingBizMailingAddress { get; set; }
-    public string ContactSurname { get; set; }
-    public string ContactGivenName { get; set; }
-    public string ContactEmailAddress { get; set; }
-    public string ContactPhoneNumber { get; set; }
-    public decimal TotalTrainingHours { get; set; }
+    public string? TrainingBizName { get; set; }
+    public MailingAddress? TrainingBizMailingAddress { get; set; }
+    public string? ContactSurname { get; set; }
+    public string? ContactGivenName { get; set; }
+    public string? ContactEmailAddress { get; set; }
+    public string? ContactPhoneNumber { get; set; }
+    public decimal? TotalTrainingHours { get; set; }
     public DateOnly? TrainingStartDate { get; set; }
     public DateOnly? TrainingEndDate { get; set; }
-    public string TrainingName { get; set; } //Name and/or type of training program
-    public string WhatLearned { get; set; }
+    public string? TrainingName { get; set; } //Name and/or type of training program
+    public string? WhatLearned { get; set; }
 }
 
 public record OtherTraining
 {
-    public string TrainingDetail { get; set; }
-    public bool UsePersonalDogTrainer { get; set; }
-    public string DogTrainerCredential { get; set; }
-    public string TrainingTime { get; set; } //? //How much time was spent training?
-    public string TrainerSurname { get; set; }
-    public string TrainerGivenName { get; set; }
-    public string TrainerEmailAddress { get; set; }
-    public string TrainerPhoneNumber { get; set; }
-    public string HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
+    public string? TrainingDetail { get; set; }
+    public bool? UsePersonalDogTrainer { get; set; }
+    public string? DogTrainerCredential { get; set; }
+    public string? TrainingTime { get; set; } //? //How much time was spent training?
+    public string? TrainerSurname { get; set; }
+    public string? TrainerGivenName { get; set; }
+    public string? TrainerEmailAddress { get; set; }
+    public string? TrainerPhoneNumber { get; set; }
+    public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
 public record DogInfoRenew
 {
-    public string DogName { get; set; }
-    public string CurrentDogCertificate { get; set; }
-    public bool IsAssistanceStillRequired { get; set; }
+    public string? DogName { get; set; }
+    public string? CurrentDogCertificate { get; set; }
+    public bool? IsAssistanceStillRequired { get; set; }
 }
 
