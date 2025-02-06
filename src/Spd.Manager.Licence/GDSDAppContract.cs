@@ -103,8 +103,8 @@ public record GraduationInfo
 public record TrainingInfo
 {
     public bool HasAttendedTrainingSchool { get; set; }
-    public IEnumerable<TrainingSchoolInfo> SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
-    public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
+    public IEnumerable<TrainingSchoolInfo>? SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
+    public IEnumerable<OtherTraining>? OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
     public string SpecializedTasksWhenPerformed { get; set; }
 }
 
