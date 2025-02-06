@@ -75,6 +75,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<DogInfoNewWithoutAccreditedSchool, spd_application>()
         .ForMember(d => d.spd_dogsinoculationsuptodate, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.AreInoculationsUpToDate))) //refine
+        .ForMember(d => d.spd_dogspayedorneutered, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsDogSterilized)))
         .IncludeBase<DogInfoNew, spd_application>()
         ;
 
@@ -127,7 +128,7 @@ internal class Mappings : Profile
             .ForMember(d => d.spd_contactfirstname, opt => opt.MapFrom(s => s.TrainerGivenName))
             .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.TrainerEmailAddress))
             .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.TrainerPhoneNumber))
-            .ForMember(d => d.spd_hoursspendpracticingskills, opt => opt.MapFrom(s => s.HoursPracticingSkill))
+            .ForMember(d => d.spd_hoursspentpracticingskills, opt => opt.MapFrom(s => s.HoursPracticingSkill))
             ;
 
         CreateMap<SaveGDSDAppCmd, spd_application>()

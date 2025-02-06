@@ -68,10 +68,21 @@ internal class GDSDAppManager :
     {
         return Task.FromResult<GDSDTeamLicenceAppResponse>(null);
     }
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct)
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
     {
-        return Task.FromResult<GDSDAppCommandResponse>(null);
+        SaveGDSDAppCmd saveCmd = _mapper.Map<SaveGDSDAppCmd>(cmd.UpsertRequest);
+        saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.UpsertRequest.DocumentInfos);
+        //var response = await _gdsdRepository.SaveGDSDAppAsync(saveCmd, cancellationToken);
+        //if (cmd.PermitUpsertRequest.LicenceAppId == null)
+        //    cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
+        //await UpdateDocumentsAsync(
+        //    (Guid)cmd.PermitUpsertRequest.LicenceAppId,
+        //    (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
+        //    cancellationToken);
+        //return _mapper.Map<GDSDAppCommandResponse>(response);
+        return null;
     }
+
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct)
     {
         return Task.FromResult<GDSDAppCommandResponse>(null);

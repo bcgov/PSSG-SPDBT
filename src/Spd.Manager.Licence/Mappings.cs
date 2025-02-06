@@ -446,6 +446,7 @@ internal class Mappings : Profile
         CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
          .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
         CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
+         .ForMember(d => d.IsDogSterilized, opt => opt.MapFrom(s => true))
          .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
         CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>();
         CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>();

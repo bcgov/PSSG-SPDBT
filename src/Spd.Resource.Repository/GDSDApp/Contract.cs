@@ -60,6 +60,7 @@ public record DogInfoNewAccreditedSchool : DogInfoNew
 public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
 {
     public bool AreInoculationsUpToDate { get; set; }
+    public bool? IsDogSterilized { get; set; }
 }
 public record GraduationInfo
 {
@@ -79,6 +80,7 @@ public record TrainingInfo
 
 public record TrainingSchoolInfo
 {
+    public Guid? TrainingId { get; set; }
     public string TrainingBizName { get; set; }
     public Addr TrainingBizMailingAddress { get; set; }
     public string ContactSurname { get; set; }
@@ -94,6 +96,7 @@ public record TrainingSchoolInfo
 
 public record OtherTraining
 {
+    public Guid? TrainingId { get; set; }
     public string TrainingDetail { get; set; }
     public bool UsePersonalDogTrainer { get; set; }
     public string DogTrainerCredential { get; set; }
@@ -116,8 +119,6 @@ public record SaveGDSDAppCmd() : GDSDApp
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
-    public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }
 }
 
 public record CreateGDSDAppCmd() : GDSDApp
