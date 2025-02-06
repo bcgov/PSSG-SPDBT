@@ -37,6 +37,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
 		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
+	});
+
+	dogGdsdFormGroup: FormGroup = this.formBuilder.group({
 		isGuideDog: new FormControl('', [Validators.required]),
 	});
 
@@ -132,7 +135,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const documentInfos: Array<Document> = [];
 
 		personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
-		personalInformationData.dogDateOfBirth = this.utilService.dateToDbDate(personalInformationData.dogDateOfBirth);
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -158,6 +160,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		let graduationInfoData: any = null;
 		const dogInfoRenewData: any = null;
 
+		dogInformationData.dogDateOfBirth = this.utilService.dateToDbDate(dogInformationData.dogDateOfBirth);
 		if (isTrainedByAccreditedSchools) {
 			graduationInfoData = {
 				accreditedSchoolName: accreditedGraduationData.accreditedSchoolName,
@@ -290,6 +293,107 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return body;
 	}
 
+	getDocsToSaveBlobs(gdsdModelFormValue: any): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
+		const dogCertificationSelectionData = gdsdModelFormValue.dogCertificationSelectionData;
+		const governmentPhotoIdData = gdsdModelFormValue.governmentPhotoIdData;
+		const medicalInformationData = gdsdModelFormValue.medicalInformationData;
+		const dogMedicalData = gdsdModelFormValue.dogMedicalData;
+		const accreditedGraduationData = gdsdModelFormValue.accreditedGraduationData;
+		const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
+
+		if (photographOfYourselfData.attachments) {
+			const docs: Array<Blob> = [];
+			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		}
+
+		if (governmentPhotoIdData.attachments) {
+			const docs: Array<Blob> = [];
+			governmentPhotoIdData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode, documents: docs });
+		}
+
+		const isTrainedByAccreditedSchools =
+			this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isDogTrainedByAccreditedSchool) ?? false;
+
+		if (isTrainedByAccreditedSchools) {
+			if (accreditedGraduationData.attachments) {
+				const docs: Array<Blob> = [];
+				accreditedGraduationData.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+					documents: docs,
+				});
+			}
+		} else {
+			const hasAttendedTrainingSchool =
+				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
+
+			if (medicalInformationData.attachments) {
+				const docs: Array<Blob> = [];
+				medicalInformationData.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
+					documents: docs,
+				});
+			}
+
+			if (dogMedicalData.attachments) {
+				const docs: Array<Blob> = [];
+				dogMedicalData.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog,
+					documents: docs,
+				});
+			}
+
+			if (hasAttendedTrainingSchool) {
+				const docs: Array<Blob> = [];
+				const schoolTrainingHistoryData = gdsdModelFormValue.schoolTrainingHistoryData;
+				schoolTrainingHistoryData.attachments?.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+					documents: docs,
+				});
+			} else {
+				const docs1: Array<Blob> = [];
+				const otherTrainingHistoryData = gdsdModelFormValue.otherTrainingHistoryData;
+				otherTrainingHistoryData.attachments?.forEach((doc: SpdFile) => {
+					docs1.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+					documents: docs1,
+				});
+				const docs2: Array<Blob> = [];
+				otherTrainingHistoryData.practiceLogAttachments?.forEach((doc: SpdFile) => {
+					docs2.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+					documents: docs2,
+				});
+			}
+		}
+
+		return documents;
+	}
+
 	private getSchoolTrainings(
 		hasAttendedTrainingSchool: boolean,
 		schoolTrainingArrayData: any
@@ -311,8 +415,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			const trainingEndDate = this.utilService.dateToDbDate(train.trainingDateTo);
 
 			trainingArray.push({
-				contactEmailAddress: train.contactEmailAddress,
-				contactGivenName: train.contactGivenName,
+				contactEmailAddress: this.utilService.getStringOrNull(train.contactEmailAddress),
+				contactGivenName: this.utilService.getStringOrNull(train.contactGivenName),
 				contactPhoneNumber: train.contactPhoneNumber,
 				contactSurname: train.contactSurname,
 				totalTrainingHours: train.hoursOfTraining,
@@ -336,93 +440,29 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const trainingArray: Array<OtherTraining> = [];
 		otherTrainingArrayData.forEach((train: any) => {
 			const usePersonalDogTrainer = this.utilService.booleanTypeToBoolean(train.usePersonalDogTrainer) ?? false;
+
 			trainingArray.push({
-				dogTrainerCredential: train.dogTrainerCredential,
-				hoursPracticingSkill: train.hoursPracticingSkill,
-				trainerEmailAddress: train.trainerEmailAddress,
-				trainerGivenName: train.trainerGivenName,
-				trainerPhoneNumber: train.trainerPhoneNumber,
-				trainerSurname: train.trainerSurname,
-				trainingDetail: train.trainingDetail,
-				trainingTime: train.trainingTime,
 				usePersonalDogTrainer,
+				trainingDetail: train.trainingDetail,
+				dogTrainerCredential: usePersonalDogTrainer ? train.dogTrainerCredential : null,
+				hoursPracticingSkill: usePersonalDogTrainer ? train.hoursPracticingSkill : null,
+				trainerEmailAddress: usePersonalDogTrainer ? this.utilService.getStringOrNull(train.trainerEmailAddress) : null,
+				trainerGivenName: usePersonalDogTrainer ? this.utilService.getStringOrNull(train.trainerGivenName) : null,
+				trainerPhoneNumber: usePersonalDogTrainer ? train.trainerPhoneNumber : null,
+				trainerSurname: usePersonalDogTrainer ? train.trainerSurname : null,
+				trainingTime: usePersonalDogTrainer ? train.trainingTime : null,
 			});
 		});
 		return trainingArray;
 	}
 
-	getDocsToSaveBlobs(gdsdModelFormValue: any): Array<LicenceDocumentsToSave> {
-		const documents: Array<LicenceDocumentsToSave> = [];
-
-		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
-		const dogCertificationSelectionData = { ...gdsdModelFormValue.dogCertificationSelectionData };
-		const governmentPhotoIdData = { ...gdsdModelFormValue.governmentPhotoIdData };
-		const medicalInformationData = { ...gdsdModelFormValue.medicalInformationData };
-		const dogMedicalData = { ...gdsdModelFormValue.dogMedicalData };
-		const accreditedGraduationData = { ...gdsdModelFormValue.accreditedGraduationData };
-
-		if (photographOfYourselfData.attachments) {
-			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
-		}
-
-		if (governmentPhotoIdData.attachments) {
-			const docs: Array<Blob> = [];
-			governmentPhotoIdData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: governmentPhotoIdData.governmentIssuedPhotoTypeCode, documents: docs });
-		}
-
-		const isTrainedByAccreditedSchools =
-			dogCertificationSelectionData.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
-
-		if (isTrainedByAccreditedSchools) {
-			if (accreditedGraduationData.attachments) {
-				const docs: Array<Blob> = [];
-				accreditedGraduationData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
-					documents: docs,
-				});
-			}
-		} else {
-			if (medicalInformationData.attachments) {
-				const docs: Array<Blob> = [];
-				medicalInformationData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
-					documents: docs,
-				});
-			}
-
-			if (dogMedicalData.attachments) {
-				const docs: Array<Blob> = [];
-				dogMedicalData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog,
-					documents: docs,
-				});
-			}
-		}
-
-		return documents;
-	}
-
 	getSummaryisDogTrainedByAccreditedSchool(gdsdModelData: any): string {
 		return gdsdModelData.dogCertificationSelectionData.isDogTrainedByAccreditedSchool ?? '';
 	}
-	getSummaryisGuideDog(gdsdModelData: any): string {
-		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes ? 'Guide Dog' : 'Service Dog';
+	getSummarydogType(gdsdModelData: any): string {
+		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes
+			? 'Guide dog (Trained as a guide for a blind person)'
+			: 'Service dog (Trained to perform specific tasks to assist a person with a disability)';
 	}
 	getSummaryapplicantName(gdsdModelData: any): string {
 		return (

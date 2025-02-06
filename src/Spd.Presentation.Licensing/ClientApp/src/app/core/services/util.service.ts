@@ -174,6 +174,11 @@ export class UtilService {
 		}
 	}
 
+	getStringOrNull(value: any): string | null {
+		if (!value) return null;
+		return value;
+	}
+
 	getDecodedAccessToken(token: string): any {
 		try {
 			return jwtDecode(token);

@@ -10,7 +10,9 @@ import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/st
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-dog-information></app-step-gdsd-dog-information>
+				<app-step-gdsd-dog-information
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+				></app-step-gdsd-dog-information>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
