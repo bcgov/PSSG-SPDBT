@@ -37,23 +37,23 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
         RuleFor(r => r.DogInfoNewAccreditedSchool).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.DogInfoNewAccreditedSchool)
             .SetValidator(new DogInfoNewAccreditedSchoolValidator())
             .When(r => r.DogInfoNewAccreditedSchool != null);
         RuleFor(r => r.GraduationInfo).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.GraduationInfo)
             .SetValidator(new GraduationInfoValidator())
-            .When(r => r.GraduationInfo != null && r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.GraduationInfo != null && r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
 
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool).NotEmpty()
-            .When(r => !r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool)
             .SetValidator(new DogInfoNewWithoutAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.TrainingInfo).NotEmpty()
-            .When(r => !r.IsDogTrainedByAccreditedSchool);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.TrainingInfo)
             .SetValidator(new TrainingInfoValidator())
             .When(r => r.TrainingInfo != null);
@@ -142,14 +142,14 @@ public class TrainingInfoValidator : AbstractValidator<TrainingInfo>
        {
            child.SetValidator(new TrainingSchoolInfoValidator());
        })
-       .When(r => r.HasAttendedTrainingSchool);
+       .When(r => r.HasAttendedTrainingSchool != null && r.HasAttendedTrainingSchool.Value);
 
         RuleFor(r => r.OtherTrainings).NotNull().NotEmpty()
         .ForEach(child =>
         {
             child.SetValidator(new OtherTrainingValidator());
         })
-        .When(r => !r.HasAttendedTrainingSchool);
+        .When(r => r.HasAttendedTrainingSchool != null && !r.HasAttendedTrainingSchool.Value);
 
         RuleFor(r => r.SpecializedTasksWhenPerformed).MaximumLength(1000);  //tbd if only 1 big block, then needs to be much larger
     }
