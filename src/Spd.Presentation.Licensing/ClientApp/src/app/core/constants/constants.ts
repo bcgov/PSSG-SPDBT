@@ -83,6 +83,10 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		controllingMemberChecklistUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
+		swlLearnMoreUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/training',
+		swlAcceptedIdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/apply',
 		mentalHealthConditionsFormUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms',
 		proofOfInsuranceUrl:

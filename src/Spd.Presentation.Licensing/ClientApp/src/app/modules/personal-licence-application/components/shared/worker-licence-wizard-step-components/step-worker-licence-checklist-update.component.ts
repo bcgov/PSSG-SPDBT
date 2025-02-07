@@ -14,12 +14,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<ul>
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
-							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
-								experience.
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a>
-								about the types of documents we accept for each security worker category.
+								experience. <a aria-label="Navigate to " [href]="swlLearnMoreUrl" target="_blank">Learn more</a> about
+								the types of documents we accept for each security worker category.
 							</p>
 						</li>
 
@@ -39,9 +37,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 
 						<li>
-							<div class="checklist-label">
-								If you have a new mental health condition, provide a physician's assessment
-							</div>
+							<div class="checklist-label">If you have a mental health condition, provide a doctor's assessment.</div>
 							<p class="checklist-info">
 								Download the
 								<a
@@ -50,7 +46,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 									target="_blank"
 								>
 									Mental Health Condition form</a
-								>, and give it to your physician to fill out. You will need to upload the completed form.
+								>, and give it to your doctor to fill out. You will need to upload the completed form.
 							</p>
 						</li>
 
@@ -66,7 +62,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">Credit card</div>
 							<p class="checklist-info">
 								Updates to your legal name, licence category, authorization to use restraints or dogs, and licence
-								photograph have a $20 fee. All major credit cards are accepted through our secure payment platform.
+								photograph have a $20 fee. All major credit cards are accepted through our secure online payment system.
 							</p>
 						</li>
 					</ul>
@@ -80,4 +76,5 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 export class StepWorkerLicenceChecklistUpdateComponent {
 	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
+	swlLearnMoreUrl = SPD_CONSTANTS.urls.swlLearnMoreUrl;
 }
