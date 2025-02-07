@@ -443,6 +443,9 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
 
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
+        CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
+        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
         CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
          .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
         CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
