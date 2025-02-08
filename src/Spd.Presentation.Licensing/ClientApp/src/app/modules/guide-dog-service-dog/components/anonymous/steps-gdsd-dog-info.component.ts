@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepGdsdDogInformationComponent } from '../shared/common-step-components/step-gdsd-dog-information.component';
 import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/step-gdsd-dog-medical.component';
 
@@ -9,7 +10,9 @@ import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/st
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-dog-information></app-step-gdsd-dog-information>
+				<app-step-gdsd-dog-information
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+				></app-step-gdsd-dog-information>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -54,13 +57,16 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@ViewChild(StepGdsdDogInformationComponent) dogInfoComponent!: StepGdsdDogInformationComponent;
 	@ViewChild(StepGdsdDogMedicalComponent) dogMedicalComponent!: StepGdsdDogMedicalComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onStepNextDogInfo(): void {
 		const isValid = this.dirtyForm(this.STEP_DOG_INFO);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		if (this.isTrainedByAccreditedSchools) {
 			this.nextStepperStep.emit(true);

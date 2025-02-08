@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepGdsdAccreditedGraduationComponent } from '../shared/common-step-components/step-gdsd-accredited-graduation.component';
 import { StepGdsdDogTasksComponent } from '../shared/common-step-components/step-gdsd-dog-tasks.component';
 import { StepGdsdOtherTrainingsComponent } from '../shared/common-step-components/step-gdsd-other-trainings.component';
@@ -123,13 +124,16 @@ export class StepsGdsdTrainingInfoComponent extends BaseWizardStepComponent {
 	@ViewChild(StepGdsdOtherTrainingsComponent) otherComponent!: StepGdsdOtherTrainingsComponent;
 	@ViewChild(StepGdsdDogTasksComponent) tasksComponent!: StepGdsdDogTasksComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onStepNextServiceTasks(): void {
 		const isValid = this.dirtyForm(this.STEP_ACCREDITED);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		if (this.isServiceDog) {
 			this.childNextStep.emit(true);

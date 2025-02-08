@@ -53,7 +53,6 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
-import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
 
@@ -107,7 +106,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		optionsPipe: OptionsPipe,
@@ -121,7 +119,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService, optionsPipe);
+		super(formBuilder, configService, utilService, fileUtilService, optionsPipe);
 
 		this.permitModelChangedSubscription = this.permitModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

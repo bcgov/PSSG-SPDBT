@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
@@ -121,8 +122,11 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private commonApplicationService: CommonApplicationService
+	) {
+		super(utilService);
 	}
 
 	onGotoBusinessProfile(): void {
