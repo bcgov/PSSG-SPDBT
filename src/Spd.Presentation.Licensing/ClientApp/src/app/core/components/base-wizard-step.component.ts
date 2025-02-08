@@ -1,13 +1,13 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceStepperStepComponent } from '../services/util.service';
+import { LicenceStepperStepComponent, UtilService } from '../services/util.service';
 
 @Component({
-    selector: 'app-base-wizard-step',
-    template: '',
-    styles: [],
-    standalone: false
+	selector: 'app-base-wizard-step',
+	template: '',
+	styles: [],
+	standalone: false,
 })
 export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
@@ -22,6 +22,8 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+	constructor(protected utilService: UtilService) {}
+
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
@@ -32,7 +34,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 
 	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.nextStepperStep.emit(true);
 	}
@@ -51,7 +56,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 
 	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.nextReview.emit(true);
 	}
@@ -74,7 +82,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 
 	onFormValidNextStep(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.childNextStep.emit(true);
 	}

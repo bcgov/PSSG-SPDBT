@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-authenticated.component';
 import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
 
 @Component({
-    selector: 'app-steps-permit-review-authenticated',
-    template: `
+	selector: 'app-steps-permit-review-authenticated',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
@@ -86,8 +87,8 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	ngOnInit(): void {

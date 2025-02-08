@@ -1,14 +1,15 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberAliasesComponent } from './step-controlling-member-aliases.component';
 import { StepControllingMemberPersonalInfoComponent } from './step-controlling-member-personal-info.component';
 import { StepControllingMemberResidentialAddressComponent } from './step-controlling-member-residential-address.component';
 import { StepControllingMemberTermsComponent } from './step-controlling-member-terms.component';
 
 @Component({
-    selector: 'app-steps-controlling-member-personal-information',
-    template: `
+	selector: 'app-steps-controlling-member-personal-information',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-terms
@@ -111,8 +112,8 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	@ViewChild(StepControllingMemberResidentialAddressComponent)
 	stepAddress!: StepControllingMemberResidentialAddressComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override dirtyForm(step: number): boolean {

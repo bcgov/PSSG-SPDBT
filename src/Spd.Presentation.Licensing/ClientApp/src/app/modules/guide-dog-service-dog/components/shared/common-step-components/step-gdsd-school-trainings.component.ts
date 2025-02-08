@@ -16,10 +16,7 @@ import moment from 'moment';
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
-						<ng-container
-							formArrayName="schoolTrainings"
-							*ngFor="let group of schoolTrainingsArray.controls; let i = index"
-						>
+						<section formArrayName="schoolTrainings" *ngFor="let group of schoolTrainingsArray.controls; let i = index">
 							<div class="school-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
 									<div class="fs-5 mb-2">Training School Name</div>
@@ -208,7 +205,7 @@ import moment from 'moment';
 									</button>
 								</div>
 							</div>
-						</ng-container>
+						</section>
 
 						<div class="mb-4 d-flex justify-content-center">
 							<button

@@ -2,14 +2,15 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMembersComponent } from './step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';
 
 @Component({
-    selector: 'app-steps-business-licence-controlling-members',
-    template: `
+	selector: 'app-steps-business-licence-controlling-members',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-controlling-members
@@ -75,8 +76,11 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 	@ViewChild(StepBusinessLicenceControllingMemberInvitesComponent)
 	stepMembersInvitesComponent!: StepBusinessLicenceControllingMemberInvitesComponent;
 
-	constructor(private router: Router) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private router: Router
+	) {
+		super(utilService);
 	}
 
 	onStepClose(): void {
