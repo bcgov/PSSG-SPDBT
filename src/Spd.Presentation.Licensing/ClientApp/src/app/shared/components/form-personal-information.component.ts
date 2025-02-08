@@ -23,7 +23,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
 								>Visit ICBC</a
 							>
-							to update this information on your BC Services Card. Any changes you make will then be updated here.
+							to update your information. Any changes you make will automatically be updated here.
 						</div>
 					</ng-template>
 
