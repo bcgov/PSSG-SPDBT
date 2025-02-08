@@ -161,21 +161,21 @@ internal class Mappings : Profile
           .ForMember(d => d.TrainingInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetTrainingInfol(src, context)));
     }
 
-    private int? GetDogTypeOptionSet(bool? isGuidDog)
+    private static int? GetDogTypeOptionSet(bool? isGuidDog)
     {
         if (isGuidDog == null) return null;
         else
             return isGuidDog.Value ? (int)DogTypeOptionSet.GuideDog : (int)DogTypeOptionSet.ServiceDog;
     }
 
-    private bool? GetBoolFromDogType(int? dogType)
+    private static bool? GetBoolFromDogType(int? dogType)
     {
         if (dogType == null) return null;
         else
             return dogType == (int)DogTypeOptionSet.GuideDog ? true : false;
     }
 
-    private GraduationInfo? GetGraduationInfo(spd_application app, ResolutionContext context)
+    private static GraduationInfo? GetGraduationInfo(spd_application app, ResolutionContext context)
     {
         if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.Yes)
         {
@@ -187,7 +187,7 @@ internal class Mappings : Profile
         return null;
     }
 
-    private DogInfoRenew? GetDogInfoRenew(spd_application app, ResolutionContext context)
+    private static DogInfoRenew? GetDogInfoRenew(spd_application app, ResolutionContext context)
     {
         if (app.spd_licenceapplicationtype == (int)LicenceApplicationTypeOptionSet.Renewal)
         {
@@ -196,7 +196,7 @@ internal class Mappings : Profile
         return null;
     }
 
-    private DogInfoNewAccreditedSchool? GetDogInfoNewAccreditedSchool(spd_application app, ResolutionContext context)
+    private static DogInfoNewAccreditedSchool? GetDogInfoNewAccreditedSchool(spd_application app, ResolutionContext context)
     {
         if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.Yes)
         {
@@ -205,7 +205,7 @@ internal class Mappings : Profile
         return null;
     }
 
-    private DogInfoNewWithoutAccreditedSchool? GetDogInfoNewWithoutAccreditedSchool(spd_application app, ResolutionContext context)
+    private static DogInfoNewWithoutAccreditedSchool? GetDogInfoNewWithoutAccreditedSchool(spd_application app, ResolutionContext context)
     {
         if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.No)
         {
@@ -214,7 +214,7 @@ internal class Mappings : Profile
         return null;
     }
 
-    private TrainingInfo? GetTrainingInfol(spd_application app, ResolutionContext context)
+    private static TrainingInfo? GetTrainingInfol(spd_application app, ResolutionContext context)
     {
         if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.No)
         {

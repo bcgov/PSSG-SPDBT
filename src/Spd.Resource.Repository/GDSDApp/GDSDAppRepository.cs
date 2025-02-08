@@ -39,7 +39,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
         spd_application? app = null;
         if (cmd.LicenceAppId != null)
         {
-            PrepareUpdateAppDataInDbContext(cmd, cmd.ApplicantId);
+            app = PrepareUpdateAppDataInDbContext(cmd, cmd.ApplicantId);
         }
         else
         {
@@ -51,6 +51,8 @@ internal class GDSDAppRepository : IGDSDAppRepository
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
         }
+        if (app == null)
+            throw new ApiException(HttpStatusCode.InternalServerError);
         await _context.SaveChangesAsync();
         return new GDSDAppCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
