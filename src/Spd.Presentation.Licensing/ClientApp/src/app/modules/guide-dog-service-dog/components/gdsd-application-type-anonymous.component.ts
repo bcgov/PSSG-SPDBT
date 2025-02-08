@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 
 @Component({
@@ -78,6 +79,7 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private gdsdApplicationService: GdsdApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -87,7 +89,9 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 	}
 
 	onStepNext(): void {
-		if (!this.isFormValid()) {
+		const isValid = this.isFormValid();
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
 			return;
 		}
 

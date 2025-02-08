@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepGdsdConsentComponent } from '../shared/common-step-components/step-gdsd-consent.component';
 import { StepGdsdSummaryComponent } from './step-components/step-gdsd-summary.component';
 
@@ -60,8 +61,8 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	@ViewChild(StepGdsdSummaryComponent) summaryComponent!: StepGdsdSummaryComponent;
 	@ViewChild(StepGdsdConsentComponent) consentComponent!: StepGdsdConsentComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onSubmitNow(): void {

@@ -1,13 +1,13 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
 @Component({
-    selector: 'app-steps-business-licence-updates',
-    template: `
+	selector: 'app-steps-business-licence-updates',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-business-licence-category
@@ -49,8 +49,8 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerComponent!: StepBusinessLicenceManagerInformationComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override dirtyForm(step: number): boolean {

@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-citizenship.component';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
@@ -75,13 +76,19 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepPermitPhotographOfYourselfComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private permitApplicationService: PermitApplicationService
+	) {
+		super(utilService);
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.childNextStep.next(true);
 	}

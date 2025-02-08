@@ -3,12 +3,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-step-worker-licence-application-type-anonymous',
-    template: `
+	selector: 'app-step-worker-licence-application-type-anonymous',
+	template: `
 		<app-step-section title="What type of Security Worker Licence are you applying for?">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
@@ -80,8 +81,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 
 		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
@@ -90,6 +91,7 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnIni
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -99,30 +101,34 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnIni
 	}
 
 	onStepNext(): void {
-		if (this.isFormValid()) {
-			const applicationTypeCode = this.applicationTypeCode.value;
+		const isValid = this.isFormValid();
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
-			this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence, applicationTypeCode);
+		const applicationTypeCode = this.applicationTypeCode.value;
 
-			switch (applicationTypeCode) {
-				case ApplicationTypeCode.New: {
-					this.router.navigateByUrl(
-						PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-							PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS
-						)
-					);
-					break;
-				}
-				case ApplicationTypeCode.Update:
-				case ApplicationTypeCode.Replacement:
-				case ApplicationTypeCode.Renewal: {
-					this.router.navigateByUrl(
-						PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-							PersonalLicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-						)
-					);
-					break;
-				}
+		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence, applicationTypeCode);
+
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.router.navigateByUrl(
+					PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+						PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS
+					)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Update:
+			case ApplicationTypeCode.Replacement:
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+						PersonalLicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
+					)
+				);
+				break;
 			}
 		}
 	}

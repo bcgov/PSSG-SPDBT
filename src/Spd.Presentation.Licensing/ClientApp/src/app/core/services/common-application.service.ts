@@ -39,7 +39,6 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
@@ -101,7 +100,6 @@ export class CommonApplicationService {
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private formatDatePipe: FormatDatePipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService,
@@ -893,7 +891,7 @@ export class CommonApplicationService {
 		);
 		applicationNotifications.forEach((item: MainApplicationResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			const itemExpiry = this.utilService.dateToDateFormat(item.applicationExpiryDate);
 			if (item.isExpiryWarning) {
 				warningMessages.push(
 					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
@@ -923,7 +921,7 @@ export class CommonApplicationService {
 		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
 		renewals.forEach((item: MainLicenceResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.formatDatePipe.transform(item.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
 
 			if (item.licenceExpiryNumberOfDays != null) {
 				if (item.licenceExpiryNumberOfDays < 0) {
