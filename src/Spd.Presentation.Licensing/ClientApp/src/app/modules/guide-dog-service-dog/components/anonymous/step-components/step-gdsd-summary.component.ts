@@ -44,14 +44,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											{{ isDogTrainedByAccreditedSchool | default }}
 										</div>
 									</div>
-									<div class="col-lg-12 col-md-12">
-										<div class="text-label d-block text-muted">
-											Is your dog trained as a Guide Dog or a Service Dog?
-										</div>
-										<div class="summary-text-data">
-											{{ isGuideDog | default }}
-										</div>
-									</div>
 								</div>
 							</div>
 						</mat-expansion-panel>
@@ -209,6 +201,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
+									</div>
+									<div class="col-12">
+										<div class="text-label d-block text-muted">Dog Type</div>
+										<div class="summary-text-data">
+											{{ dogType | default }}
+										</div>
 									</div>
 								</div>
 
@@ -368,8 +366,8 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 	get isDogTrainedByAccreditedSchool(): string {
 		return this.gdsdApplicationService.getSummaryisDogTrainedByAccreditedSchool(this.gdsdModelData);
 	}
-	get isGuideDog(): string {
-		return this.gdsdApplicationService.getSummaryisGuideDog(this.gdsdModelData);
+	get dogType(): string {
+		return this.gdsdApplicationService.getSummarydogType(this.gdsdModelData);
 	}
 	get applicantName(): string {
 		return this.gdsdApplicationService.getSummaryapplicantName(this.gdsdModelData);

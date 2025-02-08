@@ -12,14 +12,12 @@ import {
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
@@ -264,7 +262,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe,
 		protected utilService: UtilService,
 		protected fileUtilService: FileUtilService
 	) {
@@ -722,10 +719,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		let dogsAuthorizationData = {};
 		let restraintsAuthorizationData = {};
 
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
+		personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 
 		if (workerModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
@@ -870,9 +864,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
-				expiryDate: citizenshipData.expiryDate
-					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
+				expiryDate: this.utilService.dateToDbDate(citizenshipData.expiryDate),
 				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
@@ -891,12 +883,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
-					expiryDate: citizenshipData.governmentIssuedExpiryDate
-						? this.formatDatePipe.transform(
-								citizenshipData.governmentIssuedExpiryDate,
-								SPD_CONSTANTS.date.backendDateFormat
-							)
-						: null,
+					expiryDate: this.utilService.dateToDbDate(citizenshipData.governmentIssuedExpiryDate),
 					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
@@ -1056,14 +1043,10 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	private getCategoryArmouredCarGuard(armouredCarGuardData: any): Array<Document> {
 		const documents: Array<Document> = [];
 
-		const expiryDate = armouredCarGuardData.expiryDate
-			? this.formatDatePipe.transform(armouredCarGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
 		armouredCarGuardData.attachments?.forEach((doc: any) => {
 			documents.push({
 				documentUrlId: doc.documentUrlId,
-				expiryDate,
+				expiryDate: this.utilService.dateToDbDate(armouredCarGuardData.expiryDate),
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
 			});
 		});

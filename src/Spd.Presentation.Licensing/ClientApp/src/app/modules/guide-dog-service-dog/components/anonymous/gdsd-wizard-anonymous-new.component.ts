@@ -107,6 +107,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
 				></app-steps-gdsd-review-confirm>
 			</mat-step>
 
