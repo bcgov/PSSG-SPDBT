@@ -66,7 +66,11 @@ internal class GDSDAppManager :
     public async Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
     {
         var resp = await _gdsdRepository.GetGDSDAppAsync(query.LicenceApplicationId, ct);
-        return _mapper.Map<GDSDTeamLicenceAppResponse>(resp);
+        GDSDTeamLicenceAppResponse result = _mapper.Map<GDSDTeamLicenceAppResponse>(resp);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
+        return result;
+
     }
     public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
     {

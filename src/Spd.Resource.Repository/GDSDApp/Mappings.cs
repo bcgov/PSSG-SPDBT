@@ -40,7 +40,8 @@ internal class Mappings : Profile
         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
-        .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)));
+        .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
+        .ForMember(d => d.IsDogTrainedByAccreditedSchool, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_dogstrainingaccredited)));
 
         _ = CreateMap<GDSDApp, contact>()
         .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -64,18 +65,21 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_dogname, opt => opt.MapFrom(s => s.DogName))
         // .ForMember(d => d.spd_do, opt => opt.MapFrom(s => s.IsAssistanceStillRequired))
         //.ForMember(d => d.spd_do, opt => opt.MapFrom(s => s.CurrentDogCertificate))
-        ;
+        .ReverseMap();
 
         _ = CreateMap<DogInfoNewAccreditedSchool, spd_application>()
         .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => GetDogTypeOptionSet(s.IsGuideDog)))
         .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => s.ServiceDogTasks)) //refine
-        .IncludeBase<DogInfoNew, spd_application>();
-        ;
+        .IncludeBase<DogInfoNew, spd_application>()
+        .ReverseMap()
+        .ForMember(d => d.IsGuideDog, opt => opt.MapFrom(s => GetBoolFromDogType(s.spd_dogtype)));
 
         _ = CreateMap<DogInfoNewWithoutAccreditedSchool, spd_application>()
         .ForMember(d => d.spd_dogsinoculationsuptodate, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.AreInoculationsUpToDate))) //refine
         .ForMember(d => d.spd_dogspayedorneutered, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsDogSterilized)))
         .IncludeBase<DogInfoNew, spd_application>()
+        .ReverseMap()
+        .ForMember(d => d.AreInoculationsUpToDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_dogsinoculationsuptodate)))
         ;
 
         _ = CreateMap<DogInfoNew, spd_application>()
@@ -85,6 +89,8 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_dogcolourandmarkings, opt => opt.MapFrom(s => s.DogColorAndMarkings))
         .ForMember(d => d.spd_dogsgender, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<GenderEnum, GenderOptionSet>(s.DogGender)))
         .ForMember(d => d.spd_microchipnumber, opt => opt.MapFrom(s => s.MicrochipNumber))
+        .ReverseMap()
+        .ForMember(d => d.DogGender, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<GenderOptionSet, GenderEnum>(s.spd_dogsgender)))
         ;
 
         _ = CreateMap<GraduationInfo, spd_dogtrainingschool>()
@@ -92,10 +98,8 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_contactsurname, opt => opt.MapFrom(s => s.SchoolContactSurname))
          .ForMember(d => d.spd_contactfirstname, opt => opt.MapFrom(s => s.SchoolContactGivenName))
          .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.SchoolContactPhoneNumber))
-         .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress));
-
-        //_ = CreateMap<TrainingInfo, spd_dogtrainingschool>();
-        ////.ForMember(d => d.spd_name, opt => opt.MapFrom(s => s.HasAttendedTrainingSchool));
+         .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress))
+         .ReverseMap();
 
         _ = CreateMap<TrainingSchoolInfo, spd_dogtrainingschool>()
            .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.TrainingBizName))
@@ -115,6 +119,8 @@ internal class Mappings : Profile
             .ForMember(d => d.spd_postalzipcode, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.PostalCode)))
             .ForMember(d => d.spd_provincestate, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.Province)))
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.Country)))
+            .ReverseMap()
+            .ForMember(d => d.TrainingId, opt => opt.MapFrom(s => s.spd_dogtrainingschoolid))
             ;
 
         _ = CreateMap<OtherTraining, spd_dogtrainingschool>()
@@ -128,6 +134,8 @@ internal class Mappings : Profile
             .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.TrainerEmailAddress))
             .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.TrainerPhoneNumber))
             .ForMember(d => d.spd_hoursspentpracticingskills, opt => opt.MapFrom(s => s.HoursPracticingSkill))
+            .ReverseMap()
+            .ForMember(d => d.TrainingId, opt => opt.MapFrom(s => s.spd_dogtrainingschoolid))
             ;
 
         CreateMap<SaveGDSDAppCmd, spd_application>()
@@ -145,11 +153,11 @@ internal class Mappings : Profile
           .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-          .ForMember(d => d.GraduationInfo, opt => opt.MapFrom(s => GetGraduationInfo(s)))
-          .ForMember(d => d.DogInfoRenew, opt => opt.MapFrom(s => GetDogInfoRenew(s)))
-          .ForMember(d => d.DogInfoNewAccreditedSchool, opt => opt.MapFrom(s => GetDogInfoNewAccreditedSchool(s)))
-          .ForMember(d => d.DogInfoNewWithoutAccreditedSchool, opt => opt.MapFrom(s => GetDogInfoNewWithoutAccreditedSchool(s)))
-          .ForMember(d => d.TrainingInfo, opt => opt.MapFrom(s => GetTrainingInfol(s)));
+          .ForMember(d => d.GraduationInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetGraduationInfo(src, context)))
+          .ForMember(d => d.DogInfoRenew, opt => opt.MapFrom((src, dest, destMember, context) => GetDogInfoRenew(src, context)))
+          .ForMember(d => d.DogInfoNewAccreditedSchool, opt => opt.MapFrom((src, dest, destMember, context) => GetDogInfoNewAccreditedSchool(src, context)))
+          .ForMember(d => d.DogInfoNewWithoutAccreditedSchool, opt => opt.MapFrom((src, dest, destMember, context) => GetDogInfoNewWithoutAccreditedSchool(src, context)))
+          .ForMember(d => d.TrainingInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetTrainingInfol(src, context)));
     }
 
     private int? GetDogTypeOptionSet(bool? isGuidDog)
@@ -159,28 +167,71 @@ internal class Mappings : Profile
             return isGuidDog.Value ? (int)DogTypeOptionSet.GuideDog : (int)DogTypeOptionSet.ServiceDog;
     }
 
-    private GraduationInfo? GetGraduationInfo(spd_application app)
+    private bool? GetBoolFromDogType(int? dogType)
     {
+        if (dogType == null) return null;
+        else
+            return dogType == (int)DogTypeOptionSet.GuideDog ? true : false;
+    }
+
+    private GraduationInfo? GetGraduationInfo(spd_application app, ResolutionContext context)
+    {
+        if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.Yes)
+        {
+            if (app.spd_application_spd_dogtrainingschool_ApplicationId.Any())
+            {
+                return context.Mapper.Map<GraduationInfo>(app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(s => s.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool));
+            }
+        }
         return null;
     }
 
-    private DogInfoRenew? GetDogInfoRenew(spd_application app)
+    private DogInfoRenew? GetDogInfoRenew(spd_application app, ResolutionContext context)
     {
+        if (app.spd_licenceapplicationtype == (int)LicenceApplicationTypeOptionSet.Renewal)
+        {
+            return context.Mapper.Map<DogInfoRenew>(app);
+        }
         return null;
     }
 
-    private DogInfoNewAccreditedSchool? GetDogInfoNewAccreditedSchool(spd_application app)
+    private DogInfoNewAccreditedSchool? GetDogInfoNewAccreditedSchool(spd_application app, ResolutionContext context)
     {
+        if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.Yes)
+        {
+            return context.Mapper.Map<DogInfoNewAccreditedSchool>(app);
+        }
         return null;
     }
 
-    private DogInfoNewWithoutAccreditedSchool? GetDogInfoNewWithoutAccreditedSchool(spd_application app)
+    private DogInfoNewWithoutAccreditedSchool? GetDogInfoNewWithoutAccreditedSchool(spd_application app, ResolutionContext context)
     {
+        if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.No)
+        {
+            return context.Mapper.Map<DogInfoNewWithoutAccreditedSchool>(app);
+        }
         return null;
     }
 
-    private TrainingInfo? GetTrainingInfol(spd_application app)
+    private TrainingInfo? GetTrainingInfol(spd_application app, ResolutionContext context)
     {
+        if (app.spd_dogstrainingaccredited != null && app.spd_dogstrainingaccredited.Value == (int)YesNoOptionSet.No)
+        {
+            TrainingInfo ti = new TrainingInfo();
+            ti.SpecializedTasksWhenPerformed = app.spd_dogsassistanceindailyliving;
+            if (app.spd_application_spd_dogtrainingschool_ApplicationId.Any(s => s.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.UnAccreditedSchool))
+            {
+                ti.HasAttendedTrainingSchool = true;
+                ti.SchoolTrainings = context.Mapper.Map<List<TrainingSchoolInfo>>(app.spd_application_spd_dogtrainingschool_ApplicationId.Where(d => d.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.UnAccreditedSchool).ToList());
+            }
+            else
+            {
+                ti.HasAttendedTrainingSchool = false;
+                ti.OtherTrainings = context.Mapper.Map<List<OtherTraining>>(app.spd_application_spd_dogtrainingschool_ApplicationId.Where(d => d.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.Other).ToList());
+
+            }
+            return ti;
+        }
         return null;
     }
 }
