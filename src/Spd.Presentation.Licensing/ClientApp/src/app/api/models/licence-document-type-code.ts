@@ -64,5 +64,6 @@ export enum LicenceDocumentTypeCode {
   IdCardIssuedByAccreditedDogTrainingSchool = 'IdCardIssuedByAccreditedDogTrainingSchool',
   MedicalFormConfirmingNeedDog = 'MedicalFormConfirmingNeedDog',
   VeterinarianConfirmationForSpayedNeuteredDog = 'VeterinarianConfirmationForSpayedNeuteredDog',
-  DogTrainingCurriculumCertificateSupportingDocument = 'DogTrainingCurriculumCertificateSupportingDocument'
+  DogTrainingCurriculumCertificateSupportingDocument = 'DogTrainingCurriculumCertificateSupportingDocument',
+  GdsdPracticeHoursLog = 'GDSDPracticeHoursLog'
 }

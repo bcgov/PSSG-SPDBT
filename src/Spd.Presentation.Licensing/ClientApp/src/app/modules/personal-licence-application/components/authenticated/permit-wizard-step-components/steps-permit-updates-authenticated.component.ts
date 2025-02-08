@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitEmployerInformationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
@@ -106,8 +107,8 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitReprintComponent) stepReprintComponent!: StepPermitReprintComponent;
 	@ViewChild(StepPermitEmployerInformationComponent) stepEmployerComponent!: StepPermitEmployerInformationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onStepUpdatePrevious(step: number): void {

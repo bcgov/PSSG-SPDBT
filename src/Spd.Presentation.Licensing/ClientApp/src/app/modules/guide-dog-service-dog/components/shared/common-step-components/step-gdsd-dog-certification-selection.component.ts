@@ -34,30 +34,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									>This is required</mat-error
 								>
 							</div>
-							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
-						</div>
-						<div class="row">
-							<div class="fs-5 lh-base mt-3 mb-2">Is your dog trained as a Guide Dog or a Service Dog?</div>
-
-							<div class="col-xxl-10 col-xl-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
-										Guide dog (Trained as a guide for a blind person)
-									</mat-radio-button>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
-										Service dog (Trained to perform specific tasks to assist a person with a disability)
-									</mat-radio-button>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('isGuideDog')?.dirty || form.get('isGuideDog')?.touched) &&
-										form.get('isGuideDog')?.invalid &&
-										form.get('isGuideDog')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
 						</div>
 					</div>
 				</div>

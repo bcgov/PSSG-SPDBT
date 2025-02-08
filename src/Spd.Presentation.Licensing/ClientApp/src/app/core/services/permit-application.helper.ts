@@ -16,7 +16,6 @@ import {
 	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -24,7 +23,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationHelper } from './common-application.helper';
 import { PermitDocumentsToSave } from './permit-application.service';
 
@@ -205,7 +203,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe,
 		protected utilService: UtilService,
 		protected fileUtilService: FileUtilService,
 		protected optionsPipe: OptionsPipe
@@ -479,10 +476,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		mailingAddressData.isAddressTheSame = !!mailingAddressData.isAddressTheSame; // make it a boolean
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
+		personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 
 		if (personalInformationData.hasLegalNameChanged) {
 			personalInformationData.attachments?.forEach((doc: any) => {
@@ -518,9 +512,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
-				expiryDate: citizenshipData.expiryDate
-					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
+				expiryDate: this.utilService.dateToDbDate(citizenshipData.expiryDate),
 				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode,
 			});
@@ -538,12 +530,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
-					expiryDate: citizenshipData.governmentIssuedExpiryDate
-						? this.formatDatePipe.transform(
-								citizenshipData.governmentIssuedExpiryDate,
-								SPD_CONSTANTS.date.backendDateFormat
-							)
-						: null,
+					expiryDate: this.utilService.dateToDbDate(citizenshipData.governmentIssuedExpiryDate),
 					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});

@@ -5,8 +5,8 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 @Component({
 	selector: 'app-gdsd-summary-other-training',
 	template: `
-		<div class="text-minor-heading-small mt-2">Other Training</div>
 		<div *ngFor="let train of otherTrainings; let i = index">
+			<div class="text-minor-heading-small mt-2">Other Training</div>
 			<div class="row mt-0">
 				<div class="col-lg-4 col-md-12">
 					<div class="text-label d-block text-muted">Training Details</div>
