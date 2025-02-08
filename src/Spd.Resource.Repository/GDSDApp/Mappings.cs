@@ -121,6 +121,7 @@ internal class Mappings : Profile
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.TrainingBizMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainingBizMailingAddress.Country)))
             .ReverseMap()
             .ForMember(d => d.TrainingId, opt => opt.MapFrom(s => s.spd_dogtrainingschoolid))
+            .ForMember(d => d.TrainingBizMailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
             ;
 
         _ = CreateMap<OtherTraining, spd_dogtrainingschool>()

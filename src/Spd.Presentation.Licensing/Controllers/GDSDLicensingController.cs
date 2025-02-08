@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -45,7 +46,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceUpsertRequest"></param>
         /// <returns></returns>
         [Route("api/gdsd-team-app")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<GDSDAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest licenceUpsertRequest)
         {
@@ -61,7 +62,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/gdsd-team-app/{certificationAppId}")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid certificationAppId)
         {

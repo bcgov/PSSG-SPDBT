@@ -384,6 +384,18 @@ internal static class SharedMappingFuncs
         return agree != null && agree == true ? DateTime.Now : null;
     }
 
+    internal static MailingAddr? GetMailingAddressData(spd_dogtrainingschool s)
+    {
+        MailingAddr mailingAddress = new();
+        mailingAddress.AddressLine1 = s.spd_street1;
+        mailingAddress.AddressLine2 = s.spd_street2;
+        mailingAddress.City = s.spd_city;
+        mailingAddress.Province = s.spd_provincestate;
+        mailingAddress.Country = s.spd_country;
+        mailingAddress.PostalCode = s.spd_postalzipcode;
+        return mailingAddress;
+    }
+
     internal static MailingAddr? GetMailingAddressData(spd_application c)
     {
         MailingAddr mailingAddress = new();
