@@ -4,18 +4,18 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({
-    selector: 'app-step-business-licence-employees',
-    template: `
+	selector: 'app-step-business-licence-employees',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-common-employees [defaultExpanded]="true" [isWizard]="true"></app-common-employees>
+					<app-common-employees [defaultExpanded]="true"></app-common-employees>
 				</div>
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
@@ -30,7 +30,7 @@ export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChi
 			case ApplicationTypeCode.New: {
 				this.title = 'Add all employees to your application';
 				this.subtitle =
-					"Your business must have valid security worker licence holders in B.C. that support the various licence categories the business wishes to be licensed for. If your controlling members don't meet this requirement, add employees who do.";
+					'Your business must have valid licence holders in B.C. for the licence categories you need. If your current controlling members do not meet these requirements, add employees who do.';
 				break;
 			}
 			default: {

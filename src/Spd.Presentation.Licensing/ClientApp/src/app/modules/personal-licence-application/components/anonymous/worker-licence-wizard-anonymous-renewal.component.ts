@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
 @Component({
-    selector: 'app-worker-licence-wizard-anonymous-renewal',
-    template: `
+	selector: 'app-worker-licence-wizard-anonymous-renewal',
+	template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -76,6 +76,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
+					[showCitizenshipStep]="showCitizenshipStep"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -107,8 +108,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</ng-template>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based

@@ -7,8 +7,8 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 
 @Component({
-    selector: 'app-steps-business-licence-information',
-    template: `
+	selector: 'app-steps-business-licence-information',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="isNew">
@@ -20,11 +20,21 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				</ng-container>
 
 				<ng-container *ngIf="isBusinessLicenceSoleProprietor; else NotSoleProprietor">
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(nextStepperStep)="onGoToNextStep()"
-						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-					></app-wizard-footer>
+					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else NotSimultaneousFlow">
+						<app-wizard-footer
+							[isFormValid]="isFormValid"
+							(nextStepperStep)="onGoToNextStep()"
+							(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+						></app-wizard-footer>
+					</ng-container>
+					<ng-template #NotSimultaneousFlow>
+						<app-wizard-footer
+							[isFormValid]="isFormValid"
+							(previousStepperStep)="onGotoBusinessProfile()"
+							(nextStepperStep)="onGoToNextStep()"
+							(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+						></app-wizard-footer>
+					</ng-template>
 				</ng-container>
 				<ng-template #NotSoleProprietor>
 					<app-wizard-footer
@@ -89,9 +99,9 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_CHECKLIST = 0;
@@ -101,6 +111,7 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 	readonly STEP_LICENCE_LIABILITY = 4;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isSoleProprietorSimultaneousFlow!: boolean;
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;

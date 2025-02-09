@@ -69,7 +69,11 @@ public enum LicenceDocumentTypeCode
     ArmourCarGuardRegistrar,
     BizSecurityDogCertificate,
     BizBCReport,
-    CorporateRegistryDocument
+    CorporateRegistryDocument,
+    IdCardIssuedByAccreditedDogTrainingSchool,
+    MedicalFormConfirmingNeedDog,
+    VeterinarianConfirmationForSpayedNeuteredDog,
+    DogTrainingCurriculumCertificateSupportingDocument
 }
 
 public enum PoliceOfficerRoleCode

@@ -19,8 +19,8 @@ import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 
 @Component({
-    selector: 'app-worker-licence-wizard-authenticated-new',
-    template: `
+	selector: 'app-worker-licence-wizard-authenticated-new',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -67,6 +67,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review Worker Licence</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
+							[showCitizenshipStep]="showCitizenshipStep"
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"

@@ -20,6 +20,6 @@ export class MetalDealersBaseComponent implements OnInit {
 	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	ngOnInit(): void {
-		this.commonApplicationService.setApplicationTitleText('Metal Dealers & Recyclers', 'Metal Dealers & Recyclers');
+		this.commonApplicationService.setMetalDealersApplicationTitle();
 	}
 }

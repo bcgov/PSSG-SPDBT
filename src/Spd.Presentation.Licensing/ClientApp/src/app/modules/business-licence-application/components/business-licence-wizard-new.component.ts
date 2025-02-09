@@ -18,8 +18,8 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-    selector: 'app-business-licence-wizard-new',
-    template: `
+	selector: 'app-business-licence-wizard-new',
+	template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -34,6 +34,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[showSaveAndExit]="showSaveAndExit"
 					[applicationTypeCode]="applicationTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -113,8 +114,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -136,6 +137,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
+	isSoleProprietorSimultaneousFlow!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
@@ -186,6 +188,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.isBusinessLicenceSoleProprietor = this.businessApplicationService.businessModelFormGroup.get(
 					'isBusinessLicenceSoleProprietor'
 				)?.value;
+				this.isSoleProprietorSimultaneousFlow =
+					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value ??
+					false;
 
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'

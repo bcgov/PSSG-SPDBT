@@ -1,10 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-renew-and-update',
@@ -46,7 +45,7 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 								application's processing time.
 							</app-alert>
 
-							<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
+							<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
 								We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
 							</app-alert>
 
@@ -90,9 +89,6 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	photographOfYourself = this.workerApplicationService.photographOfYourself;
-
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 

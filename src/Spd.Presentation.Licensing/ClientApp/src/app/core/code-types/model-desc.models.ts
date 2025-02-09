@@ -203,8 +203,8 @@ export const ApplicationInviteStatuses: SelectOptions[] = [
 ];
 
 export const GenderTypes: SelectOptions[] = [
-	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'X', code: GenderCode.U },
 ];
 
@@ -233,11 +233,11 @@ export const RestraintDocumentTypes: SelectOptions[] = [
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
 	},
 	{
-		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months. This letter should be signed on official letterhead and include the exact date of the training for our records.',
+		desc: 'If you are a peace officer, a letter from your employer showing use of force training within the last 12 months. This letter should be signed on official letterhead and include the exact date of the training for our records.',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
 	},
 	{
-		desc: 'Must be able to demonstrate, to the satisfaction of the registrar that he or she has training equivalent to the training referred above.',
+		desc: 'Equivalent training as approved by the registrar',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
 	},
 ];
@@ -301,12 +301,15 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
 	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'Dog Trainer Certification', code: ServiceTypeCode.DogTrainerCertification },
+	{ desc: 'GDSD Team Certification', code: ServiceTypeCode.GdsdTeamCertification },
 	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
 	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
 	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },
 	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
+	{ desc: 'Retired Service Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{

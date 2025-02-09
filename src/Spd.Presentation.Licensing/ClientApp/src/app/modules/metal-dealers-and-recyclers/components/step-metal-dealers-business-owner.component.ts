@@ -53,7 +53,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</form>
 					<mat-divider class="mb-4 mt-3"></mat-divider>
 
-					<div class="text-minor-heading my-2">Upload your valid business licence documents</div>
+					<div class="text-minor-heading my-2">Upload valid business licence documents</div>
 
 					<div class="my-2">
 						<app-file-upload
