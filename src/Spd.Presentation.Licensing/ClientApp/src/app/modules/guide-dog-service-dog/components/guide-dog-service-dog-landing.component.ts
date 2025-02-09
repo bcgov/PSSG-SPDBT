@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { take, tap } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
-
-export enum GuideDogTypeCode {
-	GuideDog = 'GuideDog',
-	DogTrainer = 'DogTrainer',
-	RetiredServiceDog = 'RetiredServiceDog',
-}
 
 @Component({
 	selector: 'app-guide-dog-service-dog-landing',
@@ -84,41 +81,8 @@ export enum GuideDogTypeCode {
 											tabindex="0"
 											class="large login-link"
 											aria-label="Continue without a BC Services Card and manage certifications"
-											(click)="onContinue(guideDogTypes.GuideDog)"
-											(keydown)="onKeydownContinue($event, guideDogTypes.GuideDog)"
-										>
-											Continue without a BC Services Card
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="login-selection-container my-4 my-lg-5">
-							<div class="row m-3">
-								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/dog-trainer.svg" alt="Dog Trainer Certification" />
-								</div>
-
-								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
-									<div class="d-flex justify-content-start py-2">
-										<div class="text-start"><strong>Dog Trainer</strong> Certification:</div>
-									</div>
-
-									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterDogTrainer()">
-										Log In with <span class="fw-bold">BC Services Card</span>
-									</button>
-								</div>
-
-								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<div class="pb-0 pb-lg-3">&nbsp;</div>
-									<div class="mt-0 mt-lg-4">
-										<a
-											tabindex="0"
-											class="large login-link"
-											aria-label="Continue without a BC Services Card and manage certifications"
-											(click)="onContinue(guideDogTypes.DogTrainer)"
-											(keydown)="onKeydownContinue($event, guideDogTypes.DogTrainer)"
+											(click)="onContinue(serviceTypes.GdsdTeamCertification)"
+											(keydown)="onKeydownContinue($event, serviceTypes.GdsdTeamCertification)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -156,13 +120,39 @@ export enum GuideDogTypeCode {
 											tabindex="0"
 											class="large login-link"
 											aria-label="Continue without a BC Services Card and manage certifications"
-											(click)="onContinue(guideDogTypes.RetiredServiceDog)"
-											(keydown)="onKeydownContinue($event, guideDogTypes.RetiredServiceDog)"
+											(click)="onContinue(serviceTypes.RetiredServiceDogCertification)"
+											(keydown)="onKeydownContinue($event, serviceTypes.RetiredServiceDogCertification)"
 										>
 											Continue without a BC Services Card
 										</a>
 									</div>
 								</div>
+							</div>
+						</div>
+
+						<div class="login-selection-container my-4 my-lg-5">
+							<div class="row m-3">
+								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
+									<img class="image" src="./assets/dog-trainer.svg" alt="Dog Trainer Certification" />
+								</div>
+
+								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
+									<div class="d-flex justify-content-start py-2 mb-3">
+										<div class="text-start"><strong>Dog Trainer</strong> Certification:</div>
+									</div>
+
+									<a
+										tabindex="0"
+										class="large login-link"
+										aria-label="Continue without a BC Services Card and manage certifications"
+										(click)="onContinue(serviceTypes.DogTrainerCertification)"
+										(keydown)="onKeydownContinue($event, serviceTypes.DogTrainerCertification)"
+									>
+										Continue without a BC Services Card
+									</a>
+								</div>
+
+								<div class="col-xl-3 col-lg-4 col-md-12 col-12">&nbsp;</div>
 							</div>
 						</div>
 					</div>
@@ -189,22 +179,21 @@ export enum GuideDogTypeCode {
 	],
 	standalone: false,
 })
-export class GuideDogServiceDogLandingComponent {
-	//implements OnInit
+export class GuideDogServiceDogLandingComponent implements OnInit {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
-	guideDogTypes = GuideDogTypeCode;
+	serviceTypes = ServiceTypeCode;
 
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		// private gdsdApplicationService: GdsdApplicationService,
+		private gdsdApplicationService: GdsdApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
-	// ngOnInit(): void {
-	// this.commonApplicationService.setApplicationTitle();
-	// }
+	ngOnInit(): void {
+		this.commonApplicationService.setGdsdApplicationTitle();
+	}
 
 	onRegisterGuideDog(): void {
 		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
@@ -218,32 +207,27 @@ export class GuideDogServiceDogLandingComponent {
 		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
-	onContinue(_guideDogTypeCode: GuideDogTypeCode): void {
+	onContinue(serviceTypeCode: ServiceTypeCode): void {
 		// make sure the user is not logged in.
 		this.authProcessService.logoutBceid(GuideDogServiceDogRoutes.path());
 		this.authProcessService.logoutBcsc(GuideDogServiceDogRoutes.path());
 
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
-		);
-		// this.gdsdApplicationService
-		// 	.createNewLicenceAnonymous(guideDogTypeCode)
-		// 	.pipe(
-		// 		tap((_resp: any) => {
-		// 			this.router.navigateByUrl(
-		// 				GuideDogServiceDogRoutes.pathSecurityWorkerLicenceAnonymous(
-		// 					GuideDogServiceDogRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-		// 				)
-		// 			);
-		// 		}),
-		// 		take(1)
-		// 	)
-		// 	.subscribe();
+		this.gdsdApplicationService
+			.createNewGdsdAnonymous(serviceTypeCode)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
-	onKeydownContinue(event: KeyboardEvent, guideDogTypeCode: GuideDogTypeCode) {
+	onKeydownContinue(event: KeyboardEvent, serviceTypeCode: ServiceTypeCode) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onContinue(guideDogTypeCode);
+		this.onContinue(serviceTypeCode);
 	}
 }

@@ -43,7 +43,7 @@ import {
 			<mat-accordion multi="true">
 				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Members with a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist; else noControllingMembersWithSwlExist">
@@ -104,27 +104,38 @@ import {
 						</div>
 					</div>
 					<ng-template #noControllingMembersWithSwlExist>
-						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
+						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">No controlling members with a Security Worker Licence</div>
 					</ng-template>
 
-					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
-						<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
-							<a
-								class="large"
-								tabindex="0"
-								(click)="onAddMemberWithSWL()"
-								(keydown)="onKeydownAddMemberWithSWL($event)"
-								*ngIf="!isReadonly"
-							>
-								Add Member with a Security Worker Licence
-							</a>
+					<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember1">
+						<div class="row">
+							<div class="col-12 mt-4">
+								<app-alert type="warning" icon="warning">
+									<div>The maximum number of controlling members has been reached</div>
+								</app-alert>
+							</div>
 						</div>
-					</div>
+					</ng-container>
+					<ng-template #CanAddMember1>
+						<div class="row mt-4 mb-2" *ngIf="!isReadonly">
+							<div class="col-12'">
+								<a
+									class="large"
+									tabindex="0"
+									aria-label="Add Controlling Member with a Security Worker Licence"
+									(click)="onAddMemberWithSWL()"
+									(keydown)="onKeydownAddMemberWithSWL($event)"
+								>
+									Add Controlling Member with a Security Worker Licence
+								</a>
+							</div>
+						</div>
+					</ng-template>
 				</mat-expansion-panel>
 
 				<mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
 					<mat-expansion-panel-header>
-						<mat-panel-title>Members without a Security Worker Licence</mat-panel-title>
+						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
 
 					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
@@ -234,32 +245,35 @@ import {
 						</ng-container>
 					</div>
 					<ng-template #noControllingMembersWithoutSwlExist>
-						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
+						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">
+							No controlling members without a Security Worker Licence
+						</div>
 					</ng-template>
 
-					<div class="row">
-						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
-							<div class="col-12">
+					<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
+						<div class="row">
+							<div class="col-12 mt-4">
 								<app-alert type="warning" icon="warning">
 									<div>The maximum number of controlling members has been reached</div>
 								</app-alert>
 							</div>
-						</ng-container>
-						<ng-template #CanAddMember2>
-							<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
+						</div>
+					</ng-container>
+					<ng-template #CanAddMember2>
+						<div class="row mt-4 mb-2" *ngIf="!isReadonly">
+							<div class="col-12'">
 								<a
 									class="large"
 									tabindex="0"
-									aria-label="Add a Member without a Security Worker Licence"
+									aria-label="Add Controlling Member without a Security Worker Licence"
 									(click)="onAddMemberWithoutSWL()"
 									(keydown)="onKeydownAddMemberWithoutSWL($event)"
-									*ngIf="!isReadonly"
 								>
-									Add Member without a Security Worker Licence
+									Add Controlling Member without a Security Worker Licence
 								</a>
 							</div>
-						</ng-template>
-					</div>
+						</div>
+					</ng-template>
 				</mat-expansion-panel>
 			</mat-accordion>
 
@@ -479,7 +493,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	onAddMemberWithSWL(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
-			title: 'Add Member with Security Worker Licence',
+			title: 'Add Controlling Member with Security Worker Licence',
 			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
 			isExpiredLicenceSearch: false,

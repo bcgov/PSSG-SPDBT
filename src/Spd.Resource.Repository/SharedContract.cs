@@ -67,7 +67,10 @@ public enum ServiceTypeEnum
     ArmouredVehiclePermit,
     BodyArmourPermit,
     MDRA,
-    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC,
+    GDSDTeamCertification,
+    DogTrainerCertification,
+    RetiredServiceDogCertification
 }
 
 public enum GenderEnum
@@ -96,6 +99,36 @@ public enum ApplicationTypeEnum
     Renewal,
     Replacement,
     Update,
+}
+
+public enum ApplicationStatusEnum
+{
+    Draft,
+    PaymentPending,
+    Incomplete,
+    ApplicantVerification,
+    Submitted,
+    Cancelled
+}
+
+public enum ApplicationPortalStatusEnum
+{
+    Draft,
+    VerifyIdentity,
+    InProgress,
+    AwaitingPayment,
+    AwaitingThirdParty,
+    AwaitingApplicant,
+    UnderAssessment,
+    Incomplete,
+    CompletedCleared,
+    RiskFound,
+    ClosedNoResponse,
+    ClosedNoConsent,
+    CancelledByApplicant,
+    CancelledByOrganization,
+    Completed,
+    RefundRequested
 }
 
 public enum LicenceTermEnum

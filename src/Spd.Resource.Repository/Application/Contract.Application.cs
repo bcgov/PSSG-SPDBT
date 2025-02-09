@@ -116,15 +116,6 @@ public record UpdateCmd
     public bool? HaveVerifiedIdentity { get; set; }
 }
 
-public enum ApplicationStatusEnum
-{
-    Draft,
-    PaymentPending,
-    Incomplete,
-    ApplicantVerification,
-    Submitted,
-    Cancelled
-}
 public record SpdTempFile
 {
     public string? TempFileKey { get; set; } = null!;
@@ -317,26 +308,6 @@ public record ApplicantApplicationListResp
 }
 
 #endregion
-
-public enum ApplicationPortalStatusEnum
-{
-    Draft,
-    VerifyIdentity,
-    InProgress,
-    AwaitingPayment,
-    AwaitingThirdParty,
-    AwaitingApplicant,
-    UnderAssessment,
-    Incomplete,
-    CompletedCleared,
-    RiskFound,
-    ClosedNoResponse,
-    ClosedNoConsent,
-    CancelledByApplicant,
-    CancelledByOrganization,
-    Completed,
-    RefundRequested
-}
 
 public enum ApplicationPortalStatisticsCd
 {

@@ -15,8 +15,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
 
 @Component({
-    selector: 'app-worker-licence-wizard-authenticated-update',
-    template: `
+	selector: 'app-worker-licence-wizard-authenticated-update',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -54,6 +54,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
+							[showCitizenshipStep]="false"
 							[licenceCost]="newLicenceCost"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"

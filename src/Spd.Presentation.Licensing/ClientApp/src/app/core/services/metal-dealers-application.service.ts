@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -115,12 +115,6 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 
 		this.consentAndDeclarationFormGroup.reset();
 		this.metalDealersModelFormGroup.reset();
-
-		// clear the branches data - this does not seem to get reset during a formgroup reset
-		const branchesArray = this.metalDealersModelFormGroup.get('branchesData.branches') as FormArray;
-		while (branchesArray.length) {
-			branchesArray.removeAt(0);
-		}
 
 		console.debug('RESET', this.initialized, this.metalDealersModelFormGroup.value);
 	}

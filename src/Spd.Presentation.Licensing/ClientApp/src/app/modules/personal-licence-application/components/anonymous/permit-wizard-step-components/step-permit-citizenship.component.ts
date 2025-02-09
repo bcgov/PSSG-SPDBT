@@ -72,13 +72,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Document Expiry Date</mat-label>
 									<input
 										matInput
-										[matDatepicker]="picker"
+										[matDatepicker]="picker1"
 										formControlName="expiryDate"
 										[min]="minDate"
 										[errorStateMatcher]="matcher"
 									/>
-									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+									<mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+									<mat-datepicker #picker1 startView="multi-year"></mat-datepicker>
 									<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
 									<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">
 										Invalid expiry date
@@ -156,13 +156,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-label>Document Expiry Date</mat-label>
 										<input
 											matInput
-											[matDatepicker]="picker"
+											[matDatepicker]="picker2"
 											formControlName="expiryDate"
 											[min]="minDate"
 											[errorStateMatcher]="matcher"
 										/>
-										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+										<mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+										<mat-datepicker #picker2 startView="multi-year"></mat-datepicker>
 										<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
 										<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">
 											Invalid expiry date
@@ -249,13 +249,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											<mat-label>Document Expiry Date</mat-label>
 											<input
 												matInput
-												[matDatepicker]="picker"
+												[matDatepicker]="picker3"
 												formControlName="governmentIssuedExpiryDate"
 												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+											<mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+											<mat-datepicker #picker3 startView="multi-year"></mat-datepicker>
 											<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
 												This is required
 											</mat-error>
