@@ -10,7 +10,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-worker-licence-dogs-authorization',
 	template: `
-		<app-step-section title="Do you want to request authorization to use dogs?" [subtitle]="subtitle">
+		<app-step-section title="Are you requesting authorization to use dogs for security work?" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -56,7 +56,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							</div>
 						</div>
 
-						<app-alert type="danger" icon="error" *ngIf="originalDogAuthorizationExists">
+						<app-alert type="danger" icon="dangerous" *ngIf="originalDogAuthorizationExists">
 							Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification.
 						</app-alert>
 
@@ -108,9 +108,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.subtitle = this.isRenewalOrUpdate
-			? 'Update any information that has changed since your last application'
-			: 'Check with your employer if the use of dogs is required.';
+		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 
 		this.originalDogAuthorizationExists = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalDogAuthorizationExists'

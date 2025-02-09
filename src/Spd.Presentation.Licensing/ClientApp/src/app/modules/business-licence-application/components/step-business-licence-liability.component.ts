@@ -9,7 +9,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-business-licence-liability',
 	template: `
-		<app-step-section title="Provide proof of insurance">
+		<app-step-section title="Proof of insurance">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">

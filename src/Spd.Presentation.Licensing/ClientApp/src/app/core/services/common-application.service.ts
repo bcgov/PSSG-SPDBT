@@ -43,6 +43,7 @@ import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { BusinessLicenceCategoryTypes, SelectOptions } from '../code-types/model-desc.models';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -515,9 +516,19 @@ export class CommonApplicationService {
 					mobileTitle = 'BAP';
 					break;
 				}
+				case ServiceTypeCode.GdsdTeamCertification: {
+					mobileTitle = 'GDSDTC';
+					break;
+				}
+				case ServiceTypeCode.DogTrainerCertification: {
+					mobileTitle = 'DTC';
+					break;
+				}
+				case ServiceTypeCode.RetiredServiceDogCertification: {
+					mobileTitle = 'RSDC';
+					break;
+				}
 			}
-
-			// TODO add support for GDSD title setting
 
 			if (applicationTypeCode) {
 				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
@@ -531,6 +542,52 @@ export class CommonApplicationService {
 			}
 		} else {
 			mobileTitle = title = 'Licensing Application';
+		}
+
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	setGdsdApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
+	) {
+		let title = 'Guide Dog Service Dog';
+		let mobileTitle = 'GDSD';
+
+		if (serviceTypeCode) {
+			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+
+			if (applicationTypeCode) {
+				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+				title += ` - ${applicationTypeDesc}`;
+				mobileTitle += ` ${applicationTypeDesc}`;
+			}
+
+			if (originalLicenceNumber) {
+				title += ` - ${originalLicenceNumber}`;
+				mobileTitle += ` ${originalLicenceNumber}`;
+			}
+		}
+
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	setMetalDealersApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined
+	) {
+		let title = 'Metal Dealers & Recyclers';
+		let mobileTitle = 'MD&R';
+
+		if (serviceTypeCode) {
+			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+
+			if (applicationTypeCode) {
+				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+				title += ` - ${applicationTypeDesc}`;
+				mobileTitle += ` ${applicationTypeDesc}`;
+			}
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
@@ -710,6 +767,14 @@ export class CommonApplicationService {
 		}
 
 		return messageError;
+	}
+
+	isValidSoleProprietorSwlCategories(availableCategoryCodes: WorkerCategoryTypeCode[]): boolean {
+		return (
+			BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
+				return availableCategoryCodes.includes(item.code as WorkerCategoryTypeCode);
+			}).length > 0
+		);
 	}
 
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {

@@ -1,14 +1,20 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
+import { StepsGdsdDogInfoComponent } from './steps-gdsd-dog-info.component';
+import { StepsGdsdPersonalInfoComponent } from './steps-gdsd-personal-info.component';
+import { StepsGdsdReviewConfirmComponent } from './steps-gdsd-review-confirm.component';
+import { StepsGdsdSelectionComponent } from './steps-gdsd-selection.component';
+import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.component';
 
 @Component({
 	selector: 'app-gdsd-wizard-anonymous-new',
@@ -22,71 +28,80 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
-				<!-- <app-steps-gdsd-details-new
+				<app-steps-gdsd-selection
 					[isLoggedIn]="false"
-					[serviceTypeCode]="serviceTypeCode"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-gdsd-details-new> -->
+				></app-steps-gdsd-selection>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
-				<!-- <app-steps-gdsd-purpose-anonymous
+				<app-steps-gdsd-personal-info
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
-					[showEmployerInformation]="showEmployerInformation"
-					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-gdsd-purpose-anonymous> -->
+				></app-steps-gdsd-personal-info>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Dog Information</ng-template>
-				<!-- <app-steps-gdsd-identification-anonymous
+				<app-steps-gdsd-dog-info
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-gdsd-identification-anonymous> -->
+				></app-steps-gdsd-dog-info>
 			</mat-step>
 
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Training Information</ng-template>
-				<!-- <app-steps-gdsd-contact
+				<app-steps-gdsd-training-info
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showSaveAndExit]="false"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-gdsd-contact> -->
+				></app-steps-gdsd-training-info>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
-				<!-- <app-steps-gdsd-review-anonymous
-					[serviceTypeCode]="serviceTypeCode"
+				<app-steps-gdsd-review-confirm
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showEmployerInformation]="showEmployerInformation"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextSubmitStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
-					(goToStep)="onGoToStep($event)"
-				></app-steps-gdsd-review-anonymous> -->
+				></app-steps-gdsd-review-confirm>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -98,7 +113,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 	standalone: false,
 })
 export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	readonly STEP_CERTIFICATE = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
 	readonly STEP_TRAINING_INFO = 3;
@@ -110,24 +125,27 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	step3Complete = false;
 	step4Complete = false;
 
+	showSaveAndExit = false;
 	licenceAppId: string | null = null;
 
-	// @ViewChild(StepsGdsdDetailsNewComponent)
-	// stepsGdsdDetailsComponent!: StepsGdsdDetailsNewComponent;
+	@ViewChild(StepsGdsdSelectionComponent)
+	stepsSelection!: StepsGdsdSelectionComponent;
 
-	// @ViewChild(StepsGdsdPurposeAnonymousComponent)
-	// stepsGdsdPurposeComponent!: StepsGdsdPurposeAnonymousComponent;
+	@ViewChild(StepsGdsdPersonalInfoComponent)
+	stepsPersonalInfo!: StepsGdsdPersonalInfoComponent;
 
-	// @ViewChild(StepsGdsdIdentificationAnonymousComponent)
-	// stepsGdsdIdentificationComponent!: StepsGdsdIdentificationAnonymousComponent;
+	@ViewChild(StepsGdsdDogInfoComponent)
+	stepsDogInfo!: StepsGdsdDogInfoComponent;
 
-	// @ViewChild(StepsGdsdContactComponent)
-	// stepsGdsdContactComponent!: StepsGdsdContactComponent;
+	@ViewChild(StepsGdsdTrainingInfoComponent)
+	stepsTrainingInfo!: StepsGdsdTrainingInfoComponent;
 
-	// @ViewChild(StepsGdsdReviewAnonymousComponent)
-	// stepsGdsdReviewComponent!: StepsGdsdReviewAnonymousComponent;
+	@ViewChild(StepsGdsdReviewConfirmComponent)
+	stepsReviewConfirm!: StepsGdsdReviewConfirmComponent;
 
 	isFormValid = false;
+	isTrainedByAccreditedSchools = false;
+	hasAttendedTrainingSchool = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -136,9 +154,6 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
-		// private gdsdApplicationService: gdsdApplicationService,
-		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -146,7 +161,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 
 	ngOnInit(): void {
 		// if (!this.gdsdApplicationService.initialized) {
-		// 	this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		// 	this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 		// 	return;
 		// }
 
@@ -158,9 +173,14 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
 
-			// this.applicationTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
-			// 	'applicationTypeData.applicationTypeCode'
-			// )?.value;
+			this.isTrainedByAccreditedSchools =
+				this.gdsdApplicationService.gdsdModelFormGroup.get(
+					'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
+				)?.value === BooleanTypeCode.Yes;
+
+			this.hasAttendedTrainingSchool =
+				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
+				BooleanTypeCode.Yes;
 
 			this.updateCompleteStatus();
 		});
@@ -170,24 +190,43 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 		if (this.gdsdModelChangedSubscription) this.gdsdModelChangedSubscription.unsubscribe();
 	}
 
+	onSubmit(): void {
+		this.gdsdApplicationService.submitAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				// const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+				// 	this.serviceTypeCode,
+				// 	this.applicationTypeCode
+				// );
+				// this.hotToastService.success(successMessage);
+
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		// switch (event.selectedIndex) {
-		// 	case this.STEP_GDSD_DETAILS:
-		// 		this.stepsGdsdDetailsComponent?.onGoToFirstStep();
-		// 		break;
-		// 	case this.STEP_PURPOSE_AND_RATIONALE:
-		// 		this.stepsGdsdPurposeComponent?.onGoToFirstStep();
-		// 		break;
-		// 	case this.STEP_IDENTIFICATION:
-		// 		this.stepsGdsdIdentificationComponent?.onGoToFirstStep();
-		// 		break;
-		// 	case this.STEP_CONTACT_INFORMATION:
-		// 		this.stepsGdsdContactComponent?.onGoToFirstStep();
-		// 		break;
-		// 	case this.STEP_REVIEW_AND_CONFIRM:
-		// 		this.stepsGdsdReviewComponent?.onGoToFirstStep();
-		// 		break;
-		// }
+		switch (event.selectedIndex) {
+			case this.STEP_SELECTION:
+				this.stepsSelection?.onGoToFirstStep();
+				break;
+			case this.STEP_PERSONAL_INFO:
+				this.stepsPersonalInfo?.onGoToFirstStep();
+				break;
+			case this.STEP_DOG_INFO:
+				this.stepsDogInfo?.onGoToFirstStep();
+				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepsReviewConfirm?.onGoToFirstStep();
+				break;
+		}
 
 		super.onStepSelectionChange(event);
 	}
@@ -195,43 +234,20 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		// switch (stepper.selectedIndex) {
-		// 	case this.STEP_GDSD_DETAILS:
-		// 		this.stepsGdsdDetailsComponent?.onGoToLastStep();
-		// 		break;
-		// 	case this.STEP_PURPOSE_AND_RATIONALE:
-		// 		this.stepsGdsdPurposeComponent?.onGoToLastStep();
-		// 		break;
-		// 	case this.STEP_IDENTIFICATION:
-		// 		this.stepsGdsdIdentificationComponent?.onGoToLastStep();
-		// 		break;
-		// 	case this.STEP_CONTACT_INFORMATION:
-		// 		this.stepsGdsdContactComponent?.onGoToLastStep();
-		// 		break;
-		// }
-	}
-
-	onNextPayStep(): void {
-		// If the creation worked and the payment failed, do not post again
-		// if (this.licenceAppId) {
-		// 	this.payNow(this.licenceAppId);
-		// } else {
-		// 	this.gdsdApplicationService.submitGdsdAnonymous().subscribe({
-		// 		next: (resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 			// save this locally just in payment fails
-		// 			this.licenceAppId = resp.body.licenceAppId!;
-		// 			const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-		// 				this.serviceTypeCode,
-		// 				this.applicationTypeCode
-		// 			);
-		// 			this.hotToastService.success(successMessage);
-		// 			this.payNow(this.licenceAppId);
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during save', error);
-		// 		},
-		// 	});
-		// }
+		switch (stepper.selectedIndex) {
+			case this.STEP_SELECTION:
+				this.stepsSelection?.onGoToLastStep();
+				break;
+			case this.STEP_PERSONAL_INFO:
+				this.stepsPersonalInfo?.onGoToLastStep();
+				break;
+			case this.STEP_DOG_INFO:
+				this.stepsDogInfo?.onGoToLastStep();
+				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToLastStep();
+				break;
+		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -240,10 +256,11 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onGoToStep(step: number) {
-		// this.stepsGdsdDetailsComponent?.onGoToFirstStep();
-		// this.stepsGdsdPurposeComponent?.onGoToFirstStep();
-		// this.stepsGdsdIdentificationComponent?.onGoToFirstStep();
-		// this.stepsGdsdContactComponent?.onGoToFirstStep();
+		this.stepsSelection?.onGoToFirstStep();
+		this.stepsPersonalInfo?.onGoToFirstStep();
+		this.stepsDogInfo?.onGoToFirstStep();
+		this.stepsTrainingInfo?.onGoToFirstStep();
+		this.stepsReviewConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -255,27 +272,27 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onChildNextStep() {
-		// switch (this.stepper.selectedIndex) {
-		// 	case this.STEP_GDSD_DETAILS:
-		// 		this.stepsGdsdDetailsComponent?.onGoToNextStep();
-		// 		break;
-		// 	case this.STEP_PURPOSE_AND_RATIONALE:
-		// 		this.stepsGdsdPurposeComponent?.onGoToNextStep();
-		// 		break;
-		// 	case this.STEP_IDENTIFICATION:
-		// 		this.stepsGdsdIdentificationComponent?.onGoToNextStep();
-		// 		break;
-		// 	case this.STEP_CONTACT_INFORMATION:
-		// 		this.stepsGdsdContactComponent?.onGoToNextStep();
-		// 		break;
-		// }
+		switch (this.stepper.selectedIndex) {
+			case this.STEP_SELECTION:
+				this.stepsSelection?.onGoToNextStep();
+				break;
+			case this.STEP_PERSONAL_INFO:
+				this.stepsPersonalInfo?.onGoToNextStep();
+				break;
+			case this.STEP_DOG_INFO:
+				this.stepsDogInfo?.onGoToNextStep();
+				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToNextStep();
+				break;
+		}
 	}
 
 	private updateCompleteStatus(): void {
-		// this.step1Complete = this.gdsdApplicationService.isStepGdsdDetailsComplete();
-		// this.step2Complete = this.gdsdApplicationService.isStepPurposeAndRationaleComplete();
-		// this.step3Complete = this.gdsdApplicationService.isStepIdentificationComplete();
-		// this.step4Complete = this.gdsdApplicationService.isStepContactComplete();
+		this.step1Complete = true; //this.gdsdApplicationService.isStepSelectionComplete();
+		this.step2Complete = true; //this.gdsdApplicationService.isStepPersonalInformationComplete();
+		this.step3Complete = true; //this.gdsdApplicationService.isStepDogInformationComplete();
+		this.step4Complete = true; //this.gdsdApplicationService.isStepTrainingInformationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}

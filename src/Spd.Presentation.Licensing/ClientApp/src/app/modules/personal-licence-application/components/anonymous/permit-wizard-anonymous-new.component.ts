@@ -18,8 +18,8 @@ import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-step-compo
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-components/steps-permit-review-anonymous.component';
 
 @Component({
-    selector: 'app-permit-wizard-anonymous-new',
-    template: `
+	selector: 'app-permit-wizard-anonymous-new',
+	template: `
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -60,6 +60,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 				<app-steps-permit-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"

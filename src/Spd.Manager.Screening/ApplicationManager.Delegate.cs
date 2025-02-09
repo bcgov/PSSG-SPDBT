@@ -26,7 +26,7 @@ namespace Spd.Manager.Screening
         {
             //if already has an user. use email to connect
             Guid? userId = null;
-            PortalUserListResp userList =(PortalUserListResp) await _portalUserRepository.QueryAsync(
+            PortalUserListResp userList = (PortalUserListResp)await _portalUserRepository.QueryAsync(
                 new PortalUserQry() { UserEmail = command.CreateRequest.EmailAddress, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                 ct
                 );
@@ -40,7 +40,7 @@ namespace Spd.Manager.Screening
                  ct);
 
             //check if existing or over max
-            bool delegateAlreadyExists = allDelegateList.Items.Any(o => o.EmailAddress == command.CreateRequest.EmailAddress);
+            bool delegateAlreadyExists = allDelegateList.Items.Any(o => string.Equals(o.EmailAddress, command.CreateRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase));
             if (delegateAlreadyExists)
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The person is already added to the application as a delegate.");
