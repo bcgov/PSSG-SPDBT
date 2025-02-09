@@ -1,20 +1,21 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
+import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-new',
 	template: `
 		<app-step-section title="Upload a passport-quality photo of yourself">
-			<app-common-photograph-of-yourself
+			<app-form-photograph-of-yourself
+				[serviceTypeCode]="serviceTypeCode"
 				[form]="form"
-				name="permit"
+				label="permit"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
-			></app-common-photograph-of-yourself>
+			></app-form-photograph-of-yourself>
 		</app-step-section>
 	`,
 	styles: [],
@@ -22,9 +23,9 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licen
 })
 export class StepPermitPhotographOfYourselfNewComponent implements LicenceChildStepperStepComponent {
 	@Input() form!: FormGroup;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
+	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
@@ -43,7 +44,7 @@ export class StepPermitPhotographOfYourselfNewComponent implements LicenceChildS
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
 
-				this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
+				this.formPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
 			},
 		});
 	}

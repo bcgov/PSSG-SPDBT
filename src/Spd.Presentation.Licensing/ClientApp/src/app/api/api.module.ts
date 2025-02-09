@@ -14,6 +14,7 @@ import { BizPortalUserService } from './services/biz-portal-user.service';
 import { BizProfileService } from './services/biz-profile.service';
 import { ConfigurationService } from './services/configuration.service';
 import { ControllingMemberCrcAppService } from './services/controlling-member-crc-app.service';
+import { GdsdLicensingService } from './services/gdsd-licensing.service';
 import { LicenceService } from './services/licence.service';
 import { LicenceAppService } from './services/licence-app.service';
 import { LicenceAppDocumentService } from './services/licence-app-document.service';
@@ -39,6 +40,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     BizProfileService,
     ConfigurationService,
     ControllingMemberCrcAppService,
+    GdsdLicensingService,
     LicenceService,
     LicenceAppService,
     LicenceAppDocumentService,

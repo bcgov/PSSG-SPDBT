@@ -17,8 +17,8 @@ import { StepsPermitPurposeAuthenticatedComponent } from './permit-wizard-step-c
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-review-authenticated.component';
 
 @Component({
-    selector: 'app-permit-wizard-authenticated-renewal',
-    template: `
+	selector: 'app-permit-wizard-authenticated-renewal',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -62,6 +62,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<app-steps-permit-identification-authenticated
 							[isFormValid]="isFormValid"
 							[showSaveAndExit]="showSaveAndExit"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"

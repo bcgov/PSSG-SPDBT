@@ -9,8 +9,8 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-change.component';
 
 @Component({
-    selector: 'app-steps-permit-updates-authenticated',
-    template: `
+	selector: 'app-steps-permit-updates-authenticated',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-permit-review-name-change></app-step-permit-review-name-change>
@@ -24,6 +24,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 			<mat-step *ngIf="hasGenderChanged">
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 				></app-step-permit-photograph-of-yourself>
 
 				<app-wizard-footer

@@ -1,6 +1,5 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Edm;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using System.Text.RegularExpressions;
@@ -383,5 +382,62 @@ internal static class SharedMappingFuncs
     internal static DateTimeOffset? GetDeclarationDate(bool? agree)
     {
         return agree != null && agree == true ? DateTime.Now : null;
+    }
+
+    internal static MailingAddr? GetMailingAddressData(contact c)
+    {
+        MailingAddr mailingAddress = new();
+        mailingAddress.AddressLine1 = c.address1_line1;
+        mailingAddress.AddressLine2 = c.address1_line2;
+        mailingAddress.City = c.address1_city;
+        mailingAddress.Province = c.address1_stateorprovince;
+        mailingAddress.Country = c.address1_country;
+        mailingAddress.PostalCode = c.address1_postalcode;
+        return mailingAddress;
+    }
+
+    internal static Addr? GetEmployerAddressData(spd_application app)
+    {
+        Addr addr = new();
+        addr.AddressLine1 = app.spd_employeraddress1;
+        addr.AddressLine2 = app.spd_employeraddress2;
+        addr.City = app.spd_employercity;
+        addr.Province = app.spd_employerprovince;
+        addr.Country = app.spd_employercountry;
+        addr.PostalCode = app.spd_employerpostalcode;
+        return addr;
+    }
+    internal static ResidentialAddr? GetResidentialAddressData(contact c)
+    {
+        ResidentialAddr mailingAddress = new();
+        mailingAddress.AddressLine1 = c.address2_line1;
+        mailingAddress.AddressLine2 = c.address2_line2;
+        mailingAddress.City = c.address2_city;
+        mailingAddress.Province = c.address2_stateorprovince;
+        mailingAddress.Country = c.address2_country;
+        mailingAddress.PostalCode = c.address2_postalcode;
+        return mailingAddress;
+    }
+    internal static bool? IsMailingResidentialSame(contact c)
+    {
+        if (c.address1_line1 == null
+            && c.address1_line2 == null
+            && c.address1_city == null
+            && c.address1_stateorprovince == null
+            && c.address1_country == null
+            && c.address1_postalcode == null
+            && c.address2_line1 == null
+            && c.address2_line2 == null
+            && c.address2_city == null
+            && c.address2_stateorprovince == null
+            && c.address2_country == null
+            && c.address2_postalcode == null)
+            return null;
+        return c.address1_line1 == c.address2_line1 &&
+            c.address1_line2 == c.address2_line2 &&
+            c.address1_city == c.address2_city &&
+            c.address1_stateorprovince == c.address2_stateorprovince &&
+            c.address1_country == c.address2_country &&
+            c.address1_postalcode == c.address2_postalcode;
     }
 }

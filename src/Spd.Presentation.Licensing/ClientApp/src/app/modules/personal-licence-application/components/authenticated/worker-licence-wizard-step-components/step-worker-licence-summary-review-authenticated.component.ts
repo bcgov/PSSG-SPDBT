@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
@@ -113,7 +113,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							</mat-expansion-panel-header>
 							<div class="panel-body">
 								<div class="text-minor-heading-small">Identification</div>
-								<app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
+
+								<app-worker-summary-citizenship
+									[workerModelData]="licenceModelData"
+									[showCitizenshipStep]="showCitizenshipStep"
+								></app-worker-summary-citizenship>
 
 								<app-worker-summary-photo-of-yourself
 									[workerModelData]="licenceModelData"
@@ -211,6 +215,8 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	categorySecurityAlarmSalesFormGroup: FormGroup = this.workerApplicationService.categorySecurityAlarmSalesFormGroup;
 	categorySecurityGuardFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardSupFormGroup;
+
+	@Input() showCitizenshipStep = true;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

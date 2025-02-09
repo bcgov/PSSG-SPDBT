@@ -1,30 +1,41 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { OptionsPipe } from '../pipes/options.pipe';
 
 @Component({
-	selector: 'app-common-photograph-of-yourself',
+	selector: 'app-form-photograph-of-yourself',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info">
-						<p>
-							Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-							photo will be used for your licence or permit if your application is approved. Submitting a photo that
-							does not meet these requirements will delay your application’s processing time.
-						</p>
+					<div class="mb-3">
+						<app-alert type="info" icon="info">
+							<p>
+								Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
+								photo will be used for your {{ serviceTypeDesc }} if your application is approved. Submitting a photo
+								that does not meet these requirements will delay your application’s processing time.
+							</p>
 
-						Photo Guidelines:
-						<ul class="mb-0">
-							<li>The photo must be in colour and well-lit.</li>
-							<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
-							<li>Use a plain, white background.</li>
-						</ul>
-					</app-alert>
+							Photo Guidelines:
+							<ul class="mb-0">
+								<li>The photo must be in colour and well-lit.</li>
+								<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
+								<li>Use a plain, white background.</li>
+							</ul>
+						</app-alert>
+					</div>
 
-					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
+					<div class="mb-3" *ngIf="showDissimilarWarning">
+						<app-alert type="warning" icon="warning">
+							Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
+							application's processing time.
+						</app-alert>
+					</div>
+
+					<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
 						We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
 					</app-alert>
 
@@ -53,17 +64,26 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	standalone: false,
 })
-export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+export class FormPhotographOfYourselfComponent implements OnInit, LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
+	serviceTypeDesc = 'licence';
 
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
+	@Input() showDissimilarWarning = false;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(private optionsPipe: OptionsPipe) {}
+
+	ngOnInit(): void {
+		this.serviceTypeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes').toLowerCase();
+	}
 
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);

@@ -45,7 +45,6 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './compon
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-summary-review-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
-import { WorkerLicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/worker-licence-return-from-bl-sole-proprietor.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
@@ -67,6 +66,7 @@ import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './compo
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
 import { CommonUserProfileComponent } from './components/authenticated/user-profile-components/common-user-profile.component';
 import { UserProfileComponent } from './components/authenticated/user-profile.component';
+import { WorkerLicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/worker-licence-return-from-bl-sole-proprietor.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
@@ -80,7 +80,6 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/au
 import { CommonAccessCodeAnonymousComponent } from './components/shared/common-step-components/common-access-code-anonymous.component';
 import { CommonAliasListComponent } from './components/shared/common-step-components/common-alias-list.component';
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
-import { CommonPhotographOfYourselfComponent } from './components/shared/common-step-components/common-photograph-of-yourself.component';
 import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
@@ -175,7 +174,6 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
 		CommonCriminalHistoryComponent,
-		CommonPhotographOfYourselfComponent,
 		CommonSwlPermitTermsComponent,
 		CommonSwlPermitTermsUpdateReplaceComponent,
 		CommonUserProfileComponent,

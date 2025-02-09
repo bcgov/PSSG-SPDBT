@@ -127,7 +127,10 @@ namespace Spd.Manager.Shared
         ArmouredVehiclePermit,
         BodyArmourPermit,
         MDRA,
-        SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+        SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC,
+        GDSDTeamCertification,
+        DogTrainerCertification,
+        RetiredServiceDogCertification
     }
 
     public enum ApplicationInviteStatusCode

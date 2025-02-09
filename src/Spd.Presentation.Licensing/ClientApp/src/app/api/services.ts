@@ -10,6 +10,7 @@ export { BizPortalUserService } from './services/biz-portal-user.service';
 export { BizProfileService } from './services/biz-profile.service';
 export { ConfigurationService } from './services/configuration.service';
 export { ControllingMemberCrcAppService } from './services/controlling-member-crc-app.service';
+export { GdsdLicensingService } from './services/gdsd-licensing.service';
 export { LicenceService } from './services/licence.service';
 export { LicenceAppService } from './services/licence-app.service';
 export { LicenceAppDocumentService } from './services/licence-app-document.service';
