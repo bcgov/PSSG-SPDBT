@@ -20,7 +20,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-licence-user-applications',
+	selector: 'app-personal-licence-main',
 	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
@@ -174,7 +174,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 	styles: [],
 	standalone: false,
 })
-export class LicenceUserApplicationsComponent implements OnInit {
+export class PersonalLicenceMainComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 	yourProfileLabel = '';
