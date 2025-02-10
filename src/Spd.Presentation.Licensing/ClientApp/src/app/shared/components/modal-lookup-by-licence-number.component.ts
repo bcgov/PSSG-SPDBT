@@ -122,7 +122,7 @@ export interface LookupByLicenceNumberDialogData {
 								<div class="mt-3">
 									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
-											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}
+											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
 										</div>
 
 										<div class="row">

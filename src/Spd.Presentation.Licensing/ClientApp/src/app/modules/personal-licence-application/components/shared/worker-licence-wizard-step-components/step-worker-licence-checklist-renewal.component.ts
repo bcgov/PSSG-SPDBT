@@ -10,26 +10,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Proof of fingerprinting request</div>
-							<p class="checklist-info">
-								You must submit a proof of fingerprinting request. Download the
-								<a
-									aria-label="Download Request for Fingerprinting form"
-									download="Request For Fingerprinting Form"
-									[href]="downloadFilePath"
-									>Request for Fingerprinting form</a
-								>, take it your local police department, and return to this application when you have this form
-								completed.
-							</p>
-						</li>
-
-						<li>
 							<div class="checklist-label">Proof of training and experience</div>
-							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
-								experience. <a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a> about the
-								types of documents we accept for each security worker category.
+								experience. <a aria-label="Navigate to " [href]="swlLearnMoreUrl" target="_blank">Learn more</a> about
+								the types of documents we accept for each security worker category.
 							</p>
 						</li>
 
@@ -41,29 +26,28 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 
 						<li>
-							<div class="checklist-label">Restraint authorization</div>
+							<div class="checklist-label">Authorization for use of restraints</div>
 							<p class="checklist-info">
-								If you want to maintain your restraint authorization, you must provide your advanced security training
-								certificate or proof of training as correction officer or peace officer in last three years.
+								To maintain authorization for using restraints (such as handcuffs), you must provide your Advanced
+								Security Training Certificate or have a valid AST exemption granted by the Registrar.
 							</p>
 						</li>
 
 						<li>
-							<div class="checklist-label">Dogs for protection authorization</div>
+							<div class="checklist-label">Authorization for protection dogs</div>
 							<p class="checklist-info">
-								If you want to maintain your restraint authorization for use of dogs for protection, you must provide
-								your Canine Security Validation for each dog.
+								To maintain authorization for use of dogs in security work, you must provide your Canine Security
+								Validation for each dog.
 							</p>
 						</li>
 
 						<li>
-							<div class="checklist-label">Proof of ability to work in Canada</div>
-							<!-- // TODO update URL -->
+							<div class="checklist-label">Proof of authorization to work in Canada</div>
 							<p class="checklist-info">
-								You must supply proof of ability to work in Canada. See all accepted forms of identification on the
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"
-									>Security Worker Licence requirements page</a
-								>.
+								You must provide proof that you are authorized to work in Canada.
+								<a aria-label="Navigate to " [href]="swlAcceptedIdUrl" target="_blank"
+									>See all accepted forms of identification.</a
+								>
 							</p>
 						</li>
 
@@ -84,7 +68,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 
@@ -92,14 +78,27 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
+							<div class="checklist-label">Proof of fingerprinting request</div>
+							<p class="checklist-info">
+								Applicants must have their fingerprints taken and submit proof of fingerprinting if they are not using
+								their BC Services Card Login to renew their licence. Download the
+								<a
+									aria-label="Download Request for Fingerprinting form"
+									download="Request For Fingerprinting Form"
+									[href]="downloadFilePath"
+									>Request for Fingerprinting form</a
+								>, take it to your local police detachment or accredited fingerprinting agency, and return to this
+								application once the form is completed.
+							</p>
+						</li>
+
+						<li>
 							<div class="checklist-label">If you are now a Peace Officer, provide a letter of no conflict</div>
 							<p class="checklist-info">Your superior officer must write a letter of no conflict for you to upload.</p>
 						</li>
 
 						<li>
-							<div class="checklist-label">
-								If you have a new mental health condition, provide a physician's assessment
-							</div>
+							<div class="checklist-label">If you have a mental health condition, provide a doctor's assessment.</div>
 							<p class="checklist-info">
 								Download the
 								<a
@@ -108,7 +107,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 									target="_blank"
 								>
 									Mental Health Condition form</a
-								>, and give it to your physician to fill out. You will need to upload the completed form.
+								>, and give it to your doctor to fill out. You will need to upload the completed form.
 							</p>
 						</li>
 
@@ -116,7 +115,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">If you have changed your name, proof of legal name change</div>
 							<p class="checklist-info">
 								You must upload one of the following documents: marriage certificate, certificate of name change, or a
-								copy of your driver's licence/BCID with new name.
+								copy of your driver's licence/BCID with your new name.
 							</p>
 						</li>
 					</ul>
@@ -132,4 +131,6 @@ export class StepWorkerLicenceChecklistRenewalComponent {
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+	swlLearnMoreUrl = SPD_CONSTANTS.urls.swlLearnMoreUrl;
+	swlAcceptedIdUrl = SPD_CONSTANTS.urls.swlAcceptedIdUrl;
 }
