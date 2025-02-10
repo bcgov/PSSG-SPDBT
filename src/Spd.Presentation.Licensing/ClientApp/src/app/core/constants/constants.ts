@@ -88,7 +88,7 @@ export const SPD_CONSTANTS = {
 		swlAcceptedIdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/apply',
 		mentalHealthConditionsFormUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms',
+			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/forms/spd0511-mentalcondition.pdf',
 		proofOfInsuranceUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
 		rcmpUrl: 'https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry',

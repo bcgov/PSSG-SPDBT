@@ -94,7 +94,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<p class="checklist-info">
 								Download the
 								<a
-									aria-label="Navigate to Mental Health Condition form site"
+									aria-label="Navigate to Mental Health Condition form"
 									[href]="mentalHealthConditionsFormUrl"
 									target="_blank"
 								>

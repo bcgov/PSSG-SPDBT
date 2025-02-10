@@ -110,6 +110,7 @@ public record TrainingInfo
 
 public record TrainingSchoolInfo
 {
+    public Guid? TrainingId { get; set; }
     public string? TrainingBizName { get; set; }
     public MailingAddress? TrainingBizMailingAddress { get; set; }
     public string? ContactSurname { get; set; }
@@ -125,6 +126,7 @@ public record TrainingSchoolInfo
 
 public record OtherTraining
 {
+    public Guid? TrainingId { get; set; }
     public string? TrainingDetail { get; set; }
     public bool? UsePersonalDogTrainer { get; set; }
     public string? DogTrainerCredential { get; set; }

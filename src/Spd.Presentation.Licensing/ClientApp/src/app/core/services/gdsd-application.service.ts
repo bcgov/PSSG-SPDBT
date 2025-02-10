@@ -14,7 +14,6 @@ import {
 } from '@app/api/models';
 import { GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import {
 	BehaviorSubject,
 	Observable,
@@ -61,6 +60,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		dogTasksData: this.dogTasksFormGroup,
 		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
 		dogInformationData: this.dogInformationFormGroup,
+		dogGdsdData: this.dogGdsdFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,
 		accreditedGraduationData: this.accreditedGraduationFormGroup,
 		trainingHistoryData: this.trainingHistoryFormGroup,
@@ -73,14 +73,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private gdsdLicensingService: GdsdLicensingService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.gdsdModelChangedSubscription = this.gdsdModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -135,12 +134,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepPersonalInformationComplete(): boolean {
-		const hasAttendedTrainingSchool =
-			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+		const isTrainedByAccreditedSchools =
+			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			BooleanTypeCode.Yes;
 
 		// console.debug(
 		// 	'isStepPersonalInformationComplete',
-		// 	hasAttendedTrainingSchool,
+		// 	isTrainedByAccreditedSchools,
 		// 	this.gdsdPersonalInformationFormGroup.valid,
 		// 	this.medicalInformationFormGroup.valid,
 		// 	this.photographOfYourselfFormGroup.valid,
@@ -148,7 +148,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		// 	this.mailingAddressFormGroup.valid
 		// );
 
-		if (hasAttendedTrainingSchool) {
+		if (isTrainedByAccreditedSchools) {
 			return (
 				this.gdsdPersonalInformationFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid &&
@@ -171,10 +171,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug('isStepDogInformationComplete', this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
+		// console.debug('isStepDogInformationComplete', this.dogGdsdFormGroup.valid, this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
 
 		if (isTrainedByAccreditedSchools) {
-			return this.dogInformationFormGroup.valid;
+			return this.dogGdsdFormGroup.valid && this.dogInformationFormGroup.valid;
 		}
 
 		return this.dogInformationFormGroup.valid && this.dogMedicalFormGroup.valid;
@@ -274,33 +274,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private createEmptyGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
-		// const dogCertificationSelectionData = {
-		// 	isDogTrainedByAccreditedSchool: BooleanTypeCode.No,
-		// 	isGuideDog: BooleanTypeCode.No,
-		// };
-
-		// const trainingHistoryData = {
-		// 	hasAttendedTrainingSchool: BooleanTypeCode.Yes,
-		// };
-
-		// const personalInformationData = {
-		// 	givenName: 'Aaa',
-		// 	middleName: 'Aaa',
-		// 	surname: 'Aaa',
-		// 	dateOfBirth: '2000-01-01',
-		// 	contactPhoneNumber: '2508879797',
-		// 	contactEmailAddress: 'Aaa@gov.bccc.ca',
-		// };
-
-		// const dogInformationData = {
-		// 	dogName: 'Aaa',
-		// 	dogDateOfBirth: '2020-01-01',
-		// 	dogBreed: 'Aaa',
-		// 	dogColorAndMarkings: 'Aaa',
-		// 	dogGender: 'F',
-		// 	microchipNumber: 'Aaa',
-		// };
-
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
@@ -308,12 +281,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				bizTypeCode: BizTypeCode.None,
 				serviceTypeCode,
 				licenceTermCode: LicenceTermCode.TwoYears,
-
-				// TODO temp hardcode data
-				// dogCertificationSelectionData,
-				// trainingHistoryData,
-				// personalInformationData,
-				// dogInformationData,
 			},
 			{
 				emitEvent: false,

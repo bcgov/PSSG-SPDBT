@@ -19,63 +19,42 @@ internal class GDSDAppRepository : IGDSDAppRepository
 
     public async Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct)
     {
-
-        var app = _mapper.Map<spd_application>(cmd);
-        //process contact
-        contact? contact = _mapper.Map<contact>(cmd);
+        spd_application? app = null;
+        contact? contact = null;
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
+            contact = _mapper.Map<contact>(cmd);
             contact = await _context.CreateContact(contact, null, null, ct);
-            if (cmd.IsDogTrainedByAccreditedSchool)
-            {
-                //accredited school
-                _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(cmd.DogInfoNewAccreditedSchool, app);
-                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-                _context.AddTospd_applications(app);
-                spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(cmd.GraduationInfo);
-                graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
-                _context.AddTospd_dogtrainingschools(graduation);
-                _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
-            }
-            else
-            {
-                //non-accredited school
-                _mapper.Map<DogInfoNewWithoutAccreditedSchool, spd_application>(cmd.DogInfoNewWithoutAccreditedSchool, app);
-                app.spd_dogsassistanceindailyliving = cmd.TrainingInfo.SpecializedTasksWhenPerformed;
-                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-                _context.AddTospd_applications(app);
-
-                if (cmd.TrainingInfo.HasAttendedTrainingSchool)
-                {
-                    foreach (TrainingSchoolInfo schoolInfo in cmd.TrainingInfo.SchoolTrainings)
-                    {
-                        spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
-                        _context.AddTospd_dogtrainingschools(school);
-                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
-                    }
-                }
-                else
-                {
-                    foreach (OtherTraining other in cmd.TrainingInfo.OtherTrainings)
-                    {
-                        spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
-                        _context.AddTospd_dogtrainingschools(otherTraining);
-                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
-                    }
-                }
-            }
-            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+            app = PrepareNewAppDataInDbContext(cmd);
             _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
         }
-
         await _context.SaveChangesAsync(ct);
+        if (app == null || contact == null)
+            throw new ApiException(HttpStatusCode.InternalServerError);
         return new GDSDAppCmdResp((Guid)app.spd_applicationid, contact.contactid.Value);
     }
 
     public async Task<GDSDAppCmdResp> SaveGDSDAppAsync(SaveGDSDAppCmd cmd, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        spd_application? app = null;
+        if (cmd.LicenceAppId != null)
+        {
+            app = PrepareUpdateAppDataInDbContext(cmd, cmd.ApplicantId);
+        }
+        else
+        {
+            //first time user create an application, beginning
+            app = PrepareNewAppDataInDbContext(cmd);
+            var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
+            if (contact != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            }
+        }
+        if (app == null)
+            throw new ApiException(HttpStatusCode.InternalServerError);
+        await _context.SaveChangesAsync();
+        return new GDSDAppCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
 
     public async Task<GDSDAppResp> GetGDSDAppAsync(Guid licenceApplicationId, CancellationToken ct)
@@ -85,12 +64,8 @@ internal class GDSDAppRepository : IGDSDAppRepository
         {
             app = await _context.spd_applications
                 .Expand(a => a.spd_ServiceTypeId)
-                .Expand(a => a.spd_ApplicantId_account)
                 .Expand(a => a.spd_ApplicantId_contact)
-                .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_CurrentExpiredLicenceId)
-                .Expand(a => a.spd_businesscontact_spd_application)
-                .Expand(a => a.spd_businessapplication_spd_workerapplication)
+                .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
                 .Where(a => a.spd_applicationid == licenceApplicationId)
                 .FirstOrDefaultAsync(ct);
         }
@@ -128,5 +103,154 @@ internal class GDSDAppRepository : IGDSDAppRepository
             _context.UpdateObject(app);
             await _context.SaveChangesAsync(ct);
         }
+    }
+
+    private spd_application PrepareNewAppDataInDbContext(GDSDApp appData)
+    {
+        var app = _mapper.Map<spd_application>(appData);
+        if (appData.IsDogTrainedByAccreditedSchool.Value)
+        {
+            //accredited school
+            _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(appData.DogInfoNewAccreditedSchool, app);
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            _context.AddTospd_applications(app);
+            spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(appData.GraduationInfo);
+            graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
+            _context.AddTospd_dogtrainingschools(graduation);
+            _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
+        }
+        else
+        {
+            //non-accredited school
+            _mapper.Map<DogInfoNewWithoutAccreditedSchool, spd_application>(appData.DogInfoNewWithoutAccreditedSchool, app);
+            app.spd_dogsassistanceindailyliving = appData.TrainingInfo.SpecializedTasksWhenPerformed;
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            _context.AddTospd_applications(app);
+
+            if (appData.TrainingInfo.HasAttendedTrainingSchool.Value)
+            {
+                foreach (TrainingSchoolInfo schoolInfo in appData.TrainingInfo.SchoolTrainings)
+                {
+                    spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
+                    _context.AddTospd_dogtrainingschools(school);
+                    _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                }
+            }
+            else
+            {
+                foreach (OtherTraining other in appData.TrainingInfo.OtherTrainings)
+                {
+                    spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
+                    _context.AddTospd_dogtrainingschools(otherTraining);
+                    _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
+                }
+            }
+        }
+        SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        return app;
+    }
+
+    private spd_application PrepareUpdateAppDataInDbContext(GDSDApp appData, Guid appId)
+    {
+        spd_application app = _context.spd_applications
+            .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
+            .Where(a => a.spd_applicationid == appId)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ArgumentException("invalid app id");
+        _mapper.Map<GDSDApp, spd_application>(appData, app);
+        _context.UpdateObject(app);
+
+        if (appData.IsDogTrainedByAccreditedSchool.Value)
+        {
+            //accredited school
+            _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(appData.DogInfoNewAccreditedSchool, app);
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            _context.UpdateObject(app);
+
+            //delete all non-accredited school
+            foreach (var school in app.spd_application_spd_dogtrainingschool_ApplicationId)
+            {
+                if (school.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.UnAccreditedSchool ||
+                    school.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.Other)
+                {
+                    _context.DeleteObject(school);
+                }
+            }
+
+            //upsert graduation
+            var existingGraduation = app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(s => s.spd_trainingschooltype == (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool);
+            if (existingGraduation == null)
+            {
+                spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(appData.GraduationInfo);
+                graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
+                _context.AddTospd_dogtrainingschools(graduation);
+                _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
+            }
+            else
+            {
+                _mapper.Map<GraduationInfo, spd_dogtrainingschool>(appData.GraduationInfo, existingGraduation);
+                _context.UpdateObject(existingGraduation);
+            }
+        }
+        else
+        {
+            //non-accredited school
+            _mapper.Map<DogInfoNewWithoutAccreditedSchool, spd_application>(appData.DogInfoNewWithoutAccreditedSchool, app);
+            app.spd_dogsassistanceindailyliving = appData.TrainingInfo.SpecializedTasksWhenPerformed;
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            _context.UpdateObject(app);
+
+            //delete all school which is not in current payload
+            foreach (var school in app.spd_application_spd_dogtrainingschool_ApplicationId)
+            {
+                if (!appData.TrainingInfo.SchoolTrainings.Any(s => s.TrainingId == school.spd_dogtrainingschoolid) &&
+                    !appData.TrainingInfo.OtherTrainings.Any(s => s.TrainingId == school.spd_dogtrainingschoolid))
+                {
+                    _context.DeleteObject(school);
+                }
+            }
+
+            if (appData.TrainingInfo.HasAttendedTrainingSchool.Value)
+            {
+                foreach (TrainingSchoolInfo schoolInfo in appData.TrainingInfo.SchoolTrainings)
+                {
+                    if (schoolInfo.TrainingId == null)
+                    {
+                        spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
+                        _context.AddTospd_dogtrainingschools(school);
+                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                    }
+                    else
+                    {
+                        var existingSchool = app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(s => s.spd_dogtrainingschoolid == schoolInfo.TrainingId);
+                        _mapper.Map<TrainingSchoolInfo, spd_dogtrainingschool>(schoolInfo, existingSchool);
+                        _context.UpdateObject(existingSchool);
+                    }
+                }
+            }
+            else
+            {
+                foreach (OtherTraining other in appData.TrainingInfo.OtherTrainings)
+                {
+                    if (other.TrainingId == null)
+                    {
+                        spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(other);
+                        _context.AddTospd_dogtrainingschools(school);
+                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                    }
+                    else
+                    {
+                        var existingSchool = app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(s => s.spd_dogtrainingschoolid == other.TrainingId);
+                        _mapper.Map<OtherTraining, spd_dogtrainingschool>(other, existingSchool);
+                        _context.UpdateObject(existingSchool);
+                    }
+                }
+            }
+        }
+        SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        return app;
     }
 }

@@ -1,14 +1,15 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
 import { StepWorkerLicenceFingerprintsComponent } from './step-worker-licence-fingerprints.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './step-worker-licence-mental-health-conditions.component';
 import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licence-police-background.component';
 
 @Component({
-    selector: 'app-steps-worker-licence-background',
-    template: `
+	selector: 'app-steps-worker-licence-background',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
@@ -67,9 +68,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepComponent {
 	readonly STEP_POLICE_BACKGROUND = 1;
@@ -94,13 +95,16 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
 			this.nextStepperStep.emit(true);

@@ -19,10 +19,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<div [formGroup]="form">
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
-						<ng-container
-							formArrayName="otherTrainings"
-							*ngFor="let group of otherTrainingsArray.controls; let i = index"
-						>
+						<section formArrayName="otherTrainings" *ngFor="let group of otherTrainingsArray.controls; let i = index">
 							<div class="other-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
 									<div class="col-12">
@@ -160,7 +157,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</button>
 								</div>
 							</div>
-						</ng-container>
+						</section>
 
 						<div class="mb-4 d-flex justify-content-center">
 							<button
