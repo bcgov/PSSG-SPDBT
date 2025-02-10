@@ -98,7 +98,7 @@ export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements On
 		if (!this.originalPhotoOfYourselfExpired) {
 			this.title = 'Do you want to update your photo?';
 		} else {
-			this.title = 'Upload a passport-quality photo of yourself';
+			this.title = 'Upload a photo of yourself';
 		}
 	}
 

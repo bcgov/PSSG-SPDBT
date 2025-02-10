@@ -22,7 +22,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								target="_blank"
 								>proof of insurance</a
 							>
-							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability
+							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability.
 						</app-alert>
 
 						<div class="text-minor-heading mb-2">Upload proof of insurance</div>
