@@ -51,7 +51,6 @@ internal class GDSDAppManager :
 
         //save the application
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
-        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
@@ -64,14 +63,28 @@ internal class GDSDAppManager :
     #endregion
 
     #region auth
-    public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
+    public async Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
     {
-        return Task.FromResult<GDSDTeamLicenceAppResponse>(null);
+        var resp = await _gdsdRepository.GetGDSDAppAsync(query.LicenceApplicationId, ct);
+        GDSDTeamLicenceAppResponse result = _mapper.Map<GDSDTeamLicenceAppResponse>(resp);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
+        return result;
+
     }
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct)
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
     {
-        return Task.FromResult<GDSDAppCommandResponse>(null);
+        SaveGDSDAppCmd saveCmd = _mapper.Map<SaveGDSDAppCmd>(cmd.UpsertRequest);
+        var response = await _gdsdRepository.SaveGDSDAppAsync(saveCmd, ct);
+        if (cmd.UpsertRequest.LicenceAppId == null)
+            cmd.UpsertRequest.LicenceAppId = response.LicenceAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.UpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.UpsertRequest.DocumentInfos,
+            ct);
+        return _mapper.Map<GDSDAppCommandResponse>(response);
     }
+
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct)
     {
         return Task.FromResult<GDSDAppCommandResponse>(null);

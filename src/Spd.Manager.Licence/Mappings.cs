@@ -443,16 +443,28 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
 
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
+        CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
+        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
         CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
+         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
+         .ReverseMap();
         CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
-        CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>();
-        CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>();
-        CreateMap<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
-        CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>();
-        CreateMap<TrainingSchoolInfo, Spd.Resource.Repository.GDSDApp.TrainingSchoolInfo>();
-        CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>();
+         .ForMember(d => d.IsDogSterilized, opt => opt.MapFrom(s => true))
+         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
+         .ReverseMap();
+        CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>()
+            .ReverseMap();
+        CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>()
+            .ReverseMap();
+        CreateMap<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
+            .ReverseMap();
+        CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>()
+            .ReverseMap();
+        CreateMap<TrainingSchoolInfo, Spd.Resource.Repository.GDSDApp.TrainingSchoolInfo>()
+            .ReverseMap();
+        CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>()
+            .ReverseMap();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
