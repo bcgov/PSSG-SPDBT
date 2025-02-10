@@ -17,7 +17,7 @@ import { BusinessLicenceWizardUpdateComponent } from './components/business-lice
 import { BusinessManagerInvitationComponent } from './components/business-manager-invitation.component';
 import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
-import { BusinessUserApplicationsComponent } from './components/business-user-applications.component';
+import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
 import { StepBusinessLicenceProfileComponent } from './components/step-business-licence-profile.component';
 import { StepBusinessLicenceUpdateTermsComponent } from './components/step-business-licence-update-terms.component';
 
@@ -72,7 +72,7 @@ const routes: Routes = [
 			},
 			{
 				path: '',
-				component: BusinessUserApplicationsComponent,
+				component: BusinessLicenceMainComponent,
 			},
 			{
 				path: `${BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`,

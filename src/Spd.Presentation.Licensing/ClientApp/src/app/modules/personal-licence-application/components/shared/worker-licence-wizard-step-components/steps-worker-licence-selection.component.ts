@@ -92,6 +92,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			<mat-step>
 				<app-step-worker-licence-category
 					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 				></app-step-worker-licence-category>
 
 				<app-wizard-footer
@@ -169,6 +170,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() showStepDogsAndRestraints = false;
 	@Input() showWorkerLicenceSoleProprietorStep = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
 
