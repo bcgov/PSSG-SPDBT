@@ -121,12 +121,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-container *ngIf="isShowFrontAndBack">
 										<app-alert type="info" icon="">
 											Upload a photo of the front and back of your
-											{{ canadianCitizenProofTypeCode.value | options: 'ProofOfCanadianCitizenshipTypes' }}
+											{{ canadianCitizenProofTypeCode.value | options: 'ProofOfCanadianCitizenshipTypes' }}.
 										</app-alert>
 									</ng-container>
 
 									<ng-container *ngIf="isShowPassportPhoto">
-										<app-alert type="info" icon="info"> Upload a copy of the photo page of your passport </app-alert>
+										<app-alert type="info" icon="info"> Upload a copy of the photo page of your passport.</app-alert>
 									</ng-container>
 								</ng-container>
 								<ng-template #notCanadianCitizenTitle>
@@ -206,7 +206,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-container *ngIf="isShowNonCanadianFrontAndBackAdditional">
 										<app-alert type="info" icon="">
 											Upload a photo of the front and back of your
-											{{ governmentIssuedPhotoTypeCode.value | options: 'GovernmentIssuedPhotoIdTypes' }}
+											{{ governmentIssuedPhotoTypeCode.value | options: 'GovernmentIssuedPhotoIdTypes' }}.
 										</app-alert>
 									</ng-container>
 									<app-file-upload

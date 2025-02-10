@@ -32,7 +32,7 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
-import { LicenceUserApplicationsComponent } from './components/shared/licence-user-applications.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-user-profile.component';
 import { PersonalLicenceApplicationRoutes } from './personal-licence-application-routes';
@@ -124,7 +124,7 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: LicenceUserApplicationsComponent,
+				component: PersonalLicenceMainComponent,
 			},
 			{
 				path: PersonalLicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS,

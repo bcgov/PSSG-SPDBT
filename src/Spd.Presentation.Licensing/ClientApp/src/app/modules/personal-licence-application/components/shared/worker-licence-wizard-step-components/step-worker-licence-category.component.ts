@@ -685,6 +685,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	readonly title_update = 'Which categories of the Security Worker Licence would you like to update?';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	expandArmouredCarGuard = false;
 	expandBodyArmourSales = false;
@@ -1035,6 +1036,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		this.isDirtyAndInvalid = this.categoryList.length === 0;
 		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
 		this.showInvalidSoleProprietorCategories =
+			this.isSoleProprietorSimultaneousFlow &&
 			!this.isDirtyAndInvalid &&
 			!this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
 

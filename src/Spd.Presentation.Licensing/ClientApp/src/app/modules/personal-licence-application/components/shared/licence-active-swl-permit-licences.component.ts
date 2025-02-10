@@ -129,7 +129,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 									<app-alert type="info" icon="info">
 										This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
-										while an application is in progress
+										while an application is in progress.
 									</app-alert>
 								</div>
 							</div>
@@ -171,11 +171,11 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									<app-alert type="info" icon="info">
 										<ng-container *ngIf="licence.isReplacementPeriod; else NoPermitReplacementPeriod">
 											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or
-											replaced while an application is in progress
+											replaced while an application is in progress.
 										</ng-container>
 										<ng-template #NoPermitReplacementPeriod>
 											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or updated while an
-											application is in progress
+											application is in progress.
 										</ng-template>
 									</app-alert>
 								</div>

@@ -20,7 +20,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-licence-user-applications',
+	selector: 'app-personal-licence-main',
 	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
@@ -94,7 +94,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									A Security Worker Licence cannot be created while an application is in progress
+									A Security Worker Licence cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -119,7 +119,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									A Body Armour Permit cannot be created while an application is in progress
+									A Body Armour Permit cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -144,7 +144,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									An Armoured Vehicle Permit cannot be created while an application is in progress
+									An Armoured Vehicle Permit cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -174,7 +174,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 	styles: [],
 	standalone: false,
 })
-export class LicenceUserApplicationsComponent implements OnInit {
+export class PersonalLicenceMainComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 	yourProfileLabel = '';

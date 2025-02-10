@@ -39,7 +39,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
         spd_application? app = null;
         if (cmd.LicenceAppId != null)
         {
-            app = PrepareUpdateAppDataInDbContext(cmd, cmd.ApplicantId);
+            app = PrepareUpdateAppDataInDbContext(cmd, cmd.LicenceAppId.Value);
         }
         else
         {
