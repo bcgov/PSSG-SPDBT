@@ -96,7 +96,7 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
-import { LicenceUserApplicationsComponent } from './components/shared/licence-user-applications.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { PermitSummaryCharacteristicsComponent } from './components/shared/permit-summary-characteristics.component';
 import { PermitSummaryEmployerInformationComponent } from './components/shared/permit-summary-employer-information.component';
 import { PermitSummaryPurposeComponent } from './components/shared/permit-summary-purpose.component';
@@ -297,7 +297,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepsWorkerLicenceReviewAuthenticatedComponent,
 		StepsWorkerLicenceUpdatesAuthenticatedComponent,
 		StepsWorkerLicenceSelectionComponent,
-		LicenceUserApplicationsComponent,
+		PersonalLicenceMainComponent,
 		UserProfileComponent,
 		WorkerLicenceApplicationBaseAnonymousComponent,
 		LicenceApplicationBaseAuthenticatedComponent,

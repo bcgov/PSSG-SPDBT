@@ -36,6 +36,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[showWorkerLicenceSoleProprietorStep]="false"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -127,6 +128,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	showCitizenshipStep = false;
 	showPhotographOfYourself = true;
 	hasGenderChanged = false;
+	isSoleProprietorSimultaneousFlow = false;
 	policeOfficerRoleCode: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -182,6 +184,10 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				)?.value;
 
 				this.showPhotographOfYourself = this.hasGenderChanged;
+
+				this.isSoleProprietorSimultaneousFlow =
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+					BooleanTypeCode.Yes;
 
 				this.updateCompleteStatus();
 			}
