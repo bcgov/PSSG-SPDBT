@@ -35,6 +35,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 			<mat-step>
 				<app-step-worker-licence-category
 					[applicationTypeCode]="applicationTypeCodes.Update"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 				></app-step-worker-licence-category>
 
 				<app-wizard-footer
@@ -82,6 +83,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
