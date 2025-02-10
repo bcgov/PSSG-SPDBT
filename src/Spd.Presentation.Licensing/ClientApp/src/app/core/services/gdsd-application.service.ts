@@ -46,14 +46,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	gdsdModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(),
-		// applicantId: new FormControl(), // when authenticated, the applicant id
-		// caseNumber: new FormControl(), // placeholder to save info for display purposes
 		applicationOriginTypeCode: new FormControl(), // placeholder to save
-		applicationTypeCode: new FormControl(), // placeholder to save
 		bizTypeCode: new FormControl(), // placeholder to save
-		serviceTypeCode: new FormControl(), // placeholder to save
 		licenceTermCode: new FormControl(), // placeholder to save
 
+		serviceTypeData: this.serviceTypeFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 		personalInformationData: this.gdsdPersonalInformationFormGroup,
 		medicalInformationData: this.medicalInformationFormGroup,
@@ -143,15 +141,15 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug(
-		// 	'isStepPersonalInformationComplete',
-		// 	isTrainedByAccreditedSchools,
-		// 	this.gdsdPersonalInformationFormGroup.valid,
-		// 	this.medicalInformationFormGroup.valid,
-		// 	this.photographOfYourselfFormGroup.valid,
-		// 	this.governmentPhotoIdFormGroup.valid,
-		// 	this.mailingAddressFormGroup.valid
-		// );
+		console.debug(
+			'isStepPersonalInformationComplete',
+			isTrainedByAccreditedSchools,
+			this.gdsdPersonalInformationFormGroup.valid,
+			this.medicalInformationFormGroup.valid,
+			this.photographOfYourselfFormGroup.valid,
+			this.governmentPhotoIdFormGroup.valid,
+			this.mailingAddressFormGroup.valid
+		);
 
 		if (isTrainedByAccreditedSchools) {
 			return (
@@ -323,13 +321,19 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		this.gdsdModelFormGroup.patchValue(
 			{
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				bizTypeCode: BizTypeCode.None,
 				serviceTypeData,
+				licenceTermCode: LicenceTermCode.TwoYears,
 				applicationTypeData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
+
+		this.schoolTrainingRowAdd();
+		this.otherTrainingRowAdd();
 
 		console.debug('[createNewGdsdAuthenticated] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
 		return of(this.gdsdModelFormGroup.value);
@@ -360,13 +364,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private createEmptyGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
+		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification };
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
+
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
-				applicationTypeCode: ApplicationTypeCode.New,
 				bizTypeCode: BizTypeCode.None,
-				serviceTypeCode,
 				licenceTermCode: LicenceTermCode.TwoYears,
+				serviceTypeData,
+				applicationTypeData,
 			},
 			{
 				emitEvent: false,

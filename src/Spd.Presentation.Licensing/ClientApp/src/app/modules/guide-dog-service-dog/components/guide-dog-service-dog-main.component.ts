@@ -72,7 +72,7 @@ export class GuideDogServiceDogMainComponent {
 					// 	{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					// );
 					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_NEW_AUTHENTICATED)
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED)
 					);
 				}),
 				take(1)

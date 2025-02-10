@@ -127,6 +127,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 	getSaveBodyBase(gdsdModelFormValue: any): any {
+		const serviceTypeData = gdsdModelFormValue.serviceTypeData;
+		const applicationTypeData = gdsdModelFormValue.applicationTypeData;
 		const mailingAddressData = gdsdModelFormValue.mailingAddressData;
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const personalInformationData = gdsdModelFormValue.personalInformationData;
@@ -277,9 +279,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const body = {
 			applicantOrLegalGuardianName: null,
 			applicationOriginTypeCode: gdsdModelFormValue.applicationOriginTypeCode,
-			applicationTypeCode: gdsdModelFormValue.applicationTypeCode,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			bizTypeCode: gdsdModelFormValue.bizTypeCode,
-			serviceTypeCode: gdsdModelFormValue.serviceTypeCode,
 			licenceTermCode: gdsdModelFormValue.licenceTermCode,
 			...personalInformationData,
 			documentKeyCodes: [],

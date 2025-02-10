@@ -22,12 +22,21 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 			<mat-step>
 				<app-step-gdsd-checklist-new></app-step-gdsd-checklist-new>
 
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
-					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-				></app-wizard-footer>
+				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #NoTermsOfUse>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>

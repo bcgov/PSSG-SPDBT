@@ -9,17 +9,17 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { StepsGdsdDogInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-dog-info.component';
+import { StepsGdsdPersonalInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-personal-info.component';
+import { StepsGdsdReviewConfirmComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-review-confirm.component';
+import { StepsGdsdSelectionComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-selection.component';
+import { StepsGdsdTrainingInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-training-info.component';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
-import { StepsGdsdDogInfoComponent } from '../anonymous/steps-gdsd-dog-info.component';
-import { StepsGdsdPersonalInfoComponent } from '../anonymous/steps-gdsd-personal-info.component';
-import { StepsGdsdReviewConfirmComponent } from '../anonymous/steps-gdsd-review-confirm.component';
-import { StepsGdsdSelectionComponent } from '../anonymous/steps-gdsd-selection.component';
-import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-new',
+	selector: 'app-gdsd-wizard-authenticated-new',
 	template: `
 		<mat-stepper
 			linear
@@ -31,7 +31,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-gdsd-selection
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -45,7 +45,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-gdsd-personal-info
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -61,7 +61,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-gdsd-dog-info
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -77,7 +77,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Training Information</ng-template>
 				<app-steps-gdsd-training-info
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -95,7 +95,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -119,7 +119,7 @@ import { StepsGdsdTrainingInfoComponent } from '../anonymous/steps-gdsd-training
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GdsdWizardAnonymousNewComponent } from './components/anonymous/gdsd-wizard-anonymous-new.component';
-import { GdsdWizardNewComponent } from './components/authenticated/gdsd-wizard-new.component';
+import { GdsdWizardAuthenticatedNewComponent } from './components/authenticated/gdsd-wizard-authenticated-new.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
@@ -48,8 +48,8 @@ const routes: Routes = [
 				component: GuideDogServiceDogMainComponent,
 			},
 			{
-				path: GuideDogServiceDogRoutes.GDSD_NEW_AUTHENTICATED,
-				component: GdsdWizardNewComponent,
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED,
+				component: GdsdWizardAuthenticatedNewComponent,
 			},
 			{
 				path: '**',
