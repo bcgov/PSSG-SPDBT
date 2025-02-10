@@ -69,7 +69,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<DogInfoNewAccreditedSchool, spd_application>()
         .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => GetDogTypeOptionSet(s.IsGuideDog)))
-        .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => s.ServiceDogTasks)) //refine
+        .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => (s.IsGuideDog != null && s.IsGuideDog.Value) ? null : s.ServiceDogTasks))
         .IncludeBase<DogInfoNew, spd_application>()
         .ReverseMap()
         .ForMember(d => d.IsGuideDog, opt => opt.MapFrom(s => GetBoolFromDogType(s.spd_dogtype)));
