@@ -20,7 +20,7 @@ import { FormBusinessTermsComponent } from '@app/shared/components/form-business
 					>
 						<app-form-business-terms
 							[form]="form"
-							[applicationTypeCode]="applicationTypeCodes.New"
+							[applicationTypeCode]="applicationTypeCodeNew"
 						></app-form-business-terms>
 
 						<div class="row">
@@ -44,8 +44,7 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 	@ViewChild(FormBusinessTermsComponent) commonTermsComponent!: FormBusinessTermsComponent;
 
 	@Input() isWizard = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
+	applicationTypeCodeNew = ApplicationTypeCode.New;
 
 	constructor(
 		private router: Router,
