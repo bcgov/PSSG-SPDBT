@@ -36,6 +36,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[showWorkerLicenceSoleProprietorStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"

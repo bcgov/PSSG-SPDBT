@@ -25,7 +25,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-business-user-applications',
+	selector: 'app-business-licence-main',
 	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
@@ -146,7 +146,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 	styles: [],
 	standalone: false,
 })
-export class BusinessUserApplicationsComponent implements OnInit {
+export class BusinessLicenceMainComponent implements OnInit {
 	results$!: Observable<any>;
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
