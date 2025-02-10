@@ -8,8 +8,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-step-controlling-member-bc-security-licence-history',
-    template: `
+	selector: 'app-step-controlling-member-bc-security-licence-history',
+	template: `
 		<app-step-section [title]="title">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -70,8 +70,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 							<div class="fw-semibold text-center fs-6 mt-3">Bankruptcy History</div>
 							<div class="fs-6 text-center mt-3">
-								Have you previously been involved in a company that has declared bankruptcy, is in the process of
-								declaring bankruptcy or currently have a bankruptcy in progress?
+								Have you ever been involved in a company that has filed for bankruptcy, is in the process of filing for
+								bankruptcy, or currently has an ongoing bankruptcy?
 							</div>
 						</div>
 					</div>
@@ -122,9 +122,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class StepControllingMemberBcSecurityLicenceHistoryComponent
 	implements OnInit, LicenceChildStepperStepComponent
@@ -145,7 +145,7 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent
 		this.title = this.isUpdate ? 'Confirm your business involvement' : 'Describe your business involvement';
 		this.subtitle = this.isUpdate
 			? 'Do you have any new criminal charges or convictions to declare?'
-			: 'Have you or your business previously been charged, convicted, or received a court judgement in relation to a lawsuit?';
+			: 'Have you or your business previously been charged or convicted of a criminal offence?';
 	}
 
 	isFormValid(): boolean {

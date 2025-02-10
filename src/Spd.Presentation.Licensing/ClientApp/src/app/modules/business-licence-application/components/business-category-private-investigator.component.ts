@@ -59,7 +59,7 @@ import {
 						</app-alert>
 					</ng-container>
 					<ng-template #SearchForManager>
-						<app-alert type="warning" icon=""> Search for your manager's security worker licence </app-alert>
+						<app-alert type="warning" icon="">Search for your manager's security worker licence.</app-alert>
 					</ng-template>
 
 					<mat-error
