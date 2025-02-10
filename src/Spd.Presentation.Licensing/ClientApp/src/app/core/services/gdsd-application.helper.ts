@@ -47,6 +47,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		tasks: new FormControl('', [Validators.required]),
 	});
 
+	// TODO dog renewal
+	dogRenewFormGroup: FormGroup = this.formBuilder.group({
+		dogName: new FormControl('', [Validators.required]),
+		currentDogCertificate: new FormControl('', [Validators.required]),
+		isAssistanceStillRequired: new FormControl('', [Validators.required]),
+	});
+
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
 		dogName: new FormControl('', [Validators.required]),
 		dogDateOfBirth: new FormControl('', [Validators.required]),

@@ -7,6 +7,7 @@ import {
 	Document,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
+	GdsdTeamLicenceAppUpsertRequest,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceTermCode,
@@ -14,6 +15,7 @@ import {
 } from '@app/api/models';
 import { GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -29,6 +31,7 @@ import {
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
@@ -42,7 +45,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	gdsdModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	gdsdModelFormGroup: FormGroup = this.formBuilder.group({
-		// licenceAppId: new FormControl(),
+		licenceAppId: new FormControl(),
 		// applicantId: new FormControl(), // when authenticated, the applicant id
 		// caseNumber: new FormControl(), // placeholder to save info for display purposes
 		applicationOriginTypeCode: new FormControl(), // placeholder to save
@@ -75,33 +78,35 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		configService: ConfigService,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private gdsdLicensingService: GdsdLicensingService
+		private gdsdLicensingService: GdsdLicensingService,
+		private authUserBcscService: AuthUserBcscService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.gdsdModelChangedSubscription = this.gdsdModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				// if (this.initialized) {
-				const step1Complete = this.isStepSelectionComplete();
-				const step2Complete = this.isStepPersonalInformationComplete();
-				const step3Complete = this.isStepDogInformationComplete();
-				const step4Complete = this.isStepTrainingInformationComplete();
-				const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
+				if (this.initialized) {
+					const step1Complete = this.isStepSelectionComplete();
+					const step2Complete = this.isStepPersonalInformationComplete();
+					const step3Complete = this.isStepDogInformationComplete();
+					const step4Complete = this.isStepTrainingInformationComplete();
+					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
-				console.debug(
-					'gdsdModelFormGroup CHANGED',
-					step1Complete,
-					step2Complete,
-					step3Complete,
-					step4Complete,
-					this.gdsdModelFormGroup.getRawValue()
-				);
-				this.updateModelChangeFlags();
-				this.gdsdModelValueChanges$.next(isValid);
-				// }
+					console.debug(
+						'gdsdModelFormGroup CHANGED',
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						step4Complete,
+						this.gdsdModelFormGroup.getRawValue()
+					);
+					this.updateModelChangeFlags();
+					this.gdsdModelValueChanges$.next(isValid);
+				}
 			});
 	}
 
@@ -250,6 +255,87 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
+
+	/**
+	 * Partial Save - Save the data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	partialSaveStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		console.debug('[partialSaveStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
+
+		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				this.hasValueChanged = false;
+
+				let msg = 'Your application has been saved';
+				if (isSaveAndExit) {
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!gdsdModelFormValue.licenceAppId) {
+					this.gdsdModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
+	}
+
+	/**
+	 * Create an empty authenticated licence
+	 * @returns
+	 */
+	createNewLicenceAuthenticated(): Observable<any> {
+		// return this.applicantProfileService
+		// 	.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+		// 	.pipe(
+		// 		switchMap((applicantProfile: ApplicantProfileResponse) => {
+		return this.createEmptyLicenceAuthenticated().pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					ServiceTypeCode.GdsdTeamCertification,
+					ApplicationTypeCode.New
+				);
+			})
+		);
+		// 	})
+		// );
+	}
+
+	private createEmptyLicenceAuthenticated(): Observable<any> {
+		this.reset();
+
+		return this.applyLicenceIntoModel();
+	}
+
+	private applyLicenceIntoModel(): Observable<any> {
+		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification };
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				serviceTypeData,
+				applicationTypeData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[createNewGdsdAuthenticated] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
+	}
+
+	/*************************************************************/
 	// ANONYMOUS
 	/*************************************************************/
 
@@ -313,6 +399,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		otherTrainingsArray.push(
 			new FormGroup(
 				{
+					trainingId: new FormControl(''), // placeholder for ID
 					trainingDetail: new FormControl('', [FormControlValidators.required]),
 					usePersonalDogTrainer: new FormControl('', [Validators.required]),
 					dogTrainerCredential: new FormControl(''),
@@ -363,6 +450,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		schoolTrainingsArray.push(
 			new FormGroup(
 				{
+					trainingId: new FormControl(''), // placeholder for ID
 					trainingBizName: new FormControl(null, [FormControlValidators.required]),
 					contactGivenName: new FormControl(''),
 					contactSurname: new FormControl('', [FormControlValidators.required]),

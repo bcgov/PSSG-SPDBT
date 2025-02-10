@@ -23,7 +23,7 @@ export interface GdsdTeamLicenceAppUpsertRequest {
   bizTypeCode?: BizTypeCode;
   contactEmailAddress?: string | null;
   contactPhoneNumber?: string | null;
-  dateOfBirth?: string;
+  dateOfBirth?: string | null;
   documentInfos?: Array<Document> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
@@ -31,7 +31,7 @@ export interface GdsdTeamLicenceAppUpsertRequest {
   dogInfoRenew?: DogInfoRenew;
   givenName?: string | null;
   graduationInfo?: GraduationInfo;
-  isDogTrainedByAccreditedSchool?: boolean;
+  isDogTrainedByAccreditedSchool?: boolean | null;
   licenceAppId?: string | null;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;

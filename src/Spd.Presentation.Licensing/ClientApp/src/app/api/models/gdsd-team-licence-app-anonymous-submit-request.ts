@@ -21,7 +21,7 @@ export interface GdsdTeamLicenceAppAnonymousSubmitRequest {
   bizTypeCode?: BizTypeCode;
   contactEmailAddress?: string | null;
   contactPhoneNumber?: string | null;
-  dateOfBirth?: string;
+  dateOfBirth?: string | null;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
@@ -29,7 +29,7 @@ export interface GdsdTeamLicenceAppAnonymousSubmitRequest {
   dogInfoRenew?: DogInfoRenew;
   givenName?: string | null;
   graduationInfo?: GraduationInfo;
-  isDogTrainedByAccreditedSchool?: boolean;
+  isDogTrainedByAccreditedSchool?: boolean | null;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;
   middleName?: string | null;

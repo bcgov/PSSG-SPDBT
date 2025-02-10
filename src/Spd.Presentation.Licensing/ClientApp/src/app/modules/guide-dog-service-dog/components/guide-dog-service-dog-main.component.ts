@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { take, tap } from 'rxjs';
+import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-guide-dog-service-dog-main',
@@ -13,7 +17,7 @@ import { Component } from '@angular/core';
 					</div>
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-					<app-gdsd-active-certifications></app-gdsd-active-certifications>
+					<!-- <app-gdsd-active-certifications></app-gdsd-active-certifications> -->
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3">
 						<div class="row">
@@ -21,21 +25,13 @@ import { Component } from '@angular/core';
 								<div class="text-data">You don't have an active guide dogs/service dogs team certification.</div>
 							</div>
 							<div class="col-xl-6 col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNew()">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mt-2 mt-lg-0"
+									(click)="onNewGuideDogServiceDogTeam()"
+								>
 									<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
-								</button>
-							</div>
-						</div>
-					</div>
-
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3">
-						<div class="row">
-							<div class="col-xl-6 col-lg-6">
-								<div class="text-data">You don't have an active dog trainer certification.</div>
-							</div>
-							<div class="col-xl-6 col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNew()">
-									<mat-icon>add</mat-icon>Apply for a New Dog Trainer Certification
 								</button>
 							</div>
 						</div>
@@ -47,7 +43,7 @@ import { Component } from '@angular/core';
 								<div class="text-data">You don't have an active retired service dog certification.</div>
 							</div>
 							<div class="col-xl-6 col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNew()">
+								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewRetiredServiceDog()">
 									<mat-icon>add</mat-icon>Apply for a New Retired Service Dog Certification
 								</button>
 							</div>
@@ -61,5 +57,32 @@ import { Component } from '@angular/core';
 	standalone: false,
 })
 export class GuideDogServiceDogMainComponent {
-	onNew(): void {}
+	constructor(
+		private router: Router,
+		private gdsdApplicationService: GdsdApplicationService
+	) {}
+
+	onNewGuideDogServiceDogTeam(): void {
+		this.gdsdApplicationService
+			.createNewLicenceAuthenticated()
+			.pipe(
+				tap((_resp: any) => {
+					// this.router.navigateByUrl(
+					// 	GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GUIDE_DOG_SERVICE_DOG),
+					// 	{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+					// );
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_NEW_AUTHENTICATED)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onNewRetiredServiceDog(): void {
+		this.router.navigateByUrl(
+			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
+		);
+	}
 }
