@@ -132,7 +132,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 						</ng-container>
 						<ng-template #SearchForSP>
 							<app-alert type="warning" icon="">
-								Search for a sole proprietor with a valid security worker licence
+								Search for a sole proprietor with a valid security worker licence.
 							</app-alert>
 						</ng-template>
 

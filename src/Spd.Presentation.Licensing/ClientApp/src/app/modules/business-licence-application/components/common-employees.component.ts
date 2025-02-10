@@ -92,7 +92,7 @@ import {
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">
 							<div class="mt-4">
 								<app-alert type="warning" icon="warning">
-									<div>The maximum number of employees has been reached</div>
+									<div>The maximum number of employees has been reached.</div>
 								</app-alert>
 							</div>
 						</ng-container>

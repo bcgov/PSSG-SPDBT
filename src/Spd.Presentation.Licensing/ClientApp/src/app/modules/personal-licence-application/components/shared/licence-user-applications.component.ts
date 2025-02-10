@@ -94,7 +94,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									A Security Worker Licence cannot be created while an application is in progress
+									A Security Worker Licence cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -119,7 +119,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									A Body Armour Permit cannot be created while an application is in progress
+									A Body Armour Permit cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -144,7 +144,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									An Armoured Vehicle Permit cannot be created while an application is in progress
+									An Armoured Vehicle Permit cannot be created while an application is in progress.
 								</app-alert>
 							</div>
 						</div>

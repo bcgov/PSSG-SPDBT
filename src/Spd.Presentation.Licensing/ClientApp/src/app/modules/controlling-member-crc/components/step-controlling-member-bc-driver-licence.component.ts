@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">
-						Providing your driver’s licence number may speed up processing times
+						Providing your driver’s licence number may speed up processing times.
 					</app-alert>
 				</div>
 			</div>
@@ -18,8 +18,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-bc-driver-licence [form]="form"></app-form-bc-driver-licence>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.controllingMembersService.bcDriversLicenceFormGroup;
