@@ -112,10 +112,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			expiryDate: new FormControl(''),
 			documentIdNumber: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
-			governmentIssuedPhotoTypeCode: new FormControl(''),
-			governmentIssuedExpiryDate: new FormControl(''),
-			governmentIssuedDocumentIdNumber: new FormControl(''),
-			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
 			validators: [
@@ -148,30 +144,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 							form.get('isCanadianResident')?.value == BooleanTypeCode.Yes &&
 							(form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
 								form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.StudyPermit))
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedPhotoTypeCode',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value !== LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('isCanadianResident')?.value == BooleanTypeCode.Yes &&
-							form.get('proofOfResidentStatusCode')?.value !== LicenceDocumentTypeCode.PermanentResidentCard) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('isCanadianResident')?.value == BooleanTypeCode.No &&
-							form.get('proofOfCitizenshipCode')?.value !== LicenceDocumentTypeCode.NonCanadianPassport)
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedAttachments',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value !== LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('isCanadianResident')?.value == BooleanTypeCode.Yes &&
-							form.get('proofOfResidentStatusCode')?.value !== LicenceDocumentTypeCode.PermanentResidentCard) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('isCanadianResident')?.value == BooleanTypeCode.No &&
-							form.get('proofOfCitizenshipCode')?.value !== LicenceDocumentTypeCode.NonCanadianPassport)
 				),
 			],
 		}
@@ -342,22 +314,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
 
-		const showAdditionalGovIdData = this.utilService.getPermitShowAdditionalGovIdData(
-			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
-			citizenshipData.isCanadianResident == BooleanTypeCode.Yes,
-			citizenshipData.canadianCitizenProofTypeCode,
-			citizenshipData.proofOfResidentStatusCode,
-			citizenshipData.proofOfCitizenshipCode
-		);
-
-		if (showAdditionalGovIdData && citizenshipData.governmentIssuedAttachments) {
-			const docs: Array<Blob> = [];
-			citizenshipData.governmentIssuedAttachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
-		}
-
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
 			const docs: Array<Blob> = [];
@@ -525,17 +481,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			citizenshipData.proofOfResidentStatusCode,
 			citizenshipData.proofOfCitizenshipCode
 		);
-
-		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
-			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					expiryDate: this.utilService.dateToDbDate(citizenshipData.governmentIssuedExpiryDate),
-					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
-					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
-				});
-			});
-		}
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -865,22 +810,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			this.getSummaryproofOfResidentStatusCode(permitModelData) as LicenceDocumentTypeCode,
 			this.getSummaryproofOfCitizenshipCode(permitModelData) as LicenceDocumentTypeCode
 		);
-	}
-
-	getSummarygovernmentIssuedPhotoTypeCode(permitModelData: any): string {
-		return this.getSummaryshowAdditionalGovIdData(permitModelData)
-			? permitModelData.citizenshipData.governmentIssuedPhotoTypeCode
-			: '';
-	}
-	getSummarygovernmentIssuedPhotoExpiryDate(permitModelData: any): string {
-		return this.getSummaryshowAdditionalGovIdData(permitModelData)
-			? permitModelData.citizenshipData.governmentIssuedExpiryDate
-			: '';
-	}
-	getSummarygovernmentIssuedPhotoAttachments(permitModelData: any): File[] {
-		return this.getSummaryshowAdditionalGovIdData(permitModelData)
-			? permitModelData.citizenshipData.governmentIssuedAttachments
-			: [];
 	}
 
 	getSummarybcDriversLicenceNumber(permitModelData: any): string {

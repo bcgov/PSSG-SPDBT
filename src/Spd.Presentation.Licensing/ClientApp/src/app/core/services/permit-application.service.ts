@@ -1300,10 +1300,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			expiryDate: string | null;
 			documentIdNumber: string | null;
 			attachments: File[];
-			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
-			governmentIssuedExpiryDate: string | null;
-			governmentIssuedDocumentIdNumber: string | null;
-			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
 			isCanadianResident: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianResident),
@@ -1313,15 +1309,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			expiryDate: null,
 			documentIdNumber: null,
 			attachments: [],
-			governmentIssuedPhotoTypeCode: null,
-			governmentIssuedExpiryDate: null,
-			governmentIssuedDocumentIdNumber: null,
-			governmentIssuedAttachments: [],
 		};
 
 		const rationaleAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
-		const governmentIssuedAttachments: Array<File> = [];
 		const photographOfYourselfAttachments: Array<File> = [];
 		let photographOfYourselfLastUploadedDateTime = '';
 
@@ -1341,13 +1332,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
 				case LicenceDocumentTypeCode.PassportAdditional: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					governmentIssuedAttachments.push(aFile);
-
-					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
-					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
-					citizenshipData.governmentIssuedDocumentIdNumber = doc.documentIdNumber ?? null;
-					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+					// remove Gov Issued uploads
 					break;
 				}
 				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes

@@ -4,7 +4,6 @@ import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
 	BooleanTypeCode,
-	GovernmentIssuedPhotoIdTypes,
 	PermitProofOfCitizenshipTypes,
 	PermitProofOfResidenceStatusTypes,
 	ProofOfCanadianCitizenshipTypes,
@@ -220,87 +219,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</div>
 							</div>
 						</div>
-
-						<div class="row mt-4" *ngIf="showAdditionalGovIdData" @showHideTriggerSlideAnimation>
-							<div class="col-12">
-								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-								<div class="text-minor-heading mb-2">Type of additional piece of government-issued photo ID</div>
-								<div class="row my-2">
-									<div class="col-lg-12 col-md-12">
-										<mat-form-field>
-											<mat-label>Additional Type of Proof</mat-label>
-											<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
-												<mat-option
-													*ngFor="let item of governmentIssuedPhotoIdTypes; let i = index"
-													[value]="item.code"
-												>
-													{{ item.desc }}
-												</mat-option>
-											</mat-select>
-											<mat-hint>This ID can be from another country</mat-hint>
-											<mat-error *ngIf="form.get('governmentIssuedPhotoTypeCode')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Document Expiry Date</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker3"
-												formControlName="governmentIssuedExpiryDate"
-												[min]="minDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-											<mat-datepicker #picker3 startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
-												This is required
-											</mat-error>
-											<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')">
-												Invalid expiry date
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Document ID</mat-label>
-											<input matInput formControlName="governmentIssuedDocumentIdNumber" maxlength="30" />
-										</mat-form-field>
-									</div>
-								</div>
-								<div class="row mb-2">
-									<div class="col-12">
-										<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
-										<ng-container *ngIf="isShowNonCanadianFrontAndBackAdditional">
-											<app-alert type="info" icon="">
-												Upload a photo of the front and back of your
-												{{ governmentIssuedPhotoTypeCode.value | options: 'GovernmentIssuedPhotoIdTypes' }}.
-											</app-alert>
-										</ng-container>
-										<app-file-upload
-											(fileUploaded)="onGovernmentIssuedFileUploaded($event)"
-											(fileRemoved)="onGovernmentIssuedFileRemoved()"
-											[maxNumberOfFiles]="10"
-											[control]="governmentIssuedAttachments"
-											[files]="governmentIssuedAttachments.value"
-										></app-file-upload>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('governmentIssuedAttachments')?.dirty ||
-													form.get('governmentIssuedAttachments')?.touched) &&
-												form.get('governmentIssuedAttachments')?.invalid &&
-												form.get('governmentIssuedAttachments')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</form>
@@ -323,7 +241,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfResidenceStatusTypes = PermitProofOfResidenceStatusTypes;
 	proofOfCitizenshipTypes = PermitProofOfCitizenshipTypes;
-	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
 	minDate = this.utilService.getDateMin();
 	booleanTypeCodes = BooleanTypeCode;
@@ -382,32 +299,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 		this.permitApplicationService.hasValueChanged = true;
 	}
 
-	onGovernmentIssuedFileUploaded(file: File): void {
-		this.permitApplicationService.hasValueChanged = true;
-
-		if (!this.permitApplicationService.isAutoSave()) {
-			return;
-		}
-
-		const proofTypeCode = this.governmentIssuedPhotoTypeCode.value;
-
-		this.permitApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
-			next: (resp: any) => {
-				const matchingFile = this.governmentIssuedAttachments.value.find((item: File) => item.name == file.name);
-				matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			},
-			error: (error: any) => {
-				console.log('An error occurred during file upload', error);
-
-				this.fileUploadComponent.removeFailedFile(file);
-			},
-		});
-	}
-
-	onGovernmentIssuedFileRemoved(): void {
-		this.permitApplicationService.hasValueChanged = true;
-	}
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
@@ -415,16 +306,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 
 	get showIfPassport(): boolean {
 		return this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianPassport;
-	}
-
-	get showAdditionalGovIdData(): boolean {
-		return this.utilService.getPermitShowAdditionalGovIdData(
-			this.isCanadianCitizen.value == BooleanTypeCode.Yes,
-			this.isCanadianResident.value == BooleanTypeCode.Yes,
-			this.canadianCitizenProofTypeCode.value,
-			this.proofOfResidentStatusCode.value,
-			this.proofOfCitizenshipCode.value
-		);
 	}
 
 	get isCanadianCitizen(): FormControl {
@@ -444,12 +325,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-	get governmentIssuedPhotoTypeCode(): FormControl {
-		return this.form.get('governmentIssuedPhotoTypeCode') as FormControl;
-	}
-	get governmentIssuedAttachments(): FormControl {
-		return this.form.get('governmentIssuedAttachments') as FormControl;
 	}
 	get isRenewalOrUpdate(): boolean {
 		return (
@@ -475,16 +350,6 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 	get isShowPassportPhoto(): boolean {
 		return (
 			this.isCanadianCitizenYes && this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianPassport
-		);
-	}
-	get isShowNonCanadianFrontAndBackAdditional(): boolean {
-		return (
-			this.isCanadianCitizenNo &&
-			(this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.DriversLicenceAdditional ||
-				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.PermanentResidentCardAdditional ||
-				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional ||
-				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.CanadianFirearmsLicence ||
-				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.BcServicesCard)
 		);
 	}
 }

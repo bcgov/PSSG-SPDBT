@@ -202,19 +202,6 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 												</ul>
 											</div>
 										</div>
-
-										<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-											<div class="text-label d-block text-muted">
-												{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-											</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
 									</div>
 								</ng-container>
 
@@ -481,16 +468,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get showAdditionalGovIdData(): boolean {
 		return this.permitApplicationService.getSummaryshowAdditionalGovIdData(this.permitModelData);
-	}
-
-	get governmentIssuedPhotoTypeCode(): string {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.permitModelData);
-	}
-	get governmentIssuedPhotoExpiryDate(): string {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.permitModelData);
-	}
-	get governmentIssuedPhotoAttachments(): File[] {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.permitModelData);
 	}
 
 	get bcDriversLicenceNumber(): string {
