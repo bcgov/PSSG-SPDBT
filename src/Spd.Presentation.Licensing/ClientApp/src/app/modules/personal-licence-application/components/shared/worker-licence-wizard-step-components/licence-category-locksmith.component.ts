@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LocksmithRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -9,8 +10,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-locksmith',
-    template: `
+	selector: 'app-licence-category-locksmith',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -21,7 +22,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					will be based on a review of program or course content, and training time for each component of the
 					apprenticeship or course:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="requirementCode"
+						(change)="onChangeDocumentType($event)"
+					>
 						<mat-radio-button [value]="locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
 							A Locksmith Certificate of Qualification
 							<mat-icon
@@ -107,9 +113,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
@@ -150,6 +156,11 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 
 	onFileRemoved(): void {
 		this.workerApplicationService.hasValueChanged = true;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	isFormValid(): boolean {
