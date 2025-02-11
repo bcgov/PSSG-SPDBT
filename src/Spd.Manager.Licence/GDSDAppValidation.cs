@@ -13,10 +13,6 @@ public class GDSDTeamLicenceAppUpsertRequestValidator : GDSDTeamLicenceAppBaseVa
 
 public class GDSDTeamLicenceAppAnonymousSubmitRequestValidator : GDSDTeamLicenceAppBaseValidator<GDSDTeamLicenceAppAnonymousSubmitRequest>
 {
-    public GDSDTeamLicenceAppAnonymousSubmitRequestValidator()
-    {
-
-    }
 }
 
 public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T : GDSDTeamLicenceAppBase

@@ -70,14 +70,14 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Submit new permit Application authenticated with bcsc
+        /// Submit new gdsd team Application authenticated with bcsc
         /// </summary>
         /// <param name="gdsdSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/gdsd-team-app/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse> SubmitPermitApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
+        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
         {
             var validateResult = await _teamAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
             if (!validateResult.IsValid)
