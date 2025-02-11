@@ -100,16 +100,19 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 	) {}
 
 	ngOnInit(): void {
-		const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.title = `Why do you need ${name}`;
+				this.title =
+					this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+						? 'Why do you need body armour?'
+						: 'Why do you require an armoured vehicle?';
 				this.subtitle = '';
 				break;
 			}
 			default: {
+				const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
+				const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+
 				this.title = `Confirm your reasons for requiring ${name}`;
 				this.subtitle = `If your reasons for requiring the ${serviceTypeCodeDesc} have changed since your previous application, please provide the updated information.`;
 				break;
