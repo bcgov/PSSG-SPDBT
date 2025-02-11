@@ -57,9 +57,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 			</mat-step>
 
 			<mat-step *ngIf="isNew">
-				<app-step-controlling-member-aliases
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-aliases>
+				<app-step-controlling-member-aliases></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -90,9 +88,9 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
