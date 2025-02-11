@@ -12,8 +12,8 @@ import {
 } from './modal-lookup-by-licence-number.component';
 
 @Component({
-    selector: 'app-form-expired-licence',
-    template: `
+	selector: 'app-form-expired-licence',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -41,7 +41,7 @@ import {
 					<div class="row mb-3">
 						<div class="col-md-6 col-sm-12 mx-auto">
 							<button mat-flat-button color="primary" class="large w-auto" (click)="onLookup()">
-								Search for your Expired Licence
+								Search for your Expired {{ typeLabel }}
 							</button>
 
 							<mat-error
@@ -52,7 +52,7 @@ import {
 									form.get('expiredLicenceId')?.hasError('required')
 								"
 							>
-								An expired licence must be selected
+								An expired {{ typeLabel }} must be selected
 							</mat-error>
 						</div>
 					</div>
@@ -71,7 +71,7 @@ import {
 								<div class="col-md-6 col-sm-12">
 									<div class="d-block text-muted mt-2">Expiry Date</div>
 									<div class="text-data">
-										{{ expiredLicenceExpiryDate.value | formatDate : formalDateFormat }}
+										{{ expiredLicenceExpiryDate.value | formatDate: formalDateFormat }}
 									</div>
 								</div>
 								<div class="col-md-6 col-sm-12">
@@ -85,15 +85,16 @@ import {
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class FormExpiredLicenceComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	booleanTypeCodes = BooleanTypeCode;
 
 	titleLabel!: string;
+	typeLabel!: string;
 
 	messageInfo: string | null = null;
 	messageWarn: string | null = null;
@@ -103,10 +104,18 @@ export class FormExpiredLicenceComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() serviceTypeCode!: ServiceTypeCode;
 
-	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
+	constructor(
+		private dialog: MatDialog,
+		private optionsPipe: OptionsPipe
+	) {}
 
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+		this.typeLabel =
+			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
+			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+				? 'Permit'
+				: 'Licence';
 	}
 
 	onLookup(): void {
