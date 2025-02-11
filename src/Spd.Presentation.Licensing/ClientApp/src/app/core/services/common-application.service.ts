@@ -931,7 +931,7 @@ export class CommonApplicationService {
 						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
 					);
 				} else if (item.licenceExpiryNumberOfDays === 0) {
-					errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
+					errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
 				} else {
 					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
 					errorMessages.push(

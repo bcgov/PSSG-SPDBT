@@ -11,7 +11,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">
-						Processing time will be reduced if you provide info from your past permit.
+						Provide information from your expired permit to reduce processing time.
 					</app-alert>
 				</div>
 			</div>

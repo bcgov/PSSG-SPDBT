@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">
-						Processing time will be reduced if you provide info from your past licence.
+						Provide information from your expired licence to reduce processing time.
 					</app-alert>
 				</div>
 			</div>
