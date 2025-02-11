@@ -33,7 +33,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 
