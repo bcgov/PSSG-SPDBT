@@ -556,7 +556,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		console.debug('[submitPermitRenewalOrUpdateAuthenticated] permitModelFormValue', permitModelFormValue);
 
-		const body = this.getSaveBodyBaseSubmitAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
+		const bodyUpsert = this.getSaveBodyBaseSubmitAuthenticated(permitModelFormValue) as any;
+		delete bodyUpsert.documentInfos;
+
+		const body = bodyUpsert as PermitAppSubmitRequest;
+
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
