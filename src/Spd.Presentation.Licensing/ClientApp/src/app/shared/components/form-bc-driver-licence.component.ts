@@ -4,8 +4,8 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
-    selector: 'app-form-bc-driver-licence',
-    template: `
+	selector: 'app-form-bc-driver-licence',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -31,6 +31,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<div class="row mt-2">
 						<div class="col-lg-6 col-md-12 col-sm-12 mx-auto">
+							<div class="text-minor-heading mb-2">Your BC Driver's Licence</div>
 							<mat-form-field>
 								<mat-label>BC Driver's Licence <span class="optional-label">(recommended)</span></mat-label>
 								<input matInput formControlName="bcDriversLicenceNumber" mask="00000009" />
@@ -44,9 +45,9 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class FormBcDriverLicenceComponent {
 	booleanTypeCodes = BooleanTypeCode;
