@@ -109,9 +109,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-liability
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-business-licence-liability>
+				<app-step-business-licence-liability></app-step-business-licence-liability>
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
@@ -125,9 +123,9 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 0;

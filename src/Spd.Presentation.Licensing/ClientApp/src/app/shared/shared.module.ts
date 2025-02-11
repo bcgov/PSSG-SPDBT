@@ -29,6 +29,7 @@ import { FormMentalHealthConditionsComponent } from './components/form-mental-he
 import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
 import { FormPersonalInformationRenewUpdateAnonymousComponent } from './components/form-personal-information-renew-update-anonymous.component';
 import { FormPersonalInformationComponent } from './components/form-personal-information.component';
+import { FormPhotographOfYourselfUpdateComponent } from './components/form-photograph-of-yourself-update.component';
 import { FormPhotographOfYourselfComponent } from './components/form-photograph-of-yourself.component';
 import { FormPhysicalCharacteristicsComponent } from './components/form-physical-characteristics.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
@@ -113,6 +114,7 @@ const SHARED_COMPONENTS = [
 	FormPersonalInformationNewAnonymousComponent,
 	FormPersonalInformationRenewUpdateAnonymousComponent,
 	FormPhotographOfYourselfComponent,
+	FormPhotographOfYourselfUpdateComponent,
 	FormPhysicalCharacteristicsComponent,
 	LicenceCategoryPanelSimpleComponent,
 ];
