@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityConsultantRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -9,8 +10,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-security-consultant',
-    template: `
+	selector: 'app-licence-category-security-consultant',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -61,7 +62,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
 					You must meet the following experience requirements:
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="requirementCode"
+						(change)="onChangeDocumentType($event)"
+					>
 						<mat-radio-button
 							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
 						>
@@ -125,9 +131,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class LicenceCategorySecurityConsultantComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categorySecurityConsultantFormGroup;
@@ -191,6 +197,11 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	onFileRemoved(): void {
 		this.workerApplicationService.hasValueChanged = true;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	isFormValid(): boolean {

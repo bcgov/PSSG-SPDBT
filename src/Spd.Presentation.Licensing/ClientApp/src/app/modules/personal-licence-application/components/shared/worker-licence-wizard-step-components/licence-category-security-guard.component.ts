@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityGuardRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -9,8 +10,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-security-guard',
-    template: `
+	selector: 'app-licence-category-security-guard',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -19,7 +20,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<div class="fs-5 mb-2">Experience:</div>
 					To qualify for a security guard security worker licence, you must meet one of the following training or
 					experience requirements:
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="requirementCode"
+						(change)="onChangeDocumentType($event)"
+					>
 						<mat-radio-button
 							[value]="securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingCertificate"
 						>
@@ -83,10 +89,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;
@@ -127,6 +133,11 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 
 	onFileRemoved(): void {
 		this.workerApplicationService.hasValueChanged = true;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	isFormValid(): boolean {
