@@ -7,8 +7,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-step-permit-reason',
-    template: `
+	selector: 'app-step-permit-reason',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
@@ -79,8 +79,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitReasonComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
@@ -105,13 +105,13 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.title = `Provide your reasons for requiring ${name}`;
+				this.title = `Why do you need ${name}`;
 				this.subtitle = '';
 				break;
 			}
 			default: {
 				this.title = `Confirm your reasons for requiring ${name}`;
-				this.subtitle = `If the reasons for requiring your ${serviceTypeCodeDesc} have changed from your previous application, update your reasons`;
+				this.subtitle = `If your reasons for requiring the ${serviceTypeCodeDesc} have changed since your previous application, please provide the updated information.`;
 				break;
 			}
 		}

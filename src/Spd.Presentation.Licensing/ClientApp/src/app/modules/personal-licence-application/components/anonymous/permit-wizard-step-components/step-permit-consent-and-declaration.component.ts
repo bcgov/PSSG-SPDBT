@@ -6,119 +6,64 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-permit-consent-and-declaration',
-    template: `
+	selector: 'app-step-permit-consent-and-declaration',
+	template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="conditions px-3 mb-3">
-								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewal">
-									<div class="my-3">
-										<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-											I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
-											check, police information check and correctional service information check (Prescribed Checks) on
-											me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
-											>.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check1')?.dirty || form.get('check1')?.touched) &&
-												form.get('check1')?.invalid &&
-												form.get('check1')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-									<div class="my-3">
-										<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
-											I hereby consent to a check of available law enforcement systems for these purposes, including any
-											local police records, and I hereby consent to the disclosure to the Registrar of any documents in
-											the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
-											Checks.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check2')?.dirty || form.get('check2')?.touched) &&
-												form.get('check2')?.invalid &&
-												form.get('check2')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-									<div class="my-3">
-										<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
-											I understand that in addition to any information provided to the Registrar as a result of the
-											Prescribed Checks, the Registrar may require from me any further information the Registrar
-											considers relevant to assist in the demonstration of my need for {{ check3Name }}.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check3')?.dirty || form.get('check3')?.touched) &&
-												form.get('check3')?.invalid &&
-												form.get('check3')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-								</ng-container>
-
-								<ng-template #newOrRenewal>
-									<div class="my-3">
-										<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-											I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
-											check, police information check and correctional service information check (Prescribed Checks) on
-											me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
-											>.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check1')?.dirty || form.get('check1')?.touched) &&
-												form.get('check1')?.invalid &&
-												form.get('check1')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-									<div class="my-3">
-										<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
-											I hereby consent to a check of available law enforcement systems for these purposes, including any
-											local police records, and I hereby consent to the disclosure to the Registrar of any documents in
-											the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
-											Checks.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check2')?.dirty || form.get('check2')?.touched) &&
-												form.get('check2')?.invalid &&
-												form.get('check2')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-									<div class="my-3">
-										<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
-											I understand that in addition to any information provided to the Registrar as a result of the
-											Prescribed Checks, the Registrar may require from me any further information the Registrar
-											considers relevant to assist in the demonstration of my need for {{ check3Name }}.
-										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('check3')?.dirty || form.get('check3')?.touched) &&
-												form.get('check3')?.invalid &&
-												form.get('check3')?.hasError('required')
-											"
-											>This is required
-										</mat-error>
-									</div>
-								</ng-template>
+							<div class="conditions px-3 mb-3" *ngIf="applicationTypeCode != applicationTypeCodes.Update">
+								<div class="my-3">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
+										check, police information check and correctional service information check (Prescribed Checks) on me
+										pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
+										>.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required
+									</mat-error>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										I hereby consent to a check of available law enforcement systems for these purposes, including any
+										local police records, and I hereby consent to the disclosure to the Registrar of any documents in
+										the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
+										Checks.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
+										"
+										>This is required
+									</mat-error>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+										I understand that in addition to any information provided to the Registrar as a result of the
+										Prescribed Checks, the Registrar may require from me any further information the Registrar considers
+										relevant to assist in the demonstration of my need for {{ check3Name }}.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check3')?.dirty || form.get('check3')?.touched) &&
+											form.get('check3')?.invalid &&
+											form.get('check3')?.hasError('required')
+										"
+										>This is required
+									</mat-error>
+								</div>
 
 								<div class="my-3">
 									This consent is valid from the date signed and will remain in effect for the duration of the period
@@ -162,7 +107,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="row">
 							<div class="col-12 mt-4">
 								<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
-									Declaration & Sign Off
+									I certify that, to the best of my knowledge, the information I have provided and will provide as
+									necessary is complete and accurate.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -211,8 +157,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
@@ -234,6 +180,15 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 	) {}
 
 	ngOnInit(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			// these checkboxes are not displayed in the update process
+			this.form.patchValue({
+				check1: true,
+				check2: true,
+				check3: true,
+			});
+		}
+
 		if (this.isArmouredVehiclePermit) {
 			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act';
 			this.collectionNoticeActNameWithAbbrev = `${this.collectionNoticeActName} (AVAMCCA)`;

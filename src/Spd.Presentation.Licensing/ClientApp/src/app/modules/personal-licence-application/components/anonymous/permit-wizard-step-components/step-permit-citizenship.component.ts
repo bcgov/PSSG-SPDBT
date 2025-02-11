@@ -185,7 +185,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="row mb-2">
 								<div class="col-12">
 									<ng-container *ngIf="isCanadianCitizenYes; else notCanadianCitizenTitle">
-										<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship</div>
+										<div class="text-minor-heading mb-2">Upload your Canadian citizenship document</div>
 										<ng-container *ngIf="isShowFrontAndBack">
 											<app-alert type="info" icon="">
 												Upload a photo of the front and back of your
