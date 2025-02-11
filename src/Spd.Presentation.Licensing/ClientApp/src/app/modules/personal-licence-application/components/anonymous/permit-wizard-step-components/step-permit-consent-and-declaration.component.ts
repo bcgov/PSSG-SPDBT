@@ -13,7 +13,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="conditions px-3 mb-3" *ngIf="applicationTypeCode != applicationTypeCodes.Update">
+							<div class="conditions px-3 mb-3" *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 								<div class="my-3">
 									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 										I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record

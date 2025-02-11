@@ -474,14 +474,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			});
 		});
 
-		const isIncludeAdditionalGovermentIdStepData = this.utilService.getPermitShowAdditionalGovIdData(
-			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
-			citizenshipData.isCanadianResident == BooleanTypeCode.Yes,
-			citizenshipData.canadianCitizenProofTypeCode,
-			citizenshipData.proofOfResidentStatusCode,
-			citizenshipData.proofOfCitizenshipCode
-		);
-
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
 			const inch: number = +characteristicsData.heightInches;
