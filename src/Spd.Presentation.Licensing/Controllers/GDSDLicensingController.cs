@@ -68,6 +68,24 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(certificationAppId));
         }
+
+        /// <summary>
+        /// Submit new gdsd team Application authenticated with bcsc
+        /// </summary>
+        /// <param name="gdsdSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
+        {
+            var validateResult = await _teamAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            gdsdSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+
+            return await _mediator.Send(new GDSDTeamLicenceAppSubmitCommand(gdsdSubmitRequest));
+        }
         #endregion authenticated
 
         #region anonymous
