@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
@@ -309,7 +308,6 @@ export class CommonSwlPermitTermsUpdateReplaceComponent {
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService) {}
 

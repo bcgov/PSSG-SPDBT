@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -80,7 +79,6 @@ export class FormMentalHealthConditionsComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isWizardStep = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();
