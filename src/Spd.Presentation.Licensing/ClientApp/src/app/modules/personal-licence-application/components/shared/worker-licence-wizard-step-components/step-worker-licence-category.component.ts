@@ -31,7 +31,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								</app-alert>
 							</div>
 
-							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
+							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories && isSoleProprietorSimultaneousFlow">
 								<app-alert type="danger" icon="dangerous">
 									{{ invalidSoleProprietorCategoriesMsg }}
 								</app-alert>
