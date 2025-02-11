@@ -35,7 +35,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Renew your existing licence before it expires, within 90 days of the expiry date.
+										Renew your current licence within 90 days of the expiry date.
 									</app-alert>
 								</div>
 							</div>
@@ -47,9 +47,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 									</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
-									<app-alert type="info" icon="">
-										Lost your licence? Request a replacement card and we'll send you one.
-									</app-alert>
+									<app-alert type="info" icon=""> If you’ve lost your licence, request a replacement card. </app-alert>
 								</div>
 							</div>
 							<mat-divider class="mb-3"></mat-divider>
@@ -59,8 +57,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Update contact details, legal name, report new criminal charges or convictions, and more. Some
-										updates require a processing fee.
+										Update your contact details, legal name, report new criminal charges or convictions, and more. Note
+										that some updates may be subject to a processing fee.
 									</app-alert>
 								</div>
 							</div>

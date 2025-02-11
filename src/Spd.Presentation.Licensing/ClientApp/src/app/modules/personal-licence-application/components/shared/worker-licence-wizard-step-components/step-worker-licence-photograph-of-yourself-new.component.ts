@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
@@ -24,7 +24,6 @@ export class StepWorkerLicencePhotographOfYourselfNewComponent implements Licenc
 	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
