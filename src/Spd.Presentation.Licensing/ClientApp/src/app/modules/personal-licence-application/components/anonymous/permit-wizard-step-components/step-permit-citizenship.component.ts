@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
@@ -53,7 +54,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-md-12" [ngClass]="showIfPassport ? 'col-lg-12' : 'col-lg-6'">
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
-									<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+									<mat-select
+										formControlName="canadianCitizenProofTypeCode"
+										(selectionChange)="onChangeProof($event)"
+										[errorStateMatcher]="matcher"
+									>
 										<mat-option
 											class="proof-option"
 											*ngFor="let item of proofOfCanadianCitizenshipTypes; let i = index"
@@ -118,7 +123,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-container *ngIf="isCanadianResident.value === booleanTypeCodes.Yes; else notResidentOfCanada">
 										<mat-form-field>
 											<mat-label>Proof of Resident Status</mat-label>
-											<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
+											<mat-select
+												formControlName="proofOfResidentStatusCode"
+												(selectionChange)="onChangeProof($event)"
+												[errorStateMatcher]="matcher"
+											>
 												<mat-option
 													class="proof-option"
 													*ngFor="let item of proofOfResidenceStatusTypes; let i = index"
@@ -136,7 +145,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-template #notResidentOfCanada>
 										<mat-form-field>
 											<mat-label>Proof of Citizenship</mat-label>
-											<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
+											<mat-select
+												formControlName="proofOfCitizenshipCode"
+												(selectionChange)="onChangeProof($event)"
+												[errorStateMatcher]="matcher"
+											>
 												<mat-option
 													class="proof-option"
 													*ngFor="let item of proofOfCitizenshipTypes; let i = index"
@@ -345,6 +358,11 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 		this.subtitle = this.isRenewalOrUpdate
 			? 'If your citizenship status has changed from your previous application, update your selections'
 			: '';
+	}
+
+	onChangeProof(_event: MatSelectChange): void {
+		this.permitApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	onFileUploaded(file: File): void {

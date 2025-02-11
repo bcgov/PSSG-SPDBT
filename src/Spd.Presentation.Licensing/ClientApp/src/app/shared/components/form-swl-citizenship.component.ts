@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
@@ -51,7 +52,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<ng-container *ngIf="isCanadianCitizenYes; else notCanadianCitizen">
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
-									<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+									<mat-select
+										formControlName="canadianCitizenProofTypeCode"
+										(selectionChange)="onChangeProof($event)"
+										[errorStateMatcher]="matcher"
+									>
 										<mat-option
 											class="proof-option"
 											*ngFor="let item of proofOfCanadianCitizenshipTypes; let i = index"
@@ -68,7 +73,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<ng-template #notCanadianCitizen>
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
-									<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+									<mat-select
+										formControlName="notCanadianCitizenProofTypeCode"
+										(selectionChange)="onChangeProof($event)"
+										[errorStateMatcher]="matcher"
+									>
 										<mat-option
 											class="proof-option"
 											*ngFor="let item of proofOfAbilityToWorkInCanadaTypes; let i = index"
@@ -162,7 +171,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="col-lg-12 col-md-12">
 									<mat-form-field>
 										<mat-label>Additional Type of Proof</mat-label>
-										<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
+										<mat-select
+											formControlName="governmentIssuedPhotoTypeCode"
+											(selectionChange)="onChangeGovernmentIssuedProof($event)"
+											[errorStateMatcher]="matcher"
+										>
 											<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes; let i = index" [value]="item.code">
 												{{ item.desc }}
 											</mat-option>
@@ -259,14 +272,20 @@ export class FormSwlCitizenshipComponent implements LicenceChildStepperStepCompo
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
+	@Output() filesCleared = new EventEmitter();
 	@Output() fileGovernmentIssuedUploaded = new EventEmitter<File>();
 	@Output() fileGovernmentIssuedRemoved = new EventEmitter();
+	@Output() filesGovernmentIssuedCleared = new EventEmitter();
 
 	@ViewChild('fileUploadComponent1', { read: FileUploadComponent }) fileUploadComponent!: FileUploadComponent;
 	@ViewChild('fileUploadComponent2', { read: FileUploadComponent })
 	governmentIssuedFileUploadComponent!: FileUploadComponent;
 
 	constructor(private utilService: UtilService) {}
+
+	onChangeProof(_event: MatSelectChange): void {
+		this.filesCleared.emit();
+	}
 
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);
@@ -282,6 +301,10 @@ export class FormSwlCitizenshipComponent implements LicenceChildStepperStepCompo
 
 	onGovernmentIssuedFileRemoved(): void {
 		this.fileGovernmentIssuedRemoved.emit();
+	}
+
+	onChangeGovernmentIssuedProof(_event: MatSelectChange): void {
+		this.filesGovernmentIssuedCleared.emit();
 	}
 
 	isFormValid(): boolean {
