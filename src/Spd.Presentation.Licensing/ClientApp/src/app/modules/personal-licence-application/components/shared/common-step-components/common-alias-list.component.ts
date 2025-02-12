@@ -100,7 +100,6 @@ export class CommonAliasListComponent implements OnInit {
 	aliases: FormArray = this.formBuilder.array([]);
 
 	@Input() form!: FormGroup;
-	@Input() isWizardStep = true;
 	@Input() isReadonly = false;
 
 	constructor(

@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
@@ -12,17 +13,22 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 			subtitle="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
+				[serviceTypeCode]="serviceTypeCode"
 				[form]="form"
-				[showDissimilarWarning]="true"
+				label="licence"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 			></app-form-photograph-of-yourself>
+			<!-- // TODO gdsd photo 
+				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
+				[photographOfYourself]="photographOfYourself" -->
 		</app-step-section>
 	`,
 	styles: [],
 	standalone: false,
 })
 export class StepGdsdPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+	serviceTypeCode = ServiceTypeCode.GdsdTeamCertification;
 	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;

@@ -1,6 +1,6 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -62,8 +62,6 @@ export class StepBusinessLicenceLiabilityComponent implements LicenceChildSteppe
 	proofOfInsuranceUrl = SPD_CONSTANTS.urls.proofOfInsuranceUrl;
 
 	form = this.businessApplicationService.liabilityFormGroup;
-
-	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

@@ -85,9 +85,17 @@ internal class GDSDAppManager :
         return _mapper.Map<GDSDAppCommandResponse>(response);
     }
 
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct)
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand cmd, CancellationToken ct)
     {
-        return Task.FromResult<GDSDAppCommandResponse>(null);
+        var response = await this.Handle((GDSDTeamLicenceAppUpsertCommand)cmd, ct);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
+        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        {
+            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId,
+            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+        }, ct);
+        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 
