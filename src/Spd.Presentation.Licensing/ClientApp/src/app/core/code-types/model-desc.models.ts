@@ -360,7 +360,7 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
 	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
+	// { desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
 	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
 	{ desc: 'Locksmith - Under Supervision', code: WorkerCategoryTypeCode.LocksmithUnderSupervision },
 	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },
