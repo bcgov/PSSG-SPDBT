@@ -19,6 +19,8 @@ import { apiGdsdTeamAppGet } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
 import { ApiGdsdTeamAppGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
 import { apiGdsdTeamAppPost } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
 import { ApiGdsdTeamAppPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
+import { apiGdsdTeamAppSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
+import { ApiGdsdTeamAppSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
 import { GdsdAppCommandResponse } from '../models/gdsd-app-command-response';
 import { GdsdTeamLicenceAppResponse } from '../models/gdsd-team-licence-app-response';
 
@@ -124,6 +126,39 @@ export class GdsdLicensingService extends BaseService {
   apiGdsdTeamAppCertificationAppIdGet(params: ApiGdsdTeamAppCertificationAppIdGet$Params, context?: HttpContext): Observable<GdsdTeamLicenceAppResponse> {
     return this.apiGdsdTeamAppCertificationAppIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<GdsdTeamLicenceAppResponse>): GdsdTeamLicenceAppResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiGdsdTeamAppSubmitPost()` */
+  static readonly ApiGdsdTeamAppSubmitPostPath = '/api/gdsd-team-app/submit';
+
+  /**
+   * Submit new gdsd team Application authenticated with bcsc.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiGdsdTeamAppSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppSubmitPost$Response(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppSubmitPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Submit new gdsd team Application authenticated with bcsc.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppSubmitPost(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppSubmitPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
     );
   }
 

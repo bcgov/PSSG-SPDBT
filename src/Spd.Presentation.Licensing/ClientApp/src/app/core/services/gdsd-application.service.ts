@@ -365,7 +365,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification };
-		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
+		// const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
 
 		this.gdsdModelFormGroup.patchValue(
 			{
@@ -373,7 +373,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				bizTypeCode: BizTypeCode.None,
 				licenceTermCode: LicenceTermCode.TwoYears,
 				serviceTypeData,
-				applicationTypeData,
+				// applicationTypeData,
 			},
 			{
 				emitEvent: false,
