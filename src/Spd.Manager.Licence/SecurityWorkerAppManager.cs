@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -96,15 +95,19 @@ internal class SecurityWorkerAppManager :
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
     {
+        List<ServiceTypeEnum> serviceTypes = query.ScopeCode == AppScopeCode.PersonalSecurityLicenceApp ?
+            new List<ServiceTypeEnum>() {
+                ServiceTypeEnum.ArmouredVehiclePermit,
+                ServiceTypeEnum.BodyArmourPermit,
+                ServiceTypeEnum.SecurityWorkerLicence} :
+            new List<ServiceTypeEnum>() {
+                ServiceTypeEnum.DogTrainerCertification,
+                ServiceTypeEnum.GDSDTeamCertification,
+                ServiceTypeEnum.RetiredServiceDogCertification};
         LicenceAppQuery q = new(
             query.ApplicantId,
             null,
-            new List<ServiceTypeEnum>
-            {
-                ServiceTypeEnum.ArmouredVehiclePermit,
-                ServiceTypeEnum.BodyArmourPermit,
-                ServiceTypeEnum.SecurityWorkerLicence,
-            },
+            serviceTypes,
             new List<ApplicationPortalStatusEnum>
             {
                 ApplicationPortalStatusEnum.Draft,
