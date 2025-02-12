@@ -189,8 +189,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			BooleanTypeCode.Yes;
 
 		if (isTrainedByAccreditedSchools) {
-			const isServiceDog =
-				this.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value === BooleanTypeCode.No;
+			const isServiceDog = this.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
 
 			// console.debug(
 			// 	'isStepTrainingInformationComplete',

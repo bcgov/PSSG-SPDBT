@@ -139,6 +139,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const governmentPhotoIdData = gdsdModelFormValue.governmentPhotoIdData;
 		const medicalInformationData = gdsdModelFormValue.medicalInformationData;
 		const dogMedicalData = gdsdModelFormValue.dogMedicalData;
+		const dogGdsdData = gdsdModelFormValue.dogGdsdData;
 		const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
 
 		const documentInfos: Array<Document> = [];
@@ -179,7 +180,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				schoolContactSurname: accreditedGraduationData.schoolContactSurname,
 			};
 
-			const isGuideDog = this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog);
+			const isGuideDog = this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog);
 			dogInfoNewAccreditedSchoolData = {
 				dogBreed: dogInformationData.dogBreed,
 				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
@@ -205,7 +206,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				dogDateOfBirth: dogInformationData.dogDateOfBirth,
 				dogGender: dogInformationData.dogGender,
 				dogName: dogInformationData.dogName,
-				isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
+				isGuideDog: this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog),
 				microchipNumber: dogInformationData.microchipNumber,
 			};
 
@@ -469,7 +470,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return gdsdModelData.dogCertificationSelectionData.isDogTrainedByAccreditedSchool ?? '';
 	}
 	getSummarydogType(gdsdModelData: any): string {
-		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes
+		return gdsdModelData.dogGdsdData.isGuideDog === BooleanTypeCode.Yes
 			? 'Guide dog (Trained as a guide for a blind person)'
 			: 'Service dog (Trained to perform specific tasks to assist a person with a disability)';
 	}

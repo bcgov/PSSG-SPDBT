@@ -184,8 +184,7 @@ export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent imp
 			this.isFormValid = _resp;
 
 			this.isServiceDog =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('dogCertificationSelectionData.isGuideDog')?.value ===
-				BooleanTypeCode.No;
+				this.gdsdApplicationService.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
 
 			this.isTrainedByAccreditedSchools =
 				this.gdsdApplicationService.gdsdModelFormGroup.get(
