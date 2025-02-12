@@ -39,7 +39,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							investigator in B.C.
 							<mat-icon
 								class="info-icon"
-								matTooltip="You must prove that you have 2000 hours work experience ending no more than 5 years prior to the date of the application"
+								matTooltip="You must provide proof of 2,000 hours of work experience within the last 5 years."
 							>
 								info
 							</mat-icon>
@@ -158,7 +158,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						<mat-radio-button
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
-							You must provide proof of completion of courses or knowledge in the areas of:
+							You must provide proof of completing courses or demonstrating knowledge in the following areas:
 							<ul>
 								<li>Criminal law</li>
 								<li>Civil law and process</li>
