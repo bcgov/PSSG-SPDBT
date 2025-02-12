@@ -1,5 +1,4 @@
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -37,6 +36,7 @@ public record ControllingMemberCrcApplication
     public string? CriminalHistoryDetail { get; set; }
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
+    public bool? HasCourtJudgement { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; } = Array.Empty<UploadedDocumentEnum>();
