@@ -65,6 +65,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
          .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
          .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
+         .ForMember(d => d.spd_courtjudgementhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCourtJudgement)))
          .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
          .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
          .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
@@ -113,6 +114,7 @@ internal class Mappings : Profile
          .ForMember(d => d.HasPreviousName, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_policebackgroundrole)))
          .ForMember(d => d.HasBankruptcyHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_bankruptcyhistory)))
+         .ForMember(d => d.HasCourtJudgement, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_courtjudgementhistory)))
          .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)));
         _ = CreateMap<CreateControllingMemberCrcAppCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
