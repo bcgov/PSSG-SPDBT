@@ -20,32 +20,34 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Proof of insurance</div>
 							<p class="checklist-info">
-								You will need to provide proof of this security business’s valid general liability insurance of not less
-								than $1 million coverage.
+								You need to provide proof of an active general liability insurance policy with no less than $1 million
+								coverage.
 							</p>
 						</li>
 						<li>
 							<div class="checklist-label">Security worker licence information</div>
 							<p class="checklist-info">
-								You will need to provide a valid security worker licence that supports the licence category the business
-								wishes to be licensed for. This includes sole proprietors, employees, and controlling members.
+								You need to provide a valid security worker licence that supports the licence category you are applying
+								for.
 							</p>
 						</li>
 						<li>
 							<div class="checklist-label">Business type</div>
 							<p class="checklist-info">
-								You will need to know if your business is registered with
+								You need to know if your business is registered with
 								<a
 									aria-label="Navigate to B.C. Corporate Registries site"
 									[href]="bcCorporateRegistriesUrl"
 									target="_blank"
 									>B.C. Corporate Registries</a
-								>, and if the business is a Sole Proprietor, Partnership, or Corporation.
+								>, and if it’s a Sole Proprietor, Partnership, or Corporation.
 							</p>
 						</li>
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 
@@ -62,7 +64,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Controlling member security worker licence information</div>
 							<p class="checklist-info">
-								You will need to provide a valid Security Worker Licence for each
+								You need to provide a valid Security Worker Licence for each
 								<a
 									aria-label="Navigate to controlling member of your business site"
 									[href]="controllingMemberChecklistUrl"
@@ -77,8 +79,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								If you are applying for an Armoured Car Guard licence, provide documentation
 							</div>
 							<p class="checklist-info">
-								You will need to provide proof you own, lease or rent an approved armoured car; proof of liability
-								insurance; and a
+								You need to provide proof you own, lease, or rent an approved armoured car, proof of liability
+								insurance, and a
 								<a
 									aria-label="Navigate to safety certificate site"
 									[href]="safetyCertificateChecklistUrl"
@@ -91,7 +93,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">
 								If you are applying for an Authorization for use of dogs, provide proof of qualification
 							</div>
-							<p class="checklist-info">You will need to provide a Security Dog Validation Certificate for each dog.</p>
+							<p class="checklist-info">You need to provide a Security Dog Validation Certificate for each dog.</p>
 						</li>
 					</ul>
 				</div>

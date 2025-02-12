@@ -12,14 +12,16 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Proof of insurance</div>
 							<p class="checklist-info">
-								You will need to provide proof of this security business’s valid general liability insurance of not less
-								than $1 million coverage.
+								You need to provide proof of an active general liability insurance policy with no less than $1 million
+								coverage.
 							</p>
 						</li>
 
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 
@@ -49,7 +51,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">New controlling member security worker licence information</div>
 							<p class="checklist-info">
-								You will need to provide a valid Security Worker Licence for each new
+								You need to provide a valid Security Worker Licence for each
 								<a
 									aria-label="Navigate to controlling member of your business site"
 									[href]="controllingMemberChecklistUrl"
@@ -65,8 +67,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								If you are applying for an Armoured Car Guard licence, provide documentation
 							</div>
 							<p class="checklist-info">
-								You will need to provide proof you own, lease or rent an approved armoured car; proof of liability
-								insurance; and a
+								You need to provide proof you own, lease, or rent an approved armoured car, proof of liability
+								insurance, and a
 								<a
 									aria-label="Navigate to safety certificate site"
 									[href]="safetyCertificateChecklistUrl"
@@ -80,7 +82,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">
 								If you are applying for an Authorization for use of dogs, provide proof of qualification
 							</div>
-							<p class="checklist-info">You will need to provide a Security Dog Validation Certificate for each dog.</p>
+							<p class="checklist-info">You need to provide a Security Dog Validation Certificate for each dog.</p>
 						</li>
 					</ul>
 				</div>

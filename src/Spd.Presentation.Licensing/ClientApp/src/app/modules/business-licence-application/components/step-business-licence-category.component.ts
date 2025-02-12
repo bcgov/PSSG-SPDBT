@@ -463,10 +463,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	readonly title_new = 'What category of business licence are you applying for?';
 	readonly subtitle_new = '';
 
-	readonly title_renew = 'Which categories of the Business Licence would you like to renew?';
-	readonly subtitle_renew_update = 'You can change and remove existing categories as well as add new ones';
+	readonly title_renew = 'Which Business Licence categories would you like to renew?';
+	readonly subtitle_renew_update = 'You can add, edit, or remove categories as needed.';
 
-	readonly title_update = 'Which categories of the Business Licence would you like to update?';
+	readonly title_update = 'Which Business Licence categories would you like to update?';
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
