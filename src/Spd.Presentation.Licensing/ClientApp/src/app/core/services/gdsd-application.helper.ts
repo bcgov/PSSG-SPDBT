@@ -83,12 +83,12 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	schoolTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		schoolTrainings: this.formBuilder.array([]),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
+		attachments: new FormControl([]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
 	});
 
 	otherTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		otherTrainings: this.formBuilder.array([]),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
+		attachments: new FormControl([]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
 		practiceLogAttachments: new FormControl([]), // LicenceDocumentTypeCode.GdsdPracticeHoursLog
 	});
 
@@ -517,19 +517,33 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getSummaryschoolTrainings(gdsdModelData: any): Array<any> {
 		return gdsdModelData.schoolTrainingHistoryData.schoolTrainings ?? [];
 	}
-	getSummarysupportingDocumenTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
+	getSummaryissupportingDocumentTrainingSchoolsAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.schoolTrainingHistoryData.attachments) {
+			return gdsdModelData.schoolTrainingHistoryData.attachments.length > 0;
+		}
+		return false;
+	}
+	getSummarysupportingDocumentTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.schoolTrainingHistoryData.attachments ?? [];
 	}
 
 	getSummaryotherTrainings(gdsdModelData: any): Array<any> {
 		return gdsdModelData.otherTrainingHistoryData.otherTrainings ?? [];
 	}
+	getSummaryissupportingDocumentOtherTrainingAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.otherTrainingHistoryData.attachments) {
+			return gdsdModelData.otherTrainingHistoryData.attachments.length > 0;
+		}
+		return false;
+	}
 	getSummarysupportingDocumentOtherTrainingAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.otherTrainingHistoryData.attachments ?? [];
 	}
-	getSummaryisPracticeLogsOtherTrainingAttachments(gdsdModelData: any): boolean {
-		const attachments = gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];
-		return attachments.length > 0;
+	getSummaryispracticeLogsOtherTrainingAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.otherTrainingHistoryData.practiceLogAttachments) {
+			return gdsdModelData.otherTrainingHistoryData.practiceLogAttachments.length > 0;
+		}
+		return false;
 	}
 	getSummarypracticeLogsOtherTrainingAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];

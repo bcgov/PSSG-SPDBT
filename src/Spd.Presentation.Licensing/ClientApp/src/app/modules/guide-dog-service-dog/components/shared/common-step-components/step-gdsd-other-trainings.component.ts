@@ -106,6 +106,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												formControlName="trainerPhoneNumber"
 												[errorStateMatcher]="matcher"
 												maxlength="30"
+												appPhoneNumberTransform
 											/>
 											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
 												This is required
@@ -174,6 +175,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="mb-4">
 							<div class="fs-5">
 								Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+								<span class="optional-label">(optional)</span>
 							</div>
 							<div class="mt-2">
 								<app-file-upload
@@ -184,15 +186,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									#attachmentsRef
 									[files]="attachments.value"
 								></app-file-upload>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-										form.get('attachments')?.invalid &&
-										form.get('attachments')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
 							</div>
 						</div>
 
