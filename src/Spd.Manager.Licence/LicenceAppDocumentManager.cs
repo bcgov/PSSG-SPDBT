@@ -159,12 +159,12 @@ internal partial class LicenceAppDocumentManager :
     //todo: need to get requirements confirmed
     public static readonly List<LicenceDocumentTypeCode> ValidGovIssuedPhotoIdCodes = new()
     {
-            LicenceDocumentTypeCode.CanadianPassport,
+            LicenceDocumentTypeCode.PassportAdditional,
             LicenceDocumentTypeCode.BCID,
-            LicenceDocumentTypeCode.DriversLicence,
-            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.DriversLicenceAdditional,
+            LicenceDocumentTypeCode.PermanentResidentCardAdditional,
             LicenceDocumentTypeCode.BcServicesCard,
-            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
+            LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional,
             LicenceDocumentTypeCode.CanadianFirearmsLicence,
         };
 }
