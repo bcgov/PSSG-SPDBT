@@ -11,7 +11,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">
-						Provide information from your expired licence to reduce processing time.
+						Providing information from your expired licence may speed up the processing time.
 					</app-alert>
 				</div>
 			</div>
