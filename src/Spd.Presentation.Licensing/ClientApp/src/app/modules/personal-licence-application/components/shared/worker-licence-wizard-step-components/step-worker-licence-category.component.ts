@@ -46,7 +46,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										</mat-option>
 									</mat-select>
 								</mat-form-field>
-								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+								<mat-error class="mat-option-error" *ngIf="isCategoryListEmpty">
 									At least one category must be added. Click 'Add Category' after selecting a category.
 								</mat-error>
 							</div>
@@ -635,7 +635,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	standalone: false,
 })
 export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
-	isDirtyAndInvalid = false;
+	isCategoryListEmpty = false;
 
 	form = this.workerApplicationService.categorySelectionFormGroup;
 
@@ -833,7 +833,8 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			this.validCategoryList = this.workerApplicationService.getValidSwlCategoryList(this.categoryList);
 
 			this.form.reset();
-			this.isDirtyAndInvalid = false;
+			this.isCategoryListEmpty = false;
+			this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 		}
 	}
 
@@ -970,7 +971,8 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 					}
 
 					this.validCategoryList = this.workerApplicationService.getValidSwlCategoryList(this.categoryList);
-					this.isDirtyAndInvalid = false;
+					this.isCategoryListEmpty = false;
+					this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 				}
 			});
 	}
@@ -994,7 +996,10 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		this.categorySecurityGuardFormGroup.markAllAsTouched();
 		this.categorySecurityGuardSupFormGroup.markAllAsTouched();
 
+		this.isCategoryListEmpty = this.categoryList.length === 0;
+
 		const isValid =
+			!this.isCategoryListEmpty &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
@@ -1033,14 +1038,9 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
 
-		this.isDirtyAndInvalid = this.categoryList.length === 0;
-		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
-		this.showInvalidSoleProprietorCategories =
-			this.isSoleProprietorSimultaneousFlow &&
-			!this.isDirtyAndInvalid &&
-			!this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
+		this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 
-		return isValid && !this.isDirtyAndInvalid && !this.showInvalidSoleProprietorCategories;
+		return isValid && !this.showInvalidSoleProprietorCategories;
 	}
 
 	private setupInitialExpansionPanel(): void {
@@ -1097,6 +1097,13 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				this.blockSecurityGuardUnderSupervision = true;
 			}
 		}
+	}
+
+	isInvalidSoleProprietorCategories(): boolean {
+		const isEmpty = this.categoryList.length === 0;
+		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
+		const isValidSpCategories = this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
+		return this.isSoleProprietorSimultaneousFlow && !isEmpty && !isValidSpCategories;
 	}
 
 	get categoryList(): Array<string> {
