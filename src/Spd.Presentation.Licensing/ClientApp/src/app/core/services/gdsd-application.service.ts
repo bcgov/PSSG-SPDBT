@@ -122,6 +122,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
+
 		if (!this.isSaveAndExit()) {
 			return false;
 		}

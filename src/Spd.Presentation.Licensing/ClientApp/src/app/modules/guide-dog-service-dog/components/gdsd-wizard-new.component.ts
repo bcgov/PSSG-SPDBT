@@ -8,19 +8,20 @@ import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@a
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { AuthenticationService } from '@app/core/services/authentication.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
-import { StepsGdsdDogInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-dog-info.component';
-import { StepsGdsdPersonalInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-personal-info.component';
-import { StepsGdsdReviewConfirmComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-review-confirm.component';
-import { StepsGdsdSelectionComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-selection.component';
-import { StepsGdsdTrainingInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-training-info.component';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { StepsGdsdDogInfoComponent } from './shared/steps-gdsd-dog-info.component';
+import { StepsGdsdPersonalInfoComponent } from './shared/steps-gdsd-personal-info.component';
+import { StepsGdsdReviewConfirmComponent } from './shared/steps-gdsd-review-confirm.component';
+import { StepsGdsdSelectionComponent } from './shared/steps-gdsd-selection.component';
+import { StepsGdsdTrainingInfoComponent } from './shared/steps-gdsd-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-authenticated-new',
+	selector: 'app-gdsd-wizard-new',
 	template: `
 		<mat-stepper
 			linear
@@ -32,7 +33,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-gdsd-selection
-					[isLoggedIn]="true"
+					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
@@ -45,8 +46,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-gdsd-personal-info
-					[isLoggedIn]="true"
-					[showSaveAndExit]="showSaveAndExit"
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -62,8 +63,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-gdsd-dog-info
-					[isLoggedIn]="true"
-					[showSaveAndExit]="showSaveAndExit"
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -79,8 +80,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Training Information</ng-template>
 				<app-steps-gdsd-training-info
-					[isLoggedIn]="true"
-					[showSaveAndExit]="showSaveAndExit"
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -98,8 +99,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
-					[isLoggedIn]="true"
-					[showSaveAndExit]="showSaveAndExit"
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -123,7 +124,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
@@ -136,7 +137,7 @@ export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent imp
 	step3Complete = false;
 	step4Complete = false;
 
-	showSaveAndExit = true;
+	isLoggedIn = false;
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsGdsdSelectionComponent)
@@ -167,6 +168,7 @@ export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent imp
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private router: Router,
+		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
@@ -178,6 +180,8 @@ export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent imp
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
+
+		this.isLoggedIn = this.authenticationService.isLoggedIn();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -208,11 +212,32 @@ export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
+		if (this.isLoggedIn) {
+			this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
+				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						ServiceTypeCode.GdsdTeamCertification,
+						ApplicationTypeCode.New
+					);
+					this.hotToastService.success(successMessage);
+
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+					);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+
+			return;
+		}
+
+		this.gdsdApplicationService.submitAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.GdsdTeamCertification,
-					ApplicationTypeCode.New
+					this.applicationTypeCode
 				);
 				this.hotToastService.success(successMessage);
 
