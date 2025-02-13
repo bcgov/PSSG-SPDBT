@@ -50,9 +50,9 @@ import { OptionsPipe } from '../pipes/options.pipe';
 
 								Photo Guidelines:
 								<ul class="mb-0">
-									<li>The photo must be in colour and well-lit.</li>
-									<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
-									<li>Use a plain, white background.</li>
+									<li>The photo must be in colour and well-lit</li>
+									<li>Your face must be fully visible, with no hats, sunglasses, or filters</li>
+									<li>Use a plain, white background</li>
 								</ul>
 							</app-alert>
 						</div>
