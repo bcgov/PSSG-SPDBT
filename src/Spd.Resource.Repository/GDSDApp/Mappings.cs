@@ -137,6 +137,7 @@ internal class Mappings : Profile
             .ForMember(d => d.spd_hoursspentpracticingskills, opt => opt.MapFrom(s => s.HoursPracticingSkill))
             .ReverseMap()
             .ForMember(d => d.TrainingId, opt => opt.MapFrom(s => s.spd_dogtrainingschoolid))
+            .ForMember(d => d.UsePersonalDogTrainer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_useapersonaldogtrainer)))
             ;
 
         CreateMap<SaveGDSDAppCmd, spd_application>()
