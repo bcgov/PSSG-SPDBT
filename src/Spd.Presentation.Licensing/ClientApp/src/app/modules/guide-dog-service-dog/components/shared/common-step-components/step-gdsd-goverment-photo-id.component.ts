@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { GovernmentIssuedPhotoIdTypes } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
@@ -17,7 +18,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-lg-12 col-md-12">
 								<mat-form-field>
 									<mat-label>Type of Proof</mat-label>
-									<mat-select formControlName="photoTypeCode" [errorStateMatcher]="matcher">
+									<mat-select
+										formControlName="photoTypeCode"
+										[errorStateMatcher]="matcher"
+										(selectionChange)="onChangeProof($event)"
+									>
 										<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes; let i = index" [value]="item.code">
 											{{ item.desc }}
 										</mat-option>
@@ -80,9 +85,6 @@ export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 	minDate = this.utilService.getDateMin();
 	matcher = new FormErrorStateMatcher();
 
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
-
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
@@ -91,11 +93,21 @@ export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 	) {}
 
 	onFileUploaded(file: File): void {
-		this.fileUploaded.emit(file);
+		this.gdsdApplicationService.fileUploaded(
+			this.photoTypeCode.value,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.fileRemoved.emit();
+		this.gdsdApplicationService.fileRemoved();
+	}
+
+	onChangeProof(_event: MatSelectChange): void {
+		this.gdsdApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	isFormValid(): boolean {
@@ -103,6 +115,9 @@ export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 		return this.form.valid;
 	}
 
+	get photoTypeCode(): FormControl {
+		return this.form.get('photoTypeCode') as FormControl;
+	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}

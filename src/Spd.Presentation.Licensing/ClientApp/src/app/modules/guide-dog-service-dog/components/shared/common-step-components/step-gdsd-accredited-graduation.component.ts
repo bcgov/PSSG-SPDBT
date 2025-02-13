@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -115,10 +116,7 @@ export class StepGdsdAccreditedGraduationComponent implements LicenceChildSteppe
 
 	form: FormGroup = this.gdsdApplicationService.accreditedGraduationFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
@@ -128,11 +126,16 @@ export class StepGdsdAccreditedGraduationComponent implements LicenceChildSteppe
 	}
 
 	onFileUploaded(file: File): void {
-		this.fileUploaded.emit(file);
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.fileRemoved.emit();
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	get attachments(): FormControl {

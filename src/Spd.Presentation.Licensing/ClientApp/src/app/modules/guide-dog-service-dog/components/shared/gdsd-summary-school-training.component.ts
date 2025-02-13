@@ -27,20 +27,20 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Training Dates</div>
 						<div class="summary-text-data">
-							{{ train.trainingDateFrom | formatDate }} - {{ train.trainingDateTo | formatDate }}
+							{{ train.trainingStartDate | formatDate }} - {{ train.trainingEndDate | formatDate }}
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Program Name</div>
-						<div class="summary-text-data">{{ train.nameOfTrainingProgram | default }}</div>
+						<div class="summary-text-data">{{ train.trainingName | default }}</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Total Number of Training Hours</div>
-						<div class="summary-text-data">{{ train.hoursOfTraining | default }}</div>
+						<div class="summary-text-data">{{ train.totalTrainingHours | default }}</div>
 					</div>
 					<div class="col-lg-8 col-md-12">
 						<div class="text-label d-block text-muted">Curriculum Description</div>
-						<div class="summary-text-data">{{ train.learnedDesc | default }}</div>
+						<div class="summary-text-data">{{ train.whatLearned | default }}</div>
 					</div>
 				</div>
 

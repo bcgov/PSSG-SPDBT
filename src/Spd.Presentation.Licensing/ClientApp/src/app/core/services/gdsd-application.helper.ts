@@ -278,11 +278,11 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				}) ?? [];
 
 		const body = {
+			licenceAppId: gdsdModelFormValue.licenceAppId,
 			applicantOrLegalGuardianName: null,
 			applicationOriginTypeCode: gdsdModelFormValue.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
-			bizTypeCode: gdsdModelFormValue.bizTypeCode,
 			licenceTermCode: gdsdModelFormValue.licenceTermCode,
 			...personalInformationData,
 			documentKeyCodes: [],
@@ -421,21 +421,21 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				province: train.province,
 			};
 
-			const trainingStartDate = this.utilService.dateToDbDate(train.trainingDateFrom);
-			const trainingEndDate = this.utilService.dateToDbDate(train.trainingDateTo);
+			const trainingStartDate = this.utilService.dateToDbDate(train.trainingStartDate);
+			const trainingEndDate = this.utilService.dateToDbDate(train.trainingEndDate);
 
 			trainingArray.push({
 				contactEmailAddress: this.utilService.getStringOrNull(train.contactEmailAddress),
 				contactGivenName: this.utilService.getStringOrNull(train.contactGivenName),
 				contactPhoneNumber: train.contactPhoneNumber,
 				contactSurname: train.contactSurname,
-				totalTrainingHours: train.hoursOfTraining,
+				totalTrainingHours: train.totalTrainingHours ?? null,
 				trainingBizMailingAddress: mailingAddress,
 				trainingBizName: train.trainingBizName,
 				trainingEndDate,
 				trainingStartDate,
-				trainingName: train.nameOfTrainingProgram,
-				whatLearned: train.learnedDesc,
+				trainingName: train.trainingName,
+				whatLearned: train.whatLearned,
 			});
 		});
 		return trainingArray;

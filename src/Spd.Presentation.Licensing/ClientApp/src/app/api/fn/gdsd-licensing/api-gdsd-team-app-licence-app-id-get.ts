@@ -10,14 +10,14 @@ import { RequestBuilder } from '../../request-builder';
 
 import { GdsdTeamLicenceAppResponse } from '../../models/gdsd-team-licence-app-response';
 
-export interface ApiGdsdTeamAppCertificationAppIdGet$Params {
-  certificationAppId: string;
+export interface ApiGdsdTeamAppLicenceAppIdGet$Params {
+  licenceAppId: string;
 }
 
-export function apiGdsdTeamAppCertificationAppIdGet(http: HttpClient, rootUrl: string, params: ApiGdsdTeamAppCertificationAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppCertificationAppIdGet.PATH, 'get');
+export function apiGdsdTeamAppLicenceAppIdGet(http: HttpClient, rootUrl: string, params: ApiGdsdTeamAppLicenceAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppLicenceAppIdGet.PATH, 'get');
   if (params) {
-    rb.path('certificationAppId', params.certificationAppId, {});
+    rb.path('licenceAppId', params.licenceAppId, {});
   }
 
   return http.request(
@@ -30,4 +30,4 @@ export function apiGdsdTeamAppCertificationAppIdGet(http: HttpClient, rootUrl: s
   );
 }
 
-apiGdsdTeamAppCertificationAppIdGet.PATH = '/api/gdsd-team-app/{certificationAppId}';
+apiGdsdTeamAppLicenceAppIdGet.PATH = '/api/gdsd-team-app/{licenceAppId}';

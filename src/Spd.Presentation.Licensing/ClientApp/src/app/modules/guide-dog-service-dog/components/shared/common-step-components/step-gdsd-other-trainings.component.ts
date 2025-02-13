@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -192,7 +193,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="fs-5">Upload logs of practice hours <span class="optional-label">(optional)</span></div>
 						<div class="mt-2">
 							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
+								(fileUploaded)="onFileUploadedPracticeLog($event)"
 								(fileRemoved)="onFileRemoved()"
 								[maxNumberOfFiles]="10"
 								[control]="practiceLogAttachments"
@@ -259,12 +260,26 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 		return this.otherTrainingsArray.length > 1;
 	}
 
-	onFileUploaded(_file: File): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+	onFileUploaded(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
+	}
+
+	onFileUploadedPracticeLog(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+			file,
+			this.practiceLogAttachments,
+			this.practiceLogFileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ServiceTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { take, tap } from 'rxjs';
 import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
@@ -17,6 +18,17 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 					</div>
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
+
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto"
+						aria-label="Resume application"
+						(click)="onResume()"
+					>
+						<mat-icon>play_arrow</mat-icon>Resume
+					</button>
+
 					<!-- <app-gdsd-active-certifications></app-gdsd-active-certifications> -->
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3">
@@ -64,7 +76,7 @@ export class GuideDogServiceDogMainComponent {
 
 	onNewGuideDogServiceDogTeam(): void {
 		this.gdsdApplicationService
-			.createNewLicenceAuthenticated()
+			.createNewLicenceAuthenticated(ServiceTypeCode.GdsdTeamCertification)
 			.pipe(
 				tap((_resp: any) => {
 					// this.router.navigateByUrl(
@@ -84,5 +96,19 @@ export class GuideDogServiceDogMainComponent {
 		this.router.navigateByUrl(
 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
 		);
+	}
+
+	onResume(): void {
+		this.gdsdApplicationService
+			.getGdsdToResume('4aec1788-860c-4b8f-a7b1-0e52ead69cac')
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 }

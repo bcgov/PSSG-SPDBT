@@ -32,7 +32,6 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-gdsd-selection
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
@@ -46,7 +45,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-gdsd-personal-info
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -62,7 +61,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-gdsd-dog-info
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -78,7 +77,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 				<ng-template matStepLabel>Training Information</ng-template>
 				<app-steps-gdsd-training-info
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -96,7 +95,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -132,7 +131,6 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	step3Complete = false;
 	step4Complete = false;
 
-	showSaveAndExit = false;
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsGdsdSelectionComponent)
