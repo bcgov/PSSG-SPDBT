@@ -64,7 +64,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Controlling member security worker licence information</div>
 							<p class="checklist-info">
-								You need to provide a valid Security Worker Licence for each
+								You need to provide a valid Security Worker Licence for each new
 								<a
 									aria-label="Navigate to controlling member of your business site"
 									[href]="controllingMemberChecklistUrl"

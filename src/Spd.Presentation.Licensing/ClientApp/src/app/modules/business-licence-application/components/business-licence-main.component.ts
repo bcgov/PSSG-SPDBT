@@ -85,7 +85,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 						<ng-container *ngIf="isControllingMemberWarning">
 							<app-alert type="warning" icon="warning">
-								<div>Your Business Licence application is pending controlling member criminal record checks.</div>
+								<div>Your business licence application is pending controlling member criminal record checks.</div>
 								<div class="mt-2">
 									View <strong>'Controlling Members & Employees'</strong> to see the status of each of member.
 								</div>

@@ -746,7 +746,7 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
 		}
 
 		return [messageWarn, messageError];
@@ -761,7 +761,7 @@ export class CommonApplicationService {
 				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
 		}
 
 		return messageError;
@@ -960,14 +960,11 @@ export class CommonApplicationService {
 		return `This licence number is not a ${selServiceTypeCodeDesc}.`;
 	}
 
-	private getLicenceLookupNoMatchErrorMessage(
-		serviceTypeCode: ServiceTypeCode,
-		selServiceTypeCodeDesc: string
-	): string {
+	private getLicenceLookupNoMatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
 		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
+			return 'The licence number you entered does not match any existing records in our system for your business in BC.';
 		} else {
-			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			return 'The licence number you entered does not match any existing records in our system.';
 		}
 	}
 
