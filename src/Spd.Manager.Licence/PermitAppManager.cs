@@ -136,9 +136,6 @@ internal class PermitAppManager :
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
-        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate)
-            throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
