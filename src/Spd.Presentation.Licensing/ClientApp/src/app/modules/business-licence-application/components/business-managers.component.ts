@@ -36,8 +36,8 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 							</div>
 						</div>
 						<div class="col-12">
-							We require contact information for your company's business manager(s), who will be responsible for
-							day-to-day supervision of licensed security employees in B.C. in accordance with section 14(2) of the
+							Provide the contact information for your company’s business manager(s) responsible for overseeing the
+							daily work of licensed security employees in B.C., as required by section 14(2) of the
 							<i>Security Services Act</i>.
 						</div>
 					</div>
@@ -52,13 +52,12 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 										Your organization may have up to {{ maximumNumberOfPrimaryContacts }}
 										primary business managers
 										<mat-icon
-											matTooltip="Primary Business Manager has additional privileges to manage Business Manager
-						accounts on behalf of the business."
+											matTooltip="Primary Business Managers can manage and update Businesses Managers for the security business account."
 										>
 											info
 										</mat-icon>
 										and up to {{ maximumNumberOfContacts }} business managers.
-										<mat-icon matTooltip="Business Manager has basic privileges such as accessing Online Services.">
+										<mat-icon matTooltip="Business Managers have basic privileges such as access to online services.">
 											info
 										</mat-icon>
 									</li>

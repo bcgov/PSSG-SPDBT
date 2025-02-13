@@ -17,7 +17,6 @@ import {
 	MainApplicationResponse,
 	MainLicenceResponse,
 } from '@app/core/services/common-application.service';
-import { ConfigService } from '@app/core/services/config.service';
 import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -86,10 +85,9 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 						<ng-container *ngIf="isControllingMemberWarning">
 							<app-alert type="warning" icon="warning">
-								<div>Your Business Licence application has outstanding controlling member invitations.</div>
+								<div>Your business licence application is pending controlling member criminal record checks.</div>
 								<div class="mt-2">
-									View the <strong>'Controlling Members & Employees'</strong> to see the invitation status of each of
-									the members.
+									View <strong>'Controlling Members & Employees'</strong> to see the status of each of member.
 								</div>
 							</app-alert>
 						</ng-container>
@@ -115,7 +113,6 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						[activeLicences]="activeLicencesList"
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
-						[lostLicenceDaysText]="lostLicenceDaysText"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenewal($event)"
@@ -157,7 +154,6 @@ export class BusinessLicenceMainComponent implements OnInit {
 	applicationIsInProgress = true;
 	applicationIsDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
-	lostLicenceDaysText = 'TBD';
 
 	activeLicenceExist = false;
 
@@ -176,7 +172,6 @@ export class BusinessLicenceMainComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
-		private configService: ConfigService,
 		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService,
@@ -185,8 +180,6 @@ export class BusinessLicenceMainComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.businessApplicationService.reset(); // prevent back button into wizard
-
-		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
 		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 
