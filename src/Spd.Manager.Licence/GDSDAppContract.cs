@@ -31,8 +31,8 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? MiddleName { get; set; }
     public MailingAddress? MailingAddress { get; set; }
     public DateOnly? DateOfBirth { get; set; }
-    public string? ContactPhoneNumber { get; set; }
-    public string? ContactEmailAddress { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
 

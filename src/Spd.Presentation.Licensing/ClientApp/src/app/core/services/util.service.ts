@@ -365,6 +365,16 @@ export class UtilService {
 	}
 
 	/**
+	 * Has a boolean value (true/false)... is not null or undefined
+	 * @param value
+	 * @returns
+	 */
+	public hasBooleanValue(value: boolean | null | undefined): boolean {
+		const isBooleanType = typeof value === 'boolean';
+		return isBooleanType;
+	}
+
+	/**
 	 * Convert boolean to BooleanTypeCode
 	 * @param value
 	 * @returns

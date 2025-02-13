@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicantProfileResponse,
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
@@ -17,7 +18,7 @@ import {
 	ServiceTypeCode,
 	TrainingSchoolInfo,
 } from '@app/api/models';
-import { GdsdLicensingService, LicenceAppDocumentService, LicenceAppService } from '@app/api/services';
+import { ApplicantProfileService, GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -83,9 +84,9 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private hotToastService: HotToastService,
+		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private licenceAppService: LicenceAppService,
 		private gdsdLicensingService: GdsdLicensingService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
@@ -348,7 +349,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyGdsd(serviceTypeCode).pipe(
+		return this.createEmptyGdsd(serviceTypeCode, ApplicationTypeCode.New).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -421,31 +422,50 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private loadPartialLicenceWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
 
-		return this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId }).pipe(
-			switchMap((appl: GdsdTeamLicenceAppResponse) => {
-				return this.applyLicenceIntoModel(appl);
+		const apis: Observable<any>[] = [
+			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const gdsdAppl = resps[0];
+				const applicantProfile = resps[1];
+
+				return this.applyLicenceIntoModel(gdsdAppl, applicantProfile);
 			})
 		);
 	}
 
-	private applyLicenceIntoModel(appl: GdsdTeamLicenceAppResponse): Observable<any> {
+	private applyLicenceIntoModel(
+		appl: GdsdTeamLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse
+	): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: appl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: appl.applicationTypeCode };
 		const dogCertificationSelectionData = {
 			isDogTrainedByAccreditedSchool: this.utilService.booleanToBooleanType(appl.isDogTrainedByAccreditedSchool),
 		};
 
+		let hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
+		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		// }
+
 		const personalInformationData = {
-			givenName: appl.givenName,
-			middleName: appl.middleName,
-			surname: appl.surname,
-			dateOfBirth: appl.dateOfBirth,
-			contactPhoneNumber: appl.contactPhoneNumber,
-			contactEmailAddress: appl.contactEmailAddress,
+			givenName: applicantProfile ? applicantProfile.givenName : appl.givenName,
+			middleName: applicantProfile ? applicantProfile.middleName1 : appl.middleName,
+			surname: applicantProfile ? applicantProfile.surname : appl.surname,
+			dateOfBirth: applicantProfile ? applicantProfile.dateOfBirth : appl.dateOfBirth,
+			phoneNumber: applicantProfile ? applicantProfile.phoneNumber : appl.phoneNumber,
+			emailAddress: applicantProfile ? applicantProfile.emailAddress : appl.emailAddress,
+			hasBcscNameChanged,
 		};
 
 		const mailingAddressData = {
-			addressSelected: !!appl.mailingAddress,
+			addressSelected: !!appl.mailingAddress && !!appl.mailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: appl.mailingAddress?.addressLine1,
 			addressLine2: appl.mailingAddress?.addressLine2,
@@ -468,12 +488,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const otherSupportTrainingHistoryAttachments: Array<File> = [];
 		const otherTrainingHistoryPracticeAttachments: Array<File> = [];
 
-		let schoolTrainingHistoryData = {
-			schoolTrainings: Array(),
+		const schoolTrainingHistoryData = {
+			schoolTrainings: [],
 			attachments: schoolSupportTrainingHistoryAttachments,
 		};
-		let otherTrainingHistoryData = {
-			otherTrainings: Array(),
+		const otherTrainingHistoryData = {
+			otherTrainings: [],
 			attachments: otherSupportTrainingHistoryAttachments,
 			practiceLogAttachments: otherTrainingHistoryPracticeAttachments,
 		};
@@ -574,7 +594,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			};
 		}
 
-		if (appl.isDogTrainedByAccreditedSchool) {
+		if (this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) && appl.isDogTrainedByAccreditedSchool) {
 			if (appl.graduationInfo) {
 				accreditedGraduationData = {
 					accreditedSchoolName: appl.graduationInfo.accreditedSchoolName,
@@ -604,7 +624,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		}
 
-		if (!appl.isDogTrainedByAccreditedSchool && appl.dogInfoNewWithoutAccreditedSchool) {
+		if (
+			this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) &&
+			!appl.isDogTrainedByAccreditedSchool &&
+			appl.dogInfoNewWithoutAccreditedSchool
+		) {
 			dogInformationData = {
 				dogName: appl.dogInfoNewWithoutAccreditedSchool.dogName,
 				dogDateOfBirth: appl.dogInfoNewWithoutAccreditedSchool.dogDateOfBirth,
@@ -619,17 +643,21 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					tasks: appl.trainingInfo.specializedTasksWhenPerformed,
 				};
 
-				trainingHistoryData = {
-					hasAttendedTrainingSchool: this.utilService.booleanToBooleanType(appl.trainingInfo.hasAttendedTrainingSchool),
-				};
+				if (this.utilService.hasBooleanValue(appl.trainingInfo.hasAttendedTrainingSchool)) {
+					trainingHistoryData = {
+						hasAttendedTrainingSchool: this.utilService.booleanToBooleanType(
+							appl.trainingInfo.hasAttendedTrainingSchool
+						),
+					};
 
-				if (appl.trainingInfo.hasAttendedTrainingSchool) {
-					schoolTrainingsArray = appl.trainingInfo.schoolTrainings ?? null;
-					schoolTrainingHistoryData.attachments = schoolSupportTrainingHistoryAttachments;
-				} else {
-					otherTrainingsArray = appl.trainingInfo.otherTrainings ?? null;
-					otherTrainingHistoryData.attachments = otherSupportTrainingHistoryAttachments;
-					otherTrainingHistoryData.practiceLogAttachments = otherTrainingHistoryPracticeAttachments;
+					if (appl.trainingInfo.hasAttendedTrainingSchool) {
+						schoolTrainingsArray = appl.trainingInfo.schoolTrainings ?? null;
+						schoolTrainingHistoryData.attachments = schoolSupportTrainingHistoryAttachments;
+					} else {
+						otherTrainingsArray = appl.trainingInfo.otherTrainings ?? null;
+						otherTrainingHistoryData.attachments = otherSupportTrainingHistoryAttachments;
+						otherTrainingHistoryData.practiceLogAttachments = otherTrainingHistoryPracticeAttachments;
+					}
 				}
 			}
 		}
@@ -700,16 +728,21 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 
-	private createEmptyGdsd(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	private createEmptyGdsd(
+		serviceTypeCode: ServiceTypeCode,
+		applicationTypeCode: ApplicationTypeCode | null = null
+	): Observable<any> {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };
+		const applicationTypeData = { applicationTypeCode };
 
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				licenceTermCode: LicenceTermCode.TwoYears,
 				serviceTypeData,
+				applicationTypeData,
 			},
 			{
 				emitEvent: false,
@@ -841,12 +874,15 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	// OTHER TRAINING array
 	otherTrainingRowAdd(train: OtherTraining | null = null): void {
 		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+
+		const usePersonalDogTrainer = this.utilService.booleanToBooleanType(train?.usePersonalDogTrainer);
+
 		otherTrainingsArray.push(
 			new FormGroup(
 				{
 					trainingId: new FormControl(train?.trainingId ?? null), // placeholder for ID
 					trainingDetail: new FormControl(train?.trainingDetail ?? null, [FormControlValidators.required]),
-					usePersonalDogTrainer: new FormControl(train?.usePersonalDogTrainer ?? null, [Validators.required]),
+					usePersonalDogTrainer: new FormControl(usePersonalDogTrainer, [Validators.required]),
 					dogTrainerCredential: new FormControl(train?.dogTrainerCredential ?? null),
 					trainingTime: new FormControl(train?.trainingTime ?? null),
 					trainerGivenName: new FormControl(train?.trainerGivenName ?? null),

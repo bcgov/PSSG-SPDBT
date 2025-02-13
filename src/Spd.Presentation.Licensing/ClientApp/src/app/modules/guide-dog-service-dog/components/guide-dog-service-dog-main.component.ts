@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
@@ -98,7 +98,7 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 	styles: [],
 	standalone: false,
 })
-export class GuideDogServiceDogMainComponent {
+export class GuideDogServiceDogMainComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 

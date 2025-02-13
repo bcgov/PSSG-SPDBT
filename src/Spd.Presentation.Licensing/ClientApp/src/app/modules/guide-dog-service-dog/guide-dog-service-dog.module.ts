@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '@app/shared/shared.module';
 import { GdsdWizardAnonymousNewComponent } from './components/anonymous/gdsd-wizard-anonymous-new.component';
 import { StepGdsdMailingAddressComponent } from './components/anonymous/step-components/step-gdsd-mailing-address.component';
-import { StepGdsdPersonalInformationAnonymousComponent } from './components/anonymous/step-components/step-gdsd-personal-information-anonymous.component';
+import { StepGdsdPersonalInfoAnonymousComponent } from './components/anonymous/step-components/step-gdsd-personal-info-anonymous.component';
 import { StepGdsdSummaryComponent } from './components/anonymous/step-components/step-gdsd-summary.component';
 import { StepsGdsdDogInfoComponent } from './components/anonymous/steps-gdsd-dog-info.component';
 import { StepsGdsdPersonalInfoComponent } from './components/anonymous/steps-gdsd-personal-info.component';
@@ -11,6 +11,7 @@ import { StepsGdsdReviewConfirmComponent } from './components/anonymous/steps-gd
 import { StepsGdsdSelectionComponent } from './components/anonymous/steps-gdsd-selection.component';
 import { StepsGdsdTrainingInfoComponent } from './components/anonymous/steps-gdsd-training-info.component';
 import { GdsdWizardAuthenticatedNewComponent } from './components/authenticated/gdsd-wizard-authenticated-new.component';
+import { StepGdsdPersonalInfoComponent } from './components/authenticated/step-gdsd-personal-info.component';
 import { GdsdActiveCertificationsComponent } from './components/gdsd-active-certifications.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
 import { GdsdApplicationsListCurrentComponent } from './components/gdsd-applications-list-current.component';
@@ -55,7 +56,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepsGdsdReviewConfirmComponent,
 		StepGdsdTermsOfUseComponent,
 		StepGdsdChecklistNewComponent,
-		StepGdsdPersonalInformationAnonymousComponent,
+		StepGdsdPersonalInfoAnonymousComponent,
+		StepGdsdPersonalInfoComponent,
 		StepGdsdPhotographOfYourselfComponent,
 		StepGdsdGovermentPhotoIdComponent,
 		StepGdsdMailingAddressComponent,

@@ -2,18 +2,24 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepGdsdPersonalInfoComponent } from '../authenticated/step-gdsd-personal-info.component';
 import { StepGdsdGovermentPhotoIdComponent } from '../shared/common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdMedicalInformationComponent } from '../shared/common-step-components/step-gdsd-medical-information.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdMailingAddressComponent } from './step-components/step-gdsd-mailing-address.component';
-import { StepGdsdPersonalInformationAnonymousComponent } from './step-components/step-gdsd-personal-information-anonymous.component';
+import { StepGdsdPersonalInfoAnonymousComponent } from './step-components/step-gdsd-personal-info-anonymous.component';
 
 @Component({
 	selector: 'app-steps-gdsd-personal-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-personal-information-anonymous></app-step-gdsd-personal-information-anonymous>
+				<ng-container *ngIf="isLoggedIn; else notLoggedIn">
+					<app-step-gdsd-personal-info></app-step-gdsd-personal-info>
+				</ng-container>
+				<ng-template #notLoggedIn>
+					<app-step-gdsd-personal-info-anonymous></app-step-gdsd-personal-info-anonymous>
+				</ng-template>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -95,8 +101,8 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
-	@ViewChild(StepGdsdPersonalInformationAnonymousComponent)
-	personComponent!: StepGdsdPersonalInformationAnonymousComponent;
+	@ViewChild(StepGdsdPersonalInfoAnonymousComponent) personAnonymous!: StepGdsdPersonalInfoAnonymousComponent;
+	@ViewChild(StepGdsdPersonalInfoComponent) personAuth!: StepGdsdPersonalInfoComponent;
 	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
@@ -109,7 +115,8 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_PERSONAL_INFO:
-				return this.personComponent.isFormValid();
+				if (this.isLoggedIn) return this.personAuth.isFormValid();
+				return this.personAnonymous.isFormValid();
 			case this.STEP_MAILING_ADDRESS:
 				return this.mailingAddressComponent.isFormValid();
 			case this.STEP_MEDICAL:
