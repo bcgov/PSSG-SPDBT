@@ -44,6 +44,7 @@ internal class Mappings : Profile
         .ForMember(d => d.IsDogTrainedByAccreditedSchool, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_dogstrainingaccredited)));
 
         _ = CreateMap<GDSDApp, contact>()
+        .ForMember(d => d.contactid, opt => opt.Condition((src, dest, srcMember) => dest.contactid == null))
         .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
         .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName)))
