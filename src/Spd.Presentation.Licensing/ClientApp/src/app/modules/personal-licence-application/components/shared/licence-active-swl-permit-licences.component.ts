@@ -187,61 +187,37 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 						<ng-container
 							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitFooter"
 						>
-							<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
-								<div class="col-12">
-									<mat-divider class="my-2"></mat-divider>
-									<span class="fw-semibold">Lost your licence? </span>
-									<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-									<a
-										*ngIf="!applicationIsInProgress"
-										class="large"
-										tabindex="0"
-										aria-label="Request a security worker licence replacement"
-										(click)="onRequestReplacement(licence)"
-										(keydown)="onKeydownRequestReplacement($event, licence)"
-										>Request a replacement</a
-									>
-								</div>
-							</ng-container>
-							<ng-template #IsNotReplacementPeriod>
-								<div class="col-12">
-									<mat-divider class="my-2"></mat-divider>
-									<span class="fw-semibold">Lost your licence? </span>
-									<a class="large" aria-label="Navigate to SPD contact site" [href]="contactSpdUrl" target="_blank"
-										>Contact SPD</a
-									>
-									for a digital copy of your current licence before it expires.
-								</div>
-							</ng-template>
+							<div class="col-12">
+								<mat-divider class="my-2"></mat-divider>
+								<span class="fw-semibold">Lost your licence? </span>
+								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
+								<a
+									*ngIf="!applicationIsInProgress"
+									class="large"
+									tabindex="0"
+									aria-label="Request a security worker licence replacement"
+									(click)="onRequestReplacement(licence)"
+									(keydown)="onKeydownRequestReplacement($event, licence)"
+									>Request a replacement</a
+								>
+							</div>
 						</ng-container>
 
 						<ng-template #IsPermitFooter>
-							<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
-								<div class="col-12">
-									<mat-divider class="my-2"></mat-divider>
-									<span class="fw-semibold">Lost or stolen permit? </span>
-									<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-									<a
-										*ngIf="!applicationIsInProgress"
-										class="large"
-										tabindex="0"
-										aria-label="Request a permit replacement"
-										(click)="onRequestReplacement(licence)"
-										(keydown)="onKeydownRequestReplacement($event, licence)"
-										>Request a replacement</a
-									>
-								</div>
-							</ng-container>
-							<ng-template #IsNotReplacementPeriod>
-								<div class="col-12">
-									<mat-divider class="my-2"></mat-divider>
-									<span class="fw-semibold">Lost or stolen permit? </span>
-									<a class="large" aria-label="Navigate to SPD contact site" [href]="contactSpdUrl" target="_blank"
-										>Contact SPD</a
-									>
-									for a digital copy of your current permit before it expires.
-								</div>
-							</ng-template>
+							<div class="col-12">
+								<mat-divider class="my-2"></mat-divider>
+								<span class="fw-semibold">Lost or stolen permit? </span>
+								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
+								<a
+									*ngIf="!applicationIsInProgress"
+									class="large"
+									tabindex="0"
+									aria-label="Request a permit replacement"
+									(click)="onRequestReplacement(licence)"
+									(keydown)="onKeydownRequestReplacement($event, licence)"
+									>Request a replacement</a
+								>
+							</div>
 						</ng-template>
 					</div>
 				</div>
@@ -268,7 +244,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 })
 export class LicenceActiveSwlPermitLicencesComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
 	serviceTypeCodes = ServiceTypeCode;
 
