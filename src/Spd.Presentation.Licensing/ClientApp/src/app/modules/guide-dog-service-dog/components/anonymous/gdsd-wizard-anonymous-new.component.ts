@@ -211,8 +211,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 				this.hotToastService.success(successMessage);
 
 				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED),
-					{ state: { isSubmit: BooleanTypeCode.Yes } }
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);
 			},
 			error: (error: any) => {

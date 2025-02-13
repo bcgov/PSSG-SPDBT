@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GovernmentIssuedPhotoIdTypes } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
@@ -31,43 +32,45 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-error *ngIf="form.get('photoTypeCode')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Document Expiry Date</mat-label>
-									<input
-										matInput
-										[matDatepicker]="picker"
-										formControlName="expiryDate"
-										[min]="minDate"
-										[errorStateMatcher]="matcher"
-									/>
-									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-									<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
-									<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">
-										Invalid expiry date
-									</mat-error>
-								</mat-form-field>
-							</div>
+							<div *ngIf="photoTypeCode.value" @showHideTriggerSlideAnimation>
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Document Expiry Date</mat-label>
+										<input
+											matInput
+											[matDatepicker]="picker"
+											formControlName="expiryDate"
+											[min]="minDate"
+											[errorStateMatcher]="matcher"
+										/>
+										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+										<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+										<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">
+											Invalid expiry date
+										</mat-error>
+									</mat-form-field>
+								</div>
 
-							<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-								[previewImage]="true"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
+								<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="10"
+									[files]="attachments.value"
+									[previewImage]="true"
+								></app-file-upload>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
+									"
+									>This is required</mat-error
+								>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -75,6 +78,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		</app-step-section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperStepComponent {
