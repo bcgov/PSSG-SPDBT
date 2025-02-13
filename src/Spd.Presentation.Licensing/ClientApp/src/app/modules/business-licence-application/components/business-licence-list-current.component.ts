@@ -146,7 +146,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								(keydown)="onKeydownRequestReplacement($event, licence)"
 								>Request a replacement</a
 							>
-							and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
 						</div>
 					</div>
 				</div>
