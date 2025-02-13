@@ -449,7 +449,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			isDogTrainedByAccreditedSchool: this.utilService.booleanToBooleanType(appl.isDogTrainedByAccreditedSchool),
 		};
 
-		let hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
+		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
 		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
 		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
 		// }
