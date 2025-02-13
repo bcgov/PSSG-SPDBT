@@ -9,7 +9,7 @@ export interface DogInfoNewAccreditedSchool {
   dogDateOfBirth?: string | null;
   dogGender?: GenderCode;
   dogName?: string | null;
-  isGuideDog?: boolean;
+  isGuideDog?: boolean | null;
   microchipNumber?: string | null;
   serviceDogTasks?: string | null;
 }

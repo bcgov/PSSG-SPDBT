@@ -27,20 +27,20 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Training Dates</div>
 						<div class="summary-text-data">
-							{{ train.trainingDateFrom | formatDate }} - {{ train.trainingDateTo | formatDate }}
+							{{ train.trainingStartDate | formatDate }} - {{ train.trainingEndDate | formatDate }}
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Program Name</div>
-						<div class="summary-text-data">{{ train.nameOfTrainingProgram | default }}</div>
+						<div class="summary-text-data">{{ train.trainingName | default }}</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Total Number of Training Hours</div>
-						<div class="summary-text-data">{{ train.hoursOfTraining | default }}</div>
+						<div class="summary-text-data">{{ train.totalTrainingHours | default }}</div>
 					</div>
 					<div class="col-lg-8 col-md-12">
 						<div class="text-label d-block text-muted">Curriculum Description</div>
-						<div class="summary-text-data">{{ train.learnedDesc | default }}</div>
+						<div class="summary-text-data">{{ train.whatLearned | default }}</div>
 					</div>
 				</div>
 
@@ -49,16 +49,16 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					headingLabel="Mailing Address"
 					[isAddressTheSame]="false"
 				></app-form-address-summary>
-
-				<mat-divider class="mt-3 mb-2"></mat-divider>
 			</div>
 
-			<div class="row mt-0">
+			<div class="row mt-0" *ngIf="issupportingDocumentTrainingSchoolsAttachments">
+				<mat-divider class="mt-3 mb-2"></mat-divider>
+
 				<div class="col-12">
 					<div class="text-minor-heading-small">Supporting Documents</div>
 					<div class="summary-text-data">
 						<ul class="m-0">
-							<ng-container *ngFor="let doc of supportingDocumenTrainingSchoolsAttachments; let i = index">
+							<ng-container *ngFor="let doc of supportingDocumentTrainingSchoolsAttachments; let i = index">
 								<li>{{ doc.name }}</li>
 							</ng-container>
 						</ul>
@@ -75,8 +75,11 @@ export class GdsdSummarySchoolTrainingComponent {
 
 	@Input() gdsdModelData: any;
 
-	get supportingDocumenTrainingSchoolsAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarysupportingDocumenTrainingSchoolsAttachments(this.gdsdModelData);
+	get issupportingDocumentTrainingSchoolsAttachments(): boolean {
+		return this.gdsdApplicationService.getSummaryissupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
+	}
+	get supportingDocumentTrainingSchoolsAttachments(): File[] | null {
+		return this.gdsdApplicationService.getSummarysupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
 	}
 	get schoolTrainings(): Array<any> {
 		return this.gdsdApplicationService.getSummaryschoolTrainings(this.gdsdModelData) ?? [];

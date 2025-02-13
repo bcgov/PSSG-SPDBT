@@ -5,7 +5,7 @@
 import { OtherTraining } from '../models/other-training';
 import { TrainingSchoolInfo } from '../models/training-school-info';
 export interface TrainingInfo {
-  hasAttendedTrainingSchool?: boolean;
+  hasAttendedTrainingSchool?: boolean | null;
   otherTrainings?: Array<OtherTraining> | null;
   schoolTrainings?: Array<TrainingSchoolInfo> | null;
   specializedTasksWhenPerformed?: string | null;
