@@ -22,12 +22,22 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 			<mat-step>
 				<app-step-gdsd-checklist-new></app-step-gdsd-checklist-new>
 
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
-					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-				></app-wizard-footer>
+				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #NoTermsOfUse>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="false"
+						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>
@@ -35,6 +45,7 @@ import { StepGdsdTermsOfUseComponent } from '../shared/common-step-components/st
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="false"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_CERTIFICATION)"
 					(nextReviewStepperStep)="onNextReview(STEP_CERTIFICATION)"
@@ -52,7 +63,6 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 	readonly STEP_CERTIFICATION = 2;
 
 	@Input() isLoggedIn = false;
-	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

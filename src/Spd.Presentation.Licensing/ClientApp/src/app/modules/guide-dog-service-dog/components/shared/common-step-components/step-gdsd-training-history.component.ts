@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -19,7 +20,11 @@ training history."
 							<div class="fs-5 lh-base mt-3 mb-2">Have you attended a training school(s) and/or program(s)?</div>
 
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="hasAttendedTrainingSchool">
+								<mat-radio-group
+									aria-label="Select an option"
+									formControlName="hasAttendedTrainingSchool"
+									(change)="onChangeDocumentType($event)"
+								>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 								</mat-radio-group>
@@ -52,5 +57,24 @@ export class StepGdsdTrainingHistoryComponent implements LicenceChildStepperStep
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.gdsdApplicationService.hasValueChanged = true;
+		this.schoolattachments.setValue([]);
+		this.otherattachments.setValue([]);
+		this.logattachments.setValue([]);
+	}
+
+	public get schoolattachments(): FormControl {
+		return this.gdsdApplicationService.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
+	}
+
+	public get otherattachments(): FormControl {
+		return this.gdsdApplicationService.otherTrainingHistoryFormGroup.get('attachments') as FormControl;
+	}
+
+	public get logattachments(): FormControl {
+		return this.gdsdApplicationService.otherTrainingHistoryFormGroup.get('practiceLogAttachments') as FormControl;
 	}
 }

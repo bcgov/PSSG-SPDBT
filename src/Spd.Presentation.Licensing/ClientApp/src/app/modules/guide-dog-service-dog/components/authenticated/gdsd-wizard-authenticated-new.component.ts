@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -9,17 +10,17 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { StepsGdsdDogInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-dog-info.component';
+import { StepsGdsdPersonalInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-personal-info.component';
+import { StepsGdsdReviewConfirmComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-review-confirm.component';
+import { StepsGdsdSelectionComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-selection.component';
+import { StepsGdsdTrainingInfoComponent } from '@app/modules/guide-dog-service-dog/components/anonymous/steps-gdsd-training-info.component';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
-import { StepsGdsdDogInfoComponent } from './steps-gdsd-dog-info.component';
-import { StepsGdsdPersonalInfoComponent } from './steps-gdsd-personal-info.component';
-import { StepsGdsdReviewConfirmComponent } from './steps-gdsd-review-confirm.component';
-import { StepsGdsdSelectionComponent } from './steps-gdsd-selection.component';
-import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-anonymous-new',
+	selector: 'app-gdsd-wizard-authenticated-new',
 	template: `
 		<mat-stepper
 			linear
@@ -31,7 +32,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-gdsd-selection
-					[isLoggedIn]="false"
+					[isLoggedIn]="true"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
@@ -44,12 +45,13 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-gdsd-personal-info
-					[isLoggedIn]="false"
-					[showSaveAndExit]="false"
+					[isLoggedIn]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -60,12 +62,13 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-gdsd-dog-info
-					[isLoggedIn]="false"
-					[showSaveAndExit]="false"
+					[isLoggedIn]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -76,14 +79,15 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Training Information</ng-template>
 				<app-steps-gdsd-training-info
-					[isLoggedIn]="false"
-					[showSaveAndExit]="false"
+					[isLoggedIn]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -94,14 +98,15 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
-					[isLoggedIn]="false"
-					[showSaveAndExit]="false"
+					[isLoggedIn]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmit()"
@@ -118,7 +123,7 @@ import { StepsGdsdTrainingInfoComponent } from './steps-gdsd-training-info.compo
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
@@ -131,6 +136,7 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	step3Complete = false;
 	step4Complete = false;
 
+	showSaveAndExit = true;
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsGdsdSelectionComponent)
@@ -202,11 +208,11 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onSubmit(): void {
-		this.gdsdApplicationService.submitAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.GdsdTeamCertification,
-					this.applicationTypeCode
+					ApplicationTypeCode.New
 				);
 				this.hotToastService.success(successMessage);
 
@@ -262,8 +268,68 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		if (this.gdsdApplicationService.isAutoSave()) {
+			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					if (stepper?.selected) stepper.selected.completed = true;
+					stepper.next();
+
+					switch (stepper.selectedIndex) {
+						case this.STEP_SELECTION:
+							this.stepsSelection?.onGoToFirstStep();
+							break;
+						case this.STEP_PERSONAL_INFO:
+							this.stepsPersonalInfo?.onGoToFirstStep();
+							break;
+						case this.STEP_DOG_INFO:
+							this.stepsDogInfo?.onGoToFirstStep();
+							break;
+						case this.STEP_TRAINING_INFO:
+							this.stepsTrainingInfo?.onGoToFirstStep();
+							break;
+					}
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
+		}
+	}
+
+	onSaveAndExit(): void {
+		if (!this.gdsdApplicationService.isSaveAndExit()) {
+			return;
+		}
+
+		this.gdsdApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+			next: (_resp: any) => {
+				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				this.handlePartialSaveError(error);
+			},
+		});
+	}
+
+	onGoToReview() {
+		if (this.gdsdApplicationService.isAutoSave()) {
+			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					setTimeout(() => {
+						// hack... does not navigate without the timeout
+						this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+					}, 250);
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		}
 	}
 
 	onGoToStep(step: number) {
@@ -275,14 +341,26 @@ export class GdsdWizardAnonymousNewComponent extends BaseWizardComponent impleme
 		this.stepper.selectedIndex = step;
 	}
 
-	onGoToReview() {
-		setTimeout(() => {
-			// hack... does not navigate without the timeout
-			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-		}, 250);
+	onChildNextStep() {
+		if (this.gdsdApplicationService.isAutoSave()) {
+			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					this.goToChildNextStep();
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else {
+			this.goToChildNextStep();
+		}
 	}
 
-	onChildNextStep() {
+	private handlePartialSaveError(_error: HttpErrorResponse): void {
+		// TODO  handlePartialSaveError
+	}
+
+	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_SELECTION:
 				this.stepsSelection?.onGoToNextStep();

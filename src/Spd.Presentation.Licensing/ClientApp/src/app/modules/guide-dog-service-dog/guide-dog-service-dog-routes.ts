@@ -5,6 +5,7 @@ export class GuideDogServiceDogRoutes {
 
 	// AUTHENTICATED
 	public static readonly GDSD_AUTHENTICATED_BASE = 'application';
+	public static readonly GDSD_APPLICATION_NEW_AUTHENTICATED = 'gdsd-application-new';
 
 	// ANONYMOUS
 	public static readonly GDSD_APPLICATION_ANONYMOUS = 'gdsd-application-anonymous';

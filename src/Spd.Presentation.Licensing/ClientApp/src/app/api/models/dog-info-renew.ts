@@ -5,5 +5,5 @@
 export interface DogInfoRenew {
   currentDogCertificate?: string | null;
   dogName?: string | null;
-  isAssistanceStillRequired?: boolean;
+  isAssistanceStillRequired?: boolean | null;
 }

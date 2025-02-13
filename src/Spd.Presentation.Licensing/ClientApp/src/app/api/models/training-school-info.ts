@@ -8,10 +8,11 @@ export interface TrainingSchoolInfo {
   contactGivenName?: string | null;
   contactPhoneNumber?: string | null;
   contactSurname?: string | null;
-  totalTrainingHours?: number;
+  totalTrainingHours?: number | null;
   trainingBizMailingAddress?: MailingAddress;
   trainingBizName?: string | null;
   trainingEndDate?: string | null;
+  trainingId?: string | null;
   trainingName?: string | null;
   trainingStartDate?: string | null;
   whatLearned?: string | null;

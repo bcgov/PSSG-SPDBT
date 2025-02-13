@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -63,19 +64,21 @@ export class StepGdsdMedicalInformationComponent implements LicenceChildStepperS
 
 	form: FormGroup = this.gdsdApplicationService.medicalInformationFormGroup;
 
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
-
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	onFileUploaded(file: File): void {
-		this.fileUploaded.emit(file);
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.fileRemoved.emit();
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

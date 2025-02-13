@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-gdsd-personal-information-anonymous',
+	selector: 'app-step-gdsd-personal-info-anonymous',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
@@ -59,12 +59,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="contactPhoneNumber"
+										formControlName="phoneNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="30"
 										appPhoneNumberTransform
 									/>
-									<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -72,12 +72,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Email Address <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
-										formControlName="contactEmailAddress"
+										formControlName="emailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>
@@ -91,7 +91,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdPersonalInformationAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepGdsdPersonalInfoAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
