@@ -4,7 +4,7 @@
 
 import { GenderCode } from '../models/gender-code';
 export interface DogInfoNewWithoutAccreditedSchool {
-  areInoculationsUpToDate?: boolean;
+  areInoculationsUpToDate?: boolean | null;
   dogBreed?: string | null;
   dogColorAndMarkings?: string | null;
   dogDateOfBirth?: string | null;

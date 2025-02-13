@@ -18,9 +18,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
 					To qualify for a locksmith security worker licence, you must meet one of the following experience and training
-					requirements. Whether a particular apprenticeship program or locksmithing course is approved by the registrar
-					will be based on a review of program or course content, and training time for each component of the
-					apprenticeship or course:
+					requirements. The registrar will review the content and training hours of any apprenticeship program or
+					locksmithing course to determine if it is approved.
 
 					<mat-radio-group
 						class="category-radio-group"
@@ -43,7 +42,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							worker licensee, and proof of successful completion of an approved apprenticeship program
 							<mat-icon
 								class="info-icon"
-								matTooltip="You must provide a letter of recommendation and certification from your employer indicating that you are qualified to perform the services of a locksmith unsupervised. Your work experience must be from within the past five years."
+								matTooltip="You must provide a letter of recommendation and certification from your employer stating that you are qualified to work as a locksmith without supervision. Your work experience must be from the past five years."
 							>
 								info
 							</mat-icon>
@@ -80,8 +79,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					>
 						Upload a letter of recommendation
 						<div class="fs-6 my-2">
-							This letter must be on company letterhead, and proof of successful completion of an approved
-							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
+							This letter must be on company letterhead and include proof of successful completion of an approved
+							apprenticeship program, other than the one provided by the <i>Industry Training Authority</i>.
 						</div>
 					</span>
 					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">

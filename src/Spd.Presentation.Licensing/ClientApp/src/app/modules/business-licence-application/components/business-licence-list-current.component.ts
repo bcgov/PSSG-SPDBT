@@ -134,29 +134,20 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 					</div>
 
 					<div class="row">
-						<ng-container *ngIf="licence.isRenewalPeriod; else IsNotRenewalPeriod">
-							<div class="col-12">
-								<mat-divider class="my-2"></mat-divider>
-								<span class="fw-semibold">Lost your licence? </span>
-								<a class="large" [href]="contactSpdUrl" target="_blank">Contact SPD</a>
-								for a digital copy of your current licence before it expires.
-							</div>
-						</ng-container>
-						<ng-template #IsNotRenewalPeriod>
-							<div class="col-12">
-								<mat-divider class="my-2"></mat-divider>
-								<span class="fw-semibold">Lost your licence? </span>
-								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-								<a
-									*ngIf="!applicationIsInProgress"
-									class="large"
-									tabindex="0"
-									(click)="onRequestReplacement(licence)"
-									(keydown)="onKeydownRequestReplacement($event, licence)"
-									>Request a replacement</a
-								>
-							</div>
-						</ng-template>
+						<div class="col-12">
+							<mat-divider class="my-2"></mat-divider>
+							<span class="fw-semibold">Lost your licence? </span>
+							<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
+							<a
+								*ngIf="!applicationIsInProgress"
+								class="large"
+								tabindex="0"
+								(click)="onRequestReplacement(licence)"
+								(keydown)="onKeydownRequestReplacement($event, licence)"
+								>Request a replacement</a
+							>
+							and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
+						</div>
 					</div>
 				</div>
 			</div>
@@ -183,7 +174,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 })
 export class BusinessLicenceListCurrentComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
 	swlServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence;
 

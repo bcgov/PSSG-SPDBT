@@ -350,6 +350,65 @@ export class CommonApplicationService {
 		return of(response);
 	}
 
+	userGdsdApplicationsList(): Observable<Array<LicenceAppListResponse>> {
+		return this.licenceAppService
+			.apiApplicantsApplicantIdDogCertificationApplicationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
+					});
+
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
+					return response;
+				})
+			);
+	}
+
+	userGdsdLicencesList(): Observable<Array<LicenceAppListResponse>> {
+		return this.licenceAppService
+			.apiApplicantsApplicantIdLicenceApplicationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					// TODO handle GDSD licences
+					// switchMap((basicLicenceResps: Array<LicenceAppListResponse>) => {
+					// if (basicLicenceResps.length === 0) {
+					// 	return of([]);
+					// }
+
+					// const apis: Observable<any>[] = [];
+					// basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+					// 	if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+					// 		apis.push(
+					// 			this.licenceService.apiLicencesLicenceIdGet({
+					// 				licenceId: resp.licenceId!,
+					// 			})
+					// 		);
+					// 	}
+					// });
+
+					// if (apis.length > 0) {
+					// 	return forkJoin(apis).pipe(
+					// 		switchMap((licenceResps: LicenceResponse[]) => {
+					// 			return this.processPersonLicenceData(basicLicenceResps, licenceResps);
+					// 		})
+					// 	);
+					// } else {
+					// 	return this.processPersonLicenceData(basicLicenceResps, null);
+					// }
+					return _resp;
+				})
+			);
+	}
+
 	userBusinessApplicationsList(isSoleProprietorship: boolean): Observable<Array<MainApplicationResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
