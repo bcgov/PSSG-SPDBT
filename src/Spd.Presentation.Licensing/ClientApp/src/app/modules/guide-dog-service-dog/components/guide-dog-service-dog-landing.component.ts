@@ -196,7 +196,7 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onRegisterGuideDog(): void {
-		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterDogTrainer(): void {

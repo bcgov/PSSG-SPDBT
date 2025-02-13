@@ -43,10 +43,11 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					</div>
 				</ng-container>
 			</div>
-			<mat-divider class="mt-3 mb-2"></mat-divider>
 		</div>
 
-		<div class="row mt-0">
+		<div class="row mt-0" *ngIf="issupportingDocumentOtherTrainingAttachments">
+			<mat-divider class="mt-3 mb-2"></mat-divider>
+
 			<div class="col-12">
 				<div class="text-minor-heading-small">Supporting Documents</div>
 				<div class="summary-text-data">
@@ -57,19 +58,19 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 					</ul>
 				</div>
 			</div>
+		</div>
 
-			<div class="row mt-0" *ngIf="isPracticeLogsOtherTrainingAttachments">
-				<mat-divider class="mt-3 mb-2"></mat-divider>
+		<div class="row mt-0" *ngIf="ispracticeLogsOtherTrainingAttachments">
+			<mat-divider class="mt-3 mb-2"></mat-divider>
 
-				<div class="col-12">
-					<div class="text-minor-heading-small">Practice Logs</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of practiceLogsOtherTrainingAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
+			<div class="col-12">
+				<div class="text-minor-heading-small">Practice Logs</div>
+				<div class="summary-text-data">
+					<ul class="m-0">
+						<ng-container *ngFor="let doc of practiceLogsOtherTrainingAttachments; let i = index">
+							<li>{{ doc.name }}</li>
+						</ng-container>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -90,11 +91,14 @@ export class GdsdSummaryOtherTrainingComponent {
 	get otherTrainings(): Array<any> {
 		return this.gdsdApplicationService.getSummaryotherTrainings(this.gdsdModelData) ?? [];
 	}
+	get issupportingDocumentOtherTrainingAttachments(): boolean {
+		return this.gdsdApplicationService.getSummaryissupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
+	}
 	get supportingDocumentOtherTrainingAttachments(): File[] | null {
 		return this.gdsdApplicationService.getSummarysupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
 	}
-	get isPracticeLogsOtherTrainingAttachments(): boolean {
-		return this.gdsdApplicationService.getSummaryisPracticeLogsOtherTrainingAttachments(this.gdsdModelData);
+	get ispracticeLogsOtherTrainingAttachments(): boolean {
+		return this.gdsdApplicationService.getSummaryispracticeLogsOtherTrainingAttachments(this.gdsdModelData);
 	}
 	get practiceLogsOtherTrainingAttachments(): File[] | null {
 		return this.gdsdApplicationService.getSummarypracticeLogsOtherTrainingAttachments(this.gdsdModelData);
