@@ -5,8 +5,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { CommonControllingMembersComponent } from './common-controlling-members.component';
 
 @Component({
-    selector: 'app-step-business-licence-controlling-members',
-    template: `
+	selector: 'app-step-business-licence-controlling-members',
+	template: `
 		<app-step-section
 			[title]="title"
 			subtitle="A controlling member is any person who can direct the activity of your business."
@@ -15,9 +15,8 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="info" icon="info">
-						Controlling members who are not licensed security workers must consent to criminal, police information and
-						correctional service record checks. These checks help the Registrar determine whether or not to approve your
-						security business application.
+						Controlling members who are not licensed security workers must consent to a criminal record check. This
+						helps the Registrar determine whether to approve your security business application.
 					</app-alert>
 
 					<app-common-controlling-members [defaultExpanded]="true" [isWizard]="true"></app-common-controlling-members>
@@ -25,8 +24,8 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

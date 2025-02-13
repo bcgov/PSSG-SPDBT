@@ -84,12 +84,13 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								The following updates have a
 								{{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 								<ul class="m-0">
-									<li>add or remove branch</li>
-									<li>change to business trade name</li>
-									<li>change to business legal name</li>
-									<li>change to business address</li>
-									<li>add request for dogs authorization</li>
-									<li>update licence category</li>
+									<li>Add or remove a branch</li>
+									<li>Change your business trade name</li>
+									<li>Change your business legal name</li>
+									<li>Change your business address</li>
+									<li>Request authorization for dogs</li>
+									<li>Update your licence category</li>
+									<li>Request a replacement licence</li>
 								</ul>
 							</div>
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -145,7 +146,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								(keydown)="onKeydownRequestReplacement($event, licence)"
 								>Request a replacement</a
 							>
-							and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
 						</div>
 					</div>
 				</div>
@@ -178,7 +178,6 @@ export class BusinessLicenceListCurrentComponent {
 
 	@Input() activeLicences!: Array<MainLicenceResponse>;
 	@Input() applicationIsInProgress!: boolean;
-	@Input() lostLicenceDaysText!: string;
 	@Input() isSoleProprietor!: boolean;
 
 	@Output() replaceLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();

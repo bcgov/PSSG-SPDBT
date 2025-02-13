@@ -58,8 +58,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 							<div class="mt-3">
 								<div class="mb-4 text-primary-color">
-									This address is from your Business BCeID. If you need to make any updates, please
-									<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
+									To update your mailing address, please <a [href]="bceidUrl" target="_blank">visit BCeID</a>.
 								</div>
 
 								<app-form-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-form-address>
