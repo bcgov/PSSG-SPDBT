@@ -23,8 +23,8 @@ public record GDSDApp
     public string? MiddleName { get; set; }
     public Addr? MailingAddress { get; set; }
     public DateOnly? DateOfBirth { get; set; }
-    public string? ContactPhoneNumber { get; set; }
-    public string? ContactEmailAddress { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
 
     public bool? IsDogTrainedByAccreditedSchool { get; set; }

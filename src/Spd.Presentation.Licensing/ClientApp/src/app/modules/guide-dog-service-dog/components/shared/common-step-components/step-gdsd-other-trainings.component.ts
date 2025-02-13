@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -106,6 +107,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												formControlName="trainerPhoneNumber"
 												[errorStateMatcher]="matcher"
 												maxlength="30"
+												appPhoneNumberTransform
 											/>
 											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
 												This is required
@@ -174,6 +176,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="mb-4">
 							<div class="fs-5">
 								Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+								<span class="optional-label">(optional)</span>
 							</div>
 							<div class="mt-2">
 								<app-file-upload
@@ -184,22 +187,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									#attachmentsRef
 									[files]="attachments.value"
 								></app-file-upload>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-										form.get('attachments')?.invalid &&
-										form.get('attachments')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
 							</div>
 						</div>
 
 						<div class="fs-5">Upload logs of practice hours <span class="optional-label">(optional)</span></div>
 						<div class="mt-2">
 							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
+								(fileUploaded)="onFileUploadedPracticeLog($event)"
 								(fileRemoved)="onFileRemoved()"
 								[maxNumberOfFiles]="10"
 								[control]="practiceLogAttachments"
@@ -266,12 +260,26 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 		return this.otherTrainingsArray.length > 1;
 	}
 
-	onFileUploaded(_file: File): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+	onFileUploaded(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
+	}
+
+	onFileUploadedPracticeLog(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+			file,
+			this.practiceLogAttachments,
+			this.practiceLogFileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

@@ -7,53 +7,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 		<app-step-section title="Checklist" subtitle="Make sure you have the following items before you continue">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<h1>IGNORE THIS TEXT - NEED TO UPDATE</h1>
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
-						<li>
-							<div class="checklist-label">Proof of fingerprinting request</div>
-							<p class="checklist-info">
-								All applicants must submit a proof of fingerprinting request. Download the
-								<a
-									aria-label="Download Request for Fingerprinting form"
-									download="Request For Fingerprinting Form"
-									[href]="downloadFilePath"
-									>Request for Fingerprinting form</a
-								>, take it your local police department, and return to this application when you have this form
-								completed.
-							</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Proof of training and experience</div>
-							<!-- // TODO update URL -->
-							<p class="checklist-info">
-								Some categories of security workers, such as security guards, require proof of training and/or
-								experience.
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a>
-								about the types of documents we accept for each security worker category.
-							</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Proof of Canadian citizenship or ability to work in Canada</div>
-							<!-- // TODO update URL -->
-							<p class="checklist-info">
-								See all accepted forms of identification on the
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"
-									>Security Worker Licence requirements page</a
-								>.
-							</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Government-issued photo ID</div>
-							<p class="checklist-info">
-								The identification needs to be issued by a federal, provincial, territorial or state government
-								authority.
-							</p>
-						</li>
-
 						<li>
 							<div class="checklist-label">Photograph of yourself for the licence</div>
 							<p class="checklist-info">
@@ -70,41 +25,41 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 
 						<li>
-							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<div class="checklist-label">Government-issued photo ID</div>
+							<p class="checklist-info">
+								The identification needs to be issued by a federal, provincial, territorial or state government
+								authority.
+							</p>
 						</li>
 					</ul>
 
-					<!-- <mat-divider class="my-4"></mat-divider>
+					<mat-divider class="my-4"></mat-divider>
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Expired licence (if applicable)</div>
+							<div class="checklist-label">Proof of training and experience from an accredited school</div>
+							<p class="checklist-info">We require proof of training and/or experience from an accredited school.</p>
+						</li>
+
+						<li>
+							<div class="checklist-label">Medical Information</div>
 							<p class="checklist-info">
-								If you have a Security Worker Licence that has expired, we can use the number and expiry date to connect
-								this application to your file.
+								Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6 months.
 							</p>
 						</li>
 
 						<li>
-							<div class="checklist-label">If you are a Peace Officer, provide a letter of no conflict</div>
-							<p class="checklist-info">Your superior officer must write a letter of no conflict for you to upload.</p>
+							<div class="checklist-label">Microchip Number</div>
+							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
 						</li>
 
 						<li>
-							<div class="checklist-label">If you have a mental health condition, provide a physician's assessment</div>
+							<div class="checklist-label">Dog Medical Information</div>
 							<p class="checklist-info">
-								Download the
-								<a
-									aria-label="Navigate to Mental Health Condition form site"
-									[href]="mentalHealthConditionsFormUrl"
-									target="_blank"
-								>
-									Mental Health Condition form</a
-								>, and give it to your physician to fill out. You will need to upload the completed form.
+								Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered.
 							</p>
 						</li>
-					</ul> -->
+					</ul>
 				</div>
 			</div>
 		</app-step-section>
@@ -115,7 +70,4 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 export class StepGdsdChecklistNewComponent {
 	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
-	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
-	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
-	// TODO GDSD update checklist
 }

@@ -61,12 +61,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/{certificationAppId}")]
+        [Route("api/gdsd-team-app/{licenceAppId}")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid certificationAppId)
+        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid licenceAppId)
         {
-            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(certificationAppId));
+            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(licenceAppId));
         }
 
         /// <summary>

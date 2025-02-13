@@ -2,9 +2,14 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import {
 	Document,
 	DocumentRelatedInfo,
+	DogInfoNewAccreditedSchool,
+	DogInfoNewWithoutAccreditedSchool,
+	DogInfoRenew,
+	GraduationInfo,
 	LicenceDocumentTypeCode,
 	MailingAddress,
 	OtherTraining,
+	TrainingInfo,
 	TrainingSchoolInfo,
 } from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
@@ -17,12 +22,13 @@ import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	gdsdPersonalInformationFormGroup: FormGroup = this.formBuilder.group({
+		hasBcscNameChanged: new FormControl(''), // placeholder
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
 		dateOfBirth: new FormControl('', [Validators.required]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
-		contactEmailAddress: new FormControl('', [FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	governmentPhotoIdFormGroup: FormGroup = this.formBuilder.group({
@@ -45,6 +51,13 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	dogTasksFormGroup: FormGroup = this.formBuilder.group({
 		tasks: new FormControl('', [Validators.required]),
+	});
+
+	// TODO dog renewal
+	dogRenewFormGroup: FormGroup = this.formBuilder.group({
+		dogName: new FormControl('', [Validators.required]),
+		currentDogCertificate: new FormControl('', [Validators.required]),
+		isAssistanceStillRequired: new FormControl('', [Validators.required]),
 	});
 
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
@@ -76,12 +89,12 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 	schoolTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		schoolTrainings: this.formBuilder.array([]),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
+		attachments: new FormControl([]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
 	});
 
 	otherTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
 		otherTrainings: this.formBuilder.array([]),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
+		attachments: new FormControl([]), // LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument
 		practiceLogAttachments: new FormControl([]), // LicenceDocumentTypeCode.GdsdPracticeHoursLog
 	});
 
@@ -120,6 +133,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 	getSaveBodyBase(gdsdModelFormValue: any): any {
+		const serviceTypeData = gdsdModelFormValue.serviceTypeData;
+		const applicationTypeData = gdsdModelFormValue.applicationTypeData;
 		const mailingAddressData = gdsdModelFormValue.mailingAddressData;
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const personalInformationData = gdsdModelFormValue.personalInformationData;
@@ -130,6 +145,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const governmentPhotoIdData = gdsdModelFormValue.governmentPhotoIdData;
 		const medicalInformationData = gdsdModelFormValue.medicalInformationData;
 		const dogMedicalData = gdsdModelFormValue.dogMedicalData;
+		const dogGdsdData = gdsdModelFormValue.dogGdsdData;
 		const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
 
 		const documentInfos: Array<Document> = [];
@@ -154,11 +170,11 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const isTrainedByAccreditedSchools =
 			dogCertificationSelectionData.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
 
-		let dogInfoNewAccreditedSchoolData: any = null;
-		let dogInfoNewWithoutAccreditedSchoolData: any = null;
-		let trainingInfoData: any = null;
-		let graduationInfoData: any = null;
-		const dogInfoRenewData: any = null;
+		let dogInfoNewAccreditedSchoolData: DogInfoNewAccreditedSchool | null = null;
+		let dogInfoNewWithoutAccreditedSchoolData: DogInfoNewWithoutAccreditedSchool | null = null;
+		let trainingInfoData: TrainingInfo | null = null;
+		let graduationInfoData: GraduationInfo | null = null;
+		const dogInfoRenewData: DogInfoRenew | null = null;
 
 		dogInformationData.dogDateOfBirth = this.utilService.dateToDbDate(dogInformationData.dogDateOfBirth);
 		if (isTrainedByAccreditedSchools) {
@@ -170,7 +186,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				schoolContactSurname: accreditedGraduationData.schoolContactSurname,
 			};
 
-			const isGuideDog = this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog);
+			const isGuideDog = this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog);
 			dogInfoNewAccreditedSchoolData = {
 				dogBreed: dogInformationData.dogBreed,
 				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
@@ -189,19 +205,20 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				});
 			});
 		} else {
+			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(dogMedicalData.areInoculationsUpToDate);
 			dogInfoNewWithoutAccreditedSchoolData = {
-				areInoculationsUpToDate: this.utilService.booleanTypeToBoolean(dogMedicalData.areInoculationsUpToDate),
+				areInoculationsUpToDate,
 				dogBreed: dogInformationData.dogBreed,
 				dogColorAndMarkings: dogInformationData.dogColorAndMarkings,
 				dogDateOfBirth: dogInformationData.dogDateOfBirth,
 				dogGender: dogInformationData.dogGender,
 				dogName: dogInformationData.dogName,
-				isGuideDog: this.utilService.booleanTypeToBoolean(dogCertificationSelectionData.isGuideDog),
 				microchipNumber: dogInformationData.microchipNumber,
 			};
 
-			const hasAttendedTrainingSchool =
-				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
+			const hasAttendedTrainingSchool = this.utilService.booleanTypeToBoolean(
+				trainingHistoryData.hasAttendedTrainingSchool
+			);
 
 			const schoolTrainingHistoryData = gdsdModelFormValue.schoolTrainingHistoryData;
 			let schoolTrainingsData = null;
@@ -209,39 +226,44 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			const otherTrainingHistoryData = gdsdModelFormValue.otherTrainingHistoryData;
 			let otherTrainingsData = null;
 
-			if (hasAttendedTrainingSchool) {
-				schoolTrainingsData = this.getSchoolTrainings(
-					hasAttendedTrainingSchool,
-					schoolTrainingHistoryData.schoolTrainings
-				);
-				schoolTrainingHistoryData.attachments?.forEach((doc: any) => {
-					documentInfos.push({
-						documentUrlId: doc.documentUrlId,
-						licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+			if (this.utilService.hasBooleanValue(hasAttendedTrainingSchool)) {
+				if (hasAttendedTrainingSchool) {
+					schoolTrainingsData = this.getSchoolTrainings(
+						hasAttendedTrainingSchool,
+						schoolTrainingHistoryData.schoolTrainings
+					);
+					schoolTrainingHistoryData.attachments?.forEach((doc: any) => {
+						documentInfos.push({
+							documentUrlId: doc.documentUrlId,
+							licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+						});
 					});
-				});
-			} else {
-				otherTrainingsData = this.getOtherTrainings(hasAttendedTrainingSchool, otherTrainingHistoryData.otherTrainings);
-				otherTrainingHistoryData.attachments?.forEach((doc: any) => {
-					documentInfos.push({
-						documentUrlId: doc.documentUrlId,
-						licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+				} else {
+					otherTrainingsData = this.getOtherTrainings(
+						hasAttendedTrainingSchool!,
+						otherTrainingHistoryData.otherTrainings
+					);
+					otherTrainingHistoryData.attachments?.forEach((doc: any) => {
+						documentInfos.push({
+							documentUrlId: doc.documentUrlId,
+							licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+						});
 					});
-				});
-				otherTrainingHistoryData.practiceLogAttachments?.forEach((doc: any) => {
-					documentInfos.push({
-						documentUrlId: doc.documentUrlId,
-						licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+					otherTrainingHistoryData.practiceLogAttachments?.forEach((doc: any) => {
+						documentInfos.push({
+							documentUrlId: doc.documentUrlId,
+							licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdPracticeHoursLog,
+						});
 					});
-				});
-			}
+				}
 
-			trainingInfoData = {
-				hasAttendedTrainingSchool,
-				schoolTrainings: schoolTrainingsData,
-				otherTrainings: otherTrainingsData,
-				specializedTasksWhenPerformed: dogTasksData.tasks,
-			};
+				trainingInfoData = {
+					hasAttendedTrainingSchool,
+					schoolTrainings: schoolTrainingsData,
+					otherTrainings: otherTrainingsData,
+					specializedTasksWhenPerformed: dogTasksData.tasks,
+				};
+			}
 
 			medicalInformationData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
@@ -268,11 +290,11 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				}) ?? [];
 
 		const body = {
+			licenceAppId: gdsdModelFormValue.licenceAppId,
 			applicantOrLegalGuardianName: null,
 			applicationOriginTypeCode: gdsdModelFormValue.applicationOriginTypeCode,
-			applicationTypeCode: gdsdModelFormValue.applicationTypeCode,
-			bizTypeCode: gdsdModelFormValue.bizTypeCode,
-			serviceTypeCode: gdsdModelFormValue.serviceTypeCode,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			licenceTermCode: gdsdModelFormValue.licenceTermCode,
 			...personalInformationData,
 			documentKeyCodes: [],
@@ -411,21 +433,21 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 				province: train.province,
 			};
 
-			const trainingStartDate = this.utilService.dateToDbDate(train.trainingDateFrom);
-			const trainingEndDate = this.utilService.dateToDbDate(train.trainingDateTo);
+			const trainingStartDate = this.utilService.dateToDbDate(train.trainingStartDate);
+			const trainingEndDate = this.utilService.dateToDbDate(train.trainingEndDate);
 
 			trainingArray.push({
 				contactEmailAddress: this.utilService.getStringOrNull(train.contactEmailAddress),
 				contactGivenName: this.utilService.getStringOrNull(train.contactGivenName),
 				contactPhoneNumber: train.contactPhoneNumber,
 				contactSurname: train.contactSurname,
-				totalTrainingHours: train.hoursOfTraining,
+				totalTrainingHours: train.totalTrainingHours ?? null,
 				trainingBizMailingAddress: mailingAddress,
 				trainingBizName: train.trainingBizName,
 				trainingEndDate,
 				trainingStartDate,
-				trainingName: train.nameOfTrainingProgram,
-				whatLearned: train.learnedDesc,
+				trainingName: train.trainingName,
+				whatLearned: train.whatLearned,
 			});
 		});
 		return trainingArray;
@@ -460,7 +482,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return gdsdModelData.dogCertificationSelectionData.isDogTrainedByAccreditedSchool ?? '';
 	}
 	getSummarydogType(gdsdModelData: any): string {
-		return gdsdModelData.dogCertificationSelectionData.isGuideDog === BooleanTypeCode.Yes
+		return gdsdModelData.dogGdsdData.isGuideDog === BooleanTypeCode.Yes
 			? 'Guide dog (Trained as a guide for a blind person)'
 			: 'Service dog (Trained to perform specific tasks to assist a person with a disability)';
 	}
@@ -477,10 +499,10 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		return gdsdModelData.personalInformationData.dateOfBirth ?? '';
 	}
 	getSummaryemailAddress(gdsdModelData: any): string {
-		return gdsdModelData.personalInformationData.contactEmailAddress ?? '';
+		return gdsdModelData.personalInformationData.emailAddress ?? '';
 	}
 	getSummaryphoneNumber(gdsdModelData: any): string {
-		return gdsdModelData.personalInformationData.contactPhoneNumber ?? '';
+		return gdsdModelData.personalInformationData.phoneNumber ?? '';
 	}
 
 	getSummaryaccreditedSchoolName(gdsdModelData: any): string {
@@ -507,19 +529,33 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getSummaryschoolTrainings(gdsdModelData: any): Array<any> {
 		return gdsdModelData.schoolTrainingHistoryData.schoolTrainings ?? [];
 	}
-	getSummarysupportingDocumenTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
+	getSummaryissupportingDocumentTrainingSchoolsAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.schoolTrainingHistoryData.attachments) {
+			return gdsdModelData.schoolTrainingHistoryData.attachments.length > 0;
+		}
+		return false;
+	}
+	getSummarysupportingDocumentTrainingSchoolsAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.schoolTrainingHistoryData.attachments ?? [];
 	}
 
 	getSummaryotherTrainings(gdsdModelData: any): Array<any> {
 		return gdsdModelData.otherTrainingHistoryData.otherTrainings ?? [];
 	}
+	getSummaryissupportingDocumentOtherTrainingAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.otherTrainingHistoryData.attachments) {
+			return gdsdModelData.otherTrainingHistoryData.attachments.length > 0;
+		}
+		return false;
+	}
 	getSummarysupportingDocumentOtherTrainingAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.otherTrainingHistoryData.attachments ?? [];
 	}
-	getSummaryisPracticeLogsOtherTrainingAttachments(gdsdModelData: any): boolean {
-		const attachments = gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];
-		return attachments.length > 0;
+	getSummaryispracticeLogsOtherTrainingAttachments(gdsdModelData: any): boolean {
+		if (gdsdModelData.otherTrainingHistoryData.practiceLogAttachments) {
+			return gdsdModelData.otherTrainingHistoryData.practiceLogAttachments.length > 0;
+		}
+		return false;
 	}
 	getSummarypracticeLogsOtherTrainingAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.otherTrainingHistoryData.practiceLogAttachments ?? [];
