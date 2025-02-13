@@ -40,12 +40,13 @@ internal class GDSDAppRepository : IGDSDAppRepository
         if (cmd.LicenceAppId != null)
         {
             app = PrepareUpdateAppDataInDbContext(cmd, cmd.LicenceAppId.Value);
+            UpdateContact(cmd, cmd.ApplicantId);
         }
         else
         {
             //first time user create an application, beginning
             app = PrepareNewAppDataInDbContext(cmd);
-            var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
+            var contact = UpdateContact(cmd, cmd.ApplicantId);
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
@@ -157,9 +158,21 @@ internal class GDSDAppRepository : IGDSDAppRepository
         return app;
     }
 
+    private contact UpdateContact(GDSDApp appData, Guid applicantId)
+    {
+        contact? applicant = _context.contacts.FirstOrDefault(c => c.contactid == applicantId);
+        if (applicant == null)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the applicant");
+        }
+        _mapper.Map(appData, applicant);
+        _context.UpdateObject(applicant);
+        return applicant;
+    }
+
     private spd_application PrepareUpdateAppDataInDbContext(GDSDApp appData, Guid appId)
     {
-        spd_application app = _context.spd_applications
+        spd_application? app = _context.spd_applications
             .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
             .Where(a => a.spd_applicationid == appId)
             .FirstOrDefault();
