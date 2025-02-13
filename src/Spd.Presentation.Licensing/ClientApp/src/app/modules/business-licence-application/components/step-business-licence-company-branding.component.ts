@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-    selector: 'app-step-business-licence-company-branding',
-    template: `
+	selector: 'app-step-business-licence-company-branding',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -51,9 +51,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	title = '';
@@ -86,7 +86,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 		} else {
 			this.title = 'Provide examples of company branding';
 			this.subtitle =
-				'Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Programs Division must review and approve these before your licence will be issued.';
+				'Provide drawings or photos of any uniforms, insignia, logos, vehicle markings, or advertisements you plan to use for your security business. These must be reviewed and approved by Security Programs Division before your licence can be issued.';
 			this.info =
 				'We recommend you do not finalize any branding, marketing or advertising until your licence is approved.';
 		}

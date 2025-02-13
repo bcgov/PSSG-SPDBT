@@ -5,8 +5,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-consent-and-declaration',
-    template: `
+	selector: 'app-step-business-licence-consent-and-declaration',
+	template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -14,13 +14,12 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="mb-3" *ngIf="isControllingMembersWithoutSwlExist">
 							<app-alert type="warning" icon="warning">
 								<p>
-									After you submit your application, the application will remain on hold until we receive consent forms
-									from all controlling members.
+									After you submit your application, it will not proceed until we receive criminal record check consent
+									forms from all controlling members.
 								</p>
 								<p>
-									You will receive an email with further instructions once all controlling members have submitted their
-									criminal record check consent forms. You will be able to return to this application to pay the
-									security business licence fee.
+									You will receive an email with further instructions once all forms are received. You will be able to
+									return to this application to pay the security business licence fee.
 								</p>
 							</app-alert>
 						</div>
@@ -209,8 +208,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
@@ -220,7 +219,10 @@ export class StepBusinessLicenceConsentAndDeclarationComponent implements OnInit
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isControllingMembersWithoutSwlExist!: boolean;
 
-	constructor(private utilService: UtilService, private businessApplicationService: BusinessApplicationService) {}
+	constructor(
+		private utilService: UtilService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	ngOnInit(): void {
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
