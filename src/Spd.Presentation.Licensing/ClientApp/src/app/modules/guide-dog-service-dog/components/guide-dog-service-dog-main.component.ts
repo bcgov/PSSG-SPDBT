@@ -135,10 +135,6 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 			.createNewLicenceAuthenticated(ServiceTypeCode.GdsdTeamCertification)
 			.pipe(
 				tap((_resp: any) => {
-					// this.router.navigateByUrl(
-					// 	GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GUIDE_DOG_SERVICE_DOG),
-					// 	{ state: { applicationTypeCode: ApplicationTypeCode.New } }
-					// );
 					this.router.navigateByUrl(
 						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED)
 					);
@@ -156,7 +152,7 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 
 	onResume(appl: MainApplicationResponse): void {
 		this.gdsdApplicationService
-			.getGdsdToResume(appl.licenceAppId!) //'4aec1788-860c-4b8f-a7b1-0e52ead69cac')
+			.getGdsdToResume(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

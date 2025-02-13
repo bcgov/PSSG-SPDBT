@@ -217,12 +217,12 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						ServiceTypeCode.GdsdTeamCertification,
-						ApplicationTypeCode.New
+						this.applicationTypeCode
 					);
 					this.hotToastService.success(successMessage);
 
 					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 					);
 				},
 				error: (error: any) => {

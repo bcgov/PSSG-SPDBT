@@ -354,16 +354,31 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyGdsd(serviceTypeCode, ApplicationTypeCode.New).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					return this.createEmptyGdsdAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
-					ServiceTypeCode.GdsdTeamCertification,
-					ApplicationTypeCode.New
-				);
-			})
-		);
+							this.commonApplicationService.setApplicationTitle(
+								ServiceTypeCode.GdsdTeamCertification,
+								ApplicationTypeCode.New
+							);
+						})
+					);
+				})
+			);
+	}
+
+	private createEmptyGdsdAuthenticated(
+		applicantProfile: ApplicantProfileResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		this.reset();
+
+		return this.applyProfileIntoModel(applicantProfile, applicationTypeCode);
 	}
 
 	/**
@@ -372,9 +387,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		console.debug('[submitLicenceNewAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
-
 		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -387,7 +403,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	getGdsdToResume(licenceAppId: string): Observable<GdsdTeamLicenceAppResponse> {
-		return this.loadPartialLicenceWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -424,7 +440,49 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		practiceLogAttachments.setValue([]);
 	}
 
-	private loadPartialLicenceWithIdAuthenticated(licenceAppId: string): Observable<any> {
+	private applyProfileIntoModel(
+		applicantProfile: ApplicantProfileResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		this.reset();
+
+		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification }; // TODO GDSD hardcode for now
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode };
+
+		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
+		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		// }
+
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged,
+		};
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				serviceTypeData,
+				licenceTermCode: LicenceTermCode.TwoYears,
+				applicationTypeData,
+
+				personalInformationData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
+	}
+
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -695,13 +753,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		);
 
-		if (schoolTrainingsArray) {
+		if (schoolTrainingsArray && schoolTrainingsArray.length > 0) {
 			this.schoolTrainingAddArray(schoolTrainingsArray);
 		} else {
 			this.schoolTrainingRowAdd();
 		}
 
-		if (otherTrainingsArray) {
+		if (otherTrainingsArray && otherTrainingsArray.length > 0) {
 			this.otherTrainingAddArray(otherTrainingsArray);
 		} else {
 			this.otherTrainingRowAdd();

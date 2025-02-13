@@ -51,6 +51,10 @@ const routes: Routes = [
 				component: GdsdWizardNewComponent,
 			},
 			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
+				component: GdsdApplicationReceivedSuccessComponent,
+			},
+			{
 				path: '**',
 				redirectTo: GuideDogServiceDogRoutes.pathGdsdUserApplications(),
 				pathMatch: 'full',
