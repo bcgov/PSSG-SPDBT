@@ -23,7 +23,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
 					<ng-container *ngIf="isBusinessLicenceSoleProprietor">
 						<app-alert type="info" icon="" [showBorder]="false">
-							The name of your business must be your name, as it appears on your security worker licence.
+							If you are a Sole Proprietor, you must have a Security Worker Licence. Your business name must exactly
+							match the name you used on your Security Worker Licence.
 						</app-alert>
 					</ng-container>
 					<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
@@ -32,8 +33,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</div>
 				<div class="col-lg-6 col-md-12" *ngIf="!isSoleProprietorCombinedFlow">
 					<app-alert type="info" icon="" [showBorder]="false">
-						If you are unsure of your business type, check your
-						<a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a>.
+						Check your <a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a> if you
+						don’t know your business type.
 					</app-alert>
 				</div>
 
