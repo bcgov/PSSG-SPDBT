@@ -13,6 +13,7 @@ import { StepsGdsdTrainingInfoComponent } from './components/anonymous/steps-gds
 import { GdsdWizardAuthenticatedNewComponent } from './components/authenticated/gdsd-wizard-authenticated-new.component';
 import { GdsdActiveCertificationsComponent } from './components/gdsd-active-certifications.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
+import { GdsdApplicationsListCurrentComponent } from './components/gdsd-applications-list-current.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
@@ -73,6 +74,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GdsdSummarySchoolTrainingComponent,
 		GdsdSummaryOtherTrainingComponent,
 		GdsdWizardAuthenticatedNewComponent,
+		GdsdApplicationsListCurrentComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

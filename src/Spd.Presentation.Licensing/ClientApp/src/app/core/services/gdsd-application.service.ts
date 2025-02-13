@@ -17,7 +17,7 @@ import {
 	ServiceTypeCode,
 	TrainingSchoolInfo,
 } from '@app/api/models';
-import { GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
+import { GdsdLicensingService, LicenceAppDocumentService, LicenceAppService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -85,6 +85,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
+		private licenceAppService: LicenceAppService,
 		private gdsdLicensingService: GdsdLicensingService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
