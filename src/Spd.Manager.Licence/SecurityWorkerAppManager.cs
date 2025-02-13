@@ -178,11 +178,8 @@ internal class SecurityWorkerAppManager :
 
         //validation: check if original licence meet replacement condition.
         LicenceResp? originalLic = await _licenceRepository.GetAsync(request.OriginalLicenceId.Value, cancellationToken);
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
         if (originalLic == null)
             throw new ArgumentException("Cannot find the licence that needs to be renewed.");
-        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > originalLic.ExpiryDate)
-            throw new ArgumentException("The licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
