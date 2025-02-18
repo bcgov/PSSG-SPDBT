@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GdsdWizardAnonymousNewComponent } from './components/anonymous/gdsd-wizard-anonymous-new.component';
-import { GdsdWizardAuthenticatedNewComponent } from './components/authenticated/gdsd-wizard-authenticated-new.component';
-import { GdsdApplicationTypeAnonymousComponent } from './components/gdsd-application-type-anonymous.component';
+import { GdsdWizardNewComponent } from './components/gdsd-wizard-new.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
-import { GuideDogServiceDogMainComponent } from './components/guide-dog-service-dog-main.component';
-import { GdsdApplicationReceivedSuccessComponent } from './components/shared/gdsd-application-received-success.component';
+import { GuideDogServiceDogMainComponent } from './components/main/guide-dog-service-dog-main.component';
+import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
+import { GdsdApplicationTypeAnonymousComponent } from './components/shared/common-form-components/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogRoutes } from './guide-dog-service-dog-routes';
 
 const routes: Routes = [
@@ -28,7 +27,7 @@ const routes: Routes = [
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_ANONYMOUS,
-				component: GdsdWizardAnonymousNewComponent,
+				component: GdsdWizardNewComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
@@ -49,7 +48,11 @@ const routes: Routes = [
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED,
-				component: GdsdWizardAuthenticatedNewComponent,
+				component: GdsdWizardNewComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
+				component: GdsdApplicationReceivedSuccessComponent,
 			},
 			{
 				path: '**',

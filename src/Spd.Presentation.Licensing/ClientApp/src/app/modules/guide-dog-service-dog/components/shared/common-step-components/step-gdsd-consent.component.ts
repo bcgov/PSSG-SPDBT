@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
@@ -70,7 +70,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<div class="row mb-4">
+						<div class="row mb-4" *ngIf="displayCaptcha.value">
 							<div class="col-12">
 								<div formGroupName="captchaFormGroup">
 									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -158,5 +158,8 @@ export class StepGdsdConsentComponent implements LicenceChildStepperStepComponen
 
 	get captchaFormGroup(): FormGroup {
 		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }
