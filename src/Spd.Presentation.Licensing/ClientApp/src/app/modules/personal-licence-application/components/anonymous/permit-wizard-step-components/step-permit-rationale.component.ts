@@ -30,7 +30,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
 						<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
 						<div class="my-2">
-							These may include a police report related to a safety concern, a protection order, a news article
+							These may include a police report related to the safety concern, a protection order, a news article
 							addressing your concern, or similar documents.
 						</div>
 						<app-file-upload

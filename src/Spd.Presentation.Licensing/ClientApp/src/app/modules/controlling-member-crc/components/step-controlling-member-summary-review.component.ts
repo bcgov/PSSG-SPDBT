@@ -217,10 +217,14 @@ import { UtilService } from '@app/core/services/util.service';
 								<div class="text-minor-heading-small mt-4">Business Involvement</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
+										<div class="text-label d-block text-muted">Criminal Charges or Convictions</div>
 										<div class="summary-text-data">{{ hasCriminalHistory }}</div>
 									</div>
-									<div class="col-lg-8 col-md-12" *ngIf="criminalHistoryDetail">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Court Judgements</div>
+										<div class="summary-text-data">{{ hasCourtJudgement }}</div>
+									</div>
+									<div class="col-lg-12 col-md-12" *ngIf="showCriminalHistoryDetail">
 										<div class="text-label d-block text-muted">Criminal History Details</div>
 										<div class="summary-text-data">{{ criminalHistoryDetail }}</div>
 									</div>
@@ -402,10 +406,14 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	get hasCriminalHistory(): string {
 		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.hasCriminalHistory ?? '';
 	}
+	get hasCourtJudgement(): string {
+		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.hasCourtJudgement ?? '';
+	}
+	get showCriminalHistoryDetail(): boolean {
+		return this.hasCriminalHistory === BooleanTypeCode.Yes || this.hasCourtJudgement === BooleanTypeCode.Yes;
+	}
 	get criminalHistoryDetail(): File[] {
-		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
-			? (this.controllingMemberModelData.bcSecurityLicenceHistoryData.criminalHistoryDetail ?? '')
-			: '';
+		return this.controllingMemberModelData.bcSecurityLicenceHistoryData.criminalHistoryDetail ?? '';
 	}
 
 	get givenName(): string {
