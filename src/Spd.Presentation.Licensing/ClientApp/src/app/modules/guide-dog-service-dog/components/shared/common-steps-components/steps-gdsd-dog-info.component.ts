@@ -2,8 +2,8 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdDogInformationComponent } from '../shared/common-step-components/step-gdsd-dog-information.component';
-import { StepGdsdDogMedicalComponent } from '../shared/common-step-components/step-gdsd-dog-medical.component';
+import { StepGdsdDogInformationComponent } from '../common-step-components/step-gdsd-dog-information.component';
+import { StepGdsdDogMedicalComponent } from '../common-step-components/step-gdsd-dog-medical.component';
 
 @Component({
 	selector: 'app-steps-gdsd-dog-info',
