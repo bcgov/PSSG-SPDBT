@@ -701,6 +701,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		const bcSecurityLicenceHistoryData = {
 			hasCriminalHistory: this.utilService.booleanToBooleanType(crcAppl.hasCriminalHistory),
+			hasCourtJudgement: this.utilService.booleanToBooleanType(crcAppl.hasCourtJudgement),
 			criminalHistoryDetail: crcAppl.criminalHistoryDetail,
 			hasBankruptcyHistory: this.utilService.booleanToBooleanType(crcAppl.hasBankruptcyHistory),
 			bankruptcyHistoryDetail: crcAppl.bankruptcyHistoryDetail,

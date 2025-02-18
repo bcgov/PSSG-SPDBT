@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -44,8 +45,8 @@ import { OptionsPipe } from '../pipes/options.pipe';
 							<app-alert type="info" icon="info">
 								<p>
 									Upload a passport-quality photo of your face looking at the camera, with a plain, white background.
-									Submitting a photo that does not meet these requirements will delay your application’s processing
-									time.
+									This photo will be used for your {{ serviceTypeDesc }} if your application is approved. Submitting a
+									photo that does not meet these requirements will delay your application’s processing time.
 								</p>
 
 								Photo Guidelines:
@@ -87,14 +88,16 @@ import { OptionsPipe } from '../pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class FormPhotographOfYourselfUpdateComponent implements LicenceChildStepperStepComponent {
+export class FormPhotographOfYourselfUpdateComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
+	serviceTypeDesc = 'licence';
 
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() photographOfYourself: string | ArrayBuffer | null = null;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
@@ -102,6 +105,10 @@ export class FormPhotographOfYourselfUpdateComponent implements LicenceChildStep
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe) {}
+
+	ngOnInit(): void {
+		this.serviceTypeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes').toLowerCase();
+	}
 
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);
