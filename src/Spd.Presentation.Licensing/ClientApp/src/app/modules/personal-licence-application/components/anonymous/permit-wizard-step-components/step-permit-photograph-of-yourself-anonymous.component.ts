@@ -17,6 +17,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		<ng-template #isRenewOrUpdate>
 			<app-step-permit-photograph-of-yourself-renew-and-update
 				[form]="form"
+				[serviceTypeCode]="serviceTypeCode"
 			></app-step-permit-photograph-of-yourself-renew-and-update>
 		</ng-template>
 	`,

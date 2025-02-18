@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -10,6 +11,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<app-form-photograph-of-yourself-update
 				[form]="form"
 				label="licence"
+				[serviceTypeCode]="securityWorkerLicenceCode"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"
 				(fileUploaded)="onFileUploaded()"
@@ -26,6 +28,7 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	title = '';
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.workerApplicationService.photographOfYourself;
+	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 
 	@Input() form!: FormGroup;
 

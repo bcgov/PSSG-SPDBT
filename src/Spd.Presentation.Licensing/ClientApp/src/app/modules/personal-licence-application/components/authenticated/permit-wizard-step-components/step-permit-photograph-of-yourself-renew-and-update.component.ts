@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -10,6 +11,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-photograph-of-yourself-update
 				[form]="form"
 				label="permit"
+				[serviceTypeCode]="serviceTypeCode"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"
 				(fileUploaded)="onFileUploaded()"
@@ -26,6 +28,7 @@ export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements On
 	photographOfYourself = this.permitApplicationService.photographOfYourself;
 
 	@Input() form!: FormGroup;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
