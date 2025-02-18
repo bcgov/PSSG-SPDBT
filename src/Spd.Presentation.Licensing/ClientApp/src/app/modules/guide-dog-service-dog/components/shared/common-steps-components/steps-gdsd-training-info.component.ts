@@ -2,11 +2,11 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdAccreditedGraduationComponent } from './common-step-components/step-gdsd-accredited-graduation.component';
-import { StepGdsdDogTasksComponent } from './common-step-components/step-gdsd-dog-tasks.component';
-import { StepGdsdOtherTrainingsComponent } from './common-step-components/step-gdsd-other-trainings.component';
-import { StepGdsdSchoolTrainingsComponent } from './common-step-components/step-gdsd-school-trainings.component';
-import { StepGdsdTrainingHistoryComponent } from './common-step-components/step-gdsd-training-history.component';
+import { StepGdsdAccreditedGraduationComponent } from '../common-step-components/step-gdsd-accredited-graduation.component';
+import { StepGdsdDogTasksComponent } from '../common-step-components/step-gdsd-dog-tasks.component';
+import { StepGdsdOtherTrainingsComponent } from '../common-step-components/step-gdsd-other-trainings.component';
+import { StepGdsdSchoolTrainingsComponent } from '../common-step-components/step-gdsd-school-trainings.component';
+import { StepGdsdTrainingHistoryComponent } from '../common-step-components/step-gdsd-training-history.component';
 
 @Component({
 	selector: 'app-steps-gdsd-training-info',

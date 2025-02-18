@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } 
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdConsentComponent } from './common-step-components/step-gdsd-consent.component';
-import { StepGdsdSummaryComponent } from './common-step-components/step-gdsd-summary.component';
+import { StepGdsdConsentComponent } from '../common-step-components/step-gdsd-consent.component';
+import { StepGdsdSummaryComponent } from '../common-step-components/step-gdsd-summary.component';
 
 @Component({
 	selector: 'app-steps-gdsd-review-confirm',

@@ -14,11 +14,11 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { StepsGdsdDogInfoComponent } from './shared/steps-gdsd-dog-info.component';
-import { StepsGdsdPersonalInfoComponent } from './shared/steps-gdsd-personal-info.component';
-import { StepsGdsdReviewConfirmComponent } from './shared/steps-gdsd-review-confirm.component';
-import { StepsGdsdSelectionComponent } from './shared/steps-gdsd-selection.component';
-import { StepsGdsdTrainingInfoComponent } from './shared/steps-gdsd-training-info.component';
+import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/steps-gdsd-dog-info.component';
+import { StepsGdsdPersonalInfoComponent } from './shared/common-steps-components/steps-gdsd-personal-info.component';
+import { StepsGdsdReviewConfirmComponent } from './shared/common-steps-components/steps-gdsd-review-confirm.component';
+import { StepsGdsdSelectionComponent } from './shared/common-steps-components/steps-gdsd-selection.component';
+import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components/steps-gdsd-training-info.component';
 
 @Component({
 	selector: 'app-gdsd-wizard-new',

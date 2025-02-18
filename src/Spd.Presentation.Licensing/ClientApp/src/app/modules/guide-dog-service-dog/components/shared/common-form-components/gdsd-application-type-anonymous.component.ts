@@ -5,7 +5,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
+import { GuideDogServiceDogRoutes } from '../../../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-gdsd-application-type-anonymous',

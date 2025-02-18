@@ -10,7 +10,7 @@ import {
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { forkJoin, Observable, take, tap } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-guide-dog-service-dog-main',

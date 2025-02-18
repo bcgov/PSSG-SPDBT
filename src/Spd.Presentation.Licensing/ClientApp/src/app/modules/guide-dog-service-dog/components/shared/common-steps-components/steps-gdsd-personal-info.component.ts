@@ -2,12 +2,12 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdPersonalInfoAnonymousComponent } from '../anonymous/step-gdsd-personal-info-anonymous.component';
-import { StepGdsdPersonalInfoComponent } from '../authenticated/step-gdsd-personal-info.component';
-import { StepGdsdGovermentPhotoIdComponent } from './common-step-components/step-gdsd-goverment-photo-id.component';
-import { StepGdsdMailingAddressComponent } from './common-step-components/step-gdsd-mailing-address.component';
-import { StepGdsdMedicalInformationComponent } from './common-step-components/step-gdsd-medical-information.component';
-import { StepGdsdPhotographOfYourselfComponent } from './common-step-components/step-gdsd-photograph-of-yourself.component';
+import { StepGdsdPersonalInfoAnonymousComponent } from '../../anonymous/step-gdsd-personal-info-anonymous.component';
+import { StepGdsdPersonalInfoComponent } from '../../authenticated/step-gdsd-personal-info.component';
+import { StepGdsdGovermentPhotoIdComponent } from '../common-step-components/step-gdsd-goverment-photo-id.component';
+import { StepGdsdMailingAddressComponent } from '../common-step-components/step-gdsd-mailing-address.component';
+import { StepGdsdMedicalInformationComponent } from '../common-step-components/step-gdsd-medical-information.component';
+import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components/step-gdsd-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-steps-gdsd-personal-info',
