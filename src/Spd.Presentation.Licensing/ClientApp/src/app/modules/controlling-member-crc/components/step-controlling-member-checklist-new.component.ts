@@ -22,7 +22,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Proof of fingerprinting request</div>
+							<div class="checklist-label">Proof of fingerprinting</div>
 							<p class="checklist-info">
 								All applicants who reside in Canada must have their fingerprints taken and submit proof of
 								fingerprinting. Download the
