@@ -20,8 +20,8 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
 			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			hasCourtJudgement: new FormControl('', [FormControlValidators.required]),
 			criminalHistoryDetail: new FormControl(''),
-			hasCourtJudgement: new FormControl(''),
 			hasBankruptcyHistory: new FormControl(''),
 			bankruptcyHistoryDetail: new FormControl(''),
 		},
@@ -29,11 +29,9 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'criminalHistoryDetail',
-					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'hasCourtJudgement',
-					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
+					(form) =>
+						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes ||
+						form.get('hasCourtJudgement')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'hasBankruptcyHistory',
@@ -238,13 +236,14 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
+			hasCriminalHistory,
 			hasCourtJudgement,
 			hasBankruptcyHistory,
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
-			hasCriminalHistory,
 			hasNewCriminalRecordCharge,
-			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
+			criminalHistoryDetail:
+				hasCriminalHistory || hasCourtJudgement ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC,
 			hasNewMentalHealthCondition,

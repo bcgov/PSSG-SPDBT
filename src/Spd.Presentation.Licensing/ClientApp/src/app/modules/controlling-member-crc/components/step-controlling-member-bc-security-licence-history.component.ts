@@ -40,30 +40,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				</div>
 
 				<div class="row">
-					<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
-						<div class="mt-2" *ngIf="hasCriminalHistory.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-							<mat-form-field
-								><mat-label>
-									<ng-container *ngIf="isYesAndNew; else yesAndUpdateLabel">Provide Details</ng-container>
-									<ng-template #yesAndUpdateLabel>Brief Description of New Charges or Convictions</ng-template>
-								</mat-label>
-								<textarea
-									matInput
-									formControlName="criminalHistoryDetail"
-									style="min-height: 100px"
-									[errorStateMatcher]="matcher"
-									maxlength="250"
-								></textarea>
-								<mat-hint>Maximum 250 characters</mat-hint>
-								<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
-									This is required
-								</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
-
-				<div class="row">
 					<div class="col-md-8 col-sm-12 mx-auto">
 						<div class="fs-6 text-center mt-3">{{ subtitle2 }}</div>
 					</div>
@@ -86,6 +62,30 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							"
 							>This is required</mat-error
 						>
+					</div>
+				</div>
+
+				<div class="row" *ngIf="showCriminalHistoryDetails" @showHideTriggerSlideAnimation>
+					<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
+						<div class="mt-2">
+							<mat-form-field
+								><mat-label>
+									<ng-container *ngIf="isYesAndNew; else yesAndUpdateLabel">Provide Details</ng-container>
+									<ng-template #yesAndUpdateLabel>Brief Description of New Charges or Convictions</ng-template>
+								</mat-label>
+								<textarea
+									matInput
+									formControlName="criminalHistoryDetail"
+									style="min-height: 100px"
+									[errorStateMatcher]="matcher"
+									maxlength="250"
+								></textarea>
+								<mat-hint>Maximum 250 characters</mat-hint>
+								<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
+									This is required
+								</mat-error>
+							</mat-form-field>
+						</div>
 					</div>
 				</div>
 
@@ -186,20 +186,23 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent
 	get hasCriminalHistory(): FormControl {
 		return this.form.get('hasCriminalHistory') as FormControl;
 	}
-
+	get hasCourtJudgement(): FormControl {
+		return this.form.get('hasCourtJudgement') as FormControl;
+	}
 	get hasBankruptcyHistory(): FormControl {
 		return this.form.get('hasBankruptcyHistory') as FormControl;
 	}
-
+	get showCriminalHistoryDetails(): boolean {
+		return (
+			this.hasCriminalHistory.value === BooleanTypeCode.Yes || this.hasCourtJudgement.value === BooleanTypeCode.Yes
+		);
+	}
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 	get isYesAndNew(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.New && this.hasCriminalHistory.value === BooleanTypeCode.Yes
-		);
+		return this.applicationTypeCode === ApplicationTypeCode.New && this.showCriminalHistoryDetails;
 	}
-
 	get isUpdate(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
