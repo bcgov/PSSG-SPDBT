@@ -15,7 +15,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="row">
 					<div class="col-md-8 col-sm-12 mx-auto">
 						<div class="fw-semibold fs-6 text-center mt-3">Criminal Charges, Convictions, or Lawsuits</div>
-						<div class="fs-6 text-center mt-3">{{ subtitle }}</div>
+						<div class="fs-6 text-center mt-3">{{ subtitle1 }}</div>
 					</div>
 				</div>
 
@@ -60,6 +60,32 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-error>
 							</mat-form-field>
 						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-8 col-sm-12 mx-auto">
+						<div class="fs-6 text-center mt-3">{{ subtitle2 }}</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<mat-radio-group aria-label="Select an option" formControlName="hasCourtJudgement">
+							<div class="d-flex justify-content-start">
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</div>
+						</mat-radio-group>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('hasCourtJudgement')?.dirty || form.get('hasCourtJudgement')?.touched) &&
+								form.get('hasCourtJudgement')?.invalid &&
+								form.get('hasCourtJudgement')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
 				</div>
 
@@ -130,7 +156,8 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
 	title = '';
-	subtitle = '';
+	subtitle1 = '';
+	subtitle2 = '';
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -143,9 +170,12 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent
 
 	ngOnInit(): void {
 		this.title = this.isUpdate ? 'Confirm your business involvement' : 'Describe your business involvement';
-		this.subtitle = this.isUpdate
+		this.subtitle1 = this.isUpdate
 			? 'Do you have any new criminal charges or convictions to declare?'
 			: 'Have you or your business previously been charged or convicted of a criminal offence?';
+		this.subtitle2 = this.isUpdate
+			? 'Do you have any new court judgements in relation to a lawsuit to declare?'
+			: 'Have you or your business ever received a court judgement in relation to a lawsuit?';
 	}
 
 	isFormValid(): boolean {
