@@ -21,7 +21,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="row">
 							<div class="col-xl-8 col-lg-8 col-md-10 col-sm-12 mx-auto">
-								<div class="fw-bold mb-3">Use your BC Services Card Login:</div>
+								<div class="fw-bold mb-3">Use your BC Services Card account:</div>
 								<table>
 									<tr>
 										<td><mat-icon class="icon me-2">circle</mat-icon></td>
@@ -47,7 +47,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										[href]="setupAccountUrl"
 										target="_blank"
 									>
-										Learn how to set up the BC Services Card Login
+										Learn how to set up a BC Services Card account
 									</a>
 								</div>
 							</div>
@@ -144,12 +144,12 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
-										If you cannot obtain a BC Services Card, please
+										If you cannot set up a BC Services Card account, please
 										<a
 											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
 											target="_blank"
-											>contact our office</a
-										>.
+											>contact us</a
+										>
 									</div>
 								</div>
 							</div>
@@ -176,12 +176,12 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
-										If you cannot obtain a BC Services Card, please
+										If you cannot set up a BC Services Card account, please
 										<a
 											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
 											target="_blank"
-											>contact our office</a
-										>.
+											>contact us</a
+										>
 									</div>
 								</div>
 							</div>
