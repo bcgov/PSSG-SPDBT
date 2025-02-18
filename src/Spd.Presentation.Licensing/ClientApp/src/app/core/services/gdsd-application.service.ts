@@ -353,7 +353,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	createNewLicenceAuthenticated(_serviceTypeCode: ServiceTypeCode): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
