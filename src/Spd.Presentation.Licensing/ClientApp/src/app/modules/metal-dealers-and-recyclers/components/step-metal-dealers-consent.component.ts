@@ -15,15 +15,15 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 									I HEREBY CERTIFY THAT I have read and understand all portions of this application form. The
 									information set out by me in this application is true and correct to the best of my knowledge and
-									belief. I have read and understand the Metal Dealers and Recyclers Act and Regulations and I am aware
-									of and understand the
+									belief. I have read and understand the Metal Dealers and Recyclers Act and Regulations. I am aware of
+									and understand the terms and conditions attached to every registration under the Act, as well as the
 									<a
 										aria-label="Navigate to Terms and Conditions site"
 										href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/00_11022_01#section11"
 										target="_blank"
 										>terms and conditions</a
 									>
-									of registration and the conditions that may be placed on me as a registered business under the Act.
+									that may be placed on my business’ registration under the Act.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -40,7 +40,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="row">
 							<div class="col-12 mt-3">
 								<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
-									Declaration & Sign Off
+									I certify that, to the best of my knowledge, the information I have provided and will provide as
+									necessary is complete and accurate.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -83,7 +84,19 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
+						<app-alert type="success" icon="">
+							COLLECTION NOTICE: All information regarding this application is collected under the Metal Dealers and
+							Recyclers Act and its Regulation and will be used for that purpose. The use and disclosure of this
+							information will comply with the Freedom of Information and Protection of Privacy Act and the Federal
+							Privacy Act, as applicable. If you have any questions regarding the collection, use or disclosure of this
+							information, please contact
+							<a
+								aria-label="Send email to SPD Compliance"
+								href="mailto:SPDCompliance@gov.bc.ca"
+								class="email-address-link"
+								>SPDCompliance&#64;gov.bc.ca</a
+							>.
+						</app-alert>
 					</div>
 				</div>
 			</form>
