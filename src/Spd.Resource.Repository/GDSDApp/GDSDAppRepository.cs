@@ -28,6 +28,20 @@ internal class GDSDAppRepository : IGDSDAppRepository
             app = PrepareNewAppDataInDbContext(cmd);
             _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
         }
+        else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
+        {
+            app = _mapper.Map<spd_application>(cmd);
+            _context.AddTospd_applications(app);
+            contact = UpdateContact(cmd, (Guid)cmd.ApplicantId);
+            if (contact != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            }
+            SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
+            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+            SharedRepositoryFuncs.LinkDog(_context, cmd.DogInfoRenew?.DogId, app);
+        }
         await _context.SaveChangesAsync(ct);
         if (app == null || contact == null)
             throw new ApiException(HttpStatusCode.InternalServerError);
@@ -109,7 +123,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
     private spd_application PrepareNewAppDataInDbContext(GDSDApp appData)
     {
         var app = _mapper.Map<spd_application>(appData);
-        if (appData.IsDogTrainedByAccreditedSchool.Value)
+        if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             //accredited school
             _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(appData.DogInfoNewAccreditedSchool, app);
@@ -181,7 +195,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
         _mapper.Map<GDSDApp, spd_application>(appData, app);
         _context.UpdateObject(app);
 
-        if (appData.IsDogTrainedByAccreditedSchool.Value)
+        if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             //accredited school
             _mapper.Map<DogInfoNewAccreditedSchool, spd_application>(appData.DogInfoNewAccreditedSchool, app);
