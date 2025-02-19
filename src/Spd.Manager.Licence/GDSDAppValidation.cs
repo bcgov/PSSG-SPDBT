@@ -15,6 +15,15 @@ public class GDSDTeamLicenceAppAnonymousSubmitRequestValidator : GDSDTeamLicence
 {
 }
 
+public class GDSDTeamLicenceAppChangeRequestValidator : GDSDTeamLicenceAppBaseValidator<GDSDTeamLicenceAppChangeRequest>
+{
+    public GDSDTeamLicenceAppChangeRequestValidator()
+    {
+        RuleFor(r => r.ApplicantId).NotEmpty();
+        RuleFor(r => r.OriginalLicenceId).NotEmpty();
+    }
+}
+
 public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T : GDSDTeamLicenceAppBase
 {
     public GDSDTeamLicenceAppBaseValidator()
@@ -28,7 +37,7 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.PhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.EmailAddress).EmailAddress().MaximumLength(75).When(r => r.EmailAddress != null);
         RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty();
-        RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull();
+        RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull().When(r => r.ApplicationTypeCode == ApplicationTypeCode.New);
 
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
@@ -36,23 +45,28 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
             .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.DogInfoNewAccreditedSchool)
             .SetValidator(new DogInfoNewAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewAccreditedSchool != null);
+            .When(r => r.DogInfoNewAccreditedSchool != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
         RuleFor(r => r.GraduationInfo).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null
+            && r.IsDogTrainedByAccreditedSchool.Value
+            && r.ApplicationTypeCode == ApplicationTypeCode.New);
         RuleFor(r => r.GraduationInfo)
             .SetValidator(new GraduationInfoValidator())
-            .When(r => r.GraduationInfo != null && r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
+            .When(r => r.GraduationInfo != null
+                && r.IsDogTrainedByAccreditedSchool != null
+                && r.IsDogTrainedByAccreditedSchool.Value
+                && r.ApplicationTypeCode == ApplicationTypeCode.New);
 
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool).NotEmpty()
             .When(r => r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.DogInfoNewWithoutAccreditedSchool)
             .SetValidator(new DogInfoNewWithoutAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value);
+            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value && r.ApplicationTypeCode == ApplicationTypeCode.New);
         RuleFor(r => r.TrainingInfo).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value);
+            .When(r => r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value && r.ApplicationTypeCode == ApplicationTypeCode.New);
         RuleFor(r => r.TrainingInfo)
             .SetValidator(new TrainingInfoValidator())
-            .When(r => r.TrainingInfo != null);
+            .When(r => r.TrainingInfo != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
 
         RuleFor(r => r.DogInfoRenew).NotEmpty()
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal);
@@ -99,7 +113,7 @@ public class DogInfoRenewValidator : AbstractValidator<DogInfoRenew>
 {
     public DogInfoRenewValidator()
     {
-        RuleFor(r => r.CurrentDogCertificate).NotEmpty().MaximumLength(15);
+        RuleFor(r => r.DogId).NotEmpty();
     }
 }
 

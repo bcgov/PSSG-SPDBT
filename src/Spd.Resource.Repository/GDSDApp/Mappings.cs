@@ -63,9 +63,6 @@ internal class Mappings : Profile
         .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)));
 
         _ = CreateMap<DogInfoRenew, spd_application>()
-        .ForMember(d => d.spd_dogname, opt => opt.MapFrom(s => s.DogName))
-        // .ForMember(d => d.spd_do, opt => opt.MapFrom(s => s.IsAssistanceStillRequired))
-        //.ForMember(d => d.spd_do, opt => opt.MapFrom(s => s.CurrentDogCertificate))
         .ReverseMap();
 
         _ = CreateMap<DogInfoNewAccreditedSchool, spd_application>()

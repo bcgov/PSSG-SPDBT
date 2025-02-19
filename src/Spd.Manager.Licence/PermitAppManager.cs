@@ -169,12 +169,9 @@ internal class PermitAppManager :
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        LicenceResp originalLic = originalLicences.Items.First();
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
         DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
