@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import {
 	CommonApplicationService,
 	MainApplicationResponse,
@@ -9,11 +9,11 @@ import {
 } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { UtilService } from '@app/core/services/util.service';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { forkJoin, Observable, take, tap } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 
 @Component({
-	selector: 'app-guide-dog-service-dog-main',
+	selector: 'app-gdsd-licence-main',
 	template: `
 		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
@@ -38,21 +38,20 @@ import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 						</app-alert>
 					</ng-container>
 
-					<app-gdsd-applications-list-current
+					<app-gdsd-licence-main-applications-list
 						[applicationsDataSource]="applicationsDataSource"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
-					></app-gdsd-applications-list-current>
+					></app-gdsd-licence-main-applications-list>
 
-					<!-- // TODO licences <app-licence-active-gdsd-licences
-						[activeLicences]="activeLicences"
+					<app-gdsd-licence-main-licences-list
+						[activeLicences]="activeLicencesList"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(replaceLicence)="onReplace($event)"
-						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenew($event)"
-					></app-licence-active-gdsd-licences> -->
+					></app-gdsd-licence-main-licences-list>
 
-					<!-- // TODO retired <div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdRetiredExist">
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdRetiredExist">
 						<div class="row">
 							<div class="col-xl-6 col-lg-6">
 								<div class="text-data">You don't have an active retired service dog certification.</div>
@@ -70,9 +69,12 @@ import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 								</button>
 							</div>
 						</div>
-					</div> -->
+					</div>
 
-					<app-licence-list-expired [expiredLicences]="expiredLicences"></app-licence-list-expired>
+					<app-form-licence-list-expired
+						title="Expired Licences"
+						[expiredLicences]="expiredLicencesList"
+					></app-form-licence-list-expired>
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdTeamExist">
 						<div class="row">
@@ -98,15 +100,15 @@ import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 	styles: [],
 	standalone: false,
 })
-export class GuideDogServiceDogMainComponent implements OnInit {
+export class GdsdLicenceMainComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
 
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	activeLicences: Array<MainLicenceResponse> = [];
-	expiredLicences: Array<MainLicenceResponse> = [];
+	activeLicencesList: Array<MainLicenceResponse> = [];
+	expiredLicencesList: Array<MainLicenceResponse> = [];
 
 	activeGdsdRetiredExist = false;
 	activeGdsdTeamExist = false;
@@ -145,9 +147,9 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 	}
 
 	onNewRetiredServiceDog(): void {
-		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
-		);
+		// this.router.navigateByUrl(
+		// 	GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
+		// );
 	}
 
 	onResume(appl: MainApplicationResponse): void {
@@ -162,6 +164,56 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 				take(1)
 			)
 			.subscribe();
+	}
+
+	onRenew(licence: MainLicenceResponse): void {
+		// switch (licence.serviceTypeCode) {
+		// 	case ServiceTypeCode.GdsdTeamCertification: {
+		this.gdsdApplicationService
+			.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+							GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_AUTHENTICATED
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+		// 	break;
+		// }
+		// case ServiceTypeCode.RetiredServiceDogCertification:
+		// case ServiceTypeCode.DogTrainerCertification: {
+		// 	// TODO renewal
+		// }
+		// }
+	}
+
+	onReplace(licence: MainLicenceResponse): void {
+		// switch (licence.serviceTypeCode) {
+		// case ServiceTypeCode.GdsdTeamCertification: {
+		this.gdsdApplicationService
+			.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+							GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+		// break;
+		// }
+		// case ServiceTypeCode.RetiredServiceDogCertification:
+		// case ServiceTypeCode.DogTrainerCertification: {
+		// 	// TODO replace
+		// }
+		// }
 	}
 
 	private loadData(): void {
@@ -181,7 +233,7 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 				const activeLicencesList = userGdsdLicencesList.filter((item: MainLicenceResponse) =>
 					this.utilService.isLicenceActive(item.licenceStatusCode)
 				);
-				const expiredLicences = userGdsdLicencesList.filter(
+				const expiredLicencesList = userGdsdLicencesList.filter(
 					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
 				);
 				// Set flags that determine if NEW licence can be created
@@ -201,8 +253,8 @@ export class GuideDogServiceDogMainComponent implements OnInit {
 						userGdsdApplicationsList,
 						activeLicencesList
 					);
-				this.activeLicences = activeLicencesList;
-				this.expiredLicences = expiredLicences;
+				this.activeLicencesList = activeLicencesList;
+				this.expiredLicencesList = expiredLicencesList;
 			})
 		);
 	}

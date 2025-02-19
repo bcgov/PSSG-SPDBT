@@ -99,7 +99,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						</ng-container>
 					</div>
 
-					<app-business-applications-list-current
+					<app-business-licence-main-applications-list
 						[applicationsDataSource]="applicationsDataSource"
 						[isControllingMemberWarning]="isControllingMemberWarning"
 						[isSoleProprietor]="isSoleProprietor"
@@ -107,16 +107,16 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onDelete($event)"
 						(manageMembersAndEmployees)="onManageMembersAndEmployees()"
-					></app-business-applications-list-current>
+					></app-business-licence-main-applications-list>
 
-					<app-business-licence-list-current
+					<app-business-licence-main-licence-list
 						[activeLicences]="activeLicencesList"
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenewal($event)"
-					></app-business-licence-list-current>
+					></app-business-licence-main-licence-list>
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
@@ -135,7 +135,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						</div>
 					</div>
 
-					<app-licence-list-expired [expiredLicences]="expiredLicencesList"></app-licence-list-expired>
+					<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
 				</div>
 			</div>
 		</section>
