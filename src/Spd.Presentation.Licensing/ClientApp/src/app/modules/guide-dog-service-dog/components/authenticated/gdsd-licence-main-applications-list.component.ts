@@ -80,17 +80,6 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 								</button>
 
 								<button
-									mat-flat-button
-									color="primary"
-									class="large w-auto"
-									aria-label="Pay for application now"
-									(click)="onPayNow(application)"
-									*ngIf="isPaymentPending(application)"
-								>
-									<mat-icon>payment</mat-icon>Pay Now
-								</button>
-
-								<button
 									mat-stroked-button
 									color="primary"
 									class="large w-auto"
@@ -165,7 +154,6 @@ export class GdsdLicenceMainApplicationsListComponent {
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
-	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -189,10 +177,6 @@ export class GdsdLicenceMainApplicationsListComponent {
 		this.resumeApplication.emit(appl);
 	}
 
-	onPayNow(appl: MainApplicationResponse): void {
-		this.payApplication.emit(appl);
-	}
-
 	isNewDraft(appl: MainApplicationResponse): boolean {
 		return (
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
@@ -213,9 +197,5 @@ export class GdsdLicenceMainApplicationsListComponent {
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
 			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 		);
-	}
-
-	isPaymentPending(appl: MainApplicationResponse): boolean {
-		return appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment;
 	}
 }

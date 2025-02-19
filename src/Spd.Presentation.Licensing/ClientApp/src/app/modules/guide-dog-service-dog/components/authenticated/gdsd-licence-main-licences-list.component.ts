@@ -42,25 +42,19 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 							<mat-divider class="my-2"></mat-divider>
 						</div>
 
-						<div class="row mb-2">
-							<div class="col-lg-4">
-								<div class="d-block text-muted mt-2 mt-lg-0">Label</div>
-								<div class="text-data">Data</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="d-block text-muted mt-2 mt-lg-0">Label</div>
-								<div class="text-data">Data</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="d-block text-muted mt-2 mt-lg-0">Label</div>
-								<div class="text-data">Data</div>
-							</div>
-						</div>
-						<mat-divider class="my-2"></mat-divider>
-						<div class="row mb-2">
-							<div class="col-lg-9">
-								<div class="d-block text-muted mt-2 mt-lg-0">Label</div>
-								<div class="text-data">Data</div>
+						<div class="row mt-2">
+							<div class="col-lg-9 mt-0 mt-lg-4">
+								<span class="fw-semibold">Lost your licence? </span>
+								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
+								<a
+									*ngIf="!applicationIsInProgress"
+									class="large"
+									tabindex="0"
+									aria-label="Request a gdsd licence replacement"
+									(click)="onRequestReplacement(licence)"
+									(keydown)="onKeydownRequestReplacement($event, licence)"
+									>Request a replacement</a
+								>
 							</div>
 
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -75,23 +69,6 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									<mat-icon>restore</mat-icon>Renew
 								</button>
 							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-12">
-							<mat-divider class="my-2"></mat-divider>
-							<span class="fw-semibold">Lost your licence? </span>
-							<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-							<a
-								*ngIf="!applicationIsInProgress"
-								class="large"
-								tabindex="0"
-								aria-label="Request a gdsd licence replacement"
-								(click)="onRequestReplacement(licence)"
-								(keydown)="onKeydownRequestReplacement($event, licence)"
-								>Request a replacement</a
-							>
 						</div>
 					</div>
 				</div>
