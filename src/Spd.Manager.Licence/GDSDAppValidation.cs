@@ -37,10 +37,17 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.PhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.EmailAddress).EmailAddress().MaximumLength(75).When(r => r.EmailAddress != null);
         RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty();
-        RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull().When(r => r.ApplicationTypeCode == ApplicationTypeCode.New);
-
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
+    }
+}
+
+public class GDSDTeamLicenceAppNewValidator<T> : AbstractValidator<T> where T : GDSDTeamLicenceAppNew
+{
+    public GDSDTeamLicenceAppNewValidator()
+    {
+        Include(new GDSDTeamLicenceAppBaseValidator<T>());
+        RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull().When(r => r.ApplicationTypeCode == ApplicationTypeCode.New);
         RuleFor(r => r.DogInfoNewAccreditedSchool).NotEmpty()
             .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
         RuleFor(r => r.DogInfoNewAccreditedSchool)
@@ -67,16 +74,8 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.TrainingInfo)
             .SetValidator(new TrainingInfoValidator())
             .When(r => r.TrainingInfo != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
-
-        RuleFor(r => r.DogInfoRenew).NotEmpty()
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal);
-        RuleFor(r => r.DogInfoRenew)
-            .SetValidator(new DogInfoRenewValidator())
-            .When(r => r.DogInfoRenew != null);
-
     }
 }
-
 public class DogInfoNewValidator : AbstractValidator<DogInfoNew>
 {
     public DogInfoNewValidator()

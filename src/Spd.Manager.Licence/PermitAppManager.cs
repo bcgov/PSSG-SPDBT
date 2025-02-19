@@ -180,7 +180,6 @@ internal class PermitAppManager :
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
-            cmd.LicenceAnonymousRequest.OriginalApplicationId,
             cmd.LicenceAnonymousRequest.PreviousDocumentIds,
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
