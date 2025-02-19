@@ -140,29 +140,6 @@ namespace Spd.Presentation.Licensing.Controllers
         #region anonymous
 
         /// <summary>
-        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/gdsd-team-app")]
-        [HttpGet]
-        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamAppAnonymous()
-        {
-            return null;
-            //string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
-            //string? licenceAppId;
-            //try
-            //{
-            //    licenceAppId = licenceIdsStr.Split("*")[1];
-            //}
-            //catch
-            //{
-            //    throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
-            //}
-
-            //return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
-        }
-
-        /// <summary>
         /// Submit GDSD Team Certification application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
@@ -195,7 +172,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //    response = await _mediator.Send(command, ct);
             //}
 
-            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Replace)
             //{
             //    PermitAppUpdateCommand command = new(anonymousSubmitRequest, newDocInfos);
             //    response = await _mediator.Send(command, ct);
