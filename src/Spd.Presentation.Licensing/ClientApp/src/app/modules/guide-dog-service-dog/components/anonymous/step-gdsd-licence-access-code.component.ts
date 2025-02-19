@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-access-code-anonymous.component';
 
 @Component({
-	selector: 'app-step-worker-licence-access-code',
+	selector: 'app-step-gdsd-licence-access-code',
 	template: `
 		<app-step-section
 			title="Provide your access code"
@@ -37,10 +37,10 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 	styles: [],
 	standalone: false,
 })
-export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepGdsdLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.workerApplicationService.accessCodeFormGroup;
+	form: FormGroup = this.gdsdApplicationService.accessCodeFormGroup;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -50,15 +50,13 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 
 	constructor(
 		private router: Router,
-		private workerApplicationService: WorkerApplicationService,
+		private gdsdApplicationService: GdsdApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.serviceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
-			'serviceTypeData.serviceTypeCode'
-		)?.value;
-		this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
+		this.serviceTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get('serviceTypeData.serviceTypeCode')?.value;
+		this.applicationTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
@@ -83,7 +81,7 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 	}
 
 	onLinkSuccess(linkLicence: LicenceResponse): void {
-		this.workerApplicationService
+		this.gdsdApplicationService
 			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.serviceTypeCode) {
@@ -101,14 +99,6 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 								this.router.navigateByUrl(
 									PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
 										PersonalLicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-									)
-								);
-								break;
-							}
-							case ApplicationTypeCode.Update: {
-								this.router.navigateByUrl(
-									PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-										PersonalLicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
 									)
 								);
 								break;

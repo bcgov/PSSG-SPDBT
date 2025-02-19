@@ -96,7 +96,7 @@ export class StepGdsdPersonalInfoComponent implements OnInit, LicenceChildSteppe
 	matcher = new FormErrorStateMatcher();
 
 	// @Input() isReadonly = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	form: FormGroup = this.gdsdApplicationService.gdsdPersonalInformationFormGroup;
 

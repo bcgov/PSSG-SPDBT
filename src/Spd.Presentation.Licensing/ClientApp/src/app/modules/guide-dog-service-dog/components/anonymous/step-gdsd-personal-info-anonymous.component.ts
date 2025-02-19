@@ -103,7 +103,7 @@ export class StepGdsdPersonalInfoAnonymousComponent implements OnInit, LicenceCh
 
 	form: FormGroup = this.gdsdApplicationService.gdsdPersonalInformationFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,

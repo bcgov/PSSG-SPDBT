@@ -109,7 +109,9 @@ export class GdsdApplicationTypeAnonymousComponent implements OnInit {
 			}
 			case ApplicationTypeCode.Replacement:
 			case ApplicationTypeCode.Renewal: {
-				// TODO gdsd replace, renew
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_ACCESS_CODE_ANONYMOUS)
+				);
 				break;
 			}
 		}

@@ -6,7 +6,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -18,10 +17,9 @@ import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/step
 import { StepsGdsdPersonalInfoComponent } from './shared/common-steps-components/steps-gdsd-personal-info.component';
 import { StepsGdsdReviewConfirmComponent } from './shared/common-steps-components/steps-gdsd-review-confirm.component';
 import { StepsGdsdSelectionComponent } from './shared/common-steps-components/steps-gdsd-selection.component';
-import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components/steps-gdsd-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-new',
+	selector: 'app-gdsd-wizard-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -47,12 +45,11 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-gdsd-personal-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[isTrainedByAccreditedSchools]="false"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -64,12 +61,11 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-gdsd-dog-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[isTrainedByAccreditedSchools]="false"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -77,37 +73,17 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 				></app-steps-gdsd-dog-info>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete">
-				<ng-template matStepLabel>Training Information</ng-template>
-				<app-steps-gdsd-training-info
-					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
-					[isServiceDog]="isServiceDog"
-					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-gdsd-training-info>
-			</mat-step>
-
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
-					[isServiceDog]="isServiceDog"
+					[isTrainedByAccreditedSchools]="false"
+					[hasAttendedTrainingSchool]="false"
+					[isServiceDog]="false"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmit()"
@@ -124,18 +100,16 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
-	readonly STEP_TRAINING_INFO = 3;
-	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_SUBMIT = 5;
+	readonly STEP_REVIEW_AND_CONFIRM = 3;
+	readonly STEP_SUBMIT = 4;
 
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
-	step4Complete = false;
 
 	isLoggedIn = false;
 	licenceAppId: string | null = null;
@@ -149,18 +123,12 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	@ViewChild(StepsGdsdDogInfoComponent)
 	stepsDogInfo!: StepsGdsdDogInfoComponent;
 
-	@ViewChild(StepsGdsdTrainingInfoComponent)
-	stepsTrainingInfo!: StepsGdsdTrainingInfoComponent;
-
 	@ViewChild(StepsGdsdReviewConfirmComponent)
 	stepsReviewConfirm!: StepsGdsdReviewConfirmComponent;
 
 	isFormValid = false;
-	isTrainedByAccreditedSchools = false;
-	hasAttendedTrainingSchool = false;
-	isServiceDog = false;
 
-	readonly applicationTypeCode = ApplicationTypeCode.New;
+	readonly applicationTypeCode = ApplicationTypeCode.Renewal;
 
 	private gdsdModelChangedSubscription!: Subscription;
 
@@ -190,18 +158,6 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
-
-			this.isServiceDog =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
-
-			this.isTrainedByAccreditedSchools =
-				this.gdsdApplicationService.gdsdModelFormGroup.get(
-					'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
-				)?.value === BooleanTypeCode.Yes;
-
-			this.hasAttendedTrainingSchool =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
-				BooleanTypeCode.Yes;
 
 			this.updateCompleteStatus();
 		});
@@ -262,9 +218,6 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToFirstStep();
 				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToFirstStep();
-				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewConfirm?.onGoToFirstStep();
 				break;
@@ -286,57 +239,12 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToLastStep();
 				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToLastStep();
-				break;
 		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					if (stepper?.selected) stepper.selected.completed = true;
-					stepper.next();
-
-					switch (stepper.selectedIndex) {
-						case this.STEP_SELECTION:
-							this.stepsSelection?.onGoToFirstStep();
-							break;
-						case this.STEP_PERSONAL_INFO:
-							this.stepsPersonalInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_DOG_INFO:
-							this.stepsDogInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_TRAINING_INFO:
-							this.stepsTrainingInfo?.onGoToFirstStep();
-							break;
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else {
-			if (stepper?.selected) stepper.selected.completed = true;
-			stepper.next();
-		}
-	}
-
-	onSaveAndExit(): void {
-		if (!this.gdsdApplicationService.isSaveAndExit()) {
-			return;
-		}
-
-		this.gdsdApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
-			next: (_resp: any) => {
-				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
-			},
-		});
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
 	}
 
 	onGoToReview() {
@@ -361,24 +269,12 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 		this.stepsSelection?.onGoToFirstStep();
 		this.stepsPersonalInfo?.onGoToFirstStep();
 		this.stepsDogInfo?.onGoToFirstStep();
-		this.stepsTrainingInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
 	onChildNextStep() {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.goToChildNextStep();
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else {
-			this.goToChildNextStep();
-		}
+		this.goToChildNextStep();
 	}
 
 	private handlePartialSaveError(_error: HttpErrorResponse): void {
@@ -396,9 +292,6 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToNextStep();
 				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToNextStep();
-				break;
 		}
 	}
 
@@ -406,8 +299,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 		this.step1Complete = this.gdsdApplicationService.isStepSelectionComplete();
 		this.step2Complete = this.gdsdApplicationService.isStepPersonalInformationComplete();
 		this.step3Complete = this.gdsdApplicationService.isStepDogInformationComplete();
-		this.step4Complete = this.gdsdApplicationService.isStepTrainingInformationComplete();
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 }

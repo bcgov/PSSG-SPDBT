@@ -4,7 +4,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-panel-simple',
+    selector: 'app-form-licence-category-panel-simple',
     template: `
 		<div class="row">
 			<div class="col-md-12 col-sm-12" [ngClass]="blockCategory ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'">
@@ -56,7 +56,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
     styles: [],
     standalone: false
 })
-export class LicenceCategoryPanelSimpleComponent implements OnInit {
+export class FormLicenceCategoryPanelSimpleComponent implements OnInit {
 	form = this.workerApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	title = '';
 

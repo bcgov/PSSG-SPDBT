@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@app/shared/shared.module';
+import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
 import { StepGdsdPersonalInfoAnonymousComponent } from './components/anonymous/step-gdsd-personal-info-anonymous.component';
+import { GdsdLicenceMainApplicationsListComponent } from './components/authenticated/gdsd-licence-main-applications-list.component';
+import { GdsdLicenceMainLicencesListComponent } from './components/authenticated/gdsd-licence-main-licences-list.component';
+import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
 import { StepGdsdPersonalInfoComponent } from './components/authenticated/step-gdsd-personal-info.component';
 import { GdsdWizardNewComponent } from './components/gdsd-wizard-new.component';
+import { GdsdWizardRenewalComponent } from './components/gdsd-wizard-renewal.component';
+import { GdsdWizardReplacementComponent } from './components/gdsd-wizard-replacement.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
-import { GdsdActiveCertificationsComponent } from './components/main/gdsd-active-certifications.component';
-import { GdsdApplicationsListCurrentComponent } from './components/main/gdsd-applications-list-current.component';
-import { GuideDogServiceDogMainComponent } from './components/main/guide-dog-service-dog-main.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/shared/common-form-components/gdsd-application-type-anonymous.component';
 import { GdsdSummaryAccreditedTrainingComponent } from './components/shared/common-form-components/gdsd-summary-accredited-training.component';
@@ -43,10 +46,13 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GuideDogServiceDogBaseAnonymousComponent,
 		GuideDogServiceDogBaseAuthenticatedComponent,
 		GuideDogServiceDogLandingComponent,
-		GuideDogServiceDogMainComponent,
-		GdsdActiveCertificationsComponent,
+		GdsdLicenceMainComponent,
+		GdsdLicenceMainLicencesListComponent,
 		GdsdApplicationTypeAnonymousComponent,
 		GdsdApplicationReceivedSuccessComponent,
+		GdsdWizardNewComponent,
+		GdsdWizardRenewalComponent,
+		GdsdWizardReplacementComponent,
 		StepsGdsdSelectionComponent,
 		StepsGdsdPersonalInfoComponent,
 		StepsGdsdDogInfoComponent,
@@ -73,8 +79,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GdsdSummaryAccreditedTrainingComponent,
 		GdsdSummarySchoolTrainingComponent,
 		GdsdSummaryOtherTrainingComponent,
-		GdsdWizardNewComponent,
-		GdsdApplicationsListCurrentComponent,
+		GdsdLicenceMainApplicationsListComponent,
+		StepGdsdLicenceAccessCodeComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

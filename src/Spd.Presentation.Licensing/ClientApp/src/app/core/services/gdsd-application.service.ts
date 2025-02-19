@@ -13,12 +13,18 @@ import {
 	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
+	LicenceResponse,
 	LicenceTermCode,
 	OtherTraining,
 	ServiceTypeCode,
 	TrainingSchoolInfo,
 } from '@app/api/models';
-import { ApplicantProfileService, GdsdLicensingService, LicenceAppDocumentService } from '@app/api/services';
+import {
+	ApplicantProfileService,
+	GdsdLicensingService,
+	LicenceAppDocumentService,
+	LicenceService,
+} from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -26,6 +32,7 @@ import {
 	BehaviorSubject,
 	Observable,
 	Subscription,
+	catchError,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
@@ -39,7 +46,7 @@ import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
-import { CommonApplicationService } from './common-application.service';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { GdsdApplicationHelper } from './gdsd-application.helper';
@@ -56,6 +63,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		applicationOriginTypeCode: new FormControl(), // placeholder to save
 		bizTypeCode: new FormControl(), // placeholder to save
 		licenceTermCode: new FormControl(), // placeholder to save
+		originalLicenceData: this.originalLicenceFormGroup, // placeholder to store data
 
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -88,6 +96,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private gdsdLicensingService: GdsdLicensingService,
+		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
 	) {
@@ -159,15 +168,15 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		console.debug(
-			'isStepPersonalInformationComplete',
-			isTrainedByAccreditedSchools,
-			this.gdsdPersonalInformationFormGroup.valid,
-			this.medicalInformationFormGroup.valid,
-			this.photographOfYourselfFormGroup.valid,
-			this.governmentPhotoIdFormGroup.valid,
-			this.mailingAddressFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepPersonalInformationComplete',
+		// 	isTrainedByAccreditedSchools,
+		// 	this.gdsdPersonalInformationFormGroup.valid,
+		// 	this.medicalInformationFormGroup.valid,
+		// 	this.photographOfYourselfFormGroup.valid,
+		// 	this.governmentPhotoIdFormGroup.valid,
+		// 	this.mailingAddressFormGroup.valid
+		// );
 
 		if (isTrainedByAccreditedSchools) {
 			return (
@@ -192,7 +201,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug('isStepDogInformationComplete', this.dogGdsdFormGroup.valid, this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid);
+		// console.debug(
+		// 	'isStepDogInformationComplete',
+		// 	isTrainedByAccreditedSchools,
+		// 	this.dogGdsdFormGroup.valid,
+		// 	this.dogInformationFormGroup.valid,
+		// 	this.dogMedicalFormGroup.valid
+		// );
 
 		if (isTrainedByAccreditedSchools) {
 			return this.dogGdsdFormGroup.valid && this.dogInformationFormGroup.valid;
@@ -353,7 +368,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(_serviceTypeCode: ServiceTypeCode): Observable<any> {
+	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
@@ -362,10 +377,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 						tap((_resp: any) => {
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle(
-								ServiceTypeCode.GdsdTeamCertification,
-								ApplicationTypeCode.New
-							);
+							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 						})
 					);
 				})
@@ -413,6 +425,186 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				);
 			})
 		);
+	}
+
+	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithSelectionAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<GdsdTeamLicenceAppResponse> {
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, associatedLicence).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<any> {
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return forkJoin([
+				this.loadExistingLicenceAuthenticated(associatedLicence),
+				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: 'e7443a3d-dce8-ef11-b857-00505683fbf4' }),
+			]).pipe(
+				catchError((error) => of(error)),
+				switchMap((resps: any[]) => {
+					const latestApplication = resps[0];
+					const photoOfYourself = resps[1];
+
+					return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				})
+			);
+		}
+
+		// ApplicationTypeCode.Replacement
+		return this.loadExistingLicenceAuthenticated(associatedLicence).pipe(
+			switchMap((_resp: any) => {
+				return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+			})
+		);
+	}
+
+	private loadExistingLicenceAuthenticated(associatedLicence: MainLicenceResponse): Observable<any> {
+		this.reset();
+
+		const apis: Observable<any>[] = [
+			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: '084fe6e0-1f71-4c83-b2e3-c428816b8c18' }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const gdsdLicenceAppl = resps[0];
+				const applicantProfile = resps[1];
+
+				return this.applyLicenceIntoModel(gdsdLicenceAppl, applicantProfile, associatedLicence);
+			})
+		);
+	}
+
+	private applyRenewalDataUpdatesToModel(
+		resp: any,
+		isAuthenticated: boolean,
+		associatedLicence: MainLicenceResponse | LicenceResponse,
+		photoOfYourself: Blob
+	): Observable<any> {
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+
+		// If they do not have canadian citizenship, they have to show proof for renewal
+		// let citizenshipData = {};
+		// const isCanadianCitizen = resp.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
+		// if (!isCanadianCitizen) {
+		// 	citizenshipData = {
+		// 		isCanadianCitizen: BooleanTypeCode.No,
+		// 		canadianCitizenProofTypeCode: null,
+		// 		notCanadianCitizenProofTypeCode: null,
+		// 		expiryDate: null,
+		// 		attachments: [],
+		// 		governmentIssuedPhotoTypeCode: null,
+		// 		governmentIssuedExpiryDate: null,
+		// 		governmentIssuedAttachments: [],
+		// 	};
+		// }
+
+		// const originalLicenceData = resp.originalLicenceData;
+		// originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
+		// const photographOfYourselfData = { ...resp.photographOfYourselfData };
+
+		// const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		// originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+		// 	originalPhotoOfYourselfLastUploadDateTime
+		// );
+
+		// if (originalLicenceData.originalPhotoOfYourselfExpired) {
+		// 	// set flag - user will be updating their photo
+		// 	photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		// }
+
+		// If applicant is renewing a licence where they already had authorization to use dogs,
+		// clear attachments to force user to upload a new proof of qualification.
+		// originalLicenceData.originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		// const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
+		// let dogsAuthorizationData = {};
+		// if (originalLicenceData.originalDogAuthorizationExists) {
+		// 	dogsAuthorizationData = {
+		// 		useDogs: resp.dogsAuthorizationData.useDogs,
+		// 		dogsPurposeFormGroup: {
+		// 			isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
+		// 			isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
+		// 			isDogsPurposeProtection: dogsPurposeFormGroup.isDogsPurposeProtection,
+		// 		},
+		// 		attachments: [],
+		// 	};
+		// }
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				// profileConfirmationData: { isProfileUpToDate: false },
+				// originalLicenceData,
+
+				// photographOfYourselfData,
+				// citizenshipData,
+				// dogsAuthorizationData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyRenewalDataUpdatesToModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+				return of(this.gdsdModelFormGroup.value);
+			})
+		);
+	}
+
+	private applyReplacementDataUpdatesToModel(
+		_resp: any,
+		_associatedLicence: MainLicenceResponse | LicenceResponse
+	): Observable<any> {
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+
+		// const originalLicenceData = resp.originalLicenceData;
+		// originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				// originalLicenceData,
+				// profileConfirmationData: { isProfileUpToDate: false },
+				// mailingAddressData: { ...mailingAddressData },
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyReplacementDataUpdatesToModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
 	}
 
 	accreditedFlagChanged(isAccredited: boolean): void {
@@ -464,6 +656,18 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			hasBcscNameChanged,
 		};
 
+		const bcscMailingAddress = applicantProfile.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
+		};
+
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
@@ -472,6 +676,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				applicationTypeData,
 
 				personalInformationData,
+				mailingAddressData,
 			},
 			{
 				emitEvent: false,
@@ -504,7 +709,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	private applyLicenceIntoModel(
 		appl: GdsdTeamLicenceAppResponse,
-		applicantProfile: ApplicantProfileResponse
+		applicantProfile: ApplicantProfileResponse | null = null,
+		associatedLicence: LicenceResponse | null = null
 	): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: appl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: appl.applicationTypeCode };
@@ -517,6 +723,21 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
 		// }
 
+		const originalLicenceData = {
+			originalApplicationId: associatedLicence?.licenceAppId ?? null,
+			originalLicenceId: associatedLicence?.licenceId ?? null,
+			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
+			originalExpiryDate: associatedLicence?.expiryDate ?? null,
+			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
+			originalBizTypeCode: associatedLicence?.bizTypeCode ?? null,
+			originalCategoryCodes: associatedLicence?.categoryCodes ?? null,
+			originalCarryAndUseRestraints: associatedLicence?.carryAndUseRestraints ?? null,
+			originalUseDogs: associatedLicence?.useDogs ?? null,
+			originalIsDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
+			originalIsDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
+			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+		};
+
 		const personalInformationData = {
 			givenName: applicantProfile ? applicantProfile.givenName : appl.givenName,
 			middleName: applicantProfile ? applicantProfile.middleName1 : appl.middleName,
@@ -527,15 +748,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			hasBcscNameChanged,
 		};
 
+		const bcscMailingAddress = applicantProfile?.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!appl.mailingAddress && !!appl.mailingAddress.addressLine1,
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
-			addressLine1: appl.mailingAddress?.addressLine1,
-			addressLine2: appl.mailingAddress?.addressLine2,
-			city: appl.mailingAddress?.city,
-			country: appl.mailingAddress?.country,
-			postalCode: appl.mailingAddress?.postalCode,
-			province: appl.mailingAddress?.province,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
 		};
 
 		let medicalInformationData: any = null;
@@ -732,6 +954,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				serviceTypeData,
 				licenceTermCode: LicenceTermCode.TwoYears,
 				applicationTypeData,
+				originalLicenceData,
 
 				personalInformationData,
 				medicalInformationData,
@@ -784,6 +1007,88 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
 			})
 		);
+	}
+
+	/**
+	 * Load an existing licence application with an access code
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithAccessCodeDataAnonymous(
+		associatedLicence: LicenceResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
+			tap((_resp: any) => {
+				const personalInformationData = { ..._resp.personalInformationData };
+
+				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
+				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
+
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					associatedLicence.licenceNumber!
+				);
+
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.gdsdModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeUsingAccessCodeAnonymous(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: LicenceResponse
+	): Observable<any> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				return forkJoin([
+					this.loadExistingLicenceApplicationAnonymous(associatedLicence),
+					this.licenceService.apiLicencesLicencePhotoGet(),
+				]).pipe(
+					catchError((error) => of(error)),
+					switchMap((resps: any[]) => {
+						const latestApplication = resps[0];
+						const photoOfYourself = resps[1];
+
+						return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+					})
+				);
+			}
+			default: {
+				return this.loadExistingLicenceApplicationAnonymous(associatedLicence).pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+					})
+				);
+			}
+		}
+	}
+
+	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
+		this.reset();
+
+		return this.gdsdLicensingService.apiGdsdTeamAppGet().pipe(
+			switchMap((workerLicenceAppl: GdsdTeamLicenceAppResponse) => {
+				// return this.applyLicenceIntoModel(
+				// 	workerLicenceAppl,
+				// 	workerLicenceAppl.applicationTypeCode,
+				// 	associatedLicence
+				// ).pipe(
+				// 	switchMap((_resp: any) => {
+				return this.applyLicenceIntoModel(workerLicenceAppl, null, associatedLicence);
+			})
+		);
+		// })
+		// );
 	}
 
 	/**
