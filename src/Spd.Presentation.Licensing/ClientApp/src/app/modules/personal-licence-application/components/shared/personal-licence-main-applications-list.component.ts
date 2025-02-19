@@ -6,7 +6,7 @@ import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/model
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-personal-applications-list-current',
+	selector: 'app-personal-licence-main-applications-list',
 	template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
@@ -147,7 +147,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	],
 	standalone: false,
 })
-export class PersonalApplicationsListCurrentComponent {
+export class PersonalLicenceMainApplicationsListComponent {
 	applicationColumns: string[] = [
 		'serviceTypeCode',
 		'createdOn',

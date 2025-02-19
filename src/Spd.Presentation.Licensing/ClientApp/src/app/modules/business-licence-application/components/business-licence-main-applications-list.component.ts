@@ -1,12 +1,12 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
 import { MainApplicationResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-gdsd-applications-list-current',
+	selector: 'app-business-licence-main-applications-list',
 	template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 			<div class="text-primary-color fs-5 py-3">Applications</div>
@@ -56,51 +56,62 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 
 						<ng-container matColumnDef="applicationPortalStatusCode">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let application" [ngClass]="showStatusButton ? 'col-status-button' : ''">
 								<span class="mobile-label">Status:</span>
-								<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
-									{{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
-								</span>
+								<ng-container *ngIf="isNewDraft(application); else isNotDraft">
+									<button
+										mat-flat-button
+										color="primary"
+										class="large w-auto"
+										aria-label="Resume application"
+										(click)="onResume(application)"
+										[disabled]="isDraftAndNotResumable(application)"
+									>
+										<mat-icon>play_arrow</mat-icon>Resume
+									</button>
+								</ng-container>
+								<ng-template #isNotDraft>
+									<ng-container *ngIf="isPaymentPending(application); else showStatus">
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto"
+											aria-label="Pay for application now"
+											(click)="onPayNow(application)"
+										>
+											<mat-icon>payment</mat-icon>Pay Now
+										</button>
+									</ng-container>
+									<ng-template #showStatus>
+										<a
+											tabindex="0"
+											class="text-start me-2"
+											aria-label="Remove the draft application"
+											matTooltip="Remove the draft application"
+											(click)="onCancel(application)"
+											(keydown)="onKeydownCancel($event, application)"
+											*ngIf="isDraftCancelable(application)"
+											><mat-icon>delete_outline</mat-icon></a
+										>
+										<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
+											{{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
+										</span>
+									</ng-template>
+								</ng-template>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action1">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large w-auto"
-									aria-label="Resume application"
-									(click)="onResume(application)"
-									[disabled]="isDraftAndNotResumable(application)"
-									*ngIf="isNewDraft(application)"
+								<a
+									tabindex="0"
+									class="text-start"
+									(click)="onManageMembersAndEmployees()"
+									(keydown)="onKeydownManageMembersAndEmployees($event)"
+									*ngIf="showManageMembersAndEmployees"
+									>Controlling Members & Employees</a
 								>
-									<mat-icon>play_arrow</mat-icon>Resume
-								</button>
-
-								<button
-									mat-flat-button
-									color="primary"
-									class="large w-auto"
-									aria-label="Pay for application now"
-									(click)="onPayNow(application)"
-									*ngIf="isPaymentPending(application)"
-								>
-									<mat-icon>payment</mat-icon>Pay Now
-								</button>
-
-								<button
-									mat-stroked-button
-									color="primary"
-									class="large w-auto"
-									aria-label="Remove the application"
-									matTooltip="Remove the application"
-									(click)="onCancel(application)"
-									*ngIf="isDraftCancelable(application)"
-								>
-									<mat-icon>delete_outline</mat-icon>Remove
-								</button>
 							</mat-cell>
 						</ng-container>
 
@@ -116,19 +127,32 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	`,
 	styles: [
 		`
+			.mat-column-applicationPortalStatusCode {
+				word-break: break-word;
+			}
+			.col-status-button {
+				min-width: fit-content;
+			}
+			.mat-column-caseNumber {
+				word-break: break-word;
+			}
+
 			.mat-column-action1 {
-				text-align: right;
-				justify-content: flex-end;
-				min-width: 170px;
+				min-width: 150px;
 			}
 
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-applicationTypeCode {
-					max-width: 120px;
+					max-width: 100px;
 				}
 				.mat-column-serviceTypeCode {
-					max-width: 130px;
+					max-width: 120px;
+				}
+				.mat-column-action1 {
+					text-align: right;
+					justify-content: flex-end;
+					max-width: 150px;
 				}
 			}
 
@@ -147,7 +171,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	],
 	standalone: false,
 })
-export class GdsdApplicationsListCurrentComponent {
+export class BusinessLicenceMainApplicationsListComponent implements OnInit {
 	applicationColumns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
@@ -158,14 +182,26 @@ export class GdsdApplicationsListCurrentComponent {
 		'action1',
 	];
 
-	isShowStatusText = true;
+	showStatusButton = false;
+	showManageMembersAndEmployees = false;
 
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
+	@Input() isControllingMemberWarning!: boolean;
+	@Input() isSoleProprietor!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
+	@Output() manageMembersAndEmployees: EventEmitter<MainApplicationResponse> = new EventEmitter();
+
+	ngOnInit(): void {
+		if (this.applicationsDataSource.data.length > 0) {
+			const application = this.applicationsDataSource.data[0];
+			this.showStatusButton = this.isNewDraft(application) || this.isPaymentPending(application);
+			this.showManageMembersAndEmployees = !this.isNewDraft(application) && !this.isSoleProprietor;
+		}
+	}
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -183,6 +219,12 @@ export class GdsdApplicationsListCurrentComponent {
 
 	onCancel(appl: MainApplicationResponse): void {
 		this.cancelApplication.emit(appl);
+	}
+
+	onKeydownCancel(event: KeyboardEvent, appl: MainApplicationResponse) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onCancel(appl);
 	}
 
 	onResume(appl: MainApplicationResponse): void {
@@ -216,6 +258,19 @@ export class GdsdApplicationsListCurrentComponent {
 	}
 
 	isPaymentPending(appl: MainApplicationResponse): boolean {
-		return appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment;
+		return (
+			!this.isControllingMemberWarning &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
+		);
+	}
+
+	onManageMembersAndEmployees(): void {
+		this.manageMembersAndEmployees.emit();
+	}
+
+	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onManageMembersAndEmployees();
 	}
 }

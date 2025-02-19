@@ -59,21 +59,21 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
-					<app-personal-applications-list-current
+					<app-personal-licence-main-applications-list
 						[applicationsDataSource]="applicationsDataSource"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
 						(cancelApplication)="onDelete($event)"
-					></app-personal-applications-list-current>
+					></app-personal-licence-main-applications-list>
 
-					<app-licence-active-swl-permit-licences
+					<app-personal-licence-main-licence-list
 						[activeLicences]="activeLicences"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenew($event)"
-					></app-licence-active-swl-permit-licences>
+					></app-personal-licence-main-licence-list>
 
 					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeSwlExist">
 						<div class="row">
@@ -150,7 +150,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						</div>
 					</div>
 
-					<app-licence-list-expired [expiredLicences]="expiredLicences"></app-licence-list-expired>
+					<app-form-licence-list-expired [expiredLicences]="expiredLicences"></app-form-licence-list-expired>
 
 					<div class="mt-4">
 						<app-alert type="info" icon="info">

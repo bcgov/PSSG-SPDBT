@@ -76,7 +76,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 					</form>
-					<ng-container *ngIf="isTrainedByAccreditedSchools">
+					<ng-container *ngIf="isNew && isTrainedByAccreditedSchools">
 						<form [formGroup]="dogGdsdForm" novalidate>
 							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
 							<div class="row">
@@ -125,7 +125,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
 	dogGdsdForm: FormGroup = this.gdsdApplicationService.dogGdsdFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	constructor(
@@ -134,8 +134,8 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your Dog Information' : 'Your Dog Information';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.title = this.isNew ? 'Your Dog Information' : 'Confirm your Dog Information';
+		this.subtitle = this.isNew ? '' : 'Update any information that has changed since your last application';
 
 		this.genderMfTypes = GenderTypes.filter(
 			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M
@@ -152,7 +152,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 		return this.form.valid && this.dogGdsdForm.valid;
 	}
 
-	get isRenewal(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

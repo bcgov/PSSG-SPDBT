@@ -314,7 +314,7 @@ export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 
 	form = this.gdsdApplicationService.termsAndConditionsFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,

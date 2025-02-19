@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
     selector: 'app-step-permit-reprint',
     template: `
 		<app-step-section title="Do you need a new permit printed?" [subtitle]="subtitle">
-			<app-licence-reprint [form]="form"></app-licence-reprint>
+			<app-form-licence-reprint [form]="form"></app-form-licence-reprint>
 		</app-step-section>
 	`,
     styles: [],

@@ -14,7 +14,7 @@ import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
 @Component({
-	selector: 'app-common-access-code-anonymous',
+	selector: 'app-form-access-code-anonymous',
 	template: `
 		<div class="row">
 			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
@@ -88,7 +88,7 @@ import { Subject, take, tap } from 'rxjs';
 	styles: [],
 	standalone: false,
 })
-export class CommonAccessCodeAnonymousComponent implements OnInit {
+export class FormAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	licenceApplicationRoutes = PersonalLicenceApplicationRoutes;
@@ -116,7 +116,11 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel = this.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
+		this.titleLabel =
+			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
+			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+				? 'Permit'
+				: 'Licence';
 		this.label = this.titleLabel.toLowerCase();
 	}
 
@@ -141,7 +145,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		}
 
 		switch (this.serviceTypeCode) {
-			case ServiceTypeCode.SecurityWorkerLicence: {
+			case ServiceTypeCode.SecurityWorkerLicence:
+			case ServiceTypeCode.GdsdTeamCertification: {
 				this.workerApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(

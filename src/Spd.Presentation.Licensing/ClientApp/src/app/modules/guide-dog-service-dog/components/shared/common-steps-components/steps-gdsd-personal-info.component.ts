@@ -15,10 +15,12 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="isLoggedIn; else notLoggedIn">
-					<app-step-gdsd-personal-info></app-step-gdsd-personal-info>
+					<app-step-gdsd-personal-info [applicationTypeCode]="applicationTypeCode"></app-step-gdsd-personal-info>
 				</ng-container>
 				<ng-template #notLoggedIn>
-					<app-step-gdsd-personal-info-anonymous></app-step-gdsd-personal-info-anonymous>
+					<app-step-gdsd-personal-info-anonymous
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-gdsd-personal-info-anonymous>
 				</ng-template>
 
 				<app-wizard-footer
@@ -32,7 +34,10 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 			</mat-step>
 
 			<mat-step>
-				<app-step-gdsd-mailing-address></app-step-gdsd-mailing-address>
+				<app-step-gdsd-mailing-address
+					[isLoggedIn]="isLoggedIn"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-gdsd-mailing-address>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -44,7 +49,7 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="!isTrainedByAccreditedSchools">
+			<mat-step *ngIf="isNew && !isTrainedByAccreditedSchools">
 				<app-step-gdsd-medical-information></app-step-gdsd-medical-information>
 
 				<app-wizard-footer
@@ -98,7 +103,7 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	@ViewChild(StepGdsdPersonalInfoAnonymousComponent) personAnonymous!: StepGdsdPersonalInfoAnonymousComponent;
@@ -129,5 +134,9 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

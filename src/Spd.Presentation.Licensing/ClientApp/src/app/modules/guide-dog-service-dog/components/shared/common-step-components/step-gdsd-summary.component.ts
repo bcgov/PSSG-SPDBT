@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
-						<mat-expansion-panel class="mb-4" [expanded]="true">
+						<mat-expansion-panel class="mb-4" [expanded]="true" *ngIf="isNew">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
@@ -236,7 +236,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</div>
 						</mat-expansion-panel>
 
-						<mat-expansion-panel class="mb-4" [expanded]="true">
+						<mat-expansion-panel class="mb-4" [expanded]="true" *ngIf="isNew">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
@@ -335,6 +335,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
 	gdsdModelData: any = {};
 
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 	@Input() hasAttendedTrainingSchool!: boolean;
 	@Input() isServiceDog!: boolean;
@@ -429,5 +430,9 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get specializedTaskDetails(): string {
 		return this.gdsdApplicationService.getSummaryspecializedTaskDetails(this.gdsdModelData);
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

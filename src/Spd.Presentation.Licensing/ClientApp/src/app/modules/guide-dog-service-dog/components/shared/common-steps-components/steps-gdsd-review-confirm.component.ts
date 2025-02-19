@@ -11,6 +11,7 @@ import { StepGdsdSummaryComponent } from '../common-step-components/step-gdsd-su
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-gdsd-summary
+					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
@@ -51,7 +52,7 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 	@Input() hasAttendedTrainingSchool!: boolean;
 	@Input() isServiceDog!: boolean;
