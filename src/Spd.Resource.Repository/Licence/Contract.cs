@@ -57,6 +57,16 @@ namespace Spd.Resource.Repository.Licence
         public Guid? SoleProprietorOrgId { get; set; }
 
         public IEnumerable<Condition> Conditions { get; set; } = Enumerable.Empty<Condition>();
+
+        //gdsd
+        public Guid? GDSDTeamId { get; set; }
+        public Guid? DogId { get; set; }
+        public string? DogName { get; set; }
+        public DateOnly? DogDateOfBirth { get; set; }
+        public string? DogBreed { get; set; }
+        public string? DogColorAndMarkings { get; set; }
+        public GenderEnum? DogGender { get; set; }
+        public string? MicrochipNumber { get; set; }
     }
 
     public record Licence
@@ -88,6 +98,10 @@ namespace Spd.Resource.Repository.Licence
         public Addr? EmployerPrimaryAddress { get; set; }
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+    }
+
+    public record GDSDLicence : Licence
+    {
     }
 
     public record Condition

@@ -106,9 +106,8 @@ public record OtherTraining
 }
 public record DogInfoRenew
 {
-    public string DogName { get; set; }
-    public string CurrentDogCertificate { get; set; }
     public bool IsAssistanceStillRequired { get; set; }
+    public Guid? DogId { get; set; }
 }
 
 public record SaveGDSDAppCmd() : GDSDApp
@@ -123,6 +122,7 @@ public record CreateGDSDAppCmd() : GDSDApp
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
+    public Guid? ApplicantId { get; set; }
 };
 
 public record CommitGDSDAppCmd()
