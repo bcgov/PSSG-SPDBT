@@ -21,6 +21,7 @@ public class GDSDLicensingControllerTests
     private readonly Mock<IMediator> _mockMediator;
     private readonly Mock<IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest>> _mockAnonymousSubmitRequestValidator;
     private readonly Mock<IValidator<GDSDTeamLicenceAppUpsertRequest>> _mockUpsertValidator;
+    private readonly Mock<IValidator<GDSDTeamLicenceAppChangeRequest>> _mockChangeValidator;
     private readonly Mock<IRecaptchaVerificationService> _mockRecaptchaService;
     private readonly Mock<IDistributedCache> _mockCache;
     private readonly Mock<IDataProtectionProvider> _mockDataProtectionProvider;
@@ -35,6 +36,7 @@ public class GDSDLicensingControllerTests
         _mockMediator = new Mock<IMediator>();
         _mockAnonymousSubmitRequestValidator = new Mock<IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest>>();
         _mockUpsertValidator = new Mock<IValidator<GDSDTeamLicenceAppUpsertRequest>>();
+        _mockChangeValidator = new Mock<IValidator<GDSDTeamLicenceAppChangeRequest>>();
         _mockRecaptchaService = new Mock<IRecaptchaVerificationService>();
         _mockCache = new Mock<IDistributedCache>();
         _mockDataProtectionProvider = new Mock<IDataProtectionProvider>();
@@ -50,6 +52,7 @@ public class GDSDLicensingControllerTests
             _mockConfiguration.Object,
             _mockAnonymousSubmitRequestValidator.Object,
             _mockUpsertValidator.Object,
+            _mockChangeValidator.Object,
             _mockRecaptchaService.Object,
             _mockCache.Object,
             _mockDataProtectionProvider.Object

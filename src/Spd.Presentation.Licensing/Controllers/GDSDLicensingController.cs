@@ -22,12 +22,14 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> _teamAppAnonymousSubmitRequestValidator;
         private readonly IValidator<GDSDTeamLicenceAppUpsertRequest> _teamAppUpsertValidator;
+        private readonly IValidator<GDSDTeamLicenceAppChangeRequest> _teamAppChangeValidator;
 
         public GDSDLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> teamAppAnonymousSubmitRequestValidator,
             IValidator<GDSDTeamLicenceAppUpsertRequest> teamAppUpsertValidator,
+            IValidator<GDSDTeamLicenceAppChangeRequest> teamAppChangeValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -36,6 +38,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _teamAppAnonymousSubmitRequestValidator = teamAppAnonymousSubmitRequestValidator;
             _teamAppUpsertValidator = teamAppUpsertValidator;
+            _teamAppChangeValidator = teamAppChangeValidator;
         }
 
         #region authenticated
@@ -85,6 +88,52 @@ namespace Spd.Presentation.Licensing.Controllers
             gdsdSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             return await _mediator.Send(new GDSDTeamLicenceAppSubmitCommand(gdsdSubmitRequest));
+        }
+
+        /// <summary>
+        /// Submit GDSD Application for authenticated users, supports only: renewal and replace
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// </summary>
+        /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/change")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse?> ChangeGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        {
+            GDSDAppCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(changeRequest.DocumentKeyCodes, ct);
+            var validateResult = await _teamAppChangeValidator.ValidateAsync(changeRequest, ct);
+
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            changeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+            }
+
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                GDSDTeamLicenceAppReplaceCommand command = new(changeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                GDSDTeamLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Update application type is not supported");
+            }
+
+            return response;
         }
         #endregion authenticated
 
