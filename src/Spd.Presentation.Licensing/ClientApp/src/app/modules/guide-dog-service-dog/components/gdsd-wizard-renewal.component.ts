@@ -169,7 +169,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
+			this.gdsdApplicationService.submitLicenceRenewalAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						ServiceTypeCode.GdsdTeamCertification,
@@ -189,10 +189,10 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 			return;
 		}
 
-		this.gdsdApplicationService.submitAnonymous().subscribe({
+		this.gdsdApplicationService.submitRenewalAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					ServiceTypeCode.GdsdTeamCertification,
+					ServiceTypeCode.GdsdTeamCertification, // TODO gdsd remove hardcoded
 					this.applicationTypeCode
 				);
 				this.hotToastService.success(successMessage);

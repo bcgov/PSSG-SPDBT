@@ -421,6 +421,38 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	/**
+	 * Submit the licence data
+	 * @returns
+	 */
+	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body });
+	}
+
+	/**
+	 * Submit the licence data
+	 * @returns
+	 */
+	submitLicenceReplacementAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body });
+	}
+
+	/**
 	 * Load an existing licence application
 	 * @param licenceAppId
 	 * @returns
@@ -740,13 +772,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
 			originalExpiryDate: associatedLicence?.expiryDate ?? null,
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
-			originalBizTypeCode: associatedLicence?.bizTypeCode ?? null,
-			originalCategoryCodes: associatedLicence?.categoryCodes ?? null,
-			originalCarryAndUseRestraints: associatedLicence?.carryAndUseRestraints ?? null,
-			originalUseDogs: associatedLicence?.useDogs ?? null,
-			originalIsDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
-			originalIsDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
-			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+			originalLicenceHolderName: associatedLicence?.licenceHolderName ?? null,
+			originalPhotoOfYourselfExpired: null,
 		};
 
 		const personalInformationData = {
@@ -1140,10 +1167,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the data
 	 * @returns
 	 */
-	submitAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		console.debug('[submitAnonymous] gdsdModelFormValue', gdsdModelFormValue);
-
 		const body = this.getSaveBodyBase(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
@@ -1186,6 +1211,14 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
+	}
+
+	submitRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		return this.submitNewAnonymous(); // TODO gdsd fix
+	}
+
+	submitReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		return this.submitNewAnonymous(); // TODO gdsd fix
 	}
 
 	/**

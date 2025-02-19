@@ -52,7 +52,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Colour And Markings</mat-label>
+									<mat-label>Colour and Markings</mat-label>
 									<input matInput formControlName="dogColorAndMarkings" [errorStateMatcher]="matcher" maxlength="50" />
 									<mat-error *ngIf="form.get('dogColorAndMarkings')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>

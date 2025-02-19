@@ -191,7 +191,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Colour And Markings</div>
+										<div class="text-label d-block text-muted">Colour and Markings</div>
 										<div class="summary-text-data">{{ colourAndMarkings | default }}</div>
 									</div>
 									<div class="col-lg-4 col-md-12">

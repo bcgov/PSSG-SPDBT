@@ -227,8 +227,8 @@ export class GdsdLicenceMainComponent implements OnInit {
 
 				// Gdsd Applications
 				this.applicationsDataSource = new MatTableDataSource(userGdsdApplicationsList ?? []);
-				this.applicationIsInProgress =
-					this.commonApplicationService.getApplicationIsInProgress(userGdsdApplicationsList);
+				// TODO gdsd uncomment
+				// this.applicationIsInProgress = this.commonApplicationService.getApplicationIsInProgress(userGdsdApplicationsList);
 				// Gdsd Licences
 				const activeLicencesList = userGdsdLicencesList.filter((item: MainLicenceResponse) =>
 					this.utilService.isLicenceActive(item.licenceStatusCode)

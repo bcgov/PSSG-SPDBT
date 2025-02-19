@@ -119,6 +119,17 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		),
 	});
 
+	override originalLicenceFormGroup: FormGroup = this.formBuilder.group({
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalCarryAndUseRestraints: new FormControl(null),
+		originalLicenceHolderName: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false),
+	});
+
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
@@ -476,6 +487,19 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			});
 		});
 		return trainingArray;
+	}
+
+	getSummaryoriginalLicenceNumber(gdsdModelData: any): string {
+		return gdsdModelData.originalLicenceData.originalLicenceNumber ?? '';
+	}
+	getSummaryoriginalExpiryDate(gdsdModelData: any): string {
+		return gdsdModelData.originalLicenceData.originalExpiryDate ?? '';
+	}
+	getSummaryoriginalLicenceTermCode(gdsdModelData: any): string {
+		return gdsdModelData.originalLicenceData.originalLicenceTermCode ?? '';
+	}
+	getSummaryoriginalLicenceHolderName(gdsdModelData: any): string {
+		return gdsdModelData.originalLicenceData.originalLicenceHolderName ?? '';
 	}
 
 	getSummaryisDogTrainedByAccreditedSchool(gdsdModelData: any): string {

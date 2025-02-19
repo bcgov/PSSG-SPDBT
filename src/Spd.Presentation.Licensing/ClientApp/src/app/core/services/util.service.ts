@@ -166,6 +166,16 @@ export class UtilService {
 		return yearsDiff >= 5;
 	}
 
+	getIsDateMonthsOrOlder(aDate: string | null | undefined, periodMonths: number): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const monthsDiff = today.diff(dateDay, 'months');
+		return monthsDiff > periodMonths;
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 

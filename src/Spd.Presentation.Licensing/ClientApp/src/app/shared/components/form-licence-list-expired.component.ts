@@ -1,8 +1,10 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-form-licence-list-expired',
@@ -42,6 +44,22 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								</mat-chip-option>
 							</div>
 						</div>
+						<div class="row mt-2" *ngIf="isRenewAllowed(licence)">
+							<mat-divider class="my-2"></mat-divider>
+							<div class="col-lg-9"></div>
+
+							<div class="col-lg-3 text-end">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large my-2"
+									aria-label="Renew the licence"
+									(click)="onRenew(licence)"
+								>
+									<mat-icon>restore</mat-icon>Renew
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -65,4 +83,24 @@ export class FormLicenceListExpiredComponent {
 
 	@Input() title = 'Expired Licences/Permits';
 	@Input() expiredLicences!: Array<MainLicenceResponse>;
+
+	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
+
+	constructor(private utilService: UtilService) {}
+
+	onRenew(licence: MainLicenceResponse): void {
+		this.renewLicence.emit(licence);
+	}
+
+	isRenewAllowed(licence: MainLicenceResponse): boolean {
+		if (
+			licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+			licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
+		) {
+			return false;
+		} // TODO gdsd fix
+
+		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
+		return !this.utilService.getIsDateMonthsOrOlder(licence.expiryDate, period);
+	}
 }

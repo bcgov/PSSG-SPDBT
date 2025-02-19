@@ -43,18 +43,32 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 						</div>
 
 						<div class="row mt-2">
-							<div class="col-lg-9 mt-0 mt-lg-4">
-								<span class="fw-semibold">Lost your licence? </span>
-								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-								<a
-									*ngIf="!applicationIsInProgress"
-									class="large"
-									tabindex="0"
-									aria-label="Request a gdsd licence replacement"
-									(click)="onRequestReplacement(licence)"
-									(keydown)="onKeydownRequestReplacement($event, licence)"
-									>Request a replacement</a
-								>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Dog Name</div>
+								<div class="text-data fw-bold">Todo</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
+								<div class="text-data fw-bold">Todo</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Breed</div>
+								<div class="text-data fw-bold">Todo</div>
+							</div>
+						</div>
+
+						<div class="row mt-2">
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Colour and Markings</div>
+								<div class="text-data fw-bold">Todo</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Gender</div>
+								<div class="text-data fw-bold">Todo</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Microchip Number</div>
+								<div class="text-data fw-bold">Todo</div>
 							</div>
 
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -69,6 +83,23 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									<mat-icon>restore</mat-icon>Renew
 								</button>
 							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-12">
+							<mat-divider class="my-2"></mat-divider>
+							<span class="fw-semibold">Lost your licence? </span>
+							<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
+							<a
+								*ngIf="!applicationIsInProgress"
+								class="large"
+								tabindex="0"
+								aria-label="Request a gdsd licence replacement"
+								(click)="onRequestReplacement(licence)"
+								(keydown)="onKeydownRequestReplacement($event, licence)"
+								>Request a replacement</a
+							>
 						</div>
 					</div>
 				</div>

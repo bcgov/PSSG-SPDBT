@@ -233,7 +233,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			return;
 		}
 
-		this.gdsdApplicationService.submitAnonymous().subscribe({
+		this.gdsdApplicationService.submitNewAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.GdsdTeamCertification,
