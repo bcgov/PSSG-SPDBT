@@ -1,7 +1,7 @@
 import { AppRoutes } from '@app/app-routes';
 
 export class PersonalLicenceApplicationRoutes {
-	public static readonly LICENCE_APPLICATION = 'personal-licence';
+	public static readonly MODULE_PATH = AppRoutes.PERSONAL_LICENCE_APPLICATION;
 
 	// AUTHENTICATED
 	public static readonly LICENCE_BASE = 'application';
@@ -53,8 +53,6 @@ export class PersonalLicenceApplicationRoutes {
 	public static readonly PAYMENT_ERROR = 'payment-error';
 	public static readonly LICENCE_UPDATE_SUCCESS = 'licence-update-success';
 	public static readonly PERMIT_UPDATE_SUCCESS = 'permit-update-success';
-
-	public static readonly MODULE_PATH = PersonalLicenceApplicationRoutes.LICENCE_APPLICATION;
 
 	public static defaultLanding(): string {
 		return AppRoutes.path(AppRoutes.LANDING);
