@@ -119,33 +119,33 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showBodyArmourSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
 									[blockCategory]="blockBodyArmourSales"
 									[expandCategory]="expandBodyArmourSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
 									[blockCategory]="blockClosedCircuitTelevisionInstaller"
 									[expandCategory]="expandClosedCircuitTelevisionInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
 									[blockCategory]="blockElectronicLockingDeviceInstaller"
 									[expandCategory]="expandElectronicLockingDeviceInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showFireInvestigator">
@@ -262,13 +262,13 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showLocksmithUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.LocksmithUnderSupervision"
 									[blockCategory]="blockLocksmithUnderSupervision"
 									[expandCategory]="expandLocksmithUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showPrivateInvestigator">
@@ -448,43 +448,43 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision"
 									[blockCategory]="blockSecurityAlarmInstallerUnderSupervision"
 									[expandCategory]="expandSecurityAlarmInstallerUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmMonitor">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
 									[blockCategory]="blockSecurityAlarmMonitor"
 									[expandCategory]="expandSecurityAlarmMonitor"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmResponse">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
 									[blockCategory]="blockSecurityAlarmResponse"
 									[expandCategory]="expandSecurityAlarmResponse"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
 									[blockCategory]="blockSecurityAlarmSales"
 									[expandCategory]="expandSecurityAlarmSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityConsultant">
@@ -598,13 +598,13 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityGuardUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityGuardUnderSupervision"
 									[blockCategory]="blockSecurityGuardUnderSupervision"
 									[expandCategory]="expandSecurityGuardUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 						</mat-accordion>
 					</div>

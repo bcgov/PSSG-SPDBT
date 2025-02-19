@@ -371,40 +371,37 @@ export class CommonApplicationService {
 			);
 	}
 
-	userGdsdLicencesList(): Observable<Array<LicenceAppListResponse>> {
-		return this.licenceAppService
-			.apiApplicantsApplicantIdLicenceApplicationsGet({
+	userGdsdLicencesList(): Observable<Array<MainLicenceResponse>> {
+		return this.licenceService
+			.apiApplicantsApplicantIdLicencesGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
-				map((_resp: Array<LicenceAppListResponse>) => {
-					// TODO handle GDSD licences
-					// switchMap((basicLicenceResps: Array<LicenceAppListResponse>) => {
-					// if (basicLicenceResps.length === 0) {
-					// 	return of([]);
-					// }
+				switchMap((basicLicenceResps: LicenceBasicResponse[]) => {
+					if (basicLicenceResps.length === 0) {
+						return of([]);
+					}
 
-					// const apis: Observable<any>[] = [];
-					// basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-					// 	if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
-					// 		apis.push(
-					// 			this.licenceService.apiLicencesLicenceIdGet({
-					// 				licenceId: resp.licenceId!,
-					// 			})
-					// 		);
-					// 	}
-					// });
+					const apis: Observable<any>[] = [];
+					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+							apis.push(
+								this.licenceService.apiLicencesLicenceIdGet({
+									licenceId: resp.licenceId!,
+								})
+							);
+						}
+					});
 
-					// if (apis.length > 0) {
-					// 	return forkJoin(apis).pipe(
-					// 		switchMap((licenceResps: LicenceResponse[]) => {
-					// 			return this.processPersonLicenceData(basicLicenceResps, licenceResps);
-					// 		})
-					// 	);
-					// } else {
-					// 	return this.processPersonLicenceData(basicLicenceResps, null);
-					// }
-					return _resp;
+					if (apis.length > 0) {
+						return forkJoin(apis).pipe(
+							switchMap((licenceResps: LicenceResponse[]) => {
+								return this.processPersonLicenceData(basicLicenceResps, licenceResps);
+							})
+						);
+					} else {
+						return this.processPersonLicenceData(basicLicenceResps, null);
+					}
 				})
 			);
 	}
@@ -481,38 +478,34 @@ export class CommonApplicationService {
 	userBusinessLicencesList(businessProfile: BizProfileResponse): Observable<Array<MainLicenceResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.licenceService
-			.apiBizsBizIdLicencesGet({
-				bizId,
-			})
-			.pipe(
-				switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {
-					if (basicLicenceResps.length === 0) {
-						return of([]);
-					}
+		return this.licenceService.apiBizsBizIdLicencesGet({ bizId }).pipe(
+			switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {
+				if (basicLicenceResps.length === 0) {
+					return of([]);
+				}
 
-					const apis: Observable<any>[] = [];
-					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
-							apis.push(
-								this.licenceService.apiLicencesLicenceIdGet({
-									licenceId: resp.licenceId!,
-								})
-							);
-						}
-					});
-
-					if (apis.length > 0) {
-						return forkJoin(apis).pipe(
-							switchMap((licenceResps: LicenceResponse[]) => {
-								return this.processBusinessLicenceData(businessProfile, basicLicenceResps, licenceResps);
+				const apis: Observable<any>[] = [];
+				basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+					if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: resp.licenceId!,
 							})
 						);
-					} else {
-						return this.processBusinessLicenceData(businessProfile, basicLicenceResps, null);
 					}
-				})
-			);
+				});
+
+				if (apis.length > 0) {
+					return forkJoin(apis).pipe(
+						switchMap((licenceResps: LicenceResponse[]) => {
+							return this.processBusinessLicenceData(businessProfile, basicLicenceResps, licenceResps);
+						})
+					);
+				} else {
+					return this.processBusinessLicenceData(businessProfile, basicLicenceResps, null);
+				}
+			})
+		);
 	}
 
 	private processBusinessLicenceData(

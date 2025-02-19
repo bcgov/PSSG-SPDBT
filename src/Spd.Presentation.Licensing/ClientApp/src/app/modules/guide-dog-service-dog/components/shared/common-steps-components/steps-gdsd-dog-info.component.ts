@@ -11,6 +11,7 @@ import { StepGdsdDogMedicalComponent } from '../common-step-components/step-gdsd
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-gdsd-dog-information
+					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 				></app-step-gdsd-dog-information>
 
@@ -24,7 +25,7 @@ import { StepGdsdDogMedicalComponent } from '../common-step-components/step-gdsd
 				></app-wizard-footer>
 			</mat-step>
 
-			<ng-container *ngIf="!isTrainedByAccreditedSchools">
+			<ng-container *ngIf="showDogMedicalStep">
 				<mat-step>
 					<app-step-gdsd-dog-medical></app-step-gdsd-dog-medical>
 
@@ -51,7 +52,7 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	@ViewChild(StepGdsdDogInformationComponent) dogInfoComponent!: StepGdsdDogInformationComponent;
@@ -68,12 +69,12 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 			return;
 		}
 
-		if (this.isTrainedByAccreditedSchools) {
-			this.nextStepperStep.emit(true);
+		if (this.showDogMedicalStep) {
+			this.childNextStep.emit(true);
 			return;
 		}
 
-		this.childNextStep.emit(true);
+		this.nextStepperStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -86,5 +87,12 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get showDogMedicalStep(): boolean {
+		return this.isNew && !this.isTrainedByAccreditedSchools;
 	}
 }

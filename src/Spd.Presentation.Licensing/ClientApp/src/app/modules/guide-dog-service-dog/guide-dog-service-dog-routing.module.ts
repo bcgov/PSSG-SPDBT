@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
+import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
 import { GdsdWizardNewComponent } from './components/gdsd-wizard-new.component';
+import { GdsdWizardRenewalComponent } from './components/gdsd-wizard-renewal.component';
+import { GdsdWizardReplacementComponent } from './components/gdsd-wizard-replacement.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
 import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
-import { GuideDogServiceDogMainComponent } from './components/main/guide-dog-service-dog-main.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/shared/common-form-components/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogRoutes } from './guide-dog-service-dog-routes';
@@ -26,8 +29,20 @@ const routes: Routes = [
 				component: GdsdApplicationTypeAnonymousComponent,
 			},
 			{
+				path: GuideDogServiceDogRoutes.GDSD_ACCESS_CODE_ANONYMOUS,
+				component: StepGdsdLicenceAccessCodeComponent,
+			},
+			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_ANONYMOUS,
 				component: GdsdWizardNewComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_ANONYMOUS,
+				component: GdsdWizardRenewalComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_ANONYMOUS,
+				component: GdsdWizardReplacementComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
@@ -44,11 +59,19 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: GuideDogServiceDogMainComponent,
+				component: GdsdLicenceMainComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED,
 				component: GdsdWizardNewComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_AUTHENTICATED,
+				component: GdsdWizardRenewalComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED,
+				component: GdsdWizardReplacementComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,

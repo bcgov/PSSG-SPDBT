@@ -5,40 +5,40 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
-    selector: 'app-licence-list-expired',
-    template: `
+	selector: 'app-form-licence-list-expired',
+	template: `
 		<div class="mb-3" *ngIf="expiredLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">Expired Licences/Permits</div>
+			<div class="text-primary-color fs-5 py-3">{{ title }}</div>
 			<div
 				class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
-				*ngFor="let appl of expiredLicences; let i = index"
+				*ngFor="let licence of expiredLicences; let i = index"
 			>
 				<div class="row">
 					<div class="col-lg-3">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ appl.serviceTypeCode | options: 'ServiceTypes' }}
+							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-9">
 						<div class="row">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="text-data">{{ appl.licenceNumber }}</div>
+								<div class="text-data">{{ licence.licenceNumber }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-								<div class="text-data">5 Years</div>
+								<div class="text-data">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 								<div class="text-data">
-									{{ appl.expiryDate | formatDate: formalDateFormat }}
+									{{ licence.expiryDate | formatDate: formalDateFormat }}
 								</div>
 							</div>
 							<div class="col-lg-3 text-end">
-								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
-									<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-									<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
+								<mat-chip-option [selectable]="false" class="licence-chip-option mat-chip-red">
+									<mat-icon class="licence-chip-option-item">cancel</mat-icon>
+									<span class="licence-chip-option-item ms-2 fs-5">Expired</span>
 								</mat-chip-option>
 							</div>
 						</div>
@@ -47,21 +47,22 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 			</div>
 		</div>
 	`,
-    styles: [
-        `
-			.appl-chip-option {
+	styles: [
+		`
+			.licence-chip-option {
 				height: 35px;
 			}
 
-			.appl-chip-option-item {
+			.licence-chip-option-item {
 				vertical-align: text-bottom;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
-export class LicenceListExpiredComponent {
+export class FormLicenceListExpiredComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
+	@Input() title = 'Expired Licences/Permits';
 	@Input() expiredLicences!: Array<MainLicenceResponse>;
 }

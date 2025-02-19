@@ -6,7 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
-	selector: 'app-business-licence-list-current',
+	selector: 'app-business-licence-main-licence-list',
 	template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
 			<div class="text-primary-color fs-5 py-3">Valid Licence</div>
@@ -171,7 +171,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 	],
 	standalone: false,
 })
-export class BusinessLicenceListCurrentComponent {
+export class BusinessLicenceMainLicenceListComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	swlServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence;

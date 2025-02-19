@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -8,10 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-gdsd-mailing-address',
 	template: `
-		<app-step-section
-			title="Your Mailing Address"
-			subtitle="This is the address where you will receive your certification."
-		>
+		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="info" icon="">
@@ -26,7 +23,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-form-address [form]="form" [isReadonly]="isLoggedIn" [isWideView]="true"></app-form-address>
+					<app-form-address [form]="form" [isReadonly]="false" [isWideView]="true"></app-form-address>
 				</div>
 			</div>
 		</app-step-section>
@@ -34,15 +31,37 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdMailingAddressComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
+	title = '';
+	subtitle = '';
 
 	form: FormGroup = this.gdsdApplicationService.mailingAddressFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isLoggedIn!: boolean;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+
+	ngOnInit(): void {
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				this.title = 'Review your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.title = 'Confirm your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
+				break;
+			}
+			default: {
+				this.title = 'Provide your mailing address';
+				this.subtitle = 'This is the address where you will receive your certification.';
+				break;
+			}
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

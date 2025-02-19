@@ -26,7 +26,7 @@ import { StepGdsdTermsOfUseComponent } from '../common-step-components/step-gdsd
 					<app-wizard-footer
 						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextStepperStep)="onStepNextChecklist()"
 						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-container>
@@ -34,13 +34,13 @@ import { StepGdsdTermsOfUseComponent } from '../common-step-components/step-gdsd
 					<app-wizard-footer
 						[isFormValid]="isFormValid"
 						[showSaveAndExit]="false"
-						(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
+						(nextStepperStep)="onStepNextChecklist()"
 						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNew">
 				<app-step-gdsd-dog-certification-selection></app-step-gdsd-dog-certification-selection>
 
 				<app-wizard-footer
@@ -64,13 +64,28 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 
 	@Input() isLoggedIn = false;
 	@Input() isFormValid = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
 	@ViewChild(StepGdsdDogCertificationSelectionComponent) certComponent!: StepGdsdDogCertificationSelectionComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
+	}
+
+	onStepNextChecklist(): void {
+		const isValid = this.dirtyForm(this.STEP_CHECKLIST);
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
+
+		if (this.isNew) {
+			this.childNextStep.emit(true);
+			return;
+		}
+
+		this.nextStepperStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -90,5 +105,9 @@ export class StepsGdsdSelectionComponent extends BaseWizardStepComponent {
 	get showTermsOfUse(): boolean {
 		// anonymous: agree everytime for all
 		return !this.isLoggedIn;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }
