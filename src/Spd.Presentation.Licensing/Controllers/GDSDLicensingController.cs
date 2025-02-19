@@ -97,10 +97,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/change")]
+        [Route("api/gdsd-team-app/renew")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse?> ChangeGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        public async Task<GDSDAppCommandResponse?> RenewGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
         {
             GDSDAppCommandResponse? response = null;
 
@@ -111,28 +111,39 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             changeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
-            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+                GDSDTeamLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
             }
+            return response;
+        }
+
+        /// <summary>
+        /// Replace GDSD Application for authenticated users
+        /// </summary>
+        /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/replace")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse?> ReplaceGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        {
+            GDSDAppCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(changeRequest.DocumentKeyCodes, ct);
+            var validateResult = await _teamAppChangeValidator.ValidateAsync(changeRequest, ct);
+
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            changeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
                 GDSDTeamLicenceAppReplaceCommand command = new(changeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
-
-            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
-            {
-                GDSDTeamLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
-                response = await _mediator.Send(command, ct);
-            }
-
-            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Update application type is not supported");
-            }
-
             return response;
         }
         #endregion authenticated

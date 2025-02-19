@@ -27,7 +27,7 @@ public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequ
 public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 #endregion
 
-public record GDSDTeamLicenceAppBase : LicenceAppBase
+public abstract record GDSDTeamLicenceAppBase : LicenceAppBase
 {
     //personal info
     public string? Surname { get; set; }
@@ -39,10 +39,11 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
+}
 
+public abstract record GDSDTeamLicenceAppNew : GDSDTeamLicenceAppBase
+{
     public bool? IsDogTrainedByAccreditedSchool { get; set; }
-    public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
-
     //for app with accredited school
     public DogInfoNewAccreditedSchool? DogInfoNewAccreditedSchool { get; set; } //not null if it is New
     public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
@@ -52,14 +53,14 @@ public record GDSDTeamLicenceAppBase : LicenceAppBase
     public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 
-public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppBase
+public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
 }
 
-public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppBase
+public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 }
@@ -67,8 +68,10 @@ public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppBase
 public record GDSDTeamLicenceAppChangeRequest : GDSDTeamLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid OriginalLicenceId { get; set; } //for renew, replace, it should be original licence id.
     public Guid ApplicantId { get; set; }
+    public DogInfoRenew? DogInfoRenew { get; set; }
 }
 
 public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppBase
@@ -148,7 +151,7 @@ public record OtherTraining
     public string? TrainerPhoneNumber { get; set; }
     public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
-public record DogInfoRenew
+public record DogInfoRenew : DogInfoNew
 {
     public bool IsAssistanceStillRequired { get; set; }
     public Guid? DogId { get; set; }
