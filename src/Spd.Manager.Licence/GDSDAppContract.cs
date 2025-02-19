@@ -11,11 +11,15 @@ public interface IGDSDAppManager
     public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct);
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct);
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand command, CancellationToken ct);
 }
 
 #region authenticated
 public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : GDSDTeamLicenceAppUpsertCommand(UpsertRequest), IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest UpsertRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppRenewCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequest<GDSDTeamLicenceAppResponse>;
 #endregion
 
@@ -58,6 +62,13 @@ public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppBase
 public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+}
+
+public record GDSDTeamLicenceAppChangeRequest : GDSDTeamLicenceAppBase
+{
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public Guid OriginalLicenceId { get; set; } //for renew, replace, it should be original licence id.
+    public Guid ApplicantId { get; set; }
 }
 
 public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppBase
@@ -139,8 +150,7 @@ public record OtherTraining
 }
 public record DogInfoRenew
 {
-    public string? DogName { get; set; }
-    public string? CurrentDogCertificate { get; set; }
-    public bool? IsAssistanceStillRequired { get; set; }
+    public bool IsAssistanceStillRequired { get; set; }
+    public Guid? DogId { get; set; }
 }
 
