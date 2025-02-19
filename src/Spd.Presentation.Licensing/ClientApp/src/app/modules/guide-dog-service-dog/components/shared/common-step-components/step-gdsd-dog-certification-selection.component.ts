@@ -60,7 +60,7 @@ export class StepGdsdDogCertificationSelectionComponent implements LicenceChildS
 
 	form: FormGroup = this.gdsdApplicationService.dogCertificationSelectionFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
