@@ -313,7 +313,7 @@ internal abstract class LicenceAppManagerBase
         return docEnums;
     }
 
-    protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(Guid? originalApplicationId, IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
+    protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
     {
         IList<LicAppFileInfo> existingFileInfos = new List<LicAppFileInfo>();
 

@@ -242,7 +242,7 @@ internal class SecurityWorkerAppManager :
                 || currentDate > originalLic.ExpiryDate)
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles.ToList(),
@@ -326,7 +326,7 @@ internal class SecurityWorkerAppManager :
         if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
