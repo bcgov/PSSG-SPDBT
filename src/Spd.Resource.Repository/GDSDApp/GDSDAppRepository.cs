@@ -25,13 +25,14 @@ internal class GDSDAppRepository : IGDSDAppRepository
         {
             contact = _mapper.Map<contact>(cmd);
             contact = await _context.CreateContact(contact, null, null, ct);
-            app = PrepareNewAppDataInDbContext(cmd);
+            app = PrepareNewAppDataInDbContext(cmd, contact);
             _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
         }
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
         {
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
+            _mapper.Map<DogInfoRenew, spd_application>(cmd.DogInfoRenew, app);
             contact = UpdateContact(cmd, (Guid)cmd.ApplicantId);
             if (contact != null)
             {
@@ -53,14 +54,15 @@ internal class GDSDAppRepository : IGDSDAppRepository
         spd_application? app = null;
         if (cmd.LicenceAppId != null)
         {
-            app = PrepareUpdateAppDataInDbContext(cmd, cmd.LicenceAppId.Value);
-            UpdateContact(cmd, cmd.ApplicantId);
+            contact applicant = UpdateContact(cmd, cmd.ApplicantId);
+            app = PrepareUpdateAppDataInDbContext(cmd, cmd.LicenceAppId.Value, applicant);
         }
         else
         {
             //first time user create an application, beginning
-            app = PrepareNewAppDataInDbContext(cmd);
             var contact = UpdateContact(cmd, cmd.ApplicantId);
+            app = PrepareNewAppDataInDbContext(cmd, contact);
+
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
@@ -120,7 +122,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
         }
     }
 
-    private spd_application PrepareNewAppDataInDbContext(GDSDApp appData)
+    private spd_application PrepareNewAppDataInDbContext(GDSDApp appData, contact applicant)
     {
         var app = _mapper.Map<spd_application>(appData);
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
@@ -133,6 +135,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
             graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
             _context.AddTospd_dogtrainingschools(graduation);
             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
+            _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
         }
         else
         {
@@ -151,6 +154,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                         spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
                         _context.AddTospd_dogtrainingschools(school);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                        _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
                     }
                 }
             }
@@ -163,6 +167,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                         spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
                         _context.AddTospd_dogtrainingschools(otherTraining);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
+                        _context.SetLink(otherTraining, nameof(otherTraining.spd_ApplicantId), applicant);
                     }
                 }
             }
@@ -184,7 +189,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
         return applicant;
     }
 
-    private spd_application PrepareUpdateAppDataInDbContext(GDSDApp appData, Guid appId)
+    private spd_application PrepareUpdateAppDataInDbContext(GDSDApp appData, Guid appId, contact applicant)
     {
         spd_application? app = _context.spd_applications
             .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
@@ -220,6 +225,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                 graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
                 _context.AddTospd_dogtrainingschools(graduation);
                 _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
+                _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
             }
             else
             {
@@ -256,6 +262,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                             spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(schoolInfo);
                             _context.AddTospd_dogtrainingschools(school);
                             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                            _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
                         }
                         else
                         {
@@ -277,6 +284,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                             spd_dogtrainingschool school = _mapper.Map<spd_dogtrainingschool>(other);
                             _context.AddTospd_dogtrainingschools(school);
                             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
+                            _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
                         }
                         else
                         {
