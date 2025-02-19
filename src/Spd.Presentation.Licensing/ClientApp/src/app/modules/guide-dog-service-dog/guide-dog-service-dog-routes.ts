@@ -1,7 +1,7 @@
-export class GuideDogServiceDogRoutes {
-	public static readonly GUIDE_DOG_SERVICE_DOG = 'guide-dog-service-dog';
+import { AppRoutes } from '@app/app-routes';
 
-	public static readonly MODULE_PATH = GuideDogServiceDogRoutes.GUIDE_DOG_SERVICE_DOG;
+export class GuideDogServiceDogRoutes {
+	public static readonly MODULE_PATH = AppRoutes.GUIDE_DOG_SERVICE_DOG;
 
 	// AUTHENTICATED
 	public static readonly GDSD_AUTHENTICATED_BASE = 'application';
