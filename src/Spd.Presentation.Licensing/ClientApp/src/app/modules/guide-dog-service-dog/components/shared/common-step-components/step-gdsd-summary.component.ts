@@ -99,7 +99,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
 
-								<ng-container *ngIf="!isTrainedByAccreditedSchools">
+								<ng-container *ngIf="isNew && !isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
 									<div class="text-minor-heading-small">
@@ -202,7 +202,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
 									</div>
-									<div class="col-12">
+									<div class="col-12" *ngIf="isNew">
 										<div class="text-label d-block text-muted">Dog Type</div>
 										<div class="summary-text-data">
 											{{ dogType | default }}
@@ -210,7 +210,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</div>
 								</div>
 
-								<ng-container *ngIf="!isTrainedByAccreditedSchools">
+								<ng-container *ngIf="isNew && !isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
 									<div class="text-minor-heading-small">Dog Medical Information</div>

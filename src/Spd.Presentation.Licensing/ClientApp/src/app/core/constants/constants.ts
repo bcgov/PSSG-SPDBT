@@ -68,7 +68,6 @@ export const SPD_CONSTANTS = {
 		bceidUrl: 'https://www.bceid.ca',
 		bceidBluePagesUrl: 'https://www.bceid.ca/directories/bluepages/',
 		bceidGettingStartedUrl: 'https://www.bceid.ca/register/business/getting_started/getting_started.aspx',
-		bcGovHomeUrl: 'https://www2.gov.bc.ca/gov/content/home',
 		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
 		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
 		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',

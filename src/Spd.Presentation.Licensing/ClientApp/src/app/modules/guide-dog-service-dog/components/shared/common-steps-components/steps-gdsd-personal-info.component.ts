@@ -7,6 +7,7 @@ import { StepGdsdPersonalInfoComponent } from '../../authenticated/step-gdsd-per
 import { StepGdsdGovermentPhotoIdComponent } from '../common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdMailingAddressComponent } from '../common-step-components/step-gdsd-mailing-address.component';
 import { StepGdsdMedicalInformationComponent } from '../common-step-components/step-gdsd-medical-information.component';
+import { StepGdsdPhotographOfYourselfRenewComponent } from '../common-step-components/step-gdsd-photograph-of-yourself-renew.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components/step-gdsd-photograph-of-yourself.component';
 
 @Component({
@@ -62,7 +63,7 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNew">
 				<app-step-gdsd-photograph-of-yourself></app-step-gdsd-photograph-of-yourself>
 
 				<app-wizard-footer
@@ -72,6 +73,19 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
 					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step *ngIf="!isNew">
+				<app-step-gdsd-photograph-of-yourself-renew></app-step-gdsd-photograph-of-yourself-renew>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
+					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -98,7 +112,8 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_MAILING_ADDRESS = 1;
 	readonly STEP_MEDICAL = 2;
 	readonly STEP_PHOTO_OF_YOURSELF = 3;
-	readonly STEP_GOV_ID = 4;
+	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 4;
+	readonly STEP_GOV_ID = 5;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -109,6 +124,8 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@ViewChild(StepGdsdPersonalInfoAnonymousComponent) personAnonymous!: StepGdsdPersonalInfoAnonymousComponent;
 	@ViewChild(StepGdsdPersonalInfoComponent) personAuth!: StepGdsdPersonalInfoComponent;
 	@ViewChild(StepGdsdPhotographOfYourselfComponent) photoComponent!: StepGdsdPhotographOfYourselfComponent;
+	@ViewChild(StepGdsdPhotographOfYourselfRenewComponent)
+	photoRenewComponent!: StepGdsdPhotographOfYourselfRenewComponent;
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
 	@ViewChild(StepGdsdMedicalInformationComponent) medicalComponent!: StepGdsdMedicalInformationComponent;
@@ -128,6 +145,8 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 				return this.medicalComponent.isFormValid();
 			case this.STEP_PHOTO_OF_YOURSELF:
 				return this.photoComponent.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF_RENEW:
+				return this.photoRenewComponent.isFormValid();
 			case this.STEP_GOV_ID:
 				return this.govPhotoIdComponent.isFormValid();
 			default:

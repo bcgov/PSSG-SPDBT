@@ -25,7 +25,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	standalone: false,
 })
 export class StepGdsdPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	serviceTypeCode = ServiceTypeCode.GdsdTeamCertification;
+	serviceTypeCode = ServiceTypeCode.GdsdTeamCertification; // TODO gdsd remove hardcoding
 	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;

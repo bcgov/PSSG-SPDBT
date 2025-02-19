@@ -20,6 +20,7 @@ import { GdsdSummaryOtherTrainingComponent } from './components/shared/common-fo
 import { GdsdSummarySchoolTrainingComponent } from './components/shared/common-form-components/gdsd-summary-school-training.component';
 import { StepGdsdAccreditedGraduationComponent } from './components/shared/common-step-components/step-gdsd-accredited-graduation.component';
 import { StepGdsdChecklistNewComponent } from './components/shared/common-step-components/step-gdsd-checklist-new.component';
+import { StepGdsdChecklistRenewalComponent } from './components/shared/common-step-components/step-gdsd-checklist-renewal.component';
 import { StepGdsdConsentComponent } from './components/shared/common-step-components/step-gdsd-consent.component';
 import { StepGdsdDogCertificationSelectionComponent } from './components/shared/common-step-components/step-gdsd-dog-certification-selection.component';
 import { StepGdsdDogInformationComponent } from './components/shared/common-step-components/step-gdsd-dog-information.component';
@@ -29,6 +30,7 @@ import { StepGdsdGovermentPhotoIdComponent } from './components/shared/common-st
 import { StepGdsdMailingAddressComponent } from './components/shared/common-step-components/step-gdsd-mailing-address.component';
 import { StepGdsdMedicalInformationComponent } from './components/shared/common-step-components/step-gdsd-medical-information.component';
 import { StepGdsdOtherTrainingsComponent } from './components/shared/common-step-components/step-gdsd-other-trainings.component';
+import { StepGdsdPhotographOfYourselfRenewComponent } from './components/shared/common-step-components/step-gdsd-photograph-of-yourself-renew.component';
 import { StepGdsdPhotographOfYourselfComponent } from './components/shared/common-step-components/step-gdsd-photograph-of-yourself.component';
 import { StepGdsdSchoolTrainingsComponent } from './components/shared/common-step-components/step-gdsd-school-trainings.component';
 import { StepGdsdSummaryComponent } from './components/shared/common-step-components/step-gdsd-summary.component';
@@ -60,9 +62,11 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepsGdsdReviewConfirmComponent,
 		StepGdsdTermsOfUseComponent,
 		StepGdsdChecklistNewComponent,
+		StepGdsdChecklistRenewalComponent,
 		StepGdsdPersonalInfoAnonymousComponent,
 		StepGdsdPersonalInfoComponent,
 		StepGdsdPhotographOfYourselfComponent,
+		StepGdsdPhotographOfYourselfRenewComponent,
 		StepGdsdGovermentPhotoIdComponent,
 		StepGdsdMailingAddressComponent,
 		StepGdsdDogCertificationSelectionComponent,

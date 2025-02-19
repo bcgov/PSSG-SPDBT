@@ -53,6 +53,7 @@ export { DogInfoRenew } from './models/dog-info-renew';
 export { EyeColourCode } from './models/eye-colour-code';
 export { GdsdAppCommandResponse } from './models/gdsd-app-command-response';
 export { GdsdTeamLicenceAppAnonymousSubmitRequest } from './models/gdsd-team-licence-app-anonymous-submit-request';
+export { GdsdTeamLicenceAppChangeRequest } from './models/gdsd-team-licence-app-change-request';
 export { GdsdTeamLicenceAppResponse } from './models/gdsd-team-licence-app-response';
 export { GdsdTeamLicenceAppUpsertRequest } from './models/gdsd-team-licence-app-upsert-request';
 export { GenderCode } from './models/gender-code';

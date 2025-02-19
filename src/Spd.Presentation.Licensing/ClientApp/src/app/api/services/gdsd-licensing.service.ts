@@ -13,8 +13,8 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { apiGdsdTeamAppAnonymousSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
 import { ApiGdsdTeamAppAnonymousSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
-import { apiGdsdTeamAppGet } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
-import { ApiGdsdTeamAppGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
+import { apiGdsdTeamAppChangePost } from '../fn/gdsd-licensing/api-gdsd-team-app-change-post';
+import { ApiGdsdTeamAppChangePost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-change-post';
 import { apiGdsdTeamAppLicenceAppIdGet } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
 import { ApiGdsdTeamAppLicenceAppIdGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
 import { apiGdsdTeamAppPost } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
@@ -28,39 +28,6 @@ import { GdsdTeamLicenceAppResponse } from '../models/gdsd-team-licence-app-resp
 export class GdsdLicensingService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
-  }
-
-  /** Path part for operation `apiGdsdTeamAppGet()` */
-  static readonly ApiGdsdTeamAppGetPath = '/api/gdsd-team-app';
-
-  /**
-   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiGdsdTeamAppGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiGdsdTeamAppGet$Response(params?: ApiGdsdTeamAppGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
-    return apiGdsdTeamAppGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiGdsdTeamAppGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiGdsdTeamAppGet(params?: ApiGdsdTeamAppGet$Params, context?: HttpContext): Observable<GdsdTeamLicenceAppResponse> {
-    return this.apiGdsdTeamAppGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdTeamLicenceAppResponse>): GdsdTeamLicenceAppResponse => r.body)
-    );
   }
 
   /** Path part for operation `apiGdsdTeamAppPost()` */
@@ -158,6 +125,41 @@ export class GdsdLicensingService extends BaseService {
    */
   apiGdsdTeamAppSubmitPost(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
     return this.apiGdsdTeamAppSubmitPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiGdsdTeamAppChangePost()` */
+  static readonly ApiGdsdTeamAppChangePostPath = '/api/gdsd-team-app/change';
+
+  /**
+   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiGdsdTeamAppChangePost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppChangePost$Response(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppChangePost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppChangePost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppChangePost(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
     );
   }

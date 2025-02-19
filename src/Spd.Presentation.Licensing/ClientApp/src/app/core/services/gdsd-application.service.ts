@@ -164,6 +164,17 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepPersonalInformationComplete(): boolean {
+		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return (
+				this.gdsdPersonalInformationFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid &&
+				this.governmentPhotoIdFormGroup.valid &&
+				this.mailingAddressFormGroup.valid
+			);
+		}
+
 		const isTrainedByAccreditedSchools =
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
@@ -1076,17 +1087,19 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
-		return this.gdsdLicensingService.apiGdsdTeamAppGet().pipe(
-			switchMap((workerLicenceAppl: GdsdTeamLicenceAppResponse) => {
-				// return this.applyLicenceIntoModel(
-				// 	workerLicenceAppl,
-				// 	workerLicenceAppl.applicationTypeCode,
-				// 	associatedLicence
-				// ).pipe(
-				// 	switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(workerLicenceAppl, null, associatedLicence);
-			})
-		);
+		return this.gdsdLicensingService
+			.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: associatedLicence.licenceAppId! })
+			.pipe(
+				switchMap((workerLicenceAppl: GdsdTeamLicenceAppResponse) => {
+					// return this.applyLicenceIntoModel(
+					// 	workerLicenceAppl,
+					// 	workerLicenceAppl.applicationTypeCode,
+					// 	associatedLicence
+					// ).pipe(
+					// 	switchMap((_resp: any) => {
+					return this.applyLicenceIntoModel(workerLicenceAppl, null, associatedLicence);
+				})
+			);
 		// })
 		// );
 	}
