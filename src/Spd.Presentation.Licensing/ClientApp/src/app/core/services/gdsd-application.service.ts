@@ -7,6 +7,7 @@ import {
 	Document,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
+	GdsdTeamLicenceAppChangeRequest,
 	GdsdTeamLicenceAppResponse,
 	GdsdTeamLicenceAppUpsertRequest,
 	GoogleRecaptcha,
@@ -82,6 +83,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		trainingHistoryData: this.trainingHistoryFormGroup,
 		schoolTrainingHistoryData: this.schoolTrainingHistoryFormGroup,
 		otherTrainingHistoryData: this.otherTrainingHistoryFormGroup,
+		dogRenewData: this.dogRenewFormGroup,
 	});
 
 	gdsdModelChangedSubscription!: Subscription;
@@ -179,15 +181,9 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug(
-		// 	'isStepPersonalInformationComplete',
-		// 	isTrainedByAccreditedSchools,
-		// 	this.gdsdPersonalInformationFormGroup.valid,
-		// 	this.medicalInformationFormGroup.valid,
-		// 	this.photographOfYourselfFormGroup.valid,
-		// 	this.governmentPhotoIdFormGroup.valid,
-		// 	this.mailingAddressFormGroup.valid
-		// );
+		// console.debug('isStepPersonalInformationComplete', isTrainedByAccreditedSchools, this.gdsdPersonalInformationFormGroup.valid,
+		// this.medicalInformationFormGroup.valid, this.photographOfYourselfFormGroup.valid, this.governmentPhotoIdFormGroup.valid,
+		// this.mailingAddressFormGroup.valid );
 
 		if (isTrainedByAccreditedSchools) {
 			return (
@@ -208,17 +204,19 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepDogInformationComplete(): boolean {
+		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+
+		// console.debug('isStepDogInformationComplete', applicationTypeCode, this.dogInformationFormGroup.valid, this.dogRenewFormGroup.valid );
+
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return this.dogRenewFormGroup.valid;
+		}
+
 		const isTrainedByAccreditedSchools =
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug(
-		// 	'isStepDogInformationComplete',
-		// 	isTrainedByAccreditedSchools,
-		// 	this.dogGdsdFormGroup.valid,
-		// 	this.dogInformationFormGroup.valid,
-		// 	this.dogMedicalFormGroup.valid
-		// );
+		// console.debug('isStepDogInformationComplete', isTrainedByAccreditedSchools, this.dogGdsdFormGroup.valid, this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid );
 
 		if (isTrainedByAccreditedSchools) {
 			return this.dogGdsdFormGroup.valid && this.dogInformationFormGroup.valid;
@@ -228,6 +226,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	}
 
 	isStepTrainingInformationComplete(): boolean {
+		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return true;
+		}
+
 		const isTrainedByAccreditedSchools =
 			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
@@ -235,11 +239,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (isTrainedByAccreditedSchools) {
 			const isServiceDog = this.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
 
-			// console.debug(
-			// 	'isStepTrainingInformationComplete',
-			// 	this.accreditedGraduationFormGroup.valid,
-			// 	this.dogTasksFormGroup.valid
-			// );
+			// console.debug('isStepTrainingInformationComplete', isServiceDog, this.accreditedGraduationFormGroup.valid, this.dogTasksFormGroup.valid );
 
 			if (isServiceDog) {
 				return this.accreditedGraduationFormGroup.valid && this.dogTasksFormGroup.valid;
@@ -251,14 +251,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const hasAttendedTrainingSchool =
 			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
 
-		// console.debug(
-		// 	'isStepTrainingInformationComplete',
-		// 	hasAttendedTrainingSchool,
-		// 	this.trainingHistoryFormGroup.valid,
-		// 	this.schoolTrainingHistoryFormGroup.valid,
-		// 	this.otherTrainingHistoryFormGroup.valid,
-		// 	this.dogTasksFormGroup.valid
-		// );
+		// console.debug('isStepTrainingInformationComplete', hasAttendedTrainingSchool, this.trainingHistoryFormGroup.valid,
+		// this.schoolTrainingHistoryFormGroup.valid, this.otherTrainingHistoryFormGroup.valid, this.dogTasksFormGroup.valid );
 
 		if (hasAttendedTrainingSchool) {
 			return (
@@ -307,7 +301,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
 		console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
 
-		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -410,14 +404,22 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body });
+		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.hotToastService.success(successMessage);
+			})
+		);
 	}
 
 	/**
@@ -426,14 +428,22 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseRenewal(gdsdModelFormValue) as GdsdTeamLicenceAppChangeRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body });
+		return this.gdsdLicensingService.apiGdsdTeamAppRenewPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.hotToastService.success(successMessage);
+			})
+		);
 	}
 
 	/**
@@ -442,14 +452,22 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	submitLicenceReplacementAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseReplacement(gdsdModelFormValue) as GdsdTeamLicenceAppChangeRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body });
+		return this.gdsdLicensingService.apiGdsdTeamAppReplacePost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.hotToastService.success(successMessage);
+			})
+		);
 	}
 
 	/**
@@ -1169,7 +1187,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	submitNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(gdsdModelFormValue);
+		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1215,10 +1233,30 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	submitRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		return this.submitNewAnonymous(); // TODO gdsd fix
+
+		// .pipe(
+		// 	tap((_resp: any) => {
+		// 		const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+		// 			body.serviceTypeCode!,
+		// 			body.applicationTypeCode!
+		// 		);
+		// 		this.hotToastService.success(successMessage);
+		// 	})
+		// );
 	}
 
 	submitReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		return this.submitNewAnonymous(); // TODO gdsd fix
+
+		// .pipe(
+		// 	tap((_resp: any) => {
+		// 		const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+		// 			body.serviceTypeCode!,
+		// 			body.applicationTypeCode!
+		// 		);
+		// 		this.hotToastService.success(successMessage);
+		// 	})
+		// );
 	}
 
 	/**

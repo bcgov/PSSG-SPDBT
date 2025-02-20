@@ -53,14 +53,12 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		tasks: new FormControl('', [Validators.required]),
 	});
 
-	// TODO dog renewal
 	dogRenewFormGroup: FormGroup = this.formBuilder.group({
-		dogName: new FormControl('', [Validators.required]),
-		currentDogCertificate: new FormControl('', [Validators.required]),
 		isAssistanceStillRequired: new FormControl('', [Validators.required]),
 	});
 
 	dogInformationFormGroup: FormGroup = this.formBuilder.group({
+		dogId: new FormControl(''), // placeholder
 		dogName: new FormControl('', [Validators.required]),
 		dogDateOfBirth: new FormControl('', [Validators.required]),
 		dogBreed: new FormControl('', [Validators.required]),
@@ -140,10 +138,80 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	}
 
 	/**
-	 * getSummarythe form group data into the correct structure
+	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBase(gdsdModelFormValue: any): any {
+	getSaveBodyBaseNew(gdsdModelFormValue: any): any {
+		return this.getSaveBodyBase(gdsdModelFormValue);
+	}
+
+	/**
+	 * get body the form group data into the correct structure
+	 * @returns
+	 */
+	getSaveBodyBaseRenewal(gdsdModelFormValue: any): any {
+		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
+
+		const body = {
+			licenceAppId: bodyBase.licenceAppId,
+			applicantOrLegalGuardianName: null,
+			applicationOriginTypeCode: bodyBase.applicationOriginTypeCode,
+			applicationTypeCode: bodyBase.applicationTypeCode,
+			serviceTypeCode: bodyBase.serviceTypeCode,
+			licenceTermCode: bodyBase.licenceTermCode,
+			givenName: bodyBase.givenName,
+			middleName: bodyBase.middleName,
+			surname: bodyBase.surname,
+			dateOfBirth: bodyBase.dateOfBirth,
+			phoneNumber: bodyBase.phoneNumber,
+			emailAddress: bodyBase.emailAddress,
+			// documentKeyCodes: [],
+			dogInfoRenew: bodyBase.dogInfoRenew,
+			mailingAddress: bodyBase.mailingAddress,
+			// documentInfos,
+			// documentRelatedInfos,
+		};
+
+		console.debug('[getSaveBodyBaseRenewal]', body);
+		return body;
+	}
+
+	/**
+	 * get body the form group data into the correct structure
+	 * @returns
+	 */
+	getSaveBodyBaseReplacement(gdsdModelFormValue: any): any {
+		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
+
+		const body = {
+			licenceAppId: bodyBase.licenceAppId,
+			applicantOrLegalGuardianName: null,
+			applicationOriginTypeCode: bodyBase.applicationOriginTypeCode,
+			applicationTypeCode: bodyBase.applicationTypeCode,
+			serviceTypeCode: bodyBase.serviceTypeCode,
+			licenceTermCode: bodyBase.licenceTermCode,
+			givenName: bodyBase.givenName,
+			middleName: bodyBase.middleName,
+			surname: bodyBase.surname,
+			dateOfBirth: bodyBase.dateOfBirth,
+			phoneNumber: bodyBase.phoneNumber,
+			emailAddress: bodyBase.emailAddress,
+			// documentKeyCodes: [],
+			dogInfoRenew: bodyBase.dogInfoRenew,
+			mailingAddress: bodyBase.mailingAddress,
+			// documentInfos,
+			// documentRelatedInfos,
+		};
+
+		console.debug('[getSaveBodyBaseReplacement]', body);
+		return body;
+	}
+
+	/**
+	 * get body the form group data into the correct structure
+	 * @returns
+	 */
+	private getSaveBodyBase(gdsdModelFormValue: any): any {
 		const serviceTypeData = gdsdModelFormValue.serviceTypeData;
 		const applicationTypeData = gdsdModelFormValue.applicationTypeData;
 		const mailingAddressData = gdsdModelFormValue.mailingAddressData;

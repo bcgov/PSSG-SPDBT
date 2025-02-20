@@ -6,14 +6,10 @@ import { ApplicationOriginTypeCode } from '../models/application-origin-type-cod
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
 import { DocumentRelatedInfo } from '../models/document-related-info';
-import { DogInfoNewAccreditedSchool } from '../models/dog-info-new-accredited-school';
-import { DogInfoNewWithoutAccreditedSchool } from '../models/dog-info-new-without-accredited-school';
 import { DogInfoRenew } from '../models/dog-info-renew';
-import { GraduationInfo } from '../models/graduation-info';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
 import { ServiceTypeCode } from '../models/service-type-code';
-import { TrainingInfo } from '../models/training-info';
 export interface GdsdTeamLicenceAppChangeRequest {
   applicantId?: string;
   applicantOrLegalGuardianName?: string | null;
@@ -23,19 +19,15 @@ export interface GdsdTeamLicenceAppChangeRequest {
   dateOfBirth?: string | null;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
-  dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
-  dogInfoNewWithoutAccreditedSchool?: DogInfoNewWithoutAccreditedSchool;
   dogInfoRenew?: DogInfoRenew;
   emailAddress?: string | null;
   givenName?: string | null;
-  graduationInfo?: GraduationInfo;
-  isDogTrainedByAccreditedSchool?: boolean | null;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;
   middleName?: string | null;
   originalLicenceId?: string;
   phoneNumber?: string | null;
+  previousDocumentIds?: Array<string> | null;
   serviceTypeCode?: ServiceTypeCode;
   surname?: string | null;
-  trainingInfo?: TrainingInfo;
 }

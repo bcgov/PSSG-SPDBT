@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ServiceTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -26,9 +26,10 @@ export class StepGdsdPhotographOfYourselfRenewComponent implements OnInit, Licen
 	title = '';
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.gdsdApplicationService.photographOfYourself;
-	serviceTypeCode = ServiceTypeCode.GdsdTeamCertification; // TODO gdsd remove hardcoding
 
 	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
+
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 

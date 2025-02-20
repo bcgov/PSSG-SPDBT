@@ -104,6 +104,34 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</form>
 					</ng-container>
+					<ng-container *ngIf="!isNew">
+						<form [formGroup]="dogRenewForm" novalidate>
+							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
+							<div class="row">
+								<div class="fs-5 lh-base mt-3 mb-2">
+									Do you continue to require the dog's assistance for daily living as a result of blindness, visual
+									impairment or another disability?
+								</div>
+
+								<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+									<mat-radio-group aria-label="Select an option" formControlName="isAssistanceStillRequired">
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes"> Yes </mat-radio-button>
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No"> No </mat-radio-button>
+									</mat-radio-group>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(dogRenewForm.get('isAssistanceStillRequired')?.dirty ||
+												dogRenewForm.get('isAssistanceStillRequired')?.touched) &&
+											dogRenewForm.get('isAssistanceStillRequired')?.invalid &&
+											dogRenewForm.get('isAssistanceStillRequired')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+							</div>
+						</form>
+					</ng-container>
 				</div>
 			</div>
 		</app-step-section>
@@ -124,6 +152,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 
 	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
 	dogGdsdForm: FormGroup = this.gdsdApplicationService.dogGdsdFormGroup;
+	dogRenewForm: FormGroup = this.gdsdApplicationService.dogRenewFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
@@ -140,16 +169,27 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 		this.genderMfTypes = GenderTypes.filter(
 			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M
 		);
+
+		if (this.isNew) {
+			this.utilService.enableInputs(this.form);
+		} else {
+			this.utilService.disableInputs(this.form);
+		}
 	}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		if (!this.isTrainedByAccreditedSchools) {
-			return this.form.valid;
+		if (this.isNew) {
+			this.form.markAllAsTouched();
+			if (!this.isTrainedByAccreditedSchools) {
+				return this.form.valid;
+			}
+
+			this.dogGdsdForm.markAllAsTouched();
+			return this.form.valid && this.dogGdsdForm.valid;
 		}
 
-		this.dogGdsdForm.markAllAsTouched();
-		return this.form.valid && this.dogGdsdForm.valid;
+		this.dogRenewForm.markAllAsTouched();
+		return this.dogRenewForm.valid;
 	}
 
 	get isNew(): boolean {

@@ -54,7 +54,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdRetiredExist">
 						<div class="row">
 							<div class="col-xl-6 col-lg-6">
-								<div class="text-data">You don't have an active retired service dog certification.</div>
+								<div class="text-data">You don't have an active retired dog certification.</div>
 							</div>
 							<div class="col-xl-6 col-lg-6 text-end">
 								<button
@@ -65,7 +65,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 									aria-label="Apply for a New GDSD Team Certification"
 									*ngIf="!applicationIsInProgress"
 								>
-									<mat-icon>add</mat-icon>Apply for a New Retired Service Dog Certification
+									<mat-icon>add</mat-icon>Apply for a New Retired Dog Certification
 								</button>
 							</div>
 						</div>
@@ -167,53 +167,51 @@ export class GdsdLicenceMainComponent implements OnInit {
 	}
 
 	onRenew(licence: MainLicenceResponse): void {
-		// switch (licence.serviceTypeCode) {
-		// 	case ServiceTypeCode.GdsdTeamCertification: {
-		this.gdsdApplicationService
-			.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(
-							GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_AUTHENTICATED
-						)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-		// 	break;
-		// }
-		// case ServiceTypeCode.RetiredServiceDogCertification:
-		// case ServiceTypeCode.DogTrainerCertification: {
-		// 	// TODO renewal
-		// }
-		// }
+		switch (licence.serviceTypeCode) {
+			case ServiceTypeCode.GdsdTeamCertification: {
+				this.gdsdApplicationService
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_AUTHENTICATED
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				// TODO renewal
+			}
+		}
 	}
 
 	onReplace(licence: MainLicenceResponse): void {
-		// switch (licence.serviceTypeCode) {
-		// case ServiceTypeCode.GdsdTeamCertification: {
-		this.gdsdApplicationService
-			.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(
-							GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED
-						)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-		// break;
-		// }
-		// case ServiceTypeCode.RetiredServiceDogCertification:
-		// case ServiceTypeCode.DogTrainerCertification: {
-		// 	// TODO replace
-		// }
-		// }
+		switch (licence.serviceTypeCode) {
+			case ServiceTypeCode.GdsdTeamCertification: {
+				this.gdsdApplicationService
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				// TODO replace
+			}
+		}
 	}
 
 	private loadData(): void {

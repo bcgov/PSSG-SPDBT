@@ -5,7 +5,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 @Component({
 	selector: 'app-gdsd-licence-main-licences-list',
 	template: `
-		<div class="mb-3">
+		<div class="mb-3" *ngIf="activeLicences.length > 0">
 			<div class="text-primary-color fs-5 py-3">Active Licences</div>
 			<div
 				class="summary-card-section summary-card-section__green mb-3 px-4 py-3"

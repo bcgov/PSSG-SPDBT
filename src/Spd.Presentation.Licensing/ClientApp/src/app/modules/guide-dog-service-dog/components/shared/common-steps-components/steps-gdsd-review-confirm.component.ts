@@ -49,7 +49,6 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_CONSENT = 1;
 
-	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;

@@ -8,10 +8,8 @@ import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@a
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/steps-gdsd-dog-info.component';
 import { StepsGdsdPersonalInfoComponent } from './shared/common-steps-components/steps-gdsd-personal-info.component';
@@ -47,6 +45,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="false"
 					(childNextStep)="onChildNextStep()"
@@ -76,7 +75,6 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
-					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -128,16 +126,15 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 	isFormValid = false;
 
+	serviceTypeCode!: ServiceTypeCode;
 	readonly applicationTypeCode = ApplicationTypeCode.Renewal;
 
 	private gdsdModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private hotToastService: HotToastService,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -159,6 +156,10 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
 
+			this.serviceTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
+				'serviceTypeData.serviceTypeCode'
+			)?.value;
+
 			this.updateCompleteStatus();
 		});
 	}
@@ -171,12 +172,6 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 		if (this.isLoggedIn) {
 			this.gdsdApplicationService.submitLicenceRenewalAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						ServiceTypeCode.GdsdTeamCertification,
-						this.applicationTypeCode
-					);
-					this.hotToastService.success(successMessage);
-
 					this.router.navigateByUrl(
 						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 					);
@@ -191,12 +186,6 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 		this.gdsdApplicationService.submitRenewalAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					ServiceTypeCode.GdsdTeamCertification, // TODO gdsd remove hardcoded
-					this.applicationTypeCode
-				);
-				this.hotToastService.success(successMessage);
-
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);

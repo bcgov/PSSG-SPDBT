@@ -9,7 +9,6 @@ import { Document } from '../models/document';
 import { DocumentRelatedInfo } from '../models/document-related-info';
 import { DogInfoNewAccreditedSchool } from '../models/dog-info-new-accredited-school';
 import { DogInfoNewWithoutAccreditedSchool } from '../models/dog-info-new-without-accredited-school';
-import { DogInfoRenew } from '../models/dog-info-renew';
 import { GraduationInfo } from '../models/graduation-info';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
@@ -26,7 +25,6 @@ export interface GdsdTeamLicenceAppUpsertRequest {
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   dogInfoNewAccreditedSchool?: DogInfoNewAccreditedSchool;
   dogInfoNewWithoutAccreditedSchool?: DogInfoNewWithoutAccreditedSchool;
-  dogInfoRenew?: DogInfoRenew;
   emailAddress?: string | null;
   givenName?: string | null;
   graduationInfo?: GraduationInfo;

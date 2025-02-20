@@ -49,6 +49,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
@@ -99,7 +100,6 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-gdsd-review-confirm
-					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -160,6 +160,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	hasAttendedTrainingSchool = false;
 	isServiceDog = false;
 
+	serviceTypeCode!: ServiceTypeCode;
 	readonly applicationTypeCode = ApplicationTypeCode.New;
 
 	private gdsdModelChangedSubscription!: Subscription;
@@ -190,6 +191,10 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 
 		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
 			this.isFormValid = _resp;
+
+			this.serviceTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
+				'serviceTypeData.serviceTypeCode'
+			)?.value;
 
 			this.isServiceDog =
 				this.gdsdApplicationService.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;

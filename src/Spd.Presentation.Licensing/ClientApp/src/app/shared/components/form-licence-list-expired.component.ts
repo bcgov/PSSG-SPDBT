@@ -46,8 +46,12 @@ import { UtilService } from '@app/core/services/util.service';
 						</div>
 						<div class="row mt-2" *ngIf="isRenewAllowed(licence)">
 							<mat-divider class="my-2"></mat-divider>
-							<div class="col-lg-9"></div>
 
+							<div class="col-lg-9">
+								<div class="text-data fw-bold">
+									An expired licence certification can be renewed if within 6 months of the expiry date.
+								</div>
+							</div>
 							<div class="col-lg-3 text-end">
 								<button
 									mat-flat-button
@@ -98,7 +102,7 @@ export class FormLicenceListExpiredComponent {
 			licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
 		) {
 			return false;
-		} // TODO gdsd fix
+		}
 
 		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
 		return !this.utilService.getIsDateMonthsOrOlder(licence.expiryDate, period);

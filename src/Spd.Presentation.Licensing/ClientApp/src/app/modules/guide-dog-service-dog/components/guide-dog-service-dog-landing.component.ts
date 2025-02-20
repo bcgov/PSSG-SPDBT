@@ -91,12 +91,12 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/retired-service-dog.svg" alt="Retired Service Dog Certification" />
+									<img class="image" src="./assets/retired-service-dog.svg" alt="Retired Dog Certification" />
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
 									<div class="d-flex justify-content-start py-2">
-										<div class="text-start"><strong>Retired Service Dog</strong> Certification:</div>
+										<div class="text-start"><strong>Retired Dog</strong> Certification:</div>
 									</div>
 
 									<button

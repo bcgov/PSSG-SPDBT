@@ -11,7 +11,7 @@ import { RequestBuilder } from '../../request-builder';
 import { GdsdAppCommandResponse } from '../../models/gdsd-app-command-response';
 import { GdsdTeamLicenceAppChangeRequest } from '../../models/gdsd-team-licence-app-change-request';
 
-export interface ApiGdsdTeamAppChangePost$Params {
+export interface ApiGdsdTeamAppRenewPost$Params {
   
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
@@ -19,8 +19,8 @@ export interface ApiGdsdTeamAppChangePost$Params {
     body?: GdsdTeamLicenceAppChangeRequest
 }
 
-export function apiGdsdTeamAppChangePost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppChangePost.PATH, 'post');
+export function apiGdsdTeamAppRenewPost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppRenewPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppRenewPost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -35,4 +35,4 @@ export function apiGdsdTeamAppChangePost(http: HttpClient, rootUrl: string, para
   );
 }
 
-apiGdsdTeamAppChangePost.PATH = '/api/gdsd-team-app/change';
+apiGdsdTeamAppRenewPost.PATH = '/api/gdsd-team-app/renew';
