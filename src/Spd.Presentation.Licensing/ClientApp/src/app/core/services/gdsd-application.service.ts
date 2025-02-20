@@ -65,6 +65,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		bizTypeCode: new FormControl(), // placeholder to save
 		licenceTermCode: new FormControl(), // placeholder to save
 		originalLicenceData: this.originalLicenceFormGroup, // placeholder to store data
+		dogId: new FormControl(), // placeholder // TODO gdsd
 
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -76,10 +77,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogTasksData: this.dogTasksFormGroup,
 		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
-		dogInformationData: this.dogInformationFormGroup,
+		dogInfoData: this.dogInfoFormGroup,
 		dogGdsdData: this.dogGdsdFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,
-		accreditedGraduationData: this.accreditedGraduationFormGroup,
+		graduationInfoData: this.graduationInfoFormGroup,
 		trainingHistoryData: this.trainingHistoryFormGroup,
 		schoolTrainingHistoryData: this.schoolTrainingHistoryFormGroup,
 		otherTrainingHistoryData: this.otherTrainingHistoryFormGroup,
@@ -219,10 +220,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		// console.debug('isStepDogInformationComplete', isTrainedByAccreditedSchools, this.dogGdsdFormGroup.valid, this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid );
 
 		if (isTrainedByAccreditedSchools) {
-			return this.dogGdsdFormGroup.valid && this.dogInformationFormGroup.valid;
+			return this.dogGdsdFormGroup.valid && this.dogInfoFormGroup.valid;
 		}
 
-		return this.dogInformationFormGroup.valid && this.dogMedicalFormGroup.valid;
+		return this.dogInfoFormGroup.valid && this.dogMedicalFormGroup.valid;
 	}
 
 	isStepTrainingInformationComplete(): boolean {
@@ -239,13 +240,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (isTrainedByAccreditedSchools) {
 			const isServiceDog = this.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
 
-			// console.debug('isStepTrainingInformationComplete', isServiceDog, this.accreditedGraduationFormGroup.valid, this.dogTasksFormGroup.valid );
+			// console.debug('isStepTrainingInformationComplete', isServiceDog, this.graduationInfoFormGroup.valid, this.dogTasksFormGroup.valid );
 
 			if (isServiceDog) {
-				return this.accreditedGraduationFormGroup.valid && this.dogTasksFormGroup.valid;
+				return this.graduationInfoFormGroup.valid && this.dogTasksFormGroup.valid;
 			}
 
-			return this.accreditedGraduationFormGroup.valid;
+			return this.graduationInfoFormGroup.valid;
 		}
 
 		const hasAttendedTrainingSchool =
@@ -680,7 +681,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		}
 
 		// empty attachments that are not related to non-accredited
-		const accreditedGraduationAttachments = this.accreditedGraduationFormGroup.get('attachments') as FormControl;
+		const accreditedGraduationAttachments = this.graduationInfoFormGroup.get('attachments') as FormControl;
 		accreditedGraduationAttachments.setValue([]);
 
 		const schoolTrainingAttachments = this.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
@@ -819,10 +820,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		let medicalInformationData: any = null;
 		let photographOfYourselfData: any = null;
 		let dogTasksData: any = null;
-		let dogInformationData: any = null;
+		let dogInfoData: any = null;
 		let dogGdsdData: any = null;
 		let dogMedicalData: any = null;
-		let accreditedGraduationData: any = null;
+		let graduationInfoData: any = null;
 		let trainingHistoryData: any = null;
 
 		const schoolSupportTrainingHistoryAttachments: Array<File> = [];
@@ -893,7 +894,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument: {
 					const aFile = this.fileUtilService.dummyFile(doc);
-					if (appl.trainingInfo?.hasAttendedTrainingSchool) {
+					if (appl.nonAccreditedSchoolQuestions?.trainingInfo?.hasAttendedTrainingSchool) {
 						schoolSupportTrainingHistoryAttachments.push(aFile);
 					} else {
 						otherSupportTrainingHistoryAttachments.push(aFile);
@@ -920,7 +921,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (dogMedicalAttachments.length > 0) {
 			dogMedicalData = {
 				areInoculationsUpToDate: this.utilService.booleanToBooleanType(
-					appl.dogInfoNewWithoutAccreditedSchool?.areInoculationsUpToDate
+					appl.nonAccreditedSchoolQuestions?.areInoculationsUpToDate
 				),
 				attachments: dogMedicalAttachments,
 			};
@@ -935,32 +936,34 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			};
 		}
 
+		if (appl.dogInfo) {
+			dogInfoData = {
+				dogName: appl.dogInfo.dogName,
+				dogDateOfBirth: appl.dogInfo.dogDateOfBirth,
+				dogBreed: appl.dogInfo.dogBreed,
+				dogColorAndMarkings: appl.dogInfo.dogColorAndMarkings,
+				dogGender: appl.dogInfo.dogGender,
+				microchipNumber: appl.dogInfo.microchipNumber,
+			};
+		}
+
 		if (this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) && appl.isDogTrainedByAccreditedSchool) {
-			if (appl.graduationInfo) {
-				accreditedGraduationData = {
-					accreditedSchoolName: appl.graduationInfo.accreditedSchoolName,
-					schoolContactGivenName: appl.graduationInfo.schoolContactGivenName,
-					schoolContactSurname: appl.graduationInfo.schoolContactSurname,
-					schoolContactPhoneNumber: appl.graduationInfo.schoolContactPhoneNumber,
-					schoolContactEmailAddress: appl.graduationInfo.schoolContactEmailAddress,
+			if (appl.accreditedSchoolQuestions?.graduationInfo) {
+				graduationInfoData = {
+					accreditedSchoolName: appl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolName,
+					schoolContactGivenName: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactGivenName,
+					schoolContactSurname: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactSurname,
+					schoolContactPhoneNumber: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactPhoneNumber,
+					schoolContactEmailAddress: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactEmailAddress,
 					attachments: accreditedGraduationAttachments,
 				};
 			}
 
-			if (appl.dogInfoNewAccreditedSchool) {
-				dogGdsdData = { isGuideDog: this.utilService.booleanToBooleanType(appl.dogInfoNewAccreditedSchool.isGuideDog) };
-
-				dogInformationData = {
-					dogName: appl.dogInfoNewAccreditedSchool.dogName,
-					dogDateOfBirth: appl.dogInfoNewAccreditedSchool.dogDateOfBirth,
-					dogBreed: appl.dogInfoNewAccreditedSchool.dogBreed,
-					dogColorAndMarkings: appl.dogInfoNewAccreditedSchool.dogColorAndMarkings,
-					dogGender: appl.dogInfoNewAccreditedSchool.dogGender,
-					microchipNumber: appl.dogInfoNewAccreditedSchool.microchipNumber,
-				};
+			if (appl.accreditedSchoolQuestions) {
+				dogGdsdData = { isGuideDog: this.utilService.booleanToBooleanType(appl.accreditedSchoolQuestions.isGuideDog) };
 
 				dogTasksData = {
-					tasks: appl.dogInfoNewAccreditedSchool.serviceDogTasks,
+					tasks: appl.accreditedSchoolQuestions.serviceDogTasks,
 				};
 			}
 		}
@@ -968,34 +971,27 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (
 			this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) &&
 			!appl.isDogTrainedByAccreditedSchool &&
-			appl.dogInfoNewWithoutAccreditedSchool
+			appl.nonAccreditedSchoolQuestions
 		) {
-			dogInformationData = {
-				dogName: appl.dogInfoNewWithoutAccreditedSchool.dogName,
-				dogDateOfBirth: appl.dogInfoNewWithoutAccreditedSchool.dogDateOfBirth,
-				dogBreed: appl.dogInfoNewWithoutAccreditedSchool.dogBreed,
-				dogColorAndMarkings: appl.dogInfoNewWithoutAccreditedSchool.dogColorAndMarkings,
-				dogGender: appl.dogInfoNewWithoutAccreditedSchool.dogGender,
-				microchipNumber: appl.dogInfoNewWithoutAccreditedSchool.microchipNumber,
-			};
-
-			if (appl.trainingInfo) {
+			if (appl.nonAccreditedSchoolQuestions.trainingInfo) {
 				dogTasksData = {
-					tasks: appl.trainingInfo.specializedTasksWhenPerformed,
+					tasks: appl.nonAccreditedSchoolQuestions.trainingInfo.specializedTasksWhenPerformed,
 				};
 
-				if (this.utilService.hasBooleanValue(appl.trainingInfo.hasAttendedTrainingSchool)) {
+				if (
+					this.utilService.hasBooleanValue(appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool)
+				) {
 					trainingHistoryData = {
 						hasAttendedTrainingSchool: this.utilService.booleanToBooleanType(
-							appl.trainingInfo.hasAttendedTrainingSchool
+							appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool
 						),
 					};
 
-					if (appl.trainingInfo.hasAttendedTrainingSchool) {
-						schoolTrainingsArray = appl.trainingInfo.schoolTrainings ?? null;
+					if (appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool) {
+						schoolTrainingsArray = appl.nonAccreditedSchoolQuestions.trainingInfo.schoolTrainings ?? null;
 						schoolTrainingHistoryData.attachments = schoolSupportTrainingHistoryAttachments;
 					} else {
-						otherTrainingsArray = appl.trainingInfo.otherTrainings ?? null;
+						otherTrainingsArray = appl.nonAccreditedSchoolQuestions.trainingInfo.otherTrainings ?? null;
 						otherTrainingHistoryData.attachments = otherSupportTrainingHistoryAttachments;
 						otherTrainingHistoryData.practiceLogAttachments = otherTrainingHistoryPracticeAttachments;
 					}
@@ -1019,10 +1015,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				mailingAddressData,
 				dogTasksData,
 				dogCertificationSelectionData,
-				dogInformationData,
+				dogInfoData,
 				dogGdsdData,
 				dogMedicalData,
-				accreditedGraduationData,
+				graduationInfoData,
 				trainingHistoryData,
 				schoolTrainingHistoryData,
 				otherTrainingHistoryData,

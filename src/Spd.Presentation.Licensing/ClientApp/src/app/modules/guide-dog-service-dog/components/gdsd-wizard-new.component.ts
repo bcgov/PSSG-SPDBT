@@ -110,7 +110,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextSubmitStep)="onSubmit()"
+					(nextStepperStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-gdsd-review-confirm>

@@ -6,7 +6,7 @@ import { ApplicationOriginTypeCode } from '../models/application-origin-type-cod
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
 import { DocumentRelatedInfo } from '../models/document-related-info';
-import { DogInfoRenew } from '../models/dog-info-renew';
+import { DogInfo } from '../models/dog-info';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
 import { ServiceTypeCode } from '../models/service-type-code';
@@ -19,9 +19,11 @@ export interface GdsdTeamLicenceAppChangeRequest {
   dateOfBirth?: string | null;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
-  dogInfoRenew?: DogInfoRenew;
+  dogId?: string | null;
+  dogInfo?: DogInfo;
   emailAddress?: string | null;
   givenName?: string | null;
+  isAssistanceStillRequired?: boolean;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;
   middleName?: string | null;

@@ -150,7 +150,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	maxBirthDate = this.utilService.getDogBirthDateMax();
 	minDate = this.utilService.getDogDateMin();
 
-	form: FormGroup = this.gdsdApplicationService.dogInformationFormGroup;
+	form: FormGroup = this.gdsdApplicationService.dogInfoFormGroup;
 	dogGdsdForm: FormGroup = this.gdsdApplicationService.dogGdsdFormGroup;
 	dogRenewForm: FormGroup = this.gdsdApplicationService.dogRenewFormGroup;
 
