@@ -27,21 +27,18 @@ public record GDSDApp
     public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
 
+    public DogInfo? DogInfo { get; set; }
     public bool? IsDogTrainedByAccreditedSchool { get; set; }
-    public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
 
     //for app with accredited school
-    public DogInfoNewAccreditedSchool? DogInfoNewAccreditedSchool { get; set; } //not null if it is New
-    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
+    public AccreditedSchoolQuestions? AccreditedSchoolQuestions { get; set; } //not null if it is New
 
     //for app without accredited school
-    public DogInfoNewWithoutAccreditedSchool? DogInfoNewWithoutAccreditedSchool { get; set; } //not null if it is New
-    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
+    public NonAccreditedSchoolQuestions? NonAccreditedSchoolQuestions { get; set; } //not null if it is New
 }
 
-public record DogInfoNew
+public record DogInfo
 {
-    // Dog Information (New)
     public string? DogName { get; set; }
     public DateOnly? DogDateOfBirth { get; set; }
     public string? DogBreed { get; set; }
@@ -49,15 +46,17 @@ public record DogInfoNew
     public GenderEnum? DogGender { get; set; }
     public string? MicrochipNumber { get; set; }
 }
-public record DogInfoNewAccreditedSchool : DogInfoNew
+public record AccreditedSchoolQuestions
 {
     public bool? IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
     public string? ServiceDogTasks { get; set; }
+    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
 }
-public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
+public record NonAccreditedSchoolQuestions
 {
     public bool? AreInoculationsUpToDate { get; set; }
     public bool? IsDogSterilized { get; set; }
+    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 public record GraduationInfo
 {
@@ -104,11 +103,6 @@ public record OtherTraining
     public string? TrainerPhoneNumber { get; set; }
     public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
-public record DogInfoRenew : DogInfoNew
-{
-    public bool IsAssistanceStillRequired { get; set; }
-    public Guid? DogId { get; set; }
-}
 
 public record SaveGDSDAppCmd() : GDSDApp
 {
@@ -123,6 +117,8 @@ public record CreateGDSDAppCmd() : GDSDApp
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
     public Guid? ApplicantId { get; set; }
+    public bool IsAssistanceStillRequired { get; set; }
+    public Guid? DogId { get; set; }
 };
 
 public record CommitGDSDAppCmd()
