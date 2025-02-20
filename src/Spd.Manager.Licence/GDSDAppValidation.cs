@@ -21,6 +21,7 @@ public class GDSDTeamLicenceAppChangeRequestValidator : GDSDTeamLicenceAppBaseVa
     {
         RuleFor(r => r.ApplicantId).NotEmpty();
         RuleFor(r => r.OriginalLicenceId).NotEmpty();
+        RuleFor(r => r.DogId).NotEmpty();
     }
 }
 
@@ -39,6 +40,8 @@ public class GDSDTeamLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty();
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())
             .When(r => r.MailingAddress != null);
+        RuleFor(r => r.DogInfo).SetValidator(new DogInfoValidator())
+            .When(r => r.DogInfo != null);
     }
 }
 
@@ -48,37 +51,22 @@ public class GDSDTeamLicenceAppNewValidator<T> : AbstractValidator<T> where T : 
     {
         Include(new GDSDTeamLicenceAppBaseValidator<T>());
         RuleFor(r => r.IsDogTrainedByAccreditedSchool).NotNull().When(r => r.ApplicationTypeCode == ApplicationTypeCode.New);
-        RuleFor(r => r.DogInfoNewAccreditedSchool).NotEmpty()
+        RuleFor(r => r.AccreditedSchoolQuestions).NotEmpty()
             .When(r => r.IsDogTrainedByAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool.Value);
-        RuleFor(r => r.DogInfoNewAccreditedSchool)
-            .SetValidator(new DogInfoNewAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewAccreditedSchool != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
-        RuleFor(r => r.GraduationInfo).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool != null
-            && r.IsDogTrainedByAccreditedSchool.Value
-            && r.ApplicationTypeCode == ApplicationTypeCode.New);
-        RuleFor(r => r.GraduationInfo)
-            .SetValidator(new GraduationInfoValidator())
-            .When(r => r.GraduationInfo != null
-                && r.IsDogTrainedByAccreditedSchool != null
-                && r.IsDogTrainedByAccreditedSchool.Value
-                && r.ApplicationTypeCode == ApplicationTypeCode.New);
+        RuleFor(r => r.AccreditedSchoolQuestions)
+            .SetValidator(new AccreditedSchoolQuestionsValidator())
+            .When(r => r.AccreditedSchoolQuestions != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
 
-        RuleFor(r => r.DogInfoNewWithoutAccreditedSchool).NotEmpty()
+        RuleFor(r => r.NonAccreditedSchoolQuestions).NotEmpty()
             .When(r => r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value);
-        RuleFor(r => r.DogInfoNewWithoutAccreditedSchool)
-            .SetValidator(new DogInfoNewWithoutAccreditedSchoolValidator())
-            .When(r => r.DogInfoNewWithoutAccreditedSchool != null && r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value && r.ApplicationTypeCode == ApplicationTypeCode.New);
-        RuleFor(r => r.TrainingInfo).NotEmpty()
-            .When(r => r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value && r.ApplicationTypeCode == ApplicationTypeCode.New);
-        RuleFor(r => r.TrainingInfo)
-            .SetValidator(new TrainingInfoValidator())
-            .When(r => r.TrainingInfo != null && r.ApplicationTypeCode == ApplicationTypeCode.New);
+        RuleFor(r => r.NonAccreditedSchoolQuestions)
+            .SetValidator(new NonAccreditedSchoolQuestionsValidator())
+            .When(r => r.NonAccreditedSchoolQuestions != null && r.IsDogTrainedByAccreditedSchool != null && !r.IsDogTrainedByAccreditedSchool.Value && r.ApplicationTypeCode == ApplicationTypeCode.New);
     }
 }
-public class DogInfoNewValidator : AbstractValidator<DogInfoNew>
+public class DogInfoValidator : AbstractValidator<DogInfo>
 {
-    public DogInfoNewValidator()
+    public DogInfoValidator()
     {
         RuleFor(x => x.DogName).NotEmpty().MaximumLength(50);
         RuleFor(r => r.DogDateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
@@ -89,30 +77,29 @@ public class DogInfoNewValidator : AbstractValidator<DogInfoNew>
     }
 }
 
-public class DogInfoNewAccreditedSchoolValidator : AbstractValidator<DogInfoNewAccreditedSchool>
+public class AccreditedSchoolQuestionsValidator : AbstractValidator<AccreditedSchoolQuestions>
 {
-    public DogInfoNewAccreditedSchoolValidator()
+    public AccreditedSchoolQuestionsValidator()
     {
-        Include(new DogInfoNewValidator());
+        RuleFor(r => r.GraduationInfo).NotEmpty();
+
+        RuleFor(r => r.GraduationInfo)
+            .SetValidator(new GraduationInfoValidator())
+            .When(r => r.GraduationInfo != null);
         RuleFor(r => r.ServiceDogTasks).MaximumLength(1000);
         RuleFor(r => r.IsGuideDog).NotNull();
     }
 }
 
-public class DogInfoNewWithoutAccreditedSchoolValidator : AbstractValidator<DogInfoNewWithoutAccreditedSchool>
+public class NonAccreditedSchoolQuestionsValidator : AbstractValidator<NonAccreditedSchoolQuestions>
 {
-    public DogInfoNewWithoutAccreditedSchoolValidator()
+    public NonAccreditedSchoolQuestionsValidator()
     {
-        Include(new DogInfoNewValidator());
         RuleFor(r => r.AreInoculationsUpToDate).NotNull();
-    }
-}
-
-public class DogInfoRenewValidator : AbstractValidator<DogInfoRenew>
-{
-    public DogInfoRenewValidator()
-    {
-        RuleFor(r => r.DogId).NotEmpty();
+        RuleFor(r => r.TrainingInfo).NotEmpty();
+        RuleFor(r => r.TrainingInfo)
+            .SetValidator(new TrainingInfoValidator())
+            .When(r => r.TrainingInfo != null);
     }
 }
 
