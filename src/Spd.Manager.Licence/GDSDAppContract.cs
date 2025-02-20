@@ -74,7 +74,7 @@ public record GDSDTeamLicenceAppChangeRequest : GDSDTeamLicenceAppBase
     public DogInfoRenew? DogInfoRenew { get; set; }
 }
 
-public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppBase
+public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     public Guid? LicenceAppId { get; set; }
