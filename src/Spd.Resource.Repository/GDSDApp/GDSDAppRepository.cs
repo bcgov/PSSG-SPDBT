@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
@@ -159,15 +159,17 @@ internal class GDSDAppRepository : IGDSDAppRepository
             }
             else
             {
-                if (appData.NonAccreditedSchoolQuestions.TrainingInfo?.OtherTrainings != null)
+                if (appData.NonAccreditedSchoolQuestions?.TrainingInfo?.OtherTrainings != null)
                 {
-                    foreach (OtherTraining other in appData.NonAccreditedSchoolQuestions.TrainingInfo?.OtherTrainings)
-                    {
-                        spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
-                        _context.AddTospd_dogtrainingschools(otherTraining);
-                        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
-                        _context.SetLink(otherTraining, nameof(otherTraining.spd_ApplicantId), applicant);
-                    }
+                    var otherTrainings = appData.NonAccreditedSchoolQuestions?.TrainingInfo?.OtherTrainings;
+                    if (otherTrainings != null)
+                        foreach (OtherTraining other in otherTrainings)
+                        {
+                            spd_dogtrainingschool otherTraining = _mapper.Map<spd_dogtrainingschool>(other);
+                            _context.AddTospd_dogtrainingschools(otherTraining);
+                            _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
+                            _context.SetLink(otherTraining, nameof(otherTraining.spd_ApplicantId), applicant);
+                        }
                 }
             }
         }
