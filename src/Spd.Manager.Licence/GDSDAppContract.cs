@@ -39,18 +39,19 @@ public abstract record GDSDTeamLicenceAppBase : LicenceAppBase
     public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
+    public DogInfo? DogInfo { get; set; }
 }
 
 public abstract record GDSDTeamLicenceAppNew : GDSDTeamLicenceAppBase
 {
     public bool? IsDogTrainedByAccreditedSchool { get; set; }
+
     //for app with accredited school
-    public DogInfoNewAccreditedSchool? DogInfoNewAccreditedSchool { get; set; } //not null if it is New
-    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
+    public AccreditedSchoolQuestions? AccreditedSchoolQuestions { get; set; } //not null if it is New
 
     //for app without accredited school
-    public DogInfoNewWithoutAccreditedSchool? DogInfoNewWithoutAccreditedSchool { get; set; } //not null if it is New
-    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
+    public NonAccreditedSchoolQuestions? NonAccreditedSchoolQuestions { get; set; } //not null if it is New
+
 }
 
 public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppNew
@@ -71,7 +72,8 @@ public record GDSDTeamLicenceAppChangeRequest : GDSDTeamLicenceAppBase
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid OriginalLicenceId { get; set; } //for renew, replace, it should be original licence id.
     public Guid ApplicantId { get; set; }
-    public DogInfoRenew? DogInfoRenew { get; set; }
+    public bool IsAssistanceStillRequired { get; set; }
+    public Guid? DogId { get; set; }
 }
 
 public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppNew
@@ -87,24 +89,25 @@ public record GDSDAppCommandResponse
     public Guid? LicenceAppId { get; set; }
 }
 
-public record DogInfoNew
+public record DogInfo
 {
-    // Dog Information (New)
     public string? DogName { get; set; }
     public DateOnly? DogDateOfBirth { get; set; }
     public string? DogBreed { get; set; }
     public string? DogColorAndMarkings { get; set; }
-    public GenderCode? DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
+    public GenderCode? DogGender { get; set; }
     public string? MicrochipNumber { get; set; }
 }
-public record DogInfoNewAccreditedSchool : DogInfoNew
+public record AccreditedSchoolQuestions
 {
     public bool? IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
     public string? ServiceDogTasks { get; set; }
+    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
 }
-public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
+public record NonAccreditedSchoolQuestions
 {
     public bool? AreInoculationsUpToDate { get; set; }
+    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 public record GraduationInfo
 {
@@ -150,10 +153,5 @@ public record OtherTraining
     public string? TrainerEmailAddress { get; set; }
     public string? TrainerPhoneNumber { get; set; }
     public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
-}
-public record DogInfoRenew : DogInfoNew
-{
-    public bool IsAssistanceStillRequired { get; set; }
-    public Guid? DogId { get; set; }
 }
 
