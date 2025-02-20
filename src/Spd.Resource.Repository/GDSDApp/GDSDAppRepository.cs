@@ -159,7 +159,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
             }
             else
             {
-                if (appData.NonAccreditedSchoolQuestions.TrainingInfo?.OtherTrainings != null)
+                if (appData.NonAccreditedSchoolQuestions?.TrainingInfo?.OtherTrainings != null)
                 {
                     foreach (OtherTraining other in appData.NonAccreditedSchoolQuestions.TrainingInfo?.OtherTrainings)
                     {
