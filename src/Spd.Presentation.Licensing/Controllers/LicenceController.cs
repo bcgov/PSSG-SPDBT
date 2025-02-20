@@ -51,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns> 
         [Route("api/applicants/{applicantId}/licences")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantLicences([FromRoute][Required] Guid applicantId)
         {
             IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
@@ -66,7 +66,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns> 
         [Route("api/applicants/{applicantId}/gdsd-certifications")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantGdsdCertifications([FromRoute][Required] Guid applicantId)
         {
             IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
