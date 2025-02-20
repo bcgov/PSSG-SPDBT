@@ -173,7 +173,7 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 		if (this.isNew) {
 			this.utilService.enableInputs(this.form);
 		} else {
-			this.utilService.disableInputs(this.form);
+			this.utilService.disableInputs(this.form, ['microchipNumber']);
 		}
 	}
 

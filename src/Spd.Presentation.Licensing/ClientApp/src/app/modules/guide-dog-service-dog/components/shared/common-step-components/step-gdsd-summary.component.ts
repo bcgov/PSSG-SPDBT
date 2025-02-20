@@ -202,6 +202,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
 									</div>
+									<div class="col-lg-4 col-md-12" *ngIf="!isNew">
+										<div class="text-label d-block text-muted">Dog's Assistance Required</div>
+										<div class="summary-text-data">
+											{{ isAssistanceStillRequired | default }}
+										</div>
+									</div>
 									<div class="col-12" *ngIf="isNew">
 										<div class="text-label d-block text-muted">Dog Type</div>
 										<div class="summary-text-data">
@@ -366,6 +372,9 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get isDogTrainedByAccreditedSchool(): string {
 		return this.gdsdApplicationService.getSummaryisDogTrainedByAccreditedSchool(this.gdsdModelData);
+	}
+	get isAssistanceStillRequired(): string {
+		return this.gdsdApplicationService.getSummaryisAssistanceStillRequired(this.gdsdModelData);
 	}
 	get dogType(): string {
 		return this.gdsdApplicationService.getSummarydogType(this.gdsdModelData);

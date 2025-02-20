@@ -15,7 +15,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 				<div class="col-12">
 					<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
 						<ng-container matColumnDef="serviceTypeCode">
-							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Certification Type</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Licence Type:</span>
 								{{ application.serviceTypeCode | options: 'ServiceTypes' }}
@@ -117,7 +117,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 					max-width: 120px;
 				}
 				.mat-column-serviceTypeCode {
-					max-width: 130px;
+					max-width: 145px;
 				}
 			}
 

@@ -573,6 +573,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getSummaryisDogTrainedByAccreditedSchool(gdsdModelData: any): string {
 		return gdsdModelData.dogCertificationSelectionData.isDogTrainedByAccreditedSchool ?? '';
 	}
+	getSummaryisAssistanceStillRequired(gdsdModelData: any): string {
+		return gdsdModelData.dogRenewData.isAssistanceStillRequired ?? '';
+	}
 	getSummarydogType(gdsdModelData: any): string {
 		return gdsdModelData.dogGdsdData.isGuideDog === BooleanTypeCode.Yes
 			? 'Guide dog (Trained as a guide for a blind person)'

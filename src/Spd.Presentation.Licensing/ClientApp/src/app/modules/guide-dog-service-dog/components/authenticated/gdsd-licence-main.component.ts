@@ -20,7 +20,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-12">
-							<h2 class="fs-3 mt-2">Guide Dog & Service Dog Certifications</h2>
+							<h2 class="fs-3 mt-2">Guide Dog and Service Dog Certifications</h2>
 						</div>
 					</div>
 
@@ -51,7 +51,25 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 						(renewLicence)="onRenew($event)"
 					></app-gdsd-licence-main-licences-list>
 
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdRetiredExist">
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdTeamExist">
+						<div class="row">
+							<div class="col-xl-6 col-lg-6">
+								<div class="text-data">You don't have an active guide dog and service dog team certification.</div>
+							</div>
+							<div class="col-xl-6 col-lg-6 text-end">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mt-2 mt-lg-0"
+									(click)="onNewGuideDogServiceDogTeam()"
+								>
+									<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeRetiredDogExist">
 						<div class="row">
 							<div class="col-xl-6 col-lg-6">
 								<div class="text-data">You don't have an active retired dog certification.</div>
@@ -72,27 +90,10 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 					</div>
 
 					<app-form-licence-list-expired
-						title="Expired Licences"
+						serviceLabelTitle="Certifications"
+						serviceLabel="Certification"
 						[expiredLicences]="expiredLicencesList"
 					></app-form-licence-list-expired>
-
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdTeamExist">
-						<div class="row">
-							<div class="col-xl-6 col-lg-6">
-								<div class="text-data">You don't have an active guide dogs/service dogs team certification.</div>
-							</div>
-							<div class="col-xl-6 col-lg-6 text-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewGuideDogServiceDogTeam()"
-								>
-									<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
-								</button>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</section>
@@ -110,7 +111,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 	activeLicencesList: Array<MainLicenceResponse> = [];
 	expiredLicencesList: Array<MainLicenceResponse> = [];
 
-	activeGdsdRetiredExist = false;
+	activeRetiredDogExist = false;
 	activeGdsdTeamExist = false;
 
 	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(

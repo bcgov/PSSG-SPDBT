@@ -510,10 +510,12 @@ export class UtilService {
 		});
 	}
 
-	disableInputs(form: FormGroup) {
+	disableInputs(form: FormGroup, doNotIncludeControlNames: Array<string> | null = null) {
 		Object.keys(form.controls).forEach((control: string) => {
-			const typedControl: AbstractControl = form.controls[control];
-			typedControl.disable({ emitEvent: false });
+			if (!doNotIncludeControlNames?.includes(control)) {
+				const typedControl: AbstractControl = form.controls[control];
+				typedControl.disable({ emitEvent: false });
+			}
 		});
 	}
 

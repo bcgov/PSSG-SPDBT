@@ -10,7 +10,7 @@ import { UtilService } from '@app/core/services/util.service';
 	selector: 'app-form-licence-list-expired',
 	template: `
 		<div class="mb-3" *ngIf="expiredLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">{{ title }}</div>
+			<div class="text-primary-color fs-5 py-3">Expired {{ serviceLabelTitle }}</div>
 			<div
 				class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
 				*ngFor="let licence of expiredLicences; let i = index"
@@ -24,11 +24,11 @@ import { UtilService } from '@app/core/services/util.service';
 					<div class="col-lg-9">
 						<div class="row">
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Number</div>
 								<div class="text-data">{{ licence.licenceNumber }}</div>
 							</div>
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Term</div>
 								<div class="text-data">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
@@ -49,7 +49,7 @@ import { UtilService } from '@app/core/services/util.service';
 
 							<div class="col-lg-9">
 								<div class="text-data fw-bold">
-									An expired licence certification can be renewed if within 6 months of the expiry date.
+									An expired certification can be renewed if within 6 months of the expiry date.
 								</div>
 							</div>
 							<div class="col-lg-3 text-end">
@@ -85,7 +85,8 @@ import { UtilService } from '@app/core/services/util.service';
 export class FormLicenceListExpiredComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
-	@Input() title = 'Expired Licences/Permits';
+	@Input() serviceLabelTitle = 'Licences/Permits';
+	@Input() serviceLabel = 'Licence';
 	@Input() expiredLicences!: Array<MainLicenceResponse>;
 
 	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();

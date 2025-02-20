@@ -52,12 +52,12 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dogs/Service Dogs Team Certification" />
+									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dog and Service Dog Team Certification" />
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
 									<div class="d-flex justify-content-start py-2">
-										<div class="text-start"><strong>Guide Dogs/Service Dogs Team</strong> Certification:</div>
+										<div class="text-start"><strong>Guide Dog and Service Dog Team</strong> Certification:</div>
 									</div>
 
 									<button
