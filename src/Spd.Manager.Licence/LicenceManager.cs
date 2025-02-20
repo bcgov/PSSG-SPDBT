@@ -56,6 +56,7 @@ internal class LicenceManager :
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
+        await GetGDSDDogInfoAsync(lic, cancellationToken);
 
         return lic;
     }
@@ -81,6 +82,7 @@ internal class LicenceManager :
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
+        await GetGDSDDogInfoAsync(lic, cancellationToken);
 
         return lic;
     }
@@ -279,4 +281,14 @@ internal class LicenceManager :
         }
     }
 
+    private async Task GetGDSDDogInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
+    {
+        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification)
+        {
+            if (lic.GDSDTeamId != null)
+            {
+
+            }
+        }
+    }
 }

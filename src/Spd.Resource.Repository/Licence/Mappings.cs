@@ -46,6 +46,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
              .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
              .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition))
+             .ForMember(d => d.GDSDTeamId, opt => opt.MapFrom(s => s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault()))
              ;
 
             _ = CreateMap<spd_licencecondition, Condition>()
