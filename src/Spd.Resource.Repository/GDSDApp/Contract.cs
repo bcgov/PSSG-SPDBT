@@ -104,7 +104,7 @@ public record OtherTraining
     public string? TrainerPhoneNumber { get; set; }
     public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
-public record DogInfoRenew
+public record DogInfoRenew : DogInfoNew
 {
     public bool IsAssistanceStillRequired { get; set; }
     public Guid? DogId { get; set; }

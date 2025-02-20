@@ -108,14 +108,25 @@ internal class GDSDAppManager :
         if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
 
-        //check Renew your existing permit before it expires, within 90 days of the expiry date.
+        //check Renew your existing certification even though it has been expired for 6 month
         DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
         if (currentDate > originalLic.ExpiryDate.AddMonths(Constants.GDSDRenewValidAfterExpirationInMonths))
             throw new ArgumentException($"the certification can only be renewed within {Constants.GDSDRenewValidAfterExpirationInMonths} months after expiry date.");
 
+        var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.ChangeRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
         {
             LicenceAppId = response.LicenceAppId,

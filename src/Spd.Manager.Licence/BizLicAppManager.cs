@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
@@ -183,7 +182,6 @@ internal class BizLicAppManager :
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
-            cmd.LicenceRequest.LatestApplicationId,
             cmd.LicenceRequest.PreviousDocumentIds,
             cancellationToken);
         ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
@@ -256,7 +254,6 @@ internal class BizLicAppManager :
         if ((request.Reprint != null && request.Reprint.Value) || changes.CategoriesChanged || changes.UseDogsChanged)
         {
             var existingFiles = await GetExistingFileInfo(
-                cmd.LicenceRequest.LatestApplicationId,
                 cmd.LicenceRequest.PreviousDocumentIds,
                 cancellationToken);
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
