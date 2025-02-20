@@ -130,7 +130,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
             _mapper.Map<AccreditedSchoolQuestions, spd_application>(appData.AccreditedSchoolQuestions, app);
             app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
             _context.AddTospd_applications(app);
-            spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(appData.AccreditedSchoolQuestions.GraduationInfo);
+            spd_dogtrainingschool graduation = _mapper.Map<spd_dogtrainingschool>(appData.AccreditedSchoolQuestions?.GraduationInfo);
             graduation.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.AccreditedSchool;
             _context.AddTospd_dogtrainingschools(graduation);
             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), graduation);
@@ -140,11 +140,11 @@ internal class GDSDAppRepository : IGDSDAppRepository
         {
             //non-accredited school
             _mapper.Map<NonAccreditedSchoolQuestions, spd_application>(appData.NonAccreditedSchoolQuestions, app);
-            app.spd_dogsassistanceindailyliving = appData.NonAccreditedSchoolQuestions.TrainingInfo?.SpecializedTasksWhenPerformed;
+            app.spd_dogsassistanceindailyliving = appData.NonAccreditedSchoolQuestions?.TrainingInfo?.SpecializedTasksWhenPerformed;
             app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
             _context.AddTospd_applications(app);
 
-            if (appData.NonAccreditedSchoolQuestions.TrainingInfo?.HasAttendedTrainingSchool != null && appData.NonAccreditedSchoolQuestions.TrainingInfo.HasAttendedTrainingSchool.Value)
+            if (appData.NonAccreditedSchoolQuestions?.TrainingInfo?.HasAttendedTrainingSchool != null && appData.NonAccreditedSchoolQuestions.TrainingInfo.HasAttendedTrainingSchool.Value)
             {
                 if (appData.NonAccreditedSchoolQuestions.TrainingInfo.SchoolTrainings != null)
                 {
