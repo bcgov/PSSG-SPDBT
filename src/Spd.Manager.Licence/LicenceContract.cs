@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 
 namespace Spd.Manager.Licence;
 
@@ -69,12 +68,7 @@ public record LicenceResponse : LicenceBasicResponse
     //gdsd
     public Guid? GDSDTeamId { get; set; }
     public Guid? DogId { get; set; }
-    public string? DogName { get; set; }
-    public DateOnly? DogDateOfBirth { get; set; }
-    public string? DogBreed { get; set; }
-    public string? DogColorAndMarkings { get; set; }
-    public GenderEnum? DogGender { get; set; }
-    public string? MicrochipNumber { get; set; }
+    public DogInfo DogInfo { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
