@@ -220,32 +220,15 @@ public class GDSDAppValidationTest
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
             IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = null
+            AccreditedSchoolQuestions = null
         };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.DogInfoNewAccreditedSchool)
+        result.ShouldHaveValidationErrorFor(x => x.AccreditedSchoolQuestions)
               .WithErrorMessage("'Dog Info New Accredited School' must not be empty.");
-    }
-
-    [Fact]
-    public void Should_NotHaveError_When_DogInfoNewAccreditedSchool_IsValid_And_TrainedByAccreditedSchool()
-    {
-        // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest
-        {
-            IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { DogName = "Buddy" }
-        };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.DogInfoNewAccreditedSchool);
     }
 
     [Fact]
@@ -255,7 +238,7 @@ public class GDSDAppValidationTest
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
             IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { ServiceDogTasks = new string('A', 1001) }
+            AccreditedSchoolQuestions = new AccreditedSchoolQuestions { ServiceDogTasks = new string('A', 1001) }
         };
 
         // Act
@@ -264,24 +247,6 @@ public class GDSDAppValidationTest
         // Assert
         result.ShouldHaveValidationErrorFor("DogInfoNewAccreditedSchool.ServiceDogTasks")
               .WithErrorMessage("The length of 'Service Dog Tasks' must be 1000 characters or fewer. You entered 1001 characters.");
-    }
-
-    [Fact]
-    public void Should_HaveError_When_GraduationInfo_IsEmpty_And_TrainedByAccreditedSchool()
-    {
-        // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest
-        {
-            IsDogTrainedByAccreditedSchool = true,
-            GraduationInfo = null
-        };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.GraduationInfo)
-              .WithErrorMessage("'Graduation Info' must not be empty.");
     }
 
     [Fact]
