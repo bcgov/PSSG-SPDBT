@@ -16,6 +16,8 @@ namespace Spd.Presentation.Licensing.Controllers
     public class LicenceController : SpdLicenceControllerBase
     {
         private readonly IMediator _mediator;
+        private static List<ServiceTypeCode> PersonalSecurityLicences = new() { ServiceTypeCode.BodyArmourPermit, ServiceTypeCode.ArmouredVehiclePermit, ServiceTypeCode.SecurityWorkerLicence };
+        private static List<ServiceTypeCode> GdsdCertifications = new() { ServiceTypeCode.GDSDTeamCertification, ServiceTypeCode.RetiredServiceDogCertification, ServiceTypeCode.DogTrainerCertification };
 
         public LicenceController(
             IMediator mediator,
@@ -42,7 +44,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary> 
-        /// Get licences for login user , only return active and Expired ones. 
+        /// Get personal licences (such as swl, permit) for login user , only return active and Expired ones. 
         /// Example: http://localhost:5114/api/applicants/xxxx/licences 
         /// </summary> 
         /// <param name="applicantId"></param> 
@@ -52,9 +54,24 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantLicences([FromRoute][Required] Guid applicantId)
         {
-            return await _mediator.Send(new LicenceListQuery(applicantId, null));
+            IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
+            return resps.Where(r => r.ServiceTypeCode != null && PersonalSecurityLicences.Contains(r.ServiceTypeCode.Value)).ToList();
         }
 
+        /// <summary> 
+        /// Get gdsd licences (such as gdsd team, retired dog, dog trainer ) for login user , only return active and Expired ones. 
+        /// Example: http://localhost:5114/api/applicants/xxxx/gdsd-certifications 
+        /// </summary> 
+        /// <param name="applicantId"></param> 
+        /// <returns></returns> 
+        [Route("api/applicants/{applicantId}/gdsd-certifications")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantGdsdCertifications([FromRoute][Required] Guid applicantId)
+        {
+            IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
+            return resps.Where(r => r.ServiceTypeCode != null && GdsdCertifications.Contains(r.ServiceTypeCode.Value)).ToList();
+        }
         /// <summary>
         /// Get latest licence by licence number.
         /// There should be only one active licence for each licenceNumber.
