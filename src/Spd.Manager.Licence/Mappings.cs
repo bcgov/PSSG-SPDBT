@@ -447,18 +447,14 @@ internal class Mappings : Profile
         CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
         CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
         CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
-        CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
+        CreateMap<AccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.AccreditedSchoolQuestions>()
          .ReverseMap();
-        CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
+        CreateMap<NonAccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.NonAccreditedSchoolQuestions>()
          .ForMember(d => d.IsDogSterilized, opt => opt.MapFrom(s => true))
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
          .ReverseMap();
-        CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>()
-            .ReverseMap();
         CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>()
             .ReverseMap();
-        CreateMap<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>()
+        CreateMap<DogInfo, Spd.Resource.Repository.GDSDApp.DogInfo>()
             .ReverseMap();
         CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>()
             .ReverseMap();
