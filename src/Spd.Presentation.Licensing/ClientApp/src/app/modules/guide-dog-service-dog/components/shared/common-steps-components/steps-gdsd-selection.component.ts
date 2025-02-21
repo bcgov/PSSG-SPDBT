@@ -20,7 +20,12 @@ import { StepGdsdTermsOfUseComponent } from '../common-step-components/step-gdsd
 			</mat-step>
 
 			<mat-step>
-				<app-step-gdsd-checklist-new></app-step-gdsd-checklist-new>
+				<ng-container *ngIf="isNew; else isRenewal">
+					<app-step-gdsd-checklist-new></app-step-gdsd-checklist-new>
+				</ng-container>
+				<ng-template #isRenewal>
+					<app-step-gdsd-checklist-renewal></app-step-gdsd-checklist-renewal>
+				</ng-template>
 
 				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
 					<app-wizard-footer

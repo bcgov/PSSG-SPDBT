@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-access-code-anonymous.component';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-step-gdsd-licence-access-code',
@@ -65,9 +65,7 @@ export class StepGdsdLicenceAccessCodeComponent implements OnInit, LicenceChildS
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-				PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-			)
+			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
 		);
 	}
 
@@ -85,20 +83,20 @@ export class StepGdsdLicenceAccessCodeComponent implements OnInit, LicenceChildS
 			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.serviceTypeCode) {
-					case ServiceTypeCode.SecurityWorkerLicence: {
+					case ServiceTypeCode.GdsdTeamCertification: {
 						switch (this.applicationTypeCode) {
 							case ApplicationTypeCode.Renewal: {
 								this.router.navigateByUrl(
-									PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-										PersonalLicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
+									GuideDogServiceDogRoutes.pathGdsdAnonymous(
+										GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_ANONYMOUS
 									)
 								);
 								break;
 							}
 							case ApplicationTypeCode.Replacement: {
 								this.router.navigateByUrl(
-									PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-										PersonalLicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
+									GuideDogServiceDogRoutes.pathGdsdAnonymous(
+										GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_ANONYMOUS
 									)
 								);
 								break;
