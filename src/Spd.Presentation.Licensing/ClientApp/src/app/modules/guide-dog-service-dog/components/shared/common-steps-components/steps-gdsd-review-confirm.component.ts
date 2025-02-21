@@ -35,8 +35,8 @@ import { StepGdsdSummaryComponent } from '../common-step-components/step-gdsd-su
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_CONSENT)"
 					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_CONSENT)"
 					nextButtonLabel="Submit"
-					(nextStepperStep)="onSubmitNow()"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -49,7 +49,6 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_CONSENT = 1;
 
-	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
@@ -64,10 +63,6 @@ export class StepsGdsdReviewConfirmComponent extends BaseWizardStepComponent {
 
 	constructor(utilService: UtilService) {
 		super(utilService);
-	}
-
-	onSubmitNow(): void {
-		this.nextSubmitStep.emit();
 	}
 
 	onGoToStep(step: number): void {

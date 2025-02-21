@@ -74,7 +74,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	standalone: false,
 })
 export class StepWorkerLicenceChecklistUpdateComponent {
-	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	swlLearnMoreUrl = SPD_CONSTANTS.urls.swlLearnMoreUrl;
 }

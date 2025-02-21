@@ -20,6 +20,7 @@ export const SPD_CONSTANTS = {
 		licenceUpdatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
 		licenceRenewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
 		licenceRenewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
+		gdsdLicenceRenewAfterExpiryPeriodMonths: 6, // gdsd licence can still be renewed until 6 months after expiry
 	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',
@@ -68,7 +69,6 @@ export const SPD_CONSTANTS = {
 		bceidUrl: 'https://www.bceid.ca',
 		bceidBluePagesUrl: 'https://www.bceid.ca/directories/bluepages/',
 		bceidGettingStartedUrl: 'https://www.bceid.ca/register/business/getting_started/getting_started.aspx',
-		bcGovHomeUrl: 'https://www2.gov.bc.ca/gov/content/home',
 		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
 		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
 		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',

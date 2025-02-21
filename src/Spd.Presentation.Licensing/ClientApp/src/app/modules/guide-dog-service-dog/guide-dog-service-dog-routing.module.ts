@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { GuideDogServiceDogBaseAnonymousComponent } from './components/anonymous/guide-dog-service-dog-base-anonymous.component';
 import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
 import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
+import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/authenticated/guide-dog-service-dog-base-authenticated.component';
 import { GdsdWizardNewComponent } from './components/gdsd-wizard-new.component';
 import { GdsdWizardRenewalComponent } from './components/gdsd-wizard-renewal.component';
 import { GdsdWizardReplacementComponent } from './components/gdsd-wizard-replacement.component';
-import { GuideDogServiceDogBaseAnonymousComponent } from './components/guide-dog-service-dog-base-anonymous.component';
-import { GuideDogServiceDogBaseAuthenticatedComponent } from './components/guide-dog-service-dog-base-authenticated.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
 import { GdsdApplicationTypeAnonymousComponent } from './components/shared/common-form-components/gdsd-application-type-anonymous.component';

@@ -309,7 +309,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },
 	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
-	{ desc: 'Retired Service Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
+	{ desc: 'Retired Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{

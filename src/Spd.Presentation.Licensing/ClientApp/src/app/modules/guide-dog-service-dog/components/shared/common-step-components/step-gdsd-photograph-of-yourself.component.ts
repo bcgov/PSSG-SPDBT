@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
@@ -25,10 +25,11 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	standalone: false,
 })
 export class StepGdsdPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	serviceTypeCode = ServiceTypeCode.GdsdTeamCertification;
 	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
+
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
