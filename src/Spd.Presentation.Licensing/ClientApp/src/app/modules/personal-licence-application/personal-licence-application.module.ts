@@ -40,7 +40,6 @@ import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/a
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { StepWorkerLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-access-code.component';
 import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-application-type-anonymous.component';
-import { StepWorkerLicenceConfirmationComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-confirmation.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-personal-information-anonymous.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-summary-review-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
@@ -80,6 +79,7 @@ import { CommonAliasListComponent } from './components/shared/common-step-compon
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
 import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
+import { StepWorkerLicenceConfirmationComponent } from './components/shared/common-step-components/step-worker-licence-confirmation.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/shared/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/shared/licence-first-time-user-selection.component';
@@ -100,9 +100,9 @@ import { PermitSummaryRationaleComponent } from './components/shared/permit-summ
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-step-components/step-permit-reprint.component';
-import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { PersonalLicenceMainApplicationsListComponent } from './components/shared/personal-licence-main-applications-list.component';
 import { PersonalLicenceMainLicenceListComponent } from './components/shared/personal-licence-main-licence-list.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-armoured-car-guard.component';
 import { LicenceCategoryFireInvestigatorComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-fire-investigator.component';
 import { LicenceCategoryLocksmithComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-locksmith.component';

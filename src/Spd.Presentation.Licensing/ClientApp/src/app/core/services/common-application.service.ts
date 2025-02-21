@@ -373,7 +373,7 @@ export class CommonApplicationService {
 
 	userGdsdLicencesList(): Observable<Array<MainLicenceResponse>> {
 		return this.licenceService
-			.apiApplicantsApplicantIdLicencesGet({
+			.apiApplicantsApplicantIdGdsdCertificationsGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
