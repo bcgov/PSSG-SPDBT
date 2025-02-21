@@ -127,7 +127,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	standalone: false,
 })
 export class StepWorkerLicenceChecklistRenewalComponent {
-	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
