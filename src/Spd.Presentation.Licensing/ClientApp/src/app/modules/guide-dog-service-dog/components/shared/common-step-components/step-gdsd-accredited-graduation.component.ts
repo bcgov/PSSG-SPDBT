@@ -114,7 +114,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepGdsdAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdApplicationService.accreditedGraduationFormGroup;
+	form: FormGroup = this.gdsdApplicationService.graduationInfoFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

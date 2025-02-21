@@ -95,7 +95,7 @@ export class StepGdsdPersonalInfoComponent implements OnInit, LicenceChildSteppe
 
 	matcher = new FormErrorStateMatcher();
 
-	// @Input() isReadonly = false;
+	@Input() isReadonly = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	form: FormGroup = this.gdsdApplicationService.gdsdPersonalInformationFormGroup;
@@ -109,11 +109,11 @@ export class StepGdsdPersonalInfoComponent implements OnInit, LicenceChildSteppe
 		this.title = this.isRenewal ? 'Confirm your Personal Information' : 'Your Personal Information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 
-		// if (this.isReadonly) {
-		// 	this.utilService.disableInputs(this.form);
-		// } else {
-		// 	this.utilService.enableInputs(this.form);
-		// }
+		if (this.isReadonly) {
+			this.utilService.disableInputs(this.form);
+		} else {
+			this.utilService.enableInputs(this.form);
+		}
 	}
 
 	isFormValid(): boolean {

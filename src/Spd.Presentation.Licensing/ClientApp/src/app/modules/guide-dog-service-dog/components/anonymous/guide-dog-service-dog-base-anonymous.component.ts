@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 
 @Component({
 	selector: 'app-guide-dog-service-dog-base-anonymous',
