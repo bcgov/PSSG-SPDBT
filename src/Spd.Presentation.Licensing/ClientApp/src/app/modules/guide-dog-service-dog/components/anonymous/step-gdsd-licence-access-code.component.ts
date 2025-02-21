@@ -83,11 +83,11 @@ export class StepGdsdLicenceAccessCodeComponent implements OnInit, LicenceChildS
 			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.serviceTypeCode) {
-					case ServiceTypeCode.SecurityWorkerLicence: {
+					case ServiceTypeCode.GdsdTeamCertification: {
 						switch (this.applicationTypeCode) {
 							case ApplicationTypeCode.Renewal: {
 								this.router.navigateByUrl(
-									GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.pathGdsdAnonymous(
 										GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_ANONYMOUS
 									)
 								);
@@ -95,7 +95,7 @@ export class StepGdsdLicenceAccessCodeComponent implements OnInit, LicenceChildS
 							}
 							case ApplicationTypeCode.Replacement: {
 								this.router.navigateByUrl(
-									GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.pathGdsdAnonymous(
 										GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_ANONYMOUS
 									)
 								);
