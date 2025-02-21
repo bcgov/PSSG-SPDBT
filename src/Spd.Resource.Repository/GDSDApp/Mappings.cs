@@ -72,6 +72,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => (s.IsGuideDog != null && s.IsGuideDog.Value) ? null : s.ServiceDogTasks))
         .ReverseMap()
         .ForMember(d => d.IsGuideDog, opt => opt.MapFrom(s => GetBoolFromDogType(s.spd_dogtype)))
+        .ForMember(d => d.ServiceDogTasks, opt => opt.MapFrom(s => GetBoolFromDogType(s.spd_dogtype) == true ? null : s.spd_dogsassistanceindailyliving))
         .ForMember(d => d.GraduationInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetGraduationInfo(src, context)));
 
         _ = CreateMap<NonAccreditedSchoolQuestions, spd_application>()
