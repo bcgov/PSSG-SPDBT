@@ -84,7 +84,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextSubmitStep)="onSubmit()"
+					(nextStepperStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-gdsd-review-confirm>
@@ -170,7 +170,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+			this.gdsdApplicationService.submitLicenceRenewalOrReplaceAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(
 						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
@@ -184,7 +184,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 			return;
 		}
 
-		this.gdsdApplicationService.submitRenewalAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceRenewalOrReplaceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

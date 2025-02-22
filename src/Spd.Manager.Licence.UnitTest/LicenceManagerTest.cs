@@ -4,6 +4,8 @@ using Moq;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.DogTeam;
+using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -19,6 +21,7 @@ public class LicenceManagerTest
     private readonly Mock<IMainFileStorageService> mockFileService = new();
     private readonly Mock<IIncidentRepository> mockIncidentRepo = new();
     private readonly Mock<IBizRepository> mockBizRepo = new();
+    private readonly Mock<IDogTeamRepository> mockDogTeamRepo = new();
 
     private readonly LicenceManager sut;
 
@@ -41,6 +44,7 @@ public class LicenceManagerTest
             mockFileService.Object,
             mockIncidentRepo.Object,
             mockBizRepo.Object,
+            mockDogTeamRepo.Object,
             mapper);
     }
 

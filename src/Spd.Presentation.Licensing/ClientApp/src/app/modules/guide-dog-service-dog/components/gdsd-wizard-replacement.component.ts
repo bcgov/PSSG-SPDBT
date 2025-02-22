@@ -87,10 +87,10 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 		}
 
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceReplacementAuthenticated().subscribe({
+			this.gdsdApplicationService.submitLicenceRenewalOrReplaceAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 					);
 				},
 				error: (error: any) => {
@@ -100,7 +100,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 			return;
 		}
 
-		this.gdsdApplicationService.submitReplacementAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceRenewalOrReplaceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

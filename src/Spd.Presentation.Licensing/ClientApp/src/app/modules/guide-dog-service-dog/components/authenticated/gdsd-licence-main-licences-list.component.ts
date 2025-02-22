@@ -45,30 +45,32 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 						<div class="row mt-2">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Dog Name</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogName | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">
+									{{ licence.dogInfo?.dogDateOfBirth | formatDate: formalDateFormat | default }}
+								</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Breed</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogBreed | default }}</div>
 							</div>
 						</div>
 
 						<div class="row mt-2">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Colour and Markings</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogColorAndMarkings | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Gender</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogGender | options: 'GenderTypes' | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Microchip Number</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.microchipNumber | default }}</div>
 							</div>
 
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
