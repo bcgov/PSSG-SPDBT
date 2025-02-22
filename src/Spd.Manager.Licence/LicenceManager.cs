@@ -5,6 +5,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.DogTeam;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
@@ -24,6 +25,7 @@ internal class LicenceManager :
     private readonly ILicenceRepository _licenceRepository;
     private readonly IIncidentRepository _incidentRepository;
     private readonly IBizRepository _bizRepository;
+    private readonly IDogTeamRepository _dogTeamRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
     private readonly IMainFileStorageService _fileStorageService;
@@ -36,6 +38,7 @@ internal class LicenceManager :
         IMainFileStorageService fileStorageService,
         IIncidentRepository incidentRepository,
         IBizRepository bizRepository,
+        IDogTeamRepository dogTeamRepository,
         IMapper mapper)
     {
         _licenceRepository = licenceRepository;
@@ -45,6 +48,7 @@ internal class LicenceManager :
         _fileStorageService = fileStorageService;
         _incidentRepository = incidentRepository;
         _bizRepository = bizRepository;
+        _dogTeamRepository = dogTeamRepository;
     }
 
     public async Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken cancellationToken)
@@ -56,6 +60,7 @@ internal class LicenceManager :
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
+        await GetGDSDDogInfoAsync(lic, cancellationToken);
 
         return lic;
     }
@@ -81,6 +86,7 @@ internal class LicenceManager :
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
+        await GetGDSDDogInfoAsync(lic, cancellationToken);
 
         return lic;
     }
@@ -279,4 +285,16 @@ internal class LicenceManager :
         }
     }
 
+    private async Task GetGDSDDogInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
+    {
+        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification)
+        {
+            if (lic.GDSDTeamId != null)
+            {
+                var team = await _dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, cancellationToken);
+                lic.DogInfo = _mapper.Map<DogInfo>(team);
+                lic.DogId = team.DogId;
+            }
+        }
+    }
 }
