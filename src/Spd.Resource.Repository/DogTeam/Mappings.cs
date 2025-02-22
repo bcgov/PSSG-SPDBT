@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.DogTeam
             .ForMember(d => d.DogColorAndMarkings, opt => opt.MapFrom(s => s.spd_DogId.spd_colourandmarkings))
             .ForMember(d => d.DogDateOfBirth, opt => opt.MapFrom(s => s.spd_DogId.spd_dateofbirth))
             .ForMember(d => d.DogGender, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<GenderOptionSet, GenderEnum>(s.spd_DogId.spd_gender)))
-            .ForMember(d => d.DogName, opt => opt.MapFrom(s => s.spd_DogId.spd_name))
+            .ForMember(d => d.DogName, opt => opt.MapFrom(s => s.spd_DogId.spd_dogname))
             .ForMember(d => d.HandlerId, opt => opt.MapFrom(s => s._spd_contactid_value));
         }
     }
