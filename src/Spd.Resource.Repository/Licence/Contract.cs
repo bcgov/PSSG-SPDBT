@@ -60,13 +60,6 @@ namespace Spd.Resource.Repository.Licence
 
         //gdsd
         public Guid? GDSDTeamId { get; set; }
-        public Guid? DogId { get; set; }
-        public string? DogName { get; set; }
-        public DateOnly? DogDateOfBirth { get; set; }
-        public string? DogBreed { get; set; }
-        public string? DogColorAndMarkings { get; set; }
-        public GenderEnum? DogGender { get; set; }
-        public string? MicrochipNumber { get; set; }
     }
 
     public record Licence
