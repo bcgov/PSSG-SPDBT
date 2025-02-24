@@ -113,8 +113,11 @@ namespace Spd.Presentation.Licensing.Controllers
             else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
             else
+            {
                 //gdsd, dog
-                latestAppId = response?.LicenceAppId ?? Guid.Empty;
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
+                return response;
+            }
 
             if (response != null)
             {
