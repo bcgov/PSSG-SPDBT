@@ -137,16 +137,30 @@ internal class GDSDAppManager :
 
     public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand cmd, CancellationToken ct)
     {
-        //var response = await this.Handle((GDSDTeamLicenceAppReplaceCommand)cmd, ct);
-        ////move files from transient bucket to main bucket when app status changed to Submitted.
-        //await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
-        //await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
-        //{
-        //    LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId,
-        //    ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
-        //}, ct);
-        //return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
-        return null;
+        LicenceResp? originalLic = await _licenceRepository.GetAsync(cmd.ChangeRequest.OriginalLicenceId, ct);
+        if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+
+        var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
+        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
+        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.ChangeRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        {
+            LicenceAppId = response.LicenceAppId,
+            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+        }, ct);
+        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 
