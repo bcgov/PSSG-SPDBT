@@ -9,10 +9,8 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/steps-gdsd-dog-info.component';
 import { StepsGdsdPersonalInfoComponent } from './shared/common-steps-components/steps-gdsd-personal-info.component';
@@ -167,10 +165,8 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private hotToastService: HotToastService,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {
 		super(breakpointObserver);
@@ -220,15 +216,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 		if (this.isLoggedIn) {
 			this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						ServiceTypeCode.GdsdTeamCertification,
-						this.applicationTypeCode
-					);
-					this.hotToastService.success(successMessage);
-
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-					);
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);
@@ -240,12 +228,6 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 
 		this.gdsdApplicationService.submitNewAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					ServiceTypeCode.GdsdTeamCertification,
-					this.applicationTypeCode
-				);
-				this.hotToastService.success(successMessage);
-
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);

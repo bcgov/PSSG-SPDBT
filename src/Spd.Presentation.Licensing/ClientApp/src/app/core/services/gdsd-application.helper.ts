@@ -330,7 +330,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const body = {
 			licenceAppId: gdsdModelFormValue.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
-			isAssistanceStillRequired: dogRenewData.isAssistanceStillRequired,
+			isAssistanceStillRequired: this.utilService.booleanTypeToBoolean(dogRenewData.isAssistanceStillRequired),
 			dogId: gdsdModelFormValue.dogId,
 			applicantOrLegalGuardianName: null,
 			applicationOriginTypeCode: gdsdModelFormValue.applicationOriginTypeCode,

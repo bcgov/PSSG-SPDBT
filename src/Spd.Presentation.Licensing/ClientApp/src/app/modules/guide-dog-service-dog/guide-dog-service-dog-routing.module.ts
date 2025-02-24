@@ -73,10 +73,10 @@ const routes: Routes = [
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED,
 				component: GdsdWizardReplacementComponent,
 			},
-			{
-				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
-				component: GdsdApplicationReceivedSuccessComponent,
-			},
+			// {
+			// 	path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,
+			// 	component: GdsdApplicationReceivedSuccessComponent,
+			// },
 			{
 				path: '**',
 				redirectTo: GuideDogServiceDogRoutes.pathGdsdUserApplications(),

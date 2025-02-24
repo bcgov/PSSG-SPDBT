@@ -172,9 +172,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 		if (this.isLoggedIn) {
 			this.gdsdApplicationService.submitLicenceRenewalOrReplaceAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-					);
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);

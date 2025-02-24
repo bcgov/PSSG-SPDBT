@@ -28,7 +28,6 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -94,7 +93,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		configService: ConfigService,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
-		private hotToastService: HotToastService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
@@ -315,7 +313,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!gdsdModelFormValue.licenceAppId) {
 					this.gdsdModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -379,7 +377,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyGdsdAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
+					return this.createEmptyGdsdAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -392,11 +390,61 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	private createEmptyGdsdAuthenticated(
 		applicantProfile: ApplicantProfileResponse,
+		serviceTypeCode: ServiceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		this.reset();
 
-		return this.applyProfileIntoModel(applicantProfile, applicationTypeCode);
+		const serviceTypeData = { serviceTypeCode };
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode };
+
+		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
+		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		// }
+
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged,
+		};
+
+		const bcscMailingAddress = applicantProfile.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
+		};
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				serviceTypeData,
+				licenceTermCode: LicenceTermCode.TwoYears,
+				applicationTypeData,
+
+				personalInformationData,
+				mailingAddressData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		this.schoolTrainingRowAdd();
+		this.otherTrainingRowAdd();
+
+		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
 	}
 
 	/**
@@ -418,7 +466,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccessMustDismiss(successMessage);
 			})
 		);
 	}
@@ -501,7 +549,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccessMustDismiss(successMessage);
 			})
 		);
 	}
@@ -558,7 +606,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
 			return forkJoin([
 				this.loadExistingLicenceAuthenticated(associatedLicence),
-				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: 'e7443a3d-dce8-ef11-b857-00505683fbf4' }),
+				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
 			]).pipe(
 				catchError((error) => of(error)),
 				switchMap((resps: any[]) => {
@@ -582,7 +630,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.reset();
 
 		const apis: Observable<any>[] = [
-			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: '084fe6e0-1f71-4c83-b2e3-c428816b8c18' }),
+			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: associatedLicence.licenceAppId! }),
 			this.applicantProfileService.apiApplicantIdGet({
 				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			}),
@@ -684,6 +732,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
+		const dogRenewData = { isAssistanceStillRequired: true };
+
+		// TODO do we need for flows?
+		this.consentAndDeclarationFormGroup.patchValue({ applicantOrLegalGuardianName: 'TODO' }, { emitEvent: false });
+
 		// const originalLicenceData = resp.originalLicenceData;
 		// originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
@@ -691,6 +744,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				dogRenewData,
 				// originalLicenceData,
 				// profileConfirmationData: { isProfileUpToDate: false },
 				// mailingAddressData: { ...mailingAddressData },
@@ -729,60 +783,60 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		practiceLogAttachments.setValue([]);
 	}
 
-	private applyProfileIntoModel(
-		applicantProfile: ApplicantProfileResponse,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<any> {
-		this.reset();
+	// private applyProfileIntoModel(
+	// 	applicantProfile: ApplicantProfileResponse,
+	// 	applicationTypeCode: ApplicationTypeCode
+	// ): Observable<any> {
+	// 	this.reset();
 
-		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification }; // TODO GDSD hardcode for now
-		const applicationTypeData = { applicationTypeCode: applicationTypeCode };
+	// 	const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification }; // TODO GDSD hardcode for now
+	// 	const applicationTypeData = { applicationTypeCode: applicationTypeCode };
 
-		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
-		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
-		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
-		// }
+	// 	const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
+	// 	// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+	// 	// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+	// 	// }
 
-		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName: applicantProfile.middleName1,
-			surname: applicantProfile.surname,
-			dateOfBirth: applicantProfile.dateOfBirth,
-			phoneNumber: applicantProfile.phoneNumber,
-			emailAddress: applicantProfile.emailAddress,
-			hasBcscNameChanged,
-		};
+	// 	const personalInformationData = {
+	// 		givenName: applicantProfile.givenName,
+	// 		middleName: applicantProfile.middleName1,
+	// 		surname: applicantProfile.surname,
+	// 		dateOfBirth: applicantProfile.dateOfBirth,
+	// 		phoneNumber: applicantProfile.phoneNumber,
+	// 		emailAddress: applicantProfile.emailAddress,
+	// 		hasBcscNameChanged,
+	// 	};
 
-		const bcscMailingAddress = applicantProfile.mailingAddress;
-		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
-			isAddressTheSame: false,
-			addressLine1: bcscMailingAddress?.addressLine1,
-			addressLine2: bcscMailingAddress?.addressLine2,
-			city: bcscMailingAddress?.city,
-			country: bcscMailingAddress?.country,
-			postalCode: bcscMailingAddress?.postalCode,
-			province: bcscMailingAddress?.province,
-		};
+	// 	const bcscMailingAddress = applicantProfile.mailingAddress;
+	// 	const mailingAddressData = {
+	// 		addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+	// 		isAddressTheSame: false,
+	// 		addressLine1: bcscMailingAddress?.addressLine1,
+	// 		addressLine2: bcscMailingAddress?.addressLine2,
+	// 		city: bcscMailingAddress?.city,
+	// 		country: bcscMailingAddress?.country,
+	// 		postalCode: bcscMailingAddress?.postalCode,
+	// 		province: bcscMailingAddress?.province,
+	// 	};
 
-		this.gdsdModelFormGroup.patchValue(
-			{
-				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
-				serviceTypeData,
-				licenceTermCode: LicenceTermCode.TwoYears,
-				applicationTypeData,
+	// 	this.gdsdModelFormGroup.patchValue(
+	// 		{
+	// 			applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+	// 			serviceTypeData,
+	// 			licenceTermCode: LicenceTermCode.TwoYears,
+	// 			applicationTypeData,
 
-				personalInformationData,
-				mailingAddressData,
-			},
-			{
-				emitEvent: false,
-			}
-		);
+	// 			personalInformationData,
+	// 			mailingAddressData,
+	// 		},
+	// 		{
+	// 			emitEvent: false,
+	// 		}
+	// 	);
 
-		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
-	}
+	// 	console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+	// 	return of(this.gdsdModelFormGroup.value);
+	// }
 
 	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
@@ -1034,8 +1088,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					const schoolTrainingsArrayHasData = schoolTrainingsArray ? schoolTrainingsArray.length > 0 : false;
 					const otherTrainingsArrayHasData = otherTrainingsArray ? otherTrainingsArray.length > 0 : false;
 
-					console.log('************** schoolTrainingsArray', schoolTrainingsArray?.length);
-					console.log('************** otherTrainingsArray', otherTrainingsArray?.length);
 					// if neither array has data, then unset the flag to reprompt the user
 					if (!schoolTrainingsArrayHasData && !otherTrainingsArrayHasData) {
 						trainingHistoryData.hasAttendedTrainingSchool = null;
@@ -1052,6 +1104,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				licenceTermCode: LicenceTermCode.TwoYears,
 				applicationTypeData,
 				originalLicenceData,
+				dogId: associatedLicence?.dogId,
 
 				personalInformationData,
 				medicalInformationData,
@@ -1098,7 +1151,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	createNewGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyGdsd(serviceTypeCode).pipe(
+		return this.createEmptyGdsd(serviceTypeCode, ApplicationTypeCode.New).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 				this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
@@ -1195,10 +1248,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 
-	private createEmptyGdsd(
-		serviceTypeCode: ServiceTypeCode,
-		applicationTypeCode: ApplicationTypeCode | null = null
-	): Observable<any> {
+	private createEmptyGdsd(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): Observable<any> {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };
@@ -1377,7 +1427,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 			})
 		);
 	}

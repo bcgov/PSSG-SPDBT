@@ -7,6 +7,7 @@ import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -37,7 +38,8 @@ export type SortWeight = -1 | 0 | 1;
 export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
-		private formatDatePipe: FormatDatePipe
+		private formatDatePipe: FormatDatePipe,
+		private hotToastService: HotToastService
 	) {}
 
 	//------------------------------------
@@ -528,6 +530,21 @@ export class UtilService {
 	disableFormArrayInputs(formArray: FormArray) {
 		formArray.controls.forEach((control) => {
 			control.disable({ emitEvent: false });
+		});
+	}
+
+	toasterSuccess(msg: string): void {
+		this.hotToastService.success(msg);
+	}
+
+	toasterError(msg: string): void {
+		this.hotToastService.success(msg);
+	}
+
+	toasterSuccessMustDismiss(msg: string): void {
+		this.hotToastService.success(msg, {
+			autoClose: false,
+			dismissible: true,
 		});
 	}
 }
