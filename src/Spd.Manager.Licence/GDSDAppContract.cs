@@ -18,7 +18,7 @@ public interface IGDSDAppManager
 #region authenticated
 public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : GDSDTeamLicenceAppUpsertCommand(UpsertRequest), IRequest<GDSDAppCommandResponse>;
-public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest UpsertRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceAppRenewCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequest<GDSDTeamLicenceAppResponse>;
 #endregion
