@@ -192,7 +192,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                GDSDTeamLicenceAppRenewCommand command = new(anonymousChangeRequest, newDocInfos);
+                GDSDTeamLicenceAppReplaceCommand command = new(anonymousChangeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
