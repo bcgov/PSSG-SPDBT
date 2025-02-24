@@ -146,9 +146,10 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseRenewal(gdsdModelFormValue: any): any {
+	getSaveBodyBaseChange(gdsdModelFormValue: any): any {
 		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
 
+		console.log('************* getSaveBodyBaseChange', bodyBase);
 		const body = {
 			licenceAppId: bodyBase.licenceAppId,
 			applicantOrLegalGuardianName: null,
@@ -162,45 +163,17 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dateOfBirth: bodyBase.dateOfBirth,
 			phoneNumber: bodyBase.phoneNumber,
 			emailAddress: bodyBase.emailAddress,
+			originalLicenceId: bodyBase.originalLicenceId,
+			dogId: bodyBase.dogId,
+			dogInfo: bodyBase.dogInfo,
+			isAssistanceStillRequired: bodyBase.isAssistanceStillRequired,
 			// documentKeyCodes: [],
 			dogInfoRenew: bodyBase.dogInfoRenew,
 			mailingAddress: bodyBase.mailingAddress,
-			// documentInfos,
 			// documentRelatedInfos,
 		};
 
-		console.debug('[getSaveBodyBaseRenewal]', body);
-		return body;
-	}
-
-	/**
-	 * get body the form group data into the correct structure
-	 * @returns
-	 */
-	getSaveBodyBaseReplacement(gdsdModelFormValue: any): any {
-		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
-
-		const body = {
-			licenceAppId: bodyBase.licenceAppId,
-			applicantOrLegalGuardianName: null,
-			applicationOriginTypeCode: bodyBase.applicationOriginTypeCode,
-			applicationTypeCode: bodyBase.applicationTypeCode,
-			serviceTypeCode: bodyBase.serviceTypeCode,
-			licenceTermCode: bodyBase.licenceTermCode,
-			givenName: bodyBase.givenName,
-			middleName: bodyBase.middleName,
-			surname: bodyBase.surname,
-			dateOfBirth: bodyBase.dateOfBirth,
-			phoneNumber: bodyBase.phoneNumber,
-			emailAddress: bodyBase.emailAddress,
-			// documentKeyCodes: [],
-			dogInfoRenew: bodyBase.dogInfoRenew,
-			mailingAddress: bodyBase.mailingAddress,
-			// documentInfos,
-			// documentRelatedInfos,
-		};
-
-		console.debug('[getSaveBodyBaseReplacement]', body);
+		console.debug('[getSaveBodyBaseChange]', body);
 		return body;
 	}
 
@@ -218,7 +191,8 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const dogTasksData = gdsdModelFormValue.dogTasksData;
 		const dogInfoData = gdsdModelFormValue.dogInfoData;
-
+		const dogRenewData = gdsdModelFormValue.dogRenewData;
+		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
 		if (personalInformationData.dateOfBirth) {
@@ -355,6 +329,9 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 		const body = {
 			licenceAppId: gdsdModelFormValue.licenceAppId,
+			originalLicenceId: originalLicenceData.originalLicenceId,
+			isAssistanceStillRequired: dogRenewData.isAssistanceStillRequired,
+			dogId: gdsdModelFormValue.dogId,
 			applicantOrLegalGuardianName: null,
 			applicationOriginTypeCode: gdsdModelFormValue.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
@@ -365,7 +342,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			accreditedSchoolQuestions: accreditedSchoolQuestionsData,
 			nonAccreditedSchoolQuestions: nonAccreditedSchoolQuestionsData,
 			dogInfo: dogInfoData,
-			// dogInfoRenew: dogInfoRenewData,
 			isDogTrainedByAccreditedSchool: this.utilService.booleanTypeToBoolean(
 				dogCertificationSelectionData.isDogTrainedByAccreditedSchool
 			),
@@ -500,6 +476,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			const trainingEndDate = this.utilService.dateToDbDate(train.trainingEndDate);
 
 			trainingArray.push({
+				trainingId: train.trainingId,
 				contactEmailAddress: this.utilService.getStringOrNull(train.contactEmailAddress),
 				contactGivenName: this.utilService.getStringOrNull(train.contactGivenName),
 				contactPhoneNumber: train.contactPhoneNumber,
@@ -528,6 +505,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 
 			if (usePersonalDogTrainer != null) {
 				trainingArray.push({
+					trainingId: train.trainingId,
 					usePersonalDogTrainer,
 					trainingDetail: train.trainingDetail,
 					dogTrainerCredential: usePersonalDogTrainer ? train.dogTrainerCredential : null,

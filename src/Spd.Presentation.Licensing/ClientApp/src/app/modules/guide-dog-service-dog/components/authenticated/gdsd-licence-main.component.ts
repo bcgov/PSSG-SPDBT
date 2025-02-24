@@ -186,7 +186,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO renewal
+				// TODO RetiredServiceDogCertification renewal
 			}
 		}
 	}
@@ -210,7 +210,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO replace
+				// TODO RetiredServiceDogCertification replace
 			}
 		}
 	}
