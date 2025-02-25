@@ -29,7 +29,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<div>The insurance must be active at the time of application, and the documents must include:</div>
 						<ul>
 							<li>The business name</li>
-							<li>The business locations</li>
+							<li>The business location(s)</li>
 							<li>The expiry date of the insurance</li>
 							<li>Proof that the insurance is valid in B.C.</li>
 						</ul>
