@@ -60,7 +60,7 @@ public class LicenceManagerTest
                 .With(r => r.PhotoDocumentUrlId, photoDocumentUrlId)
                 .Create();
 
-         mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
+        mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(licenceResp);
 
         DocumentResp document = fixture.Build<DocumentResp>()
