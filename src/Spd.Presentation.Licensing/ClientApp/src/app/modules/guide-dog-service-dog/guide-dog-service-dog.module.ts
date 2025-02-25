@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@app/shared/shared.module';
+import { GdsdApplicationTypeAnonymousComponent } from './components/anonymous/gdsd-application-type-anonymous.component';
 import { GuideDogServiceDogBaseAnonymousComponent } from './components/anonymous/guide-dog-service-dog-base-anonymous.component';
 import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
 import { StepGdsdPersonalInfoAnonymousComponent } from './components/anonymous/step-gdsd-personal-info-anonymous.component';
@@ -14,7 +15,6 @@ import { GdsdWizardRenewalComponent } from './components/gdsd-wizard-renewal.com
 import { GdsdWizardReplacementComponent } from './components/gdsd-wizard-replacement.component';
 import { GuideDogServiceDogLandingComponent } from './components/guide-dog-service-dog-landing.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
-import { GdsdApplicationTypeAnonymousComponent } from './components/shared/common-form-components/gdsd-application-type-anonymous.component';
 import { GdsdSummaryAccreditedTrainingComponent } from './components/shared/common-form-components/gdsd-summary-accredited-training.component';
 import { GdsdSummaryOtherTrainingComponent } from './components/shared/common-form-components/gdsd-summary-other-training.component';
 import { GdsdSummarySchoolTrainingComponent } from './components/shared/common-form-components/gdsd-summary-school-training.component';
