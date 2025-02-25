@@ -6,8 +6,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
-    selector: 'app-common-user-profile-licence-mental-health-conditions',
-    template: `
+	selector: 'app-common-user-profile-licence-mental-health-conditions',
+	template: `
 		<mat-accordion>
 			<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 				<mat-expansion-panel-header>
@@ -22,7 +22,6 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 					</div>
 
 					<app-form-mental-health-conditions
-						[applicationTypeCode]="applicationTypeCode"
 						[form]="form"
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
@@ -31,8 +30,8 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 			</mat-expansion-panel>
 		</mat-accordion>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CommonUserProfileLicenceMentalHealthConditionsComponent
 	implements OnInit, LicenceChildStepperStepComponent

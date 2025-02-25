@@ -6,6 +6,7 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -22,7 +23,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
 					<ng-container *ngIf="isBusinessLicenceSoleProprietor">
 						<app-alert type="info" icon="" [showBorder]="false">
-							The name of your business must be your name, as it appears on your security worker licence.
+							If you are a Sole Proprietor, you must have a Security Worker Licence. Your business name must exactly
+							match the name you used on your Security Worker Licence.
 						</app-alert>
 					</ng-container>
 					<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
@@ -31,8 +33,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</div>
 				<div class="col-lg-6 col-md-12" *ngIf="!isSoleProprietorCombinedFlow">
 					<app-alert type="info" icon="" [showBorder]="false">
-						If you are unsure of your business type, check your
-						<a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a>.
+						Check your <a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a> if you
+						don’t know your business type.
 					</app-alert>
 				</div>
 
@@ -95,6 +97,12 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 					</div>
 				</div>
 
+				<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
+					<app-alert type="danger" icon="dangerous">
+						{{ invalidSoleProprietorCategoriesMsg }}
+					</app-alert>
+				</div>
+
 				<div class="my-2">
 					<ng-container *ngIf="!isSoleProprietorCombinedFlow">
 						<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
@@ -125,7 +133,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 						</ng-container>
 						<ng-template #SearchForSP>
 							<app-alert type="warning" icon="">
-								Search for a sole proprietor with a valid security worker licence
+								Search for a sole proprietor with a valid security worker licence.
 							</app-alert>
 						</ng-template>
 
@@ -149,7 +157,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								form.hasError('licencemustbeactive')
 							"
 						>
-							<app-alert type="danger" icon="error">
+							<app-alert type="danger" icon="dangerous">
 								<div>
 									You must have a valid security worker licence to apply for a sole proprietor business licence.
 								</div>
@@ -211,6 +219,9 @@ export class CommonBusinessInformationComponent implements OnInit {
 	bcRegistriesAccountUrl = SPD_CONSTANTS.urls.bcRegistriesAccountUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
+	showInvalidSoleProprietorCategories = false;
+	readonly invalidSoleProprietorCategoriesMsg = SPD_CONSTANTS.messages.invalidSoleProprietorCategories;
+
 	matcher = new FormErrorStateMatcher();
 
 	businessTypes = BusinessLicenceTypes;
@@ -224,7 +235,8 @@ export class CommonBusinessInformationComponent implements OnInit {
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService
+		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -277,21 +289,37 @@ export class CommonBusinessInformationComponent implements OnInit {
 			.subscribe((resp: any) => {
 				const lookupData: LicenceResponse | null = resp?.data;
 				if (lookupData) {
-					this.form.patchValue({
-						soleProprietorLicenceId: lookupData.licenceId,
-						soleProprietorLicenceAppId: lookupData.licenceAppId,
-						soleProprietorCategoryCodes: lookupData.categoryCodes,
-						soleProprietorLicenceHolderName: lookupData.licenceHolderName,
-						soleProprietorLicenceNumber: lookupData.licenceNumber,
-						soleProprietorLicenceExpiryDate: lookupData.expiryDate,
-						soleProprietorLicenceStatusCode: lookupData.licenceStatusCode,
-					});
+					this.showInvalidSoleProprietorCategories = !this.commonApplicationService.isValidSoleProprietorSwlCategories(
+						lookupData.categoryCodes ?? []
+					);
 
-					this.businessApplicationService
-						.applyBusinessLicenceSoleProprietorSelection(lookupData)
-						.subscribe((_resp: any) => {
-							this.hotToastService.success('A sole proprietor was successfully selected');
+					if (this.showInvalidSoleProprietorCategories) {
+						this.form.patchValue({
+							soleProprietorLicenceId: null,
+							soleProprietorLicenceAppId: null,
+							soleProprietorCategoryCodes: null,
+							soleProprietorLicenceHolderName: null,
+							soleProprietorLicenceNumber: null,
+							soleProprietorLicenceExpiryDate: null,
+							soleProprietorLicenceStatusCode: null,
 						});
+					} else {
+						this.form.patchValue({
+							soleProprietorLicenceId: lookupData.licenceId,
+							soleProprietorLicenceAppId: lookupData.licenceAppId,
+							soleProprietorCategoryCodes: lookupData.categoryCodes,
+							soleProprietorLicenceHolderName: lookupData.licenceHolderName,
+							soleProprietorLicenceNumber: lookupData.licenceNumber,
+							soleProprietorLicenceExpiryDate: lookupData.expiryDate,
+							soleProprietorLicenceStatusCode: lookupData.licenceStatusCode,
+						});
+
+						this.businessApplicationService
+							.applyBusinessLicenceSoleProprietorSelection(lookupData)
+							.subscribe((_resp: any) => {
+								this.hotToastService.success('A sole proprietor was successfully selected');
+							});
+					}
 				}
 			});
 	}

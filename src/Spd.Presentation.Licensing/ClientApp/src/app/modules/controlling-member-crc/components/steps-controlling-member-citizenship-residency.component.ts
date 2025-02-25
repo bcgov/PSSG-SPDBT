@@ -1,13 +1,14 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberBcDriverLicenceComponent } from './step-controlling-member-bc-driver-licence.component';
 import { StepControllingMemberCitizenshipComponent } from './step-controlling-member-citizenship.component';
 import { StepControllingMemberFingerprintsComponent } from './step-controlling-member-fingerprints.component';
 
 @Component({
-    selector: 'app-steps-controlling-member-citizenship-residency',
-    template: `
+	selector: 'app-steps-controlling-member-citizenship-residency',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="isNew">
 				<app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
@@ -70,8 +71,8 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 	@ViewChild(StepControllingMemberBcDriverLicenceComponent)
 	stepDriversLicence!: StepControllingMemberBcDriverLicenceComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onFingerprintsPreviousStep(): void {

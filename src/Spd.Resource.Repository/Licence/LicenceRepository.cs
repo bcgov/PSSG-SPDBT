@@ -28,6 +28,7 @@ internal class LicenceRepository : ILicenceRepository
                 .Expand(i => i.spd_CaseId)
                 .Expand(i => i.spd_SoleProprietorId)
                 .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
+                .Expand(i => i.spd_licence_spd_dogteam_LicenceId)
                 .Where(l => l.spd_licenceid == licenceId)
                 .FirstOrDefaultAsync(ct);
         }
@@ -49,6 +50,7 @@ internal class LicenceRepository : ILicenceRepository
             .Expand(i => i.spd_spd_licence_spd_licencecondition)
             .Expand(i => i.spd_LicenceHolder_contact)
             .Expand(i => i.spd_LicenceHolder_account)
+            .Expand(i => i.spd_licence_spd_dogteam_LicenceId)
             .Expand(i => i.spd_CaseId);
 
         if (!qry.IncludeInactive)

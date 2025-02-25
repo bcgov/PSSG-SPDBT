@@ -10,9 +10,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 					<app-alert type="warning" icon="warning">
-						When you submit your business licence application, invitations will be sent to these controlling members.
-						Your business licence application will be on hold until we receive consent forms from all controlling
-						members.
+						Invitations to consent to a criminal record check will be sent to these controlling members when you submit
+						your business licence application. Your application will not proceed until we receive consent forms from all
+						controlling members.
 					</app-alert>
 				</div>
 			</div>

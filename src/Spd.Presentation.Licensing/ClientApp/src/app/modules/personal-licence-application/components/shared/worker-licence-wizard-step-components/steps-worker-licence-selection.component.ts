@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired.component';
@@ -91,6 +92,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			<mat-step>
 				<app-step-worker-licence-category
 					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 				></app-step-worker-licence-category>
 
 				<app-wizard-footer
@@ -168,6 +170,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() showStepDogsAndRestraints = false;
 	@Input() showWorkerLicenceSoleProprietorStep = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
 
@@ -192,13 +195,19 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@ViewChild(StepWorkerLicenceTermComponent)
 	licenceTermComponent!: StepWorkerLicenceTermComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private commonApplicationService: CommonApplicationService
+	) {
+		super(utilService);
 	}
 
 	onFormDogsValidNextStep() {
 		const isValid = this.dirtyForm(this.STEP_DOGS);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 			this.nextStepperStep.emit(true);
@@ -210,7 +219,10 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	onFormCategoryValidNextStep() {
 		const isValid = this.dirtyForm(this.STEP_LICENCE_CATEGORY);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		if (this.applicationTypeCode === ApplicationTypeCode.Update && !this.showStepDogsAndRestraints) {
 			this.nextStepperStep.emit(true);

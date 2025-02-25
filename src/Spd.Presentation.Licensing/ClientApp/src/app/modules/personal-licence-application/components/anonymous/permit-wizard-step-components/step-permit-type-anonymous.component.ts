@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-step-permit-type-anonymous',
-    template: `
+	selector: 'app-step-permit-type-anonymous',
+	template: `
 		<app-step-section title="What type of permit are you applying for?">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -72,8 +73,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 
 		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
@@ -84,6 +85,7 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -113,7 +115,9 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 	}
 
 	onStepNext(): void {
-		if (!this.isFormValid()) {
+		const isValid = this.isFormValid();
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
 			return;
 		}
 

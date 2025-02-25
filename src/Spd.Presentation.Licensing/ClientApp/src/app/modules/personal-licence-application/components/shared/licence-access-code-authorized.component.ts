@@ -39,17 +39,16 @@ import { HotToastService } from '@ngxpert/hot-toast';
 
 					<app-alert type="info" icon="">
 						<p>
-							If you have an valid or expired security worker licence, body armour permit, or armoured vehicle permit,
-							link your existing account with your unique access code.
+							If you have a valid or expired security worker licence, body armour permit, or armoured vehicle permit,
+							you can link them to your existing account using your unique access code.
 						</p>
 						<p>
-							You need both your licence number as it appears on your current or expired licence, plus the access code
-							number. You can find your access code on the letter that came with your new licence, or your licence
-							renewal letter.
+							You will need your licence number as it appears on your current or expired licence along with the unique
+							access code number provided in the letter that came with your new or renewal licence.
 						</p>
 						<p>
-							If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-							hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
+							If you don’t have your access code, or are unable to locate it, please contact the Security Licencing Unit
+							at {{ spdPhoneNumber }} during regular office hours.
 						</p>
 					</app-alert>
 
@@ -93,7 +92,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 								</button>
 							</div>
 							<div class="col-12" *ngIf="isLinkErrorMessage">
-								<app-alert type="danger" icon="error">
+								<app-alert type="danger" icon="dangerous">
 									{{ isLinkErrorMessage }}
 								</app-alert>
 							</div>

@@ -73,7 +73,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 
 						<ng-container *ngIf="showSearchDataError">
-							<app-alert type="danger" icon="error">
+							<app-alert type="danger" icon="dangerous">
 								{{ searchDataError }}
 							</app-alert>
 						</ng-container>
@@ -139,7 +139,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<ng-template #NoSearchResults>
 							<div class="mt-3">
-								<app-alert type="danger" icon="error"> No results match your search. </app-alert>
+								<app-alert type="danger" icon="dangerous"> No results match your search. </app-alert>
 							</div>
 						</ng-template>
 					</ng-container>

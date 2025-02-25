@@ -13,6 +13,7 @@ using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Delegates;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
+using Spd.Resource.Repository.DogTeam;
 using Spd.Resource.Repository.Event;
 using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.Identity;
@@ -74,5 +75,6 @@ public class Configurer : IConfigureComponents
         configurationServices.Services.AddTransient<IControllingMemberCrcRepository, ControllingMemberCrcRepository>();
         configurationServices.Services.AddTransient<IControllingMemberInviteRepository, ControllingMemberInviteRepository>();
         configurationServices.Services.AddTransient<IGDSDAppRepository, GDSDAppRepository>();
+        configurationServices.Services.AddTransient<IDogTeamRepository, DogTeamRepository>();
     }
 }

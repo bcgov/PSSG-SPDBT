@@ -67,7 +67,7 @@ internal class PortalUserRepository : IPortalUserRepository
             .FirstOrDefaultAsync(ct);
         if (invite == null)
             throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
-        if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
+        if (!string.Equals(invite.spd_OrganizationId.spd_orgguid, verify.OrgGuid.ToString(), StringComparison.InvariantCultureIgnoreCase))
             throw new ApiException(HttpStatusCode.Accepted, "There is a mismatch between the invite organization and your bceid organization.");
 
         //verified, now add/link identity to user.

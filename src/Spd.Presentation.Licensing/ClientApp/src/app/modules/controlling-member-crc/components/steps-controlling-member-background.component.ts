@@ -1,13 +1,14 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberBcSecurityLicenceHistoryComponent } from './step-controlling-member-bc-security-licence-history.component';
 import { StepControllingMemberMentalHealthConditionsComponent } from './step-controlling-member-mental-health-conditions.component';
 import { StepControllingMemberPoliceBackgroundComponent } from './step-controlling-member-police-background.component';
 
 @Component({
-    selector: 'app-steps-controlling-member-background',
-    template: `
+	selector: 'app-steps-controlling-member-background',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-bc-security-licence-history
@@ -78,8 +79,8 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 	@ViewChild(StepControllingMemberMentalHealthConditionsComponent)
 	stepMentalHealth!: StepControllingMemberMentalHealthConditionsComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override dirtyForm(step: number): boolean {

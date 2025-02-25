@@ -1,13 +1,14 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitContactInformationComponent } from './step-permit-contact-information.component';
 import { StepPermitMailingAddressComponent } from './step-permit-mailing-address.component';
 import { StepPermitResidentialAddressComponent } from './step-permit-residential-address.component';
 
 @Component({
-    selector: 'app-steps-permit-contact',
-    template: `
+	selector: 'app-steps-permit-contact',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-residential-address
@@ -53,9 +54,9 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	readonly STEP_RESIDENTIAL_ADDRESS = 1;
@@ -72,13 +73,16 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	@ViewChild(StepPermitContactInformationComponent)
 	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.childNextStep.next(true);
 	}
