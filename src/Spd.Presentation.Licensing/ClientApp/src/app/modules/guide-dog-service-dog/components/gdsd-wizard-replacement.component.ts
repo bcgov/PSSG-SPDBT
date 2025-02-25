@@ -87,7 +87,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 		}
 
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceRenewalOrReplaceAuthenticated().subscribe({
+			this.gdsdApplicationService.submitLicenceReplacementAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -98,7 +98,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 			return;
 		}
 
-		this.gdsdApplicationService.submitLicenceRenewalOrReplaceAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceReplacementAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

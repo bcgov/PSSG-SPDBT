@@ -123,6 +123,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		originalLicenceTermCode: new FormControl(null),
 		originalCarryAndUseRestraints: new FormControl(null),
 		originalLicenceHolderName: new FormControl(null),
+		originalLicenceHolderId: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 	});
 
@@ -150,7 +151,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getSaveBodyBaseChange(gdsdModelFormValue: any): any {
 		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
 
-		console.log('************* getSaveBodyBaseChange', bodyBase);
 		const body = {
 			licenceAppId: bodyBase.licenceAppId,
 			applicantOrLegalGuardianName: null,
@@ -168,10 +168,11 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 			dogId: bodyBase.dogId,
 			dogInfo: bodyBase.dogInfo,
 			isAssistanceStillRequired: bodyBase.isAssistanceStillRequired,
-			// documentKeyCodes: [],
+			documentKeyCodes: [],
 			dogInfoRenew: bodyBase.dogInfoRenew,
 			mailingAddress: bodyBase.mailingAddress,
-			// documentRelatedInfos,
+			documentInfos: bodyBase.documentInfos,
+			documentRelatedInfos: bodyBase.documentRelatedInfos,
 		};
 
 		console.debug('[getSaveBodyBaseChange]', body);

@@ -302,7 +302,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 					}
 				},
 				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
+					console.log('An error occurred during save', error);
 				},
 			});
 		} else {
@@ -321,7 +321,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
+				console.log('An error occurred during save', error);
 			},
 		});
 	}
@@ -336,7 +336,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
+					console.log('An error occurred during save', error);
 				},
 			});
 		} else {
@@ -360,16 +360,12 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 					this.goToChildNextStep();
 				},
 				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
+					console.log('An error occurred during save', error);
 				},
 			});
 		} else {
 			this.goToChildNextStep();
 		}
-	}
-
-	private handlePartialSaveError(_error: HttpErrorResponse): void {
-		// TODO  handlePartialSaveError
 	}
 
 	private goToChildNextStep() {
