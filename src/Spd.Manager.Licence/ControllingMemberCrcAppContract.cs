@@ -37,6 +37,7 @@ public record ControllingMemberCrcAppBase
     public string? CriminalHistoryDetail { get; set; }
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
+    public bool? HasCourtJudgement { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
 }

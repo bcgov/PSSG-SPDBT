@@ -13,8 +13,9 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
 							<div class="fs-5 mt-2 mb-3">
-								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
-								Permit Application Online, including Related Prescribed Checks
+								IGNORE THIS TEXT - NEED TO UPDATE
+								<!-- Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
+								Permit Application Online, including Related Prescribed Checks -->
 							</div>
 							<p>
 								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
@@ -313,7 +314,7 @@ export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 
 	form = this.gdsdApplicationService.termsAndConditionsFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,

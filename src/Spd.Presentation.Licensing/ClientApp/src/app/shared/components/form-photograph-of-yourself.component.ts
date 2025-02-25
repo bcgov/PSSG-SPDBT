@@ -21,21 +21,14 @@ import { OptionsPipe } from '../pipes/options.pipe';
 
 							Photo Guidelines:
 							<ul class="mb-0">
-								<li>The photo must be in colour and well-lit.</li>
-								<li>Your face must be fully visible, with no hats, sunglasses, or filters.</li>
-								<li>Use a plain, white background.</li>
+								<li>The photo must be in colour and well-lit</li>
+								<li>Your face must be fully visible, with no hats, sunglasses, or filters</li>
+								<li>Use a plain, white background</li>
 							</ul>
 						</app-alert>
 					</div>
 
-					<div class="mb-3" *ngIf="showDissimilarWarning">
-						<app-alert type="warning" icon="warning">
-							Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
-							application's processing time.
-						</app-alert>
-					</div>
-
-					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
+					<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
 						We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
 					</app-alert>
 
@@ -71,7 +64,6 @@ export class FormPhotographOfYourselfComponent implements OnInit, LicenceChildSt
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
-	@Input() showDissimilarWarning = false;
 	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	@Output() fileUploaded = new EventEmitter<File>();

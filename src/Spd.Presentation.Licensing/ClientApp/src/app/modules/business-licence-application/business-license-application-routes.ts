@@ -1,5 +1,7 @@
+import { AppRoutes } from '@app/app-routes';
+
 export class BusinessLicenceApplicationRoutes {
-	public static readonly BUSINESS_LICENCE_APPLICATION = 'business-licence';
+	public static readonly MODULE_PATH = AppRoutes.BUSINESS_LICENCE_APPLICATION;
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 
@@ -24,8 +26,6 @@ export class BusinessLicenceApplicationRoutes {
 	public static readonly PAYMENT_FAIL = 'payment-fail';
 	public static readonly PAYMENT_CANCEL = 'payment-cancel';
 	public static readonly PAYMENT_ERROR = 'payment-error';
-
-	public static readonly MODULE_PATH = BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APPLICATION;
 
 	public static path(route: string | null = null): string {
 		return route

@@ -67,7 +67,7 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 						<mat-checkbox formControlName="noEmailAddress"> Doesn’t have an email address </mat-checkbox>
 					</div>
 					<div class="col-12 mt-3" *ngIf="noEmailAddress.value" @showHideTriggerSlideAnimation>
-						<app-alert type="danger" icon="error">
+						<app-alert type="danger" icon="dangerous">
 							Download the
 							<a
 								aria-label="Download Consent to Criminal Record Check document"

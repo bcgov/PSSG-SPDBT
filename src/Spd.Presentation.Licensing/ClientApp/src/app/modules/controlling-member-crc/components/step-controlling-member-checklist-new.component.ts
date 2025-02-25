@@ -22,16 +22,17 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Proof of fingerprinting request</div>
+							<div class="checklist-label">Proof of fingerprinting</div>
 							<p class="checklist-info">
-								If you reside in Canada, you must submit a proof of fingerprinting request. Download the
+								All applicants who reside in Canada must have their fingerprints taken and submit proof of
+								fingerprinting. Download the
 								<a
 									aria-label="Download Request for Fingerprinting form"
 									download="Request For Fingerprinting Form"
 									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
-								>, take it your local police department, and return to this application when you have this form
-								completed.
+								>, take it to your local police detachment or accredited fingerprinting agency, and return to this
+								application once the form is completed.
 							</p>
 						</li>
 						<li>
@@ -43,7 +44,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 
 						<li>
-							<div class="checklist-label">If you have a mental health condition, provide a physician's assessment</div>
+							<div class="checklist-label">If you have a mental health condition, provide a doctor's assessment</div>
 							<p class="checklist-info">
 								Download the
 								<a
@@ -52,7 +53,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 									target="_blank"
 								>
 									Mental Health Condition form</a
-								>, and give it to your physician to fill out. You will need to upload the completed form.
+								>, and give it to your doctor to fill out. You will need to upload the completed form.
 							</p>
 						</li>
 					</ul>

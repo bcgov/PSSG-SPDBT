@@ -56,7 +56,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							</div>
 						</div>
 
-						<app-alert type="danger" icon="error" *ngIf="originalDogAuthorizationExists">
+						<app-alert type="danger" icon="dangerous" *ngIf="originalDogAuthorizationExists">
 							Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification.
 						</app-alert>
 

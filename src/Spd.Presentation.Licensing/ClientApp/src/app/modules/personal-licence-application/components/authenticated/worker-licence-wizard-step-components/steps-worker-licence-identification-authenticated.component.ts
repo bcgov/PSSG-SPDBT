@@ -1,14 +1,15 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-citizenship.component';
 import { StepWorkerLicenceFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-fingerprints.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 
 @Component({
-    selector: 'app-steps-worker-licence-identification-authenticated',
-    template: `
+	selector: 'app-steps-worker-licence-identification-authenticated',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showCitizenshipStep">
 				<app-step-worker-licence-citizenship
@@ -91,8 +92,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onFingerprintStepPrevious(): void {

@@ -1,11 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
-import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
-import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
-import { PermitWizardAnonymousUpdateComponent } from './components/anonymous/permit-wizard-anonymous-update.component';
-import { StepPermitAccessCodeComponent } from './components/anonymous/permit-wizard-step-components/step-permit-access-code.component';
-import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-step-components/step-permit-type-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
@@ -13,13 +7,13 @@ import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/a
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { StepWorkerLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-access-code.component';
 import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-application-type-anonymous.component';
-import { WorkerLicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/worker-licence-return-from-bl-sole-proprietor.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
 import { StepPermitUpdateTermsAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/step-permit-update-terms-authenticated.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-step-components/step-permit-user-profile.component';
 import { UserProfileComponent } from './components/authenticated/user-profile.component';
+import { WorkerLicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/worker-licence-return-from-bl-sole-proprietor.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
@@ -38,7 +32,7 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
-import { LicenceUserApplicationsComponent } from './components/shared/licence-user-applications.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-user-profile.component';
 import { PersonalLicenceApplicationRoutes } from './personal-licence-application-routes';
@@ -86,40 +80,41 @@ const routes: Routes = [
 			},
 		],
 	},
-	{
-		/**************************************************** */
-		// PERMIT - ANONYMOUS
-		/**************************************************** */
-		path: PersonalLicenceApplicationRoutes.PERMIT_APPLICATION_ANONYMOUS,
-		component: PermitApplicationBaseAnonymousComponent,
-		children: [
-			{
-				path: PersonalLicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS,
-				component: StepPermitTypeAnonymousComponent,
-			},
-			{
-				path: PersonalLicenceApplicationRoutes.PERMIT_ACCESS_CODE_ANONYMOUS,
-				component: StepPermitAccessCodeComponent,
-			},
-			{
-				path: PersonalLicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS,
-				component: PermitWizardAnonymousNewComponent,
-			},
-			{
-				path: PersonalLicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS,
-				component: PermitWizardAnonymousRenewalComponent,
-			},
-			{
-				path: PersonalLicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS,
-				component: PermitWizardAnonymousUpdateComponent,
-			},
-			{
-				path: '**',
-				redirectTo: PersonalLicenceApplicationRoutes.defaultLanding(),
-				pathMatch: 'full',
-			},
-		],
-	},
+	// SPDBT-3425 - Remove anonymous permit flows
+	// {
+	// 	/**************************************************** */
+	// 	// PERMIT - ANONYMOUS
+	// 	/**************************************************** */
+	// 	path: PersonalLicenceApplicationRoutes.PERMIT_APPLICATION_ANONYMOUS,
+	// 	component: PermitApplicationBaseAnonymousComponent,
+	// 	children: [
+	// 		{
+	// 			path: PersonalLicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS,
+	// 			component: StepPermitTypeAnonymousComponent,
+	// 		},
+	// 		{
+	// 			path: PersonalLicenceApplicationRoutes.PERMIT_ACCESS_CODE_ANONYMOUS,
+	// 			component: StepPermitAccessCodeComponent,
+	// 		},
+	// 		{
+	// 			path: PersonalLicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS,
+	// 			component: PermitWizardAnonymousNewComponent,
+	// 		},
+	// 		{
+	// 			path: PersonalLicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS,
+	// 			component: PermitWizardAnonymousRenewalComponent,
+	// 		},
+	// 		{
+	// 			path: PersonalLicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS,
+	// 			component: PermitWizardAnonymousUpdateComponent,
+	// 		},
+	// 		{
+	// 			path: '**',
+	// 			redirectTo: PersonalLicenceApplicationRoutes.defaultLanding(),
+	// 			pathMatch: 'full',
+	// 		},
+	// 	],
+	// },
 	{
 		/**************************************************** */
 		// LICENCE AUTHENTICATED
@@ -129,7 +124,7 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: LicenceUserApplicationsComponent,
+				component: PersonalLicenceMainComponent,
 			},
 			{
 				path: PersonalLicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS,

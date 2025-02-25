@@ -5,8 +5,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { Address } from './form-address-autocomplete.component';
 
 @Component({
-    selector: 'app-form-address',
-    template: `
+	selector: 'app-form-address',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<ng-container *ngIf="!isReadonly">
 				<app-form-address-autocomplete
@@ -30,7 +30,7 @@ import { Address } from './form-address-autocomplete.component';
 			<section *ngIf="form.get('addressSelected')?.value">
 				<div class="row">
 					<mat-divider class="mat-divider-primary my-3" *ngIf="!isReadonly"></mat-divider>
-					<div [ngClass]="isWideView ? 'col-6' : 'col-12'">
+					<div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
 						<mat-form-field>
 							<mat-label>Street Address 1</mat-label>
 							<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
@@ -38,7 +38,7 @@ import { Address } from './form-address-autocomplete.component';
 						</mat-form-field>
 					</div>
 
-					<div [ngClass]="isWideView ? 'col-6' : 'col-12'">
+					<div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
 						<mat-form-field>
 							<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
 							<input matInput formControlName="addressLine2" maxlength="100" />
@@ -87,8 +87,8 @@ import { Address } from './form-address-autocomplete.component';
 			</section>
 		</form>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class FormAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();

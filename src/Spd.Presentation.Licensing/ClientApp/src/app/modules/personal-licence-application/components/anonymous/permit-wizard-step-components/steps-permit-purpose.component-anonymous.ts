@@ -1,13 +1,14 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitEmployerInformationComponent } from './step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from './step-permit-rationale.component';
 import { StepPermitReasonComponent } from './step-permit-reason.component';
 
 @Component({
-    selector: 'app-steps-permit-purpose-anonymous',
-    template: `
+	selector: 'app-steps-permit-purpose-anonymous',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-reason
@@ -51,9 +52,9 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERMIT_REASON = 1;
@@ -70,13 +71,16 @@ export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponen
 	stepEmployerInformationComponent!: StepPermitEmployerInformationComponent;
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
 
 		this.childNextStep.next(true);
 	}

@@ -39,10 +39,10 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { BusinessLicenceCategoryTypes, SelectOptions } from '../code-types/model-desc.models';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -91,8 +91,8 @@ export class CommonApplicationService {
 	private uniqueId = 1;
 
 	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
-		'Licensing Application',
-		'Licensing Application',
+		'Security Services Application',
+		'Security Services Application',
 	]);
 
 	constructor(
@@ -100,7 +100,6 @@ export class CommonApplicationService {
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private formatDatePipe: FormatDatePipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService,
@@ -351,6 +350,62 @@ export class CommonApplicationService {
 		return of(response);
 	}
 
+	userGdsdApplicationsList(): Observable<Array<LicenceAppListResponse>> {
+		return this.licenceAppService
+			.apiApplicantsApplicantIdDogCertificationApplicationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
+					});
+
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
+					return response;
+				})
+			);
+	}
+
+	userGdsdLicencesList(): Observable<Array<MainLicenceResponse>> {
+		return this.licenceService
+			.apiApplicantsApplicantIdGdsdCertificationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe(
+				switchMap((basicLicenceResps: LicenceBasicResponse[]) => {
+					if (basicLicenceResps.length === 0) {
+						return of([]);
+					}
+
+					const apis: Observable<any>[] = [];
+					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+							apis.push(
+								this.licenceService.apiLicencesLicenceIdGet({
+									licenceId: resp.licenceId!,
+								})
+							);
+						}
+					});
+
+					if (apis.length > 0) {
+						return forkJoin(apis).pipe(
+							switchMap((licenceResps: LicenceResponse[]) => {
+								return this.processPersonLicenceData(basicLicenceResps, licenceResps);
+							})
+						);
+					} else {
+						return this.processPersonLicenceData(basicLicenceResps, null);
+					}
+				})
+			);
+	}
+
 	userBusinessApplicationsList(isSoleProprietorship: boolean): Observable<Array<MainApplicationResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
@@ -423,38 +478,34 @@ export class CommonApplicationService {
 	userBusinessLicencesList(businessProfile: BizProfileResponse): Observable<Array<MainLicenceResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.licenceService
-			.apiBizsBizIdLicencesGet({
-				bizId,
-			})
-			.pipe(
-				switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {
-					if (basicLicenceResps.length === 0) {
-						return of([]);
-					}
+		return this.licenceService.apiBizsBizIdLicencesGet({ bizId }).pipe(
+			switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {
+				if (basicLicenceResps.length === 0) {
+					return of([]);
+				}
 
-					const apis: Observable<any>[] = [];
-					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
-							apis.push(
-								this.licenceService.apiLicencesLicenceIdGet({
-									licenceId: resp.licenceId!,
-								})
-							);
-						}
-					});
-
-					if (apis.length > 0) {
-						return forkJoin(apis).pipe(
-							switchMap((licenceResps: LicenceResponse[]) => {
-								return this.processBusinessLicenceData(businessProfile, basicLicenceResps, licenceResps);
+				const apis: Observable<any>[] = [];
+				basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+					if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: resp.licenceId!,
 							})
 						);
-					} else {
-						return this.processBusinessLicenceData(businessProfile, basicLicenceResps, null);
 					}
-				})
-			);
+				});
+
+				if (apis.length > 0) {
+					return forkJoin(apis).pipe(
+						switchMap((licenceResps: LicenceResponse[]) => {
+							return this.processBusinessLicenceData(businessProfile, basicLicenceResps, licenceResps);
+						})
+					);
+				} else {
+					return this.processBusinessLicenceData(businessProfile, basicLicenceResps, null);
+				}
+			})
+		);
 	}
 
 	private processBusinessLicenceData(
@@ -540,7 +591,7 @@ export class CommonApplicationService {
 				mobileTitle += ` ${originalLicenceNumber}`;
 			}
 		} else {
-			mobileTitle = title = 'Licensing Application';
+			mobileTitle = title = 'Security Services Application';
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
@@ -747,7 +798,7 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
 		}
 
 		return [messageWarn, messageError];
@@ -762,10 +813,18 @@ export class CommonApplicationService {
 				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, selServiceTypeCodeDesc);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
 		}
 
 		return messageError;
+	}
+
+	isValidSoleProprietorSwlCategories(availableCategoryCodes: WorkerCategoryTypeCode[]): boolean {
+		return (
+			BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
+				return availableCategoryCodes.includes(item.code as WorkerCategoryTypeCode);
+			}).length > 0
+		);
 	}
 
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
@@ -884,7 +943,7 @@ export class CommonApplicationService {
 		);
 		applicationNotifications.forEach((item: MainApplicationResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			const itemExpiry = this.utilService.dateToDateFormat(item.applicationExpiryDate);
 			if (item.isExpiryWarning) {
 				warningMessages.push(
 					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
@@ -914,21 +973,21 @@ export class CommonApplicationService {
 		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
 		renewals.forEach((item: MainLicenceResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.formatDatePipe.transform(item.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
 
 			if (item.licenceExpiryNumberOfDays != null) {
 				if (item.licenceExpiryNumberOfDays < 0) {
 					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
 				} else if (item.licenceExpiryNumberOfDays > 7) {
 					warningMessages.push(
-						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
 					);
 				} else if (item.licenceExpiryNumberOfDays === 0) {
-					errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
+					errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
 				} else {
 					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
 					errorMessages.push(
-						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
 					);
 				}
 			}
@@ -953,14 +1012,11 @@ export class CommonApplicationService {
 		return `This licence number is not a ${selServiceTypeCodeDesc}.`;
 	}
 
-	private getLicenceLookupNoMatchErrorMessage(
-		serviceTypeCode: ServiceTypeCode,
-		selServiceTypeCodeDesc: string
-	): string {
+	private getLicenceLookupNoMatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
 		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s for your business in BC.`;
+			return 'The licence number you entered does not match any existing records in our system for your business in BC.';
 		} else {
-			return `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
+			return 'The licence number you entered does not match any existing records in our system.';
 		}
 	}
 

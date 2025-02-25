@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { HeightUnitCode } from '@app/api/models';
+import { HeightUnitCode, WeightUnitCode } from '@app/api/models';
 import {
 	EyeColourTypes,
 	HairColourTypes,
@@ -47,8 +47,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						>
 							<mat-form-field>
 								<mat-label>
-									Number
-									<span *ngIf="heightUnitCode.value === heightUnitCodes.Inches"> of Feet</span>
+									<span *ngIf="heightUnitCode.value === heightUnitCodes.Centimeters">Cm</span>
+									<span *ngIf="heightUnitCode.value === heightUnitCodes.Inches">Ft</span>
 								</mat-label>
 								<input matInput formControlName="height" [errorStateMatcher]="matcher" mask="099" />
 								<mat-error *ngIf="form.get('height')?.hasError('required')"> This is required </mat-error>
@@ -59,7 +59,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="heightUnitCode.value === heightUnitCodes.Inches">
 							<mat-form-field>
-								<mat-label>Number of Inches</mat-label>
+								<mat-label>In</mat-label>
 								<input matInput formControlName="heightInches" [errorStateMatcher]="matcher" mask="09" />
 								<mat-error *ngIf="form.get('heightInches')?.hasError('max')"> This must be less than 12 </mat-error
 								><mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
@@ -86,7 +86,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="text-primary-color fs-6 mb-1">Weight</div>
 						<div class="col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Number</mat-label>
+								<mat-label>
+									<span *ngIf="weightUnitCode.value === weightUnitCodes.Kilograms">Kg</span>
+									<span *ngIf="weightUnitCode.value === weightUnitCodes.Pounds">Lbs</span>
+								</mat-label>
 								<input matInput formControlName="weight" [errorStateMatcher]="matcher" mask="009" />
 								<mat-error *ngIf="form.get('weight')?.hasError('required')"> This is required </mat-error>
 								<mat-error *ngIf="form.get('weight')?.hasError('mask')">
@@ -118,6 +121,7 @@ export class FormPhysicalCharacteristicsComponent implements OnInit {
 	eyeColourTypes = EyeColourTypes;
 	heightUnitTypes = HeightUnitTypes;
 	weightUnitTypes = WeightUnitTypes;
+	weightUnitCodes = WeightUnitCode;
 	heightUnitCodes = HeightUnitCode;
 
 	matcher = new FormErrorStateMatcher();

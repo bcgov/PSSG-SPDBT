@@ -488,13 +488,13 @@ export abstract class CommonApplicationHelper {
 		invalidCategories: any,
 		categoryList: string[],
 		isBusinessLicence: boolean = false,
-		availableCategories: WorkerCategoryTypeCode[] = [] // Business Licence does not include all of the same categories as a swl. Here is the valid set
+		availableCategoryCodes: WorkerCategoryTypeCode[] = [] // Business Licence does not include all of the same categories as a swl. Here is the valid set
 	): SelectOptions<string>[] {
 		let updatedList: SelectOptions[] = [];
 
 		if (isBusinessLicence) {
 			updatedList = BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
-				return availableCategories.includes(item.code as WorkerCategoryTypeCode);
+				return availableCategoryCodes.includes(item.code as WorkerCategoryTypeCode);
 			});
 		} else {
 			updatedList = [...WorkerCategoryTypes];
@@ -549,9 +549,9 @@ export abstract class CommonApplicationHelper {
 				title = 'Have you been treated for a mental health condition in the last 3 years?';
 			}
 		} else {
-			title = 'Have you been treated for any mental health conditions?';
+			title = 'Have you ever been treated for a mental health condition?';
 			subtitle =
-				'An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment';
+				'If you are applying for a security worker licence, you must provide details of any mental health condition you have received treatment for.';
 		}
 
 		return [title, subtitle];
@@ -564,18 +564,18 @@ export abstract class CommonApplicationHelper {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				title = 'Review your residential address';
-				subtitle = 'Ensure your residential address is correct before submitting your application';
+				subtitle = 'Ensure your residential address is correct before submitting your application.';
 				break;
 			}
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				title = 'Confirm your residential address';
-				subtitle = 'Ensure your residential address is correct before submitting your application';
+				subtitle = 'Ensure your residential address is correct before submitting your application.';
 				break;
 			}
 			default: {
 				title = 'Provide your residential address';
-				subtitle = 'This is the address where you currently live';
+				subtitle = 'This is the address where you currently live.';
 				break;
 			}
 		}

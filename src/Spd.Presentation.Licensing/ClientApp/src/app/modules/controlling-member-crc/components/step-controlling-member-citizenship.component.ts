@@ -1,26 +1,28 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-citizenship.component';
 
 @Component({
-    selector: 'app-step-controlling-member-citizenship',
-    template: `
+	selector: 'app-step-controlling-member-citizenship',
+	template: `
 		<app-step-section [title]="title">
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCodeNew"
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
+				(filesCleared)="onFilesCleared()"
 				(fileGovernmentIssuedUploaded)="onFileGovernmentIssuedUploaded($event)"
 				(fileGovernmentIssuedRemoved)="onFileGovernmentIssuedRemoved()"
+				(fileGovernmentIssuedCleared)="onFilesGovernmentIssuedCleared()"
 			></app-form-swl-citizenship>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberCitizenshipComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodeNew = ApplicationTypeCode.New;
@@ -44,6 +46,10 @@ export class StepControllingMemberCitizenshipComponent implements LicenceChildSt
 		this.controllingMembersService.fileRemoved();
 	}
 
+	onFilesCleared(): void {
+		this.attachments.setValue([]);
+	}
+
 	onFileGovernmentIssuedUploaded(file: File): void {
 		this.controllingMembersService.fileUploaded(
 			this.formSwlCitizenshipComponent.getGovernmentIssuedProofTypeCode(),
@@ -57,8 +63,19 @@ export class StepControllingMemberCitizenshipComponent implements LicenceChildSt
 		this.controllingMembersService.fileRemoved();
 	}
 
+	onFilesGovernmentIssuedCleared(): void {
+		this.governmentIssuedAttachments.setValue([]);
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+	get governmentIssuedAttachments(): FormControl {
+		return this.form.get('governmentIssuedAttachments') as FormControl;
 	}
 }
