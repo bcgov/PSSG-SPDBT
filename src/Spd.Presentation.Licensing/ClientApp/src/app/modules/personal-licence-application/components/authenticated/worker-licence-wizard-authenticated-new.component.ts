@@ -38,6 +38,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							[showWorkerLicenceSoleProprietorStep]="true"
 							(childNextStep)="onLicenceSelectionChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"

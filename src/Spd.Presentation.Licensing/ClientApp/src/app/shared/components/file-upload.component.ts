@@ -99,8 +99,8 @@ export class FileUploadHelper {
 
 			<label class="dropzone-area" [for]="id">
 				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
-				<div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
-				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
+				<div class="fw-bold m-2">Drag and Drop your file here or click to browse</div>
+				<div class="fine-print m-2" *ngIf="message">{{ message }}</div>
 
 				<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
 				<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>

@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
 import { StepControllingMemberSummaryReviewComponent } from './step-controlling-member-summary-review.component';
 
 @Component({
-    selector: 'app-steps-controlling-member-review',
-    template: `
+	selector: 'app-steps-controlling-member-review',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-summary-review
@@ -57,8 +58,8 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
 	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onEditStep(stepNumber: number) {

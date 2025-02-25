@@ -112,7 +112,7 @@ export interface LookupByLicenceNumberDialogData {
 									<app-alert type="warning" *ngIf="messageWarn">
 										<div [innerHTML]="messageWarn"></div>
 									</app-alert>
-									<app-alert type="danger" icon="error" *ngIf="messageError">
+									<app-alert type="danger" icon="dangerous" *ngIf="messageError">
 										{{ messageError }}
 									</app-alert>
 								</div>
@@ -122,7 +122,7 @@ export interface LookupByLicenceNumberDialogData {
 								<div class="mt-3">
 									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
-											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}
+											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
 										</div>
 
 										<div class="row">
@@ -151,7 +151,7 @@ export interface LookupByLicenceNumberDialogData {
 					</ng-container>
 
 					<ng-template #IsNotFound>
-						<app-alert type="danger" icon="error">
+						<app-alert type="danger" icon="dangerous">
 							{{ messageError }}
 						</app-alert>
 					</ng-template>

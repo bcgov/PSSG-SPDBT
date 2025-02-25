@@ -111,7 +111,7 @@ import {
 						<div class="row">
 							<div class="col-12 mt-4">
 								<app-alert type="warning" icon="warning">
-									<div>The maximum number of controlling members has been reached</div>
+									<div>The maximum number of controlling members has been reached.</div>
 								</app-alert>
 							</div>
 						</div>
@@ -254,7 +254,7 @@ import {
 						<div class="row">
 							<div class="col-12 mt-4">
 								<app-alert type="warning" icon="warning">
-									<div>The maximum number of controlling members has been reached</div>
+									<div>The maximum number of controlling members has been reached.</div>
 								</app-alert>
 							</div>
 						</div>

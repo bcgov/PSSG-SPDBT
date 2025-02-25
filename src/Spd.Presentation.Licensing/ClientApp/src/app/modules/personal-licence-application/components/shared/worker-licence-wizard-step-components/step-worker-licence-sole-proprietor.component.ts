@@ -20,7 +20,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							[href]="bceidGettingStartedUrl"
 							target="_blank"
 							>Business BCeID</a
-						>
+						>.
 					</app-alert>
 				</div>
 			</div>

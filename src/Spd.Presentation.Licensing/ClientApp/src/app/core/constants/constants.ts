@@ -20,6 +20,7 @@ export const SPD_CONSTANTS = {
 		licenceUpdatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
 		licenceRenewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
 		licenceRenewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
+		gdsdLicenceRenewAfterExpiryPeriodMonths: 6, // gdsd licence can still be renewed until 6 months after expiry
 	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',
@@ -58,13 +59,16 @@ export const SPD_CONSTANTS = {
 		controllingMembers: 20,
 		employees: 20,
 	},
+	messages: {
+		invalidSoleProprietorCategories:
+			'Sole proprietors must hold a valid Security Worker Licence in the same category as the business licence they are applying for.',
+	},
 	urls: {
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
 		bcCorporateRegistriesUrl: 'https://www.bcregistry.gov.bc.ca/',
 		bceidUrl: 'https://www.bceid.ca',
 		bceidBluePagesUrl: 'https://www.bceid.ca/directories/bluepages/',
 		bceidGettingStartedUrl: 'https://www.bceid.ca/register/business/getting_started/getting_started.aspx',
-		bcGovHomeUrl: 'https://www2.gov.bc.ca/gov/content/home',
 		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
 		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
 		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',
@@ -79,8 +83,12 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		controllingMemberChecklistUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
+		swlLearnMoreUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/training',
+		swlAcceptedIdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/apply',
 		mentalHealthConditionsFormUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms',
+			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/forms/spd0511-mentalcondition.pdf',
 		proofOfInsuranceUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
 		rcmpUrl: 'https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry',

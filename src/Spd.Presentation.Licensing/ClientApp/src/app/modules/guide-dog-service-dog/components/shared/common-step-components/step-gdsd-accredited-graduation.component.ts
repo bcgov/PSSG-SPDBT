@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -19,8 +20,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-12">
 								<mat-form-field>
 									<mat-label
-										>Name of Assistance Dogs International or International Guide Dog Federation accredited
-										school</mat-label
+										>Name of Assistance Dogs International or International Guide Dog Federation Accredited
+										School</mat-label
 									>
 									<input
 										matInput
@@ -28,11 +29,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[errorStateMatcher]="matcher"
 										maxlength="250"
 									/>
+									<mat-error *ngIf="form.get('accreditedSchoolName')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Contact Given Name</mat-label>
+									<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
 										formControlName="schoolContactGivenName"
@@ -45,6 +47,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-form-field>
 									<mat-label>Contact Surname</mat-label>
 									<input matInput formControlName="schoolContactSurname" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('schoolContactSurname')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
@@ -64,7 +67,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Contact Email Address</mat-label>
+									<mat-label>Contact Email Address <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
 										formControlName="schoolContactEmailAddress"
@@ -86,7 +89,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								(fileUploaded)="onFileUploaded($event)"
 								(fileRemoved)="onFileRemoved()"
 								[control]="attachments"
-								[maxNumberOfFiles]="1"
+								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 								[previewImage]="true"
 							></app-file-upload>
@@ -111,12 +114,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepGdsdAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdApplicationService.accreditedGraduationFormGroup;
+	form: FormGroup = this.gdsdApplicationService.graduationInfoFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
@@ -126,11 +126,16 @@ export class StepGdsdAccreditedGraduationComponent implements LicenceChildSteppe
 	}
 
 	onFileUploaded(file: File): void {
-		this.fileUploaded.emit(file);
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.fileRemoved.emit();
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	get attachments(): FormControl {

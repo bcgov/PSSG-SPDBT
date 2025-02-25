@@ -5,6 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -43,6 +44,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 							[hasBcscNameChanged]="hasBcscNameChanged"
 							[hasGenderChanged]="hasGenderChanged"
+							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -91,6 +93,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	showStepDogsAndRestraints = false;
 	hasBcscNameChanged = false;
 	hasGenderChanged = false;
+	isSoleProprietorSimultaneousFlow = false;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -132,6 +135,10 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				this.hasGenderChanged = this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
+
+				this.isSoleProprietorSimultaneousFlow =
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+					BooleanTypeCode.Yes;
 			}
 		);
 	}

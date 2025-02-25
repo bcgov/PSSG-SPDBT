@@ -40,7 +40,6 @@ import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/a
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { StepWorkerLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-access-code.component';
 import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-application-type-anonymous.component';
-import { StepWorkerLicenceConfirmationComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-confirmation.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-personal-information-anonymous.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/step-worker-licence-summary-review-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
@@ -60,7 +59,6 @@ import { StepsPermitIdentificationAuthenticatedComponent } from './components/au
 import { StepsPermitPurposeAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-purpose-authenticated.component';
 import { StepsPermitReviewAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-review-authenticated.component';
 import { StepsPermitUpdatesAuthenticatedComponent } from './components/authenticated/permit-wizard-step-components/steps-permit-updates-authenticated.component';
-import { PersonalApplicationsListCurrentComponent } from './components/authenticated/personal-applications-list-current.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
@@ -77,13 +75,12 @@ import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
-import { CommonAccessCodeAnonymousComponent } from './components/shared/common-step-components/common-access-code-anonymous.component';
 import { CommonAliasListComponent } from './components/shared/common-step-components/common-alias-list.component';
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
 import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
+import { StepWorkerLicenceConfirmationComponent } from './components/shared/common-step-components/step-worker-licence-confirmation.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
-import { LicenceActiveSwlPermitLicencesComponent } from './components/shared/licence-active-swl-permit-licences.component';
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/shared/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/shared/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/shared/licence-first-time-user-terms-of-use.component';
@@ -96,7 +93,6 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
-import { LicenceUserApplicationsComponent } from './components/shared/licence-user-applications.component';
 import { PermitSummaryCharacteristicsComponent } from './components/shared/permit-summary-characteristics.component';
 import { PermitSummaryEmployerInformationComponent } from './components/shared/permit-summary-employer-information.component';
 import { PermitSummaryPurposeComponent } from './components/shared/permit-summary-purpose.component';
@@ -104,6 +100,9 @@ import { PermitSummaryRationaleComponent } from './components/shared/permit-summ
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-step-components/step-permit-reprint.component';
+import { PersonalLicenceMainApplicationsListComponent } from './components/shared/personal-licence-main-applications-list.component';
+import { PersonalLicenceMainLicenceListComponent } from './components/shared/personal-licence-main-licence-list.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-armoured-car-guard.component';
 import { LicenceCategoryFireInvestigatorComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-fire-investigator.component';
 import { LicenceCategoryLocksmithComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-locksmith.component';
@@ -171,7 +170,6 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		WorkerSummaryBcDriversLicenceComponent,
 		WorkerSummaryPhotoOfYourselfComponent,
 		StepPermitUserProfileComponent,
-		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
 		CommonCriminalHistoryComponent,
 		CommonSwlPermitTermsComponent,
@@ -199,7 +197,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		LicencePaymentFailAnonymousComponent,
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
-		LicenceActiveSwlPermitLicencesComponent,
+		PersonalLicenceMainLicenceListComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitUpdateReceivedSuccessComponent,
 		PermitWizardAnonymousNewComponent,
@@ -297,7 +295,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepsWorkerLicenceReviewAuthenticatedComponent,
 		StepsWorkerLicenceUpdatesAuthenticatedComponent,
 		StepsWorkerLicenceSelectionComponent,
-		LicenceUserApplicationsComponent,
+		PersonalLicenceMainComponent,
 		UserProfileComponent,
 		WorkerLicenceApplicationBaseAnonymousComponent,
 		LicenceApplicationBaseAuthenticatedComponent,
@@ -311,7 +309,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		WorkerLicenceWizardAuthenticatedRenewalComponent,
 		WorkerLicenceWizardAuthenticatedReplacementComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
-		PersonalApplicationsListCurrentComponent,
+		PersonalLicenceMainApplicationsListComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [],

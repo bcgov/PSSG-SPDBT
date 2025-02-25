@@ -2,12 +2,13 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepPermitExpiredComponent } from './step-permit-expired.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
 @Component({
-    selector: 'app-steps-permit-details-new',
-    template: `
+	selector: 'app-steps-permit-details-new',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
@@ -68,8 +69,11 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 	@ViewChild(StepPermitExpiredComponent) permitExpiredComponent!: StepPermitExpiredComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private commonApplicationService: CommonApplicationService
+	) {
+		super(utilService);
 	}
 
 	onGotoUserProfile(): void {
