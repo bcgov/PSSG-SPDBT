@@ -110,9 +110,14 @@ namespace Spd.Presentation.Licensing.Controllers
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
             else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 return response;
-            //throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
-            else if (response != null)
+            else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
+            else
+            {
+                //gdsd, dog
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
+                return response;
+            }
 
             if (response != null)
             {
