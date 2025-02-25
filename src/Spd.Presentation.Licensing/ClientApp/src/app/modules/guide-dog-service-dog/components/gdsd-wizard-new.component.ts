@@ -226,7 +226,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			return;
 		}
 
-		this.gdsdApplicationService.submitNewAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceNewAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

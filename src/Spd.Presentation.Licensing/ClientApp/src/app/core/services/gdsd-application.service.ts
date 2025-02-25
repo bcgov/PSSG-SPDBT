@@ -562,7 +562,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	submitLicenceReplacementAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
 		delete body.documentInfos;
 
@@ -780,7 +779,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		return this.applyApplicationIntoModel(gdsdAppl).pipe(
-			switchMap((resp: any) => {
+			switchMap((_resp: any) => {
 				return this.applyProfileIntoModel(applicantProfile);
 			})
 		);
@@ -794,7 +793,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		associatedLicence: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
 		return this.applyLicenceIntoModel(associatedLicence).pipe(
-			switchMap((resp: any) => {
+			switchMap((_resp: any) => {
 				return this.applyProfileIntoModel(applicantProfile);
 			})
 		);
@@ -1305,7 +1304,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
@@ -1342,7 +1341,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		delete body.documentInfos;
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceAnonymousDocuments(
+		return this.submitLicenceNewAnonymousDocuments(
 			googleRecaptcha,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
@@ -1353,7 +1352,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the application data for anonymous new including documents
 	 * @returns
 	 */
-	private submitLicenceAnonymousDocuments(
+	private submitLicenceNewAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppAnonymousSubmitRequest
@@ -1369,7 +1368,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 						// pass in the list of document key codes
 						body.documentKeyCodes = [...resps];
 
-						return this.postChangeAnonymous(body);
+						return this.postSubmitAnonymous(body);
 					})
 				)
 				.pipe(take(1));
@@ -1378,11 +1377,25 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
-						return this.postChangeAnonymous(body);
+						return this.postSubmitAnonymous(body);
 					})
 				)
 				.pipe(take(1));
 		}
+	}
+
+	private postSubmitAnonymous(
+		body: GdsdTeamLicenceAppChangeRequest
+	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.utilService.toasterSuccess(successMessage);
+			})
+		);
 	}
 
 	/**
