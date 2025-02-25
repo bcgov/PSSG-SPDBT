@@ -116,6 +116,8 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
+                string str = $"{response.LicenceId}*{response.LicenceAppId}";
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
                 return response;
             }
 
