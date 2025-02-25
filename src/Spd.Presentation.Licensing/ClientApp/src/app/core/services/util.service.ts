@@ -533,18 +533,19 @@ export class UtilService {
 		});
 	}
 
-	toasterSuccess(msg: string): void {
-		this.hotToastService.success(msg);
-	}
+	toasterSuccess(msg: string, autoDismiss = true): void {
+		if (autoDismiss) {
+			this.hotToastService.success(msg);
+			return;
+		}
 
-	toasterError(msg: string): void {
-		this.hotToastService.success(msg);
-	}
-
-	toasterSuccessMustDismiss(msg: string): void {
 		this.hotToastService.success(msg, {
 			autoClose: false,
 			dismissible: true,
 		});
+	}
+
+	toasterError(msg: string): void {
+		this.hotToastService.success(msg);
 	}
 }

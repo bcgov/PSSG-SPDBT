@@ -146,7 +146,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	/**
 	 * Determine if the Save & Exit process can occur
-	 * @returns
+	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
 		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
@@ -156,7 +156,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		return true;
 	}
 
+	/**
+	 * Determine if the step is valid
+	 * @returns boolean
+	 */
 	isStepSelectionComplete(): boolean {
+		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return true;
+		}
+
 		if (this.authenticationService.isLoggedIn()) {
 			return this.dogCertificationSelectionFormGroup.valid;
 		}
@@ -164,6 +173,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		return this.termsAndConditionsFormGroup.valid && this.dogCertificationSelectionFormGroup.valid;
 	}
 
+	/**
+	 * Determine if the step is valid
+	 * @returns boolean
+	 */
 	isStepPersonalInformationComplete(): boolean {
 		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
@@ -202,6 +215,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		);
 	}
 
+	/**
+	 * Determine if the step is valid
+	 * @returns boolean
+	 */
 	isStepDogInformationComplete(): boolean {
 		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
@@ -224,6 +241,10 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		return this.dogInfoFormGroup.valid && this.dogMedicalFormGroup.valid;
 	}
 
+	/**
+	 * Determine if the step is valid
+	 * @returns boolean
+	 */
 	isStepTrainingInformationComplete(): boolean {
 		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
@@ -396,12 +417,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };
-		const applicationTypeData = { applicationTypeCode: applicationTypeCode };
-
-		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
-		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
-		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
-		// }
+		const applicationTypeData = { applicationTypeCode };
 
 		const personalInformationData = {
 			givenName: applicantProfile.givenName,
@@ -410,7 +426,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			dateOfBirth: applicantProfile.dateOfBirth,
 			phoneNumber: applicantProfile.phoneNumber,
 			emailAddress: applicantProfile.emailAddress,
-			hasBcscNameChanged,
+			hasBcscNameChanged: false,
 		};
 
 		const bcscMailingAddress = applicantProfile.mailingAddress;
@@ -443,7 +459,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.schoolTrainingRowAdd();
 		this.otherTrainingRowAdd();
 
-		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		console.debug('[createEmptyGdsdAuthenticated] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
 		return of(this.gdsdModelFormGroup.value);
 	}
 
@@ -466,7 +482,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
 				);
-				this.utilService.toasterSuccessMustDismiss(successMessage);
+				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
 	}
@@ -549,7 +565,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
 				);
-				this.utilService.toasterSuccessMustDismiss(successMessage);
+				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
 	}
@@ -605,113 +621,57 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	): Observable<any> {
 		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
 			return forkJoin([
-				this.loadExistingLicenceAuthenticated(associatedLicence),
+				this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
 				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
 			]).pipe(
 				catchError((error) => of(error)),
 				switchMap((resps: any[]) => {
-					const latestApplication = resps[0];
+					const applicantProfile = resps[0];
 					const photoOfYourself = resps[1];
 
-					return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+						switchMap((gdsdModelData: any) => {
+							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
+						})
+					);
 				})
 			);
 		}
 
 		// ApplicationTypeCode.Replacement
-		return this.loadExistingLicenceAuthenticated(associatedLicence).pipe(
-			switchMap((_resp: any) => {
-				return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+		return this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }).pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
+					})
+				);
 			})
 		);
 	}
 
-	private loadExistingLicenceAuthenticated(associatedLicence: MainLicenceResponse): Observable<any> {
-		this.reset();
-
-		const apis: Observable<any>[] = [
-			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: associatedLicence.licenceAppId! }),
-			this.applicantProfileService.apiApplicantIdGet({
-				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			}),
-		];
-
-		return forkJoin(apis).pipe(
-			switchMap((resps: any[]) => {
-				const gdsdLicenceAppl = resps[0];
-				const applicantProfile = resps[1];
-
-				return this.applyLicenceIntoModel(gdsdLicenceAppl, applicantProfile, associatedLicence);
-			})
-		);
-	}
-
-	private applyRenewalDataUpdatesToModel(
-		resp: any,
-		isAuthenticated: boolean,
-		associatedLicence: MainLicenceResponse | LicenceResponse,
-		photoOfYourself: Blob
-	): Observable<any> {
+	private applyRenewalDataUpdatesToModel(gdsdModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
-		// If they do not have canadian citizenship, they have to show proof for renewal
-		// let citizenshipData = {};
-		// const isCanadianCitizen = resp.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
-		// if (!isCanadianCitizen) {
-		// 	citizenshipData = {
-		// 		isCanadianCitizen: BooleanTypeCode.No,
-		// 		canadianCitizenProofTypeCode: null,
-		// 		notCanadianCitizenProofTypeCode: null,
-		// 		expiryDate: null,
-		// 		attachments: [],
-		// 		governmentIssuedPhotoTypeCode: null,
-		// 		governmentIssuedExpiryDate: null,
-		// 		governmentIssuedAttachments: [],
-		// 	};
-		// }
+		const photographOfYourselfData = gdsdModelData.photographOfYourselfData;
+		const originalLicenceData = gdsdModelData.originalLicenceData;
 
-		// const originalLicenceData = resp.originalLicenceData;
-		// originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+		const originalPhotoOfYourselfLastUploadDateTime = gdsdModelData.photographOfYourselfData.uploadedDateTime;
+		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+			originalPhotoOfYourselfLastUploadDateTime
+		);
 
-		// const photographOfYourselfData = { ...resp.photographOfYourselfData };
-
-		// const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
-		// originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
-		// 	originalPhotoOfYourselfLastUploadDateTime
-		// );
-
-		// if (originalLicenceData.originalPhotoOfYourselfExpired) {
-		// 	// set flag - user will be updating their photo
-		// 	photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
-		// }
-
-		// If applicant is renewing a licence where they already had authorization to use dogs,
-		// clear attachments to force user to upload a new proof of qualification.
-		// originalLicenceData.originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
-		// const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
-		// let dogsAuthorizationData = {};
-		// if (originalLicenceData.originalDogAuthorizationExists) {
-		// 	dogsAuthorizationData = {
-		// 		useDogs: resp.dogsAuthorizationData.useDogs,
-		// 		dogsPurposeFormGroup: {
-		// 			isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
-		// 			isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
-		// 			isDogsPurposeProtection: dogsPurposeFormGroup.isDogsPurposeProtection,
-		// 		},
-		// 		attachments: [],
-		// 	};
-		// }
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
 
 		this.gdsdModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
-				// profileConfirmationData: { isProfileUpToDate: false },
-				// originalLicenceData,
-
-				// photographOfYourselfData,
-				// citizenshipData,
-				// dogsAuthorizationData,
+				originalLicenceData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
@@ -726,28 +686,18 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		);
 	}
 
-	private applyReplacementDataUpdatesToModel(
-		_resp: any,
-		_associatedLicence: MainLicenceResponse | LicenceResponse
-	): Observable<any> {
+	private applyReplacementDataUpdatesToModel(): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-
 		const dogRenewData = { isAssistanceStillRequired: true };
 
 		// TODO do we need for flows?
 		this.consentAndDeclarationFormGroup.patchValue({ applicantOrLegalGuardianName: 'TODO' }, { emitEvent: false });
-
-		// const originalLicenceData = resp.originalLicenceData;
-		// originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
 		this.gdsdModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
 				dogRenewData,
-				// originalLicenceData,
-				// profileConfirmationData: { isProfileUpToDate: false },
-				// mailingAddressData: { ...mailingAddressData },
 			},
 			{
 				emitEvent: false,
@@ -783,61 +733,6 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		practiceLogAttachments.setValue([]);
 	}
 
-	// private applyProfileIntoModel(
-	// 	applicantProfile: ApplicantProfileResponse,
-	// 	applicationTypeCode: ApplicationTypeCode
-	// ): Observable<any> {
-	// 	this.reset();
-
-	// 	const serviceTypeData = { serviceTypeCode: ServiceTypeCode.GdsdTeamCertification }; // TODO GDSD hardcode for now
-	// 	const applicationTypeData = { applicationTypeCode: applicationTypeCode };
-
-	// 	const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
-	// 	// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
-	// 	// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
-	// 	// }
-
-	// 	const personalInformationData = {
-	// 		givenName: applicantProfile.givenName,
-	// 		middleName: applicantProfile.middleName1,
-	// 		surname: applicantProfile.surname,
-	// 		dateOfBirth: applicantProfile.dateOfBirth,
-	// 		phoneNumber: applicantProfile.phoneNumber,
-	// 		emailAddress: applicantProfile.emailAddress,
-	// 		hasBcscNameChanged,
-	// 	};
-
-	// 	const bcscMailingAddress = applicantProfile.mailingAddress;
-	// 	const mailingAddressData = {
-	// 		addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
-	// 		isAddressTheSame: false,
-	// 		addressLine1: bcscMailingAddress?.addressLine1,
-	// 		addressLine2: bcscMailingAddress?.addressLine2,
-	// 		city: bcscMailingAddress?.city,
-	// 		country: bcscMailingAddress?.country,
-	// 		postalCode: bcscMailingAddress?.postalCode,
-	// 		province: bcscMailingAddress?.province,
-	// 	};
-
-	// 	this.gdsdModelFormGroup.patchValue(
-	// 		{
-	// 			applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
-	// 			serviceTypeData,
-	// 			licenceTermCode: LicenceTermCode.TwoYears,
-	// 			applicationTypeData,
-
-	// 			personalInformationData,
-	// 			mailingAddressData,
-	// 		},
-	// 		{
-	// 			emitEvent: false,
-	// 		}
-	// 	);
-
-	// 	console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-	// 	return of(this.gdsdModelFormGroup.value);
-	// }
-
 	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
 
@@ -850,29 +745,80 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
-				const gdsdAppl = resps[0];
-				const applicantProfile = resps[1];
+				const gdsdAppl: GdsdTeamLicenceAppResponse = resps[0];
+				const applicantProfile: ApplicantProfileResponse = resps[1];
 
-				return this.applyLicenceIntoModel(gdsdAppl, applicantProfile);
+				return this.applyApplicationProfileIntoModel(gdsdAppl, applicantProfile);
 			})
 		);
 	}
 
-	private applyLicenceIntoModel(
-		appl: GdsdTeamLicenceAppResponse,
-		applicantProfile: ApplicantProfileResponse | null = null,
-		associatedLicence: LicenceResponse | null = null
+	private applyApplicationProfileIntoModel(
+		gdsdAppl: GdsdTeamLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
-		const serviceTypeData = { serviceTypeCode: appl.serviceTypeCode };
-		const applicationTypeData = { applicationTypeCode: appl.applicationTypeCode };
-		const dogCertificationSelectionData = {
-			isDogTrainedByAccreditedSchool: this.utilService.booleanToBooleanType(appl.isDogTrainedByAccreditedSchool),
+		return this.applyApplicationIntoModel(gdsdAppl).pipe(
+			switchMap((resp: any) => {
+				return this.applyProfileIntoModel(applicantProfile);
+			})
+		);
+	}
+
+	private applyLicenceProfileIntoModel(
+		applicantProfile: ApplicantProfileResponse,
+		associatedLicence: MainLicenceResponse | LicenceResponse
+	): Observable<any> {
+		return this.applyLicenceIntoModel(associatedLicence).pipe(
+			switchMap((resp: any) => {
+				return this.applyProfileIntoModel(applicantProfile);
+			})
+		);
+	}
+
+	private applyProfileIntoModel(applicantProfile: ApplicantProfileResponse): Observable<any> {
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged: false,
 		};
 
-		const hasBcscNameChanged = false; // TODO gdsd hasBcscNameChanged
-		// if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
-		// 	hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
-		// }
+		const bcscMailingAddress = applicantProfile?.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
+		};
+
+		this.gdsdModelFormGroup.patchValue(
+			{
+				personalInformationData,
+				mailingAddressData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
+	}
+
+	private applyLicenceIntoModel(associatedLicence: MainLicenceResponse | LicenceResponse): Observable<any> {
+		const serviceTypeData = { serviceTypeCode: associatedLicence.serviceTypeCode };
+		const personalInformationData = this.gdsdPersonalInformationFormGroup.value;
+
+		if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+			personalInformationData.hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		}
 
 		const originalLicenceData = {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
@@ -884,17 +830,82 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			originalPhotoOfYourselfExpired: null,
 		};
 
-		const personalInformationData = {
-			givenName: applicantProfile ? applicantProfile.givenName : appl.givenName,
-			middleName: applicantProfile ? applicantProfile.middleName1 : appl.middleName,
-			surname: applicantProfile ? applicantProfile.surname : appl.surname,
-			dateOfBirth: applicantProfile ? applicantProfile.dateOfBirth : appl.dateOfBirth,
-			phoneNumber: applicantProfile ? applicantProfile.phoneNumber : appl.phoneNumber,
-			emailAddress: applicantProfile ? applicantProfile.emailAddress : appl.emailAddress,
-			hasBcscNameChanged,
+		let dogInfoData = {};
+		if (associatedLicence.dogInfo) {
+			dogInfoData = {
+				dogName: associatedLicence.dogInfo.dogName,
+				dogDateOfBirth: associatedLicence.dogInfo.dogDateOfBirth,
+				dogBreed: associatedLicence.dogInfo.dogBreed,
+				dogColorAndMarkings: associatedLicence.dogInfo.dogColorAndMarkings,
+				dogGender: associatedLicence.dogInfo.dogGender,
+				microchipNumber: associatedLicence.dogInfo.microchipNumber,
+			};
+		}
+
+		const photographOfYourselfAttachments: Array<File> = [];
+		let photographOfYourselfLastUploadedDateTime = '';
+
+		if (associatedLicence.photoDocumentInfo) {
+			const doc: Document = {
+				documentExtension: associatedLicence?.photoDocumentInfo.documentExtension,
+				documentName: associatedLicence?.photoDocumentInfo.documentName,
+				documentUrlId: associatedLicence?.photoDocumentInfo.documentUrlId,
+				expiryDate: associatedLicence?.photoDocumentInfo.expiryDate,
+				licenceAppId: associatedLicence.licenceAppId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				uploadedDateTime: associatedLicence?.photoDocumentInfo.uploadedDateTime,
+			};
+			const aFile = this.fileUtilService.dummyFile(doc);
+			photographOfYourselfAttachments.push(aFile);
+			photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
+		}
+
+		const photographOfYourselfData = {
+			attachments: photographOfYourselfAttachments,
+			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
+			updatePhoto: null,
+			updateAttachments: [],
 		};
 
-		const bcscMailingAddress = applicantProfile?.mailingAddress;
+		this.gdsdModelFormGroup.patchValue(
+			{
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				serviceTypeData,
+				licenceTermCode: associatedLicence.licenceTermCode,
+				originalLicenceData,
+				dogId: associatedLicence?.dogId,
+
+				personalInformationData,
+				photographOfYourselfData,
+				dogInfoData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyLicenceIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		return of(this.gdsdModelFormGroup.value);
+	}
+
+	private applyApplicationIntoModel(gdsdAppl: GdsdTeamLicenceAppResponse): Observable<any> {
+		const serviceTypeData = { serviceTypeCode: gdsdAppl.serviceTypeCode };
+		const applicationTypeData = { applicationTypeCode: gdsdAppl.applicationTypeCode };
+		const dogCertificationSelectionData = {
+			isDogTrainedByAccreditedSchool: this.utilService.booleanToBooleanType(gdsdAppl.isDogTrainedByAccreditedSchool),
+		};
+
+		const personalInformationData = {
+			givenName: gdsdAppl.givenName,
+			middleName: gdsdAppl.middleName,
+			surname: gdsdAppl.surname,
+			dateOfBirth: gdsdAppl.dateOfBirth,
+			phoneNumber: gdsdAppl.phoneNumber,
+			emailAddress: gdsdAppl.emailAddress,
+			hasBcscNameChanged: false,
+		};
+
+		const bcscMailingAddress = gdsdAppl.mailingAddress;
 		const mailingAddressData = {
 			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
@@ -948,7 +959,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			attachments: [],
 		};
 
-		appl.documentInfos?.forEach((doc: Document) => {
+		gdsdAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
@@ -983,7 +994,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument: {
 					const aFile = this.fileUtilService.dummyFile(doc);
-					if (appl.nonAccreditedSchoolQuestions?.trainingInfo?.hasAttendedTrainingSchool) {
+					if (gdsdAppl.nonAccreditedSchoolQuestions?.trainingInfo?.hasAttendedTrainingSchool) {
 						schoolSupportTrainingHistoryAttachments.push(aFile);
 					} else {
 						otherSupportTrainingHistoryAttachments.push(aFile);
@@ -1010,7 +1021,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		if (dogMedicalAttachments.length > 0) {
 			dogMedicalData = {
 				areInoculationsUpToDate: this.utilService.booleanToBooleanType(
-					appl.nonAccreditedSchoolQuestions?.areInoculationsUpToDate
+					gdsdAppl.nonAccreditedSchoolQuestions?.areInoculationsUpToDate
 				),
 				attachments: dogMedicalAttachments,
 			};
@@ -1025,62 +1036,67 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			};
 		}
 
-		if (appl.dogInfo) {
+		if (gdsdAppl.dogInfo) {
 			dogInfoData = {
-				dogName: appl.dogInfo.dogName,
-				dogDateOfBirth: appl.dogInfo.dogDateOfBirth,
-				dogBreed: appl.dogInfo.dogBreed,
-				dogColorAndMarkings: appl.dogInfo.dogColorAndMarkings,
-				dogGender: appl.dogInfo.dogGender,
-				microchipNumber: appl.dogInfo.microchipNumber,
+				dogName: gdsdAppl.dogInfo.dogName,
+				dogDateOfBirth: gdsdAppl.dogInfo.dogDateOfBirth,
+				dogBreed: gdsdAppl.dogInfo.dogBreed,
+				dogColorAndMarkings: gdsdAppl.dogInfo.dogColorAndMarkings,
+				dogGender: gdsdAppl.dogInfo.dogGender,
+				microchipNumber: gdsdAppl.dogInfo.microchipNumber,
 			};
 		}
 
-		if (this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) && appl.isDogTrainedByAccreditedSchool) {
-			if (appl.accreditedSchoolQuestions?.graduationInfo) {
+		if (
+			this.utilService.hasBooleanValue(gdsdAppl.isDogTrainedByAccreditedSchool) &&
+			gdsdAppl.isDogTrainedByAccreditedSchool
+		) {
+			if (gdsdAppl.accreditedSchoolQuestions?.graduationInfo) {
 				graduationInfoData = {
-					accreditedSchoolName: appl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolName,
-					schoolContactGivenName: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactGivenName,
-					schoolContactSurname: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactSurname,
-					schoolContactPhoneNumber: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactPhoneNumber,
-					schoolContactEmailAddress: appl.accreditedSchoolQuestions?.graduationInfo.schoolContactEmailAddress,
+					accreditedSchoolName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolName,
+					schoolContactGivenName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactGivenName,
+					schoolContactSurname: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactSurname,
+					schoolContactPhoneNumber: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactPhoneNumber,
+					schoolContactEmailAddress: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactEmailAddress,
 					attachments: accreditedGraduationAttachments,
 				};
 			}
 
-			if (appl.accreditedSchoolQuestions) {
-				dogGdsdData = { isGuideDog: this.utilService.booleanToBooleanType(appl.accreditedSchoolQuestions.isGuideDog) };
+			if (gdsdAppl.accreditedSchoolQuestions) {
+				dogGdsdData = {
+					isGuideDog: this.utilService.booleanToBooleanType(gdsdAppl.accreditedSchoolQuestions.isGuideDog),
+				};
 
 				dogTasksData = {
-					tasks: appl.accreditedSchoolQuestions.serviceDogTasks,
+					tasks: gdsdAppl.accreditedSchoolQuestions.serviceDogTasks,
 				};
 			}
 		}
 
 		if (
-			this.utilService.hasBooleanValue(appl.isDogTrainedByAccreditedSchool) &&
-			!appl.isDogTrainedByAccreditedSchool &&
-			appl.nonAccreditedSchoolQuestions
+			this.utilService.hasBooleanValue(gdsdAppl.isDogTrainedByAccreditedSchool) &&
+			!gdsdAppl.isDogTrainedByAccreditedSchool &&
+			gdsdAppl.nonAccreditedSchoolQuestions
 		) {
-			if (appl.nonAccreditedSchoolQuestions.trainingInfo) {
+			if (gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo) {
 				dogTasksData = {
-					tasks: appl.nonAccreditedSchoolQuestions.trainingInfo.specializedTasksWhenPerformed,
+					tasks: gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.specializedTasksWhenPerformed,
 				};
 
 				if (
-					this.utilService.hasBooleanValue(appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool)
+					this.utilService.hasBooleanValue(gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool)
 				) {
 					trainingHistoryData = {
 						hasAttendedTrainingSchool: this.utilService.booleanToBooleanType(
-							appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool
+							gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool
 						),
 					};
 
-					if (appl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool) {
-						schoolTrainingsArray = appl.nonAccreditedSchoolQuestions.trainingInfo.schoolTrainings ?? null;
+					if (gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.hasAttendedTrainingSchool) {
+						schoolTrainingsArray = gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.schoolTrainings ?? null;
 						schoolTrainingHistoryData.attachments = schoolSupportTrainingHistoryAttachments;
 					} else {
-						otherTrainingsArray = appl.nonAccreditedSchoolQuestions.trainingInfo.otherTrainings ?? null;
+						otherTrainingsArray = gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.otherTrainings ?? null;
 						otherTrainingHistoryData.attachments = otherSupportTrainingHistoryAttachments;
 						otherTrainingHistoryData.practiceLogAttachments = otherTrainingHistoryPracticeAttachments;
 					}
@@ -1098,13 +1114,11 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		this.gdsdModelFormGroup.patchValue(
 			{
-				licenceAppId: appl.licenceAppId,
+				licenceAppId: gdsdAppl.licenceAppId,
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				serviceTypeData,
-				licenceTermCode: LicenceTermCode.TwoYears,
+				licenceTermCode: gdsdAppl.licenceTermCode,
 				applicationTypeData,
-				originalLicenceData,
-				dogId: associatedLicence?.dogId,
 
 				personalInformationData,
 				medicalInformationData,
@@ -1138,7 +1152,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.otherTrainingRowAdd();
 		}
 
-		console.debug('[createNewGdsdAuthenticated] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
+		console.debug('[applyApplicationIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
 		return of(this.gdsdModelFormGroup.value);
 	}
 
@@ -1151,7 +1165,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	createNewGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyGdsd(serviceTypeCode, ApplicationTypeCode.New).pipe(
+		return this.createEmptyGdsd(serviceTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 				this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
@@ -1197,50 +1211,34 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingLicenceApplicationAnonymous(associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return forkJoin([
+				this.applicantProfileService.apiApplicantGet(),
+				this.licenceService.apiLicencesLicencePhotoGet(),
+			]).pipe(
+				catchError((error) => of(error)),
+				switchMap((resps: any[]) => {
+					const applicantProfile = resps[0];
+					const photoOfYourself = resps[1];
 
-						return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				return this.loadExistingLicenceApplicationAnonymous(associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
-	}
-
-	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
-		this.reset();
-
-		return this.gdsdLicensingService
-			.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId: associatedLicence.licenceAppId! })
-			.pipe(
-				switchMap((workerLicenceAppl: GdsdTeamLicenceAppResponse) => {
-					// return this.applyLicenceIntoModel(
-					// 	workerLicenceAppl,
-					// 	workerLicenceAppl.applicationTypeCode,
-					// 	associatedLicence
-					// ).pipe(
-					// 	switchMap((_resp: any) => {
-					return this.applyLicenceIntoModel(workerLicenceAppl, null, associatedLicence);
+					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+						switchMap((gdsdModelData: any) => {
+							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
+						})
+					);
 				})
 			);
-		// })
-		// );
+		}
+
+		return this.applicantProfileService.apiApplicantGet().pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
+					})
+				);
+			})
+		);
 	}
 
 	/**
@@ -1248,18 +1246,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 
-	private createEmptyGdsd(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): Observable<any> {
+	private createEmptyGdsd(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };
-		const applicationTypeData = { applicationTypeCode };
 
 		this.gdsdModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				licenceTermCode: LicenceTermCode.TwoYears,
 				serviceTypeData,
-				applicationTypeData,
 			},
 			{
 				emitEvent: false,
@@ -1307,16 +1303,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		});
 
-		const existingDocumentIds: Array<string> = body.documentInfos
-			.filter((item: Document) => !!item.documentUrlId)
-			.map((item: Document) => item.documentUrlId!);
+		// const existingDocumentIds: Array<string> = body.documentInfos
+		// 	.filter((item: Document) => !!item.documentUrlId)
+		// 	.map((item: Document) => item.documentUrlId!);
 
 		delete body.documentInfos;
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.postLicenceAnonymousDocuments(
 			googleRecaptcha,
-			existingDocumentIds,
+			// existingDocumentIds,// TODO gdsd previousDocumentIds?
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -1357,16 +1353,16 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		});
 
-		const existingDocumentIds: Array<string> = body.documentInfos
-			.filter((item: Document) => !!item.documentUrlId)
-			.map((item: Document) => item.documentUrlId!);
+		// const existingDocumentIds: Array<string> = body.documentInfos
+		// 	.filter((item: Document) => !!item.documentUrlId)
+		// 	.map((item: Document) => item.documentUrlId!);
 
 		delete body.documentInfos;
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.postLicenceAnonymousDocuments(
 			googleRecaptcha,
-			existingDocumentIds,
+			// existingDocumentIds,// TODO gdsd previousDocumentIds?
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -1378,7 +1374,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	private postLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
+		// existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppAnonymousSubmitRequest
 	) {
@@ -1396,7 +1392,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 						body.documentKeyCodes = [...resps];
 						// pass in the list of document ids that were in the original
 						// application and are still being used
-						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds?
 
 						return this.postChangeAnonymous(body);
 					})
@@ -1409,7 +1405,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					switchMap((_resp: IActionResult) => {
 						// pass in the list of document ids that were in the original
 						// application and are still being used
-						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds
+						// body.previousDocumentIds = [...existingDocumentIds]; // TODO gdsd previousDocumentIds?
 
 						return this.postChangeAnonymous(body);
 					})

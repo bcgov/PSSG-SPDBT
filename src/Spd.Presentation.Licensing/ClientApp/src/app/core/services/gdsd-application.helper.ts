@@ -1,6 +1,7 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
 	AccreditedSchoolQuestions,
+	ApplicationTypeCode,
 	Document,
 	DocumentRelatedInfo,
 	LicenceDocumentTypeCode,
@@ -357,6 +358,7 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 	getDocsToSaveBlobs(gdsdModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
+		const applicationTypeData = gdsdModelFormValue.applicationTypeData;
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const dogCertificationSelectionData = gdsdModelFormValue.dogCertificationSelectionData;
 		const governmentPhotoIdData = gdsdModelFormValue.governmentPhotoIdData;
@@ -365,9 +367,16 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 		const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
 
-		if (photographOfYourselfData.attachments) {
+		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
 			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
+			photographOfYourselfData.attachments?.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		} else {
+			const docs: Array<Blob> = [];
+			photographOfYourselfData.updateAttachments?.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
