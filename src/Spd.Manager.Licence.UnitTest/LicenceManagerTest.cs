@@ -5,7 +5,6 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DogTeam;
-using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -63,7 +62,6 @@ public class LicenceManagerTest
 
          mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(licenceResp);
-
 
         DocumentResp document = fixture.Build<DocumentResp>()
             .With(r => r.LicenceId, licenceId)
