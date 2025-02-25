@@ -1,7 +1,6 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -98,14 +97,6 @@ export class FormLicenceListExpiredComponent {
 	}
 
 	isRenewAllowed(licence: MainLicenceResponse): boolean {
-		if (
-			licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
-			licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
-		) {
-			return false;
-		}
-
-		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
-		return !this.utilService.getIsDateMonthsOrOlder(licence.expiryDate, period);
+		return this.utilService.isExpiredLicenceRenewable(licence.serviceTypeCode!, licence.expiryDate!);
 	}
 }

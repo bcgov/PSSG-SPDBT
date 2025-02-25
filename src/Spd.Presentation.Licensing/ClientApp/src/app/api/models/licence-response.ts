@@ -7,6 +7,7 @@ import { ArmouredVehiclePermitReasonCode } from '../models/armoured-vehicle-perm
 import { BizTypeCode } from '../models/biz-type-code';
 import { BodyArmourPermitReasonCode } from '../models/body-armour-permit-reason-code';
 import { Document } from '../models/document';
+import { DogInfo } from '../models/dog-info';
 import { LicenceStatusCode } from '../models/licence-status-code';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { ServiceTypeCode } from '../models/service-type-code';
@@ -19,9 +20,12 @@ export interface LicenceResponse {
   carryAndUseRestraints?: boolean;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   dogDocumentInfos?: Array<Document> | null;
+  dogId?: string | null;
+  dogInfo?: DogInfo;
   employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;
+  gdsdTeamId?: string | null;
   isDogsPurposeDetectionDrugs?: boolean;
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;
