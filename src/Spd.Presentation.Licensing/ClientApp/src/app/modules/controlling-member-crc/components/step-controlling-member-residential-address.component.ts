@@ -12,11 +12,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="info" icon="">
-						Has your residential address changed?
+						Have you moved?
 						<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
-							>Change your address online</a
+							>Update your address online.</a
 						>
-						to update this information on your BC Services Card. Any changes you make will then be updated here.
+						Any changes you make will automatically be updated here.
 					</app-alert>
 				</div>
 			</div>
