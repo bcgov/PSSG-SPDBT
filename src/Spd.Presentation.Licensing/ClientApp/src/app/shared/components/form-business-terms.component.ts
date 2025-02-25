@@ -52,14 +52,8 @@ import { UtilService } from '@app/core/services/util.service';
 								<li>
 									Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 									Services and the Site in general. However, you are encouraged to refer to the
-									<i>Security Services Act</i>, <i>Body Armour Control Act</i>, or
-									<i>Armoured Vehicle and After Market Compartment Control Act</i>, as applicable, and any related
-									Regulations and other official information materials before submitting an online application for a
-									security licence or permit described above, including Prescribed Checks. Reasonable efforts have been
-									made to provide accurate, complete and timely information regarding the Services and the Site in
-									general. However, you are encouraged to refer to the <i>Security Services Act</i> and
-									<i>Regulation</i>, any other legislation as it applies specifically to your security business,
-									including the
+									<i>Security Services Act</i> and <i>Regulation</i>, any other legislation as it applies specifically
+									to your security business, including the
 									<i>Body Armour Control Act, Armoured Vehicle and After Market Compartment Control Act</i> and related
 									<i>Regulations</i>, and other official information materials before submitting an online application
 									for a new or renewed security business licence, including where applicable Prescribed Checks for
