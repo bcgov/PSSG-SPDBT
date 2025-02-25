@@ -6,8 +6,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-common-criminal-history',
-    template: `
+	selector: 'app-common-criminal-history',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
@@ -35,9 +35,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="text-minor-heading mb-2">Brief Description of New Charges or Convictions</div>
-					<div class="fs-6">
-						You must report any new charges or convictions that have been laid against you within the last 14 days.
-					</div>
+					<div class="fs-6 mb-2">You have 14 days to report new charges or convictions to our office.</div>
 
 					<mat-form-field>
 						<textarea
@@ -56,9 +54,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class CommonCriminalHistoryComponent {
 	matcher = new FormErrorStateMatcher();

@@ -1,15 +1,21 @@
-export class GuideDogServiceDogRoutes {
-	public static readonly GUIDE_DOG_SERVICE_DOG = 'guide-dog-service-dog';
+import { AppRoutes } from '@app/app-routes';
 
-	public static readonly MODULE_PATH = GuideDogServiceDogRoutes.GUIDE_DOG_SERVICE_DOG;
+export class GuideDogServiceDogRoutes {
+	public static readonly MODULE_PATH = AppRoutes.GUIDE_DOG_SERVICE_DOG;
 
 	// AUTHENTICATED
 	public static readonly GDSD_AUTHENTICATED_BASE = 'application';
+	public static readonly GDSD_APPLICATION_NEW_AUTHENTICATED = 'gdsd-team-new';
+	public static readonly GDSD_APPLICATION_RENEWAL_AUTHENTICATED = 'gdsd-team-renewal';
+	public static readonly GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED = 'gdsd-team-replacement';
 
 	// ANONYMOUS
+	public static readonly GDSD_ACCESS_CODE_ANONYMOUS = 'gdsd-access-code';
 	public static readonly GDSD_APPLICATION_ANONYMOUS = 'gdsd-application-anonymous';
 	public static readonly GDSD_APPLICATION_TYPE_ANONYMOUS = 'gdsd-application-type';
-	public static readonly GDSD_APPLICATION_NEW_ANONYMOUS = 'gdsd-application-new';
+	public static readonly GDSD_APPLICATION_NEW_ANONYMOUS = 'gdsd-team-new';
+	public static readonly GDSD_APPLICATION_RENEWAL_ANONYMOUS = 'gdsd-team-renewal';
+	public static readonly GDSD_APPLICATION_REPLACEMENT_ANONYMOUS = 'gdsd-team-replacement';
 	public static readonly GDSD_APPLICATION_RECEIVED = 'gdsd-application-received';
 
 	public static path(route: string | null = null): string {

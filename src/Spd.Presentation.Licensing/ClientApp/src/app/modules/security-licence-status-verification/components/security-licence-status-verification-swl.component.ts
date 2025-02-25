@@ -90,7 +90,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 
 						<ng-container *ngIf="showSearchDataError">
-							<app-alert type="danger" icon="error"> {{ searchDataError }} </app-alert>
+							<app-alert type="danger" icon="dangerous"> {{ searchDataError }} </app-alert>
 						</ng-container>
 
 						<div class="row no-print my-2">
@@ -162,11 +162,11 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						<ng-template #NoSearchResults>
 							<div class="mt-3">
 								<ng-container *ngIf="isWorkerLicenceNumberSearchError; else NameSearchError">
-									<app-alert type="danger" icon="error">No results match your search.</app-alert>
+									<app-alert type="danger" icon="dangerous">No results match your search.</app-alert>
 								</ng-container>
 
 								<ng-template #NameSearchError>
-									<app-alert type="danger" icon="error">
+									<app-alert type="danger" icon="dangerous">
 										<strong>{{ searchResultsErrorName }}</strong> does not hold a valid licence. If you believe they are
 										working in security in B.C., please consider submitting a
 										<a aria-label="Navigate to SPD complaint site" [href]="spdComplaintUrl" target="_blank">complaint</a

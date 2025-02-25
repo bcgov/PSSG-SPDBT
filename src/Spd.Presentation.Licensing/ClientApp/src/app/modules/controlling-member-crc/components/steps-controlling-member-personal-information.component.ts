@@ -1,14 +1,15 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberAliasesComponent } from './step-controlling-member-aliases.component';
 import { StepControllingMemberPersonalInfoComponent } from './step-controlling-member-personal-info.component';
 import { StepControllingMemberResidentialAddressComponent } from './step-controlling-member-residential-address.component';
 import { StepControllingMemberTermsComponent } from './step-controlling-member-terms.component';
 
 @Component({
-    selector: 'app-steps-controlling-member-personal-information',
-    template: `
+	selector: 'app-steps-controlling-member-personal-information',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-terms
@@ -56,9 +57,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 			</mat-step>
 
 			<mat-step *ngIf="isNew">
-				<app-step-controlling-member-aliases
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-aliases>
+				<app-step-controlling-member-aliases></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -89,9 +88,9 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
@@ -111,8 +110,8 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	@ViewChild(StepControllingMemberResidentialAddressComponent)
 	stepAddress!: StepControllingMemberResidentialAddressComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	override dirtyForm(step: number): boolean {

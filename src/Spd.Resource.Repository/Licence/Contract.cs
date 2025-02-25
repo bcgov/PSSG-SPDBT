@@ -57,6 +57,9 @@ namespace Spd.Resource.Repository.Licence
         public Guid? SoleProprietorOrgId { get; set; }
 
         public IEnumerable<Condition> Conditions { get; set; } = Enumerable.Empty<Condition>();
+
+        //gdsd
+        public Guid? GDSDTeamId { get; set; }
     }
 
     public record Licence
@@ -88,6 +91,10 @@ namespace Spd.Resource.Repository.Licence
         public Addr? EmployerPrimaryAddress { get; set; }
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+    }
+
+    public record GDSDLicence : Licence
+    {
     }
 
     public record Condition

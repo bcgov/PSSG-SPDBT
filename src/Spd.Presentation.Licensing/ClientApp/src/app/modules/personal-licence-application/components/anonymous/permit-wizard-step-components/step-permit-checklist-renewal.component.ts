@@ -27,13 +27,15 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Proof of citizenship or residence status</div>
 							<p class="checklist-info">
-								You will need to prove your citizenship or residence status by providing a valid piece of
-								government-issued identification, either from Canada or another country.
+								You are required to provide documentation verifying your Canadian citizenship or residency status as
+								part of the application process.
 							</p>
 						</li>
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 

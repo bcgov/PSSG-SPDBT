@@ -6,6 +6,7 @@ import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -34,7 +35,10 @@ export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	constructor(@Inject(DOCUMENT) private document: Document) {}
+	constructor(
+		@Inject(DOCUMENT) private document: Document,
+		private formatDatePipe: FormatDatePipe
+	) {}
 
 	//------------------------------------
 	// Session storage
@@ -86,6 +90,24 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
+	getFullNameWithOneMiddle(
+		givenName: string | null | undefined,
+		middleName: string | null | undefined,
+		surname: string | null | undefined
+	): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName) {
+			userNameArray.push(middleName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
 	getFullNameWithMiddle(
 		givenName: string | null | undefined,
 		middleName1: string | null | undefined,
@@ -116,6 +138,14 @@ export class UtilService {
 		return moment('1800-01-01');
 	}
 
+	getDogBirthDateMax(): moment.Moment {
+		return moment().startOf('day').subtract(6, 'months');
+	}
+
+	getDogDateMin(): moment.Moment {
+		return moment().startOf('day').subtract(50, 'years');
+	}
+
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
@@ -136,12 +166,27 @@ export class UtilService {
 		return yearsDiff >= 5;
 	}
 
+	getIsDateMonthsOrOlder(aDate: string | null | undefined, periodMonths: number): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const monthsDiff = today.diff(dateDay, 'months');
+		return monthsDiff > periodMonths;
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 
 		if (index !== -1) {
 			array.splice(index, 1);
 		}
+	}
+
+	getStringOrNull(value: any): string | null {
+		if (!value) return null;
+		return value;
 	}
 
 	getDecodedAccessToken(token: string): any {
@@ -330,6 +375,16 @@ export class UtilService {
 	}
 
 	/**
+	 * Has a boolean value (true/false)... is not null or undefined
+	 * @param value
+	 * @returns
+	 */
+	public hasBooleanValue(value: boolean | null | undefined): boolean {
+		const isBooleanType = typeof value === 'boolean';
+		return isBooleanType;
+	}
+
+	/**
 	 * Convert boolean to BooleanTypeCode
 	 * @param value
 	 * @returns
@@ -346,6 +401,31 @@ export class UtilService {
 			(province === SPD_CONSTANTS.address.provinceBC || province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
 			(country === SPD_CONSTANTS.address.countryCA || country === SPD_CONSTANTS.address.countryCanada)
 		);
+	}
+
+	/**
+	 * Convert date to format for DB
+	 * @param value
+	 * @returns
+	 */
+	public dateToDbDate(value: string | null | undefined): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, SPD_CONSTANTS.date.backendDateFormat);
+	}
+
+	/**
+	 * Convert date to format
+	 * @param value
+	 * @returns
+	 */
+	public dateToDateFormat(
+		value: string | null | undefined,
+		format = SPD_CONSTANTS.date.formalDateFormat
+	): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, format);
 	}
 
 	public getPermitShowAdditionalGovIdData(
@@ -430,10 +510,12 @@ export class UtilService {
 		});
 	}
 
-	disableInputs(form: FormGroup) {
+	disableInputs(form: FormGroup, doNotIncludeControlNames: Array<string> | null = null) {
 		Object.keys(form.controls).forEach((control: string) => {
-			const typedControl: AbstractControl = form.controls[control];
-			typedControl.disable({ emitEvent: false });
+			if (!doNotIncludeControlNames?.includes(control)) {
+				const typedControl: AbstractControl = form.controls[control];
+				typedControl.disable({ emitEvent: false });
+			}
 		});
 	}
 

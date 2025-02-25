@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepBusinessLicenceBusinessAddressComponent } from './step-business-licence-business-address.component';
 import { StepBusinessLicenceBusinessInformationComponent } from './step-business-licence-business-information.component';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
@@ -9,8 +10,8 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 
 @Component({
-    selector: 'app-steps-business-licence-swl-sp-information',
-    template: `
+	selector: 'app-steps-business-licence-swl-sp-information',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="isNew">
@@ -108,9 +109,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-liability
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-business-licence-liability>
+				<app-step-business-licence-liability></app-step-business-licence-liability>
 
 				<app-wizard-footer
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
@@ -124,9 +123,9 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 0;
@@ -149,8 +148,11 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(private commonApplicationService: CommonApplicationService) {
-		super();
+	constructor(
+		utilService: UtilService,
+		private commonApplicationService: CommonApplicationService
+	) {
+		super(utilService);
 	}
 
 	onGotoBusinessProfile(): void {

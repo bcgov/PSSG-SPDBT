@@ -12,9 +12,7 @@ import { CommonApplicationHelper } from '@app/core/services/common-application.h
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
-import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
@@ -22,6 +20,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
 			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			hasCourtJudgement: new FormControl('', [FormControlValidators.required]),
 			criminalHistoryDetail: new FormControl(''),
 			hasBankruptcyHistory: new FormControl(''),
 			bankruptcyHistoryDetail: new FormControl(''),
@@ -30,7 +29,9 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'criminalHistoryDetail',
-					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
+					(form) =>
+						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes ||
+						form.get('hasCourtJudgement')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'hasBankruptcyHistory',
@@ -70,7 +71,6 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe,
 		protected utilService: UtilService,
 		protected fileUtilService: FileUtilService
 	) {
@@ -158,9 +158,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
-				expiryDate: citizenshipData.expiryDate
-					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
+				expiryDate: this.utilService.dateToDbDate(citizenshipData.expiryDate),
 				documentIdNumber: citizenshipData.documentIdNumber,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
@@ -179,23 +177,17 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
-					expiryDate: citizenshipData.governmentIssuedExpiryDate
-						? this.formatDatePipe.transform(
-								citizenshipData.governmentIssuedExpiryDate,
-								SPD_CONSTANTS.date.backendDateFormat
-							)
-						: null,
+					expiryDate: this.utilService.dateToDbDate(citizenshipData.governmentIssuedExpiryDate),
 					documentIdNumber: citizenshipData.governmentIssuedDocumentIdNumber,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
 		}
 
-		personalInformationData.dateOfBirth = personalInformationData.dateOfBirth
-			? this.formatDatePipe.transform(personalInformationData.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
+		personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 
 		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
+		const hasCourtJudgement = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCourtJudgement);
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
@@ -244,12 +236,14 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
+			hasCriminalHistory,
+			hasCourtJudgement,
 			hasBankruptcyHistory,
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
-			hasCriminalHistory,
 			hasNewCriminalRecordCharge,
-			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
+			criminalHistoryDetail:
+				hasCriminalHistory || hasCourtJudgement ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC,
 			hasNewMentalHealthCondition,

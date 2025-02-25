@@ -158,10 +158,7 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 			return;
 		}
 
-		this.commonApplicationService.setApplicationTitleText(
-			'Metal Dealers & Recyclers Business Registration',
-			'Business Registration'
-		);
+		this.commonApplicationService.setMetalDealersApplicationTitle();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])

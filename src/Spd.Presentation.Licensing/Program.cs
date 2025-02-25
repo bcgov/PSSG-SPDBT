@@ -5,6 +5,7 @@ using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.JsonConverts;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -26,13 +27,13 @@ try
 
     builder.Services.ConfigureDataProtection(builder.Configuration, "ProtectionShareKeyApp");
     builder.Services.ConfigureSwagger(assemblyName);
-    builder.Services.ConfigureDataProtection(builder.Configuration, "ProtectionShareKeyApp");
     builder.Services
         .AddEndpointsApiExplorer()
         .AddControllers()
         .AddJsonOptions(x =>
         {
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            x.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
         });
 
     builder.Services.ConfigureAuthentication(builder.Configuration);

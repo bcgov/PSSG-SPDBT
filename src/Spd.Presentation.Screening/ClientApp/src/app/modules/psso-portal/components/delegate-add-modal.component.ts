@@ -12,8 +12,8 @@ export interface DelegateDialogData {
 }
 
 @Component({
-    selector: 'app-delegate-add-modal',
-    template: `
+	selector: 'app-delegate-add-modal',
+	template: `
 		<div mat-dialog-title>Add Delegate</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
@@ -39,6 +39,7 @@ export interface DelegateDialogData {
 							<mat-label>Email</mat-label>
 							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
 							<mat-error *ngIf="form.get('emailaddress')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('emailaddress')?.hasError('email')"> Must be a valid email address </mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -55,14 +56,14 @@ export interface DelegateDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({
 		lastName: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl('', [FormControlValidators.required]),
-		emailaddress: new FormControl('', [Validators.required]), // SPDBT-2951 remove FormControlValidators.govEmail
+		emailaddress: new FormControl('', [Validators.required, FormControlValidators.email]), // SPDBT-2951 remove FormControlValidators.govEmail
 	});
 
 	constructor(
@@ -70,7 +71,7 @@ export class DelegateAddModalComponent {
 		private formBuilder: FormBuilder,
 		private hotToast: HotToastService,
 		private dialogRef: MatDialogRef<DelegateAddModalComponent>,
-		@Inject(MAT_DIALOG_DATA) public dialogData: DelegateDialogData
+		@Inject(MAT_DIALOG_DATA) public dialogData: DelegateDialogData,
 	) {}
 
 	onSave(): void {

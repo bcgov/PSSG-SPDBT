@@ -9,7 +9,8 @@ namespace Spd.Utilities.Dynamics
         private string? authToken;
         private static readonly string[] resettableProperties = {
             "spd_requestdogsreasons",
-            "spd_requestdogs" };
+            "spd_requestdogs",
+            "spd_dogsassistanceindailyliving" };
 
         public void OnClientCreated(ClientCreatedArgs args)
         {
