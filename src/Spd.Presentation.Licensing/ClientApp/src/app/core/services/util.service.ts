@@ -3,10 +3,11 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -37,7 +38,8 @@ export type SortWeight = -1 | 0 | 1;
 export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
-		private formatDatePipe: FormatDatePipe
+		private formatDatePipe: FormatDatePipe,
+		private hotToastService: HotToastService
 	) {}
 
 	//------------------------------------
@@ -172,7 +174,7 @@ export class UtilService {
 		const dateDay = moment(aDate).startOf('day');
 
 		const today = moment().startOf('day');
-		const monthsDiff = today.diff(dateDay, 'months');
+		const monthsDiff = today.diff(dateDay, 'months', true);
 		return monthsDiff > periodMonths;
 	}
 
@@ -500,6 +502,18 @@ export class UtilService {
 		return false;
 	}
 
+	isExpiredLicenceRenewable(serviceTypeCode: ServiceTypeCode, expiryDate: string): boolean {
+		if (
+			serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+			serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
+		) {
+			return false;
+		}
+
+		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
+		return !this.getIsDateMonthsOrOlder(expiryDate, period);
+	}
+
 	//------------------------------------
 	// Form related
 
@@ -529,5 +543,21 @@ export class UtilService {
 		formArray.controls.forEach((control) => {
 			control.disable({ emitEvent: false });
 		});
+	}
+
+	toasterSuccess(msg: string, autoDismiss = true): void {
+		if (autoDismiss) {
+			this.hotToastService.success(msg);
+			return;
+		}
+
+		this.hotToastService.success(msg, {
+			autoClose: false,
+			dismissible: true,
+		});
+	}
+
+	toasterError(msg: string): void {
+		this.hotToastService.success(msg);
 	}
 }

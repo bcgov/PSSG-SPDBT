@@ -84,7 +84,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextSubmitStep)="onSubmit()"
+					(nextStepperStep)="onSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-gdsd-review-confirm>
@@ -172,9 +172,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 		if (this.isLoggedIn) {
 			this.gdsdApplicationService.submitLicenceRenewalAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-					);
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);
@@ -184,7 +182,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 			return;
 		}
 
-		this.gdsdApplicationService.submitRenewalAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceRenewalAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
@@ -246,7 +244,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
+					console.log('An error occurred during save', error);
 				},
 			});
 		} else {
@@ -264,10 +262,6 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 	onChildNextStep() {
 		this.goToChildNextStep();
-	}
-
-	private handlePartialSaveError(_error: HttpErrorResponse): void {
-		// TODO  handlePartialSaveError
 	}
 
 	private goToChildNextStep() {
