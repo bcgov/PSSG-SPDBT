@@ -384,7 +384,10 @@ export class CommonApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (this.utilService.isLicenceActive(resp.licenceStatusCode)) {
+						if (
+							this.utilService.isLicenceActive(resp.licenceStatusCode) ||
+							this.utilService.isExpiredLicenceRenewable(resp.serviceTypeCode!, resp.expiryDate!)
+						) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
