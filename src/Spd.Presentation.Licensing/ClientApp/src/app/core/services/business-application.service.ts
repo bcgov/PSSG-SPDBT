@@ -408,13 +408,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// save the business profile then the licence application
 		return this.saveBusinessProfile().pipe(
 			switchMap((_resp: any) => {
-				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).pipe(
-					tap((_resp: any) => {
-						this.utilService.toasterSuccess(
-							'Your business licence and security worker licence have been successfully submitted'
-						);
-					})
-				);
+				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 			})
 		);
 	}
@@ -650,16 +644,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		body.bizId = bizId;
 
-		return this.bizPortalUserService
-			.apiBusinessBizIdPortalUsersPost({
-				bizId,
-				body,
-			})
-			.pipe(
-				tap((_resp: any) => {
-					this.utilService.toasterSuccess('Business Manager was successfully added');
-				})
-			);
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersPost({
+			bizId,
+			body,
+		});
 	}
 
 	/**
@@ -670,17 +658,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		body.bizId = bizId;
 
-		return this.bizPortalUserService
-			.apiBusinessBizIdPortalUsersUserIdPut({
-				bizId,
-				userId,
-				body,
-			})
-			.pipe(
-				tap((_resp: any) => {
-					this.utilService.toasterSuccess('Business Manager was successfully updated');
-				})
-			);
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdPut({
+			bizId,
+			userId,
+			body,
+		});
 	}
 
 	/**
