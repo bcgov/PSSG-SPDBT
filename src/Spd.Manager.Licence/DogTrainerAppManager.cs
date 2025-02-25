@@ -38,17 +38,17 @@ internal class DogTrainerAppManager :
     #region anonymous
     public async Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
     {
-        return null;
+        throw new NotImplementedException();
     }
 
     public async Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppRenewCommand cmd, CancellationToken ct)
     {
-        return null;
+        throw new NotImplementedException();
     }
 
     public async Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppReplaceCommand cmd, CancellationToken ct)
     {
-        return null;
+        throw new NotImplementedException();
     }
     #endregion
 }

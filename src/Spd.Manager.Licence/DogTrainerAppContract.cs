@@ -11,12 +11,12 @@ public interface IDogTrainerAppManager
 
 #region anonymous
 public record DogTrainerLicenceAppAnonymousSubmitCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
-public record DogTrainerLicenceAppReplaceCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
-public record DogTrainerLicenceAppRenewCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppReplaceCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
 
 #endregion
 
-public abstract record DogTrainerRequest
+public record DogTrainerRequest
 {
     public string? AccreditSchoolName { get; set; }
     public MailingAddress? SchoolMailingAddress { get; set; }
@@ -37,6 +37,11 @@ public abstract record DogTrainerRequest
 
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+}
+
+public record DogTrainerChangeRequest : DogTrainerRequest
+{
+    public Guid OriginalLicenceId { get; set; }
 }
 
 public record DogTrainerAppCommandResponse
