@@ -18,7 +18,6 @@ import {
 import { ApplicantProfileService, ControllingMemberCrcAppService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -81,7 +80,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private authenticationService: AuthenticationService,
 		private authUserBcscService: AuthUserBcscService,
-		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private commonApplicationService: CommonApplicationService
@@ -332,7 +330,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!controllingMembersModelFormValue.controllingMemberAppId) {
 					this.controllingMembersModelFormGroup.patchValue(

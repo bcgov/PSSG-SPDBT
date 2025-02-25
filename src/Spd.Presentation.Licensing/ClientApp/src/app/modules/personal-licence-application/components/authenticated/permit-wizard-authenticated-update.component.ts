@@ -8,8 +8,8 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-review-authenticated.component';
 import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-updates-authenticated.component';
@@ -96,7 +96,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -198,7 +198,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 					this.serviceTypeCode,
 					this.applicationTypeCode
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 
 				this.router.navigateByUrl(
 					PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS)

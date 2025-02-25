@@ -11,18 +11,18 @@ import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-    selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
-    template: `
+	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
+	template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
 				[selectedIndex]="3"
@@ -99,8 +99,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-stepper>
 		</ng-container>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	extends BaseWizardComponent
@@ -137,7 +137,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -218,14 +218,14 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	onNextPayStep(): void {
 		this.businessApplicationService.submitBusinessLicenceWithSwlCombinedFlowNew().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(
+				this.utilService.toasterSuccess(
 					'Your business licence and security worker licence have been successfully submitted'
 				);
 				this.payNow(resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
+				this.utilService.toasterError('An error occurred during the save. Please try again.');
 			},
 		});
 	}

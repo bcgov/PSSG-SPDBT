@@ -42,7 +42,6 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -138,8 +137,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private bizMembersService: BizMembersService,
 		private authUserBceidService: AuthUserBceidService,
 		private bizPortalUserService: BizPortalUserService,
-		private commonApplicationService: CommonApplicationService,
-		private hotToastService: HotToastService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -236,7 +234,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						if (isSaveAndExit) {
 							msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 						}
-						this.hotToastService.success(msg);
+						this.utilService.toasterSuccess(msg);
 
 						if (!businessModelFormValue.licenceAppId) {
 							this.businessModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId! }, { emitEvent: false });
@@ -265,7 +263,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!businessModelFormValue.licenceAppId) {
 					this.businessModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId! }, { emitEvent: false });
@@ -300,7 +298,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-							this.hotToastService.success(successMessage);
+							this.utilService.toasterSuccess(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
 						error: (error: any) => {
@@ -311,7 +309,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			} else {
 				this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 					next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-						this.hotToastService.success(successMessage);
+						this.utilService.toasterSuccess(successMessage);
 						this.commonApplicationService.onGoToHome();
 					},
 					error: (error: any) => {
@@ -324,7 +322,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -355,7 +353,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resps: any[]) => {
-							this.hotToastService.success(successMessage);
+							this.utilService.toasterSuccess(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
 						error: (error: any) => {
@@ -369,7 +367,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: BizLicAppCommandResponse) => {
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -386,7 +384,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					params.applicationTypeCode
 				);
 
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -410,7 +408,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// save the business profile then the licence application
 		return this.saveBusinessProfile().pipe(
 			switchMap((_resp: any) => {
-				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).pipe(
+					tap((_resp: any) => {
+						this.utilService.toasterSuccess(
+							'Your business licence and security worker licence have been successfully submitted'
+						);
+					})
+				);
 			})
 		);
 	}
@@ -646,10 +650,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		body.bizId = bizId;
 
-		return this.bizPortalUserService.apiBusinessBizIdPortalUsersPost({
-			bizId,
-			body,
-		});
+		return this.bizPortalUserService
+			.apiBusinessBizIdPortalUsersPost({
+				bizId,
+				body,
+			})
+			.pipe(
+				tap((_resp: any) => {
+					this.utilService.toasterSuccess('Business Manager was successfully added');
+				})
+			);
 	}
 
 	/**
@@ -660,11 +670,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		body.bizId = bizId;
 
-		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdPut({
-			bizId,
-			userId,
-			body,
-		});
+		return this.bizPortalUserService
+			.apiBusinessBizIdPortalUsersUserIdPut({
+				bizId,
+				userId,
+				body,
+			})
+			.pipe(
+				tap((_resp: any) => {
+					this.utilService.toasterSuccess('Business Manager was successfully updated');
+				})
+			);
 	}
 
 	/**
@@ -674,10 +690,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	deleteBizPortalUser(userId: string): Observable<ActionResult> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdDelete({
-			bizId,
-			userId,
-		});
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdDelete({ bizId, userId });
 	}
 
 	/**

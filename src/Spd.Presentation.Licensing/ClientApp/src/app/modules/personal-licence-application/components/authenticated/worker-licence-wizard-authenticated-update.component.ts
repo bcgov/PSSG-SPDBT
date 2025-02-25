@@ -8,9 +8,9 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
@@ -72,9 +72,9 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 			</div>
 		</div>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
@@ -100,7 +100,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private workerApplicationService: WorkerApplicationService
 	) {
@@ -215,7 +215,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 							ServiceTypeCode.SecurityWorkerLicence,
 							this.applicationTypeCode
 						);
-						this.hotToastService.success(successMessage);
+						this.utilService.toasterSuccess(successMessage);
 
 						this.router.navigateByUrl(
 							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)

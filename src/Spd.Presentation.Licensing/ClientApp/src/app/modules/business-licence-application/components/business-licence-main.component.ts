@@ -20,7 +20,6 @@ import {
 import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
@@ -173,7 +172,6 @@ export class BusinessLicenceMainComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -240,7 +238,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.hotToastService.success('The application has been successfully removed');
+					this.utilService.toasterSuccess('The application has been successfully removed');
 
 					this.commonApplicationService
 						.cancelDraftApplication(appl.licenceAppId!)
