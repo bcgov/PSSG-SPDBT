@@ -1,4 +1,3 @@
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,6 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 using System.Security.Principal;
-using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -47,9 +45,9 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
-            var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
-            if (!validateResult.IsValid)
-                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            //var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
+            //if (!validateResult.IsValid)
+            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             anonymousSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
             GDSDAppCommandResponse? response = null;
@@ -78,10 +76,10 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousChangeRequest.DocumentKeyCodes, ct);
-            var validateResult = await _teamAppChangeValidator.ValidateAsync(anonymousChangeRequest, ct);
-            if (!validateResult.IsValid)
-                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-            anonymousChangeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
+            //var validateResult = await _teamAppChangeValidator.ValidateAsync(anonymousChangeRequest, ct);
+            //if (!validateResult.IsValid)
+            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            //anonymousChangeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
             GDSDAppCommandResponse? response = null;
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
