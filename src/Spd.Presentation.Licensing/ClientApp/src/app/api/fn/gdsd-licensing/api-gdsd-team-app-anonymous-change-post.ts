@@ -11,16 +11,16 @@ import { RequestBuilder } from '../../request-builder';
 import { GdsdAppCommandResponse } from '../../models/gdsd-app-command-response';
 import { GdsdTeamLicenceAppChangeRequest } from '../../models/gdsd-team-licence-app-change-request';
 
-export interface ApiGdsdTeamAppReplacePost$Params {
+export interface ApiGdsdTeamAppAnonymousChangePost$Params {
   
     /**
-     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     * PermitAppAnonymousSubmitRequest data
      */
     body?: GdsdTeamLicenceAppChangeRequest
 }
 
-export function apiGdsdTeamAppReplacePost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppReplacePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppReplacePost.PATH, 'post');
+export function apiGdsdTeamAppAnonymousChangePost(http: HttpClient, rootUrl: string, params?: ApiGdsdTeamAppAnonymousChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiGdsdTeamAppAnonymousChangePost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -35,4 +35,4 @@ export function apiGdsdTeamAppReplacePost(http: HttpClient, rootUrl: string, par
   );
 }
 
-apiGdsdTeamAppReplacePost.PATH = '/api/gdsd-team-app/replace';
+apiGdsdTeamAppAnonymousChangePost.PATH = '/api/gdsd-team-app/anonymous/change';
