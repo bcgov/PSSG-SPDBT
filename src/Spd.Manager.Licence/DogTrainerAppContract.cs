@@ -4,35 +4,38 @@ namespace Spd.Manager.Licence;
 public interface IDogTrainerAppManager
 {
     //anonymous
-    public Task<GDSDAppCommandResponse> Handle(DogTrainerLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(DogTrainerLicenceAppReplaceCommand command, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(DogTrainerLicenceAppRenewCommand command, CancellationToken ct);
+    public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
+    public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppRenewCommand command, CancellationToken ct);
 }
 
 #region anonymous
-public record DogTrainerLicenceAppAnonymousSubmitCommand(DogTrainerAppNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
-public record DogTrainerLicenceAppReplaceCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
-public record DogTrainerLicenceAppRenewCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record DogTrainerLicenceAppAnonymousSubmitCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppReplaceCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppRenewCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
 
 #endregion
 
-public abstract record DogTrainerAppNewRequest
+public abstract record DogTrainerRequest
 {
-    //personal info
-    public string? Surname { get; set; }
-    public string? GivenName { get; set; }
-    public string? MiddleName { get; set; }
-    public MailingAddress? MailingAddress { get; set; }
-    public DateOnly? DateOfBirth { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? EmailAddress { get; set; }
-    public string? ApplicantOrLegalGuardianName { get; set; }
-    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
-    public DogInfo? DogInfo { get; set; }
-}
+    public string? AccreditSchoolName { get; set; }
+    public MailingAddress? SchoolMailingAddress { get; set; }
+    public string? SchoolDirectorSurname { get; set; }
+    public string? SchoolDirectorGivenName { get; set; }
+    public string? SchoolDirectorMiddleName { get; set; }
+    public string? SchoolContactPhoneNumber { get; set; }
+    public string? SchoolContactEmailAddress { get; set; }
 
-public record DogTrainerLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppNew
-{
+    //trainer info
+    public string? TrainerSurname { get; set; }
+    public string? TrainerGivenName { get; set; }
+    public string? TrainerMiddleName { get; set; }
+    public MailingAddress? TrainerMailingAddress { get; set; }
+    public DateOnly? TrainerDateOfBirth { get; set; }
+    public string? TrainerPhoneNumber { get; set; }
+    public string? TrainerEmailAddress { get; set; }
+
+    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 }
 
