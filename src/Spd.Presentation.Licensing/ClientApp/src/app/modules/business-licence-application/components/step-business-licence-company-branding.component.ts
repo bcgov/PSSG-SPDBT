@@ -82,7 +82,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 			this.title = "Confirm your business' branding";
 			this.subtitle = 'Update any information that has changed since your last application';
 			this.info =
-				"If there been changes to your business' uniforms, insignia, logos, vehicle marking, or advertising, add and remove any examples of business branding that are no longer being used.";
+				'If your business has updated its uniforms, insignia, logos, vehicle markings, or advertising, update your branding by adding new examples and removing anything you no longer use. Security Services must approve all uniforms, logos, and vehicle markings.';
 		} else {
 			this.title = 'Provide examples of company branding';
 			this.subtitle =
