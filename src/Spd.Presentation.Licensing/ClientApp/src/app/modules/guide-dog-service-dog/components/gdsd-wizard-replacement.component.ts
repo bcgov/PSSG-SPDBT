@@ -89,9 +89,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 		if (this.isLoggedIn) {
 			this.gdsdApplicationService.submitLicenceReplacementAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-					);
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);
@@ -100,7 +98,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 			return;
 		}
 
-		this.gdsdApplicationService.submitReplacementAnonymous().subscribe({
+		this.gdsdApplicationService.submitLicenceReplacementAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

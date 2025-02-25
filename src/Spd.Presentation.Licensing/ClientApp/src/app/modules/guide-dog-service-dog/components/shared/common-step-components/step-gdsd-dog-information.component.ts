@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-gdsd-dog-information',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [title]="title">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
@@ -142,7 +142,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
-	subtitle = '';
 
 	genderMfTypes: SelectOptions[] = [];
 	matcher = new FormErrorStateMatcher();
@@ -164,7 +163,6 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 
 	ngOnInit(): void {
 		this.title = this.isNew ? 'Your Dog Information' : 'Confirm your Dog Information';
-		this.subtitle = this.isNew ? '' : 'Update any information that has changed since your last application';
 
 		this.genderMfTypes = GenderTypes.filter(
 			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M
