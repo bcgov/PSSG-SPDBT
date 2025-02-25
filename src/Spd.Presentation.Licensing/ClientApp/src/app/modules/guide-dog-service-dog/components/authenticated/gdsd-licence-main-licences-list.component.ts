@@ -85,6 +85,12 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									<mat-icon>restore</mat-icon>Renew
 								</button>
 							</div>
+							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+								<app-alert type="info" icon="info">
+									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or replaced while an
+									application is in progress.
+								</app-alert>
+							</div>
 						</div>
 					</div>
 

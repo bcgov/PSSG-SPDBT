@@ -93,6 +93,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 						serviceLabelTitle="Certifications"
 						serviceLabel="Certification"
 						[expiredLicences]="expiredLicencesList"
+						(renewLicence)="onRenew($event)"
 					></app-form-licence-list-expired>
 				</div>
 			</div>
@@ -226,8 +227,8 @@ export class GdsdLicenceMainComponent implements OnInit {
 
 				// Gdsd Applications
 				this.applicationsDataSource = new MatTableDataSource(userGdsdApplicationsList ?? []);
-				// TODO gdsd uncomment
-				// this.applicationIsInProgress = this.commonApplicationService.getApplicationIsInProgress(userGdsdApplicationsList);
+				this.applicationIsInProgress =
+					this.commonApplicationService.getApplicationIsInProgress(userGdsdApplicationsList);
 				// Gdsd Licences
 				const activeLicencesList = userGdsdLicencesList.filter((item: MainLicenceResponse) =>
 					this.utilService.isLicenceActive(item.licenceStatusCode)

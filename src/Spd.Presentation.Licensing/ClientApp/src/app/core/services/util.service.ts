@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -174,7 +174,7 @@ export class UtilService {
 		const dateDay = moment(aDate).startOf('day');
 
 		const today = moment().startOf('day');
-		const monthsDiff = today.diff(dateDay, 'months');
+		const monthsDiff = today.diff(dateDay, 'months', true);
 		return monthsDiff > periodMonths;
 	}
 
@@ -500,6 +500,18 @@ export class UtilService {
 		}
 
 		return false;
+	}
+
+	isExpiredLicenceRenewable(serviceTypeCode: ServiceTypeCode, expiryDate: string): boolean {
+		if (
+			serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+			serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
+		) {
+			return false;
+		}
+
+		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
+		return !this.getIsDateMonthsOrOlder(expiryDate, period);
 	}
 
 	//------------------------------------
