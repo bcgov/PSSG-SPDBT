@@ -18,7 +18,7 @@ public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitReq
 
 public record DogTrainerRequest
 {
-    public string? AccreditSchoolName { get; set; }
+    public string? AccreditedSchoolName { get; set; }
     public MailingAddress? SchoolMailingAddress { get; set; }
     public string? SchoolDirectorSurname { get; set; }
     public string? SchoolDirectorGivenName { get; set; }
