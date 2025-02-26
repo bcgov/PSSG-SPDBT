@@ -33,7 +33,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -130,8 +129,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private applicantProfileService: ApplicantProfileService,
-		private hotToastService: HotToastService
+		private applicantProfileService: ApplicantProfileService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService);
 
@@ -485,7 +483,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!licenceModelFormValue.licenceAppId) {
 					this.workerModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });

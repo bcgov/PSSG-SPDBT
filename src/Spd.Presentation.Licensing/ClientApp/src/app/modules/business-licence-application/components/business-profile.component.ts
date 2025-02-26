@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
@@ -90,7 +89,6 @@ export class BusinessProfileComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
@@ -119,7 +117,7 @@ export class BusinessProfileComponent implements OnInit {
 
 		this.businessApplicationService.saveLoginBusinessProfile().subscribe({
 			next: (_resp: any) => {
-				this.hotToastService.success('Your business profile has been successfully updated');
+				this.utilService.toasterSuccess('Your business profile has been successfully updated');
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 			},
 			error: (error: any) => {
