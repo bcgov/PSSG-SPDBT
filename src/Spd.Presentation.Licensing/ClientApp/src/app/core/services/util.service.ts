@@ -558,6 +558,6 @@ export class UtilService {
 	}
 
 	toasterError(msg: string): void {
-		this.hotToastService.success(msg);
+		this.hotToastService.error(msg);
 	}
 }

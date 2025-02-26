@@ -9,7 +9,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
@@ -110,7 +109,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
@@ -249,7 +247,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			this.linkSuccess.emit(resp);
 
 			const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.hotToastService.success(`The ${serviceTypeCodeDesc} has been found.`);
+			this.utilService.toasterSuccess(`The ${serviceTypeCodeDesc} has been found.`);
 		}
 
 		if (this.errorMessage) {

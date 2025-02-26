@@ -15,7 +15,6 @@ import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
@@ -199,7 +198,6 @@ export class PersonalLicenceMainComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private hotToastService: HotToastService,
 		private utilService: UtilService,
 		private dialog: MatDialog,
 		private commonApplicationService: CommonApplicationService,
@@ -348,7 +346,7 @@ export class PersonalLicenceMainComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.hotToastService.success('The application has been successfully removed');
+					this.utilService.toasterSuccess('The application has been successfully removed');
 
 					this.commonApplicationService
 						.cancelDraftApplication(appl.licenceAppId!)
