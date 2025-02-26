@@ -56,15 +56,14 @@ export class StepsDtTrainingSchoolInfoComponent extends BaseWizardStepComponent 
 	}
 
 	override dirtyForm(step: number): boolean {
-		return true;
-		// switch (step) {
-		// 	case this.STEP_SCHOOL_TRAINING:
-		// 		return this.schoolComponent.isFormValid();
-		// 	case this.STEP_MAILING_ADDRESS:
-		// 		return this.addressComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
+		switch (step) {
+			case this.STEP_SCHOOL_TRAINING:
+				return this.schoolComponent.isFormValid();
+			case this.STEP_MAILING_ADDRESS:
+				return this.addressComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

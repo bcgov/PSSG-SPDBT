@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ServiceTypeCode } from '@app/api/models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-photograph-of-yourself-update
 				[form]="form"
 				label="licence"
-				[serviceTypeCode]="serviceTypeCode"
+				[serviceTypeCode]="serviceTypeGdsdTeam"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"
 				(fileUploaded)="onFileUploaded()"
@@ -23,13 +23,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepGdsdPhotographOfYourselfRenewComponent implements OnInit, LicenceChildStepperStepComponent {
+	readonly serviceTypeGdsdTeam = ServiceTypeCode.GdsdTeamCertification;
 	title = '';
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.gdsdTeamApplicationService.photographOfYourself;
 
 	form: FormGroup = this.gdsdTeamApplicationService.photographOfYourselfFormGroup;
-
-	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 

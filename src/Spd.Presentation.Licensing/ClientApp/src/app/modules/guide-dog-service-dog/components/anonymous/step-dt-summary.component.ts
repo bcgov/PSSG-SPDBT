@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-dt-summary',
 	template: `
 		<app-step-section
-			title="Registration Summary"
+			title="Registration summary"
 			subtitle="Review your information before submitting your application."
 			*ngIf="dogTrainerModelData"
 		>
@@ -36,21 +36,21 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							<div class="panel-body">
 								<div class="text-minor-heading-small mt-2">Training School Information</div>
 								<div class="row mt-0">
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Training School Name</div>
 										<div class="summary-text-data">{{ accreditedSchoolName }}</div>
 									</div>
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">CEO/Executive Director Name</div>
 										<div class="summary-text-data">{{ schoolDirectorName }}</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
 											{{ schoolDirectorPhoneNumber | formatPhoneNumber }}
 										</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">{{ schoolDirectorEmailAddress | default }}</div>
 									</div>
@@ -87,23 +87,23 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							<div class="panel-body">
 								<div class="text-minor-heading-small mt-2">Dog Trainer Information</div>
 								<div class="row mt-0">
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Dog Trainer Name</div>
 										<div class="summary-text-data">{{ trainerName }}</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
 											{{ trainerDateOfBirth | formatDate | default }}
 										</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
 											{{ trainerPhoneNumber | formatPhoneNumber }}
 										</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">{{ trainerEmailAddress | default }}</div>
 									</div>

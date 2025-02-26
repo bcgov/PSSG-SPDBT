@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ServiceTypeCode } from '@app/api/models';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -27,14 +27,14 @@ export class StepDtPhotographOfYourselfRenewComponent implements OnInit, Licence
 
 	title = '';
 	originalPhotoOfYourselfExpired = false;
-	photographOfYourself = this.gdsdTeamApplicationService.photographOfYourself;
+	photographOfYourself = this.dogTrainerApplicationService.photographOfYourself;
 
-	form: FormGroup = this.gdsdTeamApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.photographOfYourselfFormGroup;
 
-	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
+	constructor(private dogTrainerApplicationService: DogTrainerApplicationService) {}
 
 	ngOnInit(): void {
-		this.originalPhotoOfYourselfExpired = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+		this.originalPhotoOfYourselfExpired = this.dogTrainerApplicationService.dogTrainerFormGroup.get(
 			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
@@ -46,11 +46,11 @@ export class StepDtPhotographOfYourselfRenewComponent implements OnInit, Licence
 	}
 
 	onFileUploaded(): void {
-		this.gdsdTeamApplicationService.hasValueChanged = true;
+		this.dogTrainerApplicationService.hasValueChanged = true;
 	}
 
 	onFileRemoved(): void {
-		this.gdsdTeamApplicationService.hasValueChanged = true;
+		this.dogTrainerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

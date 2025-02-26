@@ -16,6 +16,16 @@ export abstract class DogTrainerApplicationHelper extends CommonApplicationHelpe
 		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
+	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+	});
+
 	governmentPhotoIdFormGroup: FormGroup = this.formBuilder.group({
 		photoTypeCode: new FormControl('', [Validators.required]),
 		expiryDate: new FormControl(''),
@@ -29,6 +39,16 @@ export abstract class DogTrainerApplicationHelper extends CommonApplicationHelpe
 		trainerDateOfBirth: new FormControl('', [Validators.required]),
 		trainerPhoneNumber: new FormControl('', [Validators.required]),
 		trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
+	});
+
+	dogTrainerAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
@@ -222,37 +242,36 @@ export abstract class DogTrainerApplicationHelper extends CommonApplicationHelpe
 	}
 	getSummaryschoolDirectorName(dogTrainerModelData: any): string {
 		return (
-			this.utilService.getFullNameWithOneMiddle(
-				dogTrainerModelData.trainingSchoolInfoData.givenName,
-				dogTrainerModelData.trainingSchoolInfoData.middleName,
-				dogTrainerModelData.trainingSchoolInfoData.surname
+			this.utilService.getFullName(
+				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorGivenName,
+				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorSurname
 			) ?? ''
 		);
 	}
 	getSummaryschoolDirectorEmailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.emailAddress ?? '';
+		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorEmailAddress ?? '';
 	}
 	getSummaryschoolDirectorPhoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.phoneNumber ?? '';
+		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorPhoneNumber ?? '';
 	}
 
 	getSummarytrainerName(dogTrainerModelData: any): string {
 		return (
 			this.utilService.getFullNameWithOneMiddle(
-				dogTrainerModelData.dogTrainerData.givenName,
-				dogTrainerModelData.dogTrainerData.middleName,
-				dogTrainerModelData.dogTrainerData.surname
+				dogTrainerModelData.dogTrainerData.trainerGivenName,
+				dogTrainerModelData.dogTrainerData.trainerMiddleName,
+				dogTrainerModelData.dogTrainerData.trainerSurname
 			) ?? ''
 		);
 	}
 	getSummarytrainerdateOfBirth(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.dateOfBirth ?? '';
+		return dogTrainerModelData.dogTrainerData.trainerDateOfBirth ?? '';
 	}
 	getSummarytraineremailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.emailAddress ?? '';
+		return dogTrainerModelData.dogTrainerData.trainerEmailAddress ?? '';
 	}
 	getSummarytrainerphoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.phoneNumber ?? '';
+		return dogTrainerModelData.dogTrainerData.trainerPhoneNumber ?? '';
 	}
 
 	getSummaryphotoOfYourselfAttachments(dogTrainerModelData: any): File[] | null {

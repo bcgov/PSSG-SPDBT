@@ -29,6 +29,7 @@ import { GdsdTeamWizardNewComponent } from './components/gdsd-team-wizard-new.co
 import { GdsdTeamWizardRenewalComponent } from './components/gdsd-team-wizard-renewal.component';
 import { GdsdTeamWizardReplacementComponent } from './components/gdsd-team-wizard-replacement.component';
 import { FormGdsdApplicationTypeComponent } from './components/shared/common-form-components/form-gdsd-application-type.component';
+import { FormGdsdGovermentPhotoIdComponent } from './components/shared/common-form-components/form-gdsd-goverment-photo-id.component';
 import { FormGdsdLicenceAccessCodeComponent } from './components/shared/common-form-components/form-gdsd-licence-access-code.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
 import { GdsdSummaryAccreditedTrainingComponent } from './components/shared/common-form-components/gdsd-summary-accredited-training.component';
@@ -80,6 +81,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		GdsdLicenceMainApplicationsListComponent,
 		FormGdsdApplicationTypeComponent,
 		FormGdsdLicenceAccessCodeComponent,
+		FormGdsdGovermentPhotoIdComponent,
 
 		GdsdTeamWizardNewComponent,
 		GdsdTeamWizardRenewalComponent,

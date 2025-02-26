@@ -31,7 +31,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 				<app-steps-gdsd-selection
 					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeRenewal"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -45,8 +45,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
-					[serviceTypeCode]="serviceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeRenewal"
 					[isTrainedByAccreditedSchools]="false"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -62,7 +61,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeRenewal"
 					[isTrainedByAccreditedSchools]="false"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -77,7 +76,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 				<app-steps-gdsd-review-confirm
 					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeRenewal"
 					[isTrainedByAccreditedSchools]="false"
 					[hasAttendedTrainingSchool]="false"
 					[isServiceDog]="false"
@@ -127,7 +126,7 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 	isFormValid = false;
 
 	serviceTypeCode!: ServiceTypeCode;
-	readonly applicationTypeCode = ApplicationTypeCode.Renewal;
+	readonly applicationTypeRenewal = ApplicationTypeCode.Renewal;
 
 	private gdsdModelChangedSubscription!: Subscription;
 

@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
@@ -28,7 +28,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Certificate Details</ng-template>
 				<app-steps-dt-details
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -40,7 +40,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -53,7 +53,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Dog Trainer Information</ng-template>
 				<app-steps-dt-personal-info
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -66,7 +66,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-dt-review-confirm
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -103,8 +103,7 @@ export class DogTrainerWizardNewComponent extends BaseWizardComponent implements
 
 	isFormValid = false;
 
-	serviceTypeCode!: ServiceTypeCode;
-	readonly applicationTypeCode = ApplicationTypeCode.New;
+	readonly applicationTypeNew = ApplicationTypeCode.New;
 
 	private dogTrainerModelChangedSubscription!: Subscription;
 

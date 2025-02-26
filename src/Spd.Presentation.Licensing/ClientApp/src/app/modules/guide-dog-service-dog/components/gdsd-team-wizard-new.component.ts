@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -33,7 +33,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 				<app-steps-gdsd-selection
 					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -47,8 +47,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[serviceTypeCode]="serviceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
@@ -65,7 +64,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
@@ -82,7 +81,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
@@ -100,7 +99,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 				<app-steps-gdsd-review-confirm
 					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
+					[applicationTypeCode]="applicationTypeNew"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
@@ -158,8 +157,7 @@ export class GdsdTeamWizardNewComponent extends BaseWizardComponent implements O
 	hasAttendedTrainingSchool = false;
 	isServiceDog = false;
 
-	serviceTypeCode!: ServiceTypeCode;
-	readonly applicationTypeCode = ApplicationTypeCode.New;
+	readonly applicationTypeNew = ApplicationTypeCode.New;
 
 	private gdsdModelChangedSubscription!: Subscription;
 
@@ -188,10 +186,6 @@ export class GdsdTeamWizardNewComponent extends BaseWizardComponent implements O
 		this.gdsdModelChangedSubscription = this.gdsdTeamApplicationService.gdsdTeamModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
-
-				this.serviceTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
-					'serviceTypeData.serviceTypeCode'
-				)?.value;
 
 				this.isServiceDog =
 					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===

@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepDtDogTrainerInfoComponent } from '../../anonymous/step-dt-dog-trainer-info.component';
 import { StepDtGovermentPhotoIdComponent } from '../../anonymous/step-dt-goverment-photo-id.component';
 import { StepDtMailingAddressComponent } from '../../anonymous/step-dt-mailing-address.component';
 import { StepDtPhotographOfYourselfRenewComponent } from '../../anonymous/step-dt-photograph-of-yourself-renew.component';
@@ -18,8 +19,8 @@ import { StepDtPhotographOfYourselfComponent } from '../../anonymous/step-dt-pho
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
+					(nextStepperStep)="onFormValidNextStep(STEP_DOG_TRAINER_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_TRAINER_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -77,7 +78,7 @@ import { StepDtPhotographOfYourselfComponent } from '../../anonymous/step-dt-pho
 	standalone: false,
 })
 export class StepsDtPersonalInfoComponent extends BaseWizardStepComponent {
-	readonly STEP_PERSONAL_INFO = 0;
+	readonly STEP_DOG_TRAINER_INFO = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
 	readonly STEP_PHOTO_OF_YOURSELF = 2;
 	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 3;
@@ -87,7 +88,7 @@ export class StepsDtPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(StepsDtPersonalInfoComponent) personComponent!: StepsDtPersonalInfoComponent;
+	@ViewChild(StepDtDogTrainerInfoComponent) trainerComponent!: StepDtDogTrainerInfoComponent;
 	@ViewChild(StepDtPhotographOfYourselfComponent) photoComponent!: StepDtPhotographOfYourselfComponent;
 	@ViewChild(StepDtPhotographOfYourselfRenewComponent)
 	photoRenewComponent!: StepDtPhotographOfYourselfRenewComponent;
@@ -99,22 +100,21 @@ export class StepsDtPersonalInfoComponent extends BaseWizardStepComponent {
 	}
 
 	override dirtyForm(step: number): boolean {
-		return true;
-		// switch (step) {
-		// 	case this.STEP_PERSONAL_INFO:
-		// 		return this.personAnonymous.isFormValid();
-		// 	case this.STEP_MAILING_ADDRESS:
-		// 		return this.mailingAddressComponent.isFormValid();
-		// 	case this.STEP_PHOTO_OF_YOURSELF:
-		// 		return this.photoComponent.isFormValid();
-		// 	case this.STEP_PHOTO_OF_YOURSELF_RENEW:
-		// 		return this.photoRenewComponent.isFormValid();
-		// 	case this.STEP_GOV_ID:
-		// 		return this.govPhotoIdComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
+		switch (step) {
+			case this.STEP_DOG_TRAINER_INFO:
+				return this.trainerComponent.isFormValid();
+			case this.STEP_MAILING_ADDRESS:
+				return this.mailingAddressComponent.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF:
+				return this.photoComponent.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF_RENEW:
+				return this.photoRenewComponent.isFormValid();
+			case this.STEP_GOV_ID:
+				return this.govPhotoIdComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 
 	get isNew(): boolean {

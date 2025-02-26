@@ -53,16 +53,15 @@ export class StepsDtDetailsComponent extends BaseWizardStepComponent {
 	}
 
 	override dirtyForm(step: number): boolean {
-		return true;
-		// switch (step) {
-		// 	case this.STEP_TERMS:
-		// 		return this.termsOfUseComponent.isFormValid();
-		// 	case this.STEP_CHECKLIST:
-		// 		return true;
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
+		switch (step) {
+			case this.STEP_TERMS:
+				return this.termsOfUseComponent.isFormValid();
+			case this.STEP_CHECKLIST:
+				return true;
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 
 	get isNew(): boolean {

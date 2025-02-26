@@ -24,7 +24,7 @@ export class StepDtTrainingSchoolMailingAddressComponent implements OnInit, Lice
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.dogTrainerApplicationService.mailingAddressFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.trainingSchoolAddressFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 

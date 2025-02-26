@@ -64,15 +64,14 @@ export class StepsDtReviewConfirmComponent extends BaseWizardStepComponent {
 	}
 
 	override dirtyForm(step: number): boolean {
-		return true;
-		// switch (step) {
-		// 	case this.STEP_SUMMARY:
-		// 		return true;
-		// 	case this.STEP_CONSENT:
-		// 		return this.consentComponent.isFormValid();
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
+		switch (step) {
+			case this.STEP_SUMMARY:
+				return true;
+			case this.STEP_CONSENT:
+				return this.consentComponent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

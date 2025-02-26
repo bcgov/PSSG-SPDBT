@@ -1,12 +1,12 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepGdsdMedicalInfoComponent } from '@app/modules/guide-dog-service-dog/components/shared/common-step-components/step-gdsd-medical-info.component';
 import { StepGdsdPersonalInfoAnonymousComponent } from '../../anonymous/step-gdsd-personal-info-anonymous.component';
 import { StepGdsdPersonalInfoComponent } from '../../authenticated/step-gdsd-personal-info.component';
 import { StepGdsdGovermentPhotoIdComponent } from '../common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdMailingAddressComponent } from '../common-step-components/step-gdsd-mailing-address.component';
-import { StepGdsdMedicalInfoComponent } from '@app/modules/guide-dog-service-dog/components/shared/common-step-components/step-gdsd-medical-info.component';
 import { StepGdsdPhotographOfYourselfRenewComponent } from '../common-step-components/step-gdsd-photograph-of-yourself-renew.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components/step-gdsd-photograph-of-yourself.component';
 
@@ -64,9 +64,7 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 			</mat-step>
 
 			<mat-step *ngIf="isNew">
-				<app-step-gdsd-photograph-of-yourself
-					[serviceTypeCode]="serviceTypeCode"
-				></app-step-gdsd-photograph-of-yourself>
+				<app-step-gdsd-photograph-of-yourself></app-step-gdsd-photograph-of-yourself>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -79,9 +77,7 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 			</mat-step>
 
 			<mat-step *ngIf="!isNew">
-				<app-step-gdsd-photograph-of-yourself-renew
-					[serviceTypeCode]="serviceTypeCode"
-				></app-step-gdsd-photograph-of-yourself-renew>
+				<app-step-gdsd-photograph-of-yourself-renew></app-step-gdsd-photograph-of-yourself-renew>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -122,7 +118,6 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
-	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 

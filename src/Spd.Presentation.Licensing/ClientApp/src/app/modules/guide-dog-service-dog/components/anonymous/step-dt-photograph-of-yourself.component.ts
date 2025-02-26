@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
+import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
 
@@ -16,8 +16,8 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 				[serviceTypeCode]="serviceTypeDogTrainer"
 				[form]="form"
 				label="licence"
-				(fileUploaded)="onFileUploaded($event)"
-				(fileRemoved)="onFileRemoved()"
+				(fileUploaded)="onFileChanged()"
+				(fileRemoved)="onFileChanged()"
 			></app-form-photograph-of-yourself>
 		</app-step-section>
 	`,
@@ -27,31 +27,18 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 export class StepDtPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	readonly serviceTypeDogTrainer = ServiceTypeCode.DogTrainerCertification;
 
-	form: FormGroup = this.gdsdTeamApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
-	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
+	constructor(private dogTrainerApplicationService: DogTrainerApplicationService) {}
 
-	onFileUploaded(file: File): void {
-		this.gdsdTeamApplicationService.fileUploaded(
-			LicenceDocumentTypeCode.PhotoOfYourself,
-			file,
-			this.attachments,
-			this.formPhotographOfYourselfComponent.fileUploadComponent
-		);
-	}
-
-	onFileRemoved(): void {
-		this.gdsdTeamApplicationService.fileRemoved();
+	onFileChanged(): void {
+		this.dogTrainerApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	get attachments(): FormControl {
-		return this.form.get('attachments') as FormControl;
 	}
 }
