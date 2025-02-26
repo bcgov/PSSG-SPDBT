@@ -9,7 +9,7 @@ import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
+import { UtilService } from '@app/core/services/util.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitContactComponent } from './permit-wizard-step-components/steps-permit-contact.component';
 import { StepsPermitDetailsRenewalComponent } from './permit-wizard-step-components/steps-permit-details-renewal.component';
@@ -145,7 +145,7 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -278,7 +278,7 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 						this.serviceTypeCode,
 						this.applicationTypeCode
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					this.payNow(this.newLicenceAppId);
 				},

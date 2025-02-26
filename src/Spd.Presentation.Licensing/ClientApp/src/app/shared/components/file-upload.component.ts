@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
+import { UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from './dialog.component';
 
 export enum DocumentTypeCode {
@@ -199,7 +199,7 @@ export class FileUploadComponent implements OnInit {
 	imagePreviews: Array<string | null> = [];
 
 	constructor(
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private dialog: MatDialog,
 		private domSanitizer: DomSanitizer,
 		private applicationService: CommonApplicationService
@@ -225,7 +225,7 @@ export class FileUploadComponent implements OnInit {
 
 	private addFile(newFile: File) {
 		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
-			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
+			this.utilService.toasterError('The maximum number of files has been reached');
 			return;
 		}
 
@@ -235,17 +235,17 @@ export class FileUploadComponent implements OnInit {
 
 		const isFoundIndex = this.files.findIndex((item: File) => item.name === newFile.name);
 		if (isFoundIndex >= 0) {
-			this.hotToastService.error('A file with the same name has already been uploaded');
+			this.utilService.toasterError('A file with the same name has already been uploaded');
 			return;
 		}
 
 		if (!this.isAccepted(newFile, this.accept)) {
-			this.hotToastService.error('A file of this type cannot be uploaded');
+			this.utilService.toasterError('A file of this type cannot be uploaded');
 			return;
 		}
 
 		if (this.maxFileSize && newFile.size > this.maxFileSize) {
-			this.hotToastService.error('A file of this size cannot be uploaded');
+			this.utilService.toasterError('A file of this size cannot be uploaded');
 			return;
 		}
 
@@ -254,7 +254,7 @@ export class FileUploadComponent implements OnInit {
 		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
 
 		if (numberOfPeriods > 1) {
-			this.hotToastService.error('A file name cannot contain multiple periods. Rename this file and try again.');
+			this.utilService.toasterError('A file name cannot contain multiple periods. Rename this file and try again.');
 			return;
 		}
 

@@ -9,7 +9,7 @@ import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
+import { UtilService } from '@app/core/services/util.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitContactComponent } from './permit-wizard-step-components/steps-permit-contact.component';
 import { StepsPermitDetailsNewComponent } from './permit-wizard-step-components/steps-permit-details-new.component';
@@ -102,8 +102,8 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PermitWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -145,7 +145,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -240,7 +240,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 						this.serviceTypeCode,
 						this.applicationTypeCode
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					this.payNow(this.licenceAppId);
 				},

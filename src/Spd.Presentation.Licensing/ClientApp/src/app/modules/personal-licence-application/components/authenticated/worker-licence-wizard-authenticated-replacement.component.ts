@@ -5,14 +5,14 @@ import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } fr
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routes';
 
 @Component({
-    selector: 'app-worker-licence-wizard-authenticated-replacement',
-    template: `
+	selector: 'app-worker-licence-wizard-authenticated-replacement',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -40,14 +40,14 @@ import { PersonalLicenceApplicationRoutes } from '../../personal-licence-applica
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWizardComponent implements OnInit {
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private workerApplicationService: WorkerApplicationService
 	) {
@@ -77,7 +77,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 					ServiceTypeCode.SecurityWorkerLicence,
 					ApplicationTypeCode.Replacement
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 
 				this.payNow(_resp.body.licenceAppId!);
 			},

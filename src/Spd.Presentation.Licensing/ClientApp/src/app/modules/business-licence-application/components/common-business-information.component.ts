@@ -7,12 +7,12 @@ import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
 } from '@app/shared/components/modal-lookup-by-licence-number.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
@@ -235,7 +235,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
@@ -317,7 +317,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 						this.businessApplicationService
 							.applyBusinessLicenceSoleProprietorSelection(lookupData)
 							.subscribe((_resp: any) => {
-								this.hotToastService.success('A sole proprietor was successfully selected');
+								this.utilService.toasterSuccess('A sole proprietor was successfully selected');
 							});
 					}
 				}
