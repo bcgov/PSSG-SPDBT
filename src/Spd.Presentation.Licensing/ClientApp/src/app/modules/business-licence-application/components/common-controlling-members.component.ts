@@ -28,7 +28,6 @@ import {
 	ModalLookupByLicenceNumberComponent,
 } from '@app/shared/components/modal-lookup-by-licence-number.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import {
@@ -379,7 +378,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
 		private authUserBceidService: AuthUserBceidService,
-		private hotToastService: HotToastService,
 		private bizMembersService: BizMembersService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
@@ -485,7 +483,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 							}
 
-							this.hotToastService.success('The member has been successfully removed');
+							this.utilService.toasterSuccess('The member has been successfully removed');
 						});
 				}
 			});
@@ -535,7 +533,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 							this.membersWithSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
 							this.dataSourceWithSWL.data = this.membersWithSwlList.value;
 
-							this.hotToastService.success('The member has been successfully added');
+							this.utilService.toasterSuccess('The member has been successfully added');
 						});
 				}
 			});
@@ -576,7 +574,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
-									this.hotToastService.success('Invitation was successfully sent');
+									this.utilService.toasterSuccess('Invitation was successfully sent');
 
 									if (!member.inviteStatusCode) {
 										const memberIndex = this.membersWithoutSwlList.value.findIndex(
@@ -688,15 +686,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
 						if (this.allowNewInvitationsToBeSent && memberData.emailAddress) {
-							this.hotToastService.success(
+							this.utilService.toasterSuccess(
 								'The member has been successfully added and an invitation has been sent.<br><br><strong>The controlling member will receive a link to an online application form via email. They must provide personal information and consent to a criminal record check.</strong>',
-								{
-									autoClose: false,
-									dismissible: true,
-								}
+								false
 							);
 						} else {
-							this.hotToastService.success('The member has been successfully added');
+							this.utilService.toasterSuccess('The member has been successfully added');
 						}
 					} else {
 						const memberIndex = this.membersWithoutSwlList.value.findIndex(
@@ -705,7 +700,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						this.patchMemberData(memberIndex, memberData);
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
-						this.hotToastService.success('The member has been successfully updated');
+						this.utilService.toasterSuccess('The member has been successfully updated');
 					}
 				}
 			});

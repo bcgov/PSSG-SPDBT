@@ -29,7 +29,6 @@ import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -116,8 +115,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private applicantProfileService: ApplicantProfileService,
-		private hotToastService: HotToastService
+		private applicantProfileService: ApplicantProfileService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService, optionsPipe);
 
@@ -358,7 +356,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!permitModelFormValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });

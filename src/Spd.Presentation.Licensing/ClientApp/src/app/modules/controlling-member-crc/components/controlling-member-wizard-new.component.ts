@@ -11,18 +11,18 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-personal-information.component';
 import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-review.component';
 import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 
 @Component({
-    selector: 'app-controlling-member-wizard-new',
-    template: `
+	selector: 'app-controlling-member-wizard-new',
+	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<mat-stepper
 				linear
@@ -100,8 +100,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 			</mat-stepper>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class ControllingMemberWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -133,7 +133,7 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private authenticationService: AuthenticationService,
 		private controllingMembersService: ControllingMemberCrcService
@@ -200,7 +200,7 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 						ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 						ApplicationTypeCode.New
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					this.router.navigateByUrl(
 						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
@@ -220,7 +220,7 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 					ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 					ApplicationTypeCode.New
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 
 				this.router.navigateByUrl(
 					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),

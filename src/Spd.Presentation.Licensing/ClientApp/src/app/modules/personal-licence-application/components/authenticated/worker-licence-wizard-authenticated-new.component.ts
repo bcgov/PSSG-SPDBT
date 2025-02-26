@@ -9,11 +9,11 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
@@ -102,8 +102,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -137,7 +137,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -326,7 +326,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					ServiceTypeCode.SecurityWorkerLicence,
 					ApplicationTypeCode.New
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 
 				this.payNow(_resp.body.licenceAppId!);
 			},

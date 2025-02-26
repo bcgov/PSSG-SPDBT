@@ -8,9 +8,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -144,7 +143,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private authUserBceidService: AuthUserBceidService,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private bizMembersService: BizMembersService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
@@ -186,7 +185,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 							this.employeesList.removeAt(index);
 							this.dataSource = new MatTableDataSource(this.employeesList.value);
 
-							this.hotToastService.success('The employees has been successfully removed');
+							this.utilService.toasterSuccess('The employees has been successfully removed');
 						});
 				}
 			});
@@ -241,7 +240,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 							this.employeesList.push(this.newMemberRow(resp.bizContactId!, memberData));
 							this.dataSource.data = this.employeesList.value;
 
-							this.hotToastService.success('The employee has been successfully added');
+							this.utilService.toasterSuccess('The employee has been successfully added');
 						});
 				}
 			});

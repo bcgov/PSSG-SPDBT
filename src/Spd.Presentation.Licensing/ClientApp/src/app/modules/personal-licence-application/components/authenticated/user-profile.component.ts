@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';
 
 @Component({
@@ -89,7 +88,6 @@ export class UserProfileComponent {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService
 	) {
 		// check if isReadonly was passed from 'LicenceUserApplicationsComponent'
@@ -111,7 +109,7 @@ export class UserProfileComponent {
 
 		this.workerApplicationService.saveLoginUserProfile().subscribe({
 			next: (_resp: any) => {
-				this.hotToastService.success('Your profile has been successfully updated');
+				this.utilService.toasterSuccess('Your profile has been successfully updated');
 				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: any) => {
