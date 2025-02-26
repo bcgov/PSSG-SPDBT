@@ -102,7 +102,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [AllowAnonymous]
         public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, [FromBody] GoogleRecaptcha recaptcha, CancellationToken ct, [FromQuery] string? accessCode = null)
         {
-            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
+            // await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
@@ -112,7 +112,9 @@ namespace Spd.Presentation.Licensing.Controllers
                 return response;
             else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else
+            else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
+                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
