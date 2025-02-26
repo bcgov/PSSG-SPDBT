@@ -2,12 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, GenderCode } from '@app/api/models';
 import { BooleanTypeCode, GenderTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-gdsd-dog-information',
+	selector: 'app-step-gdsd-dog-info',
 	template: `
 		<app-step-section [title]="title">
 			<div class="row">
@@ -139,7 +139,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepGdsdDogInfoComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 
@@ -149,16 +149,16 @@ export class StepGdsdDogInformationComponent implements OnInit, LicenceChildStep
 	maxBirthDate = this.utilService.getDogBirthDateMax();
 	minDate = this.utilService.getDogDateMin();
 
-	form: FormGroup = this.gdsdApplicationService.dogInfoFormGroup;
-	dogGdsdForm: FormGroup = this.gdsdApplicationService.dogGdsdFormGroup;
-	dogRenewForm: FormGroup = this.gdsdApplicationService.dogRenewFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.dogInfoFormGroup;
+	dogGdsdForm: FormGroup = this.gdsdTeamApplicationService.dogGdsdFormGroup;
+	dogRenewForm: FormGroup = this.gdsdTeamApplicationService.dogRenewFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	ngOnInit(): void {

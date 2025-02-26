@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -312,13 +312,13 @@ export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
-	form = this.gdsdApplicationService.termsAndConditionsFormGroup;
+	form = this.gdsdTeamApplicationService.termsAndConditionsFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	// TODO GDSD update terms of use

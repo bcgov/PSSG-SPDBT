@@ -6,7 +6,7 @@ import { StepGdsdPersonalInfoAnonymousComponent } from '../../anonymous/step-gds
 import { StepGdsdPersonalInfoComponent } from '../../authenticated/step-gdsd-personal-info.component';
 import { StepGdsdGovermentPhotoIdComponent } from '../common-step-components/step-gdsd-goverment-photo-id.component';
 import { StepGdsdMailingAddressComponent } from '../common-step-components/step-gdsd-mailing-address.component';
-import { StepGdsdMedicalInformationComponent } from '../common-step-components/step-gdsd-medical-information.component';
+import { StepGdsdMedicalInfoComponent } from '@app/modules/guide-dog-service-dog/components/shared/common-step-components/step-gdsd-medical-info.component';
 import { StepGdsdPhotographOfYourselfRenewComponent } from '../common-step-components/step-gdsd-photograph-of-yourself-renew.component';
 import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components/step-gdsd-photograph-of-yourself.component';
 
@@ -51,7 +51,7 @@ import { StepGdsdPhotographOfYourselfComponent } from '../common-step-components
 			</mat-step>
 
 			<mat-step *ngIf="isNew && !isTrainedByAccreditedSchools">
-				<app-step-gdsd-medical-information></app-step-gdsd-medical-information>
+				<app-step-gdsd-medical-info></app-step-gdsd-medical-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -133,7 +133,7 @@ export class StepsGdsdPersonalInfoComponent extends BaseWizardStepComponent {
 	photoRenewComponent!: StepGdsdPhotographOfYourselfRenewComponent;
 	@ViewChild(StepGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: StepGdsdGovermentPhotoIdComponent;
 	@ViewChild(StepGdsdMailingAddressComponent) mailingAddressComponent!: StepGdsdMailingAddressComponent;
-	@ViewChild(StepGdsdMedicalInformationComponent) medicalComponent!: StepGdsdMedicalInformationComponent;
+	@ViewChild(StepGdsdMedicalInfoComponent) medicalComponent!: StepGdsdMedicalInfoComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);

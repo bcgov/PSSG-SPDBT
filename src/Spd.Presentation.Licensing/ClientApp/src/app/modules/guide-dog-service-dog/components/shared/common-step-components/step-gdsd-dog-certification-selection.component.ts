@@ -3,13 +3,13 @@ import { FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-gdsd-dog-certification-selection',
 	template: `
-		<app-step-section title="Dog Certification Selection">
+		<app-step-section title="Dog certification selection">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -58,11 +58,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepGdsdDogCertificationSelectionComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.gdsdApplicationService.dogCertificationSelectionFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.dogCertificationSelectionFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -70,6 +70,6 @@ export class StepGdsdDogCertificationSelectionComponent implements LicenceChildS
 	}
 
 	onChangeDocumentType(_event: MatRadioChange): void {
-		this.gdsdApplicationService.accreditedFlagChanged(_event.value === BooleanTypeCode.Yes);
+		this.gdsdTeamApplicationService.accreditedFlagChanged(_event.value === BooleanTypeCode.Yes);
 	}
 }

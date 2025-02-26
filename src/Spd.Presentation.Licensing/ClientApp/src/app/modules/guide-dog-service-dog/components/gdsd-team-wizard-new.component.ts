@@ -9,7 +9,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/steps-gdsd-dog-info.component';
@@ -19,7 +19,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components/steps-gdsd-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-new',
+	selector: 'app-gdsd-team-wizard-new',
 	template: `
 		<mat-stepper
 			linear
@@ -122,7 +122,7 @@ import { StepsGdsdTrainingInfoComponent } from './shared/common-steps-components
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdTeamWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
@@ -167,13 +167,13 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
@@ -185,27 +185,30 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
-			this.isFormValid = _resp;
+		this.gdsdModelChangedSubscription = this.gdsdTeamApplicationService.gdsdTeamModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
 
-			this.serviceTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
-				'serviceTypeData.serviceTypeCode'
-			)?.value;
+				this.serviceTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
+				)?.value;
 
-			this.isServiceDog =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
+				this.isServiceDog =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===
+					BooleanTypeCode.No;
 
-			this.isTrainedByAccreditedSchools =
-				this.gdsdApplicationService.gdsdModelFormGroup.get(
-					'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
-				)?.value === BooleanTypeCode.Yes;
+				this.isTrainedByAccreditedSchools =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+						'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
+					)?.value === BooleanTypeCode.Yes;
 
-			this.hasAttendedTrainingSchool =
-				this.gdsdApplicationService.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value ===
-				BooleanTypeCode.Yes;
+				this.hasAttendedTrainingSchool =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')
+						?.value === BooleanTypeCode.Yes;
 
-			this.updateCompleteStatus();
-		});
+				this.updateCompleteStatus();
+			}
+		);
 	}
 
 	ngOnDestroy() {
@@ -214,7 +217,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceNewAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -226,7 +229,7 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 			return;
 		}
 
-		this.gdsdApplicationService.submitLicenceNewAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceNewAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
@@ -280,8 +283,8 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
@@ -312,13 +315,13 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	}
 
 	onSaveAndExit(): void {
-		if (!this.gdsdApplicationService.isSaveAndExit()) {
+		if (!this.gdsdTeamApplicationService.isSaveAndExit()) {
 			return;
 		}
 
-		this.gdsdApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
 			next: (_resp: any) => {
-				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
 			},
 			error: (error: HttpErrorResponse) => {
 				console.log('An error occurred during save', error);
@@ -327,8 +330,8 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	}
 
 	onGoToReview() {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
@@ -354,8 +357,8 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	}
 
 	onChildNextStep() {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.goToChildNextStep();
 				},
@@ -386,10 +389,10 @@ export class GdsdWizardNewComponent extends BaseWizardComponent implements OnIni
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.gdsdApplicationService.isStepSelectionComplete();
-		this.step2Complete = this.gdsdApplicationService.isStepPersonalInformationComplete();
-		this.step3Complete = this.gdsdApplicationService.isStepDogInformationComplete();
-		this.step4Complete = this.gdsdApplicationService.isStepTrainingInformationComplete();
+		this.step1Complete = this.gdsdTeamApplicationService.isStepSelectionComplete();
+		this.step2Complete = this.gdsdTeamApplicationService.isStepPersonalInfoComplete();
+		this.step3Complete = this.gdsdTeamApplicationService.isStepDogInfoComplete();
+		this.step4Complete = this.gdsdTeamApplicationService.isStepTrainingInfoComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}

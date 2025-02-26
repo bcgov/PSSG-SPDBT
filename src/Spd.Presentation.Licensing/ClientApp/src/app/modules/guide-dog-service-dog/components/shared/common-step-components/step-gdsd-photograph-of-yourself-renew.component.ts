@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ServiceTypeCode } from '@app/api/models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -25,16 +25,16 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepGdsdPhotographOfYourselfRenewComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	originalPhotoOfYourselfExpired = false;
-	photographOfYourself = this.gdsdApplicationService.photographOfYourself;
+	photographOfYourself = this.gdsdTeamApplicationService.photographOfYourself;
 
-	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.photographOfYourselfFormGroup;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	ngOnInit(): void {
-		this.originalPhotoOfYourselfExpired = this.gdsdApplicationService.gdsdModelFormGroup.get(
+		this.originalPhotoOfYourselfExpired = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
 			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
@@ -46,11 +46,11 @@ export class StepGdsdPhotographOfYourselfRenewComponent implements OnInit, Licen
 	}
 
 	onFileUploaded(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdTeamApplicationService.hasValueChanged = true;
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdTeamApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

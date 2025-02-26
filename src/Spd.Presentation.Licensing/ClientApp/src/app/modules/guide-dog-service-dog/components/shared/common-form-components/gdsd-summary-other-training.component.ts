@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
 	selector: 'app-gdsd-summary-other-training',
@@ -81,26 +81,26 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 export class GdsdSummaryOtherTrainingComponent {
 	booleanTypeYes = BooleanTypeCode.Yes;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@Input() gdsdModelData: any;
 
 	get trainingDetails(): string {
-		return this.gdsdApplicationService.getSummarydogName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogName(this.gdsdModelData);
 	}
 	get otherTrainings(): Array<any> {
-		return this.gdsdApplicationService.getSummaryotherTrainings(this.gdsdModelData) ?? [];
+		return this.gdsdTeamApplicationService.getSummaryotherTrainings(this.gdsdModelData) ?? [];
 	}
 	get issupportingDocumentOtherTrainingAttachments(): boolean {
-		return this.gdsdApplicationService.getSummaryissupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryissupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
 	}
 	get supportingDocumentOtherTrainingAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarysupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarysupportingDocumentOtherTrainingAttachments(this.gdsdModelData);
 	}
 	get ispracticeLogsOtherTrainingAttachments(): boolean {
-		return this.gdsdApplicationService.getSummaryispracticeLogsOtherTrainingAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryispracticeLogsOtherTrainingAttachments(this.gdsdModelData);
 	}
 	get practiceLogsOtherTrainingAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarypracticeLogsOtherTrainingAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarypracticeLogsOtherTrainingAttachments(this.gdsdModelData);
 	}
 }

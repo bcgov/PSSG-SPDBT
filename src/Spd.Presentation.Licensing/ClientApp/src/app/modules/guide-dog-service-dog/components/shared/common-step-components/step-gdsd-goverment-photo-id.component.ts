@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GovernmentIssuedPhotoIdTypes } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -11,7 +11,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-gdsd-government-id',
 	template: `
-		<app-step-section title="Government-Issued Photo ID" subtitle="Upload a piece of your government-issued photo ID.">
+		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -82,7 +82,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.governmentPhotoIdFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.governmentPhotoIdFormGroup;
 
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
@@ -93,11 +93,11 @@ export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			this.photoTypeCode.value,
 			file,
 			this.attachments,
@@ -106,11 +106,11 @@ export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	onChangeProof(_event: MatSelectChange): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdTeamApplicationService.hasValueChanged = true;
 		this.attachments.setValue([]);
 	}
 

@@ -5,13 +5,13 @@ import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { distinctUntilChanged } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 import { StepGdsdMailingAddressReplacementComponent } from './shared/common-step-components/step-gdsd-mailing-address-replacement.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-replacement',
+	selector: 'app-gdsd-team-wizard-replacement',
 	template: `
 		<div class="row">
 			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
@@ -42,7 +42,7 @@ import { StepGdsdMailingAddressReplacementComponent } from './shared/common-step
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardReplacementComponent extends BaseWizardComponent implements OnInit {
+export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent implements OnInit {
 	@ViewChild(StepGdsdMailingAddressReplacementComponent)
 	stepAddressComponent!: StepGdsdMailingAddressReplacementComponent;
 
@@ -54,13 +54,13 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
@@ -87,7 +87,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 		}
 
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceReplacementAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceReplacementAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -98,7 +98,7 @@ export class GdsdWizardReplacementComponent extends BaseWizardComponent implemen
 			return;
 		}
 
-		this.gdsdApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceReplacementAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

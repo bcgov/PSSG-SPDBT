@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -98,15 +98,15 @@ export class StepGdsdPersonalInfoComponent implements OnInit, LicenceChildSteppe
 	@Input() isReadonly = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	form: FormGroup = this.gdsdApplicationService.gdsdPersonalInformationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.personalInformationFormGroup;
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your Personal Information' : 'Your Personal Information';
+		this.title = this.isRenewal ? 'Confirm your personal information' : 'Your personal information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 
 		if (this.isReadonly) {

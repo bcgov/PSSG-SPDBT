@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -8,7 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-gdsd-dog-tasks',
 	template: `
 		<app-step-section
-			title="Specialized Tasks"
+			title="Specialized tasks"
 			subtitle="Provide a list of the specialized tasks your dog performs to help you with day-to-day living."
 		>
 			<form [formGroup]="form" novalidate>
@@ -53,9 +53,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepGdsdDogTasksComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdApplicationService.dogTasksFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.dogTasksFormGroup;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

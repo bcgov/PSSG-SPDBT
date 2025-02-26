@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
 	selector: 'app-gdsd-application-received-success',
@@ -47,20 +48,21 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 })
 export class GdsdApplicationReceivedSuccessComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
-	gdsdModelData: any = {};
 
 	constructor(
 		private commonApplicationService: CommonApplicationService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private dogTrainerApplicationService: DogTrainerApplicationService
 	) {}
 
 	ngOnInit(): void {
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized && !this.dogTrainerApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
 			return;
 		}
 
-		this.gdsdApplicationService.reset();
+		this.gdsdTeamApplicationService.reset();
+		this.dogTrainerApplicationService.reset();
 	}
 
 	onPrint(): void {

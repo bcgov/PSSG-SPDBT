@@ -4,12 +4,13 @@ import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { take, tap } from 'rxjs';
-import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 
 @Component({
-	selector: 'app-guide-dog-service-dog-landing',
+	selector: 'app-gdsd-landing',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section title="Log in to manage your guide dog and service dog certifications">
@@ -176,7 +177,7 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 	],
 	standalone: false,
 })
-export class GuideDogServiceDogLandingComponent implements OnInit {
+export class GdsdLandingComponent implements OnInit {
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypes = ServiceTypeCode;
@@ -184,7 +185,8 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private gdsdApplicationService: GdsdApplicationService,
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private dogTrainerApplicationService: DogTrainerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
@@ -193,7 +195,7 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onRegisterGuideDog(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
 	}
 
 	onRegisterDogTrainer(): void {
@@ -205,23 +207,49 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onContinue(serviceTypeCode: ServiceTypeCode): void {
-		if (serviceTypeCode != ServiceTypeCode.GdsdTeamCertification) return;
-
 		// make sure the user is not logged in.
 		this.authProcessService.logoutBceid(GuideDogServiceDogRoutes.path());
 		this.authProcessService.logoutBcsc(GuideDogServiceDogRoutes.path());
 
-		this.gdsdApplicationService
-			.createNewGdsdAnonymous(serviceTypeCode)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.GdsdTeamCertification: {
+				this.gdsdTeamApplicationService
+					.createNewGdsdAnonymous(serviceTypeCode)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAnonymous(
+									GuideDogServiceDogRoutes.GDSD_TEAM_APPLICATION_TYPE_ANONYMOUS
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				// TODO RetiredServiceDogCertification onContinue
+				break;
+			}
+			case ServiceTypeCode.DogTrainerCertification: {
+				this.dogTrainerApplicationService
+					.createNewAnonymous(serviceTypeCode)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAnonymous(
+									GuideDogServiceDogRoutes.DOG_TRAINER_APPLICATION_TYPE_ANONYMOUS
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+
+				break;
+			}
+		}
 	}
 
 	onKeydownContinue(event: KeyboardEvent, serviceTypeCode: ServiceTypeCode) {

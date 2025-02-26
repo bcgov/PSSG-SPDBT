@@ -8,7 +8,7 @@ import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@a
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsGdsdDogInfoComponent } from './shared/common-steps-components/steps-gdsd-dog-info.component';
@@ -17,7 +17,7 @@ import { StepsGdsdReviewConfirmComponent } from './shared/common-steps-component
 import { StepsGdsdSelectionComponent } from './shared/common-steps-components/steps-gdsd-selection.component';
 
 @Component({
-	selector: 'app-gdsd-wizard-renewal',
+	selector: 'app-gdsd-team-wizard-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -98,7 +98,7 @@ import { StepsGdsdSelectionComponent } from './shared/common-steps-components/st
 	styles: [],
 	standalone: false,
 })
-export class GdsdWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
@@ -135,13 +135,13 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
@@ -153,15 +153,17 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.gdsdModelChangedSubscription = this.gdsdApplicationService.gdsdModelValueChanges$.subscribe((_resp: any) => {
-			this.isFormValid = _resp;
+		this.gdsdModelChangedSubscription = this.gdsdTeamApplicationService.gdsdTeamModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
 
-			this.serviceTypeCode = this.gdsdApplicationService.gdsdModelFormGroup.get(
-				'serviceTypeData.serviceTypeCode'
-			)?.value;
+				this.serviceTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
+				)?.value;
 
-			this.updateCompleteStatus();
-		});
+				this.updateCompleteStatus();
+			}
+		);
 	}
 
 	ngOnDestroy() {
@@ -170,7 +172,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceRenewalAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -182,7 +184,7 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 			return;
 		}
 
-		this.gdsdApplicationService.submitLicenceRenewalAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceRenewalAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
@@ -235,8 +237,8 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 	}
 
 	onGoToReview() {
-		if (this.gdsdApplicationService.isAutoSave()) {
-			this.gdsdApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
@@ -279,9 +281,9 @@ export class GdsdWizardRenewalComponent extends BaseWizardComponent implements O
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.gdsdApplicationService.isStepSelectionComplete();
-		this.step2Complete = this.gdsdApplicationService.isStepPersonalInformationComplete();
-		this.step3Complete = this.gdsdApplicationService.isStepDogInformationComplete();
+		this.step1Complete = this.gdsdTeamApplicationService.isStepSelectionComplete();
+		this.step2Complete = this.gdsdTeamApplicationService.isStepPersonalInfoComplete();
+		this.step3Complete = this.gdsdTeamApplicationService.isStepDogInfoComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}

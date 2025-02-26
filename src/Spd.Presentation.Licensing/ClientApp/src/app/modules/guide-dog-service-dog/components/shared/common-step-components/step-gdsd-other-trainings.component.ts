@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -220,7 +220,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.otherTrainingHistoryFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -230,7 +230,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 
 	constructor(
 		private dialog: MatDialog,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	onRemoveOtherTrainingRow(index: number) {
@@ -247,13 +247,13 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.gdsdApplicationService.otherTrainingRowRemove(index);
+					this.gdsdTeamApplicationService.otherTrainingRowRemove(index);
 				}
 			});
 	}
 
 	onAddOtherTraining(): void {
-		this.gdsdApplicationService.otherTrainingRowAdd();
+		this.gdsdTeamApplicationService.otherTrainingRowAdd();
 	}
 
 	isAllowDelete(): boolean {
@@ -261,7 +261,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	}
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
 			file,
 			this.attachments,
@@ -270,7 +270,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	}
 
 	onFileUploadedPracticeLog(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.GdsdPracticeHoursLog,
 			file,
 			this.practiceLogAttachments,
@@ -279,7 +279,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {
@@ -288,7 +288,7 @@ export class StepGdsdOtherTrainingsComponent implements LicenceChildStepperStepC
 	}
 
 	isUsePersonalDogTrainer(index: number): boolean {
-		return this.gdsdApplicationService.otherTrainingRowUsePersonalTraining(index);
+		return this.gdsdTeamApplicationService.otherTrainingRowUsePersonalTraining(index);
 	}
 
 	get otherTrainingsArray(): FormArray {

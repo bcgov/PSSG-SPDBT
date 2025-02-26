@@ -27,6 +27,9 @@ import {
 	LicenceService,
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import {
 	BehaviorSubject,
@@ -41,24 +44,21 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { BooleanTypeCode } from '../code-types/model-desc.models';
-import { FormControlValidators } from '../validators/form-control.validators';
-import { FormGroupValidators } from '../validators/form-group.validators';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
-import { GdsdApplicationHelper } from './gdsd-application.helper';
+import { GdsdTeamApplicationHelper } from './gdsd-team-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class GdsdApplicationService extends GdsdApplicationHelper {
-	gdsdModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
+	gdsdTeamModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	gdsdModelFormGroup: FormGroup = this.formBuilder.group({
+	gdsdTeamModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(),
 		applicationOriginTypeCode: new FormControl(), // placeholder to save
 		bizTypeCode: new FormControl(), // placeholder to save
@@ -69,7 +69,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
-		personalInformationData: this.gdsdPersonalInformationFormGroup,
+
+		personalInformationData: this.personalInformationFormGroup,
 		medicalInformationData: this.medicalInformationFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
@@ -86,7 +87,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		dogRenewData: this.dogRenewFormGroup,
 	});
 
-	gdsdModelChangedSubscription!: Subscription;
+	gdsdTeamModelChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
@@ -103,26 +104,26 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	) {
 		super(formBuilder, configService, utilService, fileUtilService);
 
-		this.gdsdModelChangedSubscription = this.gdsdModelFormGroup.valueChanges
+		this.gdsdTeamModelChangedSubscription = this.gdsdTeamModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
 					const step1Complete = this.isStepSelectionComplete();
-					const step2Complete = this.isStepPersonalInformationComplete();
-					const step3Complete = this.isStepDogInformationComplete();
-					const step4Complete = this.isStepTrainingInformationComplete();
+					const step2Complete = this.isStepPersonalInfoComplete();
+					const step3Complete = this.isStepDogInfoComplete();
+					const step4Complete = this.isStepTrainingInfoComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
-						'gdsdModelFormGroup CHANGED',
+						'gdsdTeamModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
 						step3Complete,
 						step4Complete,
-						this.gdsdModelFormGroup.getRawValue()
+						this.gdsdTeamModelFormGroup.getRawValue()
 					);
 					this.updateModelChangeFlags();
-					this.gdsdModelValueChanges$.next(isValid);
+					this.gdsdTeamModelValueChanges$.next(isValid);
 				}
 			});
 	}
@@ -161,7 +162,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepSelectionComplete(): boolean {
-		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+		const applicationTypeCode = this.gdsdTeamModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
 			return true;
 		}
@@ -177,12 +178,12 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Determine if the step is valid
 	 * @returns boolean
 	 */
-	isStepPersonalInformationComplete(): boolean {
-		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+	isStepPersonalInfoComplete(): boolean {
+		const applicationTypeCode = this.gdsdTeamModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
 		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
 			return (
-				this.gdsdPersonalInformationFormGroup.valid &&
+				this.personalInformationFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid &&
 				this.governmentPhotoIdFormGroup.valid &&
 				this.mailingAddressFormGroup.valid
@@ -190,7 +191,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		}
 
 		const isTrainedByAccreditedSchools =
-			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
 		// console.debug('isStepPersonalInformationComplete', isTrainedByAccreditedSchools, this.gdsdPersonalInformationFormGroup.valid,
@@ -199,7 +200,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		if (isTrainedByAccreditedSchools) {
 			return (
-				this.gdsdPersonalInformationFormGroup.valid &&
+				this.personalInformationFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid &&
 				this.governmentPhotoIdFormGroup.valid &&
 				this.mailingAddressFormGroup.valid
@@ -207,7 +208,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		}
 
 		return (
-			this.gdsdPersonalInformationFormGroup.valid &&
+			this.personalInformationFormGroup.valid &&
 			this.medicalInformationFormGroup.valid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.governmentPhotoIdFormGroup.valid &&
@@ -219,8 +220,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Determine if the step is valid
 	 * @returns boolean
 	 */
-	isStepDogInformationComplete(): boolean {
-		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+	isStepDogInfoComplete(): boolean {
+		const applicationTypeCode = this.gdsdTeamModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
 		// console.debug('isStepDogInformationComplete', applicationTypeCode, this.dogInformationFormGroup.valid, this.dogRenewFormGroup.valid );
 
@@ -229,7 +230,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		}
 
 		const isTrainedByAccreditedSchools =
-			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
 		// console.debug('isStepDogInformationComplete', isTrainedByAccreditedSchools, this.dogGdsdFormGroup.valid, this.dogInformationFormGroup.valid, this.dogMedicalFormGroup.valid );
@@ -245,19 +246,19 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Determine if the step is valid
 	 * @returns boolean
 	 */
-	isStepTrainingInformationComplete(): boolean {
-		const applicationTypeCode = this.gdsdModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+	isStepTrainingInfoComplete(): boolean {
+		const applicationTypeCode = this.gdsdTeamModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
 		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
 			return true;
 		}
 
 		const isTrainedByAccreditedSchools =
-			this.gdsdModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
+			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
 		if (isTrainedByAccreditedSchools) {
-			const isServiceDog = this.gdsdModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
+			const isServiceDog = this.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value === BooleanTypeCode.No;
 
 			// console.debug('isStepTrainingInformationComplete', isServiceDog, this.graduationInfoFormGroup.valid, this.dogTasksFormGroup.valid );
 
@@ -269,7 +270,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		}
 
 		const hasAttendedTrainingSchool =
-			this.gdsdModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
+			this.gdsdTeamModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')?.value === BooleanTypeCode.Yes;
 
 		// console.debug('isStepTrainingInformationComplete', hasAttendedTrainingSchool, this.trainingHistoryFormGroup.valid,
 		// this.schoolTrainingHistoryFormGroup.valid, this.otherTrainingHistoryFormGroup.valid, this.dogTasksFormGroup.valid );
@@ -294,19 +295,21 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
-		this.gdsdModelFormGroup.reset();
+		this.gdsdTeamModelFormGroup.reset();
 
 		// clear the array data - this does not seem to get reset during a formgroup reset
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdTeamModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		while (otherTrainingsArray.length) {
 			otherTrainingsArray.removeAt(0);
 		}
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdTeamModelFormGroup.get(
+			'schoolTrainingHistoryData.schoolTrainings'
+		) as FormArray;
 		while (schoolTrainingsArray.length) {
 			schoolTrainingsArray.removeAt(0);
 		}
 
-		console.debug('RESET', this.initialized, this.gdsdModelFormGroup.value);
+		console.debug('RESET', this.initialized, this.gdsdTeamModelFormGroup.value);
 	}
 
 	/*************************************************************/
@@ -318,7 +321,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
 	partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
 
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
@@ -337,7 +340,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 				this.utilService.toasterSuccess(msg);
 
 				if (!gdsdModelFormValue.licenceAppId) {
-					this.gdsdModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+					this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
 		);
@@ -381,7 +384,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		documentFile: File
 	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
-			licenceAppId: this.gdsdModelFormGroup.get('licenceAppId')?.value,
+			licenceAppId: this.gdsdTeamModelFormGroup.get('licenceAppId')?.value,
 			body: {
 				documents: [documentFile],
 				licenceDocumentTypeCode: documentCode,
@@ -441,7 +444,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			province: bcscMailingAddress?.province,
 		};
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				serviceTypeData,
@@ -459,8 +462,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.schoolTrainingRowAdd();
 		this.otherTrainingRowAdd();
 
-		console.debug('[createEmptyGdsdAuthenticated] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
+		console.debug('[createEmptyGdsdAuthenticated] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/**
@@ -468,7 +471,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -492,7 +495,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		delete bodyUpsert.documentInfos;
 
@@ -560,7 +563,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the application data for authenticated replacement
 	 */
 	submitLicenceReplacementAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 
 		delete body.documentInfos;
@@ -729,7 +732,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -743,8 +746,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-				return of(this.gdsdModelFormGroup.value);
+				console.debug('[applyRenewalDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+				return of(this.gdsdTeamModelFormGroup.value);
 			})
 		);
 	}
@@ -756,7 +759,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 		const dogRenewData = { isAssistanceStillRequired: true };
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -767,8 +770,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
+		console.debug('[applyReplacementDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/**
@@ -825,7 +828,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			province: bcscMailingAddress?.province,
 		};
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				personalInformationData,
 				mailingAddressData,
@@ -835,8 +838,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
+		console.debug('[applyProfileIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/**
@@ -844,7 +847,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 */
 	private applyLicenceIntoModel(associatedLicence: MainLicenceResponse | LicenceResponse): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: associatedLicence.serviceTypeCode };
-		const personalInformationData = this.gdsdPersonalInformationFormGroup.value;
+		const personalInformationData = this.personalInformationFormGroup.value;
 
 		if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
 			personalInformationData.hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
@@ -898,7 +901,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			updateAttachments: [],
 		};
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				serviceTypeData,
@@ -915,8 +918,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
+		console.debug('[applyLicenceIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/**
@@ -1146,7 +1149,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			}
 		}
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				licenceAppId: gdsdAppl.licenceAppId,
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
@@ -1186,8 +1189,8 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 			this.otherTrainingRowAdd();
 		}
 
-		console.debug('[applyApplicationIntoModel] gdsdModelFormGroup', this.gdsdModelFormGroup.value);
-		return of(this.gdsdModelFormGroup.value);
+		console.debug('[applyApplicationIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/*************************************************************/
@@ -1216,7 +1219,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 		const serviceTypeData = { serviceTypeCode };
 
-		this.gdsdModelFormGroup.patchValue(
+		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				licenceTermCode: LicenceTermCode.TwoYears,
@@ -1230,7 +1233,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 		this.schoolTrainingRowAdd();
 		this.otherTrainingRowAdd();
 
-		return of(this.gdsdModelFormGroup.value);
+		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
 	/**
@@ -1257,7 +1260,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 					associatedLicence.licenceNumber!
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.gdsdModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.gdsdTeamModelFormGroup.value);
 			})
 		);
 	}
@@ -1305,7 +1308,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the application data for anonymous new
 	 */
 	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
@@ -1402,7 +1405,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the application data for anonymous renewal or replacement
 	 */
 	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
@@ -1454,7 +1457,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 	 * Submit the application data for anonymous replacement
 	 */
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
@@ -1527,7 +1530,7 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// OTHER TRAINING array
 	otherTrainingRowUsePersonalTraining(index: number): boolean {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdTeamModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		const otherTrainingItem = otherTrainingsArray.at(index);
 		const ctrl = otherTrainingItem.get('usePersonalDogTrainer') as FormControl;
 		return ctrl?.value === BooleanTypeCode.Yes;
@@ -1535,13 +1538,13 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// OTHER TRAINING array
 	otherTrainingRowRemove(index: number): void {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdTeamModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 		otherTrainingsArray.removeAt(index);
 	}
 
 	// OTHER TRAINING array
 	otherTrainingRowAdd(train: OtherTraining | null = null): void {
-		const otherTrainingsArray = this.gdsdModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
+		const otherTrainingsArray = this.gdsdTeamModelFormGroup.get('otherTrainingHistoryData.otherTrainings') as FormArray;
 
 		const usePersonalDogTrainer = this.utilService.booleanToBooleanType(train?.usePersonalDogTrainer);
 
@@ -1589,13 +1592,17 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// SCHOOL TRAINING array
 	schoolTrainingRowRemove(index: number): void {
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdTeamModelFormGroup.get(
+			'schoolTrainingHistoryData.schoolTrainings'
+		) as FormArray;
 		schoolTrainingsArray.removeAt(index);
 	}
 
 	// SCHOOL TRAINING array
 	schoolTrainingRowAdd(train: TrainingSchoolInfo | null = null): void {
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdTeamModelFormGroup.get(
+			'schoolTrainingHistoryData.schoolTrainings'
+		) as FormArray;
 		schoolTrainingsArray.push(
 			new FormGroup(
 				{
@@ -1633,7 +1640,9 @@ export class GdsdApplicationService extends GdsdApplicationHelper {
 
 	// SCHOOL TRAINING array
 	getSchoolTrainingFormGroup(index: number): FormGroup {
-		const schoolTrainingsArray = this.gdsdModelFormGroup.get('schoolTrainingHistoryData.schoolTrainings') as FormArray;
+		const schoolTrainingsArray = this.gdsdTeamModelFormGroup.get(
+			'schoolTrainingHistoryData.schoolTrainings'
+		) as FormArray;
 		return schoolTrainingsArray.at(index) as FormGroup;
 	}
 

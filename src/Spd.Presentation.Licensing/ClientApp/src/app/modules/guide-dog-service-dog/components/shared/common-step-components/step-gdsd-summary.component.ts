@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -348,11 +348,11 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	ngOnInit(): void {
 		this.gdsdModelData = {
-			...this.gdsdApplicationService.gdsdModelFormGroup.getRawValue(),
+			...this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.getRawValue(),
 		};
 	}
 
@@ -362,7 +362,7 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	onUpdateData(): void {
 		this.gdsdModelData = {
-			...this.gdsdApplicationService.gdsdModelFormGroup.getRawValue(),
+			...this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.getRawValue(),
 		};
 	}
 
@@ -371,74 +371,74 @@ export class StepGdsdSummaryComponent implements OnInit, LicenceChildStepperStep
 	}
 
 	get isDogTrainedByAccreditedSchool(): string {
-		return this.gdsdApplicationService.getSummaryisDogTrainedByAccreditedSchool(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryisDogTrainedByAccreditedSchool(this.gdsdModelData);
 	}
 	get isAssistanceStillRequired(): string {
-		return this.gdsdApplicationService.getSummaryisAssistanceStillRequired(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryisAssistanceStillRequired(this.gdsdModelData);
 	}
 	get dogType(): string {
-		return this.gdsdApplicationService.getSummarydogType(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogType(this.gdsdModelData);
 	}
 	get applicantName(): string {
-		return this.gdsdApplicationService.getSummaryapplicantName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryapplicantName(this.gdsdModelData);
 	}
 	get dateOfBirth(): string {
-		return this.gdsdApplicationService.getSummarydateOfBirth(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydateOfBirth(this.gdsdModelData);
 	}
 	get emailAddress(): string {
-		return this.gdsdApplicationService.getSummaryemailAddress(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryemailAddress(this.gdsdModelData);
 	}
 	get phoneNumber(): string {
-		return this.gdsdApplicationService.getSummaryphoneNumber(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryphoneNumber(this.gdsdModelData);
 	}
 
 	get dogName(): string {
-		return this.gdsdApplicationService.getSummarydogName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogName(this.gdsdModelData);
 	}
 	get dogDateOfBirth(): string {
-		return this.gdsdApplicationService.getSummarydogDateOfBirth(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogDateOfBirth(this.gdsdModelData);
 	}
 	get dogBreed(): string {
-		return this.gdsdApplicationService.getSummarydogBreed(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogBreed(this.gdsdModelData);
 	}
 	get colourAndMarkings(): string {
-		return this.gdsdApplicationService.getSummarycolourAndMarkings(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarycolourAndMarkings(this.gdsdModelData);
 	}
 	get genderCode(): string {
-		return this.gdsdApplicationService.getSummarygenderCode(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarygenderCode(this.gdsdModelData);
 	}
 	get microchipNumber(): string {
-		return this.gdsdApplicationService.getSummarymicrochipNumber(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarymicrochipNumber(this.gdsdModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummaryphotoOfYourselfAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryphotoOfYourselfAttachments(this.gdsdModelData);
 	}
 
 	get areInoculationsUpToDate(): string {
-		return this.gdsdApplicationService.getSummaryareInoculationsUpToDate(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryareInoculationsUpToDate(this.gdsdModelData);
 	}
 
 	get medicalInformationAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
 	}
 
 	get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {
-		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.gdsdModelData);
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.gdsdModelData);
 	}
 	get governmentIssuedPhotoAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.gdsdModelData);
 	}
 
 	get dogMedicalAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarydogMedicalAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarydogMedicalAttachments(this.gdsdModelData);
 	}
 
 	get specializedTaskDetails(): string {
-		return this.gdsdApplicationService.getSummaryspecializedTaskDetails(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryspecializedTaskDetails(this.gdsdModelData);
 	}
 
 	get isNew(): boolean {

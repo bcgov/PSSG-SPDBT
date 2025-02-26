@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
-import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
+import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 
 @Component({
-	selector: 'app-guide-dog-service-dog-base-anonymous',
+	selector: 'app-gdsd-base-anonymous',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<!-- hide padding/margin on smaller screens -->
@@ -19,11 +20,12 @@ import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
 	styles: ``,
 	standalone: false,
 })
-export class GuideDogServiceDogBaseAnonymousComponent implements OnInit {
+export class GdsdBaseAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private dogTrainerApplicationService: DogTrainerApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -31,7 +33,7 @@ export class GuideDogServiceDogBaseAnonymousComponent implements OnInit {
 		this.authProcessService.logoutBceid();
 		this.authProcessService.logoutBcsc();
 
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized && !this.dogTrainerApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}

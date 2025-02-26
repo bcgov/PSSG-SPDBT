@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -136,12 +136,12 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 export class StepGdsdConsentComponent implements OnInit, LicenceChildStepperStepComponent {
 	check1Name = '';
 
-	form: FormGroup = this.gdsdApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
 		private utilService: UtilService,
 		private authProcessService: AuthProcessService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	ngOnInit(): void {

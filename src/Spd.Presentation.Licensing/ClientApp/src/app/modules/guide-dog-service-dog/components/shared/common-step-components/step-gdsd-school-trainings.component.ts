@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -14,7 +14,7 @@ import moment from 'moment';
 @Component({
 	selector: 'app-step-gdsd-school-trainings',
 	template: `
-		<app-step-section title="Training Schools" subtitle="List the formal training that have received.">
+		<app-step-section title="Training schools" subtitle="List the formal training that have received.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
@@ -246,7 +246,7 @@ import moment from 'moment';
 	standalone: false,
 })
 export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.schoolTrainingHistoryFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.schoolTrainingHistoryFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -258,7 +258,7 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 	constructor(
 		private dialog: MatDialog,
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	onRemoveSchoolTrainingRow(index: number) {
@@ -275,13 +275,13 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.gdsdApplicationService.schoolTrainingRowRemove(index);
+					this.gdsdTeamApplicationService.schoolTrainingRowRemove(index);
 				}
 			});
 	}
 
 	onAddSchoolTraining(): void {
-		this.gdsdApplicationService.schoolTrainingRowAdd();
+		this.gdsdTeamApplicationService.schoolTrainingRowAdd();
 	}
 
 	isAllowDelete(): boolean {
@@ -294,7 +294,7 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 	}
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
 			file,
 			this.attachments,
@@ -303,11 +303,11 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	getSchoolTrainingFormGroup(index: number): FormGroup {
-		return this.gdsdApplicationService.getSchoolTrainingFormGroup(index);
+		return this.gdsdTeamApplicationService.getSchoolTrainingFormGroup(index);
 	}
 
 	get schoolTrainingsArray(): FormArray {

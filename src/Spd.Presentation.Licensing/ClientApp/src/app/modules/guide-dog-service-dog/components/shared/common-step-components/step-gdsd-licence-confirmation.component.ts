@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
 	selector: 'app-step-gdsd-licence-confirmation',
@@ -50,22 +50,22 @@ export class StepGdsdLicenceConfirmationComponent implements OnInit {
 
 	private gdsdModelData: any = {};
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	ngOnInit() {
-		this.gdsdModelData = { ...this.gdsdApplicationService.gdsdModelFormGroup.getRawValue() };
+		this.gdsdModelData = { ...this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.getRawValue() };
 	}
 
 	get originalLicenceHolderName(): string {
-		return this.gdsdApplicationService.getSummaryoriginalLicenceHolderName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryoriginalLicenceHolderName(this.gdsdModelData);
 	}
 	get originalLicenceNumber(): string {
-		return this.gdsdApplicationService.getSummaryoriginalLicenceNumber(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryoriginalLicenceNumber(this.gdsdModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.gdsdApplicationService.getSummaryoriginalExpiryDate(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryoriginalExpiryDate(this.gdsdModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.gdsdApplicationService.getSummaryoriginalLicenceTermCode(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryoriginalLicenceTermCode(this.gdsdModelData);
 	}
 }

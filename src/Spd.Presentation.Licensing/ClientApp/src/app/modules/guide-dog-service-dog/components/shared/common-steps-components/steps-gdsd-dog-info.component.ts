@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdDogInformationComponent } from '../common-step-components/step-gdsd-dog-information.component';
+import { StepGdsdDogInfoComponent } from '@app/modules/guide-dog-service-dog/components/shared/common-step-components/step-gdsd-dog-info.component';
 import { StepGdsdDogMedicalComponent } from '../common-step-components/step-gdsd-dog-medical.component';
 
 @Component({
@@ -10,10 +10,10 @@ import { StepGdsdDogMedicalComponent } from '../common-step-components/step-gdsd
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-gdsd-dog-information
+				<app-step-gdsd-dog-info
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-				></app-step-gdsd-dog-information>
+				></app-step-gdsd-dog-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -55,7 +55,7 @@ export class StepsGdsdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
-	@ViewChild(StepGdsdDogInformationComponent) dogInfoComponent!: StepGdsdDogInformationComponent;
+	@ViewChild(StepGdsdDogInfoComponent) dogInfoComponent!: StepGdsdDogInfoComponent;
 	@ViewChild(StepGdsdDogMedicalComponent) dogMedicalComponent!: StepGdsdDogMedicalComponent;
 
 	constructor(utilService: UtilService) {

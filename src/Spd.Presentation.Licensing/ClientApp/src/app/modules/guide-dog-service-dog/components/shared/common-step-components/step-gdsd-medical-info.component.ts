@@ -2,12 +2,12 @@ import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-	selector: 'app-step-gdsd-medical-information',
+	selector: 'app-step-gdsd-medical-info',
 	template: `
 		<app-step-section
 			title="Medical Information"
@@ -59,17 +59,17 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	standalone: false,
 })
-export class StepGdsdMedicalInformationComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdMedicalInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.gdsdApplicationService.medicalInformationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.medicalInformationFormGroup;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
 			file,
 			this.attachments,
@@ -78,7 +78,7 @@ export class StepGdsdMedicalInformationComponent implements LicenceChildStepperS
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

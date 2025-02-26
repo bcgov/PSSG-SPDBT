@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -40,13 +40,13 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepGdsdMailingAddressReplacementComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.mailingAddressFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.mailingAddressFormGroup;
 
 	title = 'Review your mailing address';
 	subtitle = 'Ensure your mailing address is correct before submitting your application';
 
 	constructor(
-		private gdsdApplicationService: GdsdApplicationService,
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
 		private authProcessService: AuthProcessService
 	) {}
 

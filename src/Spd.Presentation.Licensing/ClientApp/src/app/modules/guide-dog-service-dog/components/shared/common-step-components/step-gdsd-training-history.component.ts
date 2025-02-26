@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -48,11 +48,11 @@ training history."
 	standalone: false,
 })
 export class StepGdsdTrainingHistoryComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.trainingHistoryFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.trainingHistoryFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -60,21 +60,21 @@ export class StepGdsdTrainingHistoryComponent implements LicenceChildStepperStep
 	}
 
 	onChangeDocumentType(_event: MatRadioChange): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdTeamApplicationService.hasValueChanged = true;
 		this.schoolattachments.setValue([]);
 		this.otherattachments.setValue([]);
 		this.logattachments.setValue([]);
 	}
 
 	public get schoolattachments(): FormControl {
-		return this.gdsdApplicationService.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
+		return this.gdsdTeamApplicationService.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
 
 	public get otherattachments(): FormControl {
-		return this.gdsdApplicationService.otherTrainingHistoryFormGroup.get('attachments') as FormControl;
+		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
 
 	public get logattachments(): FormControl {
-		return this.gdsdApplicationService.otherTrainingHistoryFormGroup.get('practiceLogAttachments') as FormControl;
+		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('practiceLogAttachments') as FormControl;
 	}
 }

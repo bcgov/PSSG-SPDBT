@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-gdsd-accredited-graduation',
 	template: `
 		<app-step-section
-			title="Accredited Graduation Information"
+			title="Accredited graduation information"
 			subtitle="Provide information about the accredited school your dog attended"
 		>
 			<form [formGroup]="form" novalidate>
@@ -114,11 +114,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepGdsdAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdApplicationService.graduationInfoFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.graduationInfoFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -126,7 +126,7 @@ export class StepGdsdAccreditedGraduationComponent implements LicenceChildSteppe
 	}
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
 			file,
 			this.attachments,
@@ -135,7 +135,7 @@ export class StepGdsdAccreditedGraduationComponent implements LicenceChildSteppe
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	get attachments(): FormControl {

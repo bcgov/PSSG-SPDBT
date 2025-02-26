@@ -19,8 +19,8 @@ import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { CommonApplicationHelper } from './common-application.helper';
 
-export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
-	gdsdPersonalInformationFormGroup: FormGroup = this.formBuilder.group({
+export abstract class GdsdTeamApplicationHelper extends CommonApplicationHelper {
+	override personalInformationFormGroup: FormGroup = this.formBuilder.group({
 		hasBcscNameChanged: new FormControl(''), // placeholder
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
@@ -121,7 +121,6 @@ export abstract class GdsdApplicationHelper extends CommonApplicationHelper {
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
-		originalCarryAndUseRestraints: new FormControl(null),
 		originalLicenceHolderName: new FormControl(null),
 		originalLicenceHolderId: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),

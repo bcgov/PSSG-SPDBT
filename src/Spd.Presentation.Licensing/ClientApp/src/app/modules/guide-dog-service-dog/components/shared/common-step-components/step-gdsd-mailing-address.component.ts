@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -36,12 +36,12 @@ export class StepGdsdMailingAddressComponent implements OnInit, LicenceChildStep
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.gdsdApplicationService.mailingAddressFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.mailingAddressFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isLoggedIn!: boolean;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {

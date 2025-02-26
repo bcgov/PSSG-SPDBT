@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
 
@@ -9,7 +9,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	selector: 'app-step-gdsd-photograph-of-yourself',
 	template: `
 		<app-step-section
-			title="Passport-Quality Photo of Yourself"
+			title="Passport-quality photo of yourself"
 			subtitle="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
@@ -25,16 +25,16 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	standalone: false,
 })
 export class StepGdsdPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.gdsdApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	onFileUploaded(file: File): void {
-		this.gdsdApplicationService.fileUploaded(
+		this.gdsdTeamApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.PhotoOfYourself,
 			file,
 			this.attachments,
@@ -43,7 +43,7 @@ export class StepGdsdPhotographOfYourselfComponent implements LicenceChildSteppe
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.fileRemoved();
+		this.gdsdTeamApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

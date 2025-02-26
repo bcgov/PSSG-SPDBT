@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 
 @Component({
-	selector: 'app-guide-dog-service-dog-base-authenticated',
+	selector: 'app-gdsd-base-authenticated',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3" *ngIf="isAuthenticated$ | async">
 			<!-- hide padding/margin on smaller screens -->
@@ -19,17 +19,17 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 	styles: ``,
 	standalone: false,
 })
-export class GuideDogServiceDogBaseAuthenticatedComponent implements OnInit {
+export class GdsdBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		console.debug('[GuideDogServiceDogAuthenticatedBaseComponent]', this.gdsdApplicationService.initialized);
+		console.debug('[GuideDogServiceDogAuthenticatedBaseComponent]', this.gdsdTeamApplicationService.initialized);
 
 		const currentPath = location.pathname;
 
@@ -41,7 +41,7 @@ export class GuideDogServiceDogBaseAuthenticatedComponent implements OnInit {
 
 		await this.authProcessService.initializeGuideDogServiceDogBCSC();
 
-		if (!this.gdsdApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 			return;
 		}

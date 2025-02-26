@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -101,31 +101,23 @@ export class StepGdsdPersonalInfoAnonymousComponent implements OnInit, LicenceCh
 	maxBirthDate = this.utilService.getBirthDateMax();
 	minDate = this.utilService.getDateMin();
 
-	form: FormGroup = this.gdsdApplicationService.gdsdPersonalInformationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.personalInformationFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdApplicationService: GdsdApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewal ? 'Confirm your Personal Information' : 'Your Personal Information';
+		this.title = this.isRenewal ? 'Confirm your personal information' : 'Your personal information';
 		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFileUploaded(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
-	}
-
-	onFileRemoved(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
 	}
 
 	get isRenewal(): boolean {

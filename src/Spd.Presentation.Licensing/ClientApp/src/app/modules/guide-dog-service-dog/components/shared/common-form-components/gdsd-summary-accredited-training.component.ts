@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
 	selector: 'app-gdsd-summary-accredited-training',
@@ -38,23 +38,23 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 	standalone: false,
 })
 export class GdsdSummaryAccreditedTrainingComponent {
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@Input() gdsdModelData: any;
 
 	get accreditedSchoolName(): string {
-		return this.gdsdApplicationService.getSummaryaccreditedSchoolName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryaccreditedSchoolName(this.gdsdModelData);
 	}
 	get accreditedContactName(): string {
-		return this.gdsdApplicationService.getSummaryaccreditedContactName(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryaccreditedContactName(this.gdsdModelData);
 	}
 	get accreditedPhoneNumber(): string {
-		return this.gdsdApplicationService.getSummaryaccreditedPhoneNumber(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryaccreditedPhoneNumber(this.gdsdModelData);
 	}
 	get accreditedEmailAddress(): string {
-		return this.gdsdApplicationService.getSummaryaccreditedEmailAddress(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryaccreditedEmailAddress(this.gdsdModelData);
 	}
 	get accreditedAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummaryaccreditedAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryaccreditedAttachments(this.gdsdModelData);
 	}
 }

@@ -8,9 +8,9 @@ import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-summary-review-update-authenticated',
-    template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+	selector: 'app-step-worker-licence-summary-review-update-authenticated',
+	template: `
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
@@ -86,8 +86,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -117,8 +117,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

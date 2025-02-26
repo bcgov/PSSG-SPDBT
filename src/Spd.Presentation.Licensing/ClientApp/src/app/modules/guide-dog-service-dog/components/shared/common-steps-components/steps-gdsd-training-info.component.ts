@@ -24,19 +24,19 @@ import { StepGdsdTrainingHistoryComponent } from '../common-step-components/step
 						(nextStepperStep)="onStepNextServiceTasks()"
 						(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
 					></app-wizard-footer>
+				</mat-step>
 
-					<mat-step *ngIf="isServiceDog">
-						<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
+				<mat-step *ngIf="isServiceDog">
+					<app-step-gdsd-dog-tasks></app-step-gdsd-dog-tasks>
 
-						<app-wizard-footer
-							[isFormValid]="isFormValid"
-							[showSaveAndExit]="showSaveAndExit"
-							(saveAndExit)="onSaveAndExit(STEP_TASKS)"
-							(previousStepperStep)="onGoToPreviousStep()"
-							(nextStepperStep)="onStepNext(STEP_TASKS)"
-							(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
-						></app-wizard-footer>
-					</mat-step>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_TASKS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_TASKS)"
+						(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+					></app-wizard-footer>
 				</mat-step>
 			</ng-container>
 

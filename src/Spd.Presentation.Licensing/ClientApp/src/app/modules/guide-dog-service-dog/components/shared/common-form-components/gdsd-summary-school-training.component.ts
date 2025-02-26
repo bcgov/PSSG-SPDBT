@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
+import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
 	selector: 'app-gdsd-summary-school-training',
@@ -71,17 +71,17 @@ import { GdsdApplicationService } from '@app/core/services/gdsd-application.serv
 	standalone: false,
 })
 export class GdsdSummarySchoolTrainingComponent {
-	constructor(private gdsdApplicationService: GdsdApplicationService) {}
+	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@Input() gdsdModelData: any;
 
 	get issupportingDocumentTrainingSchoolsAttachments(): boolean {
-		return this.gdsdApplicationService.getSummaryissupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummaryissupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
 	}
 	get supportingDocumentTrainingSchoolsAttachments(): File[] | null {
-		return this.gdsdApplicationService.getSummarysupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
+		return this.gdsdTeamApplicationService.getSummarysupportingDocumentTrainingSchoolsAttachments(this.gdsdModelData);
 	}
 	get schoolTrainings(): Array<any> {
-		return this.gdsdApplicationService.getSummaryschoolTrainings(this.gdsdModelData) ?? [];
+		return this.gdsdTeamApplicationService.getSummaryschoolTrainings(this.gdsdModelData) ?? [];
 	}
 }
