@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } 
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepDtConsentComponent } from '../../anonymous/step-dt-consent.component';
-import { StepDtSummaryComponent } from '../../anonymous/step-dt-summary.component';
+import { StepDtConsentComponent } from './step-dt-consent.component';
+import { StepDtSummaryComponent } from './step-dt-summary.component';
 
 @Component({
 	selector: 'app-steps-dt-review-confirm',

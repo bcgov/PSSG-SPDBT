@@ -2,8 +2,8 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepDtTrainingSchoolInfoComponent } from '../../anonymous/step-dt-training-school-info.component';
-import { StepDtTrainingSchoolMailingAddressComponent } from '../../anonymous/step-dt-training-school-mailing-address.component';
+import { StepDtTrainingSchoolInfoComponent } from './step-dt-training-school-info.component';
+import { StepDtTrainingSchoolMailingAddressComponent } from './step-dt-training-school-mailing-address.component';
 
 @Component({
 	selector: 'app-steps-dt-training-school-info',

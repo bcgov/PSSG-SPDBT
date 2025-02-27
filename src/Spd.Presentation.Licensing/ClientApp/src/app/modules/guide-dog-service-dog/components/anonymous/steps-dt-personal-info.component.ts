@@ -2,11 +2,11 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepDtDogTrainerInfoComponent } from '../../anonymous/step-dt-dog-trainer-info.component';
-import { StepDtGovermentPhotoIdComponent } from '../../anonymous/step-dt-goverment-photo-id.component';
-import { StepDtMailingAddressComponent } from '../../anonymous/step-dt-mailing-address.component';
-import { StepDtPhotographOfYourselfRenewComponent } from '../../anonymous/step-dt-photograph-of-yourself-renew.component';
-import { StepDtPhotographOfYourselfComponent } from '../../anonymous/step-dt-photograph-of-yourself.component';
+import { StepDtDogTrainerInfoComponent } from './step-dt-dog-trainer-info.component';
+import { StepDtGovermentPhotoIdComponent } from './step-dt-goverment-photo-id.component';
+import { StepDtMailingAddressComponent } from './step-dt-mailing-address.component';
+import { StepDtPhotographOfYourselfRenewComponent } from './step-dt-photograph-of-yourself-renew.component';
+import { StepDtPhotographOfYourselfComponent } from './step-dt-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-steps-dt-personal-info',

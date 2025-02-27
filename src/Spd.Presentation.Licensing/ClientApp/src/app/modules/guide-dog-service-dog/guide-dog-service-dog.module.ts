@@ -20,6 +20,10 @@ import { StepDtTrainingSchoolMailingAddressComponent } from './components/anonym
 import { StepGdsdApplicationTypeComponent } from './components/anonymous/step-gdsd-application-type.component';
 import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
 import { StepGdsdPersonalInfoAnonymousComponent } from './components/anonymous/step-gdsd-personal-info-anonymous.component';
+import { StepsDtDetailsComponent } from './components/anonymous/steps-dt-details.component';
+import { StepsDtPersonalInfoComponent } from './components/anonymous/steps-dt-personal-info.component';
+import { StepsDtReviewConfirmComponent } from './components/anonymous/steps-dt-review-confirm.component';
+import { StepsDtTrainingSchoolInfoComponent } from './components/anonymous/steps-dt-training-school-info.component';
 import { GdsdBaseAuthenticatedComponent } from './components/authenticated/gdsd-base-authenticated.component';
 import { GdsdLicenceMainApplicationsListComponent } from './components/authenticated/gdsd-licence-main-applications-list.component';
 import { GdsdLicenceMainLicencesListComponent } from './components/authenticated/gdsd-licence-main-licences-list.component';
@@ -60,10 +64,6 @@ import { StepGdsdSchoolTrainingsComponent } from './components/shared/common-ste
 import { StepGdsdSummaryComponent } from './components/shared/common-step-components/step-gdsd-summary.component';
 import { StepGdsdTermsOfUseComponent } from './components/shared/common-step-components/step-gdsd-terms-of-use.component';
 import { StepGdsdTrainingHistoryComponent } from './components/shared/common-step-components/step-gdsd-training-history.component';
-import { StepsDtDetailsComponent } from './components/shared/common-steps-components/steps-dt-details.component';
-import { StepsDtPersonalInfoComponent } from './components/shared/common-steps-components/steps-dt-personal-info.component';
-import { StepsDtReviewConfirmComponent } from './components/shared/common-steps-components/steps-dt-review-confirm.component';
-import { StepsDtTrainingSchoolInfoComponent } from './components/shared/common-steps-components/steps-dt-training-school-info.component';
 import { StepsGdsdDogInfoComponent } from './components/shared/common-steps-components/steps-gdsd-dog-info.component';
 import { StepsGdsdPersonalInfoComponent } from './components/shared/common-steps-components/steps-gdsd-personal-info.component';
 import { StepsGdsdReviewConfirmComponent } from './components/shared/common-steps-components/steps-gdsd-review-confirm.component';

@@ -9,10 +9,10 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { StepsDtDetailsComponent } from './shared/common-steps-components/steps-dt-details.component';
-import { StepsDtPersonalInfoComponent } from './shared/common-steps-components/steps-dt-personal-info.component';
-import { StepsDtReviewConfirmComponent } from './shared/common-steps-components/steps-dt-review-confirm.component';
-import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-components/steps-dt-training-school-info.component';
+import { StepsDtDetailsComponent } from './anonymous/steps-dt-details.component';
+import { StepsDtPersonalInfoComponent } from './anonymous/steps-dt-personal-info.component';
+import { StepsDtReviewConfirmComponent } from './anonymous/steps-dt-review-confirm.component';
+import { StepsDtTrainingSchoolInfoComponent } from './anonymous/steps-dt-training-school-info.component';
 
 @Component({
 	selector: 'app-dog-trainer-wizard-new-renewal',
