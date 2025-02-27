@@ -214,15 +214,28 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(): Observable<any> {
+	private applyReplacementDataUpdatesToModel(dogTrainerModelData: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-		const dogRenewData = { isAssistanceStillRequired: true };
+		const dogTrainerAddressData = dogTrainerModelData.dogTrainerAddressData;
+
+		this.mailingAddressFormGroup.patchValue({
+			addressSelected: !!dogTrainerAddressData && !!dogTrainerAddressData.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: dogTrainerAddressData?.addressLine1,
+			addressLine2: dogTrainerAddressData?.addressLine2,
+			city: dogTrainerAddressData?.city,
+			country: dogTrainerAddressData?.country,
+			postalCode: dogTrainerAddressData?.postalCode,
+			province: dogTrainerAddressData?.province,
+		});
+
+		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
+		captchaFormGroup.patchValue({ displayCaptcha: true });
 
 		this.dogTrainerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
-				dogRenewData,
 			},
 			{
 				emitEvent: false,
@@ -230,6 +243,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		);
 
 		console.debug('[applyReplacementDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
+		console.debug('[applyReplacementDataUpdatesToModel] mailingAddressFormGroup', this.mailingAddressFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -251,32 +265,31 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Apply the applicant profile data into the main model
 	 */
 	private applyProfileIntoModel(applicantProfile: ApplicantProfileResponse): Observable<any> {
-		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName: applicantProfile.middleName1,
-			surname: applicantProfile.surname,
-			dateOfBirth: applicantProfile.dateOfBirth,
-			phoneNumber: applicantProfile.phoneNumber,
-			emailAddress: applicantProfile.emailAddress,
-			hasBcscNameChanged: false,
+		const dogTrainerData = {
+			trainerGivenName: applicantProfile.givenName,
+			trainerMiddleName: applicantProfile.middleName1,
+			trainerSurname: applicantProfile.surname,
+			trainerDateOfBirth: applicantProfile.dateOfBirth,
+			trainerPhoneNumber: applicantProfile.phoneNumber,
+			trainerEmailAddress: applicantProfile.emailAddress,
 		};
 
-		const bcscMailingAddress = applicantProfile?.mailingAddress;
-		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+		const applicantMailingAddress = applicantProfile?.mailingAddress;
+		const dogTrainerAddressData = {
+			addressSelected: !!applicantMailingAddress && !!applicantMailingAddress.addressLine1,
 			isAddressTheSame: false,
-			addressLine1: bcscMailingAddress?.addressLine1,
-			addressLine2: bcscMailingAddress?.addressLine2,
-			city: bcscMailingAddress?.city,
-			country: bcscMailingAddress?.country,
-			postalCode: bcscMailingAddress?.postalCode,
-			province: bcscMailingAddress?.province,
+			addressLine1: applicantMailingAddress?.addressLine1,
+			addressLine2: applicantMailingAddress?.addressLine2,
+			city: applicantMailingAddress?.city,
+			country: applicantMailingAddress?.country,
+			postalCode: applicantMailingAddress?.postalCode,
+			province: applicantMailingAddress?.province,
 		};
 
 		this.dogTrainerModelFormGroup.patchValue(
 			{
-				personalInformationData,
-				mailingAddressData,
+				dogTrainerData,
+				dogTrainerAddressData,
 			},
 			{
 				emitEvent: false,
@@ -378,11 +391,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
-
-				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
-				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
@@ -424,11 +432,12 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			);
 		}
 
+		// is Replacement
 		return this.applicantProfileService.apiApplicantGet().pipe(
 			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel();
+					switchMap((dogTrainerModelData: any) => {
+						return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
 					})
 				);
 			})

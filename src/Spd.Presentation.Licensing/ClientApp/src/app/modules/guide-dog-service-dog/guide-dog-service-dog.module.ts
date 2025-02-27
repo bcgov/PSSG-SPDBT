@@ -9,6 +9,8 @@ import { StepDtConsentComponent } from './components/anonymous/step-dt-consent.c
 import { StepDtDogTrainerInfoComponent } from './components/anonymous/step-dt-dog-trainer-info.component';
 import { StepDtGovermentPhotoIdComponent } from './components/anonymous/step-dt-goverment-photo-id.component';
 import { StepDtLicenceAccessCodeComponent } from './components/anonymous/step-dt-licence-access-code.component';
+import { StepDtLicenceConfirmationComponent } from './components/anonymous/step-dt-licence-confirmation.component';
+import { StepDtMailingAddressReplacementComponent } from './components/anonymous/step-dt-mailing-address-replacement.component';
 import { StepDtMailingAddressComponent } from './components/anonymous/step-dt-mailing-address.component';
 import { StepDtPhotographOfYourselfRenewComponent } from './components/anonymous/step-dt-photograph-of-yourself-renew.component';
 import { StepDtPhotographOfYourselfComponent } from './components/anonymous/step-dt-photograph-of-yourself.component';
@@ -23,7 +25,8 @@ import { GdsdLicenceMainApplicationsListComponent } from './components/authentic
 import { GdsdLicenceMainLicencesListComponent } from './components/authenticated/gdsd-licence-main-licences-list.component';
 import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
 import { StepGdsdPersonalInfoComponent } from './components/authenticated/step-gdsd-personal-info.component';
-import { DogTrainerWizardNewComponent } from './components/dog-trainer-wizard-new.component';
+import { DogTrainerWizardNewRenewalComponent } from './components/dog-trainer-wizard-new-renewal.component';
+import { DogTrainerWizardReplacementComponent } from './components/dog-trainer-wizard-replacement.component';
 import { GdsdLandingComponent } from './components/gdsd-landing.component';
 import { GdsdTeamWizardNewComponent } from './components/gdsd-team-wizard-new.component';
 import { GdsdTeamWizardRenewalComponent } from './components/gdsd-team-wizard-renewal.component';
@@ -31,6 +34,8 @@ import { GdsdTeamWizardReplacementComponent } from './components/gdsd-team-wizar
 import { FormGdsdApplicationTypeComponent } from './components/shared/common-form-components/form-gdsd-application-type.component';
 import { FormGdsdGovermentPhotoIdComponent } from './components/shared/common-form-components/form-gdsd-goverment-photo-id.component';
 import { FormGdsdLicenceAccessCodeComponent } from './components/shared/common-form-components/form-gdsd-licence-access-code.component';
+import { FormGdsdLicenceConfirmationComponent } from './components/shared/common-form-components/form-gdsd-licence-confirmation.component';
+import { FormGdsdMailingAddressReplacementComponent } from './components/shared/common-form-components/form-gdsd-mailing-address-replacement.component';
 import { GdsdApplicationReceivedSuccessComponent } from './components/shared/common-form-components/gdsd-application-received-success.component';
 import { GdsdSummaryAccreditedTrainingComponent } from './components/shared/common-form-components/gdsd-summary-accredited-training.component';
 import { GdsdSummaryOtherTrainingComponent } from './components/shared/common-form-components/gdsd-summary-other-training.component';
@@ -82,6 +87,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		FormGdsdApplicationTypeComponent,
 		FormGdsdLicenceAccessCodeComponent,
 		FormGdsdGovermentPhotoIdComponent,
+		FormGdsdLicenceConfirmationComponent,
+		FormGdsdMailingAddressReplacementComponent,
 
 		GdsdTeamWizardNewComponent,
 		GdsdTeamWizardRenewalComponent,
@@ -117,7 +124,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepGdsdMailingAddressReplacementComponent,
 		StepGdsdLicenceConfirmationComponent,
 
-		DogTrainerWizardNewComponent,
+		DogTrainerWizardNewRenewalComponent,
+		DogTrainerWizardReplacementComponent,
 		StepsDtDetailsComponent,
 		StepsDtPersonalInfoComponent,
 		StepsDtTrainingSchoolInfoComponent,
@@ -135,6 +143,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepDtPhotographOfYourselfRenewComponent,
 		StepDtApplicationTypeComponent,
 		StepDtLicenceAccessCodeComponent,
+		StepDtLicenceConfirmationComponent,
+		StepDtMailingAddressReplacementComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })

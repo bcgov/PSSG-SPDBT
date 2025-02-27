@@ -15,7 +15,7 @@ import { StepsDtReviewConfirmComponent } from './shared/common-steps-components/
 import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-components/steps-dt-training-school-info.component';
 
 @Component({
-	selector: 'app-dog-trainer-wizard-new',
+	selector: 'app-dog-trainer-wizard-new-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -28,7 +28,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Certificate Details</ng-template>
 				<app-steps-dt-details
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeNew"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -40,7 +40,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeNew"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -53,7 +53,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Dog Trainer Information</ng-template>
 				<app-steps-dt-personal-info
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeNew"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -66,7 +66,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-dt-review-confirm
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeNew"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -84,7 +84,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './shared/common-steps-compon
 	styles: [],
 	standalone: false,
 })
-export class DogTrainerWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_TRAINING_SCHOOL_INFO = 1;
 	readonly STEP_DOG_TRAINER_PERSONAL_INFO = 2;
@@ -103,7 +103,7 @@ export class DogTrainerWizardNewComponent extends BaseWizardComponent implements
 
 	isFormValid = false;
 
-	readonly applicationTypeNew = ApplicationTypeCode.New;
+	applicationTypeCode!: ApplicationTypeCode;
 
 	private dogTrainerModelChangedSubscription!: Subscription;
 
@@ -129,6 +129,10 @@ export class DogTrainerWizardNewComponent extends BaseWizardComponent implements
 		this.dogTrainerModelChangedSubscription = this.dogTrainerApplicationService.dogTrainerModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.dogTrainerApplicationService.dogTrainerModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
 
 				this.updateCompleteStatus();
 			}

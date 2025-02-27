@@ -12,12 +12,13 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
+							<div class="fs-5 mt-2 mb-3">Todo - add terms and conditions text</div>
+							<!-- 
 							<div class="fs-5 mt-2 mb-3">
-								IGNORE THIS TEXT - NEED TO UPDATE
-								<!-- Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
-								Permit Application Online, including Related Prescribed Checks -->
-							</div>
-							<p>
+								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
+								Permit Application Online, including Related Prescribed Checks
+							</div> -->
+							<!-- <p>
 								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
 								Security Services Portal (the "Site") on their own behalf to submit an update to, or request a
 								replacement of, a security worker licence, armoured vehicle permit, or body armour permit. Depending on
@@ -241,7 +242,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									Columbia, sitting in Victoria, for the hearing of any matter relating to or arising from these Terms
 									of Use and/or your access to the Site or use of the Services or any Associated Service.
 								</li>
-							</ol>
+							</ol> -->
 						</div>
 
 						<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
@@ -304,7 +305,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	standalone: false,
 })
 export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepComponent {
-	hasScrolledToBottom = false;
+	hasScrolledToBottom = true; // TODO gdsd undo false;
 	displayValidationErrors = false;
 
 	bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;

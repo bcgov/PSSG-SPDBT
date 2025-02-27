@@ -228,12 +228,10 @@ export abstract class GdsdTeamApplicationHelper extends CommonApplicationHelper 
 		if (isTrainedByAccreditedSchools) {
 			const dogGdsdData = gdsdModelFormValue.dogGdsdData;
 			const isGuideDog = this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog);
-			// if (isGuideDog != null) {
 			accreditedSchoolQuestionsData = {
 				isGuideDog,
 				serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
 			};
-			// }
 
 			const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 			graduationInfoData.attachments?.forEach((doc: any) => {

@@ -38,7 +38,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Lost your certification? Request a replacement card and we'll send you one.
+							Lost your certificate? Request a replacement card and we'll send you one.
 						</app-alert>
 					</div>
 				</div>

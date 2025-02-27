@@ -7,7 +7,8 @@ import { StepGdsdApplicationTypeComponent } from './components/anonymous/step-gd
 import { StepGdsdLicenceAccessCodeComponent } from './components/anonymous/step-gdsd-licence-access-code.component';
 import { GdsdBaseAuthenticatedComponent } from './components/authenticated/gdsd-base-authenticated.component';
 import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
-import { DogTrainerWizardNewComponent } from './components/dog-trainer-wizard-new.component';
+import { DogTrainerWizardNewRenewalComponent } from './components/dog-trainer-wizard-new-renewal.component';
+import { DogTrainerWizardReplacementComponent } from './components/dog-trainer-wizard-replacement.component';
 import { GdsdLandingComponent } from './components/gdsd-landing.component';
 import { GdsdTeamWizardNewComponent } from './components/gdsd-team-wizard-new.component';
 import { GdsdTeamWizardRenewalComponent } from './components/gdsd-team-wizard-renewal.component';
@@ -57,7 +58,15 @@ const routes: Routes = [
 			},
 			{
 				path: GuideDogServiceDogRoutes.DOG_TRAINER_APPLICATION_NEW_ANONYMOUS,
-				component: DogTrainerWizardNewComponent,
+				component: DogTrainerWizardNewRenewalComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.DOG_TRAINER_APPLICATION_RENEWAL_ANONYMOUS,
+				component: DogTrainerWizardNewRenewalComponent,
+			},
+			{
+				path: GuideDogServiceDogRoutes.DOG_TRAINER_APPLICATION_REPLACEMENT_ANONYMOUS,
+				component: DogTrainerWizardReplacementComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED,

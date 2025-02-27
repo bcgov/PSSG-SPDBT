@@ -6,7 +6,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 	selector: 'app-gdsd-licence-main-licences-list',
 	template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">Active Certifications</div>
+			<div class="text-primary-color fs-5 py-3">Active Certificates</div>
 			<div
 				class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 				*ngFor="let licence of activeLicences; let i = index"
@@ -20,11 +20,11 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 					<div class="col-lg-10">
 						<div class="row">
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Certification Number</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">Certificate Number</div>
 								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
 							</div>
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Certification Term</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">Certificate Term</div>
 								<div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
@@ -97,7 +97,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 					<div class="row">
 						<div class="col-12">
 							<mat-divider class="my-2"></mat-divider>
-							<span class="fw-semibold">Lost your certification? </span>
+							<span class="fw-semibold">Lost your certificate? </span>
 							<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 							<a
 								*ngIf="!applicationIsInProgress"

@@ -90,8 +90,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 					</div>
 
 					<app-form-licence-list-expired
-						serviceLabelTitle="Certifications"
-						serviceLabel="Certification"
+						[isGdsdRelated]="true"
 						[expiredLicences]="expiredLicencesList"
 						(renewLicence)="onRenew($event)"
 					></app-form-licence-list-expired>
@@ -247,6 +246,17 @@ export class GdsdLicenceMainComponent implements OnInit {
 							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.GdsdTeamCertification
 						) >= 0;
 				}
+				let activeRetiredDogExist =
+					activeLicencesList.findIndex(
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.RetiredServiceDogCertification
+					) >= 0;
+				if (!activeRetiredDogExist) {
+					activeRetiredDogExist =
+						userGdsdApplicationsList.findIndex(
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.RetiredServiceDogCertification
+						) >= 0;
+				}
+				this.activeRetiredDogExist = activeRetiredDogExist;
 				this.activeGdsdTeamExist = activeGdsdTeamExist;
 				[this.warningMessages, this.errorMessages] =
 					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(

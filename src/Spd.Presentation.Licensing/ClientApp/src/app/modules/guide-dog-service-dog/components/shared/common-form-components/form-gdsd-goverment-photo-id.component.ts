@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GovernmentIssuedPhotoIdTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -78,7 +78,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class FormGdsdGovermentPhotoIdComponent implements LicenceChildStepperStepComponent {
+export class FormGdsdGovermentPhotoIdComponent {
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
 	minDate = this.utilService.getDateMin();
@@ -103,11 +103,6 @@ export class FormGdsdGovermentPhotoIdComponent implements LicenceChildStepperSte
 
 	onChangeProof(_event: MatSelectChange): void {
 		this.attachments.setValue([]);
-	}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
 	}
 
 	get photoTypeCode(): FormControl {

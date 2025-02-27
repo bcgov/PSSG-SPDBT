@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		<app-step-section [title]="title">
 			<app-form-photograph-of-yourself-update
 				[form]="form"
-				label="licence"
+				serviceTypeLabel="certificate"
 				[serviceTypeCode]="serviceTypeGdsdTeam"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"

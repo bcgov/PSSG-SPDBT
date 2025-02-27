@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormGdsdGovermentPhotoIdComponent } from '../common-form-components/form-gdsd-goverment-photo-id.component';
 
 @Component({
@@ -11,8 +10,8 @@ import { FormGdsdGovermentPhotoIdComponent } from '../common-form-components/for
 		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<app-form-gdsd-government-id
 				[form]="form"
-				(fileRemoved)="onFileUploaded($event)"
-				(fileUploaded)="onFileRemoved()"
+				(fileUploaded)="onFileUploaded($event)"
+				(fileRemoved)="onFileRemoved()"
 			></app-form-gdsd-government-id>
 		</app-step-section>
 	`,
@@ -20,7 +19,7 @@ import { FormGdsdGovermentPhotoIdComponent } from '../common-form-components/for
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class StepGdsdGovermentPhotoIdComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdGovermentPhotoIdComponent {
 	form: FormGroup = this.gdsdTeamApplicationService.governmentPhotoIdFormGroup;
 
 	@ViewChild(FormGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: FormGdsdGovermentPhotoIdComponent;

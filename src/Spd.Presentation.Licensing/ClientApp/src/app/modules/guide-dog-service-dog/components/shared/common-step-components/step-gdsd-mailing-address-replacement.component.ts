@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -8,32 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-gdsd-mailing-address-replacement',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<div class="row">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-form-address [form]="form" [isWideView]="true"></app-form-address>
-				</div>
-			</div>
-
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-						<app-collection-notice></app-collection-notice>
-
-						<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
-							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-									captchaFormGroup.get('token')?.invalid &&
-									captchaFormGroup.get('token')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</form>
+			<app-form-gdsd-mailing-address-replacement [form]="form"></app-form-gdsd-mailing-address-replacement>
 		</app-step-section>
 	`,
 	styles: [],
@@ -63,8 +38,5 @@ export class StepGdsdMailingAddressReplacementComponent implements OnInit, Licen
 
 	get captchaFormGroup(): FormGroup {
 		return this.form.get('captchaFormGroup') as FormGroup;
-	}
-	get displayCaptcha(): FormControl {
-		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }

@@ -52,7 +52,7 @@ export class StepDtLicenceAccessCodeComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.applicationTypeCode = this.dogTrainerApplicationService.dogTrainerFormGroup.get(
+		this.applicationTypeCode = this.dogTrainerApplicationService.dogTrainerModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 

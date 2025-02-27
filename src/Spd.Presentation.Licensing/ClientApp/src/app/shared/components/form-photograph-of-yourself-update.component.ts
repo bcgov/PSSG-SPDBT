@@ -59,7 +59,7 @@ import { OptionsPipe } from '../pipes/options.pipe';
 						</div>
 
 						<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
-							We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
+							We require a new photo every 5 years. Please provide a new photo for your {{ serviceTypeLabel }}.
 						</app-alert>
 
 						<app-file-upload
@@ -94,7 +94,7 @@ export class FormPhotographOfYourselfUpdateComponent implements OnInit, LicenceC
 	serviceTypeDesc = 'licence';
 
 	@Input() form!: FormGroup;
-	@Input() label = 'licence'; // licence or permit
+	@Input() serviceTypeLabel = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() photographOfYourself: string | ArrayBuffer | null = null;
 	@Input() serviceTypeCode!: ServiceTypeCode;
