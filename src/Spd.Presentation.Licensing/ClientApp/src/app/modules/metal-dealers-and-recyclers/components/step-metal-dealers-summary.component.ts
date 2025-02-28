@@ -8,7 +8,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 	selector: 'app-step-metal-dealers-summary',
 	template: `
 		<app-step-section
-			title="Registration Summary"
+			title="Registration summary"
 			subtitle="Review your information before submitting your application"
 			*ngIf="metalDealersModelData"
 		>

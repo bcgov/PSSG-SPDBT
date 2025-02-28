@@ -1,6 +1,6 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -15,12 +15,12 @@ import { UtilService } from '@app/core/services/util.service';
 				*ngFor="let licence of expiredLicences; let i = index"
 			>
 				<div class="row">
-					<div class="col-lg-3">
+					<div [ngClass]="isGdsdRelated ? 'col-lg-2' : 'col-lg-3'">
 						<div class="fs-5" style="color: var(--color-primary);">
 							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
-					<div class="col-lg-9">
+					<div [ngClass]="isGdsdRelated ? 'col-lg-10' : 'col-lg-9'">
 						<div class="row">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Number</div>
@@ -48,7 +48,7 @@ import { UtilService } from '@app/core/services/util.service';
 
 							<div class="col-lg-9">
 								<div class="text-data fw-bold">
-									An expired certification can be renewed if within 6 months of the expiry date.
+									An expired certificate can be renewed if it is within 6 months of the expiry date.
 								</div>
 							</div>
 							<div class="col-lg-3 text-end">
@@ -81,16 +81,25 @@ import { UtilService } from '@app/core/services/util.service';
 	],
 	standalone: false,
 })
-export class FormLicenceListExpiredComponent {
+export class FormLicenceListExpiredComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
-	@Input() serviceLabelTitle = 'Licences/Permits';
-	@Input() serviceLabel = 'Licence';
+	serviceLabelTitle = 'Licences/Permits';
+	serviceLabel = 'Licence';
+
+	@Input() isGdsdRelated = false;
 	@Input() expiredLicences!: Array<MainLicenceResponse>;
 
 	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 
 	constructor(private utilService: UtilService) {}
+
+	ngOnInit(): void {
+		if (this.isGdsdRelated) {
+			this.serviceLabelTitle = 'Certificates';
+			this.serviceLabel = 'Certificate';
+		}
+	}
 
 	onRenew(licence: MainLicenceResponse): void {
 		this.renewLicence.emit(licence);
