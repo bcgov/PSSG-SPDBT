@@ -139,7 +139,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED)
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
 					);
 				}),
 				take(1)
@@ -148,9 +148,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 	}
 
 	onNewRetiredServiceDog(): void {
-		// this.router.navigateByUrl(
-		// 	GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_TYPE_ANONYMOUS)
-		// );
+		// TODO onNewRetiredServiceDog
 	}
 
 	onResume(appl: MainApplicationResponse): void {
@@ -159,7 +157,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_APPLICATION_NEW_AUTHENTICATED)
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
 					);
 				}),
 				take(1)
@@ -175,9 +173,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
-								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
-									GuideDogServiceDogRoutes.GDSD_APPLICATION_RENEWAL_AUTHENTICATED
-								)
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_RENEWAL_AUTHENTICATED)
 							);
 						}),
 						take(1)
@@ -200,7 +196,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
-									GuideDogServiceDogRoutes.GDSD_APPLICATION_REPLACEMENT_AUTHENTICATED
+									GuideDogServiceDogRoutes.GDSD_TEAM_REPLACEMENT_AUTHENTICATED
 								)
 							);
 						}),

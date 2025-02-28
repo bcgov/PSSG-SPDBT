@@ -10,6 +10,7 @@ import {
 	GdsdTeamLicenceAppChangeRequest,
 	GoogleRecaptcha,
 	IActionResult,
+	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	LicenceTermCode,
@@ -23,6 +24,7 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import {
 	BehaviorSubject,
 	Observable,
@@ -36,18 +38,19 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
-import { DogTrainerApplicationHelper } from './dog-trainer-application.helper';
 import { FileUtilService } from './file-util.service';
+import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
-	dogTrainerModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
+	retiredDogModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	dogTrainerModelFormGroup: FormGroup = this.formBuilder.group({
+	retiredDogModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(),
 		applicationOriginTypeCode: new FormControl(), // placeholder to save
 		bizTypeCode: new FormControl(), // placeholder to save
@@ -58,19 +61,18 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		applicationTypeData: this.applicationTypeFormGroup,
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
-		trainingSchoolInfoData: this.trainingSchoolInfoFormGroup,
-		trainingSchoolAddressData: this.trainingSchoolAddressFormGroup,
-		dogTrainerData: this.dogTrainerFormGroup,
-		dogTrainerAddressData: this.dogTrainerAddressFormGroup,
+		personalInformationData: this.personalInformationFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
-		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
+		dogInfoData: this.dogInfoFormGroup,
 	});
 
-	dogTrainerModelChangedSubscription!: Subscription;
+	retiredDogModelChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
 		utilService: UtilService,
+		private authenticationService: AuthenticationService,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
@@ -80,22 +82,22 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	) {
 		super(formBuilder, utilService);
 
-		this.dogTrainerModelChangedSubscription = this.dogTrainerModelFormGroup.valueChanges
+		this.retiredDogModelChangedSubscription = this.retiredDogModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					const step1Complete = this.isStepDogTrainerPersonalInfoComplete();
-					const step2Complete = this.isStepDogTrainerTrainingSchoolComplete();
+					const step1Complete = this.isStepRetiredDogPersonalInfoComplete();
+					const step2Complete = this.isStepRetiredDogDogInfoComplete();
 					const isValid = step1Complete && step2Complete;
 
 					console.debug(
-						'dogTrainerModelFormGroup CHANGED',
+						'retiredDogModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
-						this.dogTrainerModelFormGroup.getRawValue()
+						this.retiredDogModelFormGroup.getRawValue()
 					);
 					this.updateModelChangeFlags();
-					this.dogTrainerModelValueChanges$.next(isValid);
+					this.retiredDogModelValueChanges$.next(isValid);
 				}
 			});
 	}
@@ -104,20 +106,16 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Determine if the step is valid
 	 * @returns boolean
 	 */
-	isStepDogTrainerTrainingSchoolComplete(): boolean {
-		return this.trainingSchoolInfoFormGroup.valid && this.trainingSchoolAddressFormGroup.valid;
+	isStepRetiredDogPersonalInfoComplete(): boolean {
+		return this.personalInformationFormGroup.valid && this.mailingAddressFormGroup.valid;
 	}
+
 	/**
 	 * Determine if the step is valid
 	 * @returns boolean
 	 */
-	isStepDogTrainerPersonalInfoComplete(): boolean {
-		return (
-			this.dogTrainerFormGroup.valid &&
-			this.dogTrainerAddressFormGroup.valid &&
-			this.photographOfYourselfFormGroup.valid &&
-			this.governmentPhotoIdFormGroup.valid
-		);
+	isStepRetiredDogDogInfoComplete(): boolean {
+		return this.dogInfoFormGroup.valid;
 	}
 
 	/**
@@ -129,11 +127,123 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
-		this.dogTrainerModelFormGroup.reset();
+		this.retiredDogModelFormGroup.reset();
 
-		console.debug('RESET', this.initialized, this.dogTrainerModelFormGroup.value);
+		console.debug('RESET', this.initialized, this.retiredDogModelFormGroup.value);
 	}
 
+	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
+
+	/**
+	 * Partial Save - Save the data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	// partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	// 	const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
+	// 	console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
+
+	// 	const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+
+	// 	body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+	// 	return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
+	// 		take(1),
+	// 		tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
+	// 			this.hasValueChanged = false;
+
+	// 			let msg = 'Your application has been saved';
+	// 			if (isSaveAndExit) {
+	// 				msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+	// 			}
+	// 			this.utilService.toasterSuccess(msg);
+
+	// 			if (!gdsdModelFormValue.licenceAppId) {
+	// 				this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+	// 			}
+	// 		})
+	// 	);
+	// }
+
+	/**
+	 * When uploading a file, set the value as changed, and perform the upload
+	 * @returns
+	 */
+	fileUploaded(
+		documentCode: LicenceDocumentTypeCode, // type of the document
+		document: File,
+		attachments: FormControl, // the FormControl containing the documents
+		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+	) {
+		this.hasValueChanged = true;
+
+		if (!this.isAutoSave()) return;
+
+		this.addUploadDocument(documentCode, document).subscribe({
+			next: (resp: any) => {
+				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+
+				fileUploadComponent.removeFailedFile(document);
+			},
+		});
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
+
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
+
+		return this.hasValueChanged;
+	}
+
+	/**
+	 * Determine if the Save & Exit process can occur
+	 * @returns boolean
+	 */
+	isSaveAndExit(): boolean {
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		documentFile: File
+	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
+			licenceAppId: this.retiredDogModelFormGroup.get('licenceAppId')?.value,
+			body: {
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
+			},
+		});
+	}
+
+	/*************************************************************/
+	// ANONYMOUS
+	/*************************************************************/
 	/**
 	 * Create an empty application
 	 * @returns
@@ -156,7 +266,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const serviceTypeData = { serviceTypeCode };
 
-		this.dogTrainerModelFormGroup.patchValue(
+		this.retiredDogModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				licenceTermCode: LicenceTermCode.TwoYears,
@@ -167,19 +277,19 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		return of(this.dogTrainerModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
 	}
 
 	/**
 	 * Overwrite or change any data specific to the renewal flow
 	 */
-	private applyRenewalDataUpdatesToModel(dogTrainerModelData: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalDataUpdatesToModel(retiredDogModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
-		const photographOfYourselfData = dogTrainerModelData.photographOfYourselfData;
-		const originalLicenceData = dogTrainerModelData.originalLicenceData;
+		const photographOfYourselfData = retiredDogModelData.photographOfYourselfData;
+		const originalLicenceData = retiredDogModelData.originalLicenceData;
 
-		const originalPhotoOfYourselfLastUploadDateTime = dogTrainerModelData.photographOfYourselfData.uploadedDateTime;
+		const originalPhotoOfYourselfLastUploadDateTime = retiredDogModelData.photographOfYourselfData.uploadedDateTime;
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
@@ -189,7 +299,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
-		this.dogTrainerModelFormGroup.patchValue(
+		this.retiredDogModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -203,8 +313,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
-				return of(this.dogTrainerModelFormGroup.value);
+				console.debug('[applyRenewalDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
+				return of(this.retiredDogModelFormGroup.value);
 			})
 		);
 	}
@@ -212,9 +322,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(dogTrainerModelData: any): Observable<any> {
+	private applyReplacementDataUpdatesToModel(retiredDogModelData: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-		const dogTrainerAddressData = dogTrainerModelData.dogTrainerAddressData;
+		const dogTrainerAddressData = retiredDogModelData.dogTrainerAddressData;
 
 		this.mailingAddressFormGroup.patchValue({
 			addressSelected: !!dogTrainerAddressData && !!dogTrainerAddressData.addressLine1,
@@ -230,7 +340,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
 		captchaFormGroup.patchValue({ displayCaptcha: true });
 
-		this.dogTrainerModelFormGroup.patchValue(
+		this.retiredDogModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -240,9 +350,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
+		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		console.debug('[applyReplacementDataUpdatesToModel] mailingAddressFormGroup', this.mailingAddressFormGroup.value);
-		return of(this.dogTrainerModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
 	}
 
 	/**
@@ -284,7 +394,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			province: applicantMailingAddress?.province,
 		};
 
-		this.dogTrainerModelFormGroup.patchValue(
+		this.retiredDogModelFormGroup.patchValue(
 			{
 				dogTrainerData,
 				dogTrainerAddressData,
@@ -294,8 +404,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
-		return of(this.dogTrainerModelFormGroup.value);
+		console.debug('[applyProfileIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
 	}
 
 	/**
@@ -357,7 +467,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			updateAttachments: [],
 		};
 
-		this.dogTrainerModelFormGroup.patchValue(
+		this.retiredDogModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
 				serviceTypeData,
@@ -374,8 +484,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
-		return of(this.dogTrainerModelFormGroup.value);
+		console.debug('[applyLicenceIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
 	}
 
 	/**
@@ -397,7 +507,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 					associatedLicence.licenceNumber!
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.dogTrainerModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.retiredDogModelFormGroup.value);
 			})
 		);
 	}
@@ -422,8 +532,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 					const photoOfYourself = resps[1];
 
 					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((dogTrainerModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(dogTrainerModelData, photoOfYourself);
+						switchMap((retiredDogModelData: any) => {
+							return this.applyRenewalDataUpdatesToModel(retiredDogModelData, photoOfYourself);
 						})
 					);
 				})
@@ -434,8 +544,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		return this.applicantProfileService.apiApplicantGet().pipe(
 			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((dogTrainerModelData: any) => {
-						return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
+					switchMap((retiredDogModelData: any) => {
+						return this.applyReplacementDataUpdatesToModel(retiredDogModelData);
 					})
 				);
 			})
@@ -446,7 +556,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Submit the application data for anonymous new
 	 */
 	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
@@ -543,7 +653,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Submit the application data for anonymous renewal or replacement
 	 */
 	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
@@ -595,7 +705,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Submit the application data for anonymous replacement
 	 */
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
+		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 

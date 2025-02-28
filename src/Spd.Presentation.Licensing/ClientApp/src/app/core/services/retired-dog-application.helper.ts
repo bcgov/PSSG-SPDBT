@@ -6,11 +6,10 @@ import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
-export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationHelper {
+export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolName: new FormControl('', [Validators.required]),
 		schoolDirectorGivenName: new FormControl(''),
-		schoolDirectoMiddleName: new FormControl(''),
 		schoolDirectorSurname: new FormControl('', [Validators.required]),
 		schoolDirectorPhoneNumber: new FormControl('', [Validators.required]),
 		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),
@@ -213,9 +212,8 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	}
 	getSummaryschoolDirectorName(dogTrainerModelData: any): string {
 		return (
-			this.utilService.getFullNameWithOneMiddle(
+			this.utilService.getFullName(
 				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorGivenName,
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorMiddleName,
 				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorSurname
 			) ?? ''
 		);

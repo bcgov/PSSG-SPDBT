@@ -47,7 +47,6 @@ import {
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
-import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { GdsdTeamApplicationHelper } from './gdsd-team-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
@@ -91,9 +90,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 	constructor(
 		formBuilder: FormBuilder,
-		configService: ConfigService,
 		utilService: UtilService,
-		fileUtilService: FileUtilService,
+		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
@@ -102,7 +100,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
 	) {
-		super(formBuilder, configService, utilService, fileUtilService);
+		super(formBuilder, utilService);
 
 		this.gdsdTeamModelChangedSubscription = this.gdsdTeamModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

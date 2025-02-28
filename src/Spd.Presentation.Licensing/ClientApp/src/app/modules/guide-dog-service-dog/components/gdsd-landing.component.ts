@@ -6,6 +6,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { take, tap } from 'rxjs';
 
@@ -187,6 +188,7 @@ export class GdsdLandingComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService,
 		private dogTrainerApplicationService: DogTrainerApplicationService,
+		private retiredDogApplicationService: RetiredDogApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
@@ -229,7 +231,19 @@ export class GdsdLandingComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO RetiredServiceDogCertification onContinue
+				this.retiredDogApplicationService
+					.createNewAnonymous(serviceTypeCode)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAnonymous(
+									GuideDogServiceDogRoutes.RETIRED_DOG_APPLICATION_TYPE_ANONYMOUS
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
 				break;
 			}
 			case ServiceTypeCode.DogTrainerCertification: {
@@ -246,7 +260,6 @@ export class GdsdLandingComponent implements OnInit {
 						take(1)
 					)
 					.subscribe();
-
 				break;
 			}
 		}
