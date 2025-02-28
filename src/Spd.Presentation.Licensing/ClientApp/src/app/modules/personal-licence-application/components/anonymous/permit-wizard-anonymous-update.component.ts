@@ -29,7 +29,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel> Permit Details </ng-template>
+				<ng-template matStepLabel>Permit Details</ng-template>
 				<app-steps-permit-details-update
 					[isLoggedIn]="false"
 					[isFormValid]="isFormValid"

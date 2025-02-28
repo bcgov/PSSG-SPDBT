@@ -5,7 +5,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-metal-dealers-business-address',
 	template: `
-		<app-step-section title="Business Addresses">
+		<app-step-section title="Business addresses">
 			<div class="row">
 				<div class="col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
