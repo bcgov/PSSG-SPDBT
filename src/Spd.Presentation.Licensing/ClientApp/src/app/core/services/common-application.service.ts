@@ -152,7 +152,7 @@ export class CommonApplicationService {
 		if (this.isLoggedIn) {
 			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
 				if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
-					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
 				} else {
 					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 				}

@@ -144,7 +144,9 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 
 		switch (this.serviceTypeCode) {
 			case ServiceTypeCode.SecurityWorkerLicence:
-			case ServiceTypeCode.GdsdTeamCertification: {
+			case ServiceTypeCode.GdsdTeamCertification:
+			case ServiceTypeCode.DogTrainerCertification:
+			case ServiceTypeCode.RetiredServiceDogCertification: {
 				this.workerApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
