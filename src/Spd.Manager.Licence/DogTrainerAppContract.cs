@@ -16,7 +16,7 @@ public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitReq
 
 #endregion
 
-public record DogTrainerRequest
+public record DogTrainerRequest : LicenceAppBase
 {
     public string? AccreditedSchoolName { get; set; }
     public MailingAddress? SchoolMailingAddress { get; set; }

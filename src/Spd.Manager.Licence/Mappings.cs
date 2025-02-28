@@ -12,6 +12,7 @@ using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DogTeam;
+using Spd.Resource.Repository.DogTrainerApp;
 using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -464,6 +465,7 @@ internal class Mappings : Profile
         CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>()
             .ReverseMap();
         CreateMap<DogTeamResp, DogInfo>();
+        CreateMap<DogTrainerRequest, CreateDogTrainerAppCmd>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
