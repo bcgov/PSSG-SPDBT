@@ -1,11 +1,31 @@
 using FluentValidation;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
-public class DogTrainerAppNewRequestValidator<T> : AbstractValidator<T> where T : DogTrainerRequest
+public class DogTrainerRequestValidator : AbstractValidator<DogTrainerRequest>
 {
-    public DogTrainerAppNewRequestValidator()
+    public DogTrainerRequestValidator()
     {
-
+        RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.DogTrainerCertification); //must be team, dog trainer or retired dog
+        RuleFor(r => r.ApplicationTypeCode).NotEmpty();
+        RuleFor(r => r.SchoolMailingAddress).SetValidator(new MailingAddressValidator())
+            .When(r => r.SchoolMailingAddress != null);
+        RuleFor(x => x.AccreditedSchoolName).NotEmpty().MaximumLength(250);
+        RuleFor(r => r.SchoolContactEmailAddress).MaximumLength(75)
+            .EmailAddress()
+            .When(r => r.SchoolContactEmailAddress != null);
+        RuleFor(r => r.SchoolContactPhoneNumber).MaximumLength(30);
+        RuleFor(r => r.SchoolDirectorGivenName).MaximumLength(40);
+        RuleFor(r => r.SchoolDirectorSurname).MaximumLength(40).NotEmpty();
+        RuleFor(r => r.SchoolDirectorMiddleName).MaximumLength(40);
+        RuleFor(r => r.TrainerGivenName).MaximumLength(40);
+        RuleFor(r => r.TrainerSurname).MaximumLength(40).NotEmpty();
+        RuleFor(r => r.TrainerMiddleName).MaximumLength(40);
+        RuleFor(r => r.TrainerMailingAddress).SetValidator(new MailingAddressValidator())
+            .When(r => r.TrainerMailingAddress != null);
+        RuleFor(r => r.TrainerDateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
+        RuleFor(r => r.TrainerPhoneNumber).MaximumLength(30);
+        RuleFor(r => r.TrainerEmailAddress).EmailAddress().MaximumLength(75).When(r => r.TrainerEmailAddress != null);
     }
 }
