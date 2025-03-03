@@ -34,34 +34,66 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<!-- <div class="text-minor-heading-small mt-2">Training School Information</div>
+								<div class="text-minor-heading-small mt-2">Personal Information</div>
 								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Training School Name</div>
-										<div class="summary-text-data">{{ accreditedSchoolName }}</div>
+									<div class="col-lg-12 col-md-12">
+										<div class="text-label d-block text-muted">Applicant Name</div>
+										<div class="summary-text-data">{{ applicantName }}</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">CEO/Executive Director Name</div>
-										<div class="summary-text-data">{{ schoolDirectorName }}</div>
-									</div>
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
-											{{ schoolDirectorPhoneNumber | formatPhoneNumber }}
+											{{ dateOfBirth | formatDate | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Phone Number</div>
+										<div class="summary-text-data">
+											{{ phoneNumber | formatPhoneNumber }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">{{ schoolDirectorEmailAddress | default }}</div>
+										<div class="summary-text-data">{{ emailAddress | default }}</div>
 									</div>
 								</div>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
 								<app-form-address-summary
-									[formData]="retiredDogModelData.trainingSchoolAddressData"
+									[formData]="retiredDogModelData.mailingAddressData"
 									headingLabel="Mailing Address"
 									[isAddressTheSame]="false"
-								></app-form-address-summary> -->
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+
+								<div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
+								<div class="row mt-0">
+									<div class="col-lg-8 col-md-12">
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of gdsdCertificateAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+
+								<div class="text-minor-heading-small">Photo of Yourself</div>
+								<div class="row mt-0">
+									<div class="col-lg-6 col-md-12">
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</div>
 							</div>
 						</mat-expansion-panel>
 
@@ -85,68 +117,49 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<!-- <div class="text-minor-heading-small mt-2">Dog Trainer Information</div>
+								<div class="text-minor-heading-small mt-2">Retired Dog Information</div>
 								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Dog Trainer Name</div>
-										<div class="summary-text-data">{{ trainerName }}</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Dog Name</div>
+										<div class="summary-text-data">{{ dogName | default }}</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
-											{{ trainerDateOfBirth | formatDate | default }}
+											{{ dogDateOfBirth | formatDate | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Breed</div>
 										<div class="summary-text-data">
-											{{ trainerPhoneNumber | formatPhoneNumber }}
+											{{ dogBreed | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">{{ trainerEmailAddress | default }}</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Colour and Markings</div>
+										<div class="summary-text-data">{{ colourAndMarkings | default }}</div>
 									</div>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="retiredDogModelData.dogTrainerAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<div class="text-minor-heading-small">Photo of Yourself</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Gender</div>
+										<div class="summary-text-data">{{ genderCode | options: 'GenderTypes' | default }}</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Microchip Number</div>
+										<div class="summary-text-data">{{ microchipNumber | default }}</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Date of Retirement</div>
 										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+											{{ dateOfRetirement | formatDate | default }}
+										</div>
+									</div>
+									<div class="col-lg-8 col-md-12">
+										<div class="text-label d-block text-muted">Continue to live with dog in his/her retirement?</div>
+										<div class="summary-text-data">
+											{{ liveWithDog | default }}
 										</div>
 									</div>
 								</div>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<div class="text-minor-heading-small">
-									{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-								</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</div> -->
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -222,47 +235,49 @@ export class StepRdSummaryComponent implements OnInit, LicenceChildStepperStepCo
 		return true;
 	}
 
-	// get accreditedSchoolName(): string {
-	// 	return this.retiredDogApplicationService.getSummaryaccreditedSchoolName(this.retiredDogModelData);
-	// }
-	// get schoolDirectorName(): string {
-	// 	return this.retiredDogApplicationService.getSummaryschoolDirectorName(this.retiredDogModelData);
-	// }
-	// get schoolDirectorEmailAddress(): string {
-	// 	return this.retiredDogApplicationService.getSummaryschoolDirectorEmailAddress(this.retiredDogModelData);
-	// }
-	// get schoolDirectorPhoneNumber(): string {
-	// 	return this.retiredDogApplicationService.getSummaryschoolDirectorPhoneNumber(this.retiredDogModelData);
-	// }
+	get applicantName(): string {
+		return this.retiredDogApplicationService.getSummaryapplicantName(this.retiredDogModelData);
+	}
+	get dateOfBirth(): string {
+		return this.retiredDogApplicationService.getSummarydateOfBirth(this.retiredDogModelData);
+	}
+	get emailAddress(): string {
+		return this.retiredDogApplicationService.getSummaryemailAddress(this.retiredDogModelData);
+	}
+	get phoneNumber(): string {
+		return this.retiredDogApplicationService.getSummaryphoneNumber(this.retiredDogModelData);
+	}
 
-	// get trainerName(): string {
-	// 	return this.retiredDogApplicationService.getSummarytrainerName(this.retiredDogModelData);
-	// }
-	// get trainerDateOfBirth(): string {
-	// 	return this.retiredDogApplicationService.getSummarytrainerdateOfBirth(this.retiredDogModelData);
-	// }
-	// get trainerEmailAddress(): string {
-	// 	return this.retiredDogApplicationService.getSummarytraineremailAddress(this.retiredDogModelData);
-	// }
-	// get trainerPhoneNumber(): string {
-	// 	return this.retiredDogApplicationService.getSummarytrainerphoneNumber(this.retiredDogModelData);
-	// }
+	get gdsdCertificateAttachments(): File[] | null {
+		return this.retiredDogApplicationService.getSummarygdsdCertificateAttachments(this.retiredDogModelData);
+	}
 
-	// get photoOfYourselfAttachments(): File[] | null {
-	// 	return this.retiredDogApplicationService.getSummaryphotoOfYourselfAttachments(this.retiredDogModelData);
-	// }
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.retiredDogApplicationService.getSummaryphotoOfYourselfAttachments(this.retiredDogModelData);
+	}
 
-	// get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {
-	// 	return this.retiredDogApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.retiredDogModelData);
-	// }
-	// get governmentIssuedPhotoExpiryDate(): string {
-	// 	return this.retiredDogApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.retiredDogModelData);
-	// }
-	// get governmentIssuedPhotoAttachments(): File[] | null {
-	// 	return this.retiredDogApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.retiredDogModelData);
-	// }
-
-	// get isNew(): boolean {
-	// 	return this.applicationTypeCode === ApplicationTypeCode.New;
-	// }
+	get dogName(): string {
+		return this.retiredDogApplicationService.getSummarydogName(this.retiredDogModelData);
+	}
+	get dogDateOfBirth(): string {
+		return this.retiredDogApplicationService.getSummarydogDateOfBirth(this.retiredDogModelData);
+	}
+	get dogBreed(): string {
+		return this.retiredDogApplicationService.getSummarydogBreed(this.retiredDogModelData);
+	}
+	get colourAndMarkings(): string {
+		return this.retiredDogApplicationService.getSummarycolourAndMarkings(this.retiredDogModelData);
+	}
+	get genderCode(): string {
+		return this.retiredDogApplicationService.getSummarygenderCode(this.retiredDogModelData);
+	}
+	get microchipNumber(): string {
+		return this.retiredDogApplicationService.getSummarymicrochipNumber(this.retiredDogModelData);
+	}
+	get dateOfRetirement(): string {
+		return this.retiredDogApplicationService.getSummarydateOfRetirement(this.retiredDogModelData);
+	}
+	get liveWithDog(): string {
+		return this.retiredDogApplicationService.getSummaryliveWithDog(this.retiredDogModelData);
+	}
 }
