@@ -7,6 +7,15 @@ import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
+	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]), // TODO LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
+	});
+
+	retiredDogForm: FormGroup = this.formBuilder.group({
+		dateOfRetirement: new FormControl('', [Validators.required]),
+		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
+	});
+
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolName: new FormControl('', [Validators.required]),
 		schoolDirectorGivenName: new FormControl(''),

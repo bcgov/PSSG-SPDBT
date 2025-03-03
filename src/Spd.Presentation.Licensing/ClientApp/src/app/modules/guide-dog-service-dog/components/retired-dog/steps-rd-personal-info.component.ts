@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepRdGdsdCertficateComponent } from './step-rd-gdsd-certificate.component';
 import { StepRdMailingAddressComponent } from './step-rd-mailing-address.component';
 import { StepRdPersonalInfoAnonymousComponent } from './step-rd-personal-info-anonymous.component';
 import { StepRdPersonalInfoComponent } from './step-rd-personal-info.component';
@@ -48,6 +49,19 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 				></app-wizard-footer>
 			</mat-step>
 
+			<mat-step>
+				<app-step-rd-gdsd-certificate></app-step-rd-gdsd-certificate>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_GDSD_CERTIFICATE)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_GDSD_CERTIFICATE)"
+					(nextReviewStepperStep)="onNextReview(STEP_GDSD_CERTIFICATE)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<mat-step *ngIf="isNew">
 				<app-step-rd-photograph-of-yourself></app-step-rd-photograph-of-yourself>
 
@@ -82,8 +96,9 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFO = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
-	readonly STEP_PHOTO_OF_YOURSELF = 2;
-	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 3;
+	readonly STEP_GDSD_CERTIFICATE = 2;
+	readonly STEP_PHOTO_OF_YOURSELF = 3;
+	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 4;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -92,10 +107,10 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 
 	@ViewChild(StepRdPersonalInfoAnonymousComponent) personAnonymous!: StepRdPersonalInfoAnonymousComponent;
 	@ViewChild(StepRdPersonalInfoComponent) personAuth!: StepRdPersonalInfoComponent;
-	@ViewChild(StepRdPhotographOfYourselfComponent) photoComponent!: StepRdPhotographOfYourselfComponent;
-	@ViewChild(StepRdPhotographOfYourselfRenewComponent)
-	photoRenewComponent!: StepRdPhotographOfYourselfRenewComponent;
-	@ViewChild(StepRdMailingAddressComponent) mailingAddressComponent!: StepRdMailingAddressComponent;
+	@ViewChild(StepRdGdsdCertficateComponent) gdsdCert!: StepRdGdsdCertficateComponent;
+	@ViewChild(StepRdPhotographOfYourselfComponent) photoNew!: StepRdPhotographOfYourselfComponent;
+	@ViewChild(StepRdPhotographOfYourselfRenewComponent) photoRenew!: StepRdPhotographOfYourselfRenewComponent;
+	@ViewChild(StepRdMailingAddressComponent) mailingAddress!: StepRdMailingAddressComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -107,11 +122,13 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 				console.log(this.isLoggedIn, this.personAnonymous.isFormValid());
 				return this.personAnonymous.isFormValid();
 			case this.STEP_MAILING_ADDRESS:
-				return this.mailingAddressComponent.isFormValid();
+				return this.mailingAddress.isFormValid();
+			case this.STEP_GDSD_CERTIFICATE:
+				return this.gdsdCert.isFormValid();
 			case this.STEP_PHOTO_OF_YOURSELF:
-				return this.photoComponent.isFormValid();
+				return this.photoNew.isFormValid();
 			case this.STEP_PHOTO_OF_YOURSELF_RENEW:
-				return this.photoRenewComponent.isFormValid();
+				return this.photoRenew.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

@@ -10,6 +10,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsRdDetailsComponent } from './steps-rd-details.component';
+import { StepsRdDogInfoComponent } from './steps-rd-dog-info.component';
 import { StepsRdPersonalInfoComponent } from './steps-rd-personal-info.component';
 import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.component';
 
@@ -100,7 +101,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 
 	@ViewChild(StepsRdDetailsComponent) stepsDetails!: StepsRdDetailsComponent;
 	@ViewChild(StepsRdPersonalInfoComponent) stepsPersonallInfo!: StepsRdPersonalInfoComponent;
-	@ViewChild(StepsRdPersonalInfoComponent) stepsDogInfo!: StepsRdPersonalInfoComponent;
+	@ViewChild(StepsRdDogInfoComponent) stepsDogInfo!: StepsRdDogInfoComponent;
 	@ViewChild(StepsRdReviewAndConfirmComponent) stepsReviewConfirm!: StepsRdReviewAndConfirmComponent;
 
 	isFormValid = false;

@@ -70,6 +70,7 @@ import { StepRdChecklistNewComponent } from './components/retired-dog/step-rd-ch
 import { StepRdChecklistRenewalComponent } from './components/retired-dog/step-rd-checklist-renewal.component';
 import { StepRdConsentComponent } from './components/retired-dog/step-rd-consent.component';
 import { StepRdDogInfoComponent } from './components/retired-dog/step-rd-dog-info.component';
+import { StepRdGdsdCertficateComponent } from './components/retired-dog/step-rd-gdsd-certificate.component';
 import { StepRdMailingAddressComponent } from './components/retired-dog/step-rd-mailing-address.component';
 import { StepRdPersonalInfoAnonymousComponent } from './components/retired-dog/step-rd-personal-info-anonymous.component';
 import { StepRdPersonalInfoComponent } from './components/retired-dog/step-rd-personal-info.component';
@@ -179,6 +180,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepRdPersonalInfoComponent,
 		StepRdPhotographOfYourselfComponent,
 		StepRdPhotographOfYourselfRenewComponent,
+		StepRdGdsdCertficateComponent,
 		StepRdDogInfoComponent,
 		StepRdConsentComponent,
 		StepRdSummaryComponent,

@@ -62,9 +62,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
+		dogGdsdCertificateData: this.dogGdsdCertificateFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
+		retiredDogData: this.retiredDogForm,
 	});
 
 	retiredDogModelChangedSubscription!: Subscription;
@@ -107,7 +109,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogPersonalInfoComplete(): boolean {
-		return this.personalInformationFormGroup.valid && this.mailingAddressFormGroup.valid;
+		return (
+			this.personalInformationFormGroup.valid &&
+			this.dogGdsdCertificateFormGroup.valid &&
+			this.photographOfYourselfFormGroup.valid &&
+			this.mailingAddressFormGroup.valid
+		);
 	}
 
 	/**
@@ -115,7 +122,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogDogInfoComplete(): boolean {
-		return this.dogInfoFormGroup.valid;
+		return this.dogInfoFormGroup.valid && this.retiredDogForm.valid;
 	}
 
 	/**
