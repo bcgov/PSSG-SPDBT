@@ -38,6 +38,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { FileUtilService } from './file-util.service';
@@ -62,9 +63,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
+		dogGdsdCertificateData: this.dogGdsdCertificateFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
+		retiredDogData: this.retiredDogForm,
 	});
 
 	retiredDogModelChangedSubscription!: Subscription;
@@ -72,6 +75,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		utilService: UtilService,
+		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
@@ -107,7 +111,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogPersonalInfoComplete(): boolean {
-		return this.personalInformationFormGroup.valid && this.mailingAddressFormGroup.valid;
+		return (
+			this.personalInformationFormGroup.valid &&
+			this.dogGdsdCertificateFormGroup.valid &&
+			this.photographOfYourselfFormGroup.valid &&
+			this.mailingAddressFormGroup.valid
+		);
 	}
 
 	/**
@@ -115,7 +124,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogDogInfoComplete(): boolean {
-		return this.dogInfoFormGroup.valid;
+		return this.dogInfoFormGroup.valid && this.retiredDogForm.valid;
 	}
 
 	/**
@@ -137,34 +146,107 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/*************************************************************/
 
 	/**
+	 * Create an empty authenticated licence
+	 * @returns
+	 */
+	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					return this.createEmptyRdAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+						})
+					);
+				})
+			);
+	}
+
+	private createEmptyRdAuthenticated(
+		applicantProfile: ApplicantProfileResponse,
+		serviceTypeCode: ServiceTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		this.reset();
+
+		const serviceTypeData = { serviceTypeCode };
+		const applicationTypeData = { applicationTypeCode };
+
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged: false,
+		};
+
+		const bcscMailingAddress = applicantProfile.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
+		};
+
+		this.retiredDogModelFormGroup.patchValue(
+			{
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				serviceTypeData,
+				licenceTermCode: LicenceTermCode.TwoYears,
+				applicationTypeData,
+
+				personalInformationData,
+				mailingAddressData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[createEmptyRdAuthenticated] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
+	}
+
+	/**
 	 * Partial Save - Save the data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	// partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-	// 	const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-	// 	console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
+	partialSaveLicenceStepAuthenticated(_isSaveAndExit?: boolean): any {
+		//} Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		const retiredDogModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		return of(retiredDogModelFormValue);
+		// console.debug('[partialSaveLicenceStepAuthenticated] retiredDogModelFormValue', retiredDogModelFormValue);
 
-	// 	const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		// const body = this.getSaveBodyBaseNew(retiredDogModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
-	// 	body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-	// 	return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
-	// 		take(1),
-	// 		tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
-	// 			this.hasValueChanged = false;
+		// return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
+		// 	take(1),
+		// 	tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 		this.hasValueChanged = false;
 
-	// 			let msg = 'Your application has been saved';
-	// 			if (isSaveAndExit) {
-	// 				msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-	// 			}
-	// 			this.utilService.toasterSuccess(msg);
+		// 		let msg = 'Your application has been saved';
+		// 		if (isSaveAndExit) {
+		// 			msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+		// 		}
+		// 		this.utilService.toasterSuccess(msg);
 
-	// 			if (!gdsdModelFormValue.licenceAppId) {
-	// 				this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
-	// 			}
-	// 		})
-	// 	);
-	// }
+		// 		if (!retiredDogModelFormValue.licenceAppId) {
+		// 			this.retiredDogModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+		// 		}
+		// 	})
+		// );
+	}
 
 	/**
 	 * When uploading a file, set the value as changed, and perform the upload

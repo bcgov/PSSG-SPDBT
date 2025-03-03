@@ -121,7 +121,7 @@ const routes: Routes = [
 			},
 			{
 				path: GuideDogServiceDogRoutes.RETIRED_DOG_NEW_AUTHENTICATED,
-				component: GdsdTeamWizardNewComponent,
+				component: RetiredDogWizardNewRenewalComponent,
 			},
 			{
 				path: GuideDogServiceDogRoutes.RETIRED_DOG_RENEWAL_AUTHENTICATED,

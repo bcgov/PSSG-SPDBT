@@ -5,6 +5,9 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
+	DogTrainerAppCommandResponse,
+	DogTrainerChangeRequest,
+	DogTrainerRequest,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GdsdTeamLicenceAppChangeRequest,
@@ -17,7 +20,7 @@ import {
 } from '@app/api/models';
 import {
 	ApplicantProfileService,
-	GdsdLicensingService,
+	DogTrainerLicensingService,
 	LicenceAppDocumentService,
 	LicenceService,
 } from '@app/api/services';
@@ -75,7 +78,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private gdsdLicensingService: GdsdLicensingService,
+		private dogTrainerLicensingService: DogTrainerLicensingService,
 		private licenceService: LicenceService
 	) {
 		super(formBuilder, utilService);
@@ -525,10 +528,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		}
 	}
 
-	private postSubmitAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+	private postSubmitAnonymous(body: DogTrainerRequest): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
@@ -653,9 +654,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	}
 
 	private postChangeAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
+		body: DogTrainerChangeRequest
+	): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,

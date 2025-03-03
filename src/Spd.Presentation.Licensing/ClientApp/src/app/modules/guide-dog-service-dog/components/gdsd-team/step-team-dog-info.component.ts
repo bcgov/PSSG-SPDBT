@@ -11,6 +11,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<app-step-section [title]="title">
 			<app-form-gdsd-dog-info [form]="form" [applicationTypeCode]="applicationTypeCode"></app-form-gdsd-dog-info>
+
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<ng-container *ngIf="isNew && isTrainedByAccreditedSchools">

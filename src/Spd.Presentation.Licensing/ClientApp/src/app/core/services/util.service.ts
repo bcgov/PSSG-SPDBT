@@ -132,6 +132,10 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
+	getToday(): moment.Moment {
+		return moment().startOf('day');
+	}
+
 	getBirthDateMax(): moment.Moment {
 		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}

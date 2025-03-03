@@ -49,6 +49,9 @@ export { ControllingMemberInvitesCreateResponse } from './models/controlling-mem
 export { Document } from './models/document';
 export { DocumentRelatedInfo } from './models/document-related-info';
 export { DogInfo } from './models/dog-info';
+export { DogTrainerAppCommandResponse } from './models/dog-trainer-app-command-response';
+export { DogTrainerChangeRequest } from './models/dog-trainer-change-request';
+export { DogTrainerRequest } from './models/dog-trainer-request';
 export { EyeColourCode } from './models/eye-colour-code';
 export { GdsdAppCommandResponse } from './models/gdsd-app-command-response';
 export { GdsdTeamLicenceAppAnonymousSubmitRequest } from './models/gdsd-team-licence-app-anonymous-submit-request';
