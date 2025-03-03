@@ -2,14 +2,14 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepTeamTermsOfUseComponent } from '@app/modules/guide-dog-service-dog/components/gdsd-team/step-team-terms-of-use.component';
+import { StepGdsdTermsOfUseComponent } from '../shared/step-gdsd-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-rd-details',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-team-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-team-terms-of-use>
+				<app-step-gdsd-terms-of-use></app-step-gdsd-terms-of-use>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -46,7 +46,7 @@ export class StepsRdDetailsComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(StepTeamTermsOfUseComponent) termsOfUseComponent!: StepTeamTermsOfUseComponent;
+	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
