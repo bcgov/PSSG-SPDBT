@@ -57,7 +57,6 @@ import { StepTeamPhotographOfYourselfRenewComponent } from './components/gdsd-te
 import { StepTeamPhotographOfYourselfComponent } from './components/gdsd-team/step-team-photograph-of-yourself.component';
 import { StepTeamSchoolTrainingsComponent } from './components/gdsd-team/step-team-school-trainings.component';
 import { StepTeamSummaryComponent } from './components/gdsd-team/step-team-summary.component';
-import { StepTeamTermsOfUseComponent } from './components/gdsd-team/step-team-terms-of-use.component';
 import { StepTeamTrainingHistoryComponent } from './components/gdsd-team/step-team-training-history.component';
 import { StepsTeamDogInfoComponent } from './components/gdsd-team/steps-team-dog-info.component';
 import { StepsTeamPersonalInfoComponent } from './components/gdsd-team/steps-team-personal-info.component';
@@ -89,6 +88,7 @@ import { FormGdsdLicenceConfirmationComponent } from './components/shared/form-g
 import { FormGdsdMailingAddressReplacementComponent } from './components/shared/form-gdsd-mailing-address-replacement.component';
 import { FormGdsdPersonalInfoAnonymousComponent } from './components/shared/form-gdsd-personal-info-anonymous.component';
 import { FormGdsdPersonalInfoComponent } from './components/shared/form-gdsd-personal-info.component';
+import { StepGdsdTermsOfUseComponent } from './components/shared/step-gdsd-terms-of-use.component';
 import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing.module';
 
 @NgModule({
@@ -112,6 +112,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		FormGdsdPersonalInfoComponent,
 		FormGdsdPersonalInfoAnonymousComponent,
 		FormGdsdDogInfoComponent,
+		StepGdsdTermsOfUseComponent,
 
 		GdsdTeamWizardNewComponent,
 		GdsdTeamWizardRenewalComponent,
@@ -123,7 +124,6 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepsTeamTrainingInfoComponent,
 		StepsTeamReviewAndConfirmComponent,
 
-		StepTeamTermsOfUseComponent,
 		StepTeamChecklistNewComponent,
 		StepTeamChecklistRenewalComponent,
 		StepTeamPersonalInfoAnonymousComponent,

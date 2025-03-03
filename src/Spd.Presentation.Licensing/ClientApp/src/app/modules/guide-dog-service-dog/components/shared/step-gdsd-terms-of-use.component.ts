@@ -1,18 +1,17 @@
-import { Component, Input } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Component } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-team-terms-of-use',
+	selector: 'app-step-gdsd-terms-of-use',
 	template: `
 		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
-							<div class="fs-5 mt-2 mb-3">Todo - add terms and conditions text</div>
+							<div class="fs-5 mt-2 mb-3">-- Sarah to provide --</div>
 							<!-- 
 							<div class="fs-5 mt-2 mb-3">
 								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
@@ -304,7 +303,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	],
 	standalone: false,
 })
-export class StepTeamTermsOfUseComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepComponent {
 	hasScrolledToBottom = true; // TODO gdsd undo false;
 	displayValidationErrors = false;
 
@@ -314,8 +313,6 @@ export class StepTeamTermsOfUseComponent implements LicenceChildStepperStepCompo
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
 	form = this.gdsdTeamApplicationService.termsAndConditionsFormGroup;
-
-	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,
