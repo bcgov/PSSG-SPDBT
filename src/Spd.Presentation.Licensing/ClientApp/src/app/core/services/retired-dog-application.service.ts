@@ -220,7 +220,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Partial Save - Save the data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): any {
+	partialSaveLicenceStepAuthenticated(_isSaveAndExit?: boolean): any {
 		//} Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const retiredDogModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		return of(retiredDogModelFormValue);
