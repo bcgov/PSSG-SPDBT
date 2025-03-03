@@ -200,12 +200,8 @@ export class GdsdLandingComponent implements OnInit {
 		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
 	}
 
-	onRegisterDogTrainer(): void {
-		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
-	}
-
 	onRegisterRetiredServiceDog(): void {
-		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
 	}
 
 	onContinue(serviceTypeCode: ServiceTypeCode): void {

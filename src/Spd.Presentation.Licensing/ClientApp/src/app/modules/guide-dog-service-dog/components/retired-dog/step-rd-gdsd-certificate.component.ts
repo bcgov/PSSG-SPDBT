@@ -9,7 +9,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-rd-gdsd-certificate',
 	template: `
-		<app-step-section title="Guide dog or service dog proof of certification">
+		<app-step-section title="Guide dog or service dog certification">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -24,15 +24,14 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								[previewImage]="true"
 							></app-file-upload>
 							<mat-error
-								class="mt-3 mat-option-error"
+								class="mat-option-error"
 								*ngIf="
 									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
 									form.get('attachments')?.invalid &&
 									form.get('attachments')?.hasError('required')
 								"
+								>This is required</mat-error
 							>
-								<app-alert type="danger" icon="dangerous"> This is required. </app-alert>
-							</mat-error>
 						</div>
 					</div>
 				</div>

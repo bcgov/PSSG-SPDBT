@@ -33,14 +33,14 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 					</ul>
 
-					<!-- <mat-divider class="my-4"></mat-divider>
+					<mat-divider class="my-4"></mat-divider>
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
 							<div class="checklist-label">Microchip Number</div>
 							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
 						</li>
-					</ul> -->
+					</ul>
 				</div>
 			</div>
 		</app-step-section>

@@ -32,34 +32,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</p>
 						</li>
 					</ul>
-
-					<!-- <mat-divider class="my-4"></mat-divider>
-					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
-					<ul>
-						<li>
-							<div class="checklist-label">Proof of training and experience from an accredited school</div>
-							<p class="checklist-info">We require proof of training and/or experience from an accredited school.</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Medical Information</div>
-							<p class="checklist-info">
-								Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6 months.
-							</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Microchip Number</div>
-							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Dog Medical Information</div>
-							<p class="checklist-info">
-								Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered.
-							</p>
-						</li>
-					</ul> -->
 				</div>
 			</div>
 		</app-step-section>

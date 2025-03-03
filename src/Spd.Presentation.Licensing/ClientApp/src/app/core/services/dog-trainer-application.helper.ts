@@ -111,8 +111,8 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const originalLicenceData = dogTrainerModelFormGroup.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
-		if (dogTrainerData.dateOfBirth) {
-			dogTrainerData.dateOfBirth = this.utilService.dateToDbDate(dogTrainerData.dateOfBirth);
+		if (dogTrainerData.trainerDateOfBirth) {
+			dogTrainerData.trainerDateOfBirth = this.utilService.dateToDbDate(dogTrainerData.trainerDateOfBirth);
 		}
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {

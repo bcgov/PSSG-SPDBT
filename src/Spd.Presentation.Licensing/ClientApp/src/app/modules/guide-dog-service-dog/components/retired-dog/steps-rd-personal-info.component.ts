@@ -119,7 +119,7 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_PERSONAL_INFO:
-				console.log(this.isLoggedIn, this.personAnonymous.isFormValid());
+				if (this.isLoggedIn) return this.personAuth.isFormValid();
 				return this.personAnonymous.isFormValid();
 			case this.STEP_MAILING_ADDRESS:
 				return this.mailingAddress.isFormValid();

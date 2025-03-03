@@ -17,10 +17,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
 						<div class="row">
-							<div class="col-xl-6 col-lg-12 col-md-12">
+							<div class="col-12">
 								<div class="fs-5 lh-base mt-3 mb-2">When was your dog retired from service?</div>
 
-								<div class="col-xxl-8 col-xl-12 col-lg-6 col-md-12">
+								<div class="col-xxl-5 col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Date of Retirement</mat-label>
 										<input
@@ -46,7 +46,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</div>
 							</div>
 
-							<div class="col-xl-6 col-lg-12 col-md-12">
+							<div class="col-12">
 								<div class="fs-5 lh-base mt-3 mb-2">Will your dog continue to live with you in his/her retirement?</div>
 
 								<mat-radio-group aria-label="Select an option" formControlName="isContinueToLiveWithDog">
