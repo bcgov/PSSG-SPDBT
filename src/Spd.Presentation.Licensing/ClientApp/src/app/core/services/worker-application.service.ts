@@ -464,7 +464,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	/**
 	 * Partial Save - Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 * @returns StrictHttpResponse<WorkerLicenceAppUpsertRequest>
 	 */
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean

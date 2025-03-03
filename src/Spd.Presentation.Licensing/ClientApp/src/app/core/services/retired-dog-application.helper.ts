@@ -7,6 +7,15 @@ import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
+	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]), // TODO LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
+	});
+
+	retiredDogForm: FormGroup = this.formBuilder.group({
+		dateOfRetirement: new FormControl('', [Validators.required]),
+		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
+	});
+
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolName: new FormControl('', [Validators.required]),
 		schoolDirectorGivenName: new FormControl(''),
@@ -194,67 +203,69 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return documents;
 	}
 
-	getSummaryoriginalLicenceNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.originalLicenceData.originalLicenceNumber ?? '';
+	getSummaryoriginalLicenceNumber(retiredDogModelData: any): string {
+		return retiredDogModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
-	getSummaryoriginalExpiryDate(dogTrainerModelData: any): string {
-		return dogTrainerModelData.originalLicenceData.originalExpiryDate ?? '';
+	getSummaryoriginalExpiryDate(retiredDogModelData: any): string {
+		return retiredDogModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
-	getSummaryoriginalLicenceTermCode(dogTrainerModelData: any): string {
-		return dogTrainerModelData.originalLicenceData.originalLicenceTermCode ?? '';
+	getSummaryoriginalLicenceTermCode(retiredDogModelData: any): string {
+		return retiredDogModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
-	getSummaryoriginalLicenceHolderName(dogTrainerModelData: any): string {
-		return dogTrainerModelData.originalLicenceData.originalLicenceHolderName ?? '';
-	}
-
-	getSummaryaccreditedSchoolName(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.accreditedSchoolName ?? '';
-	}
-	getSummaryschoolDirectorName(dogTrainerModelData: any): string {
-		return (
-			this.utilService.getFullName(
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorGivenName,
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorSurname
-			) ?? ''
-		);
-	}
-	getSummaryschoolDirectorEmailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorEmailAddress ?? '';
-	}
-	getSummaryschoolDirectorPhoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorPhoneNumber ?? '';
+	getSummaryoriginalLicenceHolderName(retiredDogModelData: any): string {
+		return retiredDogModelData.originalLicenceData.originalLicenceHolderName ?? '';
 	}
 
-	getSummarytrainerName(dogTrainerModelData: any): string {
+	getSummaryapplicantName(retiredDogModelData: any): string {
 		return (
 			this.utilService.getFullNameWithOneMiddle(
-				dogTrainerModelData.dogTrainerData.trainerGivenName,
-				dogTrainerModelData.dogTrainerData.trainerMiddleName,
-				dogTrainerModelData.dogTrainerData.trainerSurname
+				retiredDogModelData.personalInformationData.givenName,
+				retiredDogModelData.personalInformationData.middleName,
+				retiredDogModelData.personalInformationData.surname
 			) ?? ''
 		);
 	}
-	getSummarytrainerdateOfBirth(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.trainerDateOfBirth ?? '';
+	getSummarydateOfBirth(retiredDogModelData: any): string {
+		return retiredDogModelData.personalInformationData.dateOfBirth ?? '';
 	}
-	getSummarytraineremailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.trainerEmailAddress ?? '';
+	getSummaryemailAddress(retiredDogModelData: any): string {
+		return retiredDogModelData.personalInformationData.emailAddress ?? '';
 	}
-	getSummarytrainerphoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.dogTrainerData.trainerPhoneNumber ?? '';
-	}
-
-	getSummaryphotoOfYourselfAttachments(dogTrainerModelData: any): File[] | null {
-		return dogTrainerModelData.photographOfYourselfData.attachments ?? [];
+	getSummaryphoneNumber(retiredDogModelData: any): string {
+		return retiredDogModelData.personalInformationData.phoneNumber ?? '';
 	}
 
-	getSummarygovernmentIssuedPhotoTypeCode(dogTrainerModelData: any): LicenceDocumentTypeCode | null {
-		return dogTrainerModelData.governmentPhotoIdData.photoTypeCode ?? null;
+	getSummarydogName(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.dogName ?? '';
 	}
-	getSummarygovernmentIssuedPhotoExpiryDate(dogTrainerModelData: any): string {
-		return dogTrainerModelData.governmentPhotoIdData.expiryDate ?? '';
+	getSummarydogDateOfBirth(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.dogDateOfBirth ?? '';
 	}
-	getSummarygovernmentIssuedPhotoAttachments(dogTrainerModelData: any): File[] {
-		return dogTrainerModelData.governmentPhotoIdData.attachments ?? [];
+	getSummarydogBreed(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.dogBreed ?? '';
+	}
+	getSummarycolourAndMarkings(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.dogColorAndMarkings ?? '';
+	}
+	getSummarygenderCode(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.dogGender ?? '';
+	}
+	getSummarymicrochipNumber(retiredDogModelData: any): string {
+		return retiredDogModelData.dogInfoData.microchipNumber ?? '';
+	}
+
+	getSummarydateOfRetirement(retiredDogModelData: any): string {
+		return retiredDogModelData.retiredDogData.dateOfRetirement ?? '';
+	}
+	getSummaryliveWithDog(retiredDogModelData: any): string {
+		return retiredDogModelData.retiredDogData.isContinueToLiveWithDog ?? '';
+	}
+
+	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
+		return retiredDogModelData.photographOfYourselfData.attachments ?? [];
+	}
+
+	getSummaryphotoOfYourselfAttachments(retiredDogModelData: any): File[] | null {
+		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
 	}
 }

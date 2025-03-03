@@ -8,6 +8,7 @@ import {
 	MainLicenceResponse,
 } from '@app/core/services/common-application.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { forkJoin, Observable, take, tap } from 'rxjs';
@@ -122,7 +123,8 @@ export class GdsdLicenceMainComponent implements OnInit {
 		private router: Router,
 		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
-		private gdsdTeamApplicationService: GdsdTeamApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -148,7 +150,17 @@ export class GdsdLicenceMainComponent implements OnInit {
 	}
 
 	onNewRetiredServiceDog(): void {
-		// TODO onNewRetiredServiceDog
+		this.retiredDogApplicationService
+			.createNewLicenceAuthenticated(ServiceTypeCode.RetiredServiceDogCertification)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.RETIRED_DOG_NEW_AUTHENTICATED)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onResume(appl: MainApplicationResponse): void {
