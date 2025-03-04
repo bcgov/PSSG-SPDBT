@@ -15,6 +15,7 @@ internal class PrintingManager
   : IRequestHandler<StartPrintJobCommand, ResultResponse>,
     IRequestHandler<PrintJobStatusQuery, ResultResponse>,
     IRequestHandler<PreviewDocumentCommand, PreviewDocumentResp>,
+    IRequestHandler<PrintingEventImageQuery, PreviewDocumentResp>,
     IPrintingManager
 {
     private readonly IDocumentTransformationEngine _documentTransformationEngine;
@@ -121,6 +122,20 @@ internal class PrintingManager
 
             _ => throw new NotImplementedException()
         };
+    }
+
+    public async Task<PreviewDocumentResp> Handle(PrintingEventImageQuery request, CancellationToken ct)
+    {
+        EventResp? eventResp = await _eventRepo.GetAsync(request.EventId, ct);
+        if (eventResp == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.");
+        if (eventResp.EventTypeEnum != EventTypeEnum.BCMPBusinessLicencePrinting)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only support Business Licence document download.");
+        if (eventResp.JobId == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "the printing event is not executed successfully yet.");
+        AssetResponse response = await _printer.Asset(new BCMailPlusPrintImageRequest(eventResp.JobId), ct);
+
+        return new PreviewDocumentResp(response.ContentType, response.Content, eventResp.JobId);
     }
 
     private static DocumentTransformRequest CreateDocumentTransformRequest(EventResp eventResp)
