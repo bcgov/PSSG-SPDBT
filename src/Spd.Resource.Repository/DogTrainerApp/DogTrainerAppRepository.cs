@@ -24,11 +24,8 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         {
             contact = _mapper.Map<contact>(cmd);
             contact = await _context.CreateContact(contact, null, null, ct);
-            app = _mapper.Map<spd_application>(cmd);
-            _context.AddTospd_applications(app);
+            app = PrepareNewAppDataInDbContext(cmd, contact);
             _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         }
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
         {
@@ -80,5 +77,19 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         _mapper.Map(appData, applicant);
         _context.UpdateObject(applicant);
         return applicant;
+    }
+
+    private spd_application PrepareNewAppDataInDbContext(CreateDogTrainerAppCmd appData, contact applicant)
+    {
+        var app = _mapper.Map<spd_application>(appData);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        _context.AddTospd_applications(app);
+        spd_dogtrainingschool trainEvent = _mapper.Map<spd_dogtrainingschool>(appData);
+        trainEvent.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.DogTrainerAccreditedSchool;
+        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), trainEvent);
+        _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
+        SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        return app;
     }
 }
