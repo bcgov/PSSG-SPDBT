@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
@@ -19,6 +20,7 @@ internal class AdminManager(
         IRequestHandler<GetBannerMsgQuery, string?>,
         IRequestHandler<GetReplacementProcessingTimeQuery, string?>,
         IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
+        IRequestHandler<GetAccreditedDogTrainingSchoolListQuery, IEnumerable<DogSchoolResponse>>,
         IAdminManager
 {
     public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
@@ -64,8 +66,25 @@ internal class AdminManager(
         var result = await _cache.GetAsync(
             "ministries_list",
             async ct => ((OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), ct)).OrgResults.ToList(),
-            TimeSpan.FromMinutes(15),
+            TimeSpan.FromMinutes(240),
             cancellationToken);
         return _mapper.Map<IEnumerable<MinistryResponse>>(result);
+    }
+
+    public async Task<IEnumerable<DogSchoolResponse>> Handle(GetAccreditedDogTrainingSchoolListQuery query, CancellationToken ct)
+    {
+        var result = await _cache.GetAsync(
+           "accredited_dog_training_school_list",
+           async ct => ((OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry
+           {
+               ServiceTypes = new List<ServiceTypeEnum>{
+                    ServiceTypeEnum.DogTrainerCertification,
+                    ServiceTypeEnum.RetiredServiceDogCertification,
+                    ServiceTypeEnum.GDSDTeamCertification }
+           },
+               ct)).OrgResults.ToList(),
+           TimeSpan.FromMinutes(240),
+           ct);
+        return _mapper.Map<IEnumerable<DogSchoolResponse>>(result);
     }
 }
