@@ -26,6 +26,7 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { NgxMaskPipe } from 'ngx-mask';
 import {
 	BehaviorSubject,
 	Observable,
@@ -74,6 +75,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		utilService: UtilService,
+		maskPipe: NgxMaskPipe,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
@@ -81,7 +83,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		private dogTrainerLicensingService: DogTrainerLicensingService,
 		private licenceService: LicenceService
 	) {
-		super(formBuilder, utilService);
+		super(formBuilder, utilService, maskPipe);
 
 		this.dogTrainerModelChangedSubscription = this.dogTrainerModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

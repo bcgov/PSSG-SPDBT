@@ -2,7 +2,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApplicationTypeCode, Document, DocumentRelatedInfo, LicenceDocumentTypeCode } from '@app/api/models';
 import { SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
@@ -47,7 +49,8 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 
 	constructor(
 		formBuilder: FormBuilder,
-		protected utilService: UtilService
+		protected utilService: UtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
@@ -113,6 +116,20 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 
 		if (dogTrainerData.trainerDateOfBirth) {
 			dogTrainerData.trainerDateOfBirth = this.utilService.dateToDbDate(dogTrainerData.trainerDateOfBirth);
+		}
+
+		if (dogTrainerData.trainerPhoneNumber) {
+			dogTrainerData.trainerPhoneNumber = this.maskPipe.transform(
+				dogTrainerData.trainerPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		if (trainingSchoolInfoData.schoolDirectorPhoneNumber) {
+			trainingSchoolInfoData.schoolDirectorPhoneNumber = this.maskPipe.transform(
+				trainingSchoolInfoData.schoolDirectorPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
 		}
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {

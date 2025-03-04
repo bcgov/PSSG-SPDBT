@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -105,9 +106,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											<input
 												matInput
 												formControlName="trainerPhoneNumber"
+												[mask]="phoneMask"
+												[showMaskTyped]="false"
 												[errorStateMatcher]="matcher"
-												maxlength="30"
-												appPhoneNumberTransform
 											/>
 											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
 												This is required
@@ -224,6 +225,7 @@ export class StepTeamOtherTrainingsComponent implements LicenceChildStepperStepC
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 	@ViewChild('practiceLogAttachmentsRef') practiceLogFileUploadComponent!: FileUploadComponent;

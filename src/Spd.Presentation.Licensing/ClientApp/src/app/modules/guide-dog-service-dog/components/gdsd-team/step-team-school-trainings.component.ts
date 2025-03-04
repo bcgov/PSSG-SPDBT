@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -69,9 +70,9 @@ import moment from 'moment';
 											<input
 												matInput
 												formControlName="contactPhoneNumber"
+												[mask]="phoneMask"
+												[showMaskTyped]="false"
 												[errorStateMatcher]="matcher"
-												maxlength="30"
-												appPhoneNumberTransform
 											/>
 											<mat-error *ngIf="group.get('contactPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
@@ -252,6 +253,7 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 	matcher = new FormErrorStateMatcher();
 	maxDate = moment();
 	minDate = this.utilService.getDateMin();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

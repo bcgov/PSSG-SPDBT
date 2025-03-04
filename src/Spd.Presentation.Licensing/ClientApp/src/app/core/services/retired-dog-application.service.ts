@@ -25,6 +25,7 @@ import {
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { NgxMaskPipe } from 'ngx-mask';
 import {
 	BehaviorSubject,
 	Observable,
@@ -75,6 +76,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		utilService: UtilService,
+		maskPipe: NgxMaskPipe,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private fileUtilService: FileUtilService,
@@ -84,7 +86,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		private gdsdLicensingService: GdsdLicensingService,
 		private licenceService: LicenceService
 	) {
-		super(formBuilder, utilService);
+		super(formBuilder, utilService, maskPipe);
 
 		this.retiredDogModelChangedSubscription = this.retiredDogModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
