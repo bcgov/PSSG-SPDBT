@@ -9,6 +9,8 @@ public interface IPrinter
     Task<PreviewResponse> Preview(PrintRequest request, CancellationToken ct);
 
     Task<ReportResponse> Report(ReportRequest request, CancellationToken ct);
+
+    Task<AssetResponse> Asset(AssetRequest request, CancellationToken ct);
 }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -16,6 +18,7 @@ public interface IPrinter
 
 public abstract record PrintRequest;
 public abstract record ReportRequest;
+public abstract record AssetRequest;
 
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning restore S2094 // Classes should not be empty
@@ -23,9 +26,11 @@ public abstract record ReportRequest;
 public record SendResponse(string PrintJobId, JobStatus Status, string? Error);
 public record ReportResponse(string PrintJobId, JobStatus Status, string? Error);
 public record PreviewResponse(string PrintJobId, JobStatus Status, string? Error, IEnumerable<byte>? Content, string? ContentType);
+public record AssetResponse(string PrintJobId, IEnumerable<byte>? Content, string? ContentType);
 
 public record BCMailPlusPrintRequest(string JobTemplate, JsonDocument payload) : PrintRequest;
 public record BCMailPlusPrintStatusRequest(string PrintJobId) : ReportRequest;
+public record BCMailPlusPrintImageRequest(string PrintJobId) : AssetRequest;
 
 public enum JobStatus
 {
