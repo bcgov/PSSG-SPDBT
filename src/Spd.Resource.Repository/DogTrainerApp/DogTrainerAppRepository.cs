@@ -86,7 +86,6 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         _context.AddTospd_applications(app);
         spd_dogtrainingschool trainEvent = _mapper.Map<spd_dogtrainingschool>(appData);
         trainEvent.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.DogTrainerAccreditedSchool;
-        _context.AddTospd_dogtrainingschools(trainEvent);
         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), trainEvent);
         _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);

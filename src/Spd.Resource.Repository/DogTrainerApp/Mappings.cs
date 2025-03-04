@@ -70,6 +70,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.AccreditedSchoolName))
          .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress))
          .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.SchoolContactPhoneNumber))
+         .ForMember(d => d.spd_trainingschooltype, opt => opt.MapFrom(s => (int)DogTrainingSchoolTypeOptionSet.DogTrainerAccreditedSchool))
          .ForMember(d => d.spd_chiefexecutivelegalfirstname, opt => opt.MapFrom(s => s.SchoolDirectorGivenName))
          .ForMember(d => d.spd_chiefexecutivelegalmiddlename, opt => opt.MapFrom(s => s.SchoolDirectorMiddleName))
          .ForMember(d => d.spd_chiefexecutivelegalsurname, opt => opt.MapFrom(s => s.SchoolDirectorSurname));
