@@ -7,10 +7,13 @@ public interface IPrintingManager
     public Task<ResultResponse> Handle(StartPrintJobCommand cmd, CancellationToken ct);
     public Task<ResultResponse> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
     public Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken ct);
+    public Task<PreviewDocumentResp> Handle(PrintingEventImageQuery request, CancellationToken ct);
 }
 public record StartPrintJobCommand(Guid EventId) : IRequest<ResultResponse>;
 public record PrintJobStatusQuery(Guid EventId) : IRequest<ResultResponse>;
 public record PreviewDocumentCommand(Guid LicenceId) : IRequest<PreviewDocumentResp>;
+public record PrintingEventImageQuery(Guid EventId) : IRequest<PreviewDocumentResp>;
+
 public record ResultResponse()
 {
     public string PrintJobId { get; set; }
