@@ -15,7 +15,7 @@ import { apiDogTrainerAppAnonymousChangePost } from '../fn/dog-trainer-licensing
 import { ApiDogTrainerAppAnonymousChangePost$Params } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-change-post';
 import { apiDogTrainerAppAnonymousSubmitPost } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-submit-post';
 import { ApiDogTrainerAppAnonymousSubmitPost$Params } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-submit-post';
-import { GdsdAppCommandResponse } from '../models/gdsd-app-command-response';
+import { DogTrainerAppCommandResponse } from '../models/dog-trainer-app-command-response';
 
 @Injectable({ providedIn: 'root' })
 export class DogTrainerLicensingService extends BaseService {
@@ -38,7 +38,7 @@ export class DogTrainerLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiDogTrainerAppAnonymousSubmitPost$Response(params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiDogTrainerAppAnonymousSubmitPost$Response(params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
     return apiDogTrainerAppAnonymousSubmitPost(this.http, this.rootUrl, params, context);
   }
 
@@ -54,9 +54,9 @@ export class DogTrainerLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiDogTrainerAppAnonymousSubmitPost(params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiDogTrainerAppAnonymousSubmitPost(params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<DogTrainerAppCommandResponse> {
     return this.apiDogTrainerAppAnonymousSubmitPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<DogTrainerAppCommandResponse>): DogTrainerAppCommandResponse => r.body)
     );
   }
 
@@ -64,7 +64,7 @@ export class DogTrainerLicensingService extends BaseService {
   static readonly ApiDogTrainerAppAnonymousChangePostPath = '/api/dog-trainer-app/anonymous/change';
 
   /**
-   * Submit/new GDSD Team Certification application Anonymously
+   * Renew, Replace Dog Trainer application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
@@ -75,12 +75,12 @@ export class DogTrainerLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiDogTrainerAppAnonymousChangePost$Response(params?: ApiDogTrainerAppAnonymousChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiDogTrainerAppAnonymousChangePost$Response(params?: ApiDogTrainerAppAnonymousChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
     return apiDogTrainerAppAnonymousChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Submit/new GDSD Team Certification application Anonymously
+   * Renew, Replace Dog Trainer application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
@@ -91,9 +91,9 @@ export class DogTrainerLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiDogTrainerAppAnonymousChangePost(params?: ApiDogTrainerAppAnonymousChangePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiDogTrainerAppAnonymousChangePost(params?: ApiDogTrainerAppAnonymousChangePost$Params, context?: HttpContext): Observable<DogTrainerAppCommandResponse> {
     return this.apiDogTrainerAppAnonymousChangePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<DogTrainerAppCommandResponse>): DogTrainerAppCommandResponse => r.body)
     );
   }
 

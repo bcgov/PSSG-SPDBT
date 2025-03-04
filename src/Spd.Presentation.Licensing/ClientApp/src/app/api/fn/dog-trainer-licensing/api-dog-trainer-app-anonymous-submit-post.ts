@@ -8,18 +8,18 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { GdsdAppCommandResponse } from '../../models/gdsd-app-command-response';
-import { GdsdTeamLicenceAppAnonymousSubmitRequest } from '../../models/gdsd-team-licence-app-anonymous-submit-request';
+import { DogTrainerAppCommandResponse } from '../../models/dog-trainer-app-command-response';
+import { DogTrainerRequest } from '../../models/dog-trainer-request';
 
 export interface ApiDogTrainerAppAnonymousSubmitPost$Params {
   
     /**
-     * PermitAppAnonymousSubmitRequest data
+     * DogTrainerRequest data
      */
-    body?: GdsdTeamLicenceAppAnonymousSubmitRequest
+    body?: DogTrainerRequest
 }
 
-export function apiDogTrainerAppAnonymousSubmitPost(http: HttpClient, rootUrl: string, params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+export function apiDogTrainerAppAnonymousSubmitPost(http: HttpClient, rootUrl: string, params?: ApiDogTrainerAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
   const rb = new RequestBuilder(rootUrl, apiDogTrainerAppAnonymousSubmitPost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
@@ -30,7 +30,7 @@ export function apiDogTrainerAppAnonymousSubmitPost(http: HttpClient, rootUrl: s
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<GdsdAppCommandResponse>;
+      return r as StrictHttpResponse<DogTrainerAppCommandResponse>;
     })
   );
 }

@@ -1,15 +1,18 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsRdDetailsComponent } from './steps-rd-details.component';
+import { StepsRdDogInfoComponent } from './steps-rd-dog-info.component';
 import { StepsRdPersonalInfoComponent } from './steps-rd-personal-info.component';
 import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.component';
 
@@ -92,15 +95,15 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	readonly STEP_REVIEW_AND_CONFIRM = 3;
 	readonly STEP_SUBMIT = 4;
 
-	isLoggedIn = false; // TODO handle auth
+	isLoggedIn = false;
 	step2Complete = false;
 	step3Complete = false;
 
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsRdDetailsComponent) stepsDetails!: StepsRdDetailsComponent;
-	@ViewChild(StepsRdPersonalInfoComponent) stepsPersonallInfo!: StepsRdPersonalInfoComponent;
-	@ViewChild(StepsRdPersonalInfoComponent) stepsDogInfo!: StepsRdPersonalInfoComponent;
+	@ViewChild(StepsRdPersonalInfoComponent) stepsPersonalInfo!: StepsRdPersonalInfoComponent;
+	@ViewChild(StepsRdDogInfoComponent) stepsDogInfo!: StepsRdDogInfoComponent;
 	@ViewChild(StepsRdReviewAndConfirmComponent) stepsReviewConfirm!: StepsRdReviewAndConfirmComponent;
 
 	isFormValid = false;
@@ -112,6 +115,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private authenticationService: AuthenticationService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
 		super(breakpointObserver);
@@ -122,6 +126,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
+
+		this.isLoggedIn = this.authenticationService.isLoggedIn();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -164,7 +170,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 				this.stepsDetails?.onGoToFirstStep();
 				break;
 			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToFirstStep();
+				this.stepsPersonalInfo?.onGoToFirstStep();
 				break;
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToFirstStep();
@@ -185,7 +191,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 				this.stepsDetails?.onGoToLastStep();
 				break;
 			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToLastStep();
+				this.stepsPersonalInfo?.onGoToLastStep();
 				break;
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToLastStep();
@@ -194,29 +200,97 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		if (this.retiredDogApplicationService.isAutoSave()) {
+			this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					if (stepper?.selected) stepper.selected.completed = true;
+					stepper.next();
+
+					switch (stepper.selectedIndex) {
+						case this.STEP_DETAILS:
+							this.stepsDetails?.onGoToFirstStep();
+							break;
+						case this.STEP_PERSONAL_INFO:
+							this.stepsPersonalInfo?.onGoToFirstStep();
+							break;
+						case this.STEP_DOG_INFO:
+							this.stepsDogInfo?.onGoToFirstStep();
+							break;
+					}
+				},
+				error: (error: HttpErrorResponse) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
+		}
+	}
+
+	onSaveAndExit(): void {
+		if (!this.retiredDogApplicationService.isSaveAndExit()) {
+			return;
+		}
+
+		this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+			next: (_resp: any) => {
+				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		if (this.retiredDogApplicationService.isAutoSave()) {
+			this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					setTimeout(() => {
+						// hack... does not navigate without the timeout
+						this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+					}, 250);
+				},
+				error: (error: HttpErrorResponse) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		}
+	}
+
+	onChildNextStep() {
+		if (this.retiredDogApplicationService.isAutoSave()) {
+			this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					this.goToChildNextStep();
+				},
+				error: (error: HttpErrorResponse) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			this.goToChildNextStep();
+		}
 	}
 
 	onGoToStep(step: number) {
 		this.stepsDetails?.onGoToFirstStep();
-		this.stepsPersonallInfo?.onGoToFirstStep();
+		this.stepsPersonalInfo?.onGoToFirstStep();
 		this.stepsDogInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
-	onChildNextStep() {
+	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToNextStep();
 				break;
 			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToNextStep();
+				this.stepsPersonalInfo?.onGoToNextStep();
 				break;
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToNextStep();

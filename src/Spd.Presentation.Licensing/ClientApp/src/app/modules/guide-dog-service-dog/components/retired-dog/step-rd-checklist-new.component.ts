@@ -10,6 +10,11 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
+							<div class="checklist-label">Guide or Service Dog Certificate</div>
+							<p class="checklist-info">The certification needs to be issued by an accredited dog training school.</p>
+						</li>
+
+						<li>
 							<div class="checklist-label">Photograph of yourself for the licence</div>
 							<p class="checklist-info">
 								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
@@ -23,43 +28,16 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								>.
 							</p>
 						</li>
-
-						<li>
-							<div class="checklist-label">Government-issued photo ID</div>
-							<p class="checklist-info">
-								The identification needs to be issued by a federal, provincial, territorial or state government
-								authority.
-							</p>
-						</li>
 					</ul>
 
-					<!-- <mat-divider class="my-4"></mat-divider>
+					<mat-divider class="my-4"></mat-divider>
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
-						<li>
-							<div class="checklist-label">Proof of training and experience from an accredited school</div>
-							<p class="checklist-info">We require proof of training and/or experience from an accredited school.</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Medical Information</div>
-							<p class="checklist-info">
-								Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6 months.
-							</p>
-						</li>
-
 						<li>
 							<div class="checklist-label">Microchip Number</div>
 							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
 						</li>
-
-						<li>
-							<div class="checklist-label">Dog Medical Information</div>
-							<p class="checklist-info">
-								Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered.
-							</p>
-						</li>
-					</ul> -->
+					</ul>
 				</div>
 			</div>
 		</app-step-section>

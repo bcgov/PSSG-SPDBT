@@ -316,7 +316,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 	/**
 	 * Partial Save - Save the data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 * @returns StrictHttpResponse<GdsdAppCommandResponse>
 	 */
 	partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
