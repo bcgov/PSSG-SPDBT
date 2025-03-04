@@ -47,7 +47,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<DogTrainerAppCommandResponse> SubmitDogTrainerAppAnonymous(DogTrainerRequest newRequest, CancellationToken ct)
         {
-            //await VerifyKeyCode();
+            await VerifyKeyCode();
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(newRequest.DocumentKeyCodes, ct);
 
             var validateResult = await _dogTrainerNewValidator.ValidateAsync(newRequest, ct);
