@@ -65,5 +65,13 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .IncludeBase<DogTrainerApp, spd_application>();
 
+        CreateMap<CreateDogTrainerAppCmd, spd_dogtrainingschool>()
+         .ForMember(d => d.spd_dogtrainingschoolid, opt => opt.MapFrom(s => Guid.NewGuid()))
+         .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.AccreditedSchoolName))
+         .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress))
+         .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.SchoolContactPhoneNumber))
+         .ForMember(d => d.spd_chiefexecutivelegalfirstname, opt => opt.MapFrom(s => s.SchoolDirectorGivenName))
+         .ForMember(d => d.spd_chiefexecutivelegalmiddlename, opt => opt.MapFrom(s => s.SchoolDirectorMiddleName))
+         .ForMember(d => d.spd_chiefexecutivelegalsurname, opt => opt.MapFrom(s => s.SchoolDirectorSurname));
     }
 }
