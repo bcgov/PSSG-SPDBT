@@ -28,14 +28,25 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step *ngIf="!isBusinessLicenceSoleProprietor">
+				<app-step-business-licence-employees
+					[applicationTypeCode]="applicationTypeCodes.Update"
+				></app-step-business-licence-employees>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_MANAGER)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;
