@@ -2,13 +2,14 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApplicationTypeCode, Document, DocumentRelatedInfo, LicenceDocumentTypeCode } from '@app/api/models';
 import { SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
-import { FormControlValidators } from '../validators/form-control.validators';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]), // TODO LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
 	retiredDogForm: FormGroup = this.formBuilder.group({
@@ -16,46 +17,10 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
 	});
 
-	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolName: new FormControl('', [Validators.required]),
-		schoolDirectorGivenName: new FormControl(''),
-		schoolDirectorSurname: new FormControl('', [Validators.required]),
-		schoolDirectorPhoneNumber: new FormControl('', [Validators.required]),
-		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),
-	});
-
-	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-	});
-
-	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
-		trainerGivenName: new FormControl(''),
-		trainerMiddleName: new FormControl(''),
-		trainerSurname: new FormControl('', [Validators.required]),
-		trainerDateOfBirth: new FormControl('', [Validators.required]),
-		trainerPhoneNumber: new FormControl('', [Validators.required]),
-		trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
-	});
-
-	dogTrainerAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-	});
-
 	constructor(
 		formBuilder: FormBuilder,
-		protected utilService: UtilService
+		protected utilService: UtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
@@ -64,16 +29,18 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseNew(dogTrainerModelFormGroup: any): any {
-		return this.getSaveBodyBase(dogTrainerModelFormGroup);
+	getSaveBodyBaseNew(retiredDogModelFormGroup: any): any {
+		// TODO fix } RetiredDogRequestExt {
+		return this.getSaveBodyBase(retiredDogModelFormGroup);
 	}
 
 	/**
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseChange(dogTrainerModelFormGroup: any): any {
-		const bodyBase = this.getSaveBodyBase(dogTrainerModelFormGroup);
+	getSaveBodyBaseChange(retiredDogModelFormGroup: any): any {
+		// TODO fix  RetiredDogChangeRequestExt {
+		const bodyBase = this.getSaveBodyBase(retiredDogModelFormGroup);
 
 		const body = {
 			licenceAppId: bodyBase.licenceAppId,
@@ -107,34 +74,48 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(dogTrainerModelFormGroup: any): any {
-		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
-		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
-		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
-		const trainingSchoolAddressData = dogTrainerModelFormGroup.trainingSchoolAddressData;
-		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
-		const dogTrainerAddressData = dogTrainerModelFormGroup.dogTrainerAddressData;
-		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
-		const photographOfYourselfData = dogTrainerModelFormGroup.photographOfYourselfData;
-		const originalLicenceData = dogTrainerModelFormGroup.originalLicenceData;
+	private getSaveBodyBase(retiredDogModelFormGroup: any): any {
+		const serviceTypeData = retiredDogModelFormGroup.serviceTypeData;
+		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
+		const personalInformationData = retiredDogModelFormGroup.personalInformationData;
+		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
+		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
+		const mailingAddressData = retiredDogModelFormGroup.mailingAddressData;
+		const dogInfoData = retiredDogModelFormGroup.dogInfoData;
+		const retiredDogData = retiredDogModelFormGroup.retiredDogData;
+		const originalLicenceData = retiredDogModelFormGroup.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
-		if (dogTrainerData.dateOfBirth) {
-			dogTrainerData.dateOfBirth = this.utilService.dateToDbDate(dogTrainerData.dateOfBirth);
+		if (dogInfoData.dogDateOfBirth) {
+			dogInfoData.dogDateOfBirth = this.utilService.dateToDbDate(dogInfoData.dogDateOfBirth);
 		}
+
+		if (personalInformationData.dateOfBirth) {
+			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
+		}
+
+		if (retiredDogData.dateOfRetirement) {
+			retiredDogData.dateOfRetirement = this.utilService.dateToDbDate(retiredDogData.dateOfRetirement);
+		}
+
+		if (personalInformationData.phoneNumber) {
+			personalInformationData.phoneNumber = this.maskPipe.transform(
+				personalInformationData.phoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		dogGdsdCertificateData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+			});
+		});
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-			});
-		});
-
-		governmentPhotoIdData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				expiryDate: this.utilService.dateToDbDate(governmentPhotoIdData.expiryDate),
-				licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode,
 			});
 		});
 
@@ -149,17 +130,18 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 				}) ?? [];
 
 		const body = {
-			licenceAppId: dogTrainerModelFormGroup.licenceAppId,
+			licenceAppId: retiredDogModelFormGroup.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
-			applicationOriginTypeCode: dogTrainerModelFormGroup.applicationOriginTypeCode,
+			applicationOriginTypeCode: retiredDogModelFormGroup.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
-			licenceTermCode: dogTrainerModelFormGroup.licenceTermCode,
+			licenceTermCode: retiredDogModelFormGroup.licenceTermCode,
 
-			...trainingSchoolInfoData,
-			schoolMailingAddress: trainingSchoolAddressData,
-			...dogTrainerData,
-			trainerMailingAddress: dogTrainerAddressData,
+			...personalInformationData,
+			mailingAddressData,
+			...dogInfoData,
+			dateOfRetirement: retiredDogData.dateOfRetirement,
+			isContinueToLiveWithDog: this.utilService.booleanTypeToBoolean(retiredDogData.isContinueToLiveWithDog),
 
 			documentKeyCodes: [],
 			documentInfos,
@@ -170,12 +152,12 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return body;
 	}
 
-	getDocsToSaveBlobs(dogTrainerModelFormGroup: any): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(retiredDogModelFormGroup: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
-		const photographOfYourselfData = dogTrainerModelFormGroup.photographOfYourselfData;
-		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
+		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
+		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
+		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
@@ -192,12 +174,15 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
-		if (governmentPhotoIdData.attachments) {
+		if (dogGdsdCertificateData.attachments) {
 			const docs: Array<Blob> = [];
-			governmentPhotoIdData.attachments.forEach((doc: SpdFile) => {
+			dogGdsdCertificateData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
-			documents.push({ licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode, documents: docs });
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+				documents: docs,
+			});
 		}
 
 		return documents;

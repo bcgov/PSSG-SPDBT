@@ -14,6 +14,7 @@ import { BizPortalUserService } from './services/biz-portal-user.service';
 import { BizProfileService } from './services/biz-profile.service';
 import { ConfigurationService } from './services/configuration.service';
 import { ControllingMemberCrcAppService } from './services/controlling-member-crc-app.service';
+import { DogSchoolService } from './services/dog-school.service';
 import { DogTrainerLicensingService } from './services/dog-trainer-licensing.service';
 import { GdsdLicensingService } from './services/gdsd-licensing.service';
 import { LicenceService } from './services/licence.service';
@@ -41,6 +42,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     BizProfileService,
     ConfigurationService,
     ControllingMemberCrcAppService,
+    DogSchoolService,
     DogTrainerLicensingService,
     GdsdLicensingService,
     LicenceService,

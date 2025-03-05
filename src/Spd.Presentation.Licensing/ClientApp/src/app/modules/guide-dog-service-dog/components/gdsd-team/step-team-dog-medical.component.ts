@@ -14,7 +14,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="fs-5 lh-base mt-3 mb-2">
+							<div class="text-minor-heading lh-base mt-3 mb-2">
 								Are your dog's inoculations (rabies, distemper, parvovirus) up-to-date?
 							</div>
 

@@ -137,7 +137,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 
 	onNewGuideDogServiceDogTeam(): void {
 		this.gdsdTeamApplicationService
-			.createNewLicenceAuthenticated(ServiceTypeCode.GdsdTeamCertification)
+			.createNewApplAuthenticated(ServiceTypeCode.GdsdTeamCertification)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -151,7 +151,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 
 	onNewRetiredServiceDog(): void {
 		this.retiredDogApplicationService
-			.createNewLicenceAuthenticated(ServiceTypeCode.RetiredServiceDogCertification)
+			.createNewApplAuthenticated(ServiceTypeCode.RetiredServiceDogCertification)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

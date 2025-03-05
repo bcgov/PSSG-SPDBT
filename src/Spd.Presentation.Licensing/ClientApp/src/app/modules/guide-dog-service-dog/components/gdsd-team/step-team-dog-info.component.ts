@@ -18,7 +18,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<form [formGroup]="dogGdsdForm" novalidate>
 							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
 							<div class="row">
-								<div class="fs-5 lh-base mt-3 mb-2">Is your dog trained as a Guide Dog or a Service Dog?</div>
+								<div class="text-minor-heading lh-base mt-3 mb-2">
+									Is your dog trained as a Guide Dog or a Service Dog?
+								</div>
 
 								<div class="col-xxl-10 col-xl-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
@@ -46,7 +48,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<form [formGroup]="dogRenewForm" novalidate>
 							<mat-divider class="mb-2 mt-4 mat-divider-primary"></mat-divider>
 							<div class="row">
-								<div class="fs-5 lh-base mt-3 mb-2">
+								<div class="text-minor-heading lh-base mt-3 mb-2">
 									Do you continue to require the dog's assistance for daily living as a result of blindness, visual
 									impairment or another disability?
 								</div>

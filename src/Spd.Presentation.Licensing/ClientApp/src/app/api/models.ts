@@ -49,6 +49,7 @@ export { ControllingMemberInvitesCreateResponse } from './models/controlling-mem
 export { Document } from './models/document';
 export { DocumentRelatedInfo } from './models/document-related-info';
 export { DogInfo } from './models/dog-info';
+export { DogSchoolResponse } from './models/dog-school-response';
 export { DogTrainerAppCommandResponse } from './models/dog-trainer-app-command-response';
 export { DogTrainerChangeRequest } from './models/dog-trainer-change-request';
 export { DogTrainerRequest } from './models/dog-trainer-request';

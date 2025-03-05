@@ -85,7 +85,7 @@ import {
 
 					<div class="row">
 						<ng-container *ngIf="!employeesExist && isReadonly">
-							<div class="fs-5 mt-4 mb-2">No employees</div>
+							<div class="text-minor-heading mt-4 mb-2">No employees</div>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">

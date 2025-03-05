@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -60,9 +61,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<input
 										matInput
 										formControlName="trainerPhoneNumber"
+										[mask]="phoneMask"
+										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
-										maxlength="30"
-										appPhoneNumberTransform
 									/>
 									<mat-error *ngIf="form.get('trainerPhoneNumber')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
@@ -100,6 +101,7 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 
 	maxBirthDate = this.utilService.getBirthDateMax();
 	minDate = this.utilService.getDateMin();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.dogTrainerApplicationService.dogTrainerFormGroup;
 

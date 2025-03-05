@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -135,11 +135,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 export class StepRdConsentComponent implements LicenceChildStepperStepComponent {
 	check1Name = '';
 
-	form: FormGroup = this.dogTrainerApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.retiredDogApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
 		private utilService: UtilService,
-		private dogTrainerApplicationService: DogTrainerApplicationService
+		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
 
 	isFormValid(): boolean {

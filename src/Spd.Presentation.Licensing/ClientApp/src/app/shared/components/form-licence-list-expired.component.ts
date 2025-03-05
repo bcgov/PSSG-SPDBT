@@ -9,14 +9,14 @@ import { UtilService } from '@app/core/services/util.service';
 	selector: 'app-form-licence-list-expired',
 	template: `
 		<div class="mb-3" *ngIf="expiredLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">Expired {{ serviceLabelTitle }}</div>
+			<div class="text-minor-heading py-3">Expired {{ serviceLabelTitle }}</div>
 			<div
 				class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
 				*ngFor="let licence of expiredLicences; let i = index"
 			>
 				<div class="row">
 					<div [ngClass]="isGdsdRelated ? 'col-lg-2' : 'col-lg-3'">
-						<div class="fs-5" style="color: var(--color-primary);">
+						<div class="text-minor-heading">
 							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>

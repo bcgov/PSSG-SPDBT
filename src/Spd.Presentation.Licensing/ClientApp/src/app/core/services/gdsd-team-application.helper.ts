@@ -13,7 +13,9 @@ import {
 } from '@app/api/models';
 import { SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
@@ -44,7 +46,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	});
 
 	graduationInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolName: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolName: new FormControl(''),
 		schoolContactGivenName: new FormControl(''),
 		schoolContactSurname: new FormControl('', [Validators.required]),
 		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
@@ -69,7 +72,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 
 	constructor(
 		formBuilder: FormBuilder,
-		protected utilService: UtilService
+		protected utilService: UtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
@@ -139,6 +143,13 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 		}
 
+		if (personalInformationData.phoneNumber) {
+			personalInformationData.phoneNumber = this.maskPipe.transform(
+				personalInformationData.phoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
 		if (dogInfoData.dogDateOfBirth) {
 			dogInfoData.dogDateOfBirth = this.utilService.dateToDbDate(dogInfoData.dogDateOfBirth);
 		}
@@ -173,6 +184,14 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			};
 
 			const graduationInfoData = gdsdModelFormValue.graduationInfoData;
+
+			if (graduationInfoData.schoolContactPhoneNumber) {
+				graduationInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
+					graduationInfoData.schoolContactPhoneNumber,
+					SPD_CONSTANTS.phone.backendMask
+				);
+			}
+
 			graduationInfoData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -264,6 +283,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 					} as DocumentRelatedInfo;
 				}) ?? [];
+
+		delete mailingAddressData.captchaFormGroup;
 
 		const body = {
 			licenceAppId: gdsdModelFormValue.licenceAppId,
@@ -420,12 +441,15 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 
 			const trainingStartDate = this.utilService.dateToDbDate(train.trainingStartDate);
 			const trainingEndDate = this.utilService.dateToDbDate(train.trainingEndDate);
+			const contactPhoneNumber = train.contactPhoneNumber
+				? this.maskPipe.transform(train.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask)
+				: null;
 
 			trainingArray.push({
 				trainingId: train.trainingId,
 				contactEmailAddress: this.utilService.getStringOrNull(train.contactEmailAddress),
 				contactGivenName: this.utilService.getStringOrNull(train.contactGivenName),
-				contactPhoneNumber: train.contactPhoneNumber,
+				contactPhoneNumber,
 				contactSurname: train.contactSurname,
 				totalTrainingHours: train.totalTrainingHours ?? null,
 				trainingBizMailingAddress: mailingAddress,
@@ -450,6 +474,11 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			const usePersonalDogTrainer = this.utilService.booleanTypeToBoolean(train.usePersonalDogTrainer);
 
 			if (usePersonalDogTrainer != null) {
+				const trainerPhoneNumber =
+					usePersonalDogTrainer && train.trainerPhoneNumber
+						? this.maskPipe.transform(train.trainerPhoneNumber, SPD_CONSTANTS.phone.backendMask)
+						: null;
+
 				trainingArray.push({
 					trainingId: train.trainingId,
 					usePersonalDogTrainer,
@@ -460,7 +489,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 						? this.utilService.getStringOrNull(train.trainerEmailAddress)
 						: null,
 					trainerGivenName: usePersonalDogTrainer ? this.utilService.getStringOrNull(train.trainerGivenName) : null,
-					trainerPhoneNumber: usePersonalDogTrainer ? train.trainerPhoneNumber : null,
+					trainerPhoneNumber,
 					trainerSurname: usePersonalDogTrainer ? train.trainerSurname : null,
 					trainingTime: usePersonalDogTrainer ? train.trainingTime : null,
 				});
