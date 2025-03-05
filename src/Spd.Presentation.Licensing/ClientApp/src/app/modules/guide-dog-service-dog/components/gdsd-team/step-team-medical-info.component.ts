@@ -26,7 +26,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							>.
 						</app-alert>
 
-						<div class="fs-5 lh-base mt-3 mb-2">
+						<div class="text-minor-heading lh-base mt-3 mb-2">
 							Upload Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6
 							months.
 						</div>

@@ -25,7 +25,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="other-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
 									<div class="col-12">
-										<div class="fs-5 mb-2">Training Details</div>
+										<div class="text-minor-heading mb-2">Training Details</div>
 										<mat-form-field>
 											<textarea
 												matInput
@@ -42,7 +42,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										</mat-form-field>
 									</div>
 									<div class="col-12">
-										<div class="fs-5 mt-3 mb-2">Did you use a personal dog trainer?</div>
+										<div class="text-minor-heading mt-3 mb-2">Did you use a personal dog trainer?</div>
 										<mat-radio-group aria-label="Select an option" formControlName="usePersonalDogTrainer">
 											<div class="d-flex justify-content-start">
 												<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -63,7 +63,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</div>
 								</div>
 								<div class="row mt-3" *ngIf="isUsePersonalDogTrainer(i)" @showHideTriggerSlideAnimation>
-									<div class="fs-5 mt-3 mb-2">Personal Trainer Information</div>
+									<div class="text-minor-heading mt-3 mb-2">Personal Trainer Information</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Trainer Credentials</mat-label>
@@ -175,7 +175,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 
 						<div class="mb-4">
-							<div class="fs-5">
+							<div class="text-minor-heading">
 								Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
 								<span class="optional-label">(optional)</span>
 							</div>
@@ -191,7 +191,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="fs-5">Upload logs of practice hours <span class="optional-label">(optional)</span></div>
+						<div class="text-minor-heading">
+							Upload logs of practice hours <span class="optional-label">(optional)</span>
+						</div>
 						<div class="mt-2">
 							<app-file-upload
 								(fileUploaded)="onFileUploadedPracticeLog($event)"

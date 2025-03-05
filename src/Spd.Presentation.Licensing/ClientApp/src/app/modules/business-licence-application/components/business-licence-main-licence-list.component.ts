@@ -9,14 +9,14 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 	selector: 'app-business-licence-main-licence-list',
 	template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">Valid Licence</div>
+			<div class="text-minor-heading py-3">Valid Licence</div>
 			<div
 				class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 				*ngFor="let licence of activeLicences; let i = index"
 			>
 				<div class="row">
 					<div class="col-lg-2">
-						<div class="fs-5" style="color: var(--color-primary);">
+						<div class="text-minor-heading">
 							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>

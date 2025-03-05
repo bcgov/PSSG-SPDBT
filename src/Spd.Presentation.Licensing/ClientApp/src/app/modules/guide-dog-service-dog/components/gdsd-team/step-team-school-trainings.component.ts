@@ -22,7 +22,7 @@ import moment from 'moment';
 						<section formArrayName="schoolTrainings" *ngFor="let group of schoolTrainingsArray.controls; let i = index">
 							<div class="school-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
-									<div class="fs-5 mb-2">Training School Name</div>
+									<div class="text-minor-heading mb-2">Training School Name</div>
 									<div class="col-12">
 										<mat-form-field>
 											<mat-label>Business Name</mat-label>
@@ -34,11 +34,11 @@ import moment from 'moment';
 									</div>
 								</div>
 
-								<div class="fs-5 mb-2">Mailing Address</div>
+								<div class="text-minor-heading mb-2">Mailing Address</div>
 								<app-form-address [form]="getSchoolTrainingFormGroup(i)" [isWideView]="true"></app-form-address>
 
 								<div class="row">
-									<div class="fs-5 my-2">Training School Contact Information</div>
+									<div class="text-minor-heading my-2">Training School Contact Information</div>
 
 									<div
 										class="mt-3"
@@ -170,7 +170,7 @@ import moment from 'moment';
 										</mat-form-field>
 									</div>
 									<div class="col-12">
-										<div class="fs-5 mt-3 mb-2">What did you and your dog learn to do?</div>
+										<div class="text-minor-heading mt-3 mb-2">What did you and your dog learn to do?</div>
 										<mat-form-field>
 											<mat-label>Curriculum Description</mat-label>
 											<textarea
@@ -215,7 +215,7 @@ import moment from 'moment';
 							</button>
 						</div>
 
-						<div class="fs-5">
+						<div class="text-minor-heading">
 							Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
 							<span class="optional-label">(optional)</span>
 						</div>
