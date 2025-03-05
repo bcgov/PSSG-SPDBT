@@ -31,6 +31,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { NgxMaskPipe } from 'ngx-mask';
 import {
 	BehaviorSubject,
 	Observable,
@@ -91,6 +92,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		utilService: UtilService,
+		maskPipe: NgxMaskPipe,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
@@ -100,7 +102,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
 	) {
-		super(formBuilder, utilService);
+		super(formBuilder, utilService, maskPipe);
 
 		this.gdsdTeamModelChangedSubscription = this.gdsdTeamModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
