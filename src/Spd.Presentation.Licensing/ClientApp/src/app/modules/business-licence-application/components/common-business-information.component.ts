@@ -49,7 +49,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
 						<ng-container *ngIf="bizTradeNameReadonly; else EditBizTradeName">
-							<div class="text-primary-color fs-5">{{ bizTradeName.value | default }}</div>
+							<div class="text-minor-heading">{{ bizTradeName.value | default }}</div>
 						</ng-container>
 						<ng-template #EditBizTradeName>
 							<mat-form-field>
@@ -63,7 +63,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<ng-template #LegalBusinessName>
 					<div class="mb-3">
 						<div class="text-primary-color fw-semibold">Legal Business Name</div>
-						<div class="text-primary-color fs-5">{{ legalBusinessName.value | default }}</div>
+						<div class="text-minor-heading">{{ legalBusinessName.value | default }}</div>
 					</div>
 				</ng-template>
 
@@ -110,21 +110,21 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								<div class="row">
 									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Name</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
+										<div class="text-minor-heading">{{ soleProprietorLicenceHolderName.value }}</div>
 									</div>
 									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
+										<div class="text-minor-heading">{{ soleProprietorLicenceNumber.value }}</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-primary-color fs-5">
+										<div class="text-minor-heading">
 											{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Licence Status</div>
-										<div class="text-primary-color fs-5 fw-bold">
+										<div class="text-minor-heading fw-bold">
 											{{ soleProprietorLicenceStatusCode.value }}
 										</div>
 									</div>

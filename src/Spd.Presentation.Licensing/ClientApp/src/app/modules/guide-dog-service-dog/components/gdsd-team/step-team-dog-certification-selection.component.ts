@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="fs-5 lh-base mt-3 mb-3">
+							<div class="text-minor-heading lh-base mt-3 mb-3">
 								Is your dog trained by Assistance Dogs International or International Guide Dog Federation accredited
 								schools?
 							</div>

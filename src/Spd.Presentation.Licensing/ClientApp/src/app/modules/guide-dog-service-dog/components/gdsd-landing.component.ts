@@ -212,7 +212,7 @@ export class GdsdLandingComponent implements OnInit {
 		switch (serviceTypeCode) {
 			case ServiceTypeCode.GdsdTeamCertification: {
 				this.gdsdTeamApplicationService
-					.createNewGdsdAnonymous(serviceTypeCode)
+					.createNewApplAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -228,7 +228,7 @@ export class GdsdLandingComponent implements OnInit {
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
 				this.retiredDogApplicationService
-					.createNewAnonymous(serviceTypeCode)
+					.createNewApplAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -244,7 +244,7 @@ export class GdsdLandingComponent implements OnInit {
 			}
 			case ServiceTypeCode.DogTrainerCertification: {
 				this.dogTrainerApplicationService
-					.createNewAnonymous(serviceTypeCode)
+					.createNewApplAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
