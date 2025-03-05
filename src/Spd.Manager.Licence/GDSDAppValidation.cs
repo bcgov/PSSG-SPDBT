@@ -3,7 +3,7 @@ using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
-public class GDSDTeamLicenceAppUpsertRequestValidator : GDSDTeamLicenceAppBaseValidator<GDSDTeamLicenceAppUpsertRequest>
+public class GDSDTeamLicenceAppUpsertRequestValidator : GDSDTeamLicenceAppNewValidator<GDSDTeamLicenceAppUpsertRequest>
 {
     public GDSDTeamLicenceAppUpsertRequestValidator()
     {
@@ -120,6 +120,7 @@ public class GraduationInfoValidator : AbstractValidator<GraduationInfo>
 {
     public GraduationInfoValidator()
     {
+        RuleFor(x => x.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty);
         RuleFor(x => x.AccreditedSchoolName).MaximumLength(250);
         RuleFor(r => r.SchoolContactSurname).MaximumLength(40);
         RuleFor(r => r.SchoolContactGivenName).MaximumLength(40);
