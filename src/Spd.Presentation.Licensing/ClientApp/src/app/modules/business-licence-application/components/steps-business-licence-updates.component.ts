@@ -21,21 +21,34 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="!isBusinessLicenceSoleProprietor">
-				<app-step-business-licence-manager-information
-					[applicationTypeCode]="applicationTypeCodes.Update"
-				></app-step-business-licence-manager-information>
+			<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
+				<mat-step>
+					<app-step-business-licence-manager-information
+						[applicationTypeCode]="applicationTypeCodes.Update"
+					></app-step-business-licence-manager-information>
 
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_MANAGER)"
-				></app-wizard-footer>
-			</mat-step>
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step>
+					<app-step-business-licence-employees
+						[applicationTypeCode]="applicationTypeCodes.Update"
+					></app-step-business-licence-employees>
+
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_MANAGER)"
+					></app-wizard-footer>
+				</mat-step>
+			</ng-container>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;

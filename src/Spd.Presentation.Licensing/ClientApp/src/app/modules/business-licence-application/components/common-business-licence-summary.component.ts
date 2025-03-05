@@ -11,8 +11,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
-    selector: 'app-common-business-licence-summary',
-    template: `
+	selector: 'app-common-business-licence-summary',
+	template: `
 		<div class="row" *ngIf="businessModelData">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row mb-3">
@@ -278,9 +278,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted">Reason</div>
 														<div class="summary-text-data">
-															<div *ngIf="isDogsPurposeProtection">Protection</div>
-															<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-															<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+															<ul class="m-0">
+																<li *ngIf="isDogsPurposeProtection">Protection</li>
+																<li *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</li>
+																<li *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</li>
+															</ul>
 														</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
@@ -465,14 +467,41 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									</div>
 								</mat-expansion-panel>
 							</ng-container>
+
+							<ng-container *ngIf="isUpdate && !isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Employees</div>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+
+									<div class="panel-body">
+										<div class="row summary-text-data mt-3">
+											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
+												<ng-container *ngFor="let employee of employeesList; let i = index">
+													<div class="col-xl-6 col-lg-12">
+														<ul class="m-0">
+															<li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
+														</ul>
+													</div>
+												</ng-container>
+											</ng-container>
+											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
+										</div>
+									</div>
+								</mat-expansion-panel>
+							</ng-container>
 						</mat-accordion>
 					</div>
 				</div>
 			</div>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -507,8 +536,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 				height: 35px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	businessModelData: any = {};
