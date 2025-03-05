@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -58,9 +59,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<input
 									matInput
 									formControlName="phoneNumber"
+									[mask]="phoneMask"
+									[showMaskTyped]="false"
 									[errorStateMatcher]="matcher"
-									maxlength="30"
-									appPhoneNumberTransform
 								/>
 								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
@@ -94,6 +95,7 @@ export class FormGdsdPersonalInfoAnonymousComponent {
 
 	maxBirthDate = this.utilService.getBirthDateMax();
 	minDate = this.utilService.getDateMin();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode!: ApplicationTypeCode;

@@ -63,9 +63,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<input
 									matInput
 									formControlName="phoneNumber"
+									[mask]="phoneMask"
+									[showMaskTyped]="false"
 									[errorStateMatcher]="matcher"
-									maxlength="30"
-									appPhoneNumberTransform
 								/>
 								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
@@ -83,6 +83,7 @@ export class FormGdsdPersonalInfoComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	matcher = new FormErrorStateMatcher();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@Input() isReadonly = false;
 	@Input() form!: FormGroup;

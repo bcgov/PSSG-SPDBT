@@ -8,8 +8,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-business-category-armoured-car-guard',
-    template: `
+	selector: 'app-business-category-armoured-car-guard',
+	template: `
 		<div class="text-minor-heading mt-3 mb-2">You must provide the Registrar with:</div>
 		<div class="alert alert-category d-flex" role="alert">
 			<ul class="m-0">
@@ -26,7 +26,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 		</div>
 
 		<form [formGroup]="form" novalidate>
-			<div class="fs-5">Upload your documents</div>
+			<div class="text-minor-heading">Upload your documents</div>
 			<div class="my-2">
 				<app-file-upload
 					(fileUploaded)="onFileUploaded($event)"
@@ -47,8 +47,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: ``,
-    standalone: false
+	styles: ``,
+	standalone: false,
 })
 export class BusinessCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	safetyCertificateChecklistUrl = SPD_CONSTANTS.urls.safetyCertificateChecklistUrl;

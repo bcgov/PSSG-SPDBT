@@ -204,16 +204,33 @@ export class UtilService {
 	}
 
 	getAddressString(params: {
-		addressLine1: string;
-		addressLine2?: string;
-		city: string;
-		province: string;
-		country: string;
-		postalCode: string;
+		addressLine1: string | null | undefined;
+		addressLine2?: string | null | undefined;
+		city: string | null | undefined;
+		province: string | null | undefined;
+		country: string | null | undefined;
+		postalCode: string | null | undefined;
 	}): string {
-		return `${params.addressLine1}, ${params.addressLine2 ? params.addressLine2 + ',' : ''} ${params.city}, ${
-			params.province
-		}, ${params.country}, ${params.postalCode}`;
+		const addressArray: string[] = [];
+		if (params.addressLine1) {
+			addressArray.push(params.addressLine1);
+		}
+		if (params.addressLine2) {
+			addressArray.push(params.addressLine2);
+		}
+		if (params.city) {
+			addressArray.push(params.city);
+		}
+		if (params.province) {
+			addressArray.push(params.province);
+		}
+		if (params.country) {
+			addressArray.push(params.country);
+		}
+		if (params.postalCode) {
+			addressArray.push(params.postalCode);
+		}
+		return addressArray.join(' ');
 	}
 
 	//------------------------------------

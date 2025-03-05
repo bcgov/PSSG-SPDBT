@@ -37,7 +37,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				</div>
 			</div>
 
-			<div class="fs-5 mb-2">Upload your resume</div>
+			<div class="text-minor-heading mb-2">Upload your resume</div>
 
 			<div class="mt-2 mb-3">
 				<app-file-upload
@@ -91,7 +91,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-5 mb-2">
+				<div class="text-minor-heading mb-2">
 					<span
 						*ngIf="
 							requirementCode.value === securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters

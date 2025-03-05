@@ -103,7 +103,9 @@ import {
 						</div>
 					</div>
 					<ng-template #noControllingMembersWithSwlExist>
-						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">No controlling members with a Security Worker Licence</div>
+						<div class="text-minor-heading mt-4 mb-2" *ngIf="isReadonly">
+							No controlling members with a Security Worker Licence
+						</div>
 					</ng-template>
 
 					<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember1">
@@ -244,7 +246,7 @@ import {
 						</ng-container>
 					</div>
 					<ng-template #noControllingMembersWithoutSwlExist>
-						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">
+						<div class="text-minor-heading mt-4 mb-2" *ngIf="isReadonly">
 							No controlling members without a Security Worker Licence
 						</div>
 					</ng-template>

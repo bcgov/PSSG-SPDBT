@@ -55,7 +55,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-5 mb-2">
+				<div class="text-minor-heading mb-2">
 					<span
 						*ngIf="
 							requirementCode.value ===
