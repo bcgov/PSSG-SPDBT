@@ -17,7 +17,9 @@ training history."
 				<div class="row">
 					<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="fs-5 lh-base mt-3 mb-2">Have you attended a training school(s) and/or program(s)?</div>
+							<div class="text-minor-heading lh-base mt-3 mb-2">
+								Have you attended a training school(s) and/or program(s)?
+							</div>
 
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group

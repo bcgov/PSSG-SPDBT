@@ -10,6 +10,7 @@ import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
 import { ServiceTypeCode } from '../models/service-type-code';
 export interface DogTrainerChangeRequest {
+  accreditedSchoolId?: string;
   accreditedSchoolName?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;

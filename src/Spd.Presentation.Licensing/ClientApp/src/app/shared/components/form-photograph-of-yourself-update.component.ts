@@ -14,7 +14,7 @@ import { OptionsPipe } from '../pipes/options.pipe';
 			<ng-container *ngIf="!originalPhotoOfYourselfExpired">
 				<div class="d-flex justify-content-center" *ngIf="photographOfYourself">
 					<div class="photo-of-yourself">
-						<div class="fs-5">Current photo</div>
+						<div class="text-minor-heading">Current photo</div>
 						<img class="photo-of-yourself__item" [src]="photographOfYourself" alt="Photograph of yourself" />
 					</div>
 				</div>

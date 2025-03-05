@@ -20,7 +20,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="text-minor-heading mb-2">Experience:</div>
 					To qualify for a private investigator security worker licence, you must meet one of the following experience
 					requirements:
 
@@ -80,7 +80,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-5">
+				<div class="text-minor-heading">
 					<span
 						*ngIf="
 							requirementCode.value ===
@@ -140,7 +140,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Training:</div>
+					<div class="text-minor-heading mb-2">Training:</div>
 					You must meet one of the following training requirements:
 
 					<mat-radio-group
@@ -186,7 +186,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 			<div *ngIf="trainingCode.value" @showHideTriggerSlideAnimation>
 				<div class="my-2">
-					<div class="fs-5 mb-2">
+					<div class="text-minor-heading mb-2">
 						<span
 							*ngIf="
 								trainingCode.value ===
