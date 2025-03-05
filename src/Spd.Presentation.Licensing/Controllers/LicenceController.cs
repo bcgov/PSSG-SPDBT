@@ -102,7 +102,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [AllowAnonymous]
         public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, [FromBody] GoogleRecaptcha recaptcha, CancellationToken ct, [FromQuery] string? accessCode = null)
         {
-            // await VerifyGoogleRecaptchaAsync(recaptcha, ct);
+            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
@@ -125,6 +125,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (response != null)
             {
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
                 string str = $"{response.LicenceId}*{latestAppId}";
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
             }
