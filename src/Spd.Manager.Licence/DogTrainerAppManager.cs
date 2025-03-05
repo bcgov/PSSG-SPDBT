@@ -46,7 +46,7 @@ internal class DogTrainerAppManager :
     public async Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
     {
         DogTrainerRequest request = cmd.SubmitRequest;
-        //ValidateFilesForNewApp(cmd);
+        ValidateFilesForNewApp(cmd);
 
         //save the application
         CreateDogTrainerAppCmd createApp = _mapper.Map<CreateDogTrainerAppCmd>(request);

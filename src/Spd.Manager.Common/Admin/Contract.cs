@@ -14,6 +14,7 @@ namespace Spd.Manager.Common.Admin
         public Task<string?> Handle(GetReplacementProcessingTimeQuery request, CancellationToken cancellationToken);
 
         public Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken);
+        public Task<IEnumerable<DogSchoolResponse>> Handle(GetAccreditedDogTrainingSchoolListQuery query, CancellationToken ct);
     }
 
     public record GetBannerMsgQuery : IRequest<string>;
@@ -88,4 +89,20 @@ namespace Spd.Manager.Common.Admin
         public bool IsActive { get; set; }
         public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
     }
+    public record DogSchoolResponse
+    {
+        public Guid Id { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
+        public string? SchoolName { get; set; }
+        public string? SchoolLegalName { get; set; }
+        public string? ContactEmailAddress { get; set; }
+        public string? ContactPhoneNumber { get; set; }
+    };
+
+    public record GetAccreditedDogTrainingSchoolListQuery() : IRequest<IEnumerable<DogSchoolResponse>>;
 }

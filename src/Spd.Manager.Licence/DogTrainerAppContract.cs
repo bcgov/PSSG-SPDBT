@@ -18,6 +18,7 @@ public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitReq
 
 public record DogTrainerRequest : LicenceAppBase
 {
+    public Guid AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
     public MailingAddress? SchoolMailingAddress { get; set; }
     public string? SchoolDirectorSurname { get; set; }

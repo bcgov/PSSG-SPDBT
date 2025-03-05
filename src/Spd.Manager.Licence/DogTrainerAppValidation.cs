@@ -7,6 +7,7 @@ public class DogTrainerRequestValidator : AbstractValidator<DogTrainerRequest>
 {
     public DogTrainerRequestValidator()
     {
+        RuleFor(r => r.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty);
         RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.DogTrainerCertification); //must be team, dog trainer or retired dog
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.SchoolMailingAddress).SetValidator(new MailingAddressValidator())
