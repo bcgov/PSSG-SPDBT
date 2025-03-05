@@ -85,9 +85,11 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
         spd_dogtrainingschool trainEvent = _mapper.Map<spd_dogtrainingschool>(appData);
-        trainEvent.spd_trainingschooltype = (int)DogTrainingSchoolTypeOptionSet.DogTrainerAccreditedSchool;
+        _context.AddTospd_dogtrainingschools(trainEvent);
         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), trainEvent);
         _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
+        var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolId).FirstOrDefault();
+        _context.SetLink(trainEvent, nameof(trainEvent.spd_OrganizationId), school);
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         return app;
