@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -16,22 +17,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<app-form-accredited-school
+							[accreditedSchoolIdControl]="accreditedSchoolId"
+							[accreditedSchoolNameControl]="accreditedSchoolName"
+						></app-form-accredited-school>
+
 						<div class="row">
-							<div class="col-12">
-								<mat-form-field>
-									<mat-label
-										>Name of Assistance Dogs International or International Guide Dog Federation Accredited
-										School</mat-label
-									>
-									<input
-										matInput
-										formControlName="accreditedSchoolName"
-										[errorStateMatcher]="matcher"
-										maxlength="250"
-									/>
-									<mat-error *ngIf="form.get('accreditedSchoolName')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
+							<div class="text-minor-heading my-2">Contact Information</div>
 							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
@@ -56,9 +48,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<input
 										matInput
 										formControlName="schoolContactPhoneNumber"
+										[mask]="phoneMask"
+										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
-										maxlength="30"
-										appPhoneNumberTransform
 									/>
 									<mat-error *ngIf="form.get('schoolContactPhoneNumber')?.hasError('required')"
 										>This is required</mat-error
@@ -113,6 +105,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class StepTeamAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.gdsdTeamApplicationService.graduationInfoFormGroup;
 
@@ -136,6 +129,13 @@ export class StepTeamAccreditedGraduationComponent implements LicenceChildSteppe
 
 	onFileRemoved(): void {
 		this.gdsdTeamApplicationService.fileRemoved();
+	}
+
+	get accreditedSchoolId(): FormControl {
+		return this.form.get('accreditedSchoolId') as FormControl;
+	}
+	get accreditedSchoolName(): FormControl {
+		return this.form.get('accreditedSchoolName') as FormControl;
 	}
 
 	get attachments(): FormControl {

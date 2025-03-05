@@ -9,7 +9,7 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]), // TODO LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
 	retiredDogForm: FormGroup = this.formBuilder.group({
@@ -30,6 +30,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseNew(retiredDogModelFormGroup: any): any {
+		// TODO fix } RetiredDogRequestExt {
 		return this.getSaveBodyBase(retiredDogModelFormGroup);
 	}
 
@@ -38,6 +39,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseChange(retiredDogModelFormGroup: any): any {
+		// TODO fix  RetiredDogChangeRequestExt {
 		const bodyBase = this.getSaveBodyBase(retiredDogModelFormGroup);
 
 		const body = {

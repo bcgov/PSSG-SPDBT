@@ -5,6 +5,7 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
+	DogSchoolResponse,
 	GdsdAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GdsdTeamLicenceAppChangeRequest,
@@ -48,6 +49,7 @@ import {
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
+import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { GdsdTeamApplicationHelper } from './gdsd-team-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
@@ -98,6 +100,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private gdsdLicensingService: GdsdLicensingService,
+		private configService: ConfigService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService
@@ -396,23 +399,30 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.applicantProfileService
-			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
-			.pipe(
-				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyGdsdAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
-						tap((_resp: any) => {
-							this.initialized = true;
+	createNewApplAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		const apis = [
+			this.configService.getAccreditedDogSchools(),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
 
-							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
-						})
-					);
-				})
-			);
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const applicantProfile: ApplicantProfileResponse = resps[1];
+
+				return this.createEmptyApplAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
+
+						this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+					})
+				);
+			})
+		);
 	}
 
-	private createEmptyGdsdAuthenticated(
+	private createEmptyApplAuthenticated(
 		applicantProfile: ApplicantProfileResponse,
 		serviceTypeCode: ServiceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
@@ -613,6 +623,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			this.applicantProfileService.apiApplicantIdGet({
 				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			}),
+			this.configService.getAccreditedDogSchools(),
 		];
 
 		return forkJoin(apis).pipe(
@@ -1090,6 +1101,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		) {
 			if (gdsdAppl.accreditedSchoolQuestions?.graduationInfo) {
 				graduationInfoData = {
+					accreditedSchoolId: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolId,
 					accreditedSchoolName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolName,
 					schoolContactGivenName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactGivenName,
 					schoolContactSurname: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactSurname,
@@ -1201,11 +1213,15 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Create an empty application
 	 * @returns
 	 */
-	createNewGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyGdsdAnonymous(serviceTypeCode).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
-				this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
+	createNewApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.configService.getAccreditedDogSchools().pipe(
+			switchMap((_resp: DogSchoolResponse[]) => {
+				return this.createEmptyApplAnonymous(serviceTypeCode).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
+						this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
+					})
+				);
 			})
 		);
 	}
@@ -1214,7 +1230,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Create an empty anonymous Gdsd
 	 * @returns
 	 */
-	private createEmptyGdsdAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	private createEmptyApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -12,14 +12,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<mat-form-field>
-							<mat-label
-								>Name of Assistance Dogs International or International Guide Dog Federation Accredited
-								School</mat-label
-							>
-							<input matInput formControlName="accreditedSchoolName" [errorStateMatcher]="matcher" maxlength="250" />
-							<mat-error *ngIf="form.get('accreditedSchoolName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
+						<app-form-accredited-school
+							schoolLabel="Name of Assistance Dogs International or International Guide Dog Federation Accredited School"
+							[accreditedSchoolIdControl]="accreditedSchoolId"
+							[accreditedSchoolNameControl]="accreditedSchoolName"
+						></app-form-accredited-school>
 					</div>
 				</div>
 
@@ -117,5 +114,12 @@ export class StepDtTrainingSchoolInfoComponent implements LicenceChildStepperSte
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get accreditedSchoolId(): FormControl {
+		return this.form.get('accreditedSchoolId') as FormControl;
+	}
+	get accreditedSchoolName(): FormControl {
+		return this.form.get('accreditedSchoolName') as FormControl;
 	}
 }

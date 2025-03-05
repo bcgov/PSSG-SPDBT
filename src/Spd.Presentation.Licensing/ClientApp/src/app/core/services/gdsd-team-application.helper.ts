@@ -46,7 +46,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	});
 
 	graduationInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolName: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolName: new FormControl(''),
 		schoolContactGivenName: new FormControl(''),
 		schoolContactSurname: new FormControl('', [Validators.required]),
 		schoolContactPhoneNumber: new FormControl('', [Validators.required]),

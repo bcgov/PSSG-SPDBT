@@ -10,7 +10,8 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationHelper {
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolName: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolName: new FormControl(''),
 		schoolDirectorGivenName: new FormControl(''),
 		schoolDirectoMiddleName: new FormControl(''),
 		schoolDirectorSurname: new FormControl('', [Validators.required]),
@@ -60,6 +61,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseNew(dogTrainerModelFormGroup: any): any {
+		//}DogTrainerRequestExt {
 		return this.getSaveBodyBase(dogTrainerModelFormGroup);
 	}
 
@@ -68,6 +70,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseChange(dogTrainerModelFormGroup: any): any {
+		//} DogTrainerChangeRequestExt {
 		const bodyBase = this.getSaveBodyBase(dogTrainerModelFormGroup);
 
 		const body = {

@@ -46,6 +46,13 @@ import { FileUtilService } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
+// export interface RetiredDogRequestExt extends GdsdTeamLicenceAppUpsertRequest RetiredDogRequest { // TODO RetiredDogRequestExt, RetiredDogChangeRequestExt
+// 	documentInfos?: Array<Document> | null;
+// }
+// export interface RetiredDogChangeRequestExt extends RetiredDogChangeRequest {
+// 	documentInfos?: Array<Document> | null;
+// }
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -151,12 +158,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	createNewApplAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyRdAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+					return this.createEmptyApplAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -167,7 +174,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			);
 	}
 
-	private createEmptyRdAuthenticated(
+	private createEmptyApplAuthenticated(
 		applicantProfile: ApplicantProfileResponse,
 		serviceTypeCode: ServiceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
@@ -332,8 +339,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Create an empty application
 	 * @returns
 	 */
-	createNewAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.createEmptyAnonymous(serviceTypeCode).pipe(
+	createNewApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.createEmptyApplAnonymous(serviceTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 				this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode);
@@ -345,7 +352,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Create an empty anonymous Gdsd
 	 * @returns
 	 */
-	private createEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	private createEmptyApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		const serviceTypeData = { serviceTypeCode };
@@ -641,14 +648,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 */
 	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
+		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppAnonymousSubmitRequest; // TODO fix
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
+		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
+		// body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -673,8 +680,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		});
 
-		delete body.documentInfos;
+		// delete body.documentInfos; // TODO uncomment
 
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.submitLicenceNewAnonymousDocuments(
 			googleRecaptcha,
@@ -690,7 +698,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	private submitLicenceNewAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppAnonymousSubmitRequest
+		body: GdsdTeamLicenceAppAnonymousSubmitRequest // TODO RetiredDogRequest
 	) {
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
@@ -720,7 +728,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	}
 
 	private postSubmitAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest
+		body: GdsdTeamLicenceAppChangeRequest // TODO RetiredDogRequest
 	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
@@ -741,11 +749,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
+		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
+		// body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -770,12 +778,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		});
 
-		const existingDocumentIds: Array<string> = body.documentInfos
-			.filter((item: Document) => !!item.documentUrlId)
-			.map((item: Document) => item.documentUrlId!);
+		const existingDocumentIds: Array<string> =
+			body.documentInfos
+				?.filter((item: Document) => !!item.documentUrlId)
+				.map((item: Document) => item.documentUrlId!) ?? [];
 
 		delete body.documentInfos;
 
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(
 			googleRecaptcha,
@@ -795,8 +805,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		delete body.documentInfos;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
+		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
+		// body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
 		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(googleRecaptcha, [], null, body);
@@ -810,7 +820,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppChangeRequest
+		body: GdsdTeamLicenceAppChangeRequest // TODO RetiredDogChangeRequestExt
 	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
