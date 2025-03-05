@@ -111,6 +111,7 @@ public record NonAccreditedSchoolQuestions
 }
 public record GraduationInfo
 {
+    public Guid AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
     public string? SchoolContactSurname { get; set; }
     public string? SchoolContactGivenName { get; set; }
