@@ -18,7 +18,6 @@ public class DogSchoolController : SpdControllerBase
     /// <summary>
     /// Get accredited dog Schools
     /// </summary>
-    /// <param name="id"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [Route("api/accredited-dog-schools")]
