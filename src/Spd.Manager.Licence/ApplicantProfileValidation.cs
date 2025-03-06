@@ -5,7 +5,6 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
 {
     public ApplicantUpdateRequestValidator()
     {
-        //RuleFor(r => r.ApplicationTypeCode).NotEmpty().IsInEnum().When(r => r.LicenceId != null);
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.GenderCode).NotEmpty().IsInEnum();
@@ -43,21 +42,6 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty()
             .MaximumLength(20)
             .When(r => r.ResidentialAddress != null);
-        //RuleFor(r => r.HasCriminalHistory).NotNull().When(r => r.LicenceId != null);
-        //RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull().When(r => r.LicenceId != null);
-        //RuleFor(r => r.PoliceOfficerRoleCode).NotNull().When(r => r.IsPoliceOrPeaceOfficer == true);
-        //RuleFor(r => r.IsTreatedForMHC).NotNull().When(r => r.LicenceId != null);
-        //RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
-        //    .When(r => r.LicenceId != null &&
-        //    (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
-        //RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
-        //    .When(r => r.LicenceId != null &&
-        //    (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
-        //RuleFor(r => r.CriminalChargeDescription)
-        //    .NotEmpty()
-        //    .MaximumLength(1000)
-        //    .When(r => r.HasNewCriminalRecordCharge == true && r.LicenceId != null &&
-        //    (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
         RuleFor(r => r.Aliases)
             .Must(r => r.Count() <= Constants.MaximumNumberOfUserEnteredAliases)
             .When(r => r.Aliases != null)

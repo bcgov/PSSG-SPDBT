@@ -29,15 +29,6 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
-            //contact? existingContact = null;
-            //if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-            //{
-            //    SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
-            //    existingContact = SharedRepositoryFuncs.GetLicenceHolderContact(_context, (Guid)cmd.ExpiredLicenceId);
-            //}
-            //else
-            //    existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
-
             //spdbt-3402: for unauth, always create new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }

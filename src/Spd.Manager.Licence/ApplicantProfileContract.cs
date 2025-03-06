@@ -34,13 +34,6 @@ namespace Spd.Manager.Licence
 
     public record ApplicantUpdateRequest : Applicant
     {
-        //public Guid? LicenceId { get; set; } //used when user is in update, renew or replace flow.
-        //public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
-        //public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-        //public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
-        //public bool? HasNewMentalHealthCondition { get; set; }
-        //public string? CriminalChargeDescription { get; set; }
-        //public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
