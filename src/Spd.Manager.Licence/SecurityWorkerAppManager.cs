@@ -89,6 +89,7 @@ internal class SecurityWorkerAppManager :
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, cancellationToken);
+        await UpdateApplicantProfile(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.ApplicantId, cancellationToken);
         decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -155,7 +156,6 @@ internal class SecurityWorkerAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
-
         if (IsSoleProprietorComboApp(request)) //for sole proprietor, we only commit application until user submit the biz liz app. spdbt-2936 item 3
         {
             return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = 0 };
@@ -357,6 +357,7 @@ internal class SecurityWorkerAppManager :
         }
         else
         {
+            await UpdateApplicantProfile(request, originalLic.LicenceHolderId.Value, cancellationToken);
             //update contact directly
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
             updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
@@ -375,6 +376,22 @@ internal class SecurityWorkerAppManager :
             cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
 
+    }
+    private async Task UpdateApplicantProfile(WorkerLicenceAppBase r, Guid contactId, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
+        updateCmd.Id = contactId;
+
+        if (r.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+        if (r.IsTreatedForMHC == true)
+            updateCmd.IsTreatedForMHC = true;
+
+        //concat new criminal history detail with old ones.
+        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+
+        await _contactRepository.ManageAsync(updateCmd, ct);
     }
 
     private async Task<ChangeSpec> MakeChanges(
