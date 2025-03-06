@@ -25,8 +25,7 @@ namespace Spd.Manager.Licence
     public record ApplicantSearchCommand(BcscIdentityInfo BcscIdentityInfo, bool hasIdentity = false) : IRequest<IEnumerable<ApplicantListResponse>>;
     public record ApplicantUpdateCommand(
         Guid ApplicantId,
-        ApplicantUpdateRequest ApplicantUpdateRequest,
-        IEnumerable<LicAppFileInfo> LicAppFileInfos)
+        ApplicantUpdateRequest ApplicantUpdateRequest)
         : IRequest<Unit>;
     public record ApplicantMergeCommand(
         Guid OldApplicantId,
@@ -35,13 +34,13 @@ namespace Spd.Manager.Licence
 
     public record ApplicantUpdateRequest : Applicant
     {
-        public Guid? LicenceId { get; set; } //used when user is in update, renew or replace flow.
-        public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
-        public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-        public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
-        public bool? HasNewMentalHealthCondition { get; set; }
-        public string? CriminalChargeDescription { get; set; }
-        public bool? HasNewCriminalRecordCharge { get; set; }
+        //public Guid? LicenceId { get; set; } //used when user is in update, renew or replace flow.
+        //public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
+        //public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+        //public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
+        //public bool? HasNewMentalHealthCondition { get; set; }
+        //public string? CriminalChargeDescription { get; set; }
+        //public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
