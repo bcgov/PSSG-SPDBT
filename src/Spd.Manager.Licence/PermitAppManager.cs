@@ -87,6 +87,7 @@ internal class PermitAppManager :
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
+        await UpdateApplicantProfile(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.ApplicantId, cancellationToken);
         decimal cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -241,9 +242,7 @@ internal class PermitAppManager :
         else
         {
             //update contact directly
-            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-            updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
-            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            await UpdateApplicantProfile(cmd.LicenceAnonymousRequest, originalLic.LicenceHolderId.Value, cancellationToken);
             //clean up old files
             await CleanUpOldFiles(request, originalLic, cancellationToken);
 
@@ -265,6 +264,21 @@ internal class PermitAppManager :
             null,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
+    }
+
+    private async Task UpdateApplicantProfile(PermitLicenceAppBase r, Guid contactId, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
+        updateCmd.Id = contactId;
+
+        if (r.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+
+        //concat new criminal history detail with old ones.
+        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+
+        await _contactRepository.ManageAsync(updateCmd, ct);
     }
 
     private async Task CleanUpOldFiles(PermitAppSubmitRequest request, LicenceResp? originalLic, CancellationToken cancellationToken)

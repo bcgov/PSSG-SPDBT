@@ -81,6 +81,7 @@ public record WorkerLicenceAppBase : PersonalLicenceAppBase
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public bool? HasNewMentalHealthCondition { get; set; }
+    public string? CriminalChargeDescription { get; set; }
 }
 
 #region authenticated user
@@ -108,7 +109,6 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
-    public string? CriminalChargeDescription { get; set; }
 }
 
 #endregion

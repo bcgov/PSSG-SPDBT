@@ -180,6 +180,8 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to PaymentPending.
         await MoveFilesAsync(response.ControllingMemberAppId, ct);
+
+        await UpdateApplicantProfile(cmd.ControllingMemberCrcAppUpsertRequest, ct);
         await CommitApplicationAsync(
             new LicenceAppBase()
             {
@@ -198,16 +200,28 @@ internal class ControllingMemberCrcAppManager :
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
         updateCmd.Id = (Guid)request.ApplicantId;
 
-        //Jan.14, 2025 Open door session, we decide: contact always updated with the latest application info, no need to keep history.
-        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false - not valid anymore
-        //if (contact.HasCriminalHistory == true)
-        //    updateCmd.HasCriminalHistory = true;
-        //if (contact.IsTreatedForMHC == true)
-        //    updateCmd.IsTreatedForMHC = true;
+        //spdbt-3706
+        if (contact.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+        if (contact.IsTreatedForMHC == true)
+            updateCmd.IsTreatedForMHC = true;
 
-        ////concat new crminal history detail with old ones. - not valid any more.
-        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
-        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+        //concat new crminal history detail with old ones. - not valid any more.
+        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+            updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+
+        await _contactRepository.ManageAsync(updateCmd, ct);
+    }
+    private async Task UpdateApplicantProfile(ControllingMemberCrcAppUpsertRequest request, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+        updateCmd.Id = (Guid)request.ApplicantId;
+
+        //spdbt-3706
+        if (request.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+        if (request.IsTreatedForMHC == true)
+            updateCmd.IsTreatedForMHC = true;
 
         await _contactRepository.ManageAsync(updateCmd, ct);
     }
