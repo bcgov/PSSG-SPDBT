@@ -357,11 +357,8 @@ internal class SecurityWorkerAppManager :
         }
         else
         {
-            await UpdateApplicantProfile(request, originalLic.LicenceHolderId.Value, cancellationToken);
             //update contact directly
-            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-            updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
-            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            await UpdateApplicantProfile(request, originalLic.LicenceHolderId.Value, cancellationToken);
         }
 
         await UploadNewDocsAsync(request.DocumentRelatedInfos,
@@ -381,16 +378,6 @@ internal class SecurityWorkerAppManager :
     {
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
         updateCmd.Id = contactId;
-
-        if (r.HasCriminalHistory == true)
-            updateCmd.HasCriminalHistory = true;
-        if (r.IsTreatedForMHC == true)
-            updateCmd.IsTreatedForMHC = true;
-
-        //concat new criminal history detail with old ones.
-        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
-        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
-
         await _contactRepository.ManageAsync(updateCmd, ct);
     }
 
