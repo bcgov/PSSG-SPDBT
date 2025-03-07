@@ -138,7 +138,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
-            _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
+            //_mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
         }
 
         return appResp;

@@ -94,7 +94,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
-            _mapper.Map<spd_application, ControllingMemberCrcApplicationResp>(app, appResp);
+            //_mapper.Map<spd_application, ControllingMemberCrcApplicationResp>(app, appResp);
         }
 
         return appResp;
