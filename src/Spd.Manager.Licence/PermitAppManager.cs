@@ -270,14 +270,6 @@ internal class PermitAppManager :
     {
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
         updateCmd.Id = contactId;
-
-        if (r.HasCriminalHistory == true)
-            updateCmd.HasCriminalHistory = true;
-
-        //concat new criminal history detail with old ones.
-        //if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
-        //    updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
-
         await _contactRepository.ManageAsync(updateCmd, ct);
     }
 
