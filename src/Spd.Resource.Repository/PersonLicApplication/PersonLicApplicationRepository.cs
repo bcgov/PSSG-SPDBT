@@ -39,6 +39,10 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 spd_application originApp = await _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefaultAsync(ct);
                 //for replace, renew, update, "contact" is already exists, so, do update.
                 contact? existingContact = await _context.GetContactById((Guid)originApp._spd_applicantid_value, ct);
+
+                //for spdbt-3706, do not update contact mental health condition from application when the value from app is No.
+                if (contact.spd_mentalhealthcondition == (int)YesNoOptionSet.No)
+                    contact.spd_mentalhealthcondition = null;
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             }
             else
