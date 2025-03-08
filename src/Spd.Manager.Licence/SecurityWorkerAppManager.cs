@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Pipelines.Sockets.Unofficial.Arenas;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
@@ -334,11 +335,13 @@ internal class SecurityWorkerAppManager :
             cancellationToken);
 
         ContactResp contactResp = await _contactRepository.GetAsync(originalLic.LicenceHolderId.Value, cancellationToken);
-        ChangeSpec changes = await MakeChanges(request, cmd.LicAppFileInfos, originalLic, contactResp, cancellationToken);
+        List<UpdateSpec> changes = await MakeChanges(request, cmd.LicAppFileInfos, originalLic, contactResp, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         decimal? cost = 0;
-        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
+        bool categoryChanged = changes.Select(c => c.Type).Any(c => c == UpdateType.Category || c == UpdateType.CategoryDocument);
+        bool dogRestraintChanged = changes.Select(c => c.Type).Contains(UpdateType.DogRestraints);
+        if ((request.Reprint != null && request.Reprint.Value) || categoryChanged || dogRestraintChanged)
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
@@ -367,40 +370,84 @@ internal class SecurityWorkerAppManager :
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalLic.LicenceHolderId,
-            changes.PeaceOfficerStatusChangeTaskId,
-            changes.MentalHealthStatusChangeTaskId,
+            changes.Where(c => c.Type == UpdateType.PoliceOfficerInfo).FirstOrDefault()?.TaskId,
+            changes.Where(c => c.Type == UpdateType.MentalHealthInfo).FirstOrDefault()?.TaskId,
             null,
             null,
             null,
             cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
-
     }
 
-    private async Task<ChangeSpec> MakeChanges(
+    private async Task<List<UpdateSpec>> MakeChanges(
         WorkerLicenceAppSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic,
         ContactResp contactResp,
         CancellationToken ct)
     {
-        ChangeSpec changes = new();
-        //categories changed
-        if (newRequest.CategoryCodes.Count() != originalLic.CategoryCodes.Count())
-            changes.CategoriesChanged = true;
-        else
+        //name changed
+        List<UpdateSpec> updateSpecs = new();
+        if (newRequest.HasLegalNameChanged.HasValue && newRequest.HasLegalNameChanged.Value)
         {
-            List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
-            newList.Sort();
-            List<WorkerCategoryTypeCode> originalList = originalLic.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
-            originalList.Sort();
-            if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
+            updateSpecs.Add(new UpdateSpec()
+            {
+                Type = UpdateType.LegalName,
+                Description = "Legal name Changed",
+                Action = ActionType.Updated,
+                NewValue = $"{newRequest.GivenName} {newRequest.MiddleName1} {newRequest.Surname}",
+                OldValue = originalLic.NameOnCard
+            });
         }
 
-        //if any new doc contains category document, we think categorieschanged.
-        if (!changes.CategoriesChanged && newFileInfos != null)
+        //categories changed
+        List<WorkerCategoryTypeCode> originalList = originalLic.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+        foreach (WorkerCategoryTypeCode category in newRequest.CategoryCodes)
         {
-            changes.CategoriesChanged = newFileInfos.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
+            if (!originalList.Contains(category))
+            {
+                updateSpecs.Add(new UpdateSpec()
+                {
+                    Type = UpdateType.Category,
+                    Description = "Category Changed",
+                    Action = ActionType.Added,
+                    NewValue = category.ToString(),
+                    OldValue = null
+                });
+            }
+        }
+
+        foreach (WorkerCategoryTypeCode category in originalLic.CategoryCodes)
+        {
+            if (!newRequest.CategoryCodes.Contains(category))
+            {
+                updateSpecs.Add(new UpdateSpec()
+                {
+                    Type = UpdateType.Category,
+                    Description = "Category Changed",
+                    Action = ActionType.Removed,
+                    NewValue = null,
+                    OldValue = category.ToString()
+                });
+            }
+        }
+
+        if (newFileInfos != null)
+        {
+            foreach (LicAppFileInfo info in newFileInfos)
+            {
+                if (info.LicenceDocumentTypeCode.ToString().StartsWith("Category"))
+                {
+                    updateSpecs.Add(new UpdateSpec()
+                    {
+                        Type = UpdateType.CategoryDocument,
+                        Description = "Category Document Added",
+                        Action = ActionType.Added,
+                        OldValue = null,
+                        NewValue = info.LicenceDocumentTypeCode.ToString()
+                    });
+                };
+            }
         }
 
         //DogRestraintsChanged - this check only matters if the new and original requests both contain SecurityGuard, otherwise 'CategoriesChanged' will catch the change.
@@ -412,7 +459,16 @@ internal class SecurityWorkerAppManager :
                 newRequest.IsDogsPurposeDetectionDrugs != originalLic.IsDogsPurposeDetectionDrugs ||
                 newRequest.IsDogsPurposeDetectionExplosives != originalLic.IsDogsPurposeDetectionExplosives)
             {
-                changes.DogRestraintsChanged = true;
+                string newValue = $"UseDogs = {newRequest.UseDogs}, CarryAndUseRestraints = {newRequest.CarryAndUseRestraints}, Purposes = {GetDogPurposeString(newRequest.IsDogsPurposeProtection, newRequest.IsDogsPurposeDetectionDrugs, newRequest.IsDogsPurposeDetectionExplosives)}";
+                string oldValue = $"UseDogs = {originalLic.UseDogs}, CarryAndUseRestraints = {originalLic.CarryAndUseRestraints}, Purposes = {GetDogPurposeString(originalLic.IsDogsPurposeProtection, originalLic.IsDogsPurposeDetectionDrugs, originalLic.IsDogsPurposeDetectionExplosives)}";
+                updateSpecs.Add(new UpdateSpec()
+                {
+                    Type = UpdateType.DogRestraints,
+                    Description = "Security Guard DogRestraints changed",
+                    Action = ActionType.Updated,
+                    NewValue = newValue,
+                    OldValue = oldValue
+                });
             }
         }
 
@@ -425,9 +481,10 @@ internal class SecurityWorkerAppManager :
             newRequest.OtherOfficerRole != contactResp.OtherOfficerRole ||
             newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
+            UpdateSpec spec = new UpdateSpec();
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
-            changes.PeaceOfficerStatusChanged = true;
-            changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            spec.Type = UpdateType.PoliceOfficerInfo;
+            spec.TaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
@@ -437,14 +494,16 @@ internal class SecurityWorkerAppManager :
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
+            updateSpecs.Add(spec);
         }
 
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (newRequest.HasNewMentalHealthCondition == true)
         {
-            changes.MentalHealthStatusChanged = true;
+            UpdateSpec spec = new UpdateSpec();
+            spec.Type = UpdateType.MentalHealthInfo;
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
-            changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            spec.TaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Please see the attached mental health condition form submitted by the Licensee : {string.Join(";", fileNames)}  ",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
@@ -454,13 +513,15 @@ internal class SecurityWorkerAppManager :
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
+            updateSpecs.Add(spec);
         }
 
         //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
         if (newRequest.HasNewCriminalRecordCharge == true)
         {
-            changes.CriminalHistoryChanged = true;
-            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            UpdateSpec spec = new UpdateSpec();
+            spec.Type = UpdateType.CriminalHistory;
+            spec.TaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
@@ -470,8 +531,18 @@ internal class SecurityWorkerAppManager :
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
+            updateSpecs.Add(spec);
         }
-        return changes;
+        return updateSpecs;
+    }
+
+    private string GetDogPurposeString(bool? forProtection, bool? forDrugDetection, bool? forExplosiveDetect)
+    {
+        List<string> purposes = new List<string>();
+        if (forProtection.HasValue && forProtection.Value) purposes.Add("protection");
+        if (forDrugDetection.HasValue && forDrugDetection.Value) purposes.Add("drug detection");
+        if (forExplosiveDetect.HasValue && forExplosiveDetect.Value) purposes.Add("explosive detection");
+        return string.Join(";", purposes);
     }
 
     private static void ValidateFilesForNewApp(WorkerLicenceAppNewCommand cmd)
@@ -611,5 +682,34 @@ internal class SecurityWorkerAppManager :
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+    }
+
+    private sealed record UpdateSpec
+    {
+        public UpdateType Type { get; set; }
+        public string Description { get; set; }
+        public ActionType Action { get; set; }
+        public string OldValue { get; set; } //full update
+        public string NewValue { get; set; } //full update
+        public Guid? TaskId { get; set; } //full update
+    }
+
+    enum UpdateType
+    {
+        LegalName,
+        Photo,
+        Category,
+        CategoryDocument,
+        DogRestraints,
+        PoliceOfficerInfo,
+        MentalHealthInfo,
+        CriminalHistory,
+    }
+
+    enum ActionType
+    {
+        Updated,
+        Removed,
+        Added,
     }
 }
