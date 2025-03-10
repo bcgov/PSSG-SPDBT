@@ -32,8 +32,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			>
 				<mat-step [editable]="false" [completed]="true">
 					<ng-template matStepLabel
-						>Licence<span class="d-xxl-none">&nbsp;</span
-						><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+						>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 					>
 				</mat-step>
 
@@ -47,15 +46,13 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 
 				<mat-step [editable]="false" [completed]="true">
 					<ng-template matStepLabel
-						>Review<span class="d-xxl-none">&nbsp;</span
-						><span class="d-none d-xxl-inline"><br /></span>Worker</ng-template
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker</ng-template
 					>
 				</mat-step>
 
 				<mat-step [completed]="step1Complete">
 					<ng-template matStepLabel
-						>Business<span class="d-xxl-none">&nbsp;</span
-						><span class="d-none d-xxl-inline"><br /></span>Information</ng-template
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
 					>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
@@ -70,8 +67,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 
 				<mat-step [completed]="step2Complete">
 					<ng-template matStepLabel
-						>Business<span class="d-xxl-none">&nbsp;</span
-						><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 					>
 					<app-steps-business-licence-selection
 						[serviceTypeCode]="serviceTypeCode"
@@ -91,8 +87,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 
 				<mat-step completed="false">
 					<ng-template matStepLabel
-						>Review<span class="d-xxl-none">&nbsp;</span
-						><span class="d-none d-xxl-inline"><br /></span>Business</ng-template
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business</ng-template
 					>
 					<app-steps-business-licence-review
 						[applicationTypeCode]="applicationTypeCode"
@@ -113,6 +108,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 			</mat-stepper>
 		</ng-container>
+
+		<ng-template #StepNameSpace>
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,

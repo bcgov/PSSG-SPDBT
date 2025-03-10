@@ -1087,7 +1087,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				isPreviouslyTreatedForMHC: false,
 				profileConfirmationData: { isProfileUpToDate: true },
-				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 				characteristicsData,
 			},
 			{

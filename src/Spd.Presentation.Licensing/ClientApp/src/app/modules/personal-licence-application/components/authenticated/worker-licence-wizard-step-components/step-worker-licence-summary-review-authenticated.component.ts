@@ -165,12 +165,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
-								<app-worker-summary-citizenship
-									[workerModelData]="licenceModelData"
-									[showCitizenshipStep]="showCitizenshipStep"
-								></app-worker-summary-citizenship>
+								<ng-container *ngIf="showCitizenshipStep">
+									<app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								</ng-container>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<app-worker-summary-photo-of-yourself
 									[workerModelData]="licenceModelData"
 								></app-worker-summary-photo-of-yourself>

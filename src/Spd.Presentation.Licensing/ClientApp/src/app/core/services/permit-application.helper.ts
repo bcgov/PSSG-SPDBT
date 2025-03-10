@@ -579,7 +579,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,

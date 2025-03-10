@@ -148,13 +148,6 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			});
 		}
 
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
-
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
@@ -241,12 +234,10 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			hasBankruptcyHistory,
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
-			hasNewCriminalRecordCharge,
 			criminalHistoryDetail:
 				hasCriminalHistory || hasCourtJudgement ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC,
-			hasNewMentalHealthCondition,
 			//-----------------------------------
 			isPoliceOrPeaceOfficer,
 			policeOfficerRoleCode,

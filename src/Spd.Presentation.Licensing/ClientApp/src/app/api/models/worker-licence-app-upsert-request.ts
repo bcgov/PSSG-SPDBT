@@ -43,7 +43,6 @@ export interface WorkerLicenceAppUpsertRequest {
   hasCriminalHistory?: boolean | null;
   hasExpiredLicence?: boolean | null;
   hasLegalNameChanged?: boolean | null;
-  hasNewCriminalRecordCharge?: boolean | null;
   hasNewMentalHealthCondition?: boolean | null;
   hasPreviousName?: boolean | null;
   height?: number | null;

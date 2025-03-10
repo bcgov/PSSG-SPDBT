@@ -6,7 +6,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-worker-summary-police-background',
 	template: `
-		<div class="text-minor-heading-small mt-4">Police Background</div>
+		<div class="text-minor-heading-small">Police Background</div>
 		<div class="row mt-0">
 			<div class="col-lg-4 col-md-12">
 				<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
