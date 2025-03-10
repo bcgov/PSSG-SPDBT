@@ -34,7 +34,7 @@ internal class Mappings : Profile
         .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.PostalCode)))
         .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.Province)))
         .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.Country)))
-        .ForMember(d => d.spd_selfdisclosure, opt => opt.MapFrom(s => (s.HasCriminalHistory.HasValue && s.HasCriminalHistory.Value) ? SharedMappingFuncs.GetYesNo(s.HasCriminalHistory) : null))
+        .ForMember(d => d.spd_selfdisclosure, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
         .ForMember(d => d.spd_selfdisclosuredetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
         .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsPoliceOrPeaceOfficer)))
         .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
