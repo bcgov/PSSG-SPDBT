@@ -80,7 +80,6 @@ public record WorkerLicenceAppBase : PersonalLicenceAppBase
     public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
-    public bool? HasNewMentalHealthCondition { get; set; }
     public string? CriminalChargeDescription { get; set; }
 }
 

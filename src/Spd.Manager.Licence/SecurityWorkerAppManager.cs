@@ -444,7 +444,7 @@ internal class SecurityWorkerAppManager :
         }
 
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
-        if (newRequest.HasNewMentalHealthCondition == true)
+        if (newRequest.IsTreatedForMHC == true)
         {
             changes.MentalHealthStatusChanged = true;
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
@@ -548,7 +548,7 @@ internal class SecurityWorkerAppManager :
             }
         }
 
-        if (request.HasNewMentalHealthCondition == true &&
+        if (request.IsTreatedForMHC == true &&
             isAuthenticated == false &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {

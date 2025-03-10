@@ -207,7 +207,7 @@ internal class ControllingMemberCrcAppManager :
             updateCmd.IsTreatedForMHC = true;
 
         //concat new crminal history detail with old ones. - not valid any more.
-        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+        if (request.HasCriminalHistory == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
             updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
 
         await _contactRepository.ManageAsync(updateCmd, ct);
@@ -359,7 +359,7 @@ internal class ControllingMemberCrcAppManager :
         }
 
         // Check MentalHealthStatusChanged
-        if (newRequest.HasNewMentalHealthCondition == true)
+        if (newRequest.IsTreatedForMHC == true)
         {
             descriptionBuilder.AppendLine("* Mental Health");
             changes.MentalHealthStatusChanged = true;
@@ -367,7 +367,7 @@ internal class ControllingMemberCrcAppManager :
         }
 
         // Check CriminalHistoryChanged
-        if (newRequest.HasNewCriminalRecordCharge == true)
+        if (newRequest.HasCriminalHistory == true)
         {
             descriptionBuilder.AppendLine("* Criminal History");
             changes.CriminalHistoryChanged = true;
@@ -427,7 +427,7 @@ internal class ControllingMemberCrcAppManager :
             }
         }
 
-        if (request.HasNewMentalHealthCondition == true &&
+        if (request.IsTreatedForMHC == true &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");

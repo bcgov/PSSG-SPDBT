@@ -161,7 +161,7 @@ internal class Mappings : Profile
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
-            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.HasNewCriminalRecordCharge == true ? s.CriminalHistoryDetail : string.Empty))
+            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.HasCriminalHistory == true ? s.CriminalHistoryDetail : string.Empty))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
@@ -559,10 +559,6 @@ internal class Mappings : Profile
     }
     private static bool? GetIsTreatedForMHC(WorkerLicenceAppBase request)
     {
-        if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
-        {
-            return request.HasNewMentalHealthCondition;
-        }
         return request.IsTreatedForMHC;
     }
 
