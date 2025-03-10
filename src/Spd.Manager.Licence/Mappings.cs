@@ -570,7 +570,7 @@ internal class Mappings : Profile
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
-            return request.HasNewCriminalRecordCharge;
+            return request.HasCriminalHistory;
         }
         return request.HasCriminalHistory;
     }

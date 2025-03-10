@@ -461,7 +461,7 @@ internal class SecurityWorkerAppManager :
         }
 
         //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
-        if (newRequest.HasNewCriminalRecordCharge == true)
+        if (newRequest.HasCriminalHistory == true)
         {
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
