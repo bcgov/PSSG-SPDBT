@@ -382,7 +382,7 @@ internal class PermitAppManager :
         }
 
         // Criminal history changed, create a task for Licensing RA team
-        if (newRequest.HasNewCriminalRecordCharge == true)
+        if (newRequest.HasCriminalHistory == true)
         {
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
