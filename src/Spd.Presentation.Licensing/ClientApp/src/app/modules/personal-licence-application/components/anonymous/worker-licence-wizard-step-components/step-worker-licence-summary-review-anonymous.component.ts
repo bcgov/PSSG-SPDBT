@@ -98,7 +98,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Background Information</div>
+										<div class="panel-header">Background</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -113,69 +113,20 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Police Background</div>
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
-										<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
-									</div>
-									<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Role</div>
-											<div class="summary-text-data">
-												<span
-													*ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-													>{{ policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default }}</span
-												>
-												<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
-											<div class="text-label d-block text-muted">Letter of No Conflict</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</ng-container>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-police-background
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-police-background>
 
-								<div class="text-minor-heading-small">Mental Health Conditions</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Mental Health Conditions</div>
-										<div class="summary-text-data">{{ isTreatedForMHC }}</div>
-									</div>
-									<ng-container *ngIf="isTreatedForMHC === booleanTypeCodes.Yes">
-										<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
-											<div class="text-label d-block text-muted">Mental Health Condition Form</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</ng-container>
-								</div>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-mental-health-conditions
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-mental-health-conditions>
 
-								<div class="text-minor-heading-small">Criminal History</div>
-								<div class="row mt-0">
-									<div class="col-12">
-										<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-										<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-									</div>
-									<div class="col-12" *ngIf="criminalChargeDescription">
-										<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-										<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-									</div>
-								</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-criminal-history>
+
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -265,17 +216,17 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
-
-									<div class="text-minor-heading-small">Identification</div>
 									<app-worker-summary-citizenship
 										[workerModelData]="licenceModelData"
 										[showCitizenshipStep]="showCitizenshipStep"
 									></app-worker-summary-citizenship>
 
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-worker-summary-photo-of-yourself
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-photo-of-yourself>
 
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-worker-summary-bc-drivers-licence
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-bc-drivers-licence>
@@ -478,19 +429,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return fee ? (fee.amount ?? null) : null;
 	}
 
-	get isPoliceOrPeaceOfficer(): string {
-		return this.workerApplicationService.getSummaryisPoliceOrPeaceOfficer(this.licenceModelData);
-	}
-	get policeOfficerRoleCode(): string {
-		return this.workerApplicationService.getSummarypoliceOfficerRoleCode(this.licenceModelData);
-	}
-	get otherOfficerRole(): string {
-		return this.workerApplicationService.getSummaryotherOfficerRole(this.licenceModelData);
-	}
-	get letterOfNoConflictAttachments(): File[] {
-		return this.workerApplicationService.getSummaryletterOfNoConflictAttachments(this.licenceModelData);
-	}
-
 	get applicantName(): string {
 		return this.workerApplicationService.getSummaryapplicantName(this.licenceModelData);
 	}
@@ -506,23 +444,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	}
 	get aliases(): Array<any> {
 		return this.workerApplicationService.getSummaryaliases(this.licenceModelData);
-	}
-
-	get isTreatedForMHC(): string {
-		return this.workerApplicationService.getSummaryisTreatedForMHC(this.licenceModelData);
-	}
-	get mentalHealthConditionAttachments(): File[] {
-		return this.workerApplicationService.getSummarymentalHealthConditionAttachments(this.licenceModelData);
-	}
-
-	get criminalHistoryLabel(): string {
-		return this.workerApplicationService.getSummarycriminalHistoryLabel(this.licenceModelData);
-	}
-	get hasCriminalHistory(): string {
-		return this.workerApplicationService.getSummaryhasCriminalHistory(this.licenceModelData);
-	}
-	get criminalChargeDescription(): string {
-		return this.workerApplicationService.getSummarycriminalChargeDescription(this.licenceModelData);
 	}
 
 	get proofOfFingerprintAttachments(): File[] {

@@ -250,17 +250,10 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								</ng-container>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Criminal History</div>
-								<div class="row mt-0">
-									<div class="col-12">
-										<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-										<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-									</div>
-									<div class="col-12" *ngIf="criminalChargeDescription">
-										<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-										<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-									</div>
-								</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="permitModelData"
+								></app-worker-summary-criminal-history>
 							</div>
 						</mat-expansion-panel>
 

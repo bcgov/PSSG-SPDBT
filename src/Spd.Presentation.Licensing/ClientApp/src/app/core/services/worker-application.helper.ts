@@ -273,44 +273,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 	getProfileSaveBody(workerModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = workerModelFormValue.applicationTypeData;
 		const contactInformationData = workerModelFormValue.contactInformationData;
 		const residentialAddressData = workerModelFormValue.residentialAddressData;
 		const mailingAddressData = workerModelFormValue.mailingAddressData;
-		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
-		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 		const personalInformationData = workerModelFormValue.personalInformationData;
-		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
 		const characteristicsData = workerModelFormValue.characteristicsData;
-
-		const applicationTypeCode = applicationTypeData.applicationTypeCode;
-
-		const criminalChargeDescription =
-			applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
-				? criminalHistoryData.criminalChargeDescription
-				: null;
-
-		const documentKeyCodes: null | Array<string> = [];
-		const previousDocumentIds: null | Array<string> = [];
-
-		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
-		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
-			? policeBackgroundData.policeOfficerRoleCode
-			: PoliceOfficerRoleCode.None;
-		const otherOfficerRole =
-			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
-				? policeBackgroundData.otherOfficerRole
-				: null;
-
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -319,8 +286,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const requestbody: ApplicantUpdateRequest = {
-			licenceId: undefined,
-			applicationTypeCode,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
@@ -335,26 +300,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 					? workerModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			documentKeyCodes,
-			previousDocumentIds,
-			//-----------------------------------
-			isTreatedForMHC,
-			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
-			//-----------------------------------
-			isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode,
-			otherOfficerRole,
-			//-----------------------------------
-			hasCriminalHistory,
-			hasNewCriminalRecordCharge,
-			criminalChargeDescription, // populated only for Update and new charges is Yes
-			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
 			residentialAddress: residentialAddressData,
 			...characteristicsData,
 		};
 
-		console.debug('[getProfileSaveBody] workerModelFormValue', workerModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
 
 		return requestbody;

@@ -19,11 +19,11 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-    selector: 'app-business-licence-wizard-renewal-swl-sole-proprietor',
-    template: `
+	selector: 'app-business-licence-wizard-renewal-swl-sole-proprietor',
+	template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
-				[selectedIndex]="3"
+				[selectedIndex]="4"
 				linear
 				labelPosition="bottom"
 				[orientation]="orientation"
@@ -31,19 +31,32 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				#stepper
 			>
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Licence Selection</ng-template>
+					<ng-template matStepLabel
+						>Licence<span class="d-xxl-none">&nbsp;</span
+						><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+					>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Worker Information</ng-template>
+					<ng-template matStepLabel>Background</ng-template>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Review Worker Licence</ng-template>
+					<ng-template matStepLabel>Identification</ng-template>
+				</mat-step>
+
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel
+						>Review<span class="d-xxl-none">&nbsp;</span
+						><span class="d-none d-xxl-inline"><br /></span>Worker</ng-template
+					>
 				</mat-step>
 
 				<mat-step [completed]="step1Complete">
-					<ng-template matStepLabel>Business Information</ng-template>
+					<ng-template matStepLabel
+						>Business<span class="d-xxl-none">&nbsp;</span
+						><span class="d-none d-xxl-inline"><br /></span>Information</ng-template
+					>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
@@ -56,7 +69,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Business Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<span class="d-xxl-none">&nbsp;</span
+						><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+					>
 					<app-steps-business-licence-selection
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
@@ -74,7 +90,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review Business Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<span class="d-xxl-none">&nbsp;</span
+						><span class="d-none d-xxl-inline"><br /></span>Business</ng-template
+					>
 					<app-steps-business-licence-review
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
@@ -95,8 +114,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-stepper>
 		</ng-container>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	extends BaseWizardComponent
@@ -104,9 +123,9 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 {
 	isInitialized$ = this.businessApplicationService.waitUntilInitialized$;
 
-	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_LICENCE_SELECTION = 4;
-	readonly STEP_REVIEW_AND_CONFIRM = 5;
+	readonly STEP_BUSINESS_INFORMATION = 4; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_LICENCE_SELECTION = 5;
+	readonly STEP_REVIEW_AND_CONFIRM = 6;
 
 	step1Complete = false;
 	step2Complete = false;

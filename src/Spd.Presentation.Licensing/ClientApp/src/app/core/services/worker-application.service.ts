@@ -65,6 +65,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicantId: new FormControl(), // when authenticated, the applicant id
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 		latestApplicationId: new FormControl(), // placeholder for id
+		isPreviouslyTreatedForMHC: new FormControl(''), // used to determine label to display
 
 		soleProprietorBizAppId: new FormControl(), // placeholder for Simultaneous flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for Simultaneous flow
@@ -151,22 +152,20 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					);
 
 					const isSoleProprietorYesNo = this.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value;
-					if (isSoleProprietorYesNo) {
-						const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYesNo);
-						if (!isSoleProprietor) {
-							// if the sole proprietor flag is 'No', then set the bizTypeCode. This is not user selected.
-							const soleProprietorData = {
-								isSoleProprietor: isSoleProprietorYesNo,
-								bizTypeCode: null,
-							};
+					const bizTypeCode = this.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value;
+					if (isSoleProprietorYesNo === BooleanTypeCode.No && bizTypeCode) {
+						// if the sole proprietor flag is 'No', then empty the bizTypeCode. This is not user selected.
+						const soleProprietorData = {
+							isSoleProprietor: isSoleProprietorYesNo,
+							bizTypeCode: null,
+						};
 
-							this.workerModelFormGroup.patchValue(
-								{
-									soleProprietorData,
-								},
-								{ emitEvent: false }
-							);
-						}
+						this.workerModelFormGroup.patchValue(
+							{
+								soleProprietorData,
+							},
+							{ emitEvent: false }
+						);
 					}
 
 					this.updateModelChangeFlags();
@@ -174,6 +173,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					this.workerModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	getIsPreviouslyTreatedForMHC(): boolean {
+		return !!this.workerModelFormGroup.get('isPreviouslyTreatedForMHC')?.value;
 	}
 
 	/**
@@ -316,7 +319,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepBackgroundComplete(): boolean {
+	isStepBackgroundComplete(includeFingerprints: boolean = true): boolean {
 		// console.debug(
 		// 	'isStepBackgroundComplete',
 		// 	this.policeBackgroundFormGroup.valid,
@@ -324,17 +327,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		// 	this.criminalHistoryFormGroup.valid,
 		// 	this.fingerprintProofFormGroup.valid
 		// );
+		const isValid =
+			this.policeBackgroundFormGroup.valid &&
+			this.mentalHealthConditionsFormGroup.valid &&
+			this.criminalHistoryFormGroup.valid;
 
-		if (this.authenticationService.isLoggedIn()) {
-			return true;
-		} else {
-			return (
-				this.policeBackgroundFormGroup.valid &&
-				this.mentalHealthConditionsFormGroup.valid &&
-				this.criminalHistoryFormGroup.valid &&
-				this.fingerprintProofFormGroup.valid
-			);
+		if (includeFingerprints) {
+			return isValid && this.fingerprintProofFormGroup.valid;
 		}
+
+		return isValid;
 	}
 
 	/**
@@ -352,7 +354,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// );
 			return (
 				this.citizenshipFormGroup.valid &&
-				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -505,7 +506,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyLicenceAuthenticated(applicantProfile, undefined).pipe(
+					return this.createEmptyApplAuthenticated(applicantProfile, undefined).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -626,7 +627,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyLicenceAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
+					return this.createEmptyApplAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -647,68 +648,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);
 
-		// Get the keyCode for the existing documents to save.
-		const documentsToSaveApis: Observable<string>[] = [];
-
-		const existingDocumentIds: Array<string> = [];
-
-		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
-			const newDocumentsOnly: Array<Blob> = [];
-
-			doc.documents.forEach((item: Blob) => {
-				const spdFile: SpdFile = item as SpdFile;
-				if (spdFile.documentUrlId) {
-					existingDocumentIds.push(spdFile.documentUrlId);
-				} else {
-					newDocumentsOnly.push(item);
-				}
-			});
-
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
-						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
 		});
-
-		// console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
-		// console.debug('[saveUserProfile] getProfileSaveBody', body);
-		// console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
-		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		// console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
-
-		if (documentsToSaveApis.length > 0) {
-			return forkJoin(documentsToSaveApis).pipe(
-				switchMap((resps: string[]) => {
-					// pass in the list of document key codes
-					body.documentKeyCodes = [...resps];
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-						applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-						body,
-					});
-				})
-			);
-		} else {
-			// pass in the list of document ids that were in the original
-			// application and are still being used
-			body.previousDocumentIds = [...existingDocumentIds];
-
-			return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-				body,
-			});
-		}
+		// }
 	}
 
 	/**
@@ -794,13 +739,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		}
 	}
 
-	private createEmptyLicenceAuthenticated(
+	private createEmptyApplAuthenticated(
 		applicantProfile: ApplicantProfileResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(applicantProfile, applicationTypeCode);
+		return this.applyLicenceProfileIntoModel(null, applicantProfile, applicationTypeCode);
 	}
 
 	private loadPartialLicenceWithIdAuthenticated(licenceAppId: string): Observable<any> {
@@ -818,7 +763,58 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile);
+				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile).pipe(
+					tap((_resp: any) => {
+						// when resuming, populate the model with existing data for police, mhc and criminal history data
+						const policeBackgroundDataAttachments: Array<File> = [];
+						const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+						workerLicenceAppl.documentInfos?.forEach((doc: Document) => {
+							switch (doc.licenceDocumentTypeCode) {
+								case LicenceDocumentTypeCode.MentalHealthCondition: {
+									const aFile = this.fileUtilService.dummyFile(doc);
+									mentalHealthConditionsDataAttachments.push(aFile);
+									break;
+								}
+								case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+									const aFile = this.fileUtilService.dummyFile(doc);
+									policeBackgroundDataAttachments.push(aFile);
+									break;
+								}
+							}
+						});
+
+						const criminalHistoryData = {
+							hasCriminalHistory: this.utilService.booleanToBooleanType(workerLicenceAppl.hasCriminalHistory),
+							criminalChargeDescription: '',
+						};
+
+						const policeBackgroundData = {
+							isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(workerLicenceAppl.isPoliceOrPeaceOfficer),
+							policeOfficerRoleCode: workerLicenceAppl.policeOfficerRoleCode,
+							otherOfficerRole: workerLicenceAppl.otherOfficerRole,
+							attachments: policeBackgroundDataAttachments,
+						};
+
+						const mentalHealthConditionsData = {
+							isTreatedForMHC: this.utilService.booleanToBooleanType(workerLicenceAppl.isTreatedForMHC),
+							attachments: mentalHealthConditionsDataAttachments,
+						};
+
+						this.workerModelFormGroup.patchValue(
+							{
+								criminalHistoryData,
+								policeBackgroundData,
+								mentalHealthConditionsData,
+							},
+							{
+								emitEvent: false,
+							}
+						);
+
+						console.debug('[loadPartialLicenceWithIdAuthenticated] licenceFormGroup', this.workerModelFormGroup.value);
+					})
+				);
 			})
 		);
 	}
@@ -852,7 +848,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	}
 
 	/**
-	 * Loads the a business application and profile into the business model
+	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
 	private loadLicenceAppAndProfile(
@@ -883,7 +879,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(
-			applicantProfile ?? workerLicenceAppl,
+			workerLicenceAppl,
+			applicantProfile,
 			workerLicenceAppl.applicationTypeCode,
 			associatedLicence
 		).pipe(
@@ -1062,8 +1059,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewLicenceAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.getLicenceEmptyAnonymous(serviceTypeCode).pipe(
+	createNewApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.getApplEmptyAnonymous(serviceTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -1072,7 +1069,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	private getApplEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		const characteristicsData = {
@@ -1088,6 +1085,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		this.workerModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
+				isPreviouslyTreatedForMHC: false,
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 				characteristicsData,
@@ -1142,10 +1140,19 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-			switchMap((workerLicenceAppl: WorkerLicenceAppResponse) => {
+		const apis: Observable<any>[] = [
+			this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet(),
+			this.applicantProfileService.apiApplicantGet(),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const workerLicenceAppl = resps[0];
+				const applicantProfile = resps[1];
+
 				return this.applyLicenceProfileIntoModel(
 					workerLicenceAppl,
+					applicantProfile,
 					workerLicenceAppl.applicationTypeCode,
 					associatedLicence
 				).pipe(
@@ -1288,7 +1295,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	/*************************************************************/
 
 	private applyLicenceProfileIntoModel(
-		applicantProfile: ApplicantProfileResponse | WorkerLicenceAppResponse,
+		workerLicenceAppl: WorkerLicenceAppResponse | null | undefined,
+		applicantProfile: ApplicantProfileResponse | null | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
 		associatedLicence?: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
@@ -1300,21 +1308,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
 		}
 
+		const profileData = applicantProfile ?? workerLicenceAppl;
 		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName1: applicantProfile.middleName1,
-			middleName2: applicantProfile.middleName2,
-			surname: applicantProfile.surname,
-			dateOfBirth: applicantProfile.dateOfBirth,
-			genderCode: applicantProfile.genderCode,
+			givenName: profileData?.givenName,
+			middleName1: profileData?.middleName1,
+			middleName2: profileData?.middleName2,
+			surname: profileData?.surname,
+			dateOfBirth: profileData?.dateOfBirth,
+			genderCode: profileData?.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged,
-			origGivenName: applicantProfile.givenName,
-			origMiddleName1: applicantProfile.middleName1,
-			origMiddleName2: applicantProfile.middleName2,
-			origSurname: applicantProfile.surname,
-			origDateOfBirth: applicantProfile.dateOfBirth,
-			origGenderCode: applicantProfile.genderCode,
+			origGivenName: profileData?.givenName,
+			origMiddleName1: profileData?.middleName1,
+			origMiddleName2: profileData?.middleName2,
+			origSurname: profileData?.surname,
+			origDateOfBirth: profileData?.dateOfBirth,
+			origGenderCode: profileData?.genderCode,
 			cardHolderName: associatedLicence?.nameOnCard ?? null,
 			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
 		};
@@ -1338,91 +1347,53 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
 		};
 
-		let height = applicantProfile.height ? applicantProfile.height + '' : null;
+		let height = profileData?.height ? profileData?.height + '' : null;
 		let heightInches = '';
-		if (
-			applicantProfile.heightUnitCode == HeightUnitCode.Inches &&
-			applicantProfile.height &&
-			applicantProfile.height > 0
-		) {
-			height = Math.trunc(applicantProfile.height / 12) + '';
-			heightInches = (applicantProfile.height % 12) + '';
+		if (profileData?.heightUnitCode == HeightUnitCode.Inches && profileData?.height && profileData?.height > 0) {
+			height = Math.trunc(profileData?.height / 12) + '';
+			heightInches = (profileData?.height % 12) + '';
 		}
 
 		const characteristicsData = {
-			hairColourCode: applicantProfile.hairColourCode,
-			eyeColourCode: applicantProfile.eyeColourCode,
+			hairColourCode: profileData?.hairColourCode,
+			eyeColourCode: profileData?.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
+			heightUnitCode: profileData?.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
-			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
+			weight: profileData?.weight ? profileData?.weight + '' : null,
+			weightUnitCode: profileData?.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
-			emailAddress: applicantProfile.emailAddress,
-			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: profileData?.emailAddress,
+			phoneNumber: profileData?.phoneNumber,
 		};
 
 		const residentialAddressData = {
 			addressSelected: true,
-			addressLine1: applicantProfile.residentialAddress?.addressLine1,
-			addressLine2: applicantProfile.residentialAddress?.addressLine2,
-			city: applicantProfile.residentialAddress?.city,
-			country: applicantProfile.residentialAddress?.country,
-			postalCode: applicantProfile.residentialAddress?.postalCode,
-			province: applicantProfile.residentialAddress?.province,
+			addressLine1: profileData?.residentialAddress?.addressLine1,
+			addressLine2: profileData?.residentialAddress?.addressLine2,
+			city: profileData?.residentialAddress?.city,
+			country: profileData?.residentialAddress?.country,
+			postalCode: profileData?.residentialAddress?.postalCode,
+			province: profileData?.residentialAddress?.province,
 		};
 
 		const mailingAddressData = {
-			addressSelected: !!applicantProfile.mailingAddress,
+			addressSelected: !!profileData?.mailingAddress,
 			isAddressTheSame: false,
-			addressLine1: applicantProfile.mailingAddress?.addressLine1,
-			addressLine2: applicantProfile.mailingAddress?.addressLine2,
-			city: applicantProfile.mailingAddress?.city,
-			country: applicantProfile.mailingAddress?.country,
-			postalCode: applicantProfile.mailingAddress?.postalCode,
-			province: applicantProfile.mailingAddress?.province,
-		};
-
-		const policeBackgroundDataAttachments: Array<File> = [];
-		const mentalHealthConditionsDataAttachments: Array<File> = [];
-
-		applicantProfile.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
-				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					mentalHealthConditionsDataAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					policeBackgroundDataAttachments.push(aFile);
-					break;
-				}
-			}
-		});
-
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(applicantProfile.hasCriminalHistory),
-			criminalChargeDescription: '',
-		};
-
-		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(applicantProfile.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: applicantProfile.policeOfficerRoleCode,
-			otherOfficerRole: applicantProfile.otherOfficerRole,
-			attachments: policeBackgroundDataAttachments,
-		};
-
-		const mentalHealthConditionsData = {
-			isTreatedForMHC: this.utilService.booleanToBooleanType(applicantProfile.isTreatedForMHC),
-			attachments: mentalHealthConditionsDataAttachments,
+			addressLine1: profileData?.mailingAddress?.addressLine1,
+			addressLine2: profileData?.mailingAddress?.addressLine2,
+			city: profileData?.mailingAddress?.city,
+			country: profileData?.mailingAddress?.country,
+			postalCode: profileData?.mailingAddress?.postalCode,
+			province: profileData?.mailingAddress?.province,
 		};
 
 		this.workerModelFormGroup.patchValue(
 			{
-				applicantId: 'applicantId' in applicantProfile ? applicantProfile.applicantId : null,
+				applicantId: profileData && 'applicantId' in profileData ? profileData.applicantId : null,
+				isPreviouslyTreatedForMHC: !!profileData?.isTreatedForMHC,
 				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
@@ -1433,13 +1404,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				contactInformationData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
-						applicantProfile.aliases && applicantProfile.aliases.length > 0
+						profileData?.aliases && profileData?.aliases.length > 0
 					),
 					aliases: [],
 				},
-				criminalHistoryData,
-				policeBackgroundData,
-				mentalHealthConditionsData,
 				characteristicsData,
 			},
 			{
@@ -1448,7 +1416,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 
 		const aliasesArray = this.workerModelFormGroup.get('aliasesData.aliases') as FormArray;
-		applicantProfile.aliases?.forEach((alias: Alias) => {
+		profileData?.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -1516,21 +1484,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			bcDriversLicenceNumber: workerLicenceAppl.bcDriversLicenceNumber,
 		};
 
-		let restraintsAuthorizationData: any = {
-			carryAndUseRestraints: BooleanTypeCode.No,
-			carryAndUseRestraintsDocument: null,
-			attachments: [],
-		};
-		let dogsAuthorizationData: any = {
-			useDogs: BooleanTypeCode.No,
-			dogsPurposeFormGroup: {
-				isDogsPurposeDetectionDrugs: null,
-				isDogsPurposeDetectionExplosives: null,
-				isDogsPurposeProtection: null,
-			},
-			attachments: [],
-		};
-
 		const initialCategoryData = this.initializeCategoryFormGroups(workerLicenceAppl.categoryCodes);
 
 		let categoryArmouredCarGuardFormGroup = initialCategoryData[0];
@@ -1550,6 +1503,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const categorySecurityConsultantFormGroup = initialCategoryData[14];
 		let categorySecurityGuardFormGroup = initialCategoryData[15];
 		const categorySecurityGuardSupFormGroup = initialCategoryData[16];
+
+		let restraintsAuthorizationData: any = {
+			carryAndUseRestraints: this.utilService.booleanToBooleanType(workerLicenceAppl.carryAndUseRestraints),
+			carryAndUseRestraintsDocument: null,
+			attachments: [],
+		};
+		let dogsAuthorizationData: any = {
+			useDogs: this.utilService.booleanToBooleanType(workerLicenceAppl.useDogs),
+			dogsPurposeFormGroup: {
+				isDogsPurposeDetectionDrugs: null,
+				isDogsPurposeDetectionExplosives: null,
+				isDogsPurposeProtection: null,
+			},
+			attachments: [],
+		};
 
 		const fingerprintProofDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
@@ -2053,7 +2021,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		} else {
 			soleProprietorData = {
-				isSoleProprietor: null, // Remove data that should be re-prompted for
+				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for // TODO is this ok?
 				bizTypeCode: null,
 			};
 		}
@@ -2094,23 +2062,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		}
 
-		const mentalHealthConditionsData = {
-			isTreatedForMHC: null,
-			attachments: [],
-			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
-		};
+		// const mentalHealthConditionsData = {
+		// 	isTreatedForMHC: null,
+		// 	attachments: [],
+		// };
 
-		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: null,
-			policeOfficerRoleCode: null,
-			otherOfficerRole: null,
-			attachments: [],
-		};
+		// const policeBackgroundData = {
+		// 	isPoliceOrPeaceOfficer: null,
+		// 	policeOfficerRoleCode: null,
+		// 	otherOfficerRole: null,
+		// 	attachments: [],
+		// };
 
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
+		// const criminalHistoryData = {
+		// 	hasCriminalHistory: null,
+		// 	criminalChargeDescription: null,
+		// };
 
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
@@ -2164,9 +2131,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
-				mentalHealthConditionsData,
-				policeBackgroundData,
-				criminalHistoryData,
+				// mentalHealthConditionsData,
+				// policeBackgroundData,
+				// criminalHistoryData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2236,7 +2203,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
 			attachments: [],
-			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
 
 		const [

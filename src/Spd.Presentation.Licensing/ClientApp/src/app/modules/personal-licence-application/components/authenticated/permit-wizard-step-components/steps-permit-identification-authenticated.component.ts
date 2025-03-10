@@ -5,12 +5,26 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { UtilService } from '@app/core/services/util.service';
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-citizenship.component';
+import { StepPermitCriminalHistoryComponent } from '../../anonymous/permit-wizard-step-components/step-permit-criminal-history.component';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-steps-permit-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step>
+				<app-step-permit-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-criminal-history>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
@@ -61,6 +75,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 	standalone: false,
 })
 export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
+	readonly STEP_CRIMINAL_HISTORY = 0;
 	readonly STEP_CITIZENSHIP = 1;
 	readonly STEP_BC_DRIVERS_LICENCE = 2;
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 3;
@@ -70,6 +85,7 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 
+	@ViewChild(StepPermitCriminalHistoryComponent) criminalHistoryComponen!: StepPermitCriminalHistoryComponent;
 	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
 	@ViewChild(StepPermitBcDriverLicenceComponent)
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
@@ -95,6 +111,8 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_CRIMINAL_HISTORY:
+				return this.criminalHistoryComponen.isFormValid();
 			case this.STEP_CITIZENSHIP:
 				return this.stepCitizenshipComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:

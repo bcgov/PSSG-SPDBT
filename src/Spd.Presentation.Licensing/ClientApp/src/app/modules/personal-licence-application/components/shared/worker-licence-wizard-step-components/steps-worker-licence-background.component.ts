@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
@@ -12,7 +12,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
+				<app-step-worker-licence-police-background
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-police-background>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -39,7 +41,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodeUpdate">
+			<mat-step>
 				<app-step-worker-licence-criminal-history
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-criminal-history>
@@ -54,7 +56,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodeUpdate">
+			<mat-step *ngIf="showFingerprintsStep">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
 				<app-wizard-footer
@@ -78,12 +80,10 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	readonly STEP_CRIMINAL_HISTORY = 3;
 	readonly STEP_FINGERPRINTS = 4;
 
-	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-
+	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() policeOfficerRoleCode: string | null = null;
 
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
 
@@ -99,6 +99,17 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 		super(utilService);
 	}
 
+	get showFingerprintsStep(): boolean {
+		const isRenewal = this.applicationTypeCode === ApplicationTypeCode.Renewal;
+		const isUpdate = this.applicationTypeCode === ApplicationTypeCode.Update;
+
+		if (this.isLoggedIn) {
+			return !isRenewal && !isUpdate;
+		}
+
+		return !isUpdate;
+	}
+
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) {
@@ -106,7 +117,7 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 			return;
 		}
 
-		if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
+		if (_formNumber === this.STEP_CRIMINAL_HISTORY && !this.showFingerprintsStep) {
 			this.nextStepperStep.emit(true);
 			return;
 		}

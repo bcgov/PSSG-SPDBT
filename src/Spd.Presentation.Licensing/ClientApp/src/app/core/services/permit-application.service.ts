@@ -514,13 +514,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(permitModelFormValue);
-		const existingDocumentIds = this.getProfileDocsToSaveKeep(permitModelFormValue);
-
-		body.previousDocumentIds = [...existingDocumentIds];
-
-		// console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
-		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		// console.debug('[saveUserProfile] getProfileSaveBody', body);
 
 		return this.applicantProfileService
 			.apiApplicantApplicantIdPut$Response({
@@ -1121,52 +1114,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			province: applicantProfile.mailingAddress?.province,
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(applicantProfile.hasCriminalHistory),
-			criminalChargeDescription: '',
-		};
-
-		const policeBackgroundDataAttachments: Array<File> = [];
-		const mentalHealthConditionsDataAttachments: Array<File> = [];
-
-		applicantProfile.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
-				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					mentalHealthConditionsDataAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					policeBackgroundDataAttachments.push(aFile);
-					break;
-				}
-			}
-		});
-
-		let policeBackgroundData = {};
-		let mentalHealthConditionsData = {};
-
-		if (
-			'isPoliceOrPeaceOfficer' in applicantProfile &&
-			'policeOfficerRoleCode' in applicantProfile &&
-			'otherOfficerRole' in applicantProfile
-		) {
-			policeBackgroundData = {
-				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(applicantProfile.isPoliceOrPeaceOfficer),
-				policeOfficerRoleCode: applicantProfile.policeOfficerRoleCode,
-				otherOfficerRole: applicantProfile.otherOfficerRole,
-				attachments: policeBackgroundDataAttachments,
-			};
-		}
-
-		if ('isTreatedForMHC' in applicantProfile) {
-			mentalHealthConditionsData = {
-				isTreatedForMHC: this.utilService.booleanToBooleanType(applicantProfile.isTreatedForMHC),
-				attachments: mentalHealthConditionsDataAttachments,
-			};
-		}
-
 		this.permitModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in applicantProfile ? applicantProfile.applicantId : null,
@@ -1185,9 +1132,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					),
 					aliases: [],
 				},
-				criminalHistoryData,
-				policeBackgroundData,
-				mentalHealthConditionsData,
 				characteristicsData,
 			},
 			{
@@ -1450,10 +1394,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
 
 		const photographOfYourselfData = resp.photographOfYourselfData;
 
@@ -1477,7 +1417,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
-				criminalHistoryData,
 				photographOfYourselfData,
 			},
 			{
@@ -1503,10 +1442,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
 
 		this.permitModelFormGroup.patchValue(
 			{
@@ -1516,7 +1451,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
-				criminalHistoryData,
 			},
 			{
 				emitEvent: false,

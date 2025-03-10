@@ -97,9 +97,6 @@ export class FormMentalHealthConditionsComponent {
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
 	}
-	get hasPreviousMhcFormUpload(): FormControl {
-		return this.form.get('hasPreviousMhcFormUpload') as FormControl;
-	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}

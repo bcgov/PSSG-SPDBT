@@ -125,6 +125,11 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
+								<app-worker-summary-criminal-history
+									[workerModelData]="permitModelData"
+								></app-worker-summary-criminal-history>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading-small">Citizenship</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">

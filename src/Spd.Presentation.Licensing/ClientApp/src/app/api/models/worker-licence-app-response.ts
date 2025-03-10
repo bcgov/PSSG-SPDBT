@@ -31,6 +31,7 @@ export interface WorkerLicenceAppResponse {
   carryAndUseRestraints?: boolean | null;
   caseNumber?: string | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+  criminalChargeDescription?: string | null;
   dateOfBirth?: string | null;
   documentInfos?: Array<Document> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;

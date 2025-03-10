@@ -4,6 +4,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-worker-summary-citizenship',
 	template: `
+		<div class="text-minor-heading-small">Citizenship</div>
 		<div class="row mt-0" *ngIf="showCitizenshipStep">
 			<div class="col-lg-6 col-md-12">
 				<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>

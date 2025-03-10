@@ -29,6 +29,7 @@ export interface WorkerLicenceAppUpsertRequest {
   bizTypeCode?: BizTypeCode;
   carryAndUseRestraints?: boolean | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+  criminalChargeDescription?: string | null;
   dateOfBirth?: string | null;
   documentInfos?: Array<Document> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
