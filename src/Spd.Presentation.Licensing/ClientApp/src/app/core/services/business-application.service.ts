@@ -860,7 +860,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						.apiLicencesLicenceIdGet({ licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId })
 						.pipe(
 							switchMap((soleProprietorSwlLicence: LicenceResponse) => {
-								return this.applyLicenceProfileIntoModel({
+								return this.applyProfileIntoModel({
 									businessProfile,
 									soleProprietorSwlLicence,
 								}).pipe(
@@ -874,7 +874,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						);
 				}
 
-				return this.applyLicenceProfileIntoModel({
+				return this.applyProfileIntoModel({
 					businessProfile,
 				}).pipe(
 					tap((_resp: any) => {
@@ -941,7 +941,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
 			switchMap((members: Members) => {
-				return this.applyLicenceProfileMembersIntoModel(members, applicationIsInDraftOrWaitingForPayment).pipe(
+				return this.applyMembersIntoModel(members, applicationIsInDraftOrWaitingForPayment).pipe(
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
@@ -1092,7 +1092,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel({
+		return this.applyProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSWLAppId,
@@ -1127,7 +1127,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessLicenceAppl.expiredLicenceNumber = null;
 				businessLicenceAppl.hasExpiredLicence = false;
 
-				return this.applyLicenceProfileIntoModel({
+				return this.applyProfileIntoModel({
 					businessProfile,
 					applicationTypeCode: ApplicationTypeCode.Renewal,
 					soleProprietorSWLAppId,
@@ -1137,14 +1137,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
 						);
 
-						return this.applyLicenceIntoModel({
+						return this.applyApplIntoModel({
 							businessLicenceAppl,
 							associatedLicence,
 							brandingDocumentInfos,
 						});
 					}),
 					switchMap((_resp2: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp2);
+						return this.applyRenewalSpecificDataToModel(_resp2);
 					})
 				);
 			})
@@ -1169,9 +1169,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		if (controllingMembersAndEmployees) {
-			return this.applyLicenceProfileMembersIntoModel(controllingMembersAndEmployees, false).pipe(
+			return this.applyMembersIntoModel(controllingMembersAndEmployees, false).pipe(
 				switchMap((_resp: any) => {
-					return this.applyLicenceProfileIntoModel({
+					return this.applyProfileIntoModel({
 						businessProfile,
 						applicationTypeCode: ApplicationTypeCode.New,
 						soleProprietorSwlLicence,
@@ -1180,14 +1180,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 		}
 
-		return this.applyLicenceProfileIntoModel({
+		return this.applyProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
 		});
 	}
 
-	private applyLicenceProfileMembersIntoModel(members: Members, applicationIsInDraftOrWaitingForPayment: boolean) {
+	private applyMembersIntoModel(members: Members, applicationIsInDraftOrWaitingForPayment: boolean) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -1245,11 +1245,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			switchMap((resp: any) => {
 				switch (applicationTypeCode) {
 					case ApplicationTypeCode.Renewal:
-						return this.applyRenewalDataUpdatesToModel(resp);
+						return this.applyRenewalSpecificDataToModel(resp);
 					case ApplicationTypeCode.Update:
-						return this.applyUpdateDataUpdatesToModel(resp);
+						return this.applyUpdateSpecificDataToModel(resp);
 					default:
-						return this.applyReplacementDataUpdatesToModel(resp);
+						return this.applyReplacementSpecificDataToModel(resp);
 				}
 			})
 		);
@@ -1463,7 +1463,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						);
 					}
 
-					return this.applyLicenceAndProfileIntoModel({
+					return this.applyApplAndProfileIntoModel({
 						businessLicenceAppl,
 						applicationTypeCode,
 						businessProfile,
@@ -1477,7 +1477,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 		}
 
-		return this.applyLicenceAndProfileIntoModel({
+		return this.applyApplAndProfileIntoModel({
 			businessLicenceAppl,
 			applicationTypeCode,
 			businessProfile,
@@ -1543,7 +1543,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the profile and licence into the business model
 	 * @returns
 	 */
-	private applyLicenceAndProfileIntoModel({
+	private applyApplAndProfileIntoModel({
 		businessLicenceAppl,
 		applicationTypeCode,
 		businessProfile,
@@ -1565,14 +1565,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		console.debug('[applyLicenceAndProfileIntoModel] businessLicenceAppl', businessLicenceAppl);
 		console.debug('[applyLicenceAndProfileIntoModel] soleProprietorSwlLicence', soleProprietorSwlLicence);
 
-		return this.applyLicenceProfileIntoModel({
+		return this.applyProfileIntoModel({
 			businessProfile,
 			applicationTypeCode,
 			soleProprietorSwlLicence,
 			soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId ?? undefined,
 		}).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel({
+				return this.applyApplIntoModel({
 					businessLicenceAppl,
 					associatedExpiredLicence,
 					privateInvestigatorSwlLicence,
@@ -1587,7 +1587,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the licence into the business model
 	 * @returns
 	 */
-	private applyLicenceIntoModel({
+	private applyApplIntoModel({
 		businessLicenceAppl,
 		associatedExpiredLicence,
 		privateInvestigatorSwlLicence,
@@ -1854,7 +1854,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the profile into the business model
 	 * @returns
 	 */
-	private applyLicenceProfileIntoModel({
+	private applyProfileIntoModel({
 		businessProfile,
 		applicationTypeCode,
 		soleProprietorSwlLicence,
@@ -2003,7 +2003,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (applicationTypeCode) {
 			if (soleProprietorSWLAppId && applicationTypeCode != ApplicationTypeCode.Update) {
 				// using sole proprietor simultaneous flow
-				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+				return this.applySoleProprietorSwlIntoModel(soleProprietorSWLAppId);
 			} else if (soleProprietorSwlLicence?.licenceAppId) {
 				// business licence is sole proprietor (licence selected in profile)
 				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
@@ -2014,7 +2014,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyBusinessLicenceSoleProprietorSwl(licenceAppId: string): Observable<any> {
+	private applySoleProprietorSwlIntoModel(licenceAppId: string): Observable<any> {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceAppResponse) => {
 				console.debug('[applyBusinessLicenceSoleProprietorSwl] resp', resp);
@@ -2283,7 +2283,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyRenewalDataUpdatesToModel(_resp: any): Observable<any> {
+	private applyRenewalSpecificDataToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		const liabilityData = {
@@ -2310,7 +2310,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyUpdateDataUpdatesToModel(_resp: any): Observable<any> {
+	private applyUpdateSpecificDataToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
 		this.businessModelFormGroup.patchValue(
@@ -2327,7 +2327,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyReplacementDataUpdatesToModel(_resp: any): Observable<any> {
+	private applyReplacementSpecificDataToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		this.businessModelFormGroup.patchValue(

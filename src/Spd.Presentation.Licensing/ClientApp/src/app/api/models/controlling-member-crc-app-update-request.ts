@@ -20,8 +20,6 @@ export interface ControllingMemberCrcAppUpdateRequest {
   givenName?: string | null;
   hasCriminalHistory?: boolean | null;
   hasLegalNameChanged?: boolean | null;
-  hasNewCriminalRecordCharge?: boolean | null;
-  hasNewMentalHealthCondition?: boolean | null;
   inviteId?: string;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
