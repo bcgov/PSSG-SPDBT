@@ -896,13 +896,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				? policeBackgroundData.otherOfficerRole
 				: null;
 
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
-
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 		if (!hasExpiredLicence) {
@@ -954,7 +947,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasCriminalHistory,
-			hasNewCriminalRecordCharge, // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			licenceTermCode: workerModelFormValue.licenceTermData.licenceTermCode,
@@ -966,7 +958,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
 			isTreatedForMHC,
-			hasNewMentalHealthCondition, // used by the backend for an Update or Renewal
 			//-----------------------------------
 			isPoliceOrPeaceOfficer,
 			policeOfficerRoleCode,
