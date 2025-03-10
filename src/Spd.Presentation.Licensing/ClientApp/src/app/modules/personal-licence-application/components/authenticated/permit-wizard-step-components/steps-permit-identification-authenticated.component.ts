@@ -19,7 +19,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
 				></app-wizard-footer>
@@ -32,7 +32,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
-					(previousStepperStep)="onStepPrevious()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
 					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
 				></app-wizard-footer>
