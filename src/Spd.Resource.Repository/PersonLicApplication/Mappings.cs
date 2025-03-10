@@ -39,7 +39,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsPoliceOrPeaceOfficer)))
         .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
         .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
-        .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => s.IsTreatedForMHC))
+        .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
         .ForMember(d => d.spd_haircolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColor(s.HairColourCode)))
         .ForMember(d => d.spd_eyecolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColor(s.EyeColourCode)))
         .ForMember(d => d.spd_height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightStr(s.Height, s.HeightUnitCode)))
