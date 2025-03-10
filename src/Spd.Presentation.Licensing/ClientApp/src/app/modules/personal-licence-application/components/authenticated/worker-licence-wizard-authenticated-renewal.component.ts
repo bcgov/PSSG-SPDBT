@@ -33,8 +33,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 				>
 					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel
-							>Licence<span class="d-xxl-none">&nbsp;</span
-							><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+							>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 						>
 						<app-steps-worker-licence-selection
 							[isLoggedIn]="true"
@@ -83,8 +82,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<mat-step completed="false">
 						<ng-template matStepLabel
-							>Review<span class="d-xxl-none">&nbsp;</span
-							><span class="d-none d-xxl-inline"><br /></span>Worker</ng-template
+							>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker</ng-template
 						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
@@ -101,22 +99,19 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
 						<mat-step completed="false">
 							<ng-template matStepLabel
-								>Business<span class="d-xxl-none">&nbsp;</span
-								><span class="d-none d-xxl-inline"><br /></span>Information</ng-template
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
 							>
 						</mat-step>
 
 						<mat-step completed="false">
 							<ng-template matStepLabel
-								>Business<span class="d-xxl-none">&nbsp;</span
-								><span class="d-none d-xxl-inline"><br /></span>Selection</ng-template
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 							>
 						</mat-step>
 
 						<mat-step completed="false">
 							<ng-template matStepLabel
-								>Review<span class="d-xxl-none">&nbsp;</span
-								><span class="d-none d-xxl-inline"><br /></span>Business</ng-template
+								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business</ng-template
 							>
 						</mat-step>
 					</ng-container>
@@ -129,6 +124,13 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 				</mat-stepper>
 			</div>
 		</div>
+
+		<ng-template #StepNameSpace>
+			<ng-container *ngIf="isSoleProprietor">
+				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+			</ng-container>
+			<ng-container *ngIf="!isSoleProprietor">&nbsp;</ng-container>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,

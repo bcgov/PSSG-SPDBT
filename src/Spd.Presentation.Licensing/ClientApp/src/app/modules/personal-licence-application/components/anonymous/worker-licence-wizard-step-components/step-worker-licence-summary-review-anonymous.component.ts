@@ -215,11 +215,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								</ng-container>
 
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<app-worker-summary-citizenship
-										[workerModelData]="licenceModelData"
-										[showCitizenshipStep]="showCitizenshipStep"
-									></app-worker-summary-citizenship>
+									<ng-container *ngIf="showCitizenshipStep">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-worker-summary-citizenship
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-citizenship>
+									</ng-container>
 
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-worker-summary-photo-of-yourself
