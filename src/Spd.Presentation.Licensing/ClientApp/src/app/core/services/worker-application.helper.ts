@@ -754,7 +754,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				});
 			});
 		}
-		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
 		fingerprintProofData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -854,9 +853,12 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
-			? policeBackgroundData.policeOfficerRoleCode
-			: PoliceOfficerRoleCode.None;
+		let policeOfficerRoleCode = null;
+		if (applicationTypeCode != ApplicationTypeCode.Replacement) {
+			policeOfficerRoleCode = isPoliceOrPeaceOfficer
+				? policeBackgroundData.policeOfficerRoleCode
+				: PoliceOfficerRoleCode.None;
+		}
 		const otherOfficerRole =
 			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
 				? policeBackgroundData.otherOfficerRole

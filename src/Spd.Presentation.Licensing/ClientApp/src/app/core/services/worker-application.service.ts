@@ -1172,10 +1172,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
-
-		// bug: LegalNameChange document is not included (from personalInformationData) using 'getRawValue'
-		const licenceModelFormValue2 = this.workerModelFormGroup.value;
-		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue2);
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
