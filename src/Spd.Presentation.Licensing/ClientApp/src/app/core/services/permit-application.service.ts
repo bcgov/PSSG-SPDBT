@@ -763,7 +763,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
+				const personalInformationData = _resp.personalInformationData;
 
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
@@ -1122,10 +1122,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				originalLicenceData,
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
-				personalInformationData: { ...personalInformationData },
-				residentialAddressData: { ...residentialAddressData },
-				mailingAddressData: { ...mailingAddressData },
-				contactInformationData: { ...contactInformationData },
+				personalInformationData,
+				residentialAddressData,
+				mailingAddressData,
+				contactInformationData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						applicantProfile.aliases && applicantProfile.aliases.length > 0

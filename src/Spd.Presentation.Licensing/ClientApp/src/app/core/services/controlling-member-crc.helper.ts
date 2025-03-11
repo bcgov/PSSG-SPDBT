@@ -92,20 +92,16 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 	}
 
 	private getSaveBodyBase(controllingMemberCrcFormValue: any): any {
-		const serviceTypeData = { ...controllingMemberCrcFormValue.serviceTypeData };
-		const applicationTypeData = { ...controllingMemberCrcFormValue.applicationTypeData };
-		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
-		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
-		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
-		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
-		const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
-		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
-		const personalInformationData = {
-			...controllingMemberCrcFormValue.personalInformationData,
-		};
-		const contactInformationData = {
-			...controllingMemberCrcFormValue.contactInformationData,
-		};
+		const serviceTypeData = controllingMemberCrcFormValue.serviceTypeData;
+		const applicationTypeData = controllingMemberCrcFormValue.applicationTypeData;
+		const bcDriversLicenceData = controllingMemberCrcFormValue.bcDriversLicenceData;
+		const residentialAddressData = controllingMemberCrcFormValue.residentialAddressData;
+		const citizenshipData = controllingMemberCrcFormValue.citizenshipData;
+		const policeBackgroundData = controllingMemberCrcFormValue.policeBackgroundData;
+		const fingerprintProofData = controllingMemberCrcFormValue.fingerprintProofData;
+		const mentalHealthConditionsData = controllingMemberCrcFormValue.mentalHealthConditionsData;
+		const personalInformationData = controllingMemberCrcFormValue.personalInformationData;
+		const contactInformationData = controllingMemberCrcFormValue.contactInformationData;
 		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
@@ -257,10 +253,10 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 	): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const citizenshipData = { ...controllingMembersModelFormValue.citizenshipData };
-		const fingerprintProofData = { ...controllingMembersModelFormValue.fingerprintProofData };
-		const policeBackgroundData = { ...controllingMembersModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...controllingMembersModelFormValue.mentalHealthConditionsData };
+		const citizenshipData = controllingMembersModelFormValue.citizenshipData;
+		const fingerprintProofData = controllingMembersModelFormValue.fingerprintProofData;
+		const policeBackgroundData = controllingMembersModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = controllingMembersModelFormValue.mentalHealthConditionsData;
 
 		if (fingerprintProofData.attachments) {
 			const docs: Array<Blob> = [];

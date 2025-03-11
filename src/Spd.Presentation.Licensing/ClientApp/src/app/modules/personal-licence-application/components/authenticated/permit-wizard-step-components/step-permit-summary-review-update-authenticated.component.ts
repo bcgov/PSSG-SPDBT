@@ -135,7 +135,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 	}
 
 	onUpdateData(): void {

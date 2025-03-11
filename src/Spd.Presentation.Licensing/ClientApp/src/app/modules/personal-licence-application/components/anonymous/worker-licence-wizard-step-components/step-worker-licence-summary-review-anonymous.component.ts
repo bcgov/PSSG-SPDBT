@@ -401,7 +401,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onEditStep(stepNumber: number) {

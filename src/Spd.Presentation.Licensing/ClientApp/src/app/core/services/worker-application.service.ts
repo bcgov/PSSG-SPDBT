@@ -961,7 +961,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
+				const personalInformationData = _resp.personalInformationData;
 
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
@@ -2078,7 +2078,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
-		const photographOfYourselfData = { ...resp.photographOfYourselfData };
+		const photographOfYourselfData = resp.photographOfYourselfData;
 
 		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
@@ -2314,7 +2314,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				mailingAddressData: { ...mailingAddressData },
+				mailingAddressData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,

@@ -1028,8 +1028,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizManagerContactInfo = isSoleProprietor ? {} : modelFormValue.businessManagerData;
 
 		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
-			? { ...modelFormValue.businessMailingAddressData }
-			: { ...modelFormValue.businessAddressData };
+			? modelFormValue.businessMailingAddressData
+			: modelFormValue.businessAddressData;
 
 		let soleProprietorLicenceId: null | string = null;
 		let soleProprietorSwlEmailAddress: null | string = null;
@@ -1061,7 +1061,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const body: BizProfileUpdateRequest = {
 			bizAddress,
-			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : { ...modelFormValue.bcBusinessAddressData },
+			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : modelFormValue.bcBusinessAddressData,
 			bizManagerContactInfo,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
@@ -1960,9 +1960,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				isBcBusinessAddress,
 				isBusinessLicenceSoleProprietor,
-				businessAddressData: { ...businessAddressData },
-				bcBusinessAddressData: { ...bcBusinessAddressData },
-				businessMailingAddressData: { ...businessMailingAddressData },
+				businessAddressData,
+				bcBusinessAddressData,
+				businessMailingAddressData,
 				branchesInBcData,
 			},
 			{

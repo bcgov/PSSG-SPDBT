@@ -271,7 +271,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onEditStep(stepNumber: number) {

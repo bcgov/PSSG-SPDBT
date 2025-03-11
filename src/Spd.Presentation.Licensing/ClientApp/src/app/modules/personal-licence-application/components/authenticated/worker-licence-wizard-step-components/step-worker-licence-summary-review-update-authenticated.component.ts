@@ -177,7 +177,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onUpdateData(): void {
