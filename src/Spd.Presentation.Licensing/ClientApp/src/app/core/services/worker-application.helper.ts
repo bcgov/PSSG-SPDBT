@@ -310,7 +310,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		return requestbody;
 	}
 
-	getDocsToSaveBlobs(workerModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(workerModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const applicationTypeData = workerModelFormValue.applicationTypeData;
@@ -505,28 +505,26 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
 		}
 
-		if (includeProfileDocs) {
-			const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-			const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
-			if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
-				const docs: Array<Blob> = [];
-				policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-					documents: docs,
-				});
-			}
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
 
-			if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
-				const docs: Array<Blob> = [];
-				mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-			}
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
 		}
 
 		if (citizenshipData.attachments) {
@@ -571,38 +569,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		}
 
 		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
-		return documents;
-	}
-
-	getProfileDocsToSaveBlobs(workerModelFormValue: any): Array<LicenceDocumentsToSave> {
-		const documents: Array<LicenceDocumentsToSave> = [];
-
-		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
-		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
-
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-
-		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
-		console.debug('[getProfileDocsToSaveBlobs] documentsToSave', documents);
 		return documents;
 	}
 
@@ -1318,6 +1284,12 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	}
 	getSummarydateOfBirth(workerLicenceModelData: any): string {
 		return workerLicenceModelData.personalInformationData.dateOfBirth ?? '';
+	}
+	getSummaryhasLegalNameChanged(workerLicenceModelData: any): boolean {
+		return !!workerLicenceModelData.personalInformationData.hasLegalNameChanged;
+	}
+	getSummaryhasLegalNameChangedAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.personalInformationData.attachments ?? [];
 	}
 
 	getSummarypreviousNameFlag(workerLicenceModelData: any): string {

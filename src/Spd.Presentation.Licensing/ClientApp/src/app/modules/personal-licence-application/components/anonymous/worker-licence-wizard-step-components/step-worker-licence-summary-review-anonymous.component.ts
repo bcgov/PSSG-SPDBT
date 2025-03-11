@@ -187,6 +187,23 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 									</div>
 								</div>
+								<ng-container *ngIf="hasLegalNameChanged">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small">Legal Name Change</div>
+									<div class="row mt-0">
+										<div class="col-12">
+											<div class="text-label d-block text-muted">Legal Name Change Form</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of hasLegalNameChangedAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
 
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -438,6 +455,12 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	}
 	get dateOfBirth(): string {
 		return this.workerApplicationService.getSummarydateOfBirth(this.licenceModelData);
+	}
+	get hasLegalNameChanged(): boolean {
+		return this.workerApplicationService.getSummaryhasLegalNameChanged(this.licenceModelData);
+	}
+	get hasLegalNameChangedAttachments(): File[] {
+		return this.workerApplicationService.getSummaryhasLegalNameChangedAttachments(this.licenceModelData);
 	}
 
 	get previousNameFlag(): string {

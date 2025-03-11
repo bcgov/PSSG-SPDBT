@@ -584,7 +584,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	getWorkerLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
-		return this.loadPartialLicenceWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -679,7 +679,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
 
-		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -745,10 +745,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(null, applicantProfile, applicationTypeCode);
+		return this.applyProfileIntoModel(null, applicantProfile, applicationTypeCode);
 	}
 
-	private loadPartialLicenceWithIdAuthenticated(licenceAppId: string): Observable<any> {
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -763,7 +763,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile).pipe(
+				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile).pipe(
 					tap((_resp: any) => {
 						// when resuming, populate the model with existing data for police, mhc and criminal history data
 						const policeBackgroundDataAttachments: Array<File> = [];
@@ -819,10 +819,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private loadExistingLicenceWithLatestAuthenticated(
-		applicantId: string,
-		associatedLicence: MainLicenceResponse
-	): Observable<any> {
+	private loadLatestApplAuthenticated(applicantId: string, associatedLicence: MainLicenceResponse): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -842,7 +839,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
+				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
 	}
@@ -851,7 +848,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
-	private loadLicenceAppAndProfile(
+	private loadLicenceApplAndProfile(
 		workerLicenceAppl: WorkerLicenceAppResponse,
 		applicantProfile: ApplicantProfileResponse,
 		associatedLicence?: MainLicenceResponse
@@ -859,7 +856,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (workerLicenceAppl.expiredLicenceId) {
 			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceAppl.expiredLicenceId }).pipe(
 				switchMap((expiredLicence: LicenceResponse) => {
-					return this.applyLicenceAndProfileIntoModel(
+					return this.applyApplAndProfileIntoModel(
 						workerLicenceAppl,
 						applicantProfile,
 						associatedLicence,
@@ -869,23 +866,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			);
 		}
 
-		return this.applyLicenceAndProfileIntoModel(workerLicenceAppl, applicantProfile, associatedLicence);
+		return this.applyApplAndProfileIntoModel(workerLicenceAppl, applicantProfile, associatedLicence);
 	}
 
-	private applyLicenceAndProfileIntoModel(
+	private applyApplAndProfileIntoModel(
 		workerLicenceAppl: WorkerLicenceAppResponse,
 		applicantProfile: ApplicantProfileResponse | null | undefined,
 		associatedLicence?: MainLicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
-		return this.applyLicenceProfileIntoModel(
+		return this.applyProfileIntoModel(
 			workerLicenceAppl,
 			applicantProfile,
 			workerLicenceAppl.applicationTypeCode,
 			associatedLicence
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence, associatedExpiredLicence);
+				return this.applyApplIntoModel(workerLicenceAppl, associatedLicence, associatedExpiredLicence);
 			})
 		);
 	}
@@ -905,7 +902,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence),
+					this.loadLatestApplAuthenticated(applicantId, associatedLicence),
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -914,18 +911,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
+						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
 				// ApplicationTypeCode.Replacement
-				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence).pipe(
+				return this.loadLatestApplAuthenticated(applicantId, associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
 					})
 				);
 			}
@@ -1050,7 +1047,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.securityWorkerLicensingService.apiSpWorkerLicenceApplicationGet().pipe(
 			switchMap((resp: WorkerLicenceAppResponse) => {
-				return this.applyLicenceAndProfileIntoModel(resp, null);
+				return this.applyApplAndProfileIntoModel(resp, null);
 			})
 		);
 	}
@@ -1110,7 +1107,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceApplicationAnonymous(associatedLicence),
+					this.loadExistingLicenceApplAnonymous(associatedLicence),
 					this.licenceService.apiLicencesLicencePhotoGet(),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -1119,24 +1116,24 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
+						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceApplicationAnonymous(associatedLicence).pipe(
+				return this.loadExistingLicenceApplAnonymous(associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
 					})
 				);
 			}
 		}
 	}
 
-	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
+	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -1149,7 +1146,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.applyLicenceProfileIntoModel(
+				return this.applyProfileIntoModel(
 					workerLicenceAppl,
 					applicantProfile,
 					workerLicenceAppl.applicationTypeCode,
@@ -1161,7 +1158,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						workerLicenceAppl.expiredLicenceNumber = null;
 						workerLicenceAppl.hasExpiredLicence = false;
 
-						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
+						return this.applyApplIntoModel(workerLicenceAppl, associatedLicence);
 					})
 				);
 			})
@@ -1175,7 +1172,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
+
+		// bug: LegalNameChange document is not included (from personalInformationData) using 'getRawValue'
+		const licenceModelFormValue2 = this.workerModelFormGroup.value;
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue2);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -1293,7 +1293,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
-	private applyLicenceProfileIntoModel(
+	private applyProfileIntoModel(
 		workerLicenceAppl: WorkerLicenceAppResponse | null | undefined,
 		applicantProfile: ApplicantProfileResponse | null | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
@@ -1431,7 +1431,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return of(this.workerModelFormGroup.value);
 	}
 
-	private applyLicenceIntoModel(
+	private applyApplIntoModel(
 		workerLicenceAppl: WorkerLicenceAppResponse,
 		associatedLicence?: MainLicenceResponse | LicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
@@ -1994,7 +1994,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		];
 	}
 
-	private applyRenewalDataUpdatesToModel(
+	private applyRenewalSpecificDataToModel(
 		resp: any,
 		isAuthenticated: boolean,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
@@ -2165,7 +2165,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private applyUpdateDataUpdatesToModel(
+	private applyUpdateSpecificDataToModel(
 		resp: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
@@ -2278,7 +2278,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private applyReplacementDataUpdatesToModel(
+	private applyReplacementSpecificDataToModel(
 		resp: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
