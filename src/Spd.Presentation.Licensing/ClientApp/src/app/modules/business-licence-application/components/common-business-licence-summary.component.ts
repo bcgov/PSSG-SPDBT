@@ -401,7 +401,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Members & Employees</div>
+												<div class="panel-header">Controlling Members & Employees</div>
 												<button
 													*ngIf="showEditButton"
 													mat-mini-fab
