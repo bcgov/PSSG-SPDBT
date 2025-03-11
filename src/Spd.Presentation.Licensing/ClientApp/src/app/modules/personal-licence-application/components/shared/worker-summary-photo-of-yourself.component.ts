@@ -6,7 +6,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<div class="text-minor-heading-small">Photograph of Yourself</div>
 		<div class="row mt-0">
-			<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
+			<div class="col-lg-6 col-md-12">
 				<div class="text-label d-block text-muted">Photograph of Yourself</div>
 				<div class="summary-text-data">
 					<ul class="m-0">

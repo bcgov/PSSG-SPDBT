@@ -68,8 +68,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12" [ngClass]="soleProprietorBizTypeCode ? 'col-xl-4' : 'col-xl-8'">
-										<div class="text-label d-block text-muted">Licence Categories</div>
+								</div>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="text-minor-heading-small">Licence Categories</div>
+								<div class="row mt-0">
+									<div class="col-12">
 										<div class="summary-text-data">
 											<ul class="m-0">
 												<ng-container *ngFor="let category of categoryList; let i = index">
@@ -229,9 +233,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											</ng-container>
 										</div>
 									</div>
-								</ng-container>
 
-								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<ng-container *ngIf="showCitizenshipStep">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<app-worker-summary-citizenship
@@ -239,10 +241,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										></app-worker-summary-citizenship>
 									</ng-container>
 
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<app-worker-summary-photo-of-yourself
-										[workerModelData]="licenceModelData"
-									></app-worker-summary-photo-of-yourself>
+									<ng-container *ngIf="photoOfYourselfAttachments">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-worker-summary-photo-of-yourself
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-photo-of-yourself>
+									</ng-container>
 
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-worker-summary-bc-drivers-licence
@@ -420,6 +424,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	get soleProprietorBizTypeCode(): string {
 		return this.workerApplicationService.getSummarysoleProprietorBizTypeCode(this.licenceModelData);
+	}
+
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 
 	get licenceTermCode(): LicenceTermCode | null {
