@@ -104,8 +104,6 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		const contactInformationData = controllingMemberCrcFormValue.contactInformationData;
 		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
 
-		const applicationTypeCode = applicationTypeData.applicationTypeCode;
-
 		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);

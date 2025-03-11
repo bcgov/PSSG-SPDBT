@@ -8,7 +8,6 @@ import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
 import { HairColourCode } from '../models/hair-colour-code';
 import { HeightUnitCode } from '../models/height-unit-code';
-import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WeightUnitCode } from '../models/weight-unit-code';
 export interface ApplicantUpdateRequest {
   aliases?: Array<Alias> | null;
@@ -18,17 +17,12 @@ export interface ApplicantUpdateRequest {
   genderCode?: GenderCode;
   givenName?: string | null;
   hairColourCode?: HairColourCode;
-  hasCriminalHistory?: boolean | null;
   height?: number | null;
   heightUnitCode?: HeightUnitCode;
-  isPoliceOrPeaceOfficer?: boolean | null;
-  isTreatedForMHC?: boolean | null;
   mailingAddress?: Address;
   middleName1?: string | null;
   middleName2?: string | null;
-  otherOfficerRole?: string | null;
   phoneNumber?: string | null;
-  policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: Address;
   surname?: string | null;
   weight?: number | null;
