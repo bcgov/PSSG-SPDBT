@@ -77,8 +77,6 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_Success()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, false)
-                .With(r => r.IsPoliceOrPeaceOfficer, false)
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
@@ -101,8 +99,6 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_WithNoMentalHealthConditionFile_Throw_Exception()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, true)
-                .With(r => r.IsPoliceOrPeaceOfficer, false)
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
@@ -124,8 +120,6 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_WithNoPoliceBackgroundLetterOfNoConflictFile_Throw_Exception()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, false)
-                .With(r => r.IsPoliceOrPeaceOfficer, true)
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
