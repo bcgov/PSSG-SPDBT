@@ -86,7 +86,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<mat-step completed="false">
 						<ng-template matStepLabel
-							>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker</ng-template
+							>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
 						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
@@ -116,7 +116,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 						<mat-step completed="false">
 							<ng-template matStepLabel
-								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business</ng-template
+								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
 							>
 						</mat-step>
 					</ng-container>

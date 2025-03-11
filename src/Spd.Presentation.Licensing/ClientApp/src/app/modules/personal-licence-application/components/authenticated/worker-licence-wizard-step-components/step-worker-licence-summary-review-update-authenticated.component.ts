@@ -66,21 +66,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</div>
 
 									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<app-worker-summary-police-background
-										[workerModelData]="licenceModelData"
-									></app-worker-summary-police-background>
-
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<app-worker-summary-mental-health-conditions
-										[workerModelData]="licenceModelData"
-									></app-worker-summary-mental-health-conditions>
-
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<app-worker-summary-criminal-history
-										[workerModelData]="licenceModelData"
-									></app-worker-summary-criminal-history>
-
-									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<div class="text-minor-heading-small">Licence Categories</div>
 									<div class="row mt-0">
 										<div class="col-12">
@@ -97,6 +82,21 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									<app-worker-summary-dogs-restraints
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-dogs-restraints>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-police-background
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-police-background>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-mental-health-conditions
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-mental-health-conditions>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-criminal-history
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-criminal-history>
 								</div>
 							</div>
 						</mat-expansion-panel>

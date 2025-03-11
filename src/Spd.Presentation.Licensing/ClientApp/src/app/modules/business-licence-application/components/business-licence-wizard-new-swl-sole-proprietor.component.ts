@@ -48,7 +48,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 
 				<mat-step [editable]="false" [completed]="true">
 					<ng-template matStepLabel
-						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker</ng-template
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
 					>
 				</mat-step>
 
@@ -90,7 +90,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 
 				<mat-step completed="false">
 					<ng-template matStepLabel
-						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business</ng-template
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
 					>
 					<app-steps-business-licence-review
 						[applicationTypeCode]="applicationTypeCode"

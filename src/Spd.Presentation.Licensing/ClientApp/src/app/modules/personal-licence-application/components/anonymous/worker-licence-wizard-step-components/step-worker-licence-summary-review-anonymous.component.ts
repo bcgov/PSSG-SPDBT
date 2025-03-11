@@ -258,29 +258,24 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								<app-worker-summary-characteristics
 									[workerModelData]="licenceModelData"
 								></app-worker-summary-characteristics>
-							</div>
-						</mat-expansion-panel>
 
-						<mat-expansion-panel class="mb-2" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Contact Information</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(99)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Contact</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="licenceModelData.residentialAddressData"
+									headingLabel="Residential Address"
+									[isAddressTheSame]="false"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="licenceModelData.mailingAddressData"
+									headingLabel="Mailing Address"
+									[isAddressTheSame]="isAddressTheSame"
+									isAddressTheSameLabel="Mailing address is the same as the residential address"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="text-minor-heading-small">Contact</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
@@ -293,22 +288,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="licenceModelData.residentialAddressData"
-									headingLabel="Residential Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="licenceModelData.mailingAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="isAddressTheSame"
-									isAddressTheSameLabel="Mailing address is the same as the residential address"
-								></app-form-address-summary>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
