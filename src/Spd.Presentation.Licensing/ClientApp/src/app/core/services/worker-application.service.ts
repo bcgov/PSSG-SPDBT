@@ -12,6 +12,7 @@ import {
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
+	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
@@ -41,6 +42,7 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
+	map,
 	of,
 	switchMap,
 	take,
@@ -53,6 +55,10 @@ import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 import { WorkerApplicationHelper } from './worker-application.helper';
+
+export interface LicenceResponseExt extends LicenceResponse {
+	inProgressApplications: boolean;
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -944,10 +950,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceResponse> {
+	): Observable<LicenceResponseExt> {
 		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(take(1));
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
 	}
 
 	/**
