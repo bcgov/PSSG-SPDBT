@@ -15,7 +15,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Identification</div>
+										<div class="panel-header">Personal Information</div>
 										<button
 											mat-mini-fab
 											color="primary"
