@@ -13,7 +13,6 @@ import {
 	LicenceTermCode,
 	PermitAppSubmitRequest,
 	PermitAppUpsertRequest,
-	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 } from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
@@ -187,45 +186,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 	getProfileSaveBody(permitModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = permitModelFormValue.applicationTypeData;
 		const contactInformationData = permitModelFormValue.contactInformationData;
 		const residentialAddressData = permitModelFormValue.residentialAddressData;
 		const mailingAddressData = permitModelFormValue.mailingAddressData;
 		const personalInformationData = permitModelFormValue.personalInformationData;
-		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
 		const characteristicsData = permitModelFormValue.characteristicsData;
-
-		// Even thought this used by permits, still need to save the original data
-		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
-		const mentalHealthConditionsData = permitModelFormValue.mentalHealthConditionsData;
-
-		const applicationTypeCode = applicationTypeData.applicationTypeCode;
-
-		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
-		const criminalChargeDescription =
-			applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory
-				? criminalHistoryData.criminalChargeDescription
-				: null;
-
-		const documentKeyCodes: null | Array<string> = [];
-		const previousDocumentIds: null | Array<string> = [];
-
-		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
-			? policeBackgroundData.policeOfficerRoleCode
-			: PoliceOfficerRoleCode.None;
-		const otherOfficerRole =
-			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
-				? policeBackgroundData.otherOfficerRole
-				: null;
-
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -234,8 +199,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const requestbody: ApplicantUpdateRequest = {
-			licenceId: undefined,
-			applicationTypeCode: undefined,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
@@ -250,26 +213,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 					? permitModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			documentKeyCodes,
-			previousDocumentIds,
-			//-----------------------------------
-			isTreatedForMHC,
-			hasNewMentalHealthCondition,
-			//-----------------------------------
-			isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode,
-			otherOfficerRole,
-			//-----------------------------------
-			hasCriminalHistory,
-			hasNewCriminalRecordCharge,
-			criminalChargeDescription, // populated only for Update and new charges is Yes
-			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
 			residentialAddress: residentialAddressData,
 			...characteristicsData,
 		};
 
-		console.debug('[getProfileSaveBody] permitModelFormValue', permitModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
 
 		return requestbody;
@@ -631,7 +579,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,

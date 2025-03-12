@@ -4,13 +4,12 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-step-permit-user-profile',
-    template: `
+	selector: 'app-step-permit-user-profile',
+	template: `
 		<div class="step-section">
 			<div class="step">
 				<div class="row">
@@ -35,13 +34,6 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								[isReadonlyPersonalInfo]="false"
 								[isReadonlyMailingAddress]="false"
 							></app-common-user-profile>
-						</section>
-
-						<section *ngIf="isVisibleBackgroundInfo">
-							<app-common-user-profile-licence-criminal-history
-								[form]="criminalHistoryFormGroup"
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-criminal-history>
 						</section>
 
 						<section class="mb-3" *ngIf="showConfirmation">
@@ -75,8 +67,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
@@ -89,15 +81,12 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
-	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
-	criminalHistoryComponent!: CommonUserProfileLicenceCriminalHistoryComponent;
 
 	personalInformationFormGroup = this.permitApplicationService.personalInformationFormGroup;
 	contactInformationFormGroup = this.permitApplicationService.contactInformationFormGroup;
 	aliasesFormGroup = this.permitApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.permitApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.permitApplicationService.mailingAddressFormGroup;
-	criminalHistoryFormGroup = this.permitApplicationService.criminalHistoryFormGroup;
 	characteristicsFormGroup = this.permitApplicationService.characteristicsFormGroup;
 
 	constructor(
@@ -144,7 +133,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 = this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
+		const isValid3 = true; // TODO Remove this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3;
 
