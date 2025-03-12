@@ -113,5 +113,17 @@ namespace Spd.Presentation.Licensing.Controllers
             string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
             return await _mediator.Send(new GetApplicantProfileQuery(Guid.Parse(applicantIdStr)));
         }
+
+        /// <summary>
+        /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants-anonymous/licence-applications")]
+        [HttpGet]
+        public async Task<IEnumerable<LicenceAppListResponse>> GetApplicantLicenceApplicationsAnonymous(CancellationToken ct)
+        {
+            string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetLicenceAppListQuery(Guid.Parse(applicantIdStr)), ct);
+        }
     }
 }
