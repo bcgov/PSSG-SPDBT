@@ -244,7 +244,7 @@ export class LandingComponent implements OnInit {
 		switch (serviceTypeCode) {
 			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
-					.createNewLicenceAnonymous(serviceTypeCode)
+					.createNewApplAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(

@@ -18,7 +18,7 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<ng-container *ngIf="isReadonly; else IsEditable">
+								<ng-container *ngIf="isReadonly">
 									<button
 										mat-stroked-button
 										color="primary"
@@ -29,26 +29,6 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 										<mat-icon>arrow_back</mat-icon>Back
 									</button>
 								</ng-container>
-								<ng-template #IsEditable>
-									<button
-										mat-stroked-button
-										color="primary"
-										class="large mx-3 mb-3"
-										(click)="onCancel()"
-										aria-label="Cancel changes and go back to main page"
-									>
-										Cancel
-									</button>
-									<button
-										mat-flat-button
-										color="primary"
-										class="large mx-3 mb-3"
-										(click)="onSave()"
-										aria-label="Save changes and go back to main page"
-									>
-										Save
-									</button>
-								</ng-template>
 							</div>
 						</div>
 					</div>
@@ -66,6 +46,31 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 					></app-common-user-profile>
 
 					<app-collection-notice></app-collection-notice>
+
+					<div class="row mt-3" *ngIf="!isReadonly">
+						<div class="offset-xl-6 col-xl-6 offset-lg-6 col-lg-6 col-md-12">
+							<div class="d-flex justify-content-end">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large mx-3 mb-3"
+									(click)="onCancel()"
+									aria-label="Cancel changes and go back to main page"
+								>
+									Cancel
+								</button>
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mx-3 mb-3"
+									(click)="onSave()"
+									aria-label="Save changes and go back to main page"
+								>
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>

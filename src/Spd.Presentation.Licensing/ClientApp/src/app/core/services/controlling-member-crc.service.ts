@@ -52,6 +52,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		controllingMemberAppId: new FormControl(),
 		bizContactId: new FormControl(),
 		parentBizLicApplicationId: new FormControl(),
+		isPreviouslyTreatedForMHC: new FormControl(''), // used to determine label to display
 
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -107,6 +108,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					this.controllingMembersModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	getIsPreviouslyTreatedForMHC(): boolean {
+		return !!this.controllingMembersModelFormGroup.get('isPreviouslyTreatedForMHC')?.value;
 	}
 
 	isStepPersonalInformationComplete(): boolean {
@@ -247,7 +252,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
 					if (applicationTypeCode === ApplicationTypeCode.New && crcInviteData.controllingMemberCrcAppId) {
-						return this.loadDraftCrcIntoModel(crcInviteData, applicationTypeCode).pipe(
+						return this.loadDraftCrcIntoModel(crcInviteData, applicationTypeCode, applicantProfile).pipe(
 							tap((_resp: any) => {
 								this.initialized = true;
 
@@ -531,7 +536,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private loadDraftCrcIntoModel(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		this.reset();
 
@@ -539,7 +545,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.apiControllingMemberCrcApplicationsOriginalAppIdGet({ originalAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
-					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode);
+					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
 				})
 			);
 	}
@@ -547,7 +553,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: crcAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode };
@@ -714,6 +721,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				inviteId: crcInviteData.inviteId,
 				applicantId: crcInviteData.contactId,
 				controllingMemberAppId: crcAppl.controllingMemberAppId,
+				isPreviouslyTreatedForMHC: !!applicantProfile.isTreatedForMHC,
 
 				personalInformationData,
 				contactInformationData,
@@ -768,7 +776,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
 			attachments: [],
-			hasPreviousMhcFormUpload: !!applicantProfile.isTreatedForMHC,
 		};
 
 		this.controllingMembersModelFormGroup.patchValue(
@@ -776,6 +783,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				serviceTypeData: {
 					serviceTypeCode: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
+				isPreviouslyTreatedForMHC: !!applicantProfile.isTreatedForMHC,
 				applicationTypeData: { applicationTypeCode },
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,

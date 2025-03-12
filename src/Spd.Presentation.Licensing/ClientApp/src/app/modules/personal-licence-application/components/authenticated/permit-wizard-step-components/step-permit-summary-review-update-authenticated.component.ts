@@ -64,6 +64,11 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 									</div>
 
 									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-criminal-history
+										[workerModelData]="permitModelData"
+									></app-worker-summary-criminal-history>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-permit-summary-purpose [permitModelData]="permitModelData"></app-permit-summary-purpose>
 
 									<ng-container *ngIf="showEmployerInformation">
@@ -130,7 +135,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 	}
 
 	onUpdateData(): void {

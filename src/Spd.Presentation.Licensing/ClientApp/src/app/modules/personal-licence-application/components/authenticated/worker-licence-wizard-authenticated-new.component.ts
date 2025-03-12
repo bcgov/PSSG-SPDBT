@@ -15,6 +15,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { StepsWorkerLicenceBackgroundComponent } from '../shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 
@@ -31,7 +32,9 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					#stepper
 				>
 					<mat-step [completed]="step1Complete">
-						<ng-template matStepLabel>Licence Selection</ng-template>
+						<ng-template matStepLabel
+							>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+						>
 						<app-steps-worker-licence-selection
 							[isLoggedIn]="true"
 							[showSaveAndExit]="showSaveAndExit"
@@ -49,7 +52,24 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Worker Information</ng-template>
+						<ng-template matStepLabel>Background</ng-template>
+						<app-steps-worker-licence-background
+							[isLoggedIn]="true"
+							[showSaveAndExit]="showSaveAndExit"
+							[isFormValid]="isFormValid"
+							[applicationTypeCode]="applicationTypeCode"
+							[showSaveAndExit]="showSaveAndExit"
+							(childNextStep)="onChildNextStep()"
+							(saveAndExit)="onSaveAndExit()"
+							(nextReview)="onGoToReview()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-steps-worker-licence-background>
+					</mat-step>
+
+					<mat-step [completed]="step3Complete">
+						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
@@ -65,7 +85,9 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step completed="false">
-						<ng-template matStepLabel>Review Worker Licence</ng-template>
+						<ng-template matStepLabel
+							>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
 							[showCitizenshipStep]="showCitizenshipStep"
@@ -81,15 +103,21 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 						<mat-step completed="false">
-							<ng-template matStepLabel>Business Information</ng-template>
+							<ng-template matStepLabel
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+							>
 						</mat-step>
 
 						<mat-step completed="false">
-							<ng-template matStepLabel>Business Selection</ng-template>
+							<ng-template matStepLabel
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+							>
 						</mat-step>
 
 						<mat-step completed="false">
-							<ng-template matStepLabel>Review Business Licence</ng-template>
+							<ng-template matStepLabel
+								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
+							>
 						</mat-step>
 					</ng-container>
 
@@ -101,17 +129,26 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 				</mat-stepper>
 			</div>
 		</div>
+
+		<ng-template #StepNameSpace>
+			<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
+				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+			</ng-container>
+			<ng-container *ngIf="!isSoleProprietorSimultaneousFlow">&nbsp;</ng-container>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,
 })
 export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_WORKER_INFORMATION = 1;
-	readonly STEP_WORKER_LICENCE_REVIEW = 2;
+	readonly STEP_WORKER_BACKGROUND = 1;
+	readonly STEP_WORKER_IDENTIFICATION = 2;
+	readonly STEP_WORKER_LICENCE_REVIEW = 3;
 
 	step1Complete = false;
 	step2Complete = false;
+	step3Complete = false;
 
 	isFormValid = false;
 	isSoleProprietorSimultaneousFlow = false;
@@ -122,6 +159,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
@@ -197,7 +236,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_WORKER_INFORMATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_WORKER_LICENCE_REVIEW:
@@ -215,7 +257,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
-			case this.STEP_WORKER_INFORMATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToLastStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToLastStep();
 				break;
 		}
@@ -232,7 +277,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 						case this.STEP_WORKER_LICENCE_SELECTION:
 							this.stepLicenceSelectionComponent?.onGoToFirstStep();
 							break;
-						case this.STEP_WORKER_INFORMATION:
+						case this.STEP_WORKER_BACKGROUND:
+							this.stepBackgroundComponent?.onGoToFirstStep();
+							break;
+						case this.STEP_WORKER_IDENTIFICATION:
 							this.stepIdentificationComponent?.onGoToFirstStep();
 							break;
 					}
@@ -372,9 +420,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.workerApplicationService.isStepIdentificationComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
@@ -389,7 +438,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;
-			case this.STEP_WORKER_INFORMATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToNextStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}

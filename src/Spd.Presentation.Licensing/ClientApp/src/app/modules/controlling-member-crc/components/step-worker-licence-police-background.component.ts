@@ -6,34 +6,26 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
-    selector: 'app-common-user-profile-licence-police-background',
+    selector: 'app-step-worker-licence-police-background',
     template: `
-		<mat-accordion>
-			<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-				<mat-expansion-panel-header>
-					<mat-panel-title>Police Background</mat-panel-title>
-				</mat-expansion-panel-header>
-
-				<div class="mt-3">
-					<div class="py-2">{{ title }}</div>
-
-					<app-form-police-background
-						[form]="form"
-						(fileUploaded)="onFileUploaded($event)"
-						(fileRemoved)="onFileRemoved()"
-					></app-form-police-background>
-				</div>
-			</mat-expansion-panel>
-		</mat-accordion>
+		<app-step-section [title]="title">
+			<app-form-police-background
+				[form]="form"
+				[isWizardStep]="true"
+				(fileUploaded)="onFileUploaded($event)"
+				(fileRemoved)="onFileRemoved()"
+			></app-form-police-background>
+		</app-step-section>
 	`,
     styles: [],
     standalone: false
 })
-export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
-	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	form: FormGroup = this.workerApplicationService.policeBackgroundFormGroup;
 
 	@ViewChild(FormPoliceBackgroundComponent)
 	formPoliceBackgroundComponent!: FormPoliceBackgroundComponent;
