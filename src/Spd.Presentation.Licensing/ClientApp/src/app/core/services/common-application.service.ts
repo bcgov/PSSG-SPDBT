@@ -207,7 +207,8 @@ export class CommonApplicationService {
 		serviceTypeCode: ServiceTypeCode | null,
 		applicationTypeCode: ApplicationTypeCode | null,
 		bizTypeCode: BizTypeCode | null,
-		originalLicenceTermCode: LicenceTermCode | undefined = undefined
+		originalLicenceTermCode: LicenceTermCode | undefined = undefined,
+		categorySecurityGuardSupIsSelected = false
 	): Array<LicenceFeeResponse> {
 		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode);
 
@@ -218,6 +219,18 @@ export class CommonApplicationService {
 		let hasValidSwl90DayLicence = false;
 		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
 			hasValidSwl90DayLicence = true;
+		} else if (applicationTypeCode === ApplicationTypeCode.New && categorySecurityGuardSupIsSelected) {
+			const fees = this.configService
+				.getLicenceFees()
+				.filter(
+					(item: LicenceFeeResponse) =>
+						item.serviceTypeCode == serviceTypeCode &&
+						item.applicationTypeCode == applicationTypeCode &&
+						item.bizTypeCode == bizTypeCode &&
+						item.hasValidSwl90DayLicence === hasValidSwl90DayLicence &&
+						item.licenceTermCode === LicenceTermCode.NinetyDays
+				);
+			return fees;
 		}
 
 		const fees = this.configService
