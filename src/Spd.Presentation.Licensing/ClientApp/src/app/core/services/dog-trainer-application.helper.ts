@@ -13,7 +13,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		accreditedSchoolId: new FormControl('', [Validators.required]),
 		accreditedSchoolName: new FormControl(''),
 		schoolDirectorGivenName: new FormControl(''),
-		schoolDirectoMiddleName: new FormControl(''),
+		schoolDirectorMiddleName: new FormControl(''),
 		schoolDirectorSurname: new FormControl('', [Validators.required]),
 		schoolDirectorPhoneNumber: new FormControl('', [Validators.required]),
 		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),

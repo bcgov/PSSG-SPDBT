@@ -132,7 +132,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		const mailingAddressData = gdsdModelFormValue.mailingAddressData;
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const dogTasksData = gdsdModelFormValue.dogTasksData;
-		const dogInfoData = gdsdModelFormValue.dogInfoData;
+		let dogInfoData = gdsdModelFormValue.dogInfoData;
 		const dogRenewData = gdsdModelFormValue.dogRenewData;
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
@@ -148,7 +148,9 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			);
 		}
 
-		if (dogInfoData.dogDateOfBirth) {
+		if (!dogInfoData.dogName) {
+			dogInfoData = null;
+		} else if (dogInfoData.dogDateOfBirth) {
 			dogInfoData.dogDateOfBirth = this.utilService.dateToDbDate(dogInfoData.dogDateOfBirth);
 		}
 
@@ -176,28 +178,30 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		if (isTrainedByAccreditedSchools) {
 			const dogGdsdData = gdsdModelFormValue.dogGdsdData;
 			const isGuideDog = this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog);
-			accreditedSchoolQuestionsData = {
-				isGuideDog,
-				serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
-			};
+			if (isGuideDog != null) {
+				accreditedSchoolQuestionsData = {
+					isGuideDog,
+					serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
+				};
 
-			const graduationInfoData = gdsdModelFormValue.graduationInfoData;
+				const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 
-			if (graduationInfoData.schoolContactPhoneNumber) {
-				graduationInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
-					graduationInfoData.schoolContactPhoneNumber,
-					SPD_CONSTANTS.phone.backendMask
-				);
-			}
+				if (graduationInfoData.schoolContactPhoneNumber) {
+					graduationInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
+						graduationInfoData.schoolContactPhoneNumber,
+						SPD_CONSTANTS.phone.backendMask
+					);
+				}
 
-			graduationInfoData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+				graduationInfoData.attachments?.forEach((doc: any) => {
+					documentInfos.push({
+						documentUrlId: doc.documentUrlId,
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+					});
 				});
-			});
 
-			accreditedSchoolQuestionsData.graduationInfo = graduationInfoData;
+				accreditedSchoolQuestionsData.graduationInfo = graduationInfoData;
+			}
 		} else {
 			const dogInoculationsData = gdsdModelFormValue.dogInoculationsData;
 			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(

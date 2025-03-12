@@ -34,7 +34,7 @@ import { StepTeamDogServiceInfoComponent } from './step-team-dog-service-info.co
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_DOG_SERVICE_INFO)"
-					(previousStepperStep)="onStepPrevious()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNextDogServiceInfo()"
 					(nextReviewStepperStep)="onNextReview(STEP_DOG_SERVICE_INFO)"
 				></app-wizard-footer>
