@@ -14,7 +14,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 					<app-alert type="info" icon="info">
 						<p>Provide information from your expired licence to reduce processing time.</p>
 						<p>
-							If you don’t know your expired license number, call Security Program’s Licensing Unit during regular
+							If you don’t know your expired licence number, call Security Program’s Licensing Unit during regular
 							office hours at {{ spdPhoneNumber }}.
 						</p>
 					</app-alert>
