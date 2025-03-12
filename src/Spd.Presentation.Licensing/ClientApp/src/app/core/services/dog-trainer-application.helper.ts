@@ -19,16 +19,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
-	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-	});
-
 	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
 		trainerGivenName: new FormControl(''),
 		trainerMiddleName: new FormControl(''),
@@ -109,7 +99,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
-		const trainingSchoolAddressData = dogTrainerModelFormGroup.trainingSchoolAddressData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
 		const dogTrainerAddressData = dogTrainerModelFormGroup.dogTrainerAddressData;
 		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
@@ -169,7 +158,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			licenceTermCode: dogTrainerModelFormGroup.licenceTermCode,
 
 			...trainingSchoolInfoData,
-			schoolMailingAddress: trainingSchoolAddressData,
 			...dogTrainerData,
 			trainerMailingAddress: dogTrainerAddressData,
 

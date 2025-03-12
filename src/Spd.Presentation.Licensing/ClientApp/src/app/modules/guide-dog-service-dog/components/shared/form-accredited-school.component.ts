@@ -29,14 +29,17 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')">This is required</mat-error>
 		</mat-form-field>
 
-		<ng-container *ngIf="selectedSchool">
+		<ng-container *ngIf="selectedSchool; else noSelectedSchool">
 			<app-alert type="success" icon="">
 				<div class="row">
-					<div class="col-lg-6 col-md-12 col-sm-12 mt-2">{{ selectedSchool.schoolName }}</div>
-					<div class="col-lg-6 col-md-12 col-sm-12 mt-2">{{ selectedSchool.schoolAddress }}</div>
+					<div class="col-12">{{ selectedSchool.schoolName }}</div>
+					<div class="col-12 mt-2">{{ selectedSchool.schoolAddress }}</div>
 				</div>
 			</app-alert>
 		</ng-container>
+		<ng-template #noSelectedSchool>
+			<app-alert type="info" icon="info"> If your school is not in the list, please contact us. </app-alert>
+		</ng-template>
 	`,
 	styles: [
 		`

@@ -16,7 +16,6 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
-import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHelper {
@@ -40,18 +39,17 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		isAssistanceStillRequired: new FormControl('', [Validators.required]),
 	});
 
-	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
+	dogInoculationsFormGroup: FormGroup = this.formBuilder.group({
 		areInoculationsUpToDate: new FormControl('', [Validators.required]),
+	});
+
+	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
 	});
 
 	graduationInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolId: new FormControl('', [Validators.required]),
 		accreditedSchoolName: new FormControl(''),
-		schoolContactGivenName: new FormControl(''),
-		schoolContactSurname: new FormControl('', [Validators.required]),
-		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
-		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
@@ -201,8 +199,10 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 
 			accreditedSchoolQuestionsData.graduationInfo = graduationInfoData;
 		} else {
-			const dogMedicalData = gdsdModelFormValue.dogMedicalData;
-			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(dogMedicalData.areInoculationsUpToDate);
+			const dogInoculationsData = gdsdModelFormValue.dogInoculationsData;
+			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(
+				dogInoculationsData.areInoculationsUpToDate
+			);
 			nonAccreditedSchoolQuestionsData = {
 				areInoculationsUpToDate,
 			};
@@ -266,6 +266,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
 				});
 			});
+
+			const dogMedicalData = gdsdModelFormValue.dogMedicalData;
 			dogMedicalData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -544,20 +546,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	getSummaryaccreditedSchoolName(gdsdModelData: any): string {
 		return gdsdModelData.graduationInfoData.accreditedSchoolName ?? '';
 	}
-	getSummaryaccreditedContactName(gdsdModelData: any): string {
-		return (
-			this.utilService.getFullName(
-				gdsdModelData.graduationInfoData.schoolContactGivenName,
-				gdsdModelData.graduationInfoData.schoolContactSurname
-			) ?? ''
-		);
-	}
-	getSummaryaccreditedPhoneNumber(gdsdModelData: any): string {
-		return gdsdModelData.graduationInfoData.schoolContactPhoneNumber ?? '';
-	}
-	getSummaryaccreditedEmailAddress(gdsdModelData: any): string {
-		return gdsdModelData.graduationInfoData.schoolContactEmailAddress ?? '';
-	}
 	getSummaryaccreditedAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.graduationInfoData.attachments ?? [];
 	}
@@ -625,7 +613,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	}
 
 	getSummaryareInoculationsUpToDate(gdsdModelData: any): string {
-		return gdsdModelData.dogMedicalData.areInoculationsUpToDate ?? '';
+		return gdsdModelData.dogInoculationsData.areInoculationsUpToDate ?? '';
 	}
 	getSummarydogMedicalAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.dogMedicalData.attachments ?? [];

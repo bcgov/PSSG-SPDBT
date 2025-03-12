@@ -3,17 +3,16 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepTeamDogInfoComponent } from './step-team-dog-info.component';
+import { StepTeamDogInoculationsComponent } from './step-team-dog-inoculations.component';
 import { StepTeamDogMedicalComponent } from './step-team-dog-medical.component';
+import { StepTeamDogServiceInfoComponent } from './step-team-dog-service-info.component';
 
 @Component({
 	selector: 'app-steps-team-dog-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-team-dog-info
-					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-				></app-step-team-dog-info>
+				<app-step-team-dog-info [applicationTypeCode]="applicationTypeCode"></app-step-team-dog-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -25,7 +24,36 @@ import { StepTeamDogMedicalComponent } from './step-team-dog-medical.component';
 				></app-wizard-footer>
 			</mat-step>
 
+			<mat-step *ngIf="showDogServiceStep">
+				<app-step-team-dog-service-info
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+				></app-step-team-dog-service-info>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_SERVICE_INFO)"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onStepNextDogServiceInfo()"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_SERVICE_INFO)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<ng-container *ngIf="showDogMedicalStep">
+				<mat-step>
+					<app-step-team-dog-inoculations></app-step-team-dog-inoculations>
+
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_DOG_INOCULATIONS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_DOG_INOCULATIONS)"
+						(nextReviewStepperStep)="onNextReview(STEP_DOG_INOCULATIONS)"
+					></app-wizard-footer>
+				</mat-step>
+
 				<mat-step>
 					<app-step-team-dog-medical></app-step-team-dog-medical>
 
@@ -47,7 +75,9 @@ import { StepTeamDogMedicalComponent } from './step-team-dog-medical.component';
 })
 export class StepsTeamDogInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_DOG_INFO = 0;
-	readonly STEP_DOG_MEDICAL = 1;
+	readonly STEP_DOG_SERVICE_INFO = 1;
+	readonly STEP_DOG_INOCULATIONS = 2;
+	readonly STEP_DOG_MEDICAL = 3;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -56,6 +86,8 @@ export class StepsTeamDogInfoComponent extends BaseWizardStepComponent {
 	@Input() isTrainedByAccreditedSchools!: boolean;
 
 	@ViewChild(StepTeamDogInfoComponent) dogInfoComponent!: StepTeamDogInfoComponent;
+	@ViewChild(StepTeamDogServiceInfoComponent) dogServiceInfoComponent!: StepTeamDogServiceInfoComponent;
+	@ViewChild(StepTeamDogInoculationsComponent) dogInoculationsComponent!: StepTeamDogInoculationsComponent;
 	@ViewChild(StepTeamDogMedicalComponent) dogMedicalComponent!: StepTeamDogMedicalComponent;
 
 	constructor(utilService: UtilService) {
@@ -64,6 +96,21 @@ export class StepsTeamDogInfoComponent extends BaseWizardStepComponent {
 
 	onStepNextDogInfo(): void {
 		const isValid = this.dirtyForm(this.STEP_DOG_INFO);
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
+
+		if (this.showDogServiceStep || this.showDogMedicalStep) {
+			this.childNextStep.emit(true);
+			return;
+		}
+
+		this.nextStepperStep.emit(true);
+	}
+
+	onStepNextDogServiceInfo(): void {
+		const isValid = this.dirtyForm(this.STEP_DOG_SERVICE_INFO);
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
 			return;
@@ -81,6 +128,10 @@ export class StepsTeamDogInfoComponent extends BaseWizardStepComponent {
 		switch (step) {
 			case this.STEP_DOG_INFO:
 				return this.dogInfoComponent.isFormValid();
+			case this.STEP_DOG_SERVICE_INFO:
+				return this.dogServiceInfoComponent.isFormValid();
+			case this.STEP_DOG_INOCULATIONS:
+				return this.dogInoculationsComponent.isFormValid();
 			case this.STEP_DOG_MEDICAL:
 				return this.dogMedicalComponent.isFormValid();
 			default:
@@ -94,5 +145,8 @@ export class StepsTeamDogInfoComponent extends BaseWizardStepComponent {
 	}
 	get showDogMedicalStep(): boolean {
 		return this.isNew && !this.isTrainedByAccreditedSchools;
+	}
+	get showDogServiceStep(): boolean {
+		return (this.isNew && this.isTrainedByAccreditedSchools) || !this.isNew;
 	}
 }

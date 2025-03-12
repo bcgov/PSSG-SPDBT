@@ -81,6 +81,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		dogCertificationSelectionData: this.dogCertificationSelectionFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
 		dogGdsdData: this.dogGdsdFormGroup,
+		dogInoculationsData: this.dogInoculationsFormGroup,
 		dogMedicalData: this.dogMedicalFormGroup,
 		graduationInfoData: this.graduationInfoFormGroup,
 		trainingHistoryData: this.trainingHistoryFormGroup,
@@ -297,7 +298,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.resetModelFlags();
 		this.resetCommon();
 
-		this.consentAndDeclarationFormGroup.reset();
+		this.consentAndDeclarationTeamFormGroup.reset();
 		this.gdsdTeamModelFormGroup.reset();
 
 		// clear the array data - this does not seem to get reset during a formgroup reset
@@ -484,7 +485,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -513,7 +514,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -1066,11 +1067,14 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			medicalInformationData = { attachments: medicalInformationAttachments };
 		}
 
+		const dogInoculationsData = {
+			areInoculationsUpToDate: this.utilService.booleanToBooleanType(
+				gdsdAppl.nonAccreditedSchoolQuestions?.areInoculationsUpToDate
+			),
+		};
+
 		if (dogMedicalAttachments.length > 0) {
 			dogMedicalData = {
-				areInoculationsUpToDate: this.utilService.booleanToBooleanType(
-					gdsdAppl.nonAccreditedSchoolQuestions?.areInoculationsUpToDate
-				),
 				attachments: dogMedicalAttachments,
 			};
 		}
@@ -1103,10 +1107,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				graduationInfoData = {
 					accreditedSchoolId: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolId,
 					accreditedSchoolName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.accreditedSchoolName,
-					schoolContactGivenName: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactGivenName,
-					schoolContactSurname: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactSurname,
-					schoolContactPhoneNumber: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactPhoneNumber,
-					schoolContactEmailAddress: gdsdAppl.accreditedSchoolQuestions?.graduationInfo.schoolContactEmailAddress,
 					attachments: accreditedGraduationAttachments,
 				};
 			}
@@ -1178,6 +1178,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				dogCertificationSelectionData,
 				dogInfoData,
 				dogGdsdData,
+				dogInoculationsData,
 				dogMedicalData,
 				graduationInfoData,
 				trainingHistoryData,
@@ -1328,7 +1329,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
@@ -1425,7 +1426,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;

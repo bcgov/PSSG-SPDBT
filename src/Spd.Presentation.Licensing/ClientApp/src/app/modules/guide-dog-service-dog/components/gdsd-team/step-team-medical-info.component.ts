@@ -16,6 +16,11 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<p>
+							** // TODO add checkbox to indicate the doctor will be sending the form. This will make the file upload
+							optional.
+						</p>
+
 						<app-alert type="info" icon="info">
 							Download
 							<a
@@ -27,7 +32,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						</app-alert>
 
 						<div class="text-minor-heading lh-base mt-3 mb-2">
-							Upload Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6
+							Upload Medical Form Confirming Requirement for Guide Dog or Service Dog. Exam date must be within last 6
 							months.
 						</div>
 

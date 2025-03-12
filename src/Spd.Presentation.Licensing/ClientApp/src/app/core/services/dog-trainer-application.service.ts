@@ -72,7 +72,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
 		trainingSchoolInfoData: this.trainingSchoolInfoFormGroup,
-		trainingSchoolAddressData: this.trainingSchoolAddressFormGroup,
 		dogTrainerData: this.dogTrainerFormGroup,
 		dogTrainerAddressData: this.dogTrainerAddressFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
@@ -120,8 +119,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepDogTrainerTrainingSchoolComplete(): boolean {
-		return this.trainingSchoolInfoFormGroup.valid && this.trainingSchoolAddressFormGroup.valid;
+		return this.trainingSchoolInfoFormGroup.valid;
 	}
+
 	/**
 	 * Determine if the step is valid
 	 * @returns boolean
