@@ -1263,7 +1263,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
+				const personalInformationData = _resp.personalInformationData;
 
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;

@@ -51,7 +51,6 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"

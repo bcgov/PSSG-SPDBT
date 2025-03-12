@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -18,7 +17,11 @@ internal class LicAppRepository : ILicAppRepository
     }
 
     //for unauth, set applcation status to submitted.
-    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct, LicenceTermEnum? term = null)
+    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId,
+        ApplicationStatusEnum status,
+        decimal? price,
+        CancellationToken ct,
+        LicenceTermEnum? term = null)
     {
         spd_application? app = await _context.GetApplicationById(applicationId, ct);
         if (app == null)
