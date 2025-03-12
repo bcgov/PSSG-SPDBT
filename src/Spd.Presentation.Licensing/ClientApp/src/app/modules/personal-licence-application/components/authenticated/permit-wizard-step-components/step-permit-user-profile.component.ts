@@ -133,11 +133,10 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 = true; // TODO Remove this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
 
-		const isValid = isValid1 && isValid2 && isValid3;
+		const isValid = isValid1 && isValid2;
 
-		console.debug('[StepPermitUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
+		console.debug('[StepPermitUserProfileComponent] isFormValid', isValid1, isValid2);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
@@ -161,9 +160,5 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 	onBack(): void {
 		this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
-	}
-
-	get isVisibleBackgroundInfo(): boolean {
-		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }
