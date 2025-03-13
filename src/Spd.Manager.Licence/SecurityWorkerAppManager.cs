@@ -344,6 +344,7 @@ internal class SecurityWorkerAppManager :
         if ((request.Reprint != null && request.Reprint.Value) || categoryChanged || dogRestraintChanged)
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            createApp.ChangeSummary = GetSummaryString(changes);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
             //copying all old files to new application in PreviousFileIds 
@@ -676,16 +677,25 @@ internal class SecurityWorkerAppManager :
 
     }
 
-    private sealed record ChangeSpec
+    private static string GetSummaryString(IList<UpdateSpec> specs)
     {
-        public bool CategoriesChanged { get; set; } //full update
-        public bool DogRestraintsChanged { get; set; } //full update
-        public bool PeaceOfficerStatusChanged { get; set; } //task
-        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
-        public bool MentalHealthStatusChanged { get; set; } //task
-        public Guid? MentalHealthStatusChangeTaskId { get; set; }
-        public bool CriminalHistoryChanged { get; set; } //task
-        public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+        string[] strs = specs.Select(s => GetString(s)).ToArray();
+        return string.Join(Environment.NewLine, strs);
+    }
+
+    private static string GetString(UpdateSpec spec)
+    {
+        return spec.Type switch
+        {
+            UpdateType.LegalName => $"Legal Name changed from {spec.OldValue} to {spec.NewValue}",
+            UpdateType.Photo => "Photo Changed",
+            UpdateType.Category => $"Category {spec.OldValue ?? spec.NewValue} {spec.Action}",
+            UpdateType.CategoryDocument => $"Category Document {spec.OldValue ?? spec.NewValue} {spec.Action}",
+            UpdateType.DogRestraints => $"Dog Restraints changed from {spec.OldValue} to {spec.NewValue}",
+            UpdateType.PoliceOfficerInfo => $"PoliceOfficerInfo changed, Task created",
+            UpdateType.MentalHealthInfo => $"MentalHealthInfo changed, Task created",
+            UpdateType.CriminalHistory => $"CriminalHistory changed, Task created",
+        };
     }
 
     private sealed record UpdateSpec
