@@ -26,7 +26,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
 import { CrrpRoutes } from '../crrp-routes';
-import { PaymentFilter } from './payment-filter.component';
+import { PaymentFilter, PaymentFilterMap } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationPaymentResponse {
 	isPayNow: boolean;
@@ -36,8 +36,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 }
 
 @Component({
-    selector: 'app-payments',
-    template: `
+	selector: 'app-payments',
+	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
@@ -212,8 +212,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-column-status {
 				min-width: 110px;
 			}
@@ -225,8 +225,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class PaymentsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
@@ -283,9 +283,9 @@ export class PaymentsComponent implements OnInit {
 		}
 
 		const caseId = (this.location.getState() as any)?.caseId;
-		this.formFilter.patchValue({ search: caseId });
+		this.formFilter.patchValue({ search: caseId ?? '' });
 
-		this.performSearch(caseId);
+		this.performSearch(this.formFilter.value.search);
 	}
 
 	onPayNow(application: PaymentResponse): void {
@@ -392,10 +392,21 @@ export class PaymentsComponent implements OnInit {
 
 		let defaultSearch = `status==${defaultStatuses.join('|')},`;
 
-		if (!this.currentFilters) {
+		const fromDateKey = PaymentFilterMap['fromDate'];
+		if (!this.currentFilters.includes(fromDateKey)) {
 			const fromDate = moment().subtract(1, 'year').format(SPD_CONSTANTS.date.dateFormat);
+			defaultSearch += `${fromDateKey}==${fromDate},`;
+		}
+
+		const toDateKey = PaymentFilterMap['toDate'];
+		if (!this.currentFilters.includes(toDateKey)) {
 			const toDate = moment().format(SPD_CONSTANTS.date.dateFormat);
-			defaultSearch += `fromDate==${fromDate},toDate==${toDate},`;
+			defaultSearch += `${toDateKey}==${toDate},`;
+		}
+
+		const paidKey = PaymentFilterMap['paid'];
+		if (!this.currentFilters.includes(paidKey)) {
+			defaultSearch += `${paidKey}==false`;
 		}
 
 		return defaultSearch + this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
@@ -403,6 +414,8 @@ export class PaymentsComponent implements OnInit {
 
 	private loadList(): void {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
+
+		console.debug('loadList', this.queryParams.filters);
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsPaymentsGet({
@@ -413,21 +426,20 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
+					// default all flags to false
 					app.isPaid = false;
 					app.isDownloadReceipt = false;
 					app.isPayManual = false;
 					app.isPayNow = false;
 
-					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
-						if (app.paidOn) {
-							app.isPaid = true;
+					if (app.paidOn) {
+						app.isPaid = true;
 
-							// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
-							app.isDownloadReceipt =
-								app.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
-								app.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
-						}
-					} else {
+						// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
+						app.isDownloadReceipt =
+							app.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
+							app.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
+					} else if (app.status === ApplicationPortalStatusCode.AwaitingPayment) {
 						const numberOfAttempts = app.numberOfAttempts ?? 0;
 						app.isPayManual = numberOfAttempts >= SPD_CONSTANTS.payment.maxNumberOfAttempts;
 						app.isPayNow = numberOfAttempts < SPD_CONSTANTS.payment.maxNumberOfAttempts;
