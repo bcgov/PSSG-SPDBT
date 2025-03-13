@@ -86,7 +86,7 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 
 		if (!this.workerApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
