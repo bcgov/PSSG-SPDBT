@@ -406,7 +406,7 @@ export class PaymentsComponent implements OnInit {
 
 		const paidKey = PaymentFilterMap['paid'];
 		if (!this.currentFilters.includes(paidKey)) {
-			defaultSearch += `${paidKey}==false`;
+			defaultSearch += `${paidKey}==false,`;
 		}
 
 		return defaultSearch + this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
