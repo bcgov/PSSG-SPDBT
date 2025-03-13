@@ -19,7 +19,11 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 						helps the Registrar determine whether to approve your security business application.
 					</app-alert>
 
-					<app-common-controlling-members [defaultExpanded]="true" [isWizard]="true"></app-common-controlling-members>
+					<app-common-controlling-members
+						[applicationTypeCode]="applicationTypeCode"
+						[defaultExpanded]="true"
+						[isWizard]="true"
+					></app-common-controlling-members>
 				</div>
 			</div>
 		</app-step-section>

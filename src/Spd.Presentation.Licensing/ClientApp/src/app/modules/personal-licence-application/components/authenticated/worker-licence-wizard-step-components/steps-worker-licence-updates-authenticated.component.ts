@@ -7,11 +7,50 @@ import { StepWorkerLicenceDogsAuthorizationComponent } from '@app/modules/person
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicenceRestraintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-restraints.component';
 import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
+import { StepWorkerLicenceCriminalHistoryComponent } from '../../shared/worker-licence-wizard-step-components/step-worker-licence-criminal-history.component';
+import { StepWorkerLicenceMentalHealthConditionsComponent } from '../../shared/worker-licence-wizard-step-components/step-worker-licence-mental-health-conditions.component';
+import { StepWorkerLicencePoliceBackgroundComponent } from '../../shared/worker-licence-wizard-step-components/step-worker-licence-police-background.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-updates-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step>
+				<app-step-worker-licence-police-background
+					[applicationTypeCode]="applicationTypeUpdate"
+				></app-step-worker-licence-police-background>
+
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-worker-licence-mental-health-conditions
+					[applicationTypeCode]="applicationTypeUpdate"
+				></app-step-worker-licence-mental-health-conditions>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-worker-licence-criminal-history
+					[applicationTypeCode]="applicationTypeUpdate"
+				></app-step-worker-licence-criminal-history>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
 
@@ -23,30 +62,30 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 
 			<mat-step *ngIf="hasGenderChanged">
 				<app-step-worker-licence-photograph-of-yourself
-					[applicationTypeCode]="applicationTypeCodes.Update"
+					[applicationTypeCode]="applicationTypeUpdate"
 				></app-step-worker-licence-photograph-of-yourself>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
 				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-worker-licence-category
-					[applicationTypeCode]="applicationTypeCodes.Update"
+					[applicationTypeCode]="applicationTypeUpdate"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 				></app-step-worker-licence-category>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_LICENCE_CATEGORY)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidCategoryNextStep()"
 				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-step-worker-licence-restraints
-					[applicationTypeCode]="applicationTypeCodes.Update"
+					[applicationTypeCode]="applicationTypeUpdate"
 				></app-step-worker-licence-restraints>
 
 				<app-wizard-footer
@@ -57,7 +96,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-step-worker-licence-dogs-authorization
-					[applicationTypeCode]="applicationTypeCodes.Update"
+					[applicationTypeCode]="applicationTypeUpdate"
 				></app-step-worker-licence-dogs-authorization>
 
 				<app-wizard-footer
@@ -67,24 +106,32 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
+	applicationTypeUpdate = ApplicationTypeCode.Update;
 
-	readonly STEP_NAME_CHANGE = 0;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 1;
-	readonly STEP_LICENCE_CATEGORY = 2;
-	readonly STEP_DOGS = 3;
-	readonly STEP_RESTRAINTS = 4;
+	readonly STEP_POLICE_BACKGROUND = 1;
+	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
+	readonly STEP_CRIMINAL_HISTORY = 3;
+	readonly STEP_NAME_CHANGE = 4;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 5;
+	readonly STEP_LICENCE_CATEGORY = 6;
+	readonly STEP_DOGS = 7;
+	readonly STEP_RESTRAINTS = 8;
 
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
 	@Input() isSoleProprietorSimultaneousFlow = false;
 
+	@ViewChild(StepWorkerLicencePoliceBackgroundComponent)
+	policeBackgroundForm!: StepWorkerLicencePoliceBackgroundComponent;
+	@ViewChild(StepWorkerLicenceMentalHealthConditionsComponent)
+	mhcForm!: StepWorkerLicenceMentalHealthConditionsComponent;
+	@ViewChild(StepWorkerLicenceCriminalHistoryComponent) criminalHistoryForm!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
@@ -100,27 +147,6 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 		super(utilService);
 	}
 
-	onStepUpdatePrevious(step: number): void {
-		switch (step) {
-			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
-			case this.STEP_LICENCE_CATEGORY:
-				if (this.hasGenderChanged || this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
-			default:
-				console.error('Unknown Form', step);
-		}
-
-		this.previousStepperStep.emit(true);
-	}
-
 	onFormValidCategoryNextStep(): void {
 		if (this.showStepDogsAndRestraints) {
 			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
@@ -131,6 +157,12 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_POLICE_BACKGROUND:
+				return this.policeBackgroundForm.isFormValid();
+			case this.STEP_MENTAL_HEALTH_CONDITIONS:
+				return this.mhcForm.isFormValid();
+			case this.STEP_CRIMINAL_HISTORY:
+				return this.criminalHistoryForm.isFormValid();
 			case this.STEP_NAME_CHANGE:
 				return this.stepNameChangeComponent.isFormValid();
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:

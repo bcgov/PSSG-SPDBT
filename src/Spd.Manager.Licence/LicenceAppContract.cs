@@ -35,7 +35,6 @@ public record PersonalLicenceAppBase : LicenceAppBase
     public bool? HasLegalNameChanged { get; set; }
     //used for document saved in cache scenario, such as anonymous new, auth & unauth renew, update, replace
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
-    public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
 public record ResidentialAddress : Address;

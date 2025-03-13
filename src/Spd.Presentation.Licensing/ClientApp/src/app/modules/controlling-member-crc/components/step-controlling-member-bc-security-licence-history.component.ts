@@ -13,18 +13,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		<app-step-section [title]="title">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="fw-semibold fs-6 text-center mt-3">Criminal Charges, Convictions, or Lawsuits</div>
-						<div class="fs-6 text-center mt-3">{{ subtitle1 }}</div>
-					</div>
-				</div>
+					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="fw-semibold fs-6 mt-3">Criminal Charges, Convictions, or Lawsuits</div>
+						<div class="fs-6 mt-3">{{ subtitle1 }}</div>
 
-				<div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
 							<div class="d-flex justify-content-start">
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 							</div>
 						</mat-radio-group>
 						<mat-error
@@ -36,21 +32,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							"
 							>This is required</mat-error
 						>
-					</div>
-				</div>
 
-				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="fs-6 text-center mt-3">{{ subtitle2 }}</div>
-					</div>
-				</div>
+						<div class="fs-6 mt-3">{{ subtitle2 }}</div>
 
-				<div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<mat-radio-group aria-label="Select an option" formControlName="hasCourtJudgement">
 							<div class="d-flex justify-content-start">
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 							</div>
 						</mat-radio-group>
 						<mat-error
@@ -62,52 +50,42 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							"
 							>This is required</mat-error
 						>
-					</div>
-				</div>
 
-				<div class="row" *ngIf="showCriminalHistoryDetails" @showHideTriggerSlideAnimation>
-					<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
-						<div class="mt-2">
-							<mat-form-field
-								><mat-label>
-									<ng-container *ngIf="isYesAndNew; else yesAndUpdateLabel">Provide Details</ng-container>
-									<ng-template #yesAndUpdateLabel>Brief Description of New Charges or Convictions</ng-template>
-								</mat-label>
-								<textarea
-									matInput
-									formControlName="criminalHistoryDetail"
-									style="min-height: 100px"
-									[errorStateMatcher]="matcher"
-									maxlength="250"
-								></textarea>
-								<mat-hint>Maximum 250 characters</mat-hint>
-								<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
-									This is required
-								</mat-error>
-							</mat-form-field>
+						<div *ngIf="showCriminalHistoryDetails" @showHideTriggerSlideAnimation>
+							<div class="mt-2">
+								<mat-form-field
+									><mat-label>
+										<ng-container *ngIf="isYesAndNew; else yesAndUpdateLabel">Provide Details</ng-container>
+										<ng-template #yesAndUpdateLabel>Brief Description of New Charges or Convictions</ng-template>
+									</mat-label>
+									<textarea
+										matInput
+										formControlName="criminalHistoryDetail"
+										style="min-height: 100px"
+										[errorStateMatcher]="matcher"
+										maxlength="250"
+									></textarea>
+									<mat-hint>Maximum 250 characters</mat-hint>
+									<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
+										This is required
+									</mat-error>
+								</mat-form-field>
+							</div>
 						</div>
-					</div>
-				</div>
 
-				<ng-container *ngIf="isNew">
-					<div class="row mt-4">
-						<div class="col-md-8 col-sm-12 mx-auto">
-							<mat-divider class="mat-divider-primary"></mat-divider>
+						<ng-container *ngIf="isNew">
+							<mat-divider class="mat-divider-primary mt-3"></mat-divider>
 
-							<div class="fw-semibold text-center fs-6 mt-3">Bankruptcy History</div>
-							<div class="fs-6 text-center mt-3">
+							<div class="fw-semibold fs-6 mt-3">Bankruptcy History</div>
+							<div class="fs-6 mt-3">
 								Have you ever been involved in a company that has filed for bankruptcy, is in the process of filing for
 								bankruptcy, or currently has an ongoing bankruptcy?
 							</div>
-						</div>
-					</div>
 
-					<div class="row">
-						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="hasBankruptcyHistory">
 								<div class="d-flex justify-content-start">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 								</div>
 							</mat-radio-group>
 							<mat-error
@@ -119,32 +97,30 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								"
 								>This is required</mat-error
 							>
-						</div>
-					</div>
 
-					<div
-						class="row mt-2"
-						*ngIf="hasBankruptcyHistory.value === booleanTypeCodes.Yes"
-						@showHideTriggerSlideAnimation
-					>
-						<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
-							<mat-form-field>
-								<mat-label>Provide Details</mat-label>
-								<textarea
-									matInput
-									formControlName="bankruptcyHistoryDetail"
-									style="min-height: 100px"
-									[errorStateMatcher]="matcher"
-									maxlength="250"
-								></textarea>
-								<mat-hint>Maximum 250 characters</mat-hint>
-								<mat-error *ngIf="form.get('bankruptcyHistoryDetail')?.hasError('required')">
-									This is required
-								</mat-error>
-							</mat-form-field>
-						</div>
+							<div
+								class="mt-2"
+								*ngIf="hasBankruptcyHistory.value === booleanTypeCodes.Yes"
+								@showHideTriggerSlideAnimation
+							>
+								<mat-form-field>
+									<mat-label>Provide Details</mat-label>
+									<textarea
+										matInput
+										formControlName="bankruptcyHistoryDetail"
+										style="min-height: 100px"
+										[errorStateMatcher]="matcher"
+										maxlength="250"
+									></textarea>
+									<mat-hint>Maximum 250 characters</mat-hint>
+									<mat-error *ngIf="form.get('bankruptcyHistoryDetail')?.hasError('required')">
+										This is required
+									</mat-error>
+								</mat-form-field>
+							</div>
+						</ng-container>
 					</div>
-				</ng-container>
+				</div>
 			</form>
 		</app-step-section>
 	`,

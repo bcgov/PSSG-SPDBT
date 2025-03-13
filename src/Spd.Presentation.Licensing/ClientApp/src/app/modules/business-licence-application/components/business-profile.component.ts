@@ -19,7 +19,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<ng-container *ngIf="isReadonly; else IsEditable">
+								<ng-container *ngIf="isReadonly">
 									<button
 										mat-stroked-button
 										color="primary"
@@ -30,26 +30,6 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 										<mat-icon>arrow_back</mat-icon>Back
 									</button>
 								</ng-container>
-								<ng-template #IsEditable>
-									<button
-										mat-stroked-button
-										color="primary"
-										class="large mx-3 mb-3"
-										aria-label="Cancel and return to main page"
-										(click)="onCancel()"
-									>
-										Cancel
-									</button>
-									<button
-										mat-flat-button
-										color="primary"
-										class="large mx-3 mb-3"
-										aria-label="Save and return to main page"
-										(click)="onSave()"
-									>
-										Save
-									</button>
-								</ng-template>
 							</div>
 						</div>
 					</div>
@@ -67,6 +47,31 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					></app-common-business-profile>
 
 					<app-collection-notice></app-collection-notice>
+
+					<div class="row mt-3" *ngIf="!isReadonly">
+						<div class="offset-xl-6 col-xl-6 offset-lg-6 col-lg-6 col-md-12">
+							<div class="d-flex justify-content-end">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large mx-3 mb-3"
+									aria-label="Cancel and return to main page"
+									(click)="onCancel()"
+								>
+									Cancel
+								</button>
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mx-3 mb-3"
+									aria-label="Save and return to main page"
+									(click)="onSave()"
+								>
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

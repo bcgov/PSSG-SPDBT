@@ -4,14 +4,11 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
-import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
-import { CommonUserProfileLicencePoliceBackgroundComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
 
 @Component({
-    selector: 'app-step-worker-licence-user-profile',
-    template: `
+	selector: 'app-step-worker-licence-user-profile',
+	template: `
 		<div class="step-section">
 			<div class="step">
 				<div class="row">
@@ -35,29 +32,6 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 							[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
 							[isReadonlyMailingAddress]="false"
 						></app-common-user-profile>
-
-						<ng-container *ngIf="isVisibleBackgroundInfo">
-							<section>
-								<app-common-user-profile-licence-criminal-history
-									[form]="criminalHistoryFormGroup"
-									[applicationTypeCode]="applicationTypeCode"
-								></app-common-user-profile-licence-criminal-history>
-							</section>
-
-							<section>
-								<app-common-user-profile-licence-police-background
-									[form]="policeBackgroundFormGroup"
-									[applicationTypeCode]="applicationTypeCode"
-								></app-common-user-profile-licence-police-background>
-							</section>
-
-							<section>
-								<app-common-user-profile-licence-mental-health-conditions
-									[form]="mentalHealthConditionsFormGroup"
-									[applicationTypeCode]="applicationTypeCode"
-								></app-common-user-profile-licence-mental-health-conditions>
-							</section>
-						</ng-container>
 
 						<section class="mb-3" *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
@@ -90,8 +64,8 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
 	alertText = '';
@@ -102,21 +76,12 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
-	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
-	criminalHistoryComponent!: CommonUserProfileLicenceCriminalHistoryComponent;
-	@ViewChild(CommonUserProfileLicencePoliceBackgroundComponent)
-	policeBackgroundComponent!: CommonUserProfileLicencePoliceBackgroundComponent;
-	@ViewChild(CommonUserProfileLicenceMentalHealthConditionsComponent)
-	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
 
 	personalInformationFormGroup = this.workerApplicationService.personalInformationFormGroup;
 	contactInformationFormGroup = this.workerApplicationService.contactInformationFormGroup;
 	aliasesFormGroup = this.workerApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.workerApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.workerApplicationService.mailingAddressFormGroup;
-	criminalHistoryFormGroup = this.workerApplicationService.criminalHistoryFormGroup;
-	mentalHealthConditionsFormGroup = this.workerApplicationService.mentalHealthConditionsFormGroup;
-	policeBackgroundFormGroup = this.workerApplicationService.policeBackgroundFormGroup;
 	characteristicsFormGroup = this.workerApplicationService.characteristicsFormGroup;
 
 	isReadonlyPersonalInfo = false;
@@ -162,20 +127,10 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 = this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
-		const isValid4 = this.isVisibleBackgroundInfo ? this.policeBackgroundComponent.isFormValid() : true;
-		const isValid5 = this.isVisibleBackgroundInfo ? this.mentalHealthComponent.isFormValid() : true;
 
-		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+		const isValid = isValid1 && isValid2;
 
-		console.debug(
-			'[StepWorkerLicenceUserProfileComponent] isFormValid',
-			isValid1,
-			isValid2,
-			isValid3,
-			isValid4,
-			isValid5
-		);
+		console.debug('[StepWorkerLicenceUserProfileComponent] isFormValid', isValid1, isValid2);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
@@ -193,9 +148,5 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 			this.workerApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
 			return;
 		}
-	}
-
-	get isVisibleBackgroundInfo(): boolean {
-		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }

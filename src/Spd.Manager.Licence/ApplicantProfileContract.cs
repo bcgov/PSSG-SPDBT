@@ -25,8 +25,7 @@ namespace Spd.Manager.Licence
     public record ApplicantSearchCommand(BcscIdentityInfo BcscIdentityInfo, bool hasIdentity = false) : IRequest<IEnumerable<ApplicantListResponse>>;
     public record ApplicantUpdateCommand(
         Guid ApplicantId,
-        ApplicantUpdateRequest ApplicantUpdateRequest,
-        IEnumerable<LicAppFileInfo> LicAppFileInfos)
+        ApplicantUpdateRequest ApplicantUpdateRequest)
         : IRequest<Unit>;
     public record ApplicantMergeCommand(
         Guid OldApplicantId,
@@ -35,13 +34,6 @@ namespace Spd.Manager.Licence
 
     public record ApplicantUpdateRequest : Applicant
     {
-        public Guid? LicenceId { get; set; } //used when user is in update, renew or replace flow.
-        public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
-        public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-        public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
-        public bool? HasNewMentalHealthCondition { get; set; }
-        public string? CriminalChargeDescription { get; set; }
-        public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
@@ -57,11 +49,6 @@ namespace Spd.Manager.Licence
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
-        public bool? IsPoliceOrPeaceOfficer { get; set; }
-        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-        public string? OtherOfficerRole { get; set; }
-        public bool? IsTreatedForMHC { get; set; }
-        public bool? HasCriminalHistory { get; set; }
         public HairColourCode? HairColourCode { get; set; }
         public EyeColourCode? EyeColourCode { get; set; }
         public int? Height { get; set; }
@@ -76,6 +63,12 @@ namespace Spd.Manager.Licence
         public string Sub { get; set; } = null!; //bcsc sub
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
         public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+        public bool? IsPoliceOrPeaceOfficer { get; set; }
+        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+        public string? OtherOfficerRole { get; set; }
+        public bool? IsTreatedForMHC { get; set; }
+        public bool? HasCriminalHistory { get; set; }
+
     }
     public record ApplicantListResponse
     {

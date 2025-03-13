@@ -49,21 +49,26 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 						[files]="attachments.value"
 					></app-file-upload>
 					<mat-error
-						class="mat-option-error"
+						class="mat-option-error mt-3"
 						*ngIf="
 							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
 							form.get('attachments')?.invalid &&
 							form.get('attachments')?.hasError('required')
 						"
-						>Your fingerprints must be taken to continue to verify your identity.<br /><br />
-						Download the
-						<a
-							aria-label="Download the Request for Fingerprinting form"
-							download="Request For Fingerprinting Form"
-							[href]="downloadFilePath"
-							>Request for Fingerprinting form</a
-						>, take it to a fingerprinting agency (such as your local police department), and complete this application
-						when you have documentation.
+					>
+						<app-alert type="danger" icon="dangerous">
+							<p>Your fingerprints must be taken to continue to verify your identity.</p>
+							<p class="mb-0">
+								Download the
+								<a
+									aria-label="Download the Request for Fingerprinting form"
+									download="Request For Fingerprinting Form"
+									[href]="downloadFilePath"
+									>Request for Fingerprinting form</a
+								>, take it to a fingerprinting agency (such as your local police department), and complete this
+								application when you have documentation.
+							</p>
+						</app-alert>
 					</mat-error>
 				</form>
 			</div>

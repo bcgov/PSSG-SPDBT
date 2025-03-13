@@ -24,7 +24,7 @@ public class WorkerLicenceFixture
             .With(r => r.ApplicationTypeCode, applicationTypeCode)
             .With(r => r.HasLegalNameChanged, false)
             .With(r => r.IsPoliceOrPeaceOfficer, false)
-            .With(r => r.HasNewMentalHealthCondition, false)
+            .With(r => r.IsTreatedForMHC, false)
             .With(r => r.IsCanadianCitizen, true)
             .With(r => r.CategoryCodes, new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales })
             .Without(r => r.PreviousDocumentIds)

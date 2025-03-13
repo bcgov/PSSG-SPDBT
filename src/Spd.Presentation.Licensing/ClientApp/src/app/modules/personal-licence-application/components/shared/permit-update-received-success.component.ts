@@ -86,7 +86,7 @@ export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 
 		if (!this.permitApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();

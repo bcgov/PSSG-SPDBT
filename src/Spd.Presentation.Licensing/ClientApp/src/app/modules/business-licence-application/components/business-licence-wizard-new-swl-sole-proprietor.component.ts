@@ -25,7 +25,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 	template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
-				[selectedIndex]="3"
+				[selectedIndex]="4"
 				linear
 				labelPosition="bottom"
 				[orientation]="orientation"
@@ -33,19 +33,29 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				#stepper
 			>
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Licence Selection</ng-template>
+					<ng-template matStepLabel
+						>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>election</ng-template
+					>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Worker Information</ng-template>
+					<ng-template matStepLabel>Background</ng-template>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Review Worker Licence</ng-template>
+					<ng-template matStepLabel>Identification</ng-template>
+				</mat-step>
+
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+					>
 				</mat-step>
 
 				<mat-step [completed]="step1Complete">
-					<ng-template matStepLabel>Business Information</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+					>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
@@ -59,7 +69,9 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Business Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+					>
 					<app-steps-business-licence-selection
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
@@ -77,7 +89,9 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review Business Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
+					>
 					<app-steps-business-licence-review
 						[applicationTypeCode]="applicationTypeCode"
 						[showSaveAndExit]="true"
@@ -98,6 +112,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 			</mat-stepper>
 		</ng-container>
+
+		<ng-template #StepNameSpace>
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,
@@ -108,9 +126,9 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 {
 	isInitialized$ = this.businessApplicationService.waitUntilInitialized$;
 
-	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_LICENCE_SELECTION = 4;
-	readonly STEP_REVIEW_AND_CONFIRM = 5;
+	readonly STEP_BUSINESS_INFORMATION = 4; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_LICENCE_SELECTION = 5;
+	readonly STEP_REVIEW_AND_CONFIRM = 6;
 
 	step1Complete = false;
 	step2Complete = false;

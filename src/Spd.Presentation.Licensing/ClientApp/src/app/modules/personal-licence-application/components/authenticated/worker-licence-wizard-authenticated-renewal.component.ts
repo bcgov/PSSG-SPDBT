@@ -15,6 +15,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routes';
+import { StepsWorkerLicenceBackgroundComponent } from '../shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
 
@@ -31,10 +32,12 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					#stepper
 				>
 					<mat-step [completed]="step1Complete">
-						<ng-template matStepLabel>Licence Selection</ng-template>
+						<ng-template matStepLabel
+							>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+						>
 						<app-steps-worker-licence-selection
 							[isLoggedIn]="true"
-							[showSaveAndExit]="showSaveAndExit"
+							[showSaveAndExit]="false"
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
@@ -48,12 +51,27 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Worker Information</ng-template>
+						<ng-template matStepLabel>Background</ng-template>
+						<app-steps-worker-licence-background
+							[isLoggedIn]="true"
+							[showSaveAndExit]="false"
+							[isFormValid]="isFormValid"
+							[applicationTypeCode]="applicationTypeCode"
+							(childNextStep)="onChildNextStep()"
+							(nextReview)="onGoToReview()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-steps-worker-licence-background>
+					</mat-step>
+
+					<mat-step [completed]="step3Complete">
+						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
 							[showCitizenshipStep]="showCitizenshipStep"
-							[showSaveAndExit]="showSaveAndExit"
+							[showSaveAndExit]="false"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -63,7 +81,9 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step completed="false">
-						<ng-template matStepLabel>Review Worker Licence</ng-template>
+						<ng-template matStepLabel
+							>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
 							[showCitizenshipStep]="showCitizenshipStep"
@@ -78,15 +98,21 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
 						<mat-step completed="false">
-							<ng-template matStepLabel>Business Information</ng-template>
+							<ng-template matStepLabel
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+							>
 						</mat-step>
 
 						<mat-step completed="false">
-							<ng-template matStepLabel>Business Selection</ng-template>
+							<ng-template matStepLabel
+								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+							>
 						</mat-step>
 
 						<mat-step completed="false">
-							<ng-template matStepLabel>Review Business Licence</ng-template>
+							<ng-template matStepLabel
+								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
+							>
 						</mat-step>
 					</ng-container>
 
@@ -98,20 +124,31 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 				</mat-stepper>
 			</div>
 		</div>
+
+		<ng-template #StepNameSpace>
+			<ng-container *ngIf="isSoleProprietor">
+				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+			</ng-container>
+			<ng-container *ngIf="!isSoleProprietor">&nbsp;</ng-container>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,
 })
 export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_IDENTIFICATION = 1;
-	readonly STEP_REVIEW = 2;
+	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_WORKER_BACKGROUND = 1;
+	readonly STEP_WORKER_IDENTIFICATION = 2;
+	readonly STEP_WORKER_LICENCE_REVIEW = 3;
 
 	step1Complete = false;
 	step2Complete = false;
+	step3Complete = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
@@ -120,7 +157,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
-	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
@@ -197,13 +233,16 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
+			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_IDENTIFICATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_REVIEW:
+			case this.STEP_WORKER_LICENCE_REVIEW:
 				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
 				break;
 		}
@@ -215,10 +254,13 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		stepper.previous();
 
 		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
+			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
-			case this.STEP_IDENTIFICATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToLastStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToLastStep();
 				break;
 		}
@@ -241,7 +283,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
-						this.stepper.selectedIndex = this.STEP_REVIEW;
+						this.stepper.selectedIndex = this.STEP_WORKER_LICENCE_REVIEW;
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
@@ -252,7 +294,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				},
 			});
 		} else {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
+			this.stepper.selectedIndex = this.STEP_WORKER_LICENCE_REVIEW;
 		}
 	}
 
@@ -319,17 +361,21 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.workerApplicationService.isStepIdentificationComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete(false);
+		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
+			case this.STEP_WORKER_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;
-			case this.STEP_IDENTIFICATION:
+			case this.STEP_WORKER_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToNextStep();
+				break;
+			case this.STEP_WORKER_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}

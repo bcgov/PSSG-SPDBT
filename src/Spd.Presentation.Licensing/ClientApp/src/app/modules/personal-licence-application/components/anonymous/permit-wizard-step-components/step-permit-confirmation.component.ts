@@ -4,8 +4,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-    selector: 'app-step-permit-confirmation',
-    template: `
+	selector: 'app-step-permit-confirmation',
+	template: `
 		<app-step-section title="Confirm your current permit information">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -42,8 +42,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitConfirmationComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -56,7 +56,7 @@ export class StepPermitConfirmationComponent implements OnInit {
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit() {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 	}
 
 	get cardHolderName(): string {

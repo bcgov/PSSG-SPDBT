@@ -60,11 +60,11 @@ export class FormAlertUpdateOrRenewalComponent implements OnInit {
 
 	ngOnInit() {
 		if (this.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence) {
-			this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+			this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 		} else if (this.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-			this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+			this.licenceModelData = this.businessApplicationService.businessModelFormGroup.getRawValue();
 		} else {
-			this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+			this.licenceModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 		}
 	}
 

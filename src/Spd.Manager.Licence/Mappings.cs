@@ -44,6 +44,9 @@ internal class Mappings : Profile
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.OriginalApplicationId, opt => opt.MapFrom(s => s.LatestApplicationId));
 
+        CreateMap<WorkerLicenceAppUpsertRequest, UpdateContactCmd>()
+            .ConvertUsing(src => CreateUpdateContactCmd(src));
+
         CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
@@ -60,6 +63,12 @@ internal class Mappings : Profile
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPurposeEnums(s.BodyArmourPermitReasonCodes, s.ArmouredVehiclePermitReasonCodes)));
+
+        CreateMap<PermitAppUpsertRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
 
         CreateMap<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
@@ -80,14 +89,15 @@ internal class Mappings : Profile
             .ForMember(d => d.EmailAddress, opt => opt.Ignore())
             .ForMember(d => d.Gender, opt => opt.Ignore());
 
+        CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+
         CreateMap<WorkerLicenceAppSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
-            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
-
-        CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => s.IsTreatedForMHC.HasValue && s.IsTreatedForMHC.Value ? true : (bool?)null));
 
         CreateMap<PermitAppSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
@@ -151,7 +161,7 @@ internal class Mappings : Profile
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
-            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.HasNewCriminalRecordCharge == true ? s.CriminalHistoryDetail : string.Empty))
+            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.HasCriminalHistory == true ? s.CriminalHistoryDetail : string.Empty))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
@@ -549,10 +559,6 @@ internal class Mappings : Profile
     }
     private static bool? GetIsTreatedForMHC(WorkerLicenceAppBase request)
     {
-        if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
-        {
-            return request.HasNewMentalHealthCondition;
-        }
         return request.IsTreatedForMHC;
     }
 
@@ -560,7 +566,7 @@ internal class Mappings : Profile
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
-            return request.HasNewCriminalRecordCharge;
+            return request.HasCriminalHistory;
         }
         return request.HasCriminalHistory;
     }
@@ -858,6 +864,25 @@ internal class Mappings : Profile
     {
         if (status == null) return null;
         else return Enum.Parse<ApplicationPortalStatusCode>(status.Value.ToString());
+    }
+
+    private static UpdateContactCmd CreateUpdateContactCmd(WorkerLicenceAppUpsertRequest src)
+    {
+        return new UpdateContactCmd()
+        {
+            FirstName = src.GivenName,
+            LastName = src.Surname,
+            MiddleName1 = src.MiddleName1,
+            MiddleName2 = src.MiddleName2,
+            Gender = src.GenderCode.HasValue ? Enum.Parse<GenderEnum>(src.GenderCode.ToString()) : null,
+            BirthDate = src.DateOfBirth.HasValue ? src.DateOfBirth.Value : new DateOnly(1800, 1, 1),
+            IsPoliceOrPeaceOfficer = src.IsPoliceOrPeaceOfficer,
+            PoliceOfficerRoleCode = src.PoliceOfficerRoleCode.HasValue ? Enum.Parse<PoliceOfficerRoleEnum>(src.PoliceOfficerRoleCode.ToString()) : null,
+            OtherOfficerRole = src.OtherOfficerRole,
+            IsTreatedForMHC = (src.IsTreatedForMHC.HasValue && src.IsTreatedForMHC.Value) ? true : null,
+            HasCriminalHistory = src.HasCriminalHistory, //(src.HasCriminalHistory.HasValue && src.HasCriminalHistory.Value) ? true : null,
+            CriminalChargeDescription = src.CriminalChargeDescription
+        };
     }
 }
 

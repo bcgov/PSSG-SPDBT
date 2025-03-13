@@ -77,13 +77,9 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_Success()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, false)
-                .With(r => r.IsPoliceOrPeaceOfficer, false)
-                .Without(r => r.PreviousDocumentIds)
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
-                .With(c => c.LicAppFileInfos, [])
                 .With(c => c.ApplicantUpdateRequest, request)
                 .Create();
 
@@ -103,13 +99,9 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_WithNoMentalHealthConditionFile_Throw_Exception()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, true)
-                .With(r => r.IsPoliceOrPeaceOfficer, false)
-                .With(r => r.PreviousDocumentIds, new List<Guid>() { Guid.NewGuid() })
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
-                .With(c => c.LicAppFileInfos, [])
                 .With(c => c.ApplicantUpdateRequest, request)
                 .Create();
 
@@ -128,13 +120,9 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_WithNoPoliceBackgroundLetterOfNoConflictFile_Throw_Exception()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, false)
-                .With(r => r.IsPoliceOrPeaceOfficer, true)
-                .With(r => r.PreviousDocumentIds, new List<Guid>() { Guid.NewGuid() })
                 .Create();
 
             ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
-                .With(c => c.LicAppFileInfos, [])
                 .With(c => c.ApplicantUpdateRequest, request)
                 .Create();
 
@@ -152,7 +140,7 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_ApplicantUpdateCommand_WithAppInProgress_ShouldThrowException()
         {
             //Arrange
-            ApplicantUpdateCommand cmd = new(Guid.NewGuid(), fixture.Create<ApplicantUpdateRequest>(), fixture.Create<IEnumerable<LicAppFileInfo>>());
+            ApplicantUpdateCommand cmd = new(Guid.NewGuid(), fixture.Create<ApplicantUpdateRequest>());
             mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(fixture.Create<IEnumerable<LicenceAppListResp>>);
 

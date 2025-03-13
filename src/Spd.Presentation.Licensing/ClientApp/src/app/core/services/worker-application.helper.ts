@@ -273,44 +273,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 	getProfileSaveBody(workerModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = workerModelFormValue.applicationTypeData;
 		const contactInformationData = workerModelFormValue.contactInformationData;
 		const residentialAddressData = workerModelFormValue.residentialAddressData;
 		const mailingAddressData = workerModelFormValue.mailingAddressData;
-		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
-		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 		const personalInformationData = workerModelFormValue.personalInformationData;
-		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
 		const characteristicsData = workerModelFormValue.characteristicsData;
-
-		const applicationTypeCode = applicationTypeData.applicationTypeCode;
-
-		const criminalChargeDescription =
-			applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
-				? criminalHistoryData.criminalChargeDescription
-				: null;
-
-		const documentKeyCodes: null | Array<string> = [];
-		const previousDocumentIds: null | Array<string> = [];
-
-		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
-		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
-			? policeBackgroundData.policeOfficerRoleCode
-			: PoliceOfficerRoleCode.None;
-		const otherOfficerRole =
-			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
-				? policeBackgroundData.otherOfficerRole
-				: null;
-
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -319,8 +286,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const requestbody: ApplicantUpdateRequest = {
-			licenceId: undefined,
-			applicationTypeCode,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
@@ -335,32 +300,17 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 					? workerModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			documentKeyCodes,
-			previousDocumentIds,
-			//-----------------------------------
-			isTreatedForMHC,
-			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
-			//-----------------------------------
-			isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode,
-			otherOfficerRole,
-			//-----------------------------------
-			hasCriminalHistory,
-			hasNewCriminalRecordCharge,
-			criminalChargeDescription, // populated only for Update and new charges is Yes
-			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
 			residentialAddress: residentialAddressData,
 			...characteristicsData,
 		};
 
-		console.debug('[getProfileSaveBody] workerModelFormValue', workerModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
 
 		return requestbody;
 	}
 
-	getDocsToSaveBlobs(workerModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(workerModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const applicationTypeData = workerModelFormValue.applicationTypeData;
@@ -555,28 +505,26 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
 		}
 
-		if (includeProfileDocs) {
-			const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-			const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
-			if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
-				const docs: Array<Blob> = [];
-				policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-					documents: docs,
-				});
-			}
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
 
-			if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
-				const docs: Array<Blob> = [];
-				mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-			}
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
 		}
 
 		if (citizenshipData.attachments) {
@@ -621,38 +569,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		}
 
 		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
-		return documents;
-	}
-
-	getProfileDocsToSaveBlobs(workerModelFormValue: any): Array<LicenceDocumentsToSave> {
-		const documents: Array<LicenceDocumentsToSave> = [];
-
-		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
-		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
-
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-
-		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
-		console.debug('[getProfileDocsToSaveBlobs] documentsToSave', documents);
 		return documents;
 	}
 
@@ -838,7 +754,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				});
 			});
 		}
-		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
 		fingerprintProofData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -938,20 +853,16 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
-		const policeOfficerRoleCode = isPoliceOrPeaceOfficer
-			? policeBackgroundData.policeOfficerRoleCode
-			: PoliceOfficerRoleCode.None;
+		let policeOfficerRoleCode = null;
+		if (applicationTypeCode != ApplicationTypeCode.Replacement) {
+			policeOfficerRoleCode = isPoliceOrPeaceOfficer
+				? policeBackgroundData.policeOfficerRoleCode
+				: PoliceOfficerRoleCode.None;
+		}
 		const otherOfficerRole =
 			isPoliceOrPeaceOfficer && policeOfficerRoleCode === PoliceOfficerRoleCode.Other
 				? policeBackgroundData.otherOfficerRole
 				: null;
-
-		let hasNewMentalHealthCondition: boolean | null = null;
-		let hasNewCriminalRecordCharge: boolean | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = isTreatedForMHC;
-			hasNewCriminalRecordCharge = hasCriminalHistory;
-		}
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
@@ -1004,7 +915,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasCriminalHistory,
-			hasNewCriminalRecordCharge, // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			licenceTermCode: workerModelFormValue.licenceTermData.licenceTermCode,
@@ -1016,7 +926,6 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
 			isTreatedForMHC,
-			hasNewMentalHealthCondition, // used by the backend for an Update or Renewal
 			//-----------------------------------
 			isPoliceOrPeaceOfficer,
 			policeOfficerRoleCode,
@@ -1377,6 +1286,12 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	}
 	getSummarydateOfBirth(workerLicenceModelData: any): string {
 		return workerLicenceModelData.personalInformationData.dateOfBirth ?? '';
+	}
+	getSummaryhasLegalNameChanged(workerLicenceModelData: any): boolean {
+		return !!workerLicenceModelData.personalInformationData.hasLegalNameChanged;
+	}
+	getSummaryhasLegalNameChangedAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.personalInformationData.attachments ?? [];
 	}
 
 	getSummarypreviousNameFlag(workerLicenceModelData: any): string {

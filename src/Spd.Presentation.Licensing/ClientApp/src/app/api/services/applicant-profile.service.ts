@@ -19,11 +19,14 @@ import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get'
 import { ApiApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-id-get';
 import { apiApplicantMergeOldApplicantIdNewApplicantIdGet } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
 import { ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
+import { apiApplicantsAnonymousLicenceApplicationsGet } from '../fn/applicant-profile/api-applicants-anonymous-licence-applications-get';
+import { ApiApplicantsAnonymousLicenceApplicationsGet$Params } from '../fn/applicant-profile/api-applicants-anonymous-licence-applications-get';
 import { apiApplicantSearchGet } from '../fn/applicant-profile/api-applicant-search-get';
 import { ApiApplicantSearchGet$Params } from '../fn/applicant-profile/api-applicant-search-get';
 import { ApplicantListResponse } from '../models/applicant-list-response';
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
 import { IActionResult } from '../models/i-action-result';
+import { LicenceAppListResponse } from '../models/licence-app-list-response';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicantProfileService extends BaseService {
@@ -195,6 +198,39 @@ export class ApplicantProfileService extends BaseService {
   apiApplicantGet(params?: ApiApplicantGet$Params, context?: HttpContext): Observable<ApplicantProfileResponse> {
     return this.apiApplicantGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ApplicantProfileResponse>): ApplicantProfileResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiApplicantsAnonymousLicenceApplicationsGet()` */
+  static readonly ApiApplicantsAnonymousLicenceApplicationsGetPath = '/api/applicants-anonymous/licence-applications';
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application or Permit Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsAnonymousLicenceApplicationsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsAnonymousLicenceApplicationsGet$Response(params?: ApiApplicantsAnonymousLicenceApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
+    return apiApplicantsAnonymousLicenceApplicationsGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application or Permit Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsAnonymousLicenceApplicationsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsAnonymousLicenceApplicationsGet(params?: ApiApplicantsAnonymousLicenceApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
+    return this.apiApplicantsAnonymousLicenceApplicationsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
     );
   }
 

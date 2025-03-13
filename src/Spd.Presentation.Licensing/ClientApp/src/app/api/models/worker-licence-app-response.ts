@@ -31,6 +31,7 @@ export interface WorkerLicenceAppResponse {
   carryAndUseRestraints?: boolean | null;
   caseNumber?: string | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+  criminalChargeDescription?: string | null;
   dateOfBirth?: string | null;
   documentInfos?: Array<Document> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
@@ -46,8 +47,6 @@ export interface WorkerLicenceAppResponse {
   hasCriminalHistory?: boolean | null;
   hasExpiredLicence?: boolean | null;
   hasLegalNameChanged?: boolean | null;
-  hasNewCriminalRecordCharge?: boolean | null;
-  hasNewMentalHealthCondition?: boolean | null;
   hasPreviousName?: boolean | null;
   height?: number | null;
   heightUnitCode?: HeightUnitCode;

@@ -1,20 +1,14 @@
 using AutoMapper;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
-using Polly;
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Contact;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
-using System.Collections.Generic;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
-
 
     public ControllingMemberCrcRepository(IDynamicsContextFactory ctx, IMapper mapper)
     {
@@ -33,7 +27,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
                 .Where(a => a.spd_applicationid == cmd.ParentBizLicApplicationId)
                 .SingleOrDefaultAsync(ct);
 
-
         if (bizLicApplication == null)
             throw new ArgumentException("Parent business licence application was not found.");
 
@@ -41,10 +34,9 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         //check contact duplicate
         contact? contact = SharedRepositoryFuncs.GetDuplicateContact(_context, _mapper.Map<contact>(cmd), ct);
         //create or update contact
-        contact = contact == null ? 
-            await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) : 
+        contact = contact == null ?
+            await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) :
             await UpdatePersonalInformationAsync(cmd, contact, ct);
-
 
         spd_application? app = _mapper.Map<spd_application>(cmd);
         _context.AddTospd_applications(app);
@@ -102,7 +94,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
-            _mapper.Map<spd_application, ControllingMemberCrcApplicationResp>(app, appResp);
+            //_mapper.Map<spd_application, ControllingMemberCrcApplicationResp>(app, appResp);
         }
 
         return appResp;
@@ -129,8 +121,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         {
             throw new ArgumentException("applicant not found");
         }
-        //update contact and aliases
-        contact = await UpdatePersonalInformationAsync(cmd, contact, ct);
 
         spd_application? app;
         if (cmd.ControllingMemberAppId != null)
@@ -143,7 +133,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             _mapper.Map<SaveControllingMemberCrcAppCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.ControllingMemberAppId);
             _context.UpdateObject(app);
-
 
         }
         else
@@ -192,6 +181,10 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         List<spd_alias> aliasesToAdd = (List<spd_alias>)_mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)); // Only aliases with Id null or empty are considered as new
         var modifiedAliases = cmd.Aliases.Where(a => a.Id != Guid.Empty && a.Id != null).ToList();
         List<Guid?> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
+
+        //for spdbt-3706, do not update contact mental health condition from application when the value from app is No.
+        if (newContact.spd_mentalhealthcondition == (int)YesNoOptionSet.No)
+            newContact.spd_mentalhealthcondition = null;
 
         contact = await _context.UpdateContact(contact, newContact, null, aliasesToAdd, ct, cmd.IsPartialSaving);
         foreach (var aliasId in aliasesToRemove)

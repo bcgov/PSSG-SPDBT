@@ -47,6 +47,6 @@ export class ModalBizSelectionComponent implements OnInit {
 	}
 
 	onSelectBiz(bizItem: BizListResponse) {
-		this.dialogRef.close({ ...bizItem });
+		this.dialogRef.close(bizItem);
 	}
 }

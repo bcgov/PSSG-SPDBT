@@ -158,7 +158,7 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)
-            .When(r => r.HasNewCriminalRecordCharge == true && r.ApplicationTypeCode == ApplicationTypeCode.Update);
+            .When(r => r.HasCriminalHistory == true && r.ApplicationTypeCode == ApplicationTypeCode.Update);
     }
 
 }

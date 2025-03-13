@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -26,7 +26,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 
 	form: FormGroup = this.workerApplicationService.mentalHealthConditionsFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FormMentalHealthConditionsComponent)
 	formMentalHealthConditionsComponent!: FormMentalHealthConditionsComponent;
@@ -36,7 +36,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	ngOnInit(): void {
 		[this.title, this.subtitle] = this.workerApplicationService.getMentalHealthConditionsTitle(
 			this.applicationTypeCode,
-			this.hasPreviousMhcFormUpload.value
+			this.workerApplicationService.getIsPreviouslyTreatedForMHC()
 		);
 	}
 
@@ -56,9 +56,5 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 
 	onFileRemoved(): void {
 		this.workerApplicationService.fileRemoved();
-	}
-
-	get hasPreviousMhcFormUpload(): FormControl {
-		return this.form.get('hasPreviousMhcFormUpload') as FormControl;
 	}
 }

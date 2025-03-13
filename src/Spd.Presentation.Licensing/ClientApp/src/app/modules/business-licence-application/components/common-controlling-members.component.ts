@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
 	ApplicationInviteStatusCode,
+	ApplicationTypeCode,
 	BizMemberResponse,
 	ControllingMemberAppInviteTypeCode,
 	ControllingMemberInvitesCreateResponse,
@@ -278,7 +279,7 @@ import {
 				</mat-expansion-panel>
 			</mat-accordion>
 
-			<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
+			<div class="mt-2" *ngIf="requireDocumentUpload" @showHideTriggerSlideAnimation>
 				<mat-divider class="mat-divider-main my-3"></mat-divider>
 				<div class="text-minor-heading lh-base mb-2">
 					Upload a copy of the corporate registry documents for your business in the province in which you are
@@ -358,9 +359,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	@Input() isApplExists = false;
 	@Input() isLicenceExists = false;
 	@Input() isReadonly = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	isBcBusinessAddress = true;
-	allowDocumentUpload = false;
+	requireDocumentUpload = false;
 
 	allowNewInvitationsToBeSent = false;
 	allowUpdateInvitationsToBeSent = false;
@@ -391,7 +392,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		}
 
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
 		//  'action1' - EDIT
 		//  'action2' - REMOVE
@@ -402,6 +402,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		if (this.isWizard) {
 			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
+			this.requireDocumentUpload = this.applicationTypeCode === ApplicationTypeCode.Renewal;
 		} else {
 			if (this.isApplExists) {
 				// User should not be in here for Draft
@@ -432,6 +433,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
 			}
 		}
+
+		this.form.patchValue({ attachmentIsRequired: this.requireDocumentUpload });
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
 		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
@@ -468,8 +471,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
-				this.controllingMemberChanged();
-
 				if (response) {
 					this.bizMembersService
 						.apiBusinessBizIdMembersBizContactIdDelete({
@@ -517,8 +518,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						this.memberAlreadyListed();
 						return;
 					}
-
-					this.controllingMemberChanged();
 
 					const body = {
 						bizContactId: null,
@@ -655,16 +654,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.dialog.open(DialogComponent, { data });
 	}
 
-	private controllingMemberChanged(): void {
-		// document upload only needed in wizard flow
-		if (!this.isWizard) {
-			return;
-		}
-
-		this.allowDocumentUpload = true;
-		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
-	}
-
 	private memberDialogWithoutSWL(dialogOptions: NonSwlContactInfo | null, isCreate: boolean): void {
 		const dialogData: MemberWithoutSWLDialogData = dialogOptions ?? {};
 		dialogData.bizId = this.bizId;
@@ -682,8 +671,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 				if (memberData) {
 					if (isCreate) {
-						this.controllingMemberChanged();
-
 						this.membersWithoutSwlList.push(this.newMemberRow(memberData.bizContactId!, memberData));
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 

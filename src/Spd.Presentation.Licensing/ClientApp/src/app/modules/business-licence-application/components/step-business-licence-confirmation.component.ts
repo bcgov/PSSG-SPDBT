@@ -80,7 +80,7 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.businessLicenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+		this.businessLicenceModelData = this.businessApplicationService.businessModelFormGroup.getRawValue();
 
 		// only show fee for Replacement flow
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {

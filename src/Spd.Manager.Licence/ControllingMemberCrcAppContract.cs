@@ -95,8 +95,6 @@ public record ControllingMemberCrcAppUpdateRequest
     public bool? HasCriminalHistory { get; set; }
     public string? CriminalHistoryDetail { get; set; }
     public bool? HasLegalNameChanged { get; set; }
-    public bool? HasNewCriminalRecordCharge { get; set; }
-    public bool? HasNewMentalHealthCondition { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public DateOnly? DateOfBirth { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }

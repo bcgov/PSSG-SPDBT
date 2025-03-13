@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-criminal-history',
-    template: `
+	selector: 'app-step-worker-licence-criminal-history',
+	template: `
 		<app-step-section [title]="title">
 			<app-common-criminal-history
 				[form]="form"
@@ -16,15 +16,15 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			></app-common-criminal-history>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
 	form: FormGroup = this.workerApplicationService.criminalHistoryFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
 		private workerApplicationService: WorkerApplicationService,
