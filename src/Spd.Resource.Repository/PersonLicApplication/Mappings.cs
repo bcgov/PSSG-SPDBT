@@ -187,6 +187,7 @@ internal class Mappings : Profile
         _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
           .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+          .ForMember(d => d.spd_updatesummary, opt => opt.MapFrom(s => s.ChangeSummary))
           .IncludeBase<LicenceApplication, spd_application>();
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()

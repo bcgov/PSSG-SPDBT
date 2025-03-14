@@ -1,5 +1,4 @@
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicApp;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
@@ -81,6 +80,7 @@ public record CreateLicenceApplicationCmd() : LicenceApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
+    public string? ChangeSummary { get; set; }
 
 };
 

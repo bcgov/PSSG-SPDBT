@@ -37,7 +37,7 @@ public static class PropertyComparer
                 }
                 else if (!Equals(value1, value2))
                 {
-                    differences.Add($"{prop1.Name}: change from {value1} to {value2}\r\n");
+                    differences.Add($"{prop1.Name}: change from {value1} to {value2}");
                 }
             }
         }
