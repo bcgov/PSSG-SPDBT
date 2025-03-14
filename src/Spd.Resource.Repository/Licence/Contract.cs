@@ -80,6 +80,7 @@ namespace Spd.Resource.Repository.Licence
         public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     }
 
+
     public record PermitLicence : Licence
     {
         //for permit 
