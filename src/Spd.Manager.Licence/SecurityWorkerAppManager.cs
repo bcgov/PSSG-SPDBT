@@ -480,7 +480,7 @@ internal class SecurityWorkerAppManager :
         var oldData = _mapper.Map<CompareEntity>(originalLic);
         _mapper.Map<ContactResp, CompareEntity>(contactResp, oldData);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
-        changes.ChangeSummary = string.Join(',', summary);
+        changes.ChangeSummary = string.Join("\r\n", summary);
         return changes;
     }
 
@@ -652,7 +652,7 @@ public record CompareEntity
 
     public ServiceTypeEnum? ServiceTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
-    public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
+    public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
 
     //swl
     public bool UseDogs { get; set; }

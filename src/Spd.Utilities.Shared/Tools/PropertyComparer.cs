@@ -22,9 +22,22 @@ public static class PropertyComparer
                 var value1 = prop1.GetValue(obj1);
                 var value2 = prop2.GetValue(obj2);
 
-                if (!Equals(value1, value2))
+                if (value1 is Array array1 && value2 is Array array2)
                 {
-                    differences.Add($"{prop1.Name}: change from {value1} to {value2}");
+                    // Handle array comparison
+                    var missing = array1.Cast<object>().Except(array2.Cast<object>()).ToList();
+                    var added = array2.Cast<object>().Except(array1.Cast<object>()).ToList();
+
+                    if (missing.Count > 0 || added.Count > 0)
+                    {
+                        differences.Add($"{prop1.Name}:");
+                        if (missing.Count > 0) differences.Add($" Removed: {string.Join(", ", missing)}");
+                        if (added.Count > 0) differences.Add($" Added: {string.Join(", ", added)}");
+                    }
+                }
+                else if (!Equals(value1, value2))
+                {
+                    differences.Add($"{prop1.Name}: change from {value1} to {value2}\r\n");
                 }
             }
         }
