@@ -477,9 +477,9 @@ internal class SecurityWorkerAppManager :
             }, ct)).TaskId;
         }
 
-        var newData = _mapper.Map<CompareEntity>(newRequest);
-        var oldData = _mapper.Map<CompareEntity>(originalLic);
-        _mapper.Map<ContactResp, CompareEntity>(contactResp, oldData);
+        var newData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(newRequest);
+        var oldData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(originalLic);
+        _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
         changes.ChangeSummary = string.Join("\r\n", summary);
         return changes;

@@ -2,7 +2,7 @@
 using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Manager.Licence;
-public record CompareEntity
+public record SecureWorkerLicenceAppCompareEntity
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -52,4 +52,13 @@ public record PermitCompareEntity
     public string? SupervisorEmailAddress { get; set; }
     public string? SupervisorPhoneNumber { get; set; }
     public Address? EmployerPrimaryAddress { get; set; }
+}
+
+public record BizLicenceAppCompareEntity
+{
+    public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
+    public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
 }
