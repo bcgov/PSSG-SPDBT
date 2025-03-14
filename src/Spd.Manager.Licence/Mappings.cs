@@ -494,6 +494,9 @@ internal class Mappings : Profile
             .ForMember(d => d.FirstName, opt => opt.Ignore())
             .ForMember(d => d.LastName, opt => opt.Ignore())
             .ForMember(d => d.MiddleName1, opt => opt.Ignore());
+        CreateMap<PermitAppSubmitRequest, PermitCompareEntity>()
+           .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
+        CreateMap<LicenceResp, PermitCompareEntity>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

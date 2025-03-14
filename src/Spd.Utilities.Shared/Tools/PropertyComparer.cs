@@ -37,6 +37,8 @@ public static class PropertyComparer
                 }
                 else if (!Equals(value1, value2))
                 {
+                    value1 = value1 ?? "Empty";
+                    value2 = value2 ?? "Empty";
                     differences.Add($"{prop1.Name}: change from {value1} to {value2}");
                 }
             }
