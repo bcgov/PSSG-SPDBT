@@ -237,7 +237,7 @@ internal class PermitAppManager :
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint == true))
         {
-            createLicResponse = await HandleReprintRequest(request, cmd.LicAppFileInfos, cancellationToken);
+            createLicResponse = await HandleReprintRequest(request, cmd.LicAppFileInfos, changes, cancellationToken);
         }
         else
         {
@@ -292,9 +292,10 @@ internal class PermitAppManager :
             await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
         }
     }
-    private async Task<LicenceApplicationCmdResp?> HandleReprintRequest(PermitAppSubmitRequest? request, IEnumerable<LicAppFileInfo> licAppFileInfos, CancellationToken cancellationToken)
+    private async Task<LicenceApplicationCmdResp?> HandleReprintRequest(PermitAppSubmitRequest? request, IEnumerable<LicAppFileInfo> licAppFileInfos, ChangeSpec spec, CancellationToken cancellationToken)
     {
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.ChangeSummary = spec.ChangeSummary;
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(licAppFileInfos, new List<LicAppFileInfo>());
         var createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
@@ -398,8 +399,12 @@ internal class PermitAppManager :
             }, ct)).TaskId;
         }
 
-        return changes;
+        var newData = _mapper.Map<PermitCompareEntity>(newRequest);
+        var oldData = _mapper.Map<PermitCompareEntity>(originalLic);
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        changes.ChangeSummary = string.Join("\r\n", summary);
 
+        return changes;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppSubmitRequest request,
@@ -538,5 +543,6 @@ internal class PermitAppManager :
         public bool RationaleChanged { get; set; } //task
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+        public string? ChangeSummary { get; set; }
     }
 }
