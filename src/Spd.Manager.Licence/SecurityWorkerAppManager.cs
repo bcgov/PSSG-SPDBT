@@ -341,6 +341,7 @@ internal class SecurityWorkerAppManager :
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            createApp.ChangeSummary = changes.ChangeSummary;
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
             //copying all old files to new application in PreviousFileIds 
@@ -475,6 +476,12 @@ internal class SecurityWorkerAppManager :
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
         }
+
+        var newData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(newRequest);
+        var oldData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(originalLic);
+        _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        changes.ChangeSummary = string.Join("\r\n", summary);
         return changes;
     }
 
@@ -615,5 +622,8 @@ internal class SecurityWorkerAppManager :
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+        public string ChangeSummary { get; set; }
     }
 }
+
+
