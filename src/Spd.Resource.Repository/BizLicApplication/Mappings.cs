@@ -62,6 +62,7 @@ internal class Mappings : Profile
         CreateMap<CreateBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_updatesummary, opt => opt.MapFrom(s => s.ChangeSummary))
          .IncludeBase<BizLicApplication, spd_application>();
         //.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
