@@ -5,6 +5,8 @@ namespace Spd.Utilities.Shared.Tools;
 public static class PropertyComparer
 {
     public static Collection<string> GetPropertyDifferences<T1, T2>(T1 obj1, T2 obj2)
+            where T1 : class
+            where T2 : class
     {
         if (obj1 == null || obj2 == null)
             throw new ArgumentException("Both objects must be non-null");
