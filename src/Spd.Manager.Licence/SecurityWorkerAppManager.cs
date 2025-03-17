@@ -484,7 +484,7 @@ internal class SecurityWorkerAppManager :
         changes.ChangeSummary = string.Join("\r\n", summary);
         if ((newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value) && (contactResp.IsTreatedForMHC == null || !contactResp.IsTreatedForMHC.Value))
         {
-            changes.ChangeSummary += "Has new mental health issue\r\n";
+            changes.ChangeSummary += "Has new mental health condition\r\n";
         }
         return changes;
     }
