@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationPortalStatusCode, ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import {
 	CommonApplicationService,
 	MainApplicationResponse,
@@ -536,9 +536,7 @@ export class PersonalLicenceMainComponent implements OnInit {
 					this.utilService.isLicenceActive(item.licenceStatusCode)
 				);
 
-				const expiredLicences = userPersonLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-				);
+				this.expiredLicencesList = this.commonApplicationService.userExpiredLicences(userPersonLicencesList);
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
