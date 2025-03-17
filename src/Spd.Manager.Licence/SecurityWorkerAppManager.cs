@@ -482,6 +482,10 @@ internal class SecurityWorkerAppManager :
         _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
         changes.ChangeSummary = string.Join("\r\n", summary);
+        if ((newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value) && (contactResp.IsTreatedForMHC == null || !contactResp.IsTreatedForMHC.Value))
+        {
+            changes.ChangeSummary += "Has new mental health condition\r\n";
+        }
         return changes;
     }
 
