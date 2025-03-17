@@ -340,8 +340,12 @@ export class BusinessLicenceMainComponent implements OnInit {
 	}
 
 	onNewBusinessLicence(): void {
+		const previousExpiredLicence = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence
+		);
+
 		this.businessApplicationService
-			.createNewBusinessLicenceWithProfile(ApplicationTypeCode.New)
+			.createNewBusinessLicence(previousExpiredLicence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
