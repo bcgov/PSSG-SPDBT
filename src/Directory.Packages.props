@@ -33,14 +33,14 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="Microsoft.OData.Client" Version="8.2.3" />
     <PackageVersion Include="Microsoft.OData.Core" Version="8.2.3" />
