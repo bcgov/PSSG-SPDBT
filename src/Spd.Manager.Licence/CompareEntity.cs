@@ -24,9 +24,7 @@ public record SecureWorkerLicenceAppCompareEntity
     public bool? IsPoliceOrPeaceOfficer { get; set; }
     public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
     public string? OtherOfficerRole { get; set; }
-    public bool? IsTreatedForMHC { get; set; }
     public bool? HasCriminalHistory { get; set; }
-
     public ServiceTypeEnum? ServiceTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();

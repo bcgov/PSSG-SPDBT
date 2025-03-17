@@ -62,7 +62,6 @@ namespace Spd.Manager.Licence
         public Guid ApplicantId { get; set; } //which is contact id in db
         public string Sub { get; set; } = null!; //bcsc sub
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
-        public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
         public bool? IsPoliceOrPeaceOfficer { get; set; }
         public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
