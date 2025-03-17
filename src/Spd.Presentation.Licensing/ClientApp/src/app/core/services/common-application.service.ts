@@ -15,6 +15,7 @@ import {
 	LicenceBasicResponse,
 	LicenceFeeResponse,
 	LicenceResponse,
+	LicenceStatusCode,
 	LicenceTermCode,
 	Members,
 	NonSwlContactInfo,
@@ -340,6 +341,29 @@ export class CommonApplicationService {
 					}
 				})
 			);
+	}
+
+	// get the list of expired licence with unique licence number and latest expiry date
+	userExpiredLicences(licencesList: Array<MainLicenceResponse>): Array<MainLicenceResponse> {
+		const expiredLicencesSorted = licencesList.filter(
+			(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+		);
+
+		expiredLicencesSorted.sort((a, b) => {
+			return this.utilService.sortDate(a.expiryDate, b.expiryDate, 'desc');
+		});
+
+		const seenLicences = new Set<string>();
+		const expiredLicencesFiltered: MainLicenceResponse[] = [];
+
+		expiredLicencesSorted.forEach((licence: MainLicenceResponse) => {
+			if (!seenLicences.has(licence.licenceNumber!)) {
+				expiredLicencesFiltered.push(licence);
+				seenLicences.add(licence.licenceNumber!);
+			}
+		});
+
+		return expiredLicencesFiltered;
 	}
 
 	private processPersonLicenceData(
