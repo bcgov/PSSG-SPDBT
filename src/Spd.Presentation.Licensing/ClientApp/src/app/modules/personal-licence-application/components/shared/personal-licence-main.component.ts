@@ -582,7 +582,6 @@ export class PersonalLicenceMainComponent implements OnInit {
 					);
 
 				this.activeLicencesList = activeLicencesList;
-				this.expiredLicencesList = expiredLicences;
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 			})
