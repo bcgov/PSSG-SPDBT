@@ -181,15 +181,15 @@ export class PersonalLicenceMainComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	activeLicencesList: Array<MainLicenceResponse> = [];
-	expiredLicencesList: Array<MainLicenceResponse> = [];
-
 	// If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
 	// If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
 	// If the licence holder has an Armoured vehicle permit, they can add a new Body Armour permit and/or a security worker licence
 	activeSwlExist = false;
 	activeAvPermitExist = false;
 	activeBaPermitExist = false;
+
+	activeLicencesList: Array<MainLicenceResponse> = [];
+	expiredLicencesList: Array<MainLicenceResponse> = [];
 
 	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(
 		[]
@@ -234,8 +234,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewSecurityWorkerLicence(): void {
+		const previousExpiredLicence = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
+		);
+
 		this.workerApplicationService
-			.createNewLicenceAuthenticated()
+			.createNewLicenceAuthenticated(previousExpiredLicence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -251,8 +255,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewBodyArmourPermit(): void {
+		const previousExpiredPermit = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+		);
+
 		this.permitApplicationService
-			.createNewPermitAuthenticated(ServiceTypeCode.BodyArmourPermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.BodyArmourPermit, previousExpiredPermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -273,8 +281,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewArmouredVehiclePermit(): void {
+		const previousExpiredPermit = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
+		);
+
 		this.permitApplicationService
-			.createNewPermitAuthenticated(ServiceTypeCode.ArmouredVehiclePermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.ArmouredVehiclePermit, previousExpiredPermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
