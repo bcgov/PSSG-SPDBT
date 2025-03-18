@@ -512,7 +512,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyApplAuthenticated(applicantProfile, undefined).pipe(
+					return this.createEmptyApplAuthenticated({
+						applicantProfile,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -628,15 +630,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(): Observable<any> {
+	createNewLicenceAuthenticated(previousExpiredLicence: MainLicenceResponse | undefined): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyApplAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
+					return this.createEmptyApplAuthenticated({
+						applicantProfile,
+						applicationTypeCode: ApplicationTypeCode.New,
+						previousExpiredLicence,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
-
 							this.commonApplicationService.setApplicationTitle(
 								ServiceTypeCode.SecurityWorkerLicence,
 								ApplicationTypeCode.New
@@ -745,13 +750,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		}
 	}
 
-	private createEmptyApplAuthenticated(
-		applicantProfile: ApplicantProfileResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined
-	): Observable<any> {
+	private createEmptyApplAuthenticated({
+		applicantProfile,
+		applicationTypeCode,
+		previousExpiredLicence,
+	}: {
+		applicantProfile: ApplicantProfileResponse;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		previousExpiredLicence?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		this.reset();
 
-		return this.applyProfileIntoModel(null, applicantProfile, applicationTypeCode);
+		return this.applyProfileIntoModel({
+			workerLicenceAppl: null,
+			applicantProfile,
+			applicationTypeCode,
+			previousExpiredLicence,
+		});
 	}
 
 	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
@@ -881,14 +896,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		associatedLicence?: MainLicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
-		return this.applyProfileIntoModel(
+		return this.applyProfileIntoModel({
 			workerLicenceAppl,
 			applicantProfile,
-			workerLicenceAppl.applicationTypeCode,
-			associatedLicence
-		).pipe(
+			applicationTypeCode: workerLicenceAppl.applicationTypeCode,
+			associatedLicence,
+		}).pipe(
 			switchMap((_resp: any) => {
-				return this.applyApplIntoModel(workerLicenceAppl, associatedLicence, associatedExpiredLicence);
+				return this.applyApplIntoModel({
+					workerLicenceAppl,
+					associatedLicence,
+					associatedExpiredLicence,
+				});
 			})
 		);
 	}
@@ -1163,19 +1182,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.applyProfileIntoModel(
+				return this.applyProfileIntoModel({
 					workerLicenceAppl,
 					applicantProfile,
-					workerLicenceAppl.applicationTypeCode,
-					associatedLicence
-				).pipe(
+					applicationTypeCode: workerLicenceAppl.applicationTypeCode,
+					associatedLicence,
+				}).pipe(
 					switchMap((_resp: any) => {
 						// remove reference to expired licence - data is only used in the Resume authenticated flow.
 						workerLicenceAppl.expiredLicenceId = null;
 						workerLicenceAppl.expiredLicenceNumber = null;
 						workerLicenceAppl.hasExpiredLicence = false;
 
-						return this.applyApplIntoModel(workerLicenceAppl, associatedLicence);
+						return this.applyApplIntoModel({
+							workerLicenceAppl,
+							associatedLicence,
+						});
 					})
 				);
 			})
@@ -1306,19 +1328,33 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	/*************************************************************/
 	// COMMON
 	/*************************************************************/
-
-	private applyProfileIntoModel(
-		workerLicenceAppl: WorkerLicenceAppResponse | null | undefined,
-		applicantProfile: ApplicantProfileResponse | null | undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		associatedLicence?: MainLicenceResponse | LicenceResponse
-	): Observable<any> {
+	private applyProfileIntoModel({
+		workerLicenceAppl,
+		applicantProfile,
+		applicationTypeCode,
+		associatedLicence,
+		previousExpiredLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse | null | undefined;
+		applicantProfile: ApplicantProfileResponse | null | undefined;
+		applicationTypeCode: ApplicationTypeCode | undefined;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		previousExpiredLicence?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		let hasBcscNameChanged = false;
 		if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
 			hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		}
+
+		let expiredLicenceData: any = null;
+		if (previousExpiredLicence?.licenceId) {
+			expiredLicenceData = this.getExpiredLicenceData(
+				this.utilService.booleanToBooleanType(true),
+				previousExpiredLicence
+			);
 		}
 
 		const profileData = applicantProfile ?? workerLicenceAppl;
@@ -1409,6 +1445,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				isPreviouslyTreatedForMHC: !!profileData?.isTreatedForMHC,
 				serviceTypeData,
 				applicationTypeData,
+				expiredLicenceData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData,
@@ -1445,11 +1482,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return of(this.workerModelFormGroup.value);
 	}
 
-	private applyApplIntoModel(
-		workerLicenceAppl: WorkerLicenceAppResponse,
-		associatedLicence?: MainLicenceResponse | LicenceResponse,
-		associatedExpiredLicence?: LicenceResponse
-	): Observable<any> {
+	private applyApplIntoModel({
+		workerLicenceAppl,
+		associatedLicence,
+		associatedExpiredLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		associatedExpiredLicence?: LicenceResponse;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
