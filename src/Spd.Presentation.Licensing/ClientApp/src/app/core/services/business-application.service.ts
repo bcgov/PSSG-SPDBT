@@ -781,7 +781,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithProfile(applicationTypeCode: ApplicationTypeCode): Observable<any> {
+	createNewBusinessLicence(previousExpiredLicence: MainLicenceResponse | undefined): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -793,13 +793,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							.apiLicencesLicenceIdGet({ licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId })
 							.pipe(
 								switchMap((soleProprietorSwlLicence: LicenceResponse) => {
-									return this.createEmptyLicence({ businessProfile, soleProprietorSwlLicence }).pipe(
+									return this.createEmptyLicence({
+										businessProfile,
+										soleProprietorSwlLicence,
+										previousExpiredLicence,
+									}).pipe(
 										tap((_resp: any) => {
 											this.setAsInitialized();
 
 											this.commonApplicationService.setApplicationTitle(
 												ServiceTypeCode.SecurityBusinessLicence,
-												applicationTypeCode
+												ApplicationTypeCode.New
 											);
 										})
 									);
@@ -807,13 +811,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							);
 					}
 
-					return this.createEmptyLicence({ businessProfile }).pipe(
+					return this.createEmptyLicence({ businessProfile, previousExpiredLicence }).pipe(
 						tap((_resp: any) => {
 							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(
 								ServiceTypeCode.SecurityBusinessLicence,
-								applicationTypeCode
+								ApplicationTypeCode.New
 							);
 						})
 					);
@@ -825,13 +829,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					})
 					.pipe(
 						switchMap((controllingMembersAndEmployees: Members) => {
-							return this.createEmptyLicence({ businessProfile, controllingMembersAndEmployees }).pipe(
+							return this.createEmptyLicence({
+								businessProfile,
+								controllingMembersAndEmployees,
+								previousExpiredLicence,
+							}).pipe(
 								tap((_resp: any) => {
 									this.setAsInitialized();
 
 									this.commonApplicationService.setApplicationTitle(
 										ServiceTypeCode.SecurityBusinessLicence,
-										applicationTypeCode
+										ApplicationTypeCode.New
 									);
 								})
 							);
@@ -1161,10 +1169,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessProfile,
 		soleProprietorSwlLicence,
 		controllingMembersAndEmployees,
+		previousExpiredLicence,
 	}: {
 		businessProfile: BizProfileResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
 		controllingMembersAndEmployees?: Members;
+		previousExpiredLicence?: MainLicenceResponse;
 	}): Observable<any> {
 		this.reset();
 
@@ -1175,6 +1185,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						businessProfile,
 						applicationTypeCode: ApplicationTypeCode.New,
 						soleProprietorSwlLicence,
+						previousExpiredLicence,
 					});
 				})
 			);
@@ -1184,6 +1195,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
+			previousExpiredLicence,
 		});
 	}
 
@@ -1859,11 +1871,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode,
 		soleProprietorSwlLicence,
 		soleProprietorSWLAppId,
+		previousExpiredLicence,
 	}: {
 		businessProfile: BizProfileResponse;
 		applicationTypeCode?: ApplicationTypeCode | null;
 		soleProprietorSwlLicence?: LicenceResponse;
 		soleProprietorSWLAppId?: string;
+		previousExpiredLicence?: MainLicenceResponse;
 	}): Observable<any> {
 		console.debug('[applyLicenceProfileIntoModel] soleProprietor', soleProprietorSwlLicence, soleProprietorSWLAppId);
 
@@ -1871,6 +1885,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const bceidBizTradeName = this.authUserBceidService.bceidUserProfile?.bceidBizTradeName;
+
+		// If an expired licence exists for the user, default the data in the model
+		let expiredLicenceData: any = null;
+		if (previousExpiredLicence?.licenceId) {
+			expiredLicenceData = this.getExpiredLicenceData(
+				this.utilService.booleanToBooleanType(true),
+				previousExpiredLicence
+			);
+		}
 
 		const businessInformationData: any = {
 			bizTypeCode: businessProfile.bizTypeCode,
@@ -1957,6 +1980,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				applicationTypeData,
 				businessInformationData,
 				businessManagerData,
+				expiredLicenceData,
 
 				isBcBusinessAddress,
 				isBusinessLicenceSoleProprietor,
