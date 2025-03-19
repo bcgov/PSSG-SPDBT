@@ -476,6 +476,29 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<DogTeamResp, DogInfo>();
         CreateMap<DogTrainerRequest, CreateDogTrainerAppCmd>();
+        CreateMap<WorkerLicenceAppSubmitRequest, SecureWorkerLicenceAppCompareEntity>()
+           .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+           .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+           .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => s.UseDogs ?? false))
+           .ForMember(d => d.IsDogsPurposeProtection, opt => opt.MapFrom(s => s.IsDogsPurposeProtection ?? false))
+           .ForMember(d => d.IsDogsPurposeDetectionDrugs, opt => opt.MapFrom(s => s.IsDogsPurposeDetectionDrugs ?? false))
+           .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => s.IsDogsPurposeDetectionExplosives ?? false))
+           .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => s.CarryAndUseRestraints ?? false));
+        CreateMap<LicenceResp, SecureWorkerLicenceAppCompareEntity>()
+           .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.LicenceHolderFirstName))
+           .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.LicenceHolderLastName))
+           .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.LicenceHolderMiddleName1));
+        CreateMap<ContactResp, SecureWorkerLicenceAppCompareEntity>()
+            .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => s.Gender))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => s.BirthDate))
+            .ForMember(d => d.FirstName, opt => opt.Ignore())
+            .ForMember(d => d.LastName, opt => opt.Ignore())
+            .ForMember(d => d.MiddleName1, opt => opt.Ignore());
+        CreateMap<PermitAppSubmitRequest, PermitCompareEntity>()
+           .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
+        CreateMap<LicenceResp, PermitCompareEntity>();
+        CreateMap<BizLicAppSubmitRequest, BizLicenceAppCompareEntity>();
+        CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

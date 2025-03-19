@@ -15,6 +15,7 @@ import {
 	LicenceBasicResponse,
 	LicenceFeeResponse,
 	LicenceResponse,
+	LicenceStatusCode,
 	LicenceTermCode,
 	Members,
 	NonSwlContactInfo,
@@ -207,7 +208,8 @@ export class CommonApplicationService {
 		serviceTypeCode: ServiceTypeCode | null,
 		applicationTypeCode: ApplicationTypeCode | null,
 		bizTypeCode: BizTypeCode | null,
-		originalLicenceTermCode: LicenceTermCode | undefined = undefined
+		originalLicenceTermCode: LicenceTermCode | undefined = undefined,
+		categorySecurityGuardSupIsSelected = false
 	): Array<LicenceFeeResponse> {
 		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode);
 
@@ -218,6 +220,18 @@ export class CommonApplicationService {
 		let hasValidSwl90DayLicence = false;
 		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
 			hasValidSwl90DayLicence = true;
+		} else if (applicationTypeCode === ApplicationTypeCode.New && categorySecurityGuardSupIsSelected) {
+			const fees = this.configService
+				.getLicenceFees()
+				.filter(
+					(item: LicenceFeeResponse) =>
+						item.serviceTypeCode == serviceTypeCode &&
+						item.applicationTypeCode == applicationTypeCode &&
+						item.bizTypeCode == bizTypeCode &&
+						item.hasValidSwl90DayLicence === hasValidSwl90DayLicence &&
+						item.licenceTermCode === LicenceTermCode.NinetyDays
+				);
+			return fees;
 		}
 
 		const fees = this.configService
@@ -327,6 +341,29 @@ export class CommonApplicationService {
 					}
 				})
 			);
+	}
+
+	// get the list of expired licence with unique licence number and latest expiry date
+	userExpiredLicences(licencesList: Array<MainLicenceResponse>): Array<MainLicenceResponse> {
+		const expiredLicencesSorted = licencesList.filter(
+			(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+		);
+
+		expiredLicencesSorted.sort((a, b) => {
+			return this.utilService.sortDate(a.expiryDate, b.expiryDate, 'desc');
+		});
+
+		const seenLicences = new Set<string>();
+		const expiredLicencesFiltered: MainLicenceResponse[] = [];
+
+		expiredLicencesSorted.forEach((licence: MainLicenceResponse) => {
+			if (!seenLicences.has(licence.licenceNumber!)) {
+				expiredLicencesFiltered.push(licence);
+				seenLicences.add(licence.licenceNumber!);
+			}
+		});
+
+		return expiredLicencesFiltered;
 	}
 
 	private processPersonLicenceData(

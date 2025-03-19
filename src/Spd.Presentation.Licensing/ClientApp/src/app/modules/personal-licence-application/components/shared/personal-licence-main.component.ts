@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationPortalStatusCode, ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import {
 	CommonApplicationService,
 	MainApplicationResponse,
@@ -67,7 +67,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 					></app-personal-licence-main-applications-list>
 
 					<app-personal-licence-main-licence-list
-						[activeLicences]="activeLicences"
+						[activeLicences]="activeLicencesList"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
@@ -149,7 +149,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						</div>
 					</div>
 
-					<app-form-licence-list-expired [expiredLicences]="expiredLicences"></app-form-licence-list-expired>
+					<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
 
 					<div class="mt-4">
 						<app-alert type="info" icon="info">
@@ -181,8 +181,6 @@ export class PersonalLicenceMainComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	activeLicences: Array<MainLicenceResponse> = [];
-
 	// If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
 	// If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
 	// If the licence holder has an Armoured vehicle permit, they can add a new Body Armour permit and/or a security worker licence
@@ -190,7 +188,8 @@ export class PersonalLicenceMainComponent implements OnInit {
 	activeAvPermitExist = false;
 	activeBaPermitExist = false;
 
-	expiredLicences: Array<MainLicenceResponse> = [];
+	activeLicencesList: Array<MainLicenceResponse> = [];
+	expiredLicencesList: Array<MainLicenceResponse> = [];
 
 	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(
 		[]
@@ -235,8 +234,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewSecurityWorkerLicence(): void {
+		const previousExpiredLicence = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
+		);
+
 		this.workerApplicationService
-			.createNewLicenceAuthenticated()
+			.createNewLicenceAuthenticated(previousExpiredLicence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -252,8 +255,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewBodyArmourPermit(): void {
+		const previousExpiredPermit = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+		);
+
 		this.permitApplicationService
-			.createNewPermitAuthenticated(ServiceTypeCode.BodyArmourPermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.BodyArmourPermit, previousExpiredPermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -274,8 +281,12 @@ export class PersonalLicenceMainComponent implements OnInit {
 	}
 
 	onNewArmouredVehiclePermit(): void {
+		const previousExpiredPermit = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
+		);
+
 		this.permitApplicationService
-			.createNewPermitAuthenticated(ServiceTypeCode.ArmouredVehiclePermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.ArmouredVehiclePermit, previousExpiredPermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -525,9 +536,7 @@ export class PersonalLicenceMainComponent implements OnInit {
 					this.utilService.isLicenceActive(item.licenceStatusCode)
 				);
 
-				const expiredLicences = userPersonLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-				);
+				this.expiredLicencesList = this.commonApplicationService.userExpiredLicences(userPersonLicencesList);
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
@@ -572,8 +581,7 @@ export class PersonalLicenceMainComponent implements OnInit {
 						activeLicencesList
 					);
 
-				this.activeLicences = activeLicencesList;
-				this.expiredLicences = expiredLicences;
+				this.activeLicencesList = activeLicencesList;
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 			})

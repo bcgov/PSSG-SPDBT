@@ -56,11 +56,6 @@ namespace Spd.Manager.Licence
         {
             var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
-
-            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId, OnlyReturnLatestSet: false), ct);
-            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition ||
-                d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
-
             return result;
         }
 

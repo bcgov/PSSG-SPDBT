@@ -378,7 +378,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(applicantProfile, undefined, undefined).pipe(
+					return this.createEmptyPermitAuthenticated({
+						applicantProfile,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -468,12 +470,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit
 	 * @returns
 	 */
-	createNewPermitAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	createNewPermitAuthenticated(
+		serviceTypeCode: ServiceTypeCode,
+		previousExpiredPermit: MainLicenceResponse | undefined
+	): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+					return this.createEmptyPermitAuthenticated({
+						applicantProfile,
+						serviceTypeCode,
+						applicationTypeCode: ApplicationTypeCode.New,
+						previousExpiredPermit,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -648,14 +658,25 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit just containing profile data
 	 * @returns
 	 */
-	private createEmptyPermitAuthenticated(
-		applicantProfile: ApplicantProfileResponse,
-		serviceTypeCode: ServiceTypeCode | undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined
-	): Observable<any> {
+	private createEmptyPermitAuthenticated({
+		applicantProfile,
+		serviceTypeCode,
+		applicationTypeCode,
+		previousExpiredPermit,
+	}: {
+		applicantProfile: ApplicantProfileResponse;
+		serviceTypeCode?: ServiceTypeCode | undefined;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		previousExpiredPermit?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		this.reset();
 
-		return this.applyProfileIntoModel(applicantProfile, serviceTypeCode, applicationTypeCode);
+		return this.applyProfileIntoModel({
+			applicantProfile,
+			serviceTypeCode,
+			applicationTypeCode,
+			previousExpiredPermit,
+		});
 	}
 
 	/**
@@ -1012,30 +1033,45 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		associatedLicence?: MainLicenceResponse | LicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
 	}): Observable<any> {
-		return this.applyProfileIntoModel(
-			applicantProfile ?? permitLicenceAppl,
-			permitLicenceAppl.serviceTypeCode,
-			permitLicenceAppl.applicationTypeCode,
-			associatedLicence
-		).pipe(
+		return this.applyProfileIntoModel({
+			applicantProfile: applicantProfile ?? permitLicenceAppl,
+			serviceTypeCode: permitLicenceAppl.serviceTypeCode,
+			applicationTypeCode: permitLicenceAppl.applicationTypeCode,
+			associatedLicence,
+		}).pipe(
 			switchMap((_resp: any) => {
 				return this.applyApplIntoModel(permitLicenceAppl, associatedLicence, associatedExpiredLicence);
 			})
 		);
 	}
 
-	private applyProfileIntoModel(
-		applicantProfile: ApplicantProfileResponse | PermitLicenceAppResponse,
-		serviceTypeCode: ServiceTypeCode | undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		associatedLicence?: MainLicenceResponse | LicenceResponse
-	): Observable<any> {
+	private applyProfileIntoModel({
+		applicantProfile,
+		serviceTypeCode,
+		applicationTypeCode,
+		associatedLicence,
+		previousExpiredPermit,
+	}: {
+		applicantProfile: ApplicantProfileResponse | PermitLicenceAppResponse;
+		serviceTypeCode?: ServiceTypeCode | undefined;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		previousExpiredPermit?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		let hasBcscNameChanged = false;
 		if (associatedLicence) {
 			hasBcscNameChanged = 'hasLoginNameChanged' in associatedLicence ? associatedLicence?.hasLoginNameChanged : false;
+		}
+
+		let expiredLicenceData: any = null;
+		if (previousExpiredPermit?.licenceId) {
+			expiredLicenceData = this.getExpiredLicenceData(
+				this.utilService.booleanToBooleanType(true),
+				previousExpiredPermit
+			);
 		}
 
 		const personalInformationData = {
@@ -1120,6 +1156,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
+				expiredLicenceData,
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData,

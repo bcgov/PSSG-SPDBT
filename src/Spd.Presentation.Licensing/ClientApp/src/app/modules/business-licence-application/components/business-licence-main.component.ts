@@ -4,13 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import {
-	ApplicationPortalStatusCode,
-	ApplicationTypeCode,
-	BizProfileResponse,
-	LicenceStatusCode,
-	ServiceTypeCode,
-} from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, BizProfileResponse, ServiceTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import {
 	CommonApplicationService,
@@ -340,8 +334,12 @@ export class BusinessLicenceMainComponent implements OnInit {
 	}
 
 	onNewBusinessLicence(): void {
+		const previousExpiredLicence = this.expiredLicencesList.find(
+			(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence
+		);
+
 		this.businessApplicationService
-			.createNewBusinessLicenceWithProfile(ApplicationTypeCode.New)
+			.createNewBusinessLicence(previousExpiredLicence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -408,9 +406,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
 						this.showManageMembersAndEmployees = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
 
-						this.expiredLicencesList = businessLicencesList.filter(
-							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-						);
+						this.expiredLicencesList = this.commonApplicationService.userExpiredLicences(businessLicencesList);
 
 						// User Licence/Permit Applications
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
