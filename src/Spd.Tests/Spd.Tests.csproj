@@ -77,8 +77,17 @@
 				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Fingerprint Request Letter.json">
 						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Guide Dog Service Dog Team.json">
+				  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Guide Dog Trainer.json">
+				  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</None>
 				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Metal Dealers and Recyclers Permit.json">
 						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Retired Service Dog.json">
+				  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 				</None>
 				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 270%29.json">
 						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

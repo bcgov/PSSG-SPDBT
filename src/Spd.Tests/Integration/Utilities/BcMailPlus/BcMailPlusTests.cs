@@ -68,6 +68,27 @@ public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fi
         (await Run(Jobs.MetalDealerAndRecyclersPermit, fileName)).ShouldBeTrue();
     }
 
+    [Theory]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Guide Dog Service Dog Team.json")]
+    public async Task RunGDSDPrintingJob(string fileName)
+    {
+        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Guide Dog Trainer.json")]
+    public async Task RunGuidDogTrainerPrintingJob(string fileName)
+    {
+        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Retired Service Dog.json")]
+    public async Task RunRetiredServiceDogPrintingJob(string fileName)
+    {
+        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+    }
+
     private async Task<bool> Run(string jobName, string payloadFileName)
     {
         using var fs = File.Open(payloadFileName, FileMode.Open);
