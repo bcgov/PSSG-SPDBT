@@ -69,8 +69,8 @@ public static class PropertyComparer
                 }
                 else if (!Equals(value1, value2))
                 {
-                    value1 = value1 ?? "blank";
-                    value2 = value2 ?? "blank";
+                    value1 = GetDisplayValue(value1);
+                    value2 = GetDisplayValue(value2);
                     var inputName = Regex.Replace(prop1.Name, "([A-Z])", " $1").Trim();
                     differences.Add($"{inputName} has been updated from {value1} to {value2}");
                 }
@@ -78,5 +78,18 @@ public static class PropertyComparer
         }
 
         return new Collection<string>(differences);
+    }
+
+    private static string GetDisplayValue(object? value)
+    {
+        if (value != null)
+        {
+            var valueStr = value.ToString();
+            if (valueStr == "False") return "No";
+            else if (valueStr == "True") return "Yes";
+            else return valueStr!;
+
+        }
+        return "blank";
     }
 }
