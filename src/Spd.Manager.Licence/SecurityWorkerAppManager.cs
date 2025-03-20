@@ -485,17 +485,17 @@ internal class SecurityWorkerAppManager :
         if (newRequest.IsPoliceOrPeaceOfficer.HasValue)
         {
             // If any police officer data has changed, just add one change summary message
+            // IsPoliceOrPeaceOfficer changed from true -> false or vice versa
             if (contactResp.IsPoliceOrPeaceOfficer == null || contactResp.IsPoliceOrPeaceOfficer.Value != newRequest.IsPoliceOrPeaceOfficer.Value)
             {
                 changes.ChangeSummary += "\r\nPeace Officer has been updated";
-            } 
-            else if (newRequest.IsPoliceOrPeaceOfficer.Value)
+            }
+            // PoliceOfficerRoleCode or OtherOfficerRole changed. Only need to check if IsPoliceOrPeaceOfficer is true
+            else if (newRequest.IsPoliceOrPeaceOfficer.Value &&
+                (((newRequest.PoliceOfficerRoleCode != null || contactResp.PoliceOfficerRoleCode != null) && !Equals(newRequest.PoliceOfficerRoleCode.Value.ToString(), contactResp.PoliceOfficerRoleCode.Value.ToString())) ||
+                    ((newRequest.OtherOfficerRole != null || contactResp.OtherOfficerRole != null) && !Equals(newRequest.OtherOfficerRole, contactResp.OtherOfficerRole))))
             {
-                if (((newRequest.PoliceOfficerRoleCode != null || contactResp.PoliceOfficerRoleCode != null) && !Equals(newRequest.PoliceOfficerRoleCode.Value.ToString(), contactResp.PoliceOfficerRoleCode.Value.ToString())) ||
-                    ((newRequest.OtherOfficerRole != null || contactResp.OtherOfficerRole != null) && !Equals(newRequest.OtherOfficerRole, contactResp.OtherOfficerRole)))
-                {
-                    changes.ChangeSummary += "\r\nPeace Officer has been updated";
-                }
+                changes.ChangeSummary += "\r\nPeace Officer has been updated";
             }
         }
         if (newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value)
