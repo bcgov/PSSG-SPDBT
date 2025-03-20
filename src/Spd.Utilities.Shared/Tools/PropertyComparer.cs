@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Spd.Utilities.Shared.Tools;
 public static class PropertyComparer
@@ -16,7 +18,16 @@ public static class PropertyComparer
 
         var differences = new List<string>();
 
-        foreach (var prop1 in type1Properties)
+        // Ignore these properties and just handle it in SecurityWorkerAppManager/PermitAppManager
+        List<PropertyInfo> type1PropertiesFiltered = type1Properties.Where(prop => 
+            prop.Name != "IsPoliceOrPeaceOfficer" && 
+            prop.Name != "PoliceOfficerRoleCode" && 
+            prop.Name != "OtherOfficerRole" &&
+            prop.Name != "HasCriminalHistory" &&
+            prop.Name != "CriminalChargeDescription" &&
+            prop.Name != "EmployerPrimaryAddress").ToList();
+
+        foreach (var prop1 in type1PropertiesFiltered)
         {
             var prop2 = type2Properties.FirstOrDefault(p => p.Name == prop1.Name && p.PropertyType == prop1.PropertyType);
             if (prop2 != null)
@@ -32,16 +43,36 @@ public static class PropertyComparer
 
                     if (missing.Count > 0 || added.Count > 0)
                     {
-                        differences.Add($"{prop1.Name}:");
-                        if (missing.Count > 0) differences.Add($" Removed: {string.Join(", ", missing)}");
-                        if (added.Count > 0) differences.Add($" Added: {string.Join(", ", added)}");
+                        var listName = prop1.Name;
+                        switch (prop1.Name)
+                        {
+                            case "CategoryCodes":
+                                listName = "category";
+                                break;
+                            case "PermitPurposeEnums":
+                                listName = "purpose";
+                                break; 
+                        }
+
+                        foreach (var item in missing)
+                        {
+                            var inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1").Trim();
+                            differences.Add($"{inputName} {listName} has been removed");
+                        }
+
+                        foreach (var item in added)
+                        {
+                            var inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1").Trim();
+                            differences.Add($"{inputName} {listName} has been added");
+                        }
                     }
                 }
                 else if (!Equals(value1, value2))
                 {
-                    value1 = value1 ?? "Empty";
-                    value2 = value2 ?? "Empty";
-                    differences.Add($"{prop1.Name}: change from {value1} to {value2}");
+                    value1 = value1 ?? "blank";
+                    value2 = value2 ?? "blank";
+                    var inputName = Regex.Replace(prop1.Name, "([A-Z])", " $1").Trim();
+                    differences.Add($"{inputName} has been updated from {value1} to {value2}");
                 }
             }
         }
