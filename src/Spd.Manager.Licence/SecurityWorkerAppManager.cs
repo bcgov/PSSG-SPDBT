@@ -482,9 +482,29 @@ internal class SecurityWorkerAppManager :
         _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
         changes.ChangeSummary = string.Join("\r\n", summary);
-        if ((newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value) && (contactResp.IsTreatedForMHC == null || !contactResp.IsTreatedForMHC.Value))
+        if (newRequest.IsPoliceOrPeaceOfficer.HasValue)
         {
-            changes.ChangeSummary += "Has new mental health condition\r\n";
+            // If any police officer data has changed, just add one change summary message
+            // IsPoliceOrPeaceOfficer changed from true -> false or vice versa
+            if (contactResp.IsPoliceOrPeaceOfficer == null || contactResp.IsPoliceOrPeaceOfficer.Value != newRequest.IsPoliceOrPeaceOfficer.Value)
+            {
+                changes.ChangeSummary += "\r\nPeace Officer has been updated";
+            }
+            // PoliceOfficerRoleCode or OtherOfficerRole changed. Only need to check if IsPoliceOrPeaceOfficer is true
+            else if (newRequest.IsPoliceOrPeaceOfficer.Value &&
+                (((newRequest.PoliceOfficerRoleCode != null || contactResp.PoliceOfficerRoleCode != null) && !Equals(newRequest.PoliceOfficerRoleCode.Value.ToString(), contactResp.PoliceOfficerRoleCode.Value.ToString())) ||
+                    ((newRequest.OtherOfficerRole != null || contactResp.OtherOfficerRole != null) && !Equals(newRequest.OtherOfficerRole, contactResp.OtherOfficerRole))))
+            {
+                changes.ChangeSummary += "\r\nPeace Officer has been updated";
+            }
+        }
+        if (newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value)
+        {
+            changes.ChangeSummary += "\r\nMental Health Condition has been updated";
+        }
+        if (newRequest.HasCriminalHistory.HasValue && newRequest.HasCriminalHistory.Value)
+        {
+            changes.ChangeSummary += "\r\nSelf Disclosure has been updated";
         }
         return changes;
     }
