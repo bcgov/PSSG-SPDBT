@@ -56,13 +56,13 @@ public static class PropertyComparer
 
                         foreach (var item in missing)
                         {
-                            var inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1").Trim();
+                            string inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
                             differences.Add($"{inputName} {listName} has been removed");
                         }
 
                         foreach (var item in added)
                         {
-                            var inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1").Trim();
+                            string inputName = Regex.Replace(item.ToString()!, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
                             differences.Add($"{inputName} {listName} has been added");
                         }
                     }
@@ -71,7 +71,7 @@ public static class PropertyComparer
                 {
                     value1 = GetDisplayValue(value1);
                     value2 = GetDisplayValue(value2);
-                    var inputName = Regex.Replace(prop1.Name, "([A-Z])", " $1").Trim();
+                    var inputName = Regex.Replace(prop1.Name, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
                     differences.Add($"{inputName} has been updated from {value1} to {value2}");
                 }
             }
