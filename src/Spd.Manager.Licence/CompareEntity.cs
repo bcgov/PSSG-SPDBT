@@ -1,4 +1,4 @@
-﻿using Spd.Resource.Repository;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Manager.Licence;
@@ -12,7 +12,6 @@ public record SecureWorkerLicenceAppCompareEntity
     public string? EmailAddress { get; set; }
     public string? PhoneNumber { get; set; }
     public GenderEnum? GenderCode { get; set; }
-    public string? BirthPlace { get; set; }
     public HairColourEnum? HairColourCode { get; set; }
     public EyeColourEnum? EyeColourCode { get; set; }
     public int? Height { get; set; }
