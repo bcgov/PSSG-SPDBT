@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationPortalStatusCode, ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import {
 	CommonApplicationService,
 	MainApplicationResponse,
@@ -199,6 +200,7 @@ export class PersonalLicenceMainComponent implements OnInit {
 		private router: Router,
 		private utilService: UtilService,
 		private dialog: MatDialog,
+		private authUserBcscService: AuthUserBcscService,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private workerApplicationService: WorkerApplicationService
@@ -209,6 +211,15 @@ export class PersonalLicenceMainComponent implements OnInit {
 		this.workerApplicationService.reset(); // prevent back button into wizard
 
 		this.commonApplicationService.setApplicationTitle();
+
+		if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(
+				PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+					PersonalLicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS
+				)
+			);
+			return;
+		}
 
 		this.loadData();
 	}
