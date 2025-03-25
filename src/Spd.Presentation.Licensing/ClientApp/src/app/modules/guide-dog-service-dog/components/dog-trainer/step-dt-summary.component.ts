@@ -34,12 +34,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Training School Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Training School Name</div>
 										<div class="summary-text-data">{{ accreditedSchoolName }}</div>
 									</div>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small">Chief Executive Officer/Executive Director</div>
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">CEO/Executive Director Name</div>
 										<div class="summary-text-data">{{ schoolDirectorName }}</div>
@@ -55,13 +57,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="summary-text-data">{{ schoolDirectorEmailAddress | default }}</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="dogTrainerModelData.trainingSchoolAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
 							</div>
 						</mat-expansion-panel>
 

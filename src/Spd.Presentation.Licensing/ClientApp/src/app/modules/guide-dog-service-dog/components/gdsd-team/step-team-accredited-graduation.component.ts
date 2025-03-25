@@ -23,56 +23,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						></app-form-accredited-school>
 
 						<div class="row">
-							<div class="text-minor-heading my-2">Contact Information</div>
-							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input
-										matInput
-										formControlName="schoolContactGivenName"
-										[errorStateMatcher]="matcher"
-										maxlength="40"
-									/>
-								</mat-form-field>
-							</div>
-							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Contact Surname</mat-label>
-									<input matInput formControlName="schoolContactSurname" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('schoolContactSurname')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Contact Phone Number</mat-label>
-									<input
-										matInput
-										formControlName="schoolContactPhoneNumber"
-										[mask]="phoneMask"
-										[showMaskTyped]="false"
-										[errorStateMatcher]="matcher"
-									/>
-									<mat-error *ngIf="form.get('schoolContactPhoneNumber')?.hasError('required')"
-										>This is required</mat-error
-									>
-								</mat-form-field>
-							</div>
-							<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Contact Email Address <span class="optional-label">(optional)</span></mat-label>
-									<input
-										matInput
-										formControlName="schoolContactEmailAddress"
-										[errorStateMatcher]="matcher"
-										placeholder="name@domain.com"
-										maxlength="75"
-									/>
-									<mat-error *ngIf="form.get('schoolContactEmailAddress')?.hasError('email')">
-										Must be a valid email address
-									</mat-error>
-								</mat-form-field>
-							</div>
-
 							<div class="text-minor-heading mt-3 mb-2">
 								Attached written confirmation from the accredited training school that my dog and I have successfully
 								completed the training program

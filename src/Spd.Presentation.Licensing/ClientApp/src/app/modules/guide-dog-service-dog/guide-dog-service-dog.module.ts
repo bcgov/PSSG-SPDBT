@@ -20,7 +20,6 @@ import { StepDtPhotographOfYourselfRenewComponent } from './components/dog-train
 import { StepDtPhotographOfYourselfComponent } from './components/dog-trainer/step-dt-photograph-of-yourself.component';
 import { StepDtSummaryComponent } from './components/dog-trainer/step-dt-summary.component';
 import { StepDtTrainingSchoolInfoComponent } from './components/dog-trainer/step-dt-training-school-info.component';
-import { StepDtTrainingSchoolMailingAddressComponent } from './components/dog-trainer/step-dt-training-school-mailing-address.component';
 import { StepsDtDetailsComponent } from './components/dog-trainer/steps-dt-details.component';
 import { StepsDtPersonalInfoComponent } from './components/dog-trainer/steps-dt-personal-info.component';
 import { StepsDtReviewAndConfirmComponent } from './components/dog-trainer/steps-dt-review-and-confirm.component';
@@ -42,7 +41,9 @@ import { StepTeamChecklistRenewalComponent } from './components/gdsd-team/step-t
 import { StepTeamConsentComponent } from './components/gdsd-team/step-team-consent.component';
 import { StepTeamDogCertificationSelectionComponent } from './components/gdsd-team/step-team-dog-certification-selection.component';
 import { StepTeamDogInfoComponent } from './components/gdsd-team/step-team-dog-info.component';
+import { StepTeamDogInoculationsComponent } from './components/gdsd-team/step-team-dog-inoculations.component';
 import { StepTeamDogMedicalComponent } from './components/gdsd-team/step-team-dog-medical.component';
+import { StepTeamDogServiceInfoComponent } from './components/gdsd-team/step-team-dog-service-info.component';
 import { StepTeamDogTasksComponent } from './components/gdsd-team/step-team-dog-tasks.component';
 import { StepTeamGovermentPhotoIdComponent } from './components/gdsd-team/step-team-goverment-photo-id.component';
 import { StepTeamLicenceAccessCodeComponent } from './components/gdsd-team/step-team-licence-access-code.component';
@@ -69,6 +70,7 @@ import { StepRdChecklistNewComponent } from './components/retired-dog/step-rd-ch
 import { StepRdChecklistRenewalComponent } from './components/retired-dog/step-rd-checklist-renewal.component';
 import { StepRdConsentComponent } from './components/retired-dog/step-rd-consent.component';
 import { StepRdDogInfoComponent } from './components/retired-dog/step-rd-dog-info.component';
+import { StepRdDogServiceInfoComponent } from './components/retired-dog/step-rd-dog-service-info.component';
 import { StepRdGdsdCertficateComponent } from './components/retired-dog/step-rd-gdsd-certificate.component';
 import { StepRdMailingAddressComponent } from './components/retired-dog/step-rd-mailing-address.component';
 import { StepRdPersonalInfoAnonymousComponent } from './components/retired-dog/step-rd-personal-info-anonymous.component';
@@ -136,6 +138,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepTeamMailingAddressComponent,
 		StepTeamDogCertificationSelectionComponent,
 		StepTeamDogInfoComponent,
+		StepTeamDogServiceInfoComponent,
 		StepTeamAccreditedGraduationComponent,
 		StepTeamConsentComponent,
 		StepTeamSummaryComponent,
@@ -143,6 +146,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepTeamSchoolTrainingsComponent,
 		StepTeamOtherTrainingsComponent,
 		StepTeamDogMedicalComponent,
+		StepTeamDogInoculationsComponent,
 		StepTeamMedicalInfoComponent,
 		StepTeamDogTasksComponent,
 		StepTeamLicenceAccessCodeComponent,
@@ -158,7 +162,6 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepDtChecklistNewComponent,
 		StepDtChecklistRenewalComponent,
 		StepDtTrainingSchoolInfoComponent,
-		StepDtTrainingSchoolMailingAddressComponent,
 		StepDtDogTrainerInfoComponent,
 		StepDtMailingAddressComponent,
 		StepDtSummaryComponent,
@@ -184,6 +187,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepRdPhotographOfYourselfRenewComponent,
 		StepRdGdsdCertficateComponent,
 		StepRdDogInfoComponent,
+		StepRdDogServiceInfoComponent,
 		StepRdConsentComponent,
 		StepRdSummaryComponent,
 		StepRdChecklistRenewalComponent,

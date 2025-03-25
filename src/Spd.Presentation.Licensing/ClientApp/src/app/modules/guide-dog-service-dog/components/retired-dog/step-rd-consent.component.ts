@@ -31,16 +31,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<div class="col-xl-6 col-lg-6 col-md-12 mt-4">
-							<mat-form-field>
-								<mat-label>Name of Applicant or Legal Guardian</mat-label>
-								<input matInput formControlName="applicantOrLegalGuardianName" maxlength="80" />
-								<mat-error *ngIf="form.get('applicantOrLegalGuardianName')?.hasError('required')">
-									This is required
-								</mat-error>
-							</mat-form-field>
-						</div>
-
 						<div class="row">
 							<div class="col-12 mt-3">
 								<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
