@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -29,17 +30,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')">This is required</mat-error>
 		</mat-form-field>
 
-		<ng-container *ngIf="selectedSchool; else noSelectedSchool">
-			<app-alert type="success" icon="">
-				<div class="row">
-					<div class="col-12">{{ selectedSchool.schoolName }}</div>
-					<div class="col-12 mt-2">{{ selectedSchool.schoolAddress }}</div>
-				</div>
+		<ng-container *ngIf="!selectedSchool">
+			<app-alert type="info" icon="info">
+				If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
+				regular office hours.
 			</app-alert>
 		</ng-container>
-		<ng-template #noSelectedSchool>
-			<app-alert type="info" icon="info"> If your school is not in the list, please contact us. </app-alert>
-		</ng-template>
 	`,
 	styles: [
 		`
@@ -55,6 +51,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class FormAccreditedSchoolComponent {
+	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	matcher = new FormErrorStateMatcher();
 
 	@Input() schoolLabel = 'Your Assistance Dogs International or International Guide Dog Federation Accredited School';

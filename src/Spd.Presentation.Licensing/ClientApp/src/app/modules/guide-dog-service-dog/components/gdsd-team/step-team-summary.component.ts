@@ -105,8 +105,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="text-minor-heading-small">
 										Medical Form Confirming Requirement for Guide Dog or Service Dog
 									</div>
+
 									<div class="row mt-0">
-										<div class="col-lg-8 col-md-12">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Doctor Sends Medical Forms</div>
+											<div class="summary-text-data">
+												{{ isDoctorSendingGdsdMedicalForm | default }}
+											</div>
+										</div>
+										<div class="col-lg-8 col-md-12" *ngIf="medicalInformationAttachments">
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of medicalInformationAttachments; let i = index">
@@ -421,6 +428,9 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get medicalInformationAttachments(): File[] | null {
 		return this.gdsdTeamApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
+	}
+	get isDoctorSendingGdsdMedicalForm(): string {
+		return this.gdsdTeamApplicationService.getSummaryisDoctorSendingGdsdMedicalForm(this.gdsdModelData);
 	}
 
 	get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {

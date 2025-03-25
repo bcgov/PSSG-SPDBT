@@ -16,12 +16,24 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { FormGroupValidators } from '../validators/form-group.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHelper {
-	medicalInformationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
-	});
+	medicalInformationFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isDoctorSendingGdsdMedicalForm: new FormControl('', [Validators.required]),
+			attachments: new FormControl([]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'attachments',
+					(form) => form.get('isDoctorSendingGdsdMedicalForm')?.value == BooleanTypeCode.No
+				),
+			],
+		}
+	);
 
 	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
 		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
@@ -183,6 +195,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					isGuideDog,
 					serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
 				};
+				// TODO add: medicalInformationData.isDoctorSendingGdsdMedicalForm
 
 				const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 
@@ -372,15 +385,17 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			const hasAttendedTrainingSchool =
 				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
 
-			if (medicalInformationData.attachments) {
-				const docs: Array<Blob> = [];
-				medicalInformationData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
-					documents: docs,
-				});
+			if (medicalInformationData.isDoctorSendingGdsdMedicalForm == BooleanTypeCode.No) {
+				if (medicalInformationData.attachments) {
+					const docs: Array<Blob> = [];
+					medicalInformationData.attachments.forEach((doc: SpdFile) => {
+						docs.push(doc);
+					});
+					documents.push({
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
+						documents: docs,
+					});
+				}
 			}
 
 			if (dogMedicalData.attachments) {
@@ -623,7 +638,13 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		return gdsdModelData.dogMedicalData.attachments ?? [];
 	}
 
+	getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData: any): string {
+		return gdsdModelData.medicalInformationData.isDoctorSendingGdsdMedicalForm ?? '';
+	}
 	getSummarymedicalInformationAttachments(gdsdModelData: any): File[] | null {
+		if (this.getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData) != BooleanTypeCode.Yes) {
+			return null;
+		}
 		return gdsdModelData.medicalInformationData.attachments ?? [];
 	}
 
