@@ -147,6 +147,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
 									</div>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<div class="text-minor-heading-small mt-2">Retired Dog Service Information</div>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Date of Retirement</div>
 										<div class="summary-text-data">
