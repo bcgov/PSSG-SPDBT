@@ -29,9 +29,29 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 		microchipNumber: new FormControl(''),
 	});
 
-	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+	consentAndDeclarationTeamFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		applicantOrLegalGuardianName: new FormControl('', [Validators.required]),
+		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
+		dateSigned: new FormControl({ value: null, disabled: true }),
+		captchaFormGroup: new FormGroup(
+			{
+				displayCaptcha: new FormControl(false),
+				token: new FormControl(''),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'token',
+						(form) => form.get('displayCaptcha')?.value == true
+					),
+				],
+			}
+		),
+	});
+
+	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+		check1: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(

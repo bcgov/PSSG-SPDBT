@@ -10,7 +10,7 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 @Component({
 	selector: 'app-step-team-application-type',
 	template: `
-		<app-step-section title="What type of Dog Trainer Certification are you applying for?">
+		<app-step-section title="What type of Guide or Service Dog Team Certification are you applying for?">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 					<app-form-gdsd-application-type [form]="form"></app-form-gdsd-application-type>

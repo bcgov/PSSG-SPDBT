@@ -136,7 +136,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 export class StepTeamConsentComponent implements OnInit, LicenceChildStepperStepComponent {
 	check1Name = '';
 
-	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationTeamFormGroup;
 
 	constructor(
 		private utilService: UtilService,

@@ -289,16 +289,18 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		const isLoggedIn = this.authenticationService.isLoggedIn();
-		if (!isLoggedIn) {
-			return false;
-		}
+		// const isLoggedIn = this.authenticationService.isLoggedIn();
+		// if (!isLoggedIn) {
+		// 	return false;
+		// }
 
-		if (!this.isSaveAndExit()) {
-			return false;
-		}
+		// if (!this.isSaveAndExit()) {
+		// 	return false;
+		// }
 
-		return this.hasValueChanged;
+		// return this.hasValueChanged;
+		// TODO hardcode isAutoSave
+		return false;
 	}
 
 	/**
@@ -306,11 +308,13 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
-		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
-			return false;
-		}
+		// if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+		// 	return false;
+		// }
 
-		return true;
+		// return true;
+		// TODO hardcode isSaveAndExit
+		return false;
 	}
 
 	/**
