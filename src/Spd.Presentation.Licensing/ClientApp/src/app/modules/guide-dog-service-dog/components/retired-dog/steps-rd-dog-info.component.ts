@@ -3,7 +3,8 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepRdDogInfoComponent } from './step-rd-dog-info.component';
-import { StepRdDogServiceInfoComponent } from './step-rd-dog-service-info.component';
+import { StepRdDogLivingInfoComponent } from './step-rd-dog-living-info.component';
+import { StepRdDogRetiredInfoComponent } from './step-rd-dog-retired-info.component';
 
 @Component({
 	selector: 'app-steps-rd-dog-info',
@@ -23,15 +24,28 @@ import { StepRdDogServiceInfoComponent } from './step-rd-dog-service-info.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-rd-dog-service-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-service-info>
+				<app-step-rd-dog-retired-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-retired-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_SERVICE_INFO)"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_RETIRED_INFO)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOG_SERVICE_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_SERVICE_INFO)"
+					(nextStepperStep)="onFormValidNextStep(STEP_DOG_RETIRED_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_RETIRED_INFO)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-rd-dog-living-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-living-info>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_LIVING_INFO)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_DOG_LIVING_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_LIVING_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -42,7 +56,8 @@ import { StepRdDogServiceInfoComponent } from './step-rd-dog-service-info.compon
 })
 export class StepsRdDogInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_DOG_INFO = 0;
-	readonly STEP_DOG_SERVICE_INFO = 1;
+	readonly STEP_DOG_RETIRED_INFO = 1;
+	readonly STEP_DOG_LIVING_INFO = 2;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -50,7 +65,8 @@ export class StepsRdDogInfoComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepRdDogInfoComponent) dogInfoComponent!: StepRdDogInfoComponent;
-	@ViewChild(StepRdDogServiceInfoComponent) dogServiceInfoComponent!: StepRdDogServiceInfoComponent;
+	@ViewChild(StepRdDogRetiredInfoComponent) dogRetiredInfoComponent!: StepRdDogRetiredInfoComponent;
+	@ViewChild(StepRdDogLivingInfoComponent) dogLivingInfoComponent!: StepRdDogLivingInfoComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -60,8 +76,10 @@ export class StepsRdDogInfoComponent extends BaseWizardStepComponent {
 		switch (step) {
 			case this.STEP_DOG_INFO:
 				return this.dogInfoComponent.isFormValid();
-			case this.STEP_DOG_SERVICE_INFO:
-				return this.dogServiceInfoComponent.isFormValid();
+			case this.STEP_DOG_RETIRED_INFO:
+				return this.dogRetiredInfoComponent.isFormValid();
+			case this.STEP_DOG_LIVING_INFO:
+				return this.dogLivingInfoComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

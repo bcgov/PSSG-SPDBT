@@ -27,8 +27,11 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							>.
 						</app-alert>
 
-						<div class="text-minor-heading lh-base mt-3 mb-2">Is your doctor sending the medical form?</div>
-						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<div class="col-xxl-6 col-xl-7 col-lg-7 col-md-10 col-sm-12 mx-auto">
+							<div class="text-minor-heading lh-base mb-2">Is your doctor sending the medical form?</div>
+						</div>
+
+						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="isDoctorSendingGdsdMedicalForm">
 								<div class="d-flex justify-content-start">
 									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>

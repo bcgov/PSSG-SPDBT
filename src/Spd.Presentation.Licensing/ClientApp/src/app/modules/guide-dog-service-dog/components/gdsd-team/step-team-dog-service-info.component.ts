@@ -42,8 +42,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isAssistanceStillRequired">
 										<div class="d-flex justify-content-start">
-											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes"> Yes </mat-radio-button>
-											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No"> No </mat-radio-button>
+											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 										</div>
 									</mat-radio-group>
 									<mat-error
