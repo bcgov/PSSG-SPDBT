@@ -75,7 +75,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
-		retiredDogData: this.retiredDogForm,
+		dogRetiredData: this.dogRetiredForm,
+		dogLivingData: this.dogLivingForm,
 	});
 
 	retiredDogModelChangedSubscription!: Subscription;
@@ -133,7 +134,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogDogInfoComplete(): boolean {
-		return this.dogInfoFormGroup.valid && this.retiredDogForm.valid;
+		return this.dogInfoFormGroup.valid && this.dogRetiredForm.valid && this.dogLivingForm.valid;
 	}
 
 	/**
