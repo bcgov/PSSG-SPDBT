@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-10 col-xl-10 mx-auto">
+				<div class="col-xxl-8 col-xl-10 mx-auto">
 					<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
 						<app-alert type="warning" icon="warning">
 							We noticed you changed your name recently on your BC Services Card.

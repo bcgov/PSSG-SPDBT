@@ -194,10 +194,10 @@ internal class GDSDAppManager :
             else
             {
                 //dog is trained by non-accredited school
-                if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Medical Form Confirming Requirement for Guide Dog or Service completed by a Canadian or U.S. physician or nurse practitioner is required.");
-                }
+                //if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog))
+                //{
+                //    throw new ApiException(HttpStatusCode.BadRequest, "Medical Form Confirming Requirement for Guide Dog or Service completed by a Canadian or U.S. physician or nurse practitioner is required.");
+                //}
                 if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, "Written confirmation from a Canadian or U.S. veterinarian or equivalent that your dog has been spayed or neutered is required.");
