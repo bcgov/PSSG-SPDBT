@@ -46,8 +46,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 								<mat-radio-group aria-label="Select an option" formControlName="isContinueToLiveWithDog">
 									<div class="d-flex justify-content-start">
-										<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes"> Yes </mat-radio-button>
-										<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No"> No </mat-radio-button>
+										<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
+										<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 									</div>
 								</mat-radio-group>
 								<mat-error

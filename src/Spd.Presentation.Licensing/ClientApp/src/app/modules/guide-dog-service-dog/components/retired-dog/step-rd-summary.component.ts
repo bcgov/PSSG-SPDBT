@@ -25,7 +25,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											class="go-to-step-button"
 											matTooltip="Go to Step 4"
 											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
+											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -108,7 +108,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											class="go-to-step-button"
 											matTooltip="Go to Step 2"
 											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
