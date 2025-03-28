@@ -1,7 +1,8 @@
-export class MetalDealersAndRecyclersRoutes {
-	public static readonly METAL_DEALERS_AND_RECYCLERS = 'metal-dealers-and-recyclers';
+import { AppRoutes } from '@app/app-routes';
 
-	public static readonly MODULE_PATH = MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS;
+export class MetalDealersAndRecyclersRoutes {
+	public static readonly MODULE_PATH = AppRoutes.METAL_DEALERS_AND_RECYCLERS;
+
 	public static readonly METAL_DEALERS_AND_RECYCLERS_REGISTER = 'register';
 	public static readonly METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED = 'received';
 

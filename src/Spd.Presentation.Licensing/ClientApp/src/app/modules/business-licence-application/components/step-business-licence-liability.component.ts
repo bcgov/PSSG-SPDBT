@@ -1,6 +1,6 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -22,16 +22,16 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								target="_blank"
 								>proof of insurance</a
 							>
-							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability
+							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability.
 						</app-alert>
 
 						<div class="text-minor-heading mb-2">Upload proof of insurance</div>
-						<div>The insurance document must also include:</div>
+						<div>The insurance must be active at the time of application, and the documents must include:</div>
 						<ul>
 							<li>The business name</li>
 							<li>The business locations</li>
 							<li>The expiry date of the insurance</li>
-							<li>Proof that insurance is valid in B.C.</li>
+							<li>Proof that the insurance is valid in B.C.</li>
 						</ul>
 
 						<app-file-upload
@@ -62,8 +62,6 @@ export class StepBusinessLicenceLiabilityComponent implements LicenceChildSteppe
 	proofOfInsuranceUrl = SPD_CONSTANTS.urls.proofOfInsuranceUrl;
 
 	form = this.businessApplicationService.liabilityFormGroup;
-
-	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

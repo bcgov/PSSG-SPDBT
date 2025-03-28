@@ -130,8 +130,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
 										<div class="summary-text-data">
-											{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-											{{ surname }}
+											{{ applicantName }}
 										</div>
 									</div>
 									<div class="col-lg-3 col-md-12">
@@ -198,19 +197,6 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of attachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-
-										<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-											<div class="text-label d-block text-muted">
-												{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-											</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
 														<li>{{ doc.name }}</li>
 													</ng-container>
 												</ul>
@@ -431,17 +417,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitApplicationService.getSummaryexpiredLicenceExpiryDate(this.permitModelData);
 	}
 
-	get givenName(): string {
-		return this.permitApplicationService.getSummarygivenName(this.permitModelData);
-	}
-	get middleName1(): string {
-		return this.permitApplicationService.getSummarymiddleName1(this.permitModelData);
-	}
-	get middleName2(): string {
-		return this.permitApplicationService.getSummarymiddleName2(this.permitModelData);
-	}
-	get surname(): string {
-		return this.permitApplicationService.getSummarysurname(this.permitModelData);
+	get applicantName(): string {
+		return this.permitApplicationService.getSummaryapplicantName(this.permitModelData);
 	}
 	get genderCode(): string {
 		return this.permitApplicationService.getSummarygenderCode(this.permitModelData);
@@ -491,16 +468,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get showAdditionalGovIdData(): boolean {
 		return this.permitApplicationService.getSummaryshowAdditionalGovIdData(this.permitModelData);
-	}
-
-	get governmentIssuedPhotoTypeCode(): string {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.permitModelData);
-	}
-	get governmentIssuedPhotoExpiryDate(): string {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.permitModelData);
-	}
-	get governmentIssuedPhotoAttachments(): File[] {
-		return this.permitApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.permitModelData);
 	}
 
 	get bcDriversLicenceNumber(): string {

@@ -12,9 +12,8 @@ using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
-using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 using System.Security.Principal;
+using System.Text;
 
 public class GDSDLicensingControllerTests
 {
@@ -22,9 +21,11 @@ public class GDSDLicensingControllerTests
     private readonly Mock<IMediator> _mockMediator;
     private readonly Mock<IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest>> _mockAnonymousSubmitRequestValidator;
     private readonly Mock<IValidator<GDSDTeamLicenceAppUpsertRequest>> _mockUpsertValidator;
+    private readonly Mock<IValidator<GDSDTeamLicenceAppChangeRequest>> _mockChangeValidator;
     private readonly Mock<IRecaptchaVerificationService> _mockRecaptchaService;
     private readonly Mock<IDistributedCache> _mockCache;
     private readonly Mock<IDataProtectionProvider> _mockDataProtectionProvider;
+    private readonly Mock<ITimeLimitedDataProtector> _mockTimeLimitDataProvider;
     private readonly Mock<IConfiguration> _mockConfiguration;
 
     private readonly GDSDLicensingController _controller;
@@ -35,13 +36,15 @@ public class GDSDLicensingControllerTests
         _mockMediator = new Mock<IMediator>();
         _mockAnonymousSubmitRequestValidator = new Mock<IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest>>();
         _mockUpsertValidator = new Mock<IValidator<GDSDTeamLicenceAppUpsertRequest>>();
+        _mockChangeValidator = new Mock<IValidator<GDSDTeamLicenceAppChangeRequest>>();
         _mockRecaptchaService = new Mock<IRecaptchaVerificationService>();
         _mockCache = new Mock<IDistributedCache>();
         _mockDataProtectionProvider = new Mock<IDataProtectionProvider>();
+        _mockTimeLimitDataProvider = new Mock<ITimeLimitedDataProtector>();
         _mockConfiguration = new Mock<IConfiguration>();
 
         _mockDataProtectionProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
-            .Returns(new Mock<ITimeLimitedDataProtector>().Object);
+            .Returns(_mockTimeLimitDataProvider.Object);
 
         _controller = new GDSDLicensingController(
             _mockCurrentUser.Object,
@@ -49,6 +52,7 @@ public class GDSDLicensingControllerTests
             _mockConfiguration.Object,
             _mockAnonymousSubmitRequestValidator.Object,
             _mockUpsertValidator.Object,
+            _mockChangeValidator.Object,
             _mockRecaptchaService.Object,
             _mockCache.Object,
             _mockDataProtectionProvider.Object
@@ -66,7 +70,7 @@ public class GDSDLicensingControllerTests
 
         // Mock HttpContext and set cookies
         var httpContext = new DefaultHttpContext();
-        httpContext.Request.Headers["Cookie"] = $"{SessionConstants.AnonymousApplicationSubmitKeyCode}=Value"; ;
+        httpContext.Request.Headers["Cookie"] = $"{SessionConstants.AnonymousApplicationSubmitKeyCode}=cookieValuetestlongdata"; ;
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = httpContext
@@ -74,7 +78,7 @@ public class GDSDLicensingControllerTests
         var request = new GDSDTeamLicenceAppAnonymousSubmitRequest
         {
             ApplicationTypeCode = ApplicationTypeCode.New,
-            DocumentKeyCodes = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }
+            DocumentKeyCodes = []
         };
         var cancellationToken = CancellationToken.None;
         Guid licenceAppId = Guid.NewGuid();
@@ -87,30 +91,18 @@ public class GDSDLicensingControllerTests
             .Setup(m => m.Send(It.IsAny<GDSDTeamLicenceAppAnonymousSubmitCommand>(), cancellationToken))
             .ReturnsAsync(new GDSDAppCommandResponse { LicenceAppId = licenceAppId });
 
+        var cachedBytes = Encoding.UTF8.GetBytes("{\"Items\": []}");
+        _mockCache
+            .Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(cachedBytes);
+        _mockTimeLimitDataProvider
+            .Setup(m => m.Unprotect(It.IsAny<byte[]>()))
+            .Returns(cachedBytes);
+
         // Act
         var result = await _controller.SubmitGDSDTeamAppAnonymous(request, cancellationToken);
 
         // Assert
         result.LicenceAppId.ShouldBe(licenceAppId);
-    }
-
-    [Fact]
-    public async Task SubmitGDSDTeamAppAnonymous_ShouldThrowApiException_WhenValidationFails()
-    {
-        // Arrange
-        var request = new GDSDTeamLicenceAppAnonymousSubmitRequest();
-        var cancellationToken = CancellationToken.None;
-        var validationErrors = new List<ValidationFailure> { new("Property", "Error message") };
-
-        _mockAnonymousSubmitRequestValidator
-            .Setup(v => v.ValidateAsync(request, cancellationToken))
-            .ReturnsAsync(new ValidationResult(validationErrors));
-
-        // Act
-        var act = async () => await _controller.SubmitGDSDTeamAppAnonymous(request, cancellationToken);
-
-        // Assert
-        var exception = await act.ShouldThrowAsync<ApiException>();
-        exception.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }

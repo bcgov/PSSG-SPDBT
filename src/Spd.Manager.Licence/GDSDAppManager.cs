@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.GDSDApp;
@@ -8,6 +9,7 @@ using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -17,6 +19,8 @@ internal class GDSDAppManager :
         IRequestHandler<GDSDTeamLicenceAppUpsertCommand, GDSDAppCommandResponse>,
         IRequestHandler<GDSDTeamLicenceAppSubmitCommand, GDSDAppCommandResponse>,
         IRequestHandler<GDSDTeamLicenceAppAnonymousSubmitCommand, GDSDAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppRenewCommand, GDSDAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppReplaceCommand, GDSDAppCommandResponse>,
         IGDSDAppManager
 {
     private readonly IContactRepository _contactRepository;
@@ -51,7 +55,6 @@ internal class GDSDAppManager :
 
         //save the application
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
-        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
@@ -64,17 +67,100 @@ internal class GDSDAppManager :
     #endregion
 
     #region auth
-    public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
+    public async Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct)
     {
-        return Task.FromResult<GDSDTeamLicenceAppResponse>(null);
+        var resp = await _gdsdRepository.GetGDSDAppAsync(query.LicenceApplicationId, ct);
+        GDSDTeamLicenceAppResponse result = _mapper.Map<GDSDTeamLicenceAppResponse>(resp);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
+        return result;
+
     }
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct)
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
     {
-        return Task.FromResult<GDSDAppCommandResponse>(null);
+        SaveGDSDAppCmd saveCmd = _mapper.Map<SaveGDSDAppCmd>(cmd.UpsertRequest);
+        var response = await _gdsdRepository.SaveGDSDAppAsync(saveCmd, ct);
+        if (cmd.UpsertRequest.LicenceAppId == null)
+            cmd.UpsertRequest.LicenceAppId = response.LicenceAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.UpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.UpsertRequest.DocumentInfos,
+            ct);
+        return _mapper.Map<GDSDAppCommandResponse>(response);
     }
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct)
+
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand cmd, CancellationToken ct)
     {
-        return Task.FromResult<GDSDAppCommandResponse>(null);
+        var response = await this.Handle((GDSDTeamLicenceAppUpsertCommand)cmd, ct);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
+        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        {
+            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId,
+            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+        }, ct);
+        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand cmd, CancellationToken ct)
+    {
+        LicenceResp? originalLic = await _licenceRepository.GetAsync(cmd.ChangeRequest.OriginalLicenceId, ct);
+        if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+
+        //check Renew your existing certification even though it has been expired for 6 month
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        if (currentDate > originalLic.ExpiryDate.AddMonths(Constants.GDSDRenewValidAfterExpirationInMonths))
+            throw new ArgumentException($"the certification can only be renewed within {Constants.GDSDRenewValidAfterExpirationInMonths} months after expiry date.");
+
+        var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
+        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
+        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.ChangeRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        {
+            LicenceAppId = response.LicenceAppId,
+            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+        }, ct);
+        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand cmd, CancellationToken ct)
+    {
+        LicenceResp? originalLic = await _licenceRepository.GetAsync(cmd.ChangeRequest.OriginalLicenceId, ct);
+        if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+
+        var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
+        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
+        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.ChangeRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        {
+            LicenceAppId = response.LicenceAppId,
+            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+        }, ct);
+        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 

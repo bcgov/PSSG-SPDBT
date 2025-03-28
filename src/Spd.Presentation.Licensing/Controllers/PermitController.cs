@@ -163,6 +163,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
+            if (!_configuration.GetValue<bool>("EnableAnonymousPermitFeatures"))
+                throw new NotSupportedException();
+
             string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
             string? licenceAppId;
             try
@@ -189,6 +192,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
+            if (!_configuration.GetValue<bool>("EnableAnonymousPermitFeatures"))
+                throw new NotSupportedException();
+
             await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);

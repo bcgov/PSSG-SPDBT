@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-    selector: 'app-step-business-licence-manager-information',
-    template: `
+	selector: 'app-step-business-licence-manager-information',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -98,15 +98,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceManagerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	title = '';
 	subtitle =
-		"We require contact information for your company's business manager, who is responsible for the day-to-day supervision of licensed security workers";
+		'Provide the contact information for your company’s business manager(s) responsible for overseeing the daily work of licensed security employees in B.C.';
 
 	readonly title_new = 'Provide contact information';
 	readonly title_renew_update = 'Confirm contact information';

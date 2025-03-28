@@ -11,6 +11,7 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.DogTeam;
 using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -443,16 +444,26 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
 
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
-        CreateMap<DogInfoNewAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewAccreditedSchool>()
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
-        CreateMap<DogInfoNewWithoutAccreditedSchool, Spd.Resource.Repository.GDSDApp.DogInfoNewWithoutAccreditedSchool>()
-         .IncludeBase<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
-        CreateMap<DogInfoRenew, Spd.Resource.Repository.GDSDApp.DogInfoRenew>();
-        CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>();
-        CreateMap<DogInfoNew, Spd.Resource.Repository.GDSDApp.DogInfoNew>();
-        CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>();
-        CreateMap<TrainingSchoolInfo, Spd.Resource.Repository.GDSDApp.TrainingSchoolInfo>();
-        CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>();
+        CreateMap<GDSDTeamLicenceAppChangeRequest, CreateGDSDAppCmd>();
+        CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
+        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
+        CreateMap<AccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.AccreditedSchoolQuestions>()
+         .ReverseMap();
+        CreateMap<NonAccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.NonAccreditedSchoolQuestions>()
+         .ForMember(d => d.IsDogSterilized, opt => opt.MapFrom(s => true))
+         .ReverseMap();
+        CreateMap<GraduationInfo, Spd.Resource.Repository.GDSDApp.GraduationInfo>()
+            .ReverseMap();
+        CreateMap<DogInfo, Spd.Resource.Repository.GDSDApp.DogInfo>()
+            .ReverseMap();
+        CreateMap<TrainingInfo, Spd.Resource.Repository.GDSDApp.TrainingInfo>()
+            .ReverseMap();
+        CreateMap<TrainingSchoolInfo, Spd.Resource.Repository.GDSDApp.TrainingSchoolInfo>()
+            .ReverseMap();
+        CreateMap<OtherTraining, Spd.Resource.Repository.GDSDApp.OtherTraining>()
+            .ReverseMap();
+        CreateMap<DogTeamResp, DogInfo>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -740,7 +751,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool, DocumentTypeEnum.IdCardIssuedByAccreditedDogTrainingSchool },
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
-        {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument }
+        {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -806,7 +818,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool, DocumentTypeEnum.IdCardIssuedByAccreditedDogTrainingSchool },
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
-        {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument }
+        {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

@@ -62,7 +62,6 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 	standalone: false,
 })
 export class ControllingMemberSubmissionReceivedComponent implements OnInit {
-	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
 	isSubmit: boolean | null = null;

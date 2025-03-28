@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
@@ -12,8 +13,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-private-investigator',
-    template: `
+	selector: 'app-licence-category-private-investigator',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -23,7 +24,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					To qualify for a private investigator security worker licence, you must meet one of the following experience
 					requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="requirementCode"
+						(change)="onChangeDocumentType($event)"
+					>
 						<mat-radio-button
 							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses"
 						>
@@ -33,7 +39,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							investigator in B.C.
 							<mat-icon
 								class="info-icon"
-								matTooltip="You must prove that you have 2000 hours work experience ending no more than 5 years prior to the date of the application"
+								matTooltip="You must provide proof of 2,000 hours of work experience within the last 5 years."
 							>
 								info
 							</mat-icon>
@@ -137,7 +143,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<div class="fs-5 mb-2">Training:</div>
 					You must meet one of the following training requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="trainingCode"
+						(change)="onChangeTrainingDocumentType($event)"
+					>
 						<mat-radio-button
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse"
 						>
@@ -147,7 +158,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						<mat-radio-button
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
-							You must provide proof of completion of courses or knowledge in the areas of:
+							You must provide proof of completing courses or demonstrating knowledge in the following areas:
 							<ul>
 								<li>Criminal law</li>
 								<li>Civil law and process</li>
@@ -213,9 +224,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
@@ -256,6 +267,11 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 		});
 	}
 
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
+	}
+
 	onFileTrainingAdded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;
 
@@ -274,6 +290,11 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 				this.fileUploadTrainingComponent.removeFailedFile(file);
 			},
 		});
+	}
+
+	onChangeTrainingDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.trainingAttachments.setValue([]);
 	}
 
 	onFileRemoved(): void {

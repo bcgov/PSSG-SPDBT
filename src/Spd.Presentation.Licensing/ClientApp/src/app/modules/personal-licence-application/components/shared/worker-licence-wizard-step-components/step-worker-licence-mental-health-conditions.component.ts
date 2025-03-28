@@ -6,11 +6,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
-    selector: 'app-step-worker-licence-mental-health-conditions',
-    template: `
+	selector: 'app-step-worker-licence-mental-health-conditions',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-form-mental-health-conditions
-				[applicationTypeCode]="applicationTypeCode"
 				[form]="form"
 				[isWizardStep]="true"
 				(fileUploaded)="onFileUploaded($event)"
@@ -18,8 +17,8 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 			></app-form-mental-health-conditions>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

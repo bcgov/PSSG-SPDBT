@@ -14,12 +14,14 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
 
-        public LoginController(ILogger<LoginController> logger, IPrincipal currentUser, IMediator mediator)
+        public LoginController(ILogger<LoginController> logger, IPrincipal currentUser, IMediator mediator, IConfiguration configuration)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
+            this._configuration = configuration;
         }
 
         /// <summary>
@@ -58,6 +60,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<IEnumerable<BizListResponse>> BizList()
         {
+            bool oneOrgGuidHasOneBizLicencePortal = _configuration.GetValue<bool>("OneOrgGuidHasOneBizLicencePortal");
             var info = _currentUser.GetBceidUserIdentityInfo();
             //string test = @"{
             //    ""BCeIDUserName"": ""VictoriaCharity"",
@@ -73,7 +76,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //    ""Email"": ""peggy.zhang@quartech.com""
             //}";
             //BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
-            return await _mediator.Send(new GetBizsQuery(info.BizGuid.Value));
+            return await _mediator.Send(new GetBizsQuery(info.BizGuid.Value, oneOrgGuidHasOneBizLicencePortal));
         }
 
         /// <summary>
