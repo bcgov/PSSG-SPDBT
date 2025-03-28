@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -96,15 +95,19 @@ internal class SecurityWorkerAppManager :
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
     {
+        List<ServiceTypeEnum> serviceTypes = query.ScopeCode == AppScopeCode.PersonalSecurityLicenceApp ?
+            new List<ServiceTypeEnum>() {
+                ServiceTypeEnum.ArmouredVehiclePermit,
+                ServiceTypeEnum.BodyArmourPermit,
+                ServiceTypeEnum.SecurityWorkerLicence} :
+            new List<ServiceTypeEnum>() {
+                ServiceTypeEnum.DogTrainerCertification,
+                ServiceTypeEnum.GDSDTeamCertification,
+                ServiceTypeEnum.RetiredServiceDogCertification};
         LicenceAppQuery q = new(
             query.ApplicantId,
             null,
-            new List<ServiceTypeEnum>
-            {
-                ServiceTypeEnum.ArmouredVehiclePermit,
-                ServiceTypeEnum.BodyArmourPermit,
-                ServiceTypeEnum.SecurityWorkerLicence,
-            },
+            serviceTypes,
             new List<ApplicationPortalStatusEnum>
             {
                 ApplicationPortalStatusEnum.Draft,
@@ -175,11 +178,8 @@ internal class SecurityWorkerAppManager :
 
         //validation: check if original licence meet replacement condition.
         LicenceResp? originalLic = await _licenceRepository.GetAsync(request.OriginalLicenceId.Value, cancellationToken);
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
         if (originalLic == null)
             throw new ArgumentException("Cannot find the licence that needs to be renewed.");
-        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > originalLic.ExpiryDate)
-            throw new ArgumentException("The licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
@@ -242,7 +242,7 @@ internal class SecurityWorkerAppManager :
                 || currentDate > originalLic.ExpiryDate)
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles.ToList(),
@@ -326,7 +326,7 @@ internal class SecurityWorkerAppManager :
         if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles,

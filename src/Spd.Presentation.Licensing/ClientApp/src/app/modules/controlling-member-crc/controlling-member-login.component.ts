@@ -28,13 +28,19 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 							</div>
 							<div class="row p-4">
 								<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-									<div class="fw-bold mb-3">Log in with BC Services Card:</div>
+									<div class="fw-bold mb-3">Log in with your BC Services Card account:</div>
 									<table>
 										<tr>
-											<td>
-												<mat-icon class="icon me-2">circle</mat-icon>
-											</td>
-											<td class="pb-2">Save your progress</td>
+											<td><mat-icon class="icon me-2">circle</mat-icon></td>
+											<td class="pb-2">Save your application and continue it later</td>
+										</tr>
+										<tr>
+											<td><mat-icon class="icon me-2">circle</mat-icon></td>
+											<td class="pb-2">Apply faster</td>
+										</tr>
+										<tr>
+											<td><mat-icon class="icon me-2">circle</mat-icon></td>
+											<td class="pb-2">See your application progress in real time</td>
 										</tr>
 									</table>
 									<button
@@ -47,13 +53,12 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 									<div class="mt-3">
-										Don't have BC Services Card?
 										<a
 											class="large login-link"
 											aria-label="Navigate to BC Services Card site"
 											[href]="setupAccountUrl"
 											target="_blank"
-											>Set up your account today</a
+											>Learn how to set up the BC Services Card account</a
 										>
 									</div>
 								</div>
@@ -62,19 +67,25 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 						<div class="row m-3">
 							<div class="col-12 mb-4">
-								If you don't have the BC Services Card app you can still apply, but you will not have access to features
-								available to registered users.
+								If you don’t have a
+								<a
+									class="large login-link"
+									aria-label="Navigate to BC Services Card site"
+									[href]="setupAccountUrl"
+									target="_blank"
+									>BC Services Card account</a
+								>, you can still complete the application.
 							</div>
-							<div class="col-lg-6 col-md-12 col-12 my-auto">
+							<div class="col-lg-12 col-md-12 col-12 my-auto">
 								<div class="my-3 my-lg-0">
 									<a
 										tabindex="0"
 										class="large login-link"
-										aria-label="Continue without a BC Services Card"
+										aria-label="Continue without a BC Services Card account"
 										(click)="onContinueAnonymous()"
 										(keydown)="onKeydownContinueAnonymous($event)"
 									>
-										Continue without a BC Services Card
+										Continue without a BC Services Card account
 									</a>
 								</div>
 							</div>

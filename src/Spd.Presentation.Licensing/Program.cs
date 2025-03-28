@@ -1,11 +1,11 @@
 using FluentValidation;
 using Serilog;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.JsonConverts;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -33,10 +33,10 @@ try
         .AddJsonOptions(x =>
         {
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            x.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
         });
 
     builder.Services.ConfigureAuthentication(builder.Configuration);
-    builder.Services.AddFluentValidationAutoValidation();
     builder.Services.ConfigureAuthorization();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);

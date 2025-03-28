@@ -60,5 +60,10 @@ export enum LicenceDocumentTypeCode {
   ArmourCarGuardRegistrar = 'ArmourCarGuardRegistrar',
   BizSecurityDogCertificate = 'BizSecurityDogCertificate',
   BizBcReport = 'BizBCReport',
-  CorporateRegistryDocument = 'CorporateRegistryDocument'
+  CorporateRegistryDocument = 'CorporateRegistryDocument',
+  IdCardIssuedByAccreditedDogTrainingSchool = 'IdCardIssuedByAccreditedDogTrainingSchool',
+  MedicalFormConfirmingNeedDog = 'MedicalFormConfirmingNeedDog',
+  VeterinarianConfirmationForSpayedNeuteredDog = 'VeterinarianConfirmationForSpayedNeuteredDog',
+  DogTrainingCurriculumCertificateSupportingDocument = 'DogTrainingCurriculumCertificateSupportingDocument',
+  GdsdPracticeHoursLog = 'GDSDPracticeHoursLog'
 }

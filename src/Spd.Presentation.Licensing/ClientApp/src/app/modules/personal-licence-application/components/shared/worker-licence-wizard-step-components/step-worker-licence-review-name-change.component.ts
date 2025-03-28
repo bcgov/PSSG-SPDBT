@@ -5,12 +5,12 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-review-name-change',
-    template: `
+	selector: 'app-step-worker-licence-review-name-change',
+	template: `
 		<app-step-section title="Review your updated name">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info"> Your licence will be updated with your new name </app-alert>
+					<app-alert type="info" icon="info"> Your licence will be updated with your new name.</app-alert>
 
 					<div [formGroup]="form">
 						<div class="row mt-0 mb-3">
@@ -28,8 +28,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceReviewNameChangeComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.personalInformationFormGroup;

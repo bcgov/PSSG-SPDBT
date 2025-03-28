@@ -9,6 +9,7 @@ import { AlertComponent } from './components/alert.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
+import { FormAccessCodeAnonymousComponent } from './components/form-access-code-anonymous.component';
 import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
@@ -29,13 +30,14 @@ import { FormMentalHealthConditionsComponent } from './components/form-mental-he
 import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
 import { FormPersonalInformationRenewUpdateAnonymousComponent } from './components/form-personal-information-renew-update-anonymous.component';
 import { FormPersonalInformationComponent } from './components/form-personal-information.component';
+import { FormPhotographOfYourselfUpdateComponent } from './components/form-photograph-of-yourself-update.component';
 import { FormPhotographOfYourselfComponent } from './components/form-photograph-of-yourself.component';
 import { FormPhysicalCharacteristicsComponent } from './components/form-physical-characteristics.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
-import { LicenceCategoryPanelSimpleComponent } from './components/licence-category-panel-simple.component';
-import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
-import { LicenceReprintComponent } from './components/licence-reprint.component';
+import { FormLicenceCategoryPanelSimpleComponent } from './components/form-licence-category-panel-simple.component';
+import { FormLicenceListExpiredComponent } from './components/form-licence-list-expired.component';
+import { FormLicenceReprintComponent } from './components/form-licence-reprint.component';
 import { ModalAddressComponent } from './components/modal-address.component';
 import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
@@ -91,9 +93,9 @@ const SHARED_COMPONENTS = [
 	PhoneNumberTransformDirective,
 	CollectionNoticeComponent,
 	ModalLookupByLicenceNumberComponent,
-	LicenceListExpiredComponent,
+	FormLicenceListExpiredComponent,
 	FormAlertUpdateOrRenewalComponent,
-	LicenceReprintComponent,
+	FormLicenceReprintComponent,
 	FormExpiredLicenceComponent,
 	FormAddressAndIsSameFlagComponent,
 	ContainerComponent,
@@ -113,8 +115,10 @@ const SHARED_COMPONENTS = [
 	FormPersonalInformationNewAnonymousComponent,
 	FormPersonalInformationRenewUpdateAnonymousComponent,
 	FormPhotographOfYourselfComponent,
+	FormPhotographOfYourselfUpdateComponent,
 	FormPhysicalCharacteristicsComponent,
-	LicenceCategoryPanelSimpleComponent,
+	FormLicenceCategoryPanelSimpleComponent,
+	FormAccessCodeAnonymousComponent,
 ];
 
 @NgModule({

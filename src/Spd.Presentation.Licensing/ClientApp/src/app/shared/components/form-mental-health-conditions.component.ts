@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -35,12 +34,19 @@ import { FileUploadComponent } from './file-upload.component';
 				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<p>
-						If you don't have a completed form, you can download and provide it to your physician to fill out, or your
-						physician may download it and fill the form out on a computer if you provide them with the required
-						information. See the
+						If you don't have a completed form, you can download it and give it to your doctor to fill out, or your
+						doctor can
+						<a
+							aria-label="Navigate to Mental Health Condition form"
+							[href]="mentalHealthConditionsFormUrl"
+							target="_blank"
+						>
+							download it</a
+						>
+						and complete it on a computer if you give them the required information. For more details, see the
 						<a aria-label="Navigate to Security Services Act site" [href]="securityServicesActUrl" target="_blank">
 							Security Services Act</a
-						>, s. 3, Security Services Regulation, s. 4(1)(e) for more information
+						>, s. 3, Security Services Regulation, s. 4(1)(e).
 					</p>
 					<div class="text-minor-heading my-2">Upload your mental health condition form</div>
 					<app-file-upload
@@ -68,11 +74,11 @@ import { FileUploadComponent } from './file-upload.component';
 	standalone: false,
 })
 export class FormMentalHealthConditionsComponent {
+	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	securityServicesActUrl = SPD_CONSTANTS.urls.securityServicesActUrl;
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isWizardStep = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();

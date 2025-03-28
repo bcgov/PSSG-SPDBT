@@ -10,36 +10,33 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Proof of fingerprinting request</div>
+							<div class="checklist-label">Proof of fingerprinting</div>
 							<p class="checklist-info">
-								All applicants must submit a proof of fingerprinting request. Download the
+								All applicants must have their fingerprints taken and submit proof of fingerprinting. Download the
 								<a
 									aria-label="Download Request for Fingerprinting form"
 									download="Request For Fingerprinting Form"
 									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
-								>, take it your local police department, and return to this application when you have this form
-								completed.
+								>, take it to your local police detachment or accredited fingerprinting agency, and return to this
+								application once the form is completed.
 							</p>
 						</li>
 
 						<li>
 							<div class="checklist-label">Proof of training and experience</div>
-							<!-- // TODO update URL -->
 							<p class="checklist-info">
-								Some categories of security workers, such as security guards, require proof of training and/or
-								experience.
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank">Learn more</a>
+								You may need to provide proof of training and/or experience.
+								<a aria-label="Navigate to " [href]="swlLearnMoreUrl" target="_blank">Learn more</a>
 								about the types of documents we accept for each security worker category.
 							</p>
 						</li>
 
 						<li>
 							<div class="checklist-label">Proof of Canadian citizenship or ability to work in Canada</div>
-							<!-- // TODO update URL -->
 							<p class="checklist-info">
 								See all accepted forms of identification on the
-								<a aria-label="Navigate to " [href]="bcGovHomeUrl" target="_blank"
+								<a aria-label="Navigate to " [href]="swlAcceptedIdUrl" target="_blank"
 									>Security Worker Licence requirements page</a
 								>.
 							</p>
@@ -70,7 +67,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 						<li>
 							<div class="checklist-label">Credit card</div>
-							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								All major credit cards are accepted through our secure online payment system.
+							</p>
 						</li>
 					</ul>
 
@@ -91,16 +90,16 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						</li>
 
 						<li>
-							<div class="checklist-label">If you have a mental health condition, provide a physician's assessment</div>
+							<div class="checklist-label">If you have a mental health condition, provide a doctor's assessment</div>
 							<p class="checklist-info">
 								Download the
 								<a
-									aria-label="Navigate to Mental Health Condition form site"
+									aria-label="Navigate to Mental Health Condition form"
 									[href]="mentalHealthConditionsFormUrl"
 									target="_blank"
 								>
 									Mental Health Condition form</a
-								>, and give it to your physician to fill out. You will need to upload the completed form.
+								>, and give it to your doctor to fill out. You will need to upload the completed form.
 							</p>
 						</li>
 					</ul>
@@ -112,8 +111,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	standalone: false,
 })
 export class StepWorkerLicenceChecklistNewComponent {
-	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
 	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+	swlLearnMoreUrl = SPD_CONSTANTS.urls.swlLearnMoreUrl;
+	swlAcceptedIdUrl = SPD_CONSTANTS.urls.swlAcceptedIdUrl;
 }
