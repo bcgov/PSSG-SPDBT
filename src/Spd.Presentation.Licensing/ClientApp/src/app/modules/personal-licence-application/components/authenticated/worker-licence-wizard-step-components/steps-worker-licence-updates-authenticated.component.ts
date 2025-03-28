@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceCategoryComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
@@ -8,8 +9,8 @@ import { StepWorkerLicenceRestraintsComponent } from '@app/modules/personal-lice
 import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
 
 @Component({
-    selector: 'app-steps-worker-licence-updates-authenticated',
-    template: `
+	selector: 'app-steps-worker-licence-updates-authenticated',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
@@ -34,6 +35,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/persona
 			<mat-step>
 				<app-step-worker-licence-category
 					[applicationTypeCode]="applicationTypeCodes.Update"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 				></app-step-worker-licence-category>
 
 				<app-wizard-footer
@@ -81,6 +83,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
@@ -93,8 +96,8 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepWorkerLicenceDogsAuthorizationComponent)
 	stepDogsComponent!: StepWorkerLicenceDogsAuthorizationComponent;
 
-	constructor() {
-		super();
+	constructor(utilService: UtilService) {
+		super(utilService);
 	}
 
 	onStepUpdatePrevious(step: number): void {

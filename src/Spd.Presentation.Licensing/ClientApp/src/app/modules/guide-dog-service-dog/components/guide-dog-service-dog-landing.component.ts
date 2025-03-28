@@ -17,36 +17,33 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 					<div class="col-xxl-10 col-xl-12 col-lg-12 mx-auto">
 						<div class="row">
 							<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-								<div class="fw-bold mb-3">Benefits of logging in with your BC Service Card:</div>
+								<div class="fw-bold mb-3">Use your BC Services Card account:</div>
 								<table>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">Save your application</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Manage your licence with ease online</td>
 									</tr>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">See the progress of your application</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Verify your identity securely online</td>
 									</tr>
 									<tr>
-										<td>
-											<mat-icon class="icon me-2">circle</mat-icon>
-										</td>
-										<td class="pb-2">Manage your licence renewal and updates</td>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Save your application and return to finish it at your convenience</td>
+									</tr>
+									<tr>
+										<td><mat-icon class="icon me-2">circle</mat-icon></td>
+										<td class="pb-2">Track the progress of your application</td>
 									</tr>
 								</table>
 								<div class="mt-3">
-									Don't have BC Services Card?
 									<a
 										class="large login-link"
-										aria-label="Navigate to BC Service Card site"
+										aria-label="Register for a BC Services Card"
 										[href]="setupAccountUrl"
 										target="_blank"
 									>
-										Set up your account today
+										Learn how to set up a BC Services Card account
 									</a>
 								</div>
 							</div>
@@ -55,12 +52,12 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dogs/Service Dogs Team Certification" />
+									<img class="image" src="./assets/guide-dog.svg" alt="Guide Dog and Service Dog Team Certification" />
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
 									<div class="d-flex justify-content-start py-2">
-										<div class="text-start"><strong>Guide Dogs/Service Dogs Team</strong> Certification:</div>
+										<div class="text-start"><strong>Guide Dog and Service Dog Team</strong> Certification:</div>
 									</div>
 
 									<button
@@ -94,12 +91,12 @@ import { GuideDogServiceDogRoutes } from '../guide-dog-service-dog-routes';
 						<div class="login-selection-container my-4 my-lg-5">
 							<div class="row m-3">
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">
-									<img class="image" src="./assets/retired-service-dog.svg" alt="Retired Service Dog Certification" />
+									<img class="image" src="./assets/retired-service-dog.svg" alt="Retired Dog Certification" />
 								</div>
 
 								<div class="col-xl-6 col-lg-4 col-md-12 col-12">
 									<div class="d-flex justify-content-start py-2">
-										<div class="text-start"><strong>Retired Service Dog</strong> Certification:</div>
+										<div class="text-start"><strong>Retired Dog</strong> Certification:</div>
 									</div>
 
 									<button
@@ -200,14 +197,16 @@ export class GuideDogServiceDogLandingComponent implements OnInit {
 	}
 
 	onRegisterDogTrainer(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onRegisterRetiredServiceDog(): void {
-		this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
+		// this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdUserApplications());
 	}
 
 	onContinue(serviceTypeCode: ServiceTypeCode): void {
+		if (serviceTypeCode != ServiceTypeCode.GdsdTeamCertification) return;
+
 		// make sure the user is not logged in.
 		this.authProcessService.logoutBceid(GuideDogServiceDogRoutes.path());
 		this.authProcessService.logoutBcsc(GuideDogServiceDogRoutes.path());

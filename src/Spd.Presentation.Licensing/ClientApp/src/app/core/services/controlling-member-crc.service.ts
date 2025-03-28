@@ -18,7 +18,6 @@ import {
 import { ApplicantProfileService, ControllingMemberCrcAppService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
@@ -77,7 +76,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
@@ -88,7 +86,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private commonApplicationService: CommonApplicationService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService);
 
 		this.controllingMembersModelChangedSubscription = this.controllingMembersModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -703,6 +701,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		const bcSecurityLicenceHistoryData = {
 			hasCriminalHistory: this.utilService.booleanToBooleanType(crcAppl.hasCriminalHistory),
+			hasCourtJudgement: this.utilService.booleanToBooleanType(crcAppl.hasCourtJudgement),
 			criminalHistoryDetail: crcAppl.criminalHistoryDetail,
 			hasBankruptcyHistory: this.utilService.booleanToBooleanType(crcAppl.hasBankruptcyHistory),
 			bankruptcyHistoryDetail: crcAppl.bankruptcyHistoryDetail,

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -9,8 +10,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-licence-category-private-investigator-sup',
-    template: `
+	selector: 'app-licence-category-private-investigator-sup',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
@@ -20,7 +21,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
 					requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+					<mat-radio-group
+						class="category-radio-group"
+						aria-label="Select an option"
+						formControlName="requirementCode"
+						(change)="onChangeDocumentType($event)"
+					>
 						<mat-radio-button
 							[value]="
 								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
@@ -103,9 +109,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorSupFormGroup;
@@ -154,6 +160,11 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	public get requirementCode(): FormControl {

@@ -168,7 +168,7 @@ export class FormControlValidators {
 		if (!control.value) {
 			return null;
 		}
-		const regExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+		const regExp = /^[a-z0-9._'%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 		// Affixed spaces does not invalidate the entry, and should
 		// be sanitized by on submission and by the server
 		const valid = control.valid && regExp.test(control.value);

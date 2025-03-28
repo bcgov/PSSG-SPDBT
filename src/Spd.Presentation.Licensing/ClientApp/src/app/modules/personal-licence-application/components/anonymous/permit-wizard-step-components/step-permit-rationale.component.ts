@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-step-permit-rationale',
-    template: `
+	selector: 'app-step-permit-rationale',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -30,8 +30,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
 						<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
 						<div class="my-2">
-							These could be a police report which refers to the safety concern, a protection order, a news article
-							about your concern, etc.
+							These may include a police report related to the safety concern, a protection order, a news article
+							addressing your concern, or similar documents.
 						</div>
 						<app-file-upload
 							(fileUploaded)="onFileUploaded($event)"
@@ -45,8 +45,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitRationaleComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
@@ -83,7 +83,7 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 			}
 			default: {
 				this.title = `Confirm your rationale for requiring ${name}`;
-				this.subtitle = `If the purpose for requiring your ${serviceTypeCodeDesc} has changed from your previous application, update your rationale`;
+				this.subtitle = `If your purpose for requiring the ${serviceTypeCodeDesc} has changed since your previous application, please provide the updated rationale.`;
 				break;
 			}
 		}

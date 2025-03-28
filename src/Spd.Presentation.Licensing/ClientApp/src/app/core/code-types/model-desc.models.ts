@@ -309,7 +309,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },
 	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
-	{ desc: 'Retired Service Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
+	{ desc: 'Retired Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
@@ -360,7 +360,7 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
 	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
+	// { desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
 	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
 	{ desc: 'Locksmith - Under Supervision', code: WorkerCategoryTypeCode.LocksmithUnderSupervision },
 	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },

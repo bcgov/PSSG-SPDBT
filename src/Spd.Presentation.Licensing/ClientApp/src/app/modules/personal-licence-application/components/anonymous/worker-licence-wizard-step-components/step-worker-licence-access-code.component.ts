@@ -6,12 +6,12 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { CommonAccessCodeAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-access-code-anonymous.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
+import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-access-code-anonymous.component';
 
 @Component({
-    selector: 'app-step-worker-licence-access-code',
-    template: `
+	selector: 'app-step-worker-licence-access-code',
+	template: `
 		<app-step-section
 			title="Provide your access code"
 			info="<p>
@@ -24,18 +24,18 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 					</p>"
 		>
-			<app-common-access-code-anonymous
+			<app-form-access-code-anonymous
 				(linkSuccess)="onLinkSuccess($event)"
 				[form]="form"
 				[serviceTypeCode]="serviceTypeCode"
 				[applicationTypeCode]="applicationTypeCode"
-			></app-common-access-code-anonymous>
+			></app-form-access-code-anonymous>
 		</app-step-section>
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
@@ -45,8 +45,8 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(CommonAccessCodeAnonymousComponent)
-	commonAccessCodeAnonymousComponent!: CommonAccessCodeAnonymousComponent;
+	@ViewChild(FormAccessCodeAnonymousComponent)
+	commonAccessCodeAnonymousComponent!: FormAccessCodeAnonymousComponent;
 
 	constructor(
 		private router: Router,

@@ -12,8 +12,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
-    selector: 'app-worker-licence-wizard-anonymous-replacement',
-    template: `
+	selector: 'app-worker-licence-wizard-anonymous-replacement',
+	template: `
 		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 			<mat-step>
 				<ng-template matStepLabel>Licence Confirmation</ng-template>
@@ -23,7 +23,7 @@ import { distinctUntilChanged } from 'rxjs';
 			</mat-step>
 
 			<mat-step>
-				<ng-template matStepLabel>Address Update</ng-template>
+				<ng-template matStepLabel>Mailing Address</ng-template>
 				<app-step-worker-licence-mailing-address-replacement-anonymous></app-step-worker-licence-mailing-address-replacement-anonymous>
 
 				<app-wizard-footer
@@ -38,8 +38,8 @@ import { distinctUntilChanged } from 'rxjs';
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizardComponent implements OnInit {
 	newLicenceAppId: string | null = null;

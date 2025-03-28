@@ -120,13 +120,13 @@ public class GDSDAppValidationTest
     public void Should_HaveError_When_ContactPhoneNumber_IsEmpty()
     {
         // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest { ContactPhoneNumber = string.Empty };
+        var model = new GDSDTeamLicenceAppUpsertRequest { PhoneNumber = string.Empty };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ContactPhoneNumber)
+        result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
               .WithErrorMessage("'Contact Phone Number' must not be empty.");
     }
 
@@ -134,26 +134,26 @@ public class GDSDAppValidationTest
     public void Should_NotHaveError_When_ContactPhoneNumber_IsValid()
     {
         // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest { Surname = "test", ContactPhoneNumber = "1234567890" };
+        var model = new GDSDTeamLicenceAppUpsertRequest { Surname = "test", PhoneNumber = "1234567890" };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.ContactPhoneNumber);
+        result.ShouldNotHaveValidationErrorFor(x => x.PhoneNumber);
     }
 
     [Fact]
     public void Should_HaveError_When_ContactEmailAddress_IsInvalid()
     {
         // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest { ContactEmailAddress = "invalid-email" };
+        var model = new GDSDTeamLicenceAppUpsertRequest { EmailAddress = "invalid-email" };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ContactEmailAddress)
+        result.ShouldHaveValidationErrorFor(x => x.EmailAddress)
               .WithErrorMessage("'Contact Email Address' is not a valid email address.");
     }
 
@@ -161,13 +161,13 @@ public class GDSDAppValidationTest
     public void Should_NotHaveError_When_ContactEmailAddress_IsValid()
     {
         // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest { ContactEmailAddress = "test@example.com" };
+        var model = new GDSDTeamLicenceAppUpsertRequest { EmailAddress = "test@example.com" };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.ContactEmailAddress);
+        result.ShouldNotHaveValidationErrorFor(x => x.EmailAddress);
     }
 
     [Fact]
@@ -220,32 +220,15 @@ public class GDSDAppValidationTest
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
             IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = null
+            AccreditedSchoolQuestions = null
         };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.DogInfoNewAccreditedSchool)
+        result.ShouldHaveValidationErrorFor(x => x.AccreditedSchoolQuestions)
               .WithErrorMessage("'Dog Info New Accredited School' must not be empty.");
-    }
-
-    [Fact]
-    public void Should_NotHaveError_When_DogInfoNewAccreditedSchool_IsValid_And_TrainedByAccreditedSchool()
-    {
-        // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest
-        {
-            IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { DogName = "Buddy" }
-        };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.DogInfoNewAccreditedSchool);
     }
 
     [Fact]
@@ -255,7 +238,7 @@ public class GDSDAppValidationTest
         var model = new GDSDTeamLicenceAppUpsertRequest
         {
             IsDogTrainedByAccreditedSchool = true,
-            DogInfoNewAccreditedSchool = new DogInfoNewAccreditedSchool { ServiceDogTasks = new string('A', 1001) }
+            AccreditedSchoolQuestions = new AccreditedSchoolQuestions { ServiceDogTasks = new string('A', 1001) }
         };
 
         // Act
@@ -264,24 +247,6 @@ public class GDSDAppValidationTest
         // Assert
         result.ShouldHaveValidationErrorFor("DogInfoNewAccreditedSchool.ServiceDogTasks")
               .WithErrorMessage("The length of 'Service Dog Tasks' must be 1000 characters or fewer. You entered 1001 characters.");
-    }
-
-    [Fact]
-    public void Should_HaveError_When_GraduationInfo_IsEmpty_And_TrainedByAccreditedSchool()
-    {
-        // Arrange
-        var model = new GDSDTeamLicenceAppUpsertRequest
-        {
-            IsDogTrainedByAccreditedSchool = true,
-            GraduationInfo = null
-        };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.GraduationInfo)
-              .WithErrorMessage("'Graduation Info' must not be empty.");
     }
 
     [Fact]

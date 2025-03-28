@@ -10,6 +10,7 @@ export interface OtherTraining {
   trainerPhoneNumber?: string | null;
   trainerSurname?: string | null;
   trainingDetail?: string | null;
+  trainingId?: string | null;
   trainingTime?: string | null;
-  usePersonalDogTrainer?: boolean;
+  usePersonalDogTrainer?: boolean | null;
 }

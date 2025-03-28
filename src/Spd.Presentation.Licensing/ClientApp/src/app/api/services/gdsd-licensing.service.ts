@@ -13,12 +13,16 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { apiGdsdTeamAppAnonymousSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
 import { ApiGdsdTeamAppAnonymousSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
-import { apiGdsdTeamAppCertificationAppIdGet } from '../fn/gdsd-licensing/api-gdsd-team-app-certification-app-id-get';
-import { ApiGdsdTeamAppCertificationAppIdGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-certification-app-id-get';
-import { apiGdsdTeamAppGet } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
-import { ApiGdsdTeamAppGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-get';
+import { apiGdsdTeamAppLicenceAppIdGet } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
+import { ApiGdsdTeamAppLicenceAppIdGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
 import { apiGdsdTeamAppPost } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
 import { ApiGdsdTeamAppPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
+import { apiGdsdTeamAppRenewPost } from '../fn/gdsd-licensing/api-gdsd-team-app-renew-post';
+import { ApiGdsdTeamAppRenewPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-renew-post';
+import { apiGdsdTeamAppReplacePost } from '../fn/gdsd-licensing/api-gdsd-team-app-replace-post';
+import { ApiGdsdTeamAppReplacePost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-replace-post';
+import { apiGdsdTeamAppSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
+import { ApiGdsdTeamAppSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
 import { GdsdAppCommandResponse } from '../models/gdsd-app-command-response';
 import { GdsdTeamLicenceAppResponse } from '../models/gdsd-team-licence-app-response';
 
@@ -26,39 +30,6 @@ import { GdsdTeamLicenceAppResponse } from '../models/gdsd-team-licence-app-resp
 export class GdsdLicensingService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
-  }
-
-  /** Path part for operation `apiGdsdTeamAppGet()` */
-  static readonly ApiGdsdTeamAppGetPath = '/api/gdsd-team-app';
-
-  /**
-   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiGdsdTeamAppGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiGdsdTeamAppGet$Response(params?: ApiGdsdTeamAppGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
-    return apiGdsdTeamAppGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiGdsdTeamAppGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiGdsdTeamAppGet(params?: ApiGdsdTeamAppGet$Params, context?: HttpContext): Observable<GdsdTeamLicenceAppResponse> {
-    return this.apiGdsdTeamAppGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdTeamLicenceAppResponse>): GdsdTeamLicenceAppResponse => r.body)
-    );
   }
 
   /** Path part for operation `apiGdsdTeamAppPost()` */
@@ -94,8 +65,8 @@ export class GdsdLicensingService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiGdsdTeamAppCertificationAppIdGet()` */
-  static readonly ApiGdsdTeamAppCertificationAppIdGetPath = '/api/gdsd-team-app/{certificationAppId}';
+  /** Path part for operation `apiGdsdTeamAppLicenceAppIdGet()` */
+  static readonly ApiGdsdTeamAppLicenceAppIdGetPath = '/api/gdsd-team-app/{licenceAppId}';
 
   /**
    * Get gdsd team certification application.
@@ -103,12 +74,12 @@ export class GdsdLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiGdsdTeamAppCertificationAppIdGet()` instead.
+   * To access only the response body, use `apiGdsdTeamAppLicenceAppIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiGdsdTeamAppCertificationAppIdGet$Response(params: ApiGdsdTeamAppCertificationAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
-    return apiGdsdTeamAppCertificationAppIdGet(this.http, this.rootUrl, params, context);
+  apiGdsdTeamAppLicenceAppIdGet$Response(params: ApiGdsdTeamAppLicenceAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamLicenceAppResponse>> {
+    return apiGdsdTeamAppLicenceAppIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -117,13 +88,114 @@ export class GdsdLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiGdsdTeamAppCertificationAppIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppLicenceAppIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiGdsdTeamAppCertificationAppIdGet(params: ApiGdsdTeamAppCertificationAppIdGet$Params, context?: HttpContext): Observable<GdsdTeamLicenceAppResponse> {
-    return this.apiGdsdTeamAppCertificationAppIdGet$Response(params, context).pipe(
+  apiGdsdTeamAppLicenceAppIdGet(params: ApiGdsdTeamAppLicenceAppIdGet$Params, context?: HttpContext): Observable<GdsdTeamLicenceAppResponse> {
+    return this.apiGdsdTeamAppLicenceAppIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<GdsdTeamLicenceAppResponse>): GdsdTeamLicenceAppResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiGdsdTeamAppSubmitPost()` */
+  static readonly ApiGdsdTeamAppSubmitPostPath = '/api/gdsd-team-app/submit';
+
+  /**
+   * Submit new gdsd team Application authenticated with bcsc.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiGdsdTeamAppSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppSubmitPost$Response(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppSubmitPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Submit new gdsd team Application authenticated with bcsc.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppSubmitPost(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppSubmitPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiGdsdTeamAppRenewPost()` */
+  static readonly ApiGdsdTeamAppRenewPostPath = '/api/gdsd-team-app/renew';
+
+  /**
+   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiGdsdTeamAppRenewPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppRenewPost$Response(params?: ApiGdsdTeamAppRenewPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppRenewPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppRenewPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppRenewPost(params?: ApiGdsdTeamAppRenewPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppRenewPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiGdsdTeamAppReplacePost()` */
+  static readonly ApiGdsdTeamAppReplacePostPath = '/api/gdsd-team-app/replace';
+
+  /**
+   * Replace GDSD Application for authenticated users.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiGdsdTeamAppReplacePost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppReplacePost$Response(params?: ApiGdsdTeamAppReplacePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+    return apiGdsdTeamAppReplacePost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Replace GDSD Application for authenticated users.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiGdsdTeamAppReplacePost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiGdsdTeamAppReplacePost(params?: ApiGdsdTeamAppReplacePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+    return this.apiGdsdTeamAppReplacePost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
     );
   }
 

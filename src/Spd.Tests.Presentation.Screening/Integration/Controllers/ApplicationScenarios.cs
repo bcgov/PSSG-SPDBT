@@ -1,10 +1,10 @@
+using Alba;
+using Spd.Manager.Screening;
+using Spd.Manager.Shared;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Alba;
-using Spd.Manager.Screening;
-using Spd.Manager.Shared;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
@@ -166,10 +166,11 @@ public class ApplicationScenarios : ScenarioContextBase
             _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.MultipartFormData(CreateBulkUploadMultipartFormData(
-                "\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"123456 TEST ROAD\"\t\"\"\t\"CITY\"\t\"BC\"\t\"CANADA\"\t\"V1V 1V1\"\t\"111-222-3333\"\t\"ADDRESS CANADA\"\t\"1990-01-01\"\t\"F\"\t\"9999999\"\t\"1111111\"", "test.tsv")).ToUrl($"/api/orgs/{org.accountid}/applications/bulk");
+                "\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"123456 TEST ROAD\"\t\"\"\t\"CITY\"\t\"BC\"\t\"CANADA\"\t\"V1V 1V1\"\t\"111-222-3333\"\t\"ADDRESS CANADA\"\t\"1990-01-01\"\t\"F\"\t\"9999999\"\t\"1111111\"\ttestemail@testemail.com", "test.tsv")).ToUrl($"/api/orgs/{org.accountid}/applications/bulk");
             if (org != null && org.accountid != null)
             {
                 _.StatusCodeShouldBeOk();
+
             }
         });
     }
@@ -181,8 +182,7 @@ public class ApplicationScenarios : ScenarioContextBase
             RequireDuplicateCheck = true,
             ApplicationInviteCreateRequests = new List<ApplicationInviteCreateRequest>
             {
-                new ApplicationInviteCreateRequest
-                {
+                new() {
                     FirstName= "firstName",
                     LastName="lastName",
                     Email="email@test.com",

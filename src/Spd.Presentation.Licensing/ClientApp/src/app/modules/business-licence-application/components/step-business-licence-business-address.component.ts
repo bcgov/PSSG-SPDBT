@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 								<div class="mt-3">
 									<div class="mb-4 text-primary-color">
-										This address is from your Business BCeID. If you need to make any updates, please
+										To update your mailing address, please
 										<a aria-label="Navigate to BCeID site" [href]="bceidUrl" target="_blank">visit BCeID</a>.
 									</div>
 

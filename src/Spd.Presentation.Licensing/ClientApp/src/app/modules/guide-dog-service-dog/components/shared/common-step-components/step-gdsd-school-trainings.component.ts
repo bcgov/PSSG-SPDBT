@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import moment from 'moment';
 
@@ -16,10 +18,7 @@ import moment from 'moment';
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
-						<ng-container
-							formArrayName="schoolTrainings"
-							*ngFor="let group of schoolTrainingsArray.controls; let i = index"
-						>
+						<section formArrayName="schoolTrainings" *ngFor="let group of schoolTrainingsArray.controls; let i = index">
 							<div class="school-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
 								<div class="row">
 									<div class="fs-5 mb-2">Training School Name</div>
@@ -39,6 +38,16 @@ import moment from 'moment';
 
 								<div class="row">
 									<div class="fs-5 my-2">Training School Contact Information</div>
+
+									<div
+										class="mt-3"
+										*ngIf="(group.dirty || group.touched) && group.invalid && group.hasError('daterange')"
+									>
+										<app-alert type="danger" icon="dangerous">
+											Training Start Date must be on or before the Training End Date
+										</app-alert>
+									</div>
+
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
@@ -71,7 +80,7 @@ import moment from 'moment';
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Contact Email Address</mat-label>
+											<mat-label>Contact Email Address <span class="optional-label">(optional)</span></mat-label>
 											<input
 												matInput
 												formControlName="contactEmailAddress"
@@ -91,20 +100,20 @@ import moment from 'moment';
 											<input
 												matInput
 												[matDatepicker]="picker1"
-												formControlName="trainingDateFrom"
+												formControlName="trainingStartDate"
 												[max]="maxDate"
 												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
 											<mat-datepicker #picker1 startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('required')"
+											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('required')"
 												>This is required</mat-error
 											>
-											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('matDatepickerMin')">
+											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('matDatepickerMin')">
 												Invalid date of birth
 											</mat-error>
-											<mat-error *ngIf="group.get('trainingDateFrom')?.hasError('matDatepickerMax')">
+											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('matDatepickerMax')">
 												This must be on or before {{ maxDate | formatDate }}
 											</mat-error>
 										</mat-form-field>
@@ -115,18 +124,18 @@ import moment from 'moment';
 											<input
 												matInput
 												[matDatepicker]="picker2"
-												formControlName="trainingDateTo"
+												formControlName="trainingEndDate"
 												[max]="maxDate"
 												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
 											<mat-datepicker #picker2 startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('required')">This is required</mat-error>
-											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('matDatepickerMin')">
+											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('required')">This is required</mat-error>
+											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('matDatepickerMin')">
 												Invalid date of birth
 											</mat-error>
-											<mat-error *ngIf="group.get('trainingDateTo')?.hasError('matDatepickerMax')">
+											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('matDatepickerMax')">
 												This must be on or before {{ maxDate | formatDate }}
 											</mat-error>
 										</mat-form-field>
@@ -134,16 +143,9 @@ import moment from 'moment';
 									<div class="col-xxl-8 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Program Name</mat-label>
-											<input
-												matInput
-												formControlName="nameOfTrainingProgram"
-												[errorStateMatcher]="matcher"
-												maxlength="100"
-											/>
+											<input matInput formControlName="trainingName" [errorStateMatcher]="matcher" maxlength="100" />
 											<mat-hint>Name and/or type of training program</mat-hint>
-											<mat-error *ngIf="group.get('nameOfTrainingProgram')?.hasError('required')">
-												This is required
-											</mat-error>
+											<mat-error *ngIf="group.get('trainingName')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -151,17 +153,17 @@ import moment from 'moment';
 											<mat-label>Number of Hours</mat-label>
 											<input
 												matInput
-												formControlName="hoursOfTraining"
+												formControlName="totalTrainingHours"
 												[errorStateMatcher]="matcher"
 												mask="separator.2"
 												thousandSeparator=","
 												maxlength="10"
 											/>
 											<mat-hint>Total number of training hours</mat-hint>
-											<mat-error *ngIf="group.get('hoursOfTraining')?.hasError('required')">
+											<mat-error *ngIf="group.get('totalTrainingHours')?.hasError('required')">
 												This is required
 											</mat-error>
-											<mat-error *ngIf="group.get('hoursOfTraining')?.hasError('mask')">
+											<mat-error *ngIf="group.get('totalTrainingHours')?.hasError('mask')">
 												This must be a decimal
 											</mat-error>
 										</mat-form-field>
@@ -173,13 +175,13 @@ import moment from 'moment';
 											<textarea
 												matInput
 												aria-label="Curriculum Description"
-												formControlName="learnedDesc"
+												formControlName="whatLearned"
 												style="min-height: 80px"
 												[errorStateMatcher]="matcher"
 												maxlength="1000"
 											></textarea>
 											<mat-hint>Maximum 1000 characters</mat-hint>
-											<mat-error *ngIf="group.get('learnedDesc')?.hasError('required')"> This is required </mat-error>
+											<mat-error *ngIf="group.get('whatLearned')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 								</div>
@@ -192,14 +194,15 @@ import moment from 'moment';
 										class="large w-auto"
 										aria-label="Remove this training"
 										(click)="onRemoveSchoolTrainingRow(i)"
+										*ngIf="isAllowDelete()"
 									>
 										Remove this Training School
 									</button>
 								</div>
 							</div>
-						</ng-container>
+						</section>
 
-						<div class="d-flex justify-content-center">
+						<div class="mb-4 d-flex justify-content-center">
 							<button
 								mat-flat-button
 								type="button"
@@ -209,6 +212,20 @@ import moment from 'moment';
 							>
 								Add Another Training School
 							</button>
+						</div>
+
+						<div class="fs-5">
+							Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+							<span class="optional-label">(optional)</span>
+						</div>
+						<div class="mt-2">
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[maxNumberOfFiles]="10"
+								[control]="attachments"
+								[files]="attachments.value"
+							></app-file-upload>
 						</div>
 					</div>
 				</div>
@@ -235,6 +252,8 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 	matcher = new FormErrorStateMatcher();
 	maxDate = moment();
 	minDate = this.utilService.getDateMin();
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private dialog: MatDialog,
@@ -265,9 +284,26 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 		this.gdsdApplicationService.schoolTrainingRowAdd();
 	}
 
+	isAllowDelete(): boolean {
+		return this.schoolTrainingsArray.length > 1;
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onFileUploaded(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
+	}
+
+	onFileRemoved(): void {
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	getSchoolTrainingFormGroup(index: number): FormGroup {
@@ -276,5 +312,8 @@ export class StepGdsdSchoolTrainingsComponent implements LicenceChildStepperStep
 
 	get schoolTrainingsArray(): FormArray {
 		return <FormArray>this.form.get('schoolTrainings');
+	}
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -45,8 +44,6 @@ export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceC
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() isWizard = false;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	constructor(
 		private router: Router,
