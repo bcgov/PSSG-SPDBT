@@ -22,12 +22,14 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> _teamAppAnonymousSubmitRequestValidator;
         private readonly IValidator<GDSDTeamLicenceAppUpsertRequest> _teamAppUpsertValidator;
+        private readonly IValidator<GDSDTeamLicenceAppChangeRequest> _teamAppChangeValidator;
 
         public GDSDLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> teamAppAnonymousSubmitRequestValidator,
             IValidator<GDSDTeamLicenceAppUpsertRequest> teamAppUpsertValidator,
+            IValidator<GDSDTeamLicenceAppChangeRequest> teamAppChangeValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -36,6 +38,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _teamAppAnonymousSubmitRequestValidator = teamAppAnonymousSubmitRequestValidator;
             _teamAppUpsertValidator = teamAppUpsertValidator;
+            _teamAppChangeValidator = teamAppChangeValidator;
         }
 
         #region authenticated
@@ -61,42 +64,71 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/{certificationAppId}")]
+        [Route("api/gdsd-team-app/{licenceAppId}")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid certificationAppId)
+        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid licenceAppId)
         {
-            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(certificationAppId));
+            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(licenceAppId));
+        }
+
+        /// <summary>
+        /// Submit new gdsd team Application authenticated with bcsc
+        /// </summary>
+        /// <param name="gdsdSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
+        {
+            var validateResult = await _teamAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            gdsdSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+
+            return await _mediator.Send(new GDSDTeamLicenceAppSubmitCommand(gdsdSubmitRequest));
+        }
+
+        /// <summary>
+        /// Submit GDSD Application for authenticated users, supports only: renewal and replace
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// </summary>
+        /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/change")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse?> RenewReplaceGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        {
+            GDSDAppCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(changeRequest.DocumentKeyCodes, ct);
+            var validateResult = await _teamAppChangeValidator.ValidateAsync(changeRequest, ct);
+
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            changeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                GDSDTeamLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+            if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                GDSDTeamLicenceAppReplaceCommand command = new(changeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+            return response;
         }
         #endregion authenticated
 
         #region anonymous
 
         /// <summary>
-        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/gdsd-team-app")]
-        [HttpGet]
-        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamAppAnonymous()
-        {
-            return null;
-            //string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
-            //string? licenceAppId;
-            //try
-            //{
-            //    licenceAppId = licenceIdsStr.Split("*")[1];
-            //}
-            //catch
-            //{
-            //    throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
-            //}
-
-            //return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
-        }
-
-        /// <summary>
-        /// Submit GDSD Team Certification application Anonymously
+        /// Submit/new GDSD Team Certification application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
@@ -121,23 +153,52 @@ namespace Spd.Presentation.Licensing.Controllers
                 GDSDTeamLicenceAppAnonymousSubmitCommand command = new(anonymousSubmitRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
-
-            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
-            //{
-            //    PermitAppRenewCommand command = new(anonymousSubmitRequest, newDocInfos);
-            //    response = await _mediator.Send(command, ct);
-            //}
-
-            //if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
-            //{
-            //    PermitAppUpdateCommand command = new(anonymousSubmitRequest, newDocInfos);
-            //    response = await _mediator.Send(command, ct);
-            //}
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
 
+        /// <summary>
+        /// Submit/new GDSD Team Certification application Anonymously
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// The session keycode is stored in the cookies.
+        /// </summary>
+        /// <param name="anonymousChangeRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/gdsd-team-app/anonymous/change")]
+        [HttpPost]
+        public async Task<GDSDAppCommandResponse> RenewReplaceGDSDTeamAppAnonymous(GDSDTeamLicenceAppChangeRequest anonymousChangeRequest, CancellationToken ct)
+        {
+            await VerifyKeyCode();
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousChangeRequest.DocumentKeyCodes, ct);
+            var validateResult = await _teamAppChangeValidator.ValidateAsync(anonymousChangeRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            anonymousChangeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
+
+            GDSDAppCommandResponse? response = null;
+            if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New GDSD is not supported in this endpoint");
+            }
+
+            if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                GDSDTeamLicenceAppRenewCommand command = new(anonymousChangeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                GDSDTeamLicenceAppReplaceCommand command = new(anonymousChangeRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+            return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
+        }
         #endregion anonymous
     }
 }

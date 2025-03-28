@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { BusinessUserApplicationsComponent } from '../business-licence-application/components/business-user-applications.component';
+import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
 import { CommonBusinessLicenceSummaryComponent } from '../business-licence-application/components/common-business-licence-summary.component';
 import { CommonBusinessManagerComponent } from '../business-licence-application/components/common-business-manager.component';
 import { CommonBusinessProfileComponent } from '../business-licence-application/components/common-business-profile.component';
@@ -13,7 +13,7 @@ import { StepsBusinessLicenceInformationComponent } from '../business-licence-ap
 import { StepsBusinessLicenceSelectionComponent } from '../business-licence-application/components/steps-business-licence-selection.component';
 import { StepsBusinessLicenceUpdatesComponent } from '../business-licence-application/components/steps-business-licence-updates.component';
 import { BusinessLicenceApplicationRoutingModule } from './business-licence-application-routing.module';
-import { BusinessApplicationsListCurrentComponent } from './components/business-applications-list-current.component';
+import { BusinessLicenceMainApplicationsListComponent } from './components/business-licence-main-applications-list.component';
 import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
 import { BusinessCategoryArmouredCarGuardComponent } from './components/business-category-armoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business-category-private-investigator.component';
@@ -21,7 +21,7 @@ import { BusinessCategorySecurityGuardComponent } from './components/business-ca
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
-import { BusinessLicenceListCurrentComponent } from './components/business-licence-list-current.component';
+import { BusinessLicenceMainLicenceListComponent } from './components/business-licence-main-licence-list.component';
 import { BusinessLicencePaymentCancelComponent } from './components/business-licence-payment-cancel.component';
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
@@ -86,7 +86,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessLicencePaymentErrorComponent,
 		BusinessLicencePaymentFailComponent,
 		BusinessLicencePaymentSuccessComponent,
-		BusinessLicenceListCurrentComponent,
+		BusinessLicenceMainLicenceListComponent,
 		ModalMemberWithoutSwlEditComponent,
 		StepBusinessLicenceBusinessAddressComponent,
 		StepBusinessLicenceBusinessInformationComponent,
@@ -114,14 +114,14 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepsBusinessLicenceSelectionComponent,
 		StepsBusinessLicenceContactInformationComponent,
 		StepsBusinessLicenceControllingMembersComponent,
-		BusinessUserApplicationsComponent,
+		BusinessLicenceMainComponent,
 		BusinessCategoryArmouredCarGuardComponent,
 		BusinessCategoryPrivateInvestigatorComponent,
 		BusinessCategorySecurityGuardComponent,
 		BusinessManagersComponent,
 		BusinessProfileComponent,
 		BusinessControllingMembersAndEmployeesComponent,
-		BusinessApplicationsListCurrentComponent,
+		BusinessLicenceMainApplicationsListComponent,
 	],
 	imports: [SharedModule, BusinessLicenceApplicationRoutingModule],
 	providers: [],

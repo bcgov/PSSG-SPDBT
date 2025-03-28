@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-photograph-of-yourself.component';
@@ -12,8 +13,9 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 			subtitle="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
+				[serviceTypeCode]="serviceTypeCode"
 				[form]="form"
-				[showDissimilarWarning]="true"
+				label="licence"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 			></app-form-photograph-of-yourself>
@@ -27,14 +29,21 @@ export class StepGdsdPhotographOfYourselfComponent implements LicenceChildSteppe
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
 
+	@Input() serviceTypeCode!: ServiceTypeCode;
+
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
-	onFileUploaded(_file: File): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+	onFileUploaded(file: File): void {
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.PhotoOfYourself,
+			file,
+			this.attachments,
+			this.formPhotographOfYourselfComponent.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.gdsdApplicationService.hasValueChanged = true;
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

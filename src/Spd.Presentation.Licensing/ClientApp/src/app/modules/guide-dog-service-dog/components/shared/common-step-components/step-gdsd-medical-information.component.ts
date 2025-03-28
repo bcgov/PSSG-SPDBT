@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -34,19 +35,22 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							(fileUploaded)="onFileUploaded($event)"
 							(fileRemoved)="onFileRemoved()"
 							[control]="attachments"
-							[maxNumberOfFiles]="1"
+							[maxNumberOfFiles]="10"
 							[files]="attachments.value"
 							[previewImage]="true"
 						></app-file-upload>
 						<mat-error
-							class="mat-option-error"
+							class="mt-3 mat-option-error"
 							*ngIf="
 								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
 								form.get('attachments')?.invalid &&
 								form.get('attachments')?.hasError('required')
 							"
-							>This is required</mat-error
 						>
+							<app-alert type="danger" icon="dangerous">
+								This is required. You must have a Medical Form confirming requirement for Guide Dog or Service Dog.
+							</app-alert>
+						</mat-error>
 					</div>
 				</div>
 			</form>
@@ -60,19 +64,21 @@ export class StepGdsdMedicalInformationComponent implements LicenceChildStepperS
 
 	form: FormGroup = this.gdsdApplicationService.medicalInformationFormGroup;
 
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
-
 	constructor(private gdsdApplicationService: GdsdApplicationService) {}
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	onFileUploaded(file: File): void {
-		this.fileUploaded.emit(file);
+		this.gdsdApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.fileRemoved.emit();
+		this.gdsdApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

@@ -136,9 +136,6 @@ internal class PermitAppManager :
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
-        if (currentDate.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate)
-            throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
@@ -172,12 +169,9 @@ internal class PermitAppManager :
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        LicenceResp originalLic = originalLicences.Items.First();
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
         DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
@@ -186,7 +180,6 @@ internal class PermitAppManager :
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
-            cmd.LicenceAnonymousRequest.OriginalApplicationId,
             cmd.LicenceAnonymousRequest.PreviousDocumentIds,
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,

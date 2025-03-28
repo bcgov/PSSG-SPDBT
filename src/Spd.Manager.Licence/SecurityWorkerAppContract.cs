@@ -43,7 +43,7 @@ public record WorkerLicenceAppUpdateCommand(
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
 public record GetLatestWorkerLicenceApplicationIdQuery(Guid ApplicantId) : IRequest<Guid>;
-public record GetLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceAppListResponse>>;
+public record GetLicenceAppListQuery(Guid ApplicantId, AppScopeCode ScopeCode = AppScopeCode.PersonalSecurityLicenceApp) : IRequest<IEnumerable<LicenceAppListResponse>>;
 
 public record WorkerLicenceAppResponse : WorkerLicenceAppBase
 {
@@ -119,4 +119,10 @@ public record Document : LicenceAppDocumentResponse
     public DateOnly? ExpiryDate { get; set; }
     public string? DocumentIdNumber { get; set; }
 };
+
+public enum AppScopeCode
+{
+    PersonalSecurityLicenceApp,
+    DogCertificationApp
+}
 

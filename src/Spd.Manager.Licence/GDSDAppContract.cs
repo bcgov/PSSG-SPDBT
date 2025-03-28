@@ -11,11 +11,15 @@ public interface IGDSDAppManager
     public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct);
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct);
     public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand command, CancellationToken ct);
 }
 
 #region authenticated
 public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
-public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : GDSDTeamLicenceAppUpsertCommand(UpsertRequest), IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppRenewCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequest<GDSDTeamLicenceAppResponse>;
 #endregion
 
@@ -23,44 +27,56 @@ public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequ
 public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
 #endregion
 
-public record GDSDTeamLicenceAppBase : LicenceAppBase
+public abstract record GDSDTeamLicenceAppBase : LicenceAppBase
 {
     //personal info
-    public string Surname { get; set; }
+    public string? Surname { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName { get; set; }
     public MailingAddress? MailingAddress { get; set; }
-    public DateOnly DateOfBirth { get; set; }
-    public string? ContactPhoneNumber { get; set; }
-    public string? ContactEmailAddress { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
-
-    public bool IsDogTrainedByAccreditedSchool { get; set; }
-    public DogInfoRenew? DogInfoRenew { get; set; } //not null if it is Renew
-
-    //for app with accredited school
-    public DogInfoNewAccreditedSchool? DogInfoNewAccreditedSchool { get; set; } //not null if it is New
-    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
-
-    //for app without accredited school
-    public DogInfoNewWithoutAccreditedSchool? DogInfoNewWithoutAccreditedSchool { get; set; } //not null if it is New
-    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
+    public DogInfo? DogInfo { get; set; }
 }
 
-public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppBase
+public abstract record GDSDTeamLicenceAppNew : GDSDTeamLicenceAppBase
+{
+    public bool? IsDogTrainedByAccreditedSchool { get; set; }
+
+    //for app with accredited school
+    public AccreditedSchoolQuestions? AccreditedSchoolQuestions { get; set; } //not null if it is New
+
+    //for app without accredited school
+    public NonAccreditedSchoolQuestions? NonAccreditedSchoolQuestions { get; set; } //not null if it is New
+
+}
+
+public record GDSDTeamLicenceAppUpsertRequest : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
 }
 
-public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppBase
+public record GDSDTeamLicenceAppAnonymousSubmitRequest : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 }
 
-public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppBase
+public record GDSDTeamLicenceAppChangeRequest : GDSDTeamLicenceAppBase
+{
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
+    public Guid OriginalLicenceId { get; set; } //for renew, replace, it should be original licence id.
+    public Guid ApplicantId { get; set; }
+    public bool IsAssistanceStillRequired { get; set; }
+    public Guid? DogId { get; set; }
+}
+
+public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppNew
 {
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     public Guid? LicenceAppId { get; set; }
@@ -73,24 +89,25 @@ public record GDSDAppCommandResponse
     public Guid? LicenceAppId { get; set; }
 }
 
-public record DogInfoNew
+public record DogInfo
 {
-    // Dog Information (New)
-    public string DogName { get; set; }
+    public string? DogName { get; set; }
     public DateOnly? DogDateOfBirth { get; set; }
-    public string DogBreed { get; set; }
-    public string DogColorAndMarkings { get; set; }
-    public GenderCode DogGender { get; set; } //only Male and Female?If it is fixed, what should it be.
+    public string? DogBreed { get; set; }
+    public string? DogColorAndMarkings { get; set; }
+    public GenderCode? DogGender { get; set; }
     public string? MicrochipNumber { get; set; }
 }
-public record DogInfoNewAccreditedSchool : DogInfoNew
+public record AccreditedSchoolQuestions
 {
-    public bool IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
+    public bool? IsGuideDog { get; set; } // True for Guide Dog, False for Service Dog
     public string? ServiceDogTasks { get; set; }
+    public GraduationInfo? GraduationInfo { get; set; } //not null if it is New
 }
-public record DogInfoNewWithoutAccreditedSchool : DogInfoNew
+public record NonAccreditedSchoolQuestions
 {
-    public bool AreInoculationsUpToDate { get; set; }
+    public bool? AreInoculationsUpToDate { get; set; }
+    public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 public record GraduationInfo
 {
@@ -102,43 +119,39 @@ public record GraduationInfo
 }
 public record TrainingInfo
 {
-    public bool HasAttendedTrainingSchool { get; set; }
-    public IEnumerable<TrainingSchoolInfo> SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
-    public IEnumerable<OtherTraining> OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
-    public string SpecializedTasksWhenPerformed { get; set; }
+    public bool? HasAttendedTrainingSchool { get; set; }
+    public IEnumerable<TrainingSchoolInfo>? SchoolTrainings { get; set; } //have value when HasAttendedTrainingSchool=true
+    public IEnumerable<OtherTraining>? OtherTrainings { get; set; } //have value when HasAttendedTrainingSchool=false
+    public string? SpecializedTasksWhenPerformed { get; set; }
 }
 
 public record TrainingSchoolInfo
 {
-    public string TrainingBizName { get; set; }
-    public MailingAddress TrainingBizMailingAddress { get; set; }
-    public string ContactSurname { get; set; }
-    public string ContactGivenName { get; set; }
-    public string ContactEmailAddress { get; set; }
-    public string ContactPhoneNumber { get; set; }
-    public decimal TotalTrainingHours { get; set; }
+    public Guid? TrainingId { get; set; }
+    public string? TrainingBizName { get; set; }
+    public MailingAddress? TrainingBizMailingAddress { get; set; }
+    public string? ContactSurname { get; set; }
+    public string? ContactGivenName { get; set; }
+    public string? ContactEmailAddress { get; set; }
+    public string? ContactPhoneNumber { get; set; }
+    public decimal? TotalTrainingHours { get; set; }
     public DateOnly? TrainingStartDate { get; set; }
     public DateOnly? TrainingEndDate { get; set; }
-    public string TrainingName { get; set; } //Name and/or type of training program
-    public string WhatLearned { get; set; }
+    public string? TrainingName { get; set; } //Name and/or type of training program
+    public string? WhatLearned { get; set; }
 }
 
 public record OtherTraining
 {
-    public string TrainingDetail { get; set; }
-    public bool UsePersonalDogTrainer { get; set; }
-    public string DogTrainerCredential { get; set; }
-    public string TrainingTime { get; set; } //? //How much time was spent training?
-    public string TrainerSurname { get; set; }
-    public string TrainerGivenName { get; set; }
-    public string TrainerEmailAddress { get; set; }
-    public string TrainerPhoneNumber { get; set; }
-    public string HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
-}
-public record DogInfoRenew
-{
-    public string DogName { get; set; }
-    public string CurrentDogCertificate { get; set; }
-    public bool IsAssistanceStillRequired { get; set; }
+    public Guid? TrainingId { get; set; }
+    public string? TrainingDetail { get; set; }
+    public bool? UsePersonalDogTrainer { get; set; }
+    public string? DogTrainerCredential { get; set; }
+    public string? TrainingTime { get; set; } //? //How much time was spent training?
+    public string? TrainerSurname { get; set; }
+    public string? TrainerGivenName { get; set; }
+    public string? TrainerEmailAddress { get; set; }
+    public string? TrainerPhoneNumber { get; set; }
+    public string? HoursPracticingSkill { get; set; } //How many hours did you spend practising the skills learned? (e.g. 20 hours/week for 8 weeks) 
 }
 

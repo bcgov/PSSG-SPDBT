@@ -113,8 +113,21 @@ public class BizProfileManager :
 
     public async Task<IEnumerable<BizListResponse>> Handle(GetBizsQuery query, CancellationToken ct)
     {
-        IEnumerable<BizResult> result = await _bizRepository.QueryBizAsync(new BizsQry(query.BizGuid), ct);
-        return _mapper.Map<IEnumerable<BizListResponse>>(result);
+        IEnumerable<BizResult> result = await _bizRepository.QueryBizAsync(new BizsQry(query.
+            BizGuid), ct);
+
+        if (query.OneOrgGuidOneBizPortal)
+        {
+            BizResult? br = result.FirstOrDefault(b => b.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence));
+            if (br != null)
+                return _mapper.Map<IEnumerable<BizListResponse>>(new List<BizResult> { br });
+            else
+                return _mapper.Map<IEnumerable<BizListResponse>>(result);
+        }
+        else
+        {
+            return _mapper.Map<IEnumerable<BizListResponse>>(result);
+        }
     }
 
     public async Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct)

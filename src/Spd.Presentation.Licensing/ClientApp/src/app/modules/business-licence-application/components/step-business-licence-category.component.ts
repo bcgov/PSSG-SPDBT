@@ -77,30 +77,33 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 						<div class="mt-2" *ngIf="showLocksmithMessage">
 							<app-alert type="success" icon="">
-								The <strong>Locksmith</strong> business licence automatically includes Electronic Locking Device
-								Installer.
+								The <strong>Locksmith</strong> business licence includes the licence category
+								<strong>Electronic Locking Device Installer</strong>.
 							</app-alert>
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityAlarmInstallerMessage">
 							<app-alert type="success" icon="">
-								The <strong>Security Alarm Installer</strong> business licence automatically includes Security Alarm
-								Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television Installer, and
-								Electronic Locking Device Installer.
+								The <strong>Security Alarm Installer</strong> business licence includes the following licence
+								categories:
+								<strong
+									>Security Alarm Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television
+									Installer, and Electronic Locking Device Installer</strong
+								>.
 							</app-alert>
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityAlarmResponseMessage">
 							<app-alert type="success" icon="">
-								The <strong>Security Alarm Response</strong> business licence automatically includes Security Alarm
-								Monitor.
+								The <strong>Security Alarm Response</strong> business licence includes the licence category
+								<strong>Security Alarm Monitor</strong>.
 							</app-alert>
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityGuardMessage">
 							<app-alert type="success" icon="">
-								The <strong>Security Guard</strong> business licence automatically includes Security Alarm Monitor and
-								Security Alarm Response.
+								The <strong>Security Guard</strong> business licence includes the following licence categories:
+								<strong>Security Alarm Monitor and Security Alarm Response</strong>.
 							</app-alert>
 						</div>
 
@@ -162,54 +165,54 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showBodyArmourSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
 									[blockCategory]="blockBodyArmourSales"
 									[expandCategory]="expandBodyArmourSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
 									[blockCategory]="blockClosedCircuitTelevisionInstaller"
 									[expandCategory]="expandClosedCircuitTelevisionInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
 									[blockCategory]="blockElectronicLockingDeviceInstaller"
 									[expandCategory]="expandElectronicLockingDeviceInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showLocksmith">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.Locksmith"
 									[blockCategory]="blockLocksmith"
 									[expandCategory]="expandLocksmith"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showPrivateInvestigator">
 								<ng-container *ngIf="isBusinessLicenceSoleProprietor; else notBusinessLicenceSoleProprietor">
-									<app-licence-category-panel-simple
+									<app-form-licence-category-panel-simple
 										[categoryTypeCode]="privateInvestigatorCode"
 										[blockCategory]="blockPrivateInvestigator"
 										[expandCategory]="expandPrivateInvestigator"
 										(removeCategory)="onRemove($event)"
 										(deselectCategory)="onDeselect($event)"
-									></app-licence-category-panel-simple>
+									></app-form-licence-category-panel-simple>
 								</ng-container>
 								<ng-template #notBusinessLicenceSoleProprietor>
 									<div class="row">
@@ -270,53 +273,53 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstaller"
 									[blockCategory]="blockSecurityAlarmInstaller"
 									[expandCategory]="expandSecurityAlarmInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmMonitor">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
 									[blockCategory]="blockSecurityAlarmMonitor"
 									[expandCategory]="expandSecurityAlarmMonitor"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmResponse">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
 									[blockCategory]="blockSecurityAlarmResponse"
 									[expandCategory]="expandSecurityAlarmResponse"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
 									[blockCategory]="blockSecurityAlarmSales"
 									[expandCategory]="expandSecurityAlarmSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityConsultant">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityConsultant"
 									[blockCategory]="blockSecurityConsultant"
 									[expandCategory]="expandSecurityConsultant"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityGuard">
@@ -363,9 +366,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							<div>The insurance document must also include:</div>
 							<ul>
 								<li>The business name</li>
-								<li>The business locations</li>
+								<li>The business location(s)</li>
 								<li>The expiry date of the insurance</li>
-								<li>Proof that insurance is valid in B.C.</li>
+								<li>Proof that the insurance is valid in B.C.</li>
 							</ul>
 
 							<app-file-upload
@@ -463,10 +466,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	readonly title_new = 'What category of business licence are you applying for?';
 	readonly subtitle_new = '';
 
-	readonly title_renew = 'Which categories of the Business Licence would you like to renew?';
-	readonly subtitle_renew_update = 'You can change and remove existing categories as well as add new ones';
+	readonly title_renew = 'Which business licence categories would you like to renew?';
+	readonly subtitle_renew_update = 'You can add, edit, or remove categories as needed.';
 
-	readonly title_update = 'Which categories of the Business Licence would you like to update?';
+	readonly title_update = 'Which business licence categories would you like to update?';
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;

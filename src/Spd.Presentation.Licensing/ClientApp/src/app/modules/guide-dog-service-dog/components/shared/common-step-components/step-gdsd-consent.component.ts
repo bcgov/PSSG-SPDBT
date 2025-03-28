@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdApplicationService } from '@app/core/services/gdsd-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
@@ -70,7 +71,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<div class="row mb-4">
+						<div class="row mb-4" *ngIf="displayCaptcha.value">
 							<div class="col-12">
 								<div formGroupName="captchaFormGroup">
 									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -132,15 +133,22 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	],
 	standalone: false,
 })
-export class StepGdsdConsentComponent implements LicenceChildStepperStepComponent {
+export class StepGdsdConsentComponent implements OnInit, LicenceChildStepperStepComponent {
 	check1Name = '';
 
 	form: FormGroup = this.gdsdApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
 		private utilService: UtilService,
+		private authProcessService: AuthProcessService,
 		private gdsdApplicationService: GdsdApplicationService
 	) {}
+
+	ngOnInit(): void {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
+		});
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -158,5 +166,8 @@ export class StepGdsdConsentComponent implements LicenceChildStepperStepComponen
 
 	get captchaFormGroup(): FormGroup {
 		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }

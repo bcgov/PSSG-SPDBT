@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FormGroup } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -9,67 +8,15 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	selector: 'app-step-worker-licence-photograph-of-yourself-renew-and-update',
 	template: `
 		<app-step-section [title]="title">
-			<div [formGroup]="form" class="row">
-				<ng-container *ngIf="!originalPhotoOfYourselfExpired">
-					<div class="d-flex justify-content-center" *ngIf="photographOfYourself">
-						<div class="photo-of-yourself">
-							<div class="fs-5">Current photo</div>
-							<img class="photo-of-yourself__item" [src]="photographOfYourself" alt="Photograph of yourself" />
-						</div>
-					</div>
-
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group aria-label="Select an option" formControlName="updatePhoto">
-							<div class="d-flex justify-content-start">
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</div>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('updatePhoto')?.dirty || form.get('updatePhoto')?.touched) &&
-								form.get('updatePhoto')?.invalid &&
-								form.get('updatePhoto')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
-				</ng-container>
-
-				<ng-container *ngIf="isUpdatePhoto || originalPhotoOfYourselfExpired">
-					<div class="row my-2">
-						<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<app-alert type="warning" icon="warning">
-								Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
-								application's processing time.
-							</app-alert>
-
-							<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
-								We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
-							</app-alert>
-
-							<app-file-upload
-								(fileRemoved)="onFileRemoved()"
-								[control]="updateAttachments"
-								[maxNumberOfFiles]="1"
-								[files]="updateAttachments.value"
-								[accept]="accept"
-								[previewImage]="true"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('updateAttachments')?.dirty || form.get('updateAttachments')?.touched) &&
-									form.get('updateAttachments')?.invalid &&
-									form.get('updateAttachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</ng-container>
-			</div>
+			<app-form-photograph-of-yourself-update
+				[form]="form"
+				label="licence"
+				[serviceTypeCode]="securityWorkerLicenceCode"
+				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
+				[photographOfYourself]="photographOfYourself"
+				(fileUploaded)="onFileUploaded()"
+				(fileRemoved)="onFileRemoved()"
+			></app-form-photograph-of-yourself-update>
 		</app-step-section>
 	`,
 	styles: [],
@@ -78,17 +25,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
-	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
-	booleanTypeCodes = BooleanTypeCode;
-	originalPhotoOfYourselfExpired = false;
-
 	title = '';
+	originalPhotoOfYourselfExpired = false;
+	photographOfYourself = this.workerApplicationService.photographOfYourself;
+	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 
 	@Input() form!: FormGroup;
-	@Input() label = 'licence'; // licence or permit
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	photographOfYourself = this.workerApplicationService.photographOfYourself;
 
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
@@ -100,8 +42,12 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 		if (!this.originalPhotoOfYourselfExpired) {
 			this.title = 'Do you want to update your photo?';
 		} else {
-			this.title = 'Upload a passport-quality photo of yourself';
+			this.title = 'Upload a photo of yourself';
 		}
+	}
+
+	onFileUploaded(): void {
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	onFileRemoved(): void {
@@ -111,15 +57,5 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	get isUpdatePhoto(): boolean {
-		return this.updatePhoto.value === BooleanTypeCode.Yes;
-	}
-	get updatePhoto(): FormControl {
-		return this.form.get('updatePhoto') as FormControl;
-	}
-	get updateAttachments(): FormControl {
-		return this.form.get('updateAttachments') as FormControl;
 	}
 }

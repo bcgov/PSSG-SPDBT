@@ -35,6 +35,13 @@ internal static class SharedRepositoryFuncs
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 
+    public static void LinkDog(DynamicsContext _context, Guid? dogId, spd_application app)
+    {
+        if (dogId == null) return;
+        spd_dog? dog = _context.spd_dogs.Where(t => t.spd_dogid == dogId).FirstOrDefault();
+        _context.SetLink(app, nameof(spd_application.spd_DogId), dog);
+    }
+
     public static void LinkServiceType(DynamicsContext _context, ServiceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");

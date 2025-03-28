@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
@@ -43,6 +44,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							class="category-radio-group"
 							aria-label="Select an option"
 							formControlName="carryAndUseRestraintsDocument"
+							(change)="onChangeDocumentType($event)"
 						>
 							<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
 								<mat-radio-button class="radio-label" [value]="doc.code">
@@ -135,6 +137,11 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onChangeDocumentType(_event: MatRadioChange): void {
+		this.workerApplicationService.hasValueChanged = true;
+		this.attachments.setValue([]);
 	}
 
 	get carryAndUseRestraints(): FormControl {

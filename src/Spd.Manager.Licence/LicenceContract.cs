@@ -64,6 +64,11 @@ public record LicenceResponse : LicenceBasicResponse
     //sole-proprietor
     public Guid? LinkedSoleProprietorLicenceId { get; set; }
     public DateOnly? LinkedSoleProprietorExpiryDate { get; set; }
+
+    //gdsd
+    public Guid? GDSDTeamId { get; set; }
+    public Guid? DogId { get; set; }
+    public DogInfo DogInfo { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;

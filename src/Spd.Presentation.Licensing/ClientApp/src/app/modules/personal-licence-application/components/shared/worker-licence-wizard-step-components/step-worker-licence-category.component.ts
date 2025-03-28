@@ -31,7 +31,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								</app-alert>
 							</div>
 
-							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
+							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories && isSoleProprietorSimultaneousFlow">
 								<app-alert type="danger" icon="dangerous">
 									{{ invalidSoleProprietorCategoriesMsg }}
 								</app-alert>
@@ -46,7 +46,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										</mat-option>
 									</mat-select>
 								</mat-form-field>
-								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+								<mat-error class="mat-option-error" *ngIf="isCategoryListEmpty">
 									At least one category must be added. Click 'Add Category' after selecting a category.
 								</mat-error>
 							</div>
@@ -119,33 +119,33 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showBodyArmourSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
 									[blockCategory]="blockBodyArmourSales"
 									[expandCategory]="expandBodyArmourSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
 									[blockCategory]="blockClosedCircuitTelevisionInstaller"
 									[expandCategory]="expandClosedCircuitTelevisionInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
 									[blockCategory]="blockElectronicLockingDeviceInstaller"
 									[expandCategory]="expandElectronicLockingDeviceInstaller"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showFireInvestigator">
@@ -262,13 +262,13 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showLocksmithUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.LocksmithUnderSupervision"
 									[blockCategory]="blockLocksmithUnderSupervision"
 									[expandCategory]="expandLocksmithUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showPrivateInvestigator">
@@ -448,43 +448,43 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision"
 									[blockCategory]="blockSecurityAlarmInstallerUnderSupervision"
 									[expandCategory]="expandSecurityAlarmInstallerUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmMonitor">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
 									[blockCategory]="blockSecurityAlarmMonitor"
 									[expandCategory]="expandSecurityAlarmMonitor"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmResponse">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
 									[blockCategory]="blockSecurityAlarmResponse"
 									[expandCategory]="expandSecurityAlarmResponse"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmSales">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
 									[blockCategory]="blockSecurityAlarmSales"
 									[expandCategory]="expandSecurityAlarmSales"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityConsultant">
@@ -598,13 +598,13 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityGuardUnderSupervision">
-								<app-licence-category-panel-simple
+								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityGuardUnderSupervision"
 									[blockCategory]="blockSecurityGuardUnderSupervision"
 									[expandCategory]="expandSecurityGuardUnderSupervision"
 									(removeCategory)="onRemove($event)"
 									(deselectCategory)="onDeselect($event)"
-								></app-licence-category-panel-simple>
+								></app-form-licence-category-panel-simple>
 							</ng-container>
 						</mat-accordion>
 					</div>
@@ -635,7 +635,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	standalone: false,
 })
 export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
-	isDirtyAndInvalid = false;
+	isCategoryListEmpty = false;
 
 	form = this.workerApplicationService.categorySelectionFormGroup;
 
@@ -685,6 +685,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	readonly title_update = 'Which categories of the Security Worker Licence would you like to update?';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	expandArmouredCarGuard = false;
 	expandBodyArmourSales = false;
@@ -832,7 +833,8 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			this.validCategoryList = this.workerApplicationService.getValidSwlCategoryList(this.categoryList);
 
 			this.form.reset();
-			this.isDirtyAndInvalid = false;
+			this.isCategoryListEmpty = false;
+			this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 		}
 	}
 
@@ -969,7 +971,8 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 					}
 
 					this.validCategoryList = this.workerApplicationService.getValidSwlCategoryList(this.categoryList);
-					this.isDirtyAndInvalid = false;
+					this.isCategoryListEmpty = false;
+					this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 				}
 			});
 	}
@@ -993,7 +996,10 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		this.categorySecurityGuardFormGroup.markAllAsTouched();
 		this.categorySecurityGuardSupFormGroup.markAllAsTouched();
 
+		this.isCategoryListEmpty = this.categoryList.length === 0;
+
 		const isValid =
+			!this.isCategoryListEmpty &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
@@ -1032,13 +1038,9 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
 
-		this.isDirtyAndInvalid = this.categoryList.length === 0;
-		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
-		this.showInvalidSoleProprietorCategories =
-			!this.isDirtyAndInvalid &&
-			!this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
+		this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 
-		return isValid && !this.isDirtyAndInvalid && !this.showInvalidSoleProprietorCategories;
+		return isValid && !this.showInvalidSoleProprietorCategories;
 	}
 
 	private setupInitialExpansionPanel(): void {
@@ -1095,6 +1097,13 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				this.blockSecurityGuardUnderSupervision = true;
 			}
 		}
+	}
+
+	isInvalidSoleProprietorCategories(): boolean {
+		const isEmpty = this.categoryList.length === 0;
+		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
+		const isValidSpCategories = this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
+		return this.isSoleProprietorSimultaneousFlow && !isEmpty && !isValidSpCategories;
 	}
 
 	get categoryList(): Array<string> {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
@@ -6,8 +6,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-controlling-member-consent-and-declaration',
-    template: `
+	selector: 'app-step-controlling-member-consent-and-declaration',
+	template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -139,15 +139,13 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.controllingMembersService.consentAndDeclarationFormGroup;
-
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
 		private utilService: UtilService,

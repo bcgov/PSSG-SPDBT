@@ -1,5 +1,6 @@
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BizTypeCode, LicenceStatusCode, PoliceOfficerRoleCode } from '@app/api/models';
+import moment from 'moment';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from './form-control.validators';
@@ -58,6 +59,26 @@ export class FormGroupValidators {
 			}
 			return null;
 		};
+
+	public static daterangeValidator(controlName1: string, controlName2: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control1 = controls.get(controlName1);
+			const control2 = controls.get(controlName2);
+			if (!control1 || !control2) return null;
+
+			const value1 = control1?.value;
+			const value2 = control2?.value;
+			if (!value1 || !value2) return null;
+
+			const value1Date = moment(value1).startOf('day');
+			const value2Date = moment(value2).startOf('day');
+			if (!value1Date || !value2Date) return null;
+
+			if (value1Date.isAfter(value2Date)) return { daterange: true };
+
+			return null;
+		};
+	}
 
 	public static nopoliceofficerValidator(controlName: string, checkControlName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
