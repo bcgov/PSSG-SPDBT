@@ -627,8 +627,18 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		return gdsdModelData.dogInfoData.microchipNumber ?? '';
 	}
 
+	getSummaryapplicationTypeCode(gdsdModelData: any): ApplicationTypeCode | null {
+		return gdsdModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
 	getSummaryphotoOfYourselfAttachments(gdsdModelData: any): File[] | null {
-		return gdsdModelData.photographOfYourselfData.attachments ?? [];
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(gdsdModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return gdsdModelData.photographOfYourselfData.attachments ?? null;
+		} else {
+			const updatePhoto = gdsdModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = gdsdModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 
 	getSummaryareInoculationsUpToDate(gdsdModelData: any): string {

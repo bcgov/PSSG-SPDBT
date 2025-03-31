@@ -83,7 +83,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber }}
+											{{ phoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
@@ -125,20 +125,22 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</div>
 								</ng-container>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<ng-container *ngIf="photoOfYourselfAttachments">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Photo of Yourself</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+									<div class="text-minor-heading-small">Photo of Yourself</div>
+									<div class="row mt-0">
+										<div class="col-lg-6 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
 									</div>
-								</div>
+								</ng-container>
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
