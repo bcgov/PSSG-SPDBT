@@ -40,7 +40,6 @@ import {
 	tap,
 } from 'rxjs';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
-import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { FileUtilService } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
@@ -86,7 +85,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		utilService: UtilService,
 		maskPipe: NgxMaskPipe,
 		private authUserBcscService: AuthUserBcscService,
-		private authenticationService: AuthenticationService,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
@@ -121,9 +119,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogPersonalInfoComplete(): boolean {
+		let dogGdsdCertificateDataValid = true;
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New) {
+			dogGdsdCertificateDataValid = this.dogGdsdCertificateFormGroup.valid;
+		}
+
 		return (
 			this.personalInformationFormGroup.valid &&
-			this.dogGdsdCertificateFormGroup.valid &&
+			dogGdsdCertificateDataValid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
 		);
@@ -134,7 +137,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogDogInfoComplete(): boolean {
-		return this.dogInfoFormGroup.valid && this.dogRetiredForm.valid && this.dogLivingForm.valid;
+		let dogRetiredDataValid = true;
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New) {
+			dogRetiredDataValid = this.dogRetiredForm.valid;
+		}
+
+		return this.dogInfoFormGroup.valid && dogRetiredDataValid && this.dogLivingForm.valid;
 	}
 
 	/**
@@ -418,23 +426,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(retiredDogModelData: any): Observable<any> {
+	private applyReplacementDataUpdatesToModel(): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-		const dogTrainerAddressData = retiredDogModelData.dogTrainerAddressData;
-
-		this.mailingAddressFormGroup.patchValue({
-			addressSelected: !!dogTrainerAddressData && !!dogTrainerAddressData.addressLine1,
-			isAddressTheSame: false,
-			addressLine1: dogTrainerAddressData?.addressLine1,
-			addressLine2: dogTrainerAddressData?.addressLine2,
-			city: dogTrainerAddressData?.city,
-			country: dogTrainerAddressData?.country,
-			postalCode: dogTrainerAddressData?.postalCode,
-			province: dogTrainerAddressData?.province,
-		});
-
-		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
-		captchaFormGroup.patchValue({ displayCaptcha: true });
 
 		this.retiredDogModelFormGroup.patchValue(
 			{
@@ -447,7 +440,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		);
 
 		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
-		console.debug('[applyReplacementDataUpdatesToModel] mailingAddressFormGroup', this.mailingAddressFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -469,31 +461,32 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Apply the applicant profile data into the main model
 	 */
 	private applyProfileIntoModel(applicantProfile: ApplicantProfileResponse): Observable<any> {
-		const dogTrainerData = {
-			trainerGivenName: applicantProfile.givenName,
-			trainerMiddleName: applicantProfile.middleName1,
-			trainerSurname: applicantProfile.surname,
-			trainerDateOfBirth: applicantProfile.dateOfBirth,
-			trainerPhoneNumber: applicantProfile.phoneNumber,
-			trainerEmailAddress: applicantProfile.emailAddress,
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged: false,
 		};
 
-		const applicantMailingAddress = applicantProfile?.mailingAddress;
-		const dogTrainerAddressData = {
-			addressSelected: !!applicantMailingAddress && !!applicantMailingAddress.addressLine1,
+		const bcscMailingAddress = applicantProfile?.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
-			addressLine1: applicantMailingAddress?.addressLine1,
-			addressLine2: applicantMailingAddress?.addressLine2,
-			city: applicantMailingAddress?.city,
-			country: applicantMailingAddress?.country,
-			postalCode: applicantMailingAddress?.postalCode,
-			province: applicantMailingAddress?.province,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
 		};
 
 		this.retiredDogModelFormGroup.patchValue(
 			{
-				dogTrainerData,
-				dogTrainerAddressData,
+				personalInformationData,
+				mailingAddressData,
 			},
 			{
 				emitEvent: false,
@@ -603,7 +596,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 					associatedLicence.licenceNumber!
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.retiredDogModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 			})
 		);
 	}
@@ -640,8 +633,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		return this.applicantProfileService.apiApplicantGet().pipe(
 			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((retiredDogModelData: any) => {
-						return this.applyReplacementDataUpdatesToModel(retiredDogModelData);
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
 					})
 				);
 			})
