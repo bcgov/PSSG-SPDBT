@@ -119,6 +119,10 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepDogTrainerTrainingSchoolComplete(): boolean {
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return true;
+		}
+
 		return this.trainingSchoolInfoFormGroup.valid;
 	}
 

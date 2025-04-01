@@ -36,7 +36,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 				></app-steps-dt-details>
 			</mat-step>
 
-			<mat-step [completed]="step2Complete">
+			<mat-step [completed]="step2Complete" *ngIf="isNew">
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
@@ -157,7 +157,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
+		const index = this.getSelectedIndex(event.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToFirstStep();
 				break;
@@ -178,7 +179,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
+		const index = this.getSelectedIndex(stepper.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToLastStep();
 				break;
@@ -197,29 +199,56 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
 	}
 
-	onGoToStep(step: number) {
+	onGoToStep(stepIndex: number) {
 		this.stepsDetails?.onGoToFirstStep();
 		this.stepsSchoolInfo?.onGoToFirstStep();
 		this.stepsPersonallInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+
+		this.stepper.selectedIndex = this.getMatchingIndex(stepIndex);
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
+		const index = this.getSelectedIndex(this.stepper.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToNextStep();
 				break;
 			case this.STEP_TRAINING_SCHOOL_INFO:
 				this.stepsSchoolInfo?.onGoToNextStep();
 				break;
+
 			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
 				this.stepsPersonallInfo?.onGoToNextStep();
 				break;
 		}
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+
+	private getSelectedIndex(currSelectedIndex: number): number {
+		if (this.isNew) {
+			return currSelectedIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return currSelectedIndex === this.STEP_DETAILS ? this.STEP_DETAILS : currSelectedIndex + 1;
+	}
+
+	private getMatchingIndex(stepIndex: number): number {
+		if (this.isNew) {
+			return stepIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return stepIndex === this.STEP_DETAILS ? stepIndex : stepIndex - 1;
 	}
 
 	private updateCompleteStatus(): void {

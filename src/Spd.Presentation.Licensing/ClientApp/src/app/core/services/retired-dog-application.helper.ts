@@ -252,10 +252,20 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	}
 
 	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
-		return retiredDogModelData.photographOfYourselfData.attachments ?? [];
+		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
 	}
 
+	getSummaryapplicationTypeCode(retiredDogModelData: any): ApplicationTypeCode | null {
+		return retiredDogModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
 	getSummaryphotoOfYourselfAttachments(retiredDogModelData: any): File[] | null {
-		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(retiredDogModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return retiredDogModelData.photographOfYourselfData.attachments ?? null;
+		} else {
+			const updatePhoto = retiredDogModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = retiredDogModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 }
