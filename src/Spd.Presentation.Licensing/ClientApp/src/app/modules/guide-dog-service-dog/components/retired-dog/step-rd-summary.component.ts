@@ -34,7 +34,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Personal Information</div>
+								<div class="text-minor-heading-small mt-2">Applicant Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
@@ -65,20 +65,22 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<ng-container *ngIf="isNew">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
-								<div class="row mt-0">
-									<div class="col-lg-8 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of gdsdCertificateAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+									<div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
+									<div class="row mt-0">
+										<div class="col-lg-8 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of gdsdCertificateAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
 									</div>
-								</div>
+								</ng-container>
 
 								<ng-container *ngIf="photoOfYourselfAttachments">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -119,7 +121,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Retired Dog Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Dog Name</div>
@@ -149,10 +150,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="text-label d-block text-muted">Microchip Number</div>
 										<div class="summary-text-data">{{ microchipNumber | default }}</div>
 									</div>
-
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<div class="text-minor-heading-small mt-2">Retired Dog Service Information</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-4 col-md-12" *ngIf="isNew">
 										<div class="text-label d-block text-muted">Date of Retirement</div>
 										<div class="summary-text-data">
 											{{ dateOfRetirement | formatDate | default }}
@@ -238,6 +236,10 @@ export class StepRdSummaryComponent implements OnInit, LicenceChildStepperStepCo
 
 	isFormValid(): boolean {
 		return true;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
 	get applicantName(): string {
