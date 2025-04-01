@@ -264,7 +264,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		);
 
 		console.debug('[applyReplacementDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
-		console.debug('[applyReplacementDataUpdatesToModel] mailingAddressFormGroup', this.mailingAddressFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -420,7 +419,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 					associatedLicence.licenceNumber!
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.dogTrainerModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 			})
 		);
 	}

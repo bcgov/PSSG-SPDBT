@@ -1281,7 +1281,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					associatedLicence.licenceNumber!
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.gdsdTeamModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 			})
 		);
 	}
