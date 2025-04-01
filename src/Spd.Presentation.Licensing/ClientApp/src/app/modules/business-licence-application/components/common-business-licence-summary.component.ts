@@ -108,7 +108,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Phone Number</div>
 												<div class="summary-text-data">
-													{{ soleProprietorSwlPhoneNumber | default }}
+													{{ soleProprietorSwlPhoneNumber | formatPhoneNumber | default }}
 												</div>
 											</div>
 										</div>

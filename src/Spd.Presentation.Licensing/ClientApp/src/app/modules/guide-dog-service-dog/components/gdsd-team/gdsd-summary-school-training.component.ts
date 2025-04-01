@@ -18,7 +18,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Contact Phone Number</div>
-						<div class="summary-text-data">{{ train.contactPhoneNumber | default }}</div>
+						<div class="summary-text-data">{{ train.contactPhoneNumber | formatPhoneNumber | default }}</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Contact Email Address</div>

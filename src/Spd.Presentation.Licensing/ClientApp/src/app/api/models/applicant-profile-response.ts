@@ -4,7 +4,6 @@
 
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
-import { Document } from '../models/document';
 import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
 import { HairColourCode } from '../models/hair-colour-code';
@@ -16,7 +15,6 @@ export interface ApplicantProfileResponse {
   aliases?: Array<Alias> | null;
   applicantId?: string;
   dateOfBirth?: string;
-  documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
   eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
