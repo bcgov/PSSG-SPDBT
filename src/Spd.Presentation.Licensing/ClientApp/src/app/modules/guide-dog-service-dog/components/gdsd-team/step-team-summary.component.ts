@@ -68,7 +68,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Personal Information</div>
+								<div class="text-minor-heading-small mt-2">Applicant Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
@@ -181,7 +181,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Dog Information</div>
+								<div class="text-minor-heading-small mt-2" *ngIf="isNew">Dog Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Dog Name</div>

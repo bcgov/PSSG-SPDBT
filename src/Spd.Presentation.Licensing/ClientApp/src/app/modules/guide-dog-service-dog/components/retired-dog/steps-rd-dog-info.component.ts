@@ -23,7 +23,7 @@ import { StepRdDogRetiredInfoComponent } from './step-rd-dog-retired-info.compon
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNew">
 				<app-step-rd-dog-retired-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-retired-info>
 
 				<app-wizard-footer
@@ -84,5 +84,9 @@ export class StepsRdDogInfoComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }
