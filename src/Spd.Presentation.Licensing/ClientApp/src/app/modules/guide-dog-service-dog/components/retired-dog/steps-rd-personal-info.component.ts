@@ -49,7 +49,7 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNew">
 				<app-step-rd-gdsd-certificate></app-step-rd-gdsd-certificate>
 
 				<app-wizard-footer
