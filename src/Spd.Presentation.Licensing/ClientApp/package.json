@@ -27,7 +27,7 @@
     "@angular/platform-browser-dynamic": "^19.2.4",
     "@angular/router": "^19.2.4",
     "@bcgov/bc-sans": "^2.1.0",
-    "@ngneat/overview": "^6.1.1",
+    "@ngneat/overview": "^6.1.2",
     "@ngneat/until-destroy": "^10.0.0",
     "@ngxpert/hot-toast": "^4.1.2",
     "angular-oauth2-oidc": "^19.0.0",
