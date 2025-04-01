@@ -80,7 +80,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Dog Trainer Information</div>
+								<div class="text-minor-heading-small mt-2">Dog Trainer</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Dog Trainer Name</div>

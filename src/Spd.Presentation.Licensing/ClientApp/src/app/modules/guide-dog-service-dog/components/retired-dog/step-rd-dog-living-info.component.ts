@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-rd-dog-living-info',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section title="Will your dog continue to live with you in his/her retirement?">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -36,8 +36,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepRdDogLivingInfoComponent implements OnInit, LicenceChildStepperStepComponent {
-	title = '';
+export class StepRdDogLivingInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	matcher = new FormErrorStateMatcher();
@@ -53,12 +52,6 @@ export class StepRdDogLivingInfoComponent implements OnInit, LicenceChildStepper
 		private utilService: UtilService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
-
-	ngOnInit(): void {
-		this.title = this.isNew
-			? 'Will your dog continue to live with you in his/her retirement?'
-			: 'Confirm your dog will continue to live with you in his/her retirement';
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
