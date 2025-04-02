@@ -216,7 +216,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		this.gdsdTeamApplicationService.submitLicenceNewAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
