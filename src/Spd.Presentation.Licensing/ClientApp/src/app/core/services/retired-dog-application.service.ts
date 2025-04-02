@@ -683,20 +683,48 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
+			[],
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
 	}
 
 	/**
-	 * Submit the application data for anonymous new including documents
+	 * Submit the application data for anonymous replacement
+	 */
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			}
+		});
+
+		delete body.documentInfos;
+
+		const originalLicenceData = gdsdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		body.applicantId = originalLicenceData.originalLicenceHolderId;
+
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
+	}
+
+	/**
+	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
 	 */
 	private submitLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppAnonymousSubmitRequest // TODO RetiredDogRequest
-	) {
+		body: GdsdTeamLicenceAppChangeRequest
+	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		// TODO RetiredDogRequest
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -707,6 +735,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 					switchMap((resps: string[]) => {
 						// pass in the list of document key codes
 						body.documentKeyCodes = [...resps];
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						body.previousDocumentIds = [...existingDocumentIds];
 
 						return this.postSubmitAnonymous(body);
 					})
@@ -717,6 +748,10 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						body.previousDocumentIds = [...existingDocumentIds];
+
 						return this.postSubmitAnonymous(body);
 					})
 				)
