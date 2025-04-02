@@ -204,7 +204,19 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
+			if (this.isNew) {
+				this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
+					next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+					},
+				});
+				return;
+			}
+
+			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -212,11 +224,10 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 					console.log('An error occurred during save', error);
 				},
 			});
-
 			return;
 		}
 
-		this.gdsdTeamApplicationService.submitLicenceNewAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

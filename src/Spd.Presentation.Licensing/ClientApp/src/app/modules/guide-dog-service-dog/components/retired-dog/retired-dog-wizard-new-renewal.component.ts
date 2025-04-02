@@ -4,8 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -152,16 +151,38 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		this.retiredDogApplicationService.submitLicenceNewAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-				);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
+		// if (this.isLoggedIn) {
+		// 	if (this.isNew) {
+		// 		this.retiredDogApplicationService.submitLicenceNewAuthenticated().subscribe({
+		// 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+		// 			},
+		// 			error: (error: any) => {
+		// 				console.log('An error occurred during save', error);
+		// 			},
+		// 		});
+		// 		return;
+		// 	}
+		// 	this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+		// 		next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during save', error);
+		// 		},
+		// 	});
+		// 	return;
+		// }
+		// this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
+		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 		this.router.navigateByUrl(
+		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+		// 		);
+		// 	},
+		// 	error: (error: any) => {
+		// 		console.log('An error occurred during save', error);
+		// 	},
+		// });
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
@@ -282,6 +303,10 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		this.stepsDogInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
 	private goToChildNextStep() {
