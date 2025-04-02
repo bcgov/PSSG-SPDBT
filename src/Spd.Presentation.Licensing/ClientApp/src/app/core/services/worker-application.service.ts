@@ -683,7 +683,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -1054,8 +1054,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
 				);
-
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.workerModelFormGroup.value);
 			})
 		);
 	}
