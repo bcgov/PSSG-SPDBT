@@ -200,7 +200,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				);
 			}
 		} else {
-			this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+			this.workerApplicationService.submitLicenceChangeAuthenticated().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					const workerLicenceCommandResponse = resp.body;
 
