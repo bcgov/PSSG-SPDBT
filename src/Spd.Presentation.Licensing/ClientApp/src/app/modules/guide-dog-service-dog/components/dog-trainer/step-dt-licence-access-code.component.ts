@@ -71,7 +71,7 @@ export class StepDtLicenceAccessCodeComponent implements OnInit {
 
 	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.dogTrainerApplicationService
-			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
+			.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.applicationTypeCode) {
 					case ApplicationTypeCode.Renewal: {

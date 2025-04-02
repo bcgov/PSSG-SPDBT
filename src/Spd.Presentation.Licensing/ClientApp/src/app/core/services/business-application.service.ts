@@ -345,7 +345,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// Send the controlling member invitations
 			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
 			if (apis.length > 0) {
-				this.submitBusinessLicenceRenewalOrUpdateOrReplace()
+				this.submitBusinessLicenceChange()
 					.pipe(
 						switchMap((_resp: BizLicAppCommandResponse) => {
 							return forkJoin(apis);
@@ -365,7 +365,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		}
 
-		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
+		this.submitBusinessLicenceChange().subscribe({
 			next: (_resp: BizLicAppCommandResponse) => {
 				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.licenceAppId!);
@@ -377,7 +377,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	payBusinessLicenceUpdateOrReplace(params: { applicationTypeCode: ApplicationTypeCode }): void {
-		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
+		this.submitBusinessLicenceChange().subscribe({
 			next: (_resp: BizLicAppCommandResponse) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.SecurityBusinessLicence,
@@ -413,7 +413,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<BizLicAppCommandResponse> {
+	private submitBusinessLicenceChange(): Observable<BizLicAppCommandResponse> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;

@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceResponseExt, WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
@@ -109,8 +108,8 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private workerApplicationService: WorkerApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private workerApplicationService: WorkerApplicationService
+		// private permitApplicationService: PermitApplicationService
 	) {}
 
 	ngOnInit(): void {

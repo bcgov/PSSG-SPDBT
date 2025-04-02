@@ -71,7 +71,7 @@ export class StepTeamLicenceAccessCodeComponent implements OnInit {
 
 	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.gdsdTeamApplicationService
-			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
+			.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.applicationTypeCode) {
 					case ApplicationTypeCode.Renewal: {
