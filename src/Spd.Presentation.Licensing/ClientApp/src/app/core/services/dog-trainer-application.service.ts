@@ -405,7 +405,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceWithAccessCodeDataAnonymous(
+	getLicenceWithAccessCodeAnonymous(
 		associatedLicence: LicenceResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
@@ -418,8 +418,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
 				);
-
-				console.debug('[getLicenceWithAccessCodeData] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 			})
 		);
 	}
@@ -467,7 +465,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		// TODO fix dt submitLicenceAnonymous
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
@@ -499,7 +498,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceNewAnonymousDocuments(
+		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
@@ -510,7 +509,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Submit the application data for anonymous new including documents
 	 * @returns
 	 */
-	private submitLicenceNewAnonymousDocuments(
+	private submitLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppAnonymousSubmitRequest
@@ -557,7 +556,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Submit the application data for anonymous renewal or replacement
 	 */
-	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceChangeAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
@@ -594,7 +593,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(
+		return this.submitLicenceChangeAnonymousDocuments(
 			googleRecaptcha,
 			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
@@ -603,24 +602,10 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	}
 
 	/**
-	 * Submit the application data for anonymous replacement
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(dogTrainerModelFormValue);
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
-
-		delete body.documentInfos;
-
-		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
-		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(googleRecaptcha, [], null, body);
-	}
-
-	/**
 	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
 	 */
-	private submitLicenceRenewalOrReplaceAnonymousDocuments(
+	private submitLicenceChangeAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
