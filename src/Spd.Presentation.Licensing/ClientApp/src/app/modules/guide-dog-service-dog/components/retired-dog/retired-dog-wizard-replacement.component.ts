@@ -1,8 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { GdsdAppCommandResponse } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
@@ -74,19 +72,29 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 	}
 
 	onSubmit(): void {
-		if (!this.stepAddressComponent.isFormValid()) {
-			return;
-		}
-
-		this.retiredDogApplicationService.submitLicenceReplacementAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-				);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
+		// if (!this.stepAddressComponent.isFormValid()) {
+		// 	return;
+		// }
+		// if (this.isLoggedIn) {
+		// 	this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+		// 		next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during save', error);
+		// 		},
+		// 	});
+		// 	return;
+		// }
+		// this.retiredDogApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 		this.router.navigateByUrl(
+		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+		// 		);
+		// 	},
+		// 	error: (error: any) => {
+		// 		console.log('An error occurred during save', error);
+		// 	},
+		// });
 	}
 }
