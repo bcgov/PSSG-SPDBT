@@ -514,7 +514,8 @@ namespace Spd.Manager.Screening
 
             RuleFor(r => r.EmailAddress)
                 .EmailAddress()
-                .MaximumLength(75);
+                .MaximumLength(75)
+                .NotEmpty();
 
             RuleFor(r => r.PhoneNumber)
                  .MaximumLength(30)
