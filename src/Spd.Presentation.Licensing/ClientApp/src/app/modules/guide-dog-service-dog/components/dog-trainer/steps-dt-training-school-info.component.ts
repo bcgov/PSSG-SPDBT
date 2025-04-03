@@ -3,7 +3,6 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepDtTrainingSchoolInfoComponent } from './step-dt-training-school-info.component';
-import { StepDtTrainingSchoolMailingAddressComponent } from './step-dt-training-school-mailing-address.component';
 
 @Component({
 	selector: 'app-steps-dt-training-school-info',
@@ -16,22 +15,8 @@ import { StepDtTrainingSchoolMailingAddressComponent } from './step-dt-training-
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_SCHOOL_TRAINING)"
+					(nextStepperStep)="onStepNext(STEP_SCHOOL_TRAINING)"
 					(nextReviewStepperStep)="onNextReview(STEP_SCHOOL_TRAINING)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-dt-training-school-mailing-address
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-dt-training-school-mailing-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -42,14 +27,11 @@ import { StepDtTrainingSchoolMailingAddressComponent } from './step-dt-training-
 })
 export class StepsDtTrainingSchoolInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_SCHOOL_TRAINING = 0;
-	readonly STEP_MAILING_ADDRESS = 1;
 
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepDtTrainingSchoolInfoComponent) schoolComponent!: StepDtTrainingSchoolInfoComponent;
-	@ViewChild(StepDtTrainingSchoolMailingAddressComponent)
-	addressComponent!: StepDtTrainingSchoolMailingAddressComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -59,8 +41,6 @@ export class StepsDtTrainingSchoolInfoComponent extends BaseWizardStepComponent 
 		switch (step) {
 			case this.STEP_SCHOOL_TRAINING:
 				return this.schoolComponent.isFormValid();
-			case this.STEP_MAILING_ADDRESS:
-				return this.addressComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

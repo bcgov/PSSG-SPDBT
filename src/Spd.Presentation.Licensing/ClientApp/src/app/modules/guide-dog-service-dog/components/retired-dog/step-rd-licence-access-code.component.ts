@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
-import { FormGdsdLicenceAccessCodeComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-licence-access-code.component';
-import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
+import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
+import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-access-code.component';
 
 @Component({
-	selector: 'app-step-team-licence-access-code',
+	selector: 'app-step-rd-licence-access-code',
 	template: `
 		<app-step-section
 			title="Provide your access code"
@@ -25,7 +25,7 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 			<app-form-gdsd-licence-access-code
 				(linkSuccess)="onLinkSuccess($event)"
 				[form]="form"
-				[serviceTypeCode]="serviceTypeGdsdTeam"
+				[serviceTypeCode]="serviceTypeRetiredDog"
 				[applicationTypeCode]="applicationTypeCode"
 			></app-form-gdsd-licence-access-code>
 		</app-step-section>
@@ -35,33 +35,33 @@ import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/gui
 	styles: [],
 	standalone: false,
 })
-export class StepTeamLicenceAccessCodeComponent implements OnInit {
+export class StepRdLicenceAccessCodeComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.gdsdTeamApplicationService.accessCodeFormGroup;
+	form: FormGroup = this.retiredDogApplicationService.accessCodeFormGroup;
 
-	readonly serviceTypeGdsdTeam = ServiceTypeCode.GdsdTeamCertification;
+	readonly serviceTypeRetiredDog = ServiceTypeCode.RetiredServiceDogCertification;
 	applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FormGdsdLicenceAccessCodeComponent) accessCodeComponent!: FormGdsdLicenceAccessCodeComponent;
 
 	constructor(
 		private router: Router,
-		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private retiredDogApplicationService: RetiredDogApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.applicationTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+		this.applicationTypeCode = this.retiredDogApplicationService.retiredDogModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		this.commonApplicationService.setApplicationTitle(this.serviceTypeGdsdTeam, this.applicationTypeCode);
+		this.commonApplicationService.setApplicationTitle(this.serviceTypeRetiredDog, this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_TEAM_APPLICATION_TYPE_ANONYMOUS)
+			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_APPLICATION_TYPE_ANONYMOUS)
 		);
 	}
 
@@ -70,19 +70,19 @@ export class StepTeamLicenceAccessCodeComponent implements OnInit {
 	}
 
 	onLinkSuccess(linkLicence: LicenceResponse): void {
-		this.gdsdTeamApplicationService
+		this.retiredDogApplicationService
 			.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.applicationTypeCode) {
 					case ApplicationTypeCode.Renewal: {
 						this.router.navigateByUrl(
-							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_TEAM_RENEWAL_ANONYMOUS)
+							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_RENEWAL_ANONYMOUS)
 						);
 						break;
 					}
 					case ApplicationTypeCode.Replacement: {
 						this.router.navigateByUrl(
-							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_TEAM_REPLACEMENT_ANONYMOUS)
+							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_REPLACEMENT_ANONYMOUS)
 						);
 						break;
 					}

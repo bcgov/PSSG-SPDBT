@@ -9,11 +9,15 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
+		gdsdCertificateNumber: new FormControl('', [Validators.required]),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
-	retiredDogForm: FormGroup = this.formBuilder.group({
+	dogRetiredForm: FormGroup = this.formBuilder.group({
 		dateOfRetirement: new FormControl('', [Validators.required]),
+	});
+
+	dogLivingForm: FormGroup = this.formBuilder.group({
 		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
 	});
 
@@ -82,7 +86,8 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
 		const mailingAddressData = retiredDogModelFormGroup.mailingAddressData;
 		const dogInfoData = retiredDogModelFormGroup.dogInfoData;
-		const retiredDogData = retiredDogModelFormGroup.retiredDogData;
+		const dogRetiredData = retiredDogModelFormGroup.retiredDogData;
+		const dogLivingData = retiredDogModelFormGroup.dogLivingData;
 		const originalLicenceData = retiredDogModelFormGroup.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
@@ -94,8 +99,8 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 		}
 
-		if (retiredDogData.dateOfRetirement) {
-			retiredDogData.dateOfRetirement = this.utilService.dateToDbDate(retiredDogData.dateOfRetirement);
+		if (dogRetiredData.dateOfRetirement) {
+			dogRetiredData.dateOfRetirement = this.utilService.dateToDbDate(dogRetiredData.dateOfRetirement);
 		}
 
 		if (personalInformationData.phoneNumber) {
@@ -140,8 +145,8 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			...personalInformationData,
 			mailingAddressData,
 			...dogInfoData,
-			dateOfRetirement: retiredDogData.dateOfRetirement,
-			isContinueToLiveWithDog: this.utilService.booleanTypeToBoolean(retiredDogData.isContinueToLiveWithDog),
+			dateOfRetirement: dogRetiredData.dateOfRetirement,
+			isContinueToLiveWithDog: this.utilService.booleanTypeToBoolean(dogLivingData.isContinueToLiveWithDog),
 
 			documentKeyCodes: [],
 			documentInfos,
@@ -240,17 +245,27 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	}
 
 	getSummarydateOfRetirement(retiredDogModelData: any): string {
-		return retiredDogModelData.retiredDogData.dateOfRetirement ?? '';
+		return retiredDogModelData.dogRetiredData.dateOfRetirement ?? '';
 	}
 	getSummaryliveWithDog(retiredDogModelData: any): string {
-		return retiredDogModelData.retiredDogData.isContinueToLiveWithDog ?? '';
+		return retiredDogModelData.dogLivingData.isContinueToLiveWithDog ?? '';
 	}
 
 	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
-		return retiredDogModelData.photographOfYourselfData.attachments ?? [];
+		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
 	}
 
+	getSummaryapplicationTypeCode(retiredDogModelData: any): ApplicationTypeCode | null {
+		return retiredDogModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
 	getSummaryphotoOfYourselfAttachments(retiredDogModelData: any): File[] | null {
-		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(retiredDogModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return retiredDogModelData.photographOfYourselfData.attachments ?? null;
+		} else {
+			const updatePhoto = retiredDogModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = retiredDogModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 }

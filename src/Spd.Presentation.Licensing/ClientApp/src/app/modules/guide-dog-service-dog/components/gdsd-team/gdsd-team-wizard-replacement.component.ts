@@ -85,7 +85,7 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 		}
 
 		if (this.isLoggedIn) {
-			this.gdsdTeamApplicationService.submitLicenceReplacementAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},

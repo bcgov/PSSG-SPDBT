@@ -2,26 +2,26 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { distinctUntilChanged } from 'rxjs';
-import { StepDtMailingAddressReplacementComponent } from './step-dt-mailing-address-replacement.component';
+import { StepRdMailingAddressReplacementComponent } from './step-rd-mailing-address-replacement.component';
 
 @Component({
-	selector: 'app-dog-trainer-wizard-replacement',
+	selector: 'app-retired-dog-wizard-replacement',
 	template: `
 		<div class="row">
 			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 				<mat-step>
 					<ng-template matStepLabel>Licence Confirmation</ng-template>
-					<app-step-dt-licence-confirmation></app-step-dt-licence-confirmation>
+					<app-step-rd-licence-confirmation></app-step-rd-licence-confirmation>
 
 					<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 				</mat-step>
 
 				<mat-step>
 					<ng-template matStepLabel>Mailing Address</ng-template>
-					<app-step-dt-mailing-address-replacement></app-step-dt-mailing-address-replacement>
+					<app-step-rd-mailing-address-replacement></app-step-rd-mailing-address-replacement>
 
 					<app-wizard-footer
 						nextButtonLabel="Submit"
@@ -39,20 +39,20 @@ import { StepDtMailingAddressReplacementComponent } from './step-dt-mailing-addr
 	styles: [],
 	standalone: false,
 })
-export class DogTrainerWizardReplacementComponent extends BaseWizardComponent implements OnInit {
-	@ViewChild(StepDtMailingAddressReplacementComponent)
-	stepAddressComponent!: StepDtMailingAddressReplacementComponent;
+export class RetiredDogWizardReplacementComponent extends BaseWizardComponent implements OnInit {
+	@ViewChild(StepRdMailingAddressReplacementComponent)
+	stepAddressComponent!: StepRdMailingAddressReplacementComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private dogTrainerApplicationService: DogTrainerApplicationService
+		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
-		if (!this.dogTrainerApplicationService.initialized) {
+		if (!this.retiredDogApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 			return;
 		}
@@ -75,7 +75,18 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 		// if (!this.stepAddressComponent.isFormValid()) {
 		// 	return;
 		// }
-		// this.dogTrainerApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		// if (this.isLoggedIn) {
+		// 	this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+		// 		next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during save', error);
+		// 		},
+		// 	});
+		// 	return;
+		// }
+		// this.retiredDogApplicationService.submitLicenceReplacementAnonymous().subscribe({
 		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 		// 		this.router.navigateByUrl(
 		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)

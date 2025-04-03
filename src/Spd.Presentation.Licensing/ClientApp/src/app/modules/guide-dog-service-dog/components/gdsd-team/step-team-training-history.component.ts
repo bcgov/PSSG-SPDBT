@@ -15,7 +15,7 @@ training history."
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-6 col-lg-10 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="text-minor-heading lh-base mt-3 mb-2">
 								Have you attended a training school(s) and/or program(s)?
