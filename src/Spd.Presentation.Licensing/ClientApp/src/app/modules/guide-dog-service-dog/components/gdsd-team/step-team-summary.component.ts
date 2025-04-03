@@ -68,7 +68,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Personal Information</div>
+								<div class="text-minor-heading-small mt-2">Applicant Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Applicant Name</div>
@@ -83,7 +83,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber }}
+											{{ phoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
@@ -105,8 +105,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="text-minor-heading-small">
 										Medical Form Confirming Requirement for Guide Dog or Service Dog
 									</div>
+
 									<div class="row mt-0">
-										<div class="col-lg-8 col-md-12">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Doctor Sends Medical Forms</div>
+											<div class="summary-text-data">
+												{{ isDoctorSendingGdsdMedicalForm | default }}
+											</div>
+										</div>
+										<div class="col-lg-8 col-md-12" *ngIf="medicalInformationAttachments">
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of medicalInformationAttachments; let i = index">
@@ -118,20 +125,22 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</div>
 								</ng-container>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<ng-container *ngIf="photoOfYourselfAttachments">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Photo of Yourself</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+									<div class="text-minor-heading-small">Photo of Yourself</div>
+									<div class="row mt-0">
+										<div class="col-lg-6 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
 									</div>
-								</div>
+								</ng-container>
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -172,7 +181,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Dog Information</div>
+								<div class="text-minor-heading-small mt-2" *ngIf="isNew">Dog Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Dog Name</div>
@@ -421,6 +430,9 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get medicalInformationAttachments(): File[] | null {
 		return this.gdsdTeamApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
+	}
+	get isDoctorSendingGdsdMedicalForm(): string {
+		return this.gdsdTeamApplicationService.getSummaryisDoctorSendingGdsdMedicalForm(this.gdsdModelData);
 	}
 
 	get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {

@@ -13,20 +13,10 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		accreditedSchoolId: new FormControl('', [Validators.required]),
 		accreditedSchoolName: new FormControl(''),
 		schoolDirectorGivenName: new FormControl(''),
-		schoolDirectoMiddleName: new FormControl(''),
+		schoolDirectorMiddleName: new FormControl(''),
 		schoolDirectorSurname: new FormControl('', [Validators.required]),
-		schoolDirectorPhoneNumber: new FormControl('', [Validators.required]),
-		schoolDirectorEmailAddress: new FormControl('', [FormControlValidators.email]),
-	});
-
-	trainingSchoolAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
+		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
+		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
@@ -108,8 +98,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	private getSaveBodyBase(dogTrainerModelFormGroup: any): any {
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
-		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
-		const trainingSchoolAddressData = dogTrainerModelFormGroup.trainingSchoolAddressData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
 		const dogTrainerAddressData = dogTrainerModelFormGroup.dogTrainerAddressData;
 		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
@@ -128,11 +116,15 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			);
 		}
 
-		if (trainingSchoolInfoData.schoolDirectorPhoneNumber) {
-			trainingSchoolInfoData.schoolDirectorPhoneNumber = this.maskPipe.transform(
-				trainingSchoolInfoData.schoolDirectorPhoneNumber,
-				SPD_CONSTANTS.phone.backendMask
-			);
+		let trainingSchoolInfoData: any = {};
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New) {
+			trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
+			if (trainingSchoolInfoData.schoolContactPhoneNumber) {
+				trainingSchoolInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
+					trainingSchoolInfoData.schoolContactPhoneNumber,
+					SPD_CONSTANTS.phone.backendMask
+				);
+			}
 		}
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
@@ -169,7 +161,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			licenceTermCode: dogTrainerModelFormGroup.licenceTermCode,
 
 			...trainingSchoolInfoData,
-			schoolMailingAddress: trainingSchoolAddressData,
 			...dogTrainerData,
 			trainerMailingAddress: dogTrainerAddressData,
 
@@ -240,11 +231,11 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			) ?? ''
 		);
 	}
-	getSummaryschoolDirectorEmailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorEmailAddress ?? '';
+	getSummaryschoolContactEmailAddress(dogTrainerModelData: any): string {
+		return dogTrainerModelData.trainingSchoolInfoData.schoolContactEmailAddress ?? '';
 	}
-	getSummaryschoolDirectorPhoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolDirectorPhoneNumber ?? '';
+	getSummaryschoolContactPhoneNumber(dogTrainerModelData: any): string {
+		return dogTrainerModelData.trainingSchoolInfoData.schoolContactPhoneNumber ?? '';
 	}
 
 	getSummarytrainerName(dogTrainerModelData: any): string {
@@ -266,8 +257,18 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		return dogTrainerModelData.dogTrainerData.trainerPhoneNumber ?? '';
 	}
 
+	getSummaryapplicationTypeCode(dogTrainerModelData: any): ApplicationTypeCode | null {
+		return dogTrainerModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
 	getSummaryphotoOfYourselfAttachments(dogTrainerModelData: any): File[] | null {
-		return dogTrainerModelData.photographOfYourselfData.attachments ?? [];
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(dogTrainerModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return dogTrainerModelData.photographOfYourselfData.attachments ?? null;
+		} else {
+			const updatePhoto = dogTrainerModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = dogTrainerModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 
 	getSummarygovernmentIssuedPhotoTypeCode(dogTrainerModelData: any): LicenceDocumentTypeCode | null {

@@ -69,12 +69,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="schoolDirectorPhoneNumber"
+										formControlName="schoolContactPhoneNumber"
 										[mask]="phoneMask"
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
 									/>
-									<mat-error *ngIf="form.get('schoolDirectorPhoneNumber')?.hasError('required')"
+									<mat-error *ngIf="form.get('schoolContactPhoneNumber')?.hasError('required')"
 										>This is required</mat-error
 									>
 								</mat-form-field>
@@ -84,12 +84,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Contact Email Address <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
-										formControlName="schoolDirectorEmailAddress"
+										formControlName="schoolContactEmailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('schoolDirectorEmailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('schoolContactEmailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>

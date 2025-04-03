@@ -4,8 +4,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
@@ -15,9 +16,10 @@ import { StepsTeamDogInfoComponent } from './steps-team-dog-info.component';
 import { StepsTeamPersonalInfoComponent } from './steps-team-personal-info.component';
 import { StepsTeamReviewAndConfirmComponent } from './steps-team-review-and-confirm.component';
 import { StepsTeamSelectionComponent } from './steps-team-selection.component';
+import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.component';
 
 @Component({
-	selector: 'app-gdsd-team-wizard-renewal',
+	selector: 'app-gdsd-team-wizard-new-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -31,7 +33,7 @@ import { StepsTeamSelectionComponent } from './steps-team-selection.component';
 				<app-steps-team-selection
 					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeRenewal"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -43,11 +45,12 @@ import { StepsTeamSelectionComponent } from './steps-team-selection.component';
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-team-personal-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="false"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeRenewal"
-					[isTrainedByAccreditedSchools]="false"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -59,11 +62,12 @@ import { StepsTeamSelectionComponent } from './steps-team-selection.component';
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-team-dog-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="false"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeRenewal"
-					[isTrainedByAccreditedSchools]="false"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -71,16 +75,36 @@ import { StepsTeamSelectionComponent } from './steps-team-selection.component';
 				></app-steps-team-dog-info>
 			</mat-step>
 
+			<mat-step [completed]="step4Complete" *ngIf="isNew">
+				<ng-template matStepLabel>Training Information</ng-template>
+				<app-steps-team-training-info
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="isLoggedIn"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-team-training-info>
+			</mat-step>
+
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-team-review-and-confirm
-					[showSaveAndExit]="false"
+					[showSaveAndExit]="isLoggedIn"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeRenewal"
-					[isTrainedByAccreditedSchools]="false"
-					[hasAttendedTrainingSchool]="false"
-					[isServiceDog]="false"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onSubmit()"
@@ -97,27 +121,31 @@ import { StepsTeamSelectionComponent } from './steps-team-selection.component';
 	styles: [],
 	standalone: false,
 })
-export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PERSONAL_INFO = 1;
 	readonly STEP_DOG_INFO = 2;
-	readonly STEP_REVIEW_AND_CONFIRM = 3;
-	readonly STEP_SUBMIT = 4;
+	readonly STEP_TRAINING_INFO = 3;
+	readonly STEP_REVIEW_AND_CONFIRM = 4;
+	readonly STEP_SUBMIT = 5;
 
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
+	step4Complete = false;
 
 	isLoggedIn = false;
 	licenceAppId: string | null = null;
 	isFormValid = false;
-
-	serviceTypeCode!: ServiceTypeCode;
-	readonly applicationTypeRenewal = ApplicationTypeCode.Renewal;
+	isTrainedByAccreditedSchools = false;
+	hasAttendedTrainingSchool = false;
+	isServiceDog = false;
+	applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepsTeamSelectionComponent) stepsSelection!: StepsTeamSelectionComponent;
 	@ViewChild(StepsTeamPersonalInfoComponent) stepsPersonalInfo!: StepsTeamPersonalInfoComponent;
 	@ViewChild(StepsTeamDogInfoComponent) stepsDogInfo!: StepsTeamDogInfoComponent;
+	@ViewChild(StepsTeamTrainingInfoComponent) stepsTrainingInfo!: StepsTeamTrainingInfoComponent;
 	@ViewChild(StepsTeamReviewAndConfirmComponent) stepsReviewConfirm!: StepsTeamReviewAndConfirmComponent;
 
 	private gdsdModelChangedSubscription!: Subscription;
@@ -148,9 +176,22 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 			(_resp: any) => {
 				this.isFormValid = _resp;
 
-				this.serviceTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
-					'serviceTypeData.serviceTypeCode'
+				this.applicationTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
 				)?.value;
+
+				this.isServiceDog =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===
+					BooleanTypeCode.No;
+
+				this.isTrainedByAccreditedSchools =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+						'dogCertificationSelectionData.isDogTrainedByAccreditedSchool'
+					)?.value === BooleanTypeCode.Yes;
+
+				this.hasAttendedTrainingSchool =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('trainingHistoryData.hasAttendedTrainingSchool')
+						?.value === BooleanTypeCode.Yes;
 
 				this.updateCompleteStatus();
 			}
@@ -163,7 +204,19 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			this.gdsdTeamApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+			if (this.isNew) {
+				this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
+					next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+					},
+				});
+				return;
+			}
+
+			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -171,11 +224,10 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 					console.log('An error occurred during save', error);
 				},
 			});
-
 			return;
 		}
 
-		this.gdsdTeamApplicationService.submitLicenceRenewalAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
@@ -188,7 +240,8 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
+		const index = this.getSelectedIndex(event.selectedIndex);
+		switch (index) {
 			case this.STEP_SELECTION:
 				this.stepsSelection?.onGoToFirstStep();
 				break;
@@ -197,6 +250,9 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 				break;
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToFirstStep();
+				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewConfirm?.onGoToFirstStep();
@@ -209,7 +265,8 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
+		const index = this.getSelectedIndex(stepper.selectedIndex);
+		switch (index) {
 			case this.STEP_SELECTION:
 				this.stepsSelection?.onGoToLastStep();
 				break;
@@ -219,12 +276,57 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToLastStep();
 				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToLastStep();
+				break;
 		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					if (stepper?.selected) stepper.selected.completed = true;
+					stepper.next();
+
+					switch (stepper.selectedIndex) {
+						case this.STEP_SELECTION:
+							this.stepsSelection?.onGoToFirstStep();
+							break;
+						case this.STEP_PERSONAL_INFO:
+							this.stepsPersonalInfo?.onGoToFirstStep();
+							break;
+						case this.STEP_DOG_INFO:
+							this.stepsDogInfo?.onGoToFirstStep();
+							break;
+						case this.STEP_TRAINING_INFO:
+							this.stepsTrainingInfo?.onGoToFirstStep();
+							break;
+					}
+				},
+				error: (error: HttpErrorResponse) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
+		}
+	}
+
+	onSaveAndExit(): void {
+		if (!this.gdsdTeamApplicationService.isSaveAndExit()) {
+			return;
+		}
+
+		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+			next: (_resp: any) => {
+				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	onGoToReview() {
@@ -233,7 +335,7 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
-						this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+						this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
@@ -241,24 +343,39 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 				},
 			});
 		} else {
-			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+			this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
 		}
 	}
 
-	onGoToStep(step: number) {
+	onGoToStep(stepIndex: number) {
 		this.stepsSelection?.onGoToFirstStep();
 		this.stepsPersonalInfo?.onGoToFirstStep();
 		this.stepsDogInfo?.onGoToFirstStep();
+		this.stepsTrainingInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+
+		this.stepper.selectedIndex = this.getMatchingIndex(stepIndex);
 	}
 
 	onChildNextStep() {
-		this.goToChildNextStep();
+		if (this.gdsdTeamApplicationService.isAutoSave()) {
+			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+				next: (_resp: any) => {
+					this.goToChildNextStep();
+				},
+				error: (error: HttpErrorResponse) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			this.goToChildNextStep();
+		}
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
+		const index = this.getSelectedIndex(this.stepper.selectedIndex);
+		console.log('goToChildNextStep', this.stepper.selectedIndex, index);
+		switch (index) {
 			case this.STEP_SELECTION:
 				this.stepsSelection?.onGoToNextStep();
 				break;
@@ -268,14 +385,42 @@ export class GdsdTeamWizardRenewalComponent extends BaseWizardComponent implemen
 			case this.STEP_DOG_INFO:
 				this.stepsDogInfo?.onGoToNextStep();
 				break;
+			case this.STEP_TRAINING_INFO:
+				this.stepsTrainingInfo?.onGoToNextStep();
+				break;
 		}
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+
+	private getSelectedIndex(currSelectedIndex: number): number {
+		if (this.isNew) {
+			return currSelectedIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return currSelectedIndex < this.STEP_TRAINING_INFO ? currSelectedIndex : currSelectedIndex + 1;
+	}
+
+	private getMatchingIndex(stepIndex: number): number {
+		if (this.isNew) {
+			return stepIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return stepIndex < this.STEP_TRAINING_INFO ? stepIndex : stepIndex - 1;
 	}
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.gdsdTeamApplicationService.isStepSelectionComplete();
 		this.step2Complete = this.gdsdTeamApplicationService.isStepPersonalInfoComplete();
 		this.step3Complete = this.gdsdTeamApplicationService.isStepDogInfoComplete();
+		this.step4Complete = this.gdsdTeamApplicationService.isStepTrainingInfoComplete();
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 }

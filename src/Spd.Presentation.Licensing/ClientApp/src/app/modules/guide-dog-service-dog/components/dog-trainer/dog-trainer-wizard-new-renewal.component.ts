@@ -3,8 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
@@ -36,7 +35,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 				></app-steps-dt-details>
 			</mat-step>
 
-			<mat-step [completed]="step2Complete">
+			<mat-step [completed]="step2Complete" *ngIf="isNew">
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
@@ -144,20 +143,21 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		this.dogTrainerApplicationService.submitLicenceNewAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-				this.router.navigateByUrl(
-					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-				);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
+		// this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
+		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+		// 		this.router.navigateByUrl(
+		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+		// 		);
+		// 	},
+		// 	error: (error: any) => {
+		// 		console.log('An error occurred during save', error);
+		// 	},
+		// });
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
+		const index = this.getSelectedIndex(event.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToFirstStep();
 				break;
@@ -178,7 +178,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
+		const index = this.getSelectedIndex(stepper.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToLastStep();
 				break;
@@ -197,29 +198,56 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
 	}
 
-	onGoToStep(step: number) {
+	onGoToStep(stepIndex: number) {
 		this.stepsDetails?.onGoToFirstStep();
 		this.stepsSchoolInfo?.onGoToFirstStep();
 		this.stepsPersonallInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
-		this.stepper.selectedIndex = step;
+
+		this.stepper.selectedIndex = this.getMatchingIndex(stepIndex);
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
+		const index = this.getSelectedIndex(this.stepper.selectedIndex);
+		switch (index) {
 			case this.STEP_DETAILS:
 				this.stepsDetails?.onGoToNextStep();
 				break;
 			case this.STEP_TRAINING_SCHOOL_INFO:
 				this.stepsSchoolInfo?.onGoToNextStep();
 				break;
+
 			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
 				this.stepsPersonallInfo?.onGoToNextStep();
 				break;
 		}
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+
+	private getSelectedIndex(currSelectedIndex: number): number {
+		if (this.isNew) {
+			return currSelectedIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return currSelectedIndex === this.STEP_DETAILS ? this.STEP_DETAILS : currSelectedIndex + 1;
+	}
+
+	private getMatchingIndex(stepIndex: number): number {
+		if (this.isNew) {
+			return stepIndex;
+		}
+
+		// step index is different for renewals.
+		// there is a hidden step that changes the step index
+		return stepIndex === this.STEP_DETAILS ? stepIndex : stepIndex - 1;
 	}
 
 	private updateCompleteStatus(): void {
