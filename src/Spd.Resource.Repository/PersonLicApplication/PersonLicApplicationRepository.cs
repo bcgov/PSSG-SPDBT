@@ -31,6 +31,11 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         {
             //spdbt-3402: for unauth, always create new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
+            else
+                _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
         }
         else
         {
