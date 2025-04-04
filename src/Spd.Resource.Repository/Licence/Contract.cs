@@ -66,6 +66,7 @@ namespace Spd.Resource.Repository.Licence
     {
         public string? LicenceNumber { get; set; }
         public DateOnly ExpiryDate { get; set; }
+        public DateOnly IssuedDate { get; set; }
         public ServiceTypeEnum? ServiceTypeCode { get; set; }
         public LicenceTermEnum? LicenceTermCode { get; set; }
         public Guid? LicenceHolderId { get; set; }

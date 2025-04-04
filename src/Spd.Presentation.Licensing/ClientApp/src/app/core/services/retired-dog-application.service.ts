@@ -75,7 +75,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
-		retiredDogData: this.retiredDogForm,
+		dogRetiredData: this.dogRetiredForm,
+		dogLivingData: this.dogLivingForm,
 	});
 
 	retiredDogModelChangedSubscription!: Subscription;
@@ -84,8 +85,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		formBuilder: FormBuilder,
 		utilService: UtilService,
 		maskPipe: NgxMaskPipe,
-		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
+		private authUserBcscService: AuthUserBcscService,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
@@ -120,9 +121,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogPersonalInfoComplete(): boolean {
+		let dogGdsdCertificateDataValid = true;
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New) {
+			dogGdsdCertificateDataValid = this.dogGdsdCertificateFormGroup.valid;
+		}
+
 		return (
 			this.personalInformationFormGroup.valid &&
-			this.dogGdsdCertificateFormGroup.valid &&
+			dogGdsdCertificateDataValid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
 		);
@@ -133,7 +139,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepRetiredDogDogInfoComplete(): boolean {
-		return this.dogInfoFormGroup.valid && this.retiredDogForm.valid;
+		let dogRetiredDataValid = true;
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New) {
+			dogRetiredDataValid = this.dogRetiredForm.valid;
+		}
+
+		return this.dogInfoFormGroup.valid && dogRetiredDataValid && this.dogLivingForm.valid;
 	}
 
 	/**
@@ -413,23 +424,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(retiredDogModelData: any): Observable<any> {
+	private applyReplacementDataUpdatesToModel(): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-		const dogTrainerAddressData = retiredDogModelData.dogTrainerAddressData;
-
-		this.mailingAddressFormGroup.patchValue({
-			addressSelected: !!dogTrainerAddressData && !!dogTrainerAddressData.addressLine1,
-			isAddressTheSame: false,
-			addressLine1: dogTrainerAddressData?.addressLine1,
-			addressLine2: dogTrainerAddressData?.addressLine2,
-			city: dogTrainerAddressData?.city,
-			country: dogTrainerAddressData?.country,
-			postalCode: dogTrainerAddressData?.postalCode,
-			province: dogTrainerAddressData?.province,
-		});
-
-		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
-		captchaFormGroup.patchValue({ displayCaptcha: true });
 
 		this.retiredDogModelFormGroup.patchValue(
 			{
@@ -442,7 +438,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		);
 
 		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
-		console.debug('[applyReplacementDataUpdatesToModel] mailingAddressFormGroup', this.mailingAddressFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -464,31 +459,32 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Apply the applicant profile data into the main model
 	 */
 	private applyProfileIntoModel(applicantProfile: ApplicantProfileResponse): Observable<any> {
-		const dogTrainerData = {
-			trainerGivenName: applicantProfile.givenName,
-			trainerMiddleName: applicantProfile.middleName1,
-			trainerSurname: applicantProfile.surname,
-			trainerDateOfBirth: applicantProfile.dateOfBirth,
-			trainerPhoneNumber: applicantProfile.phoneNumber,
-			trainerEmailAddress: applicantProfile.emailAddress,
+		const personalInformationData = {
+			givenName: applicantProfile.givenName,
+			middleName: applicantProfile.middleName1,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			hasBcscNameChanged: false,
 		};
 
-		const applicantMailingAddress = applicantProfile?.mailingAddress;
-		const dogTrainerAddressData = {
-			addressSelected: !!applicantMailingAddress && !!applicantMailingAddress.addressLine1,
+		const bcscMailingAddress = applicantProfile?.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
-			addressLine1: applicantMailingAddress?.addressLine1,
-			addressLine2: applicantMailingAddress?.addressLine2,
-			city: applicantMailingAddress?.city,
-			country: applicantMailingAddress?.country,
-			postalCode: applicantMailingAddress?.postalCode,
-			province: applicantMailingAddress?.province,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
 		};
 
 		this.retiredDogModelFormGroup.patchValue(
 			{
-				dogTrainerData,
-				dogTrainerAddressData,
+				personalInformationData,
+				mailingAddressData,
 			},
 			{
 				emitEvent: false,
@@ -584,7 +580,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceWithAccessCodeDataAnonymous(
+	getLicenceWithAccessCodeAnonymous(
 		associatedLicence: LicenceResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
@@ -597,8 +593,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
 				);
-
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.retiredDogModelFormGroup.value);
 			})
 		);
 	}
@@ -635,8 +629,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		return this.applicantProfileService.apiApplicantGet().pipe(
 			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((retiredDogModelData: any) => {
-						return this.applyReplacementDataUpdatesToModel(retiredDogModelData);
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
 					})
 				);
 			})
@@ -646,9 +640,10 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceNewAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		// TODO fix rt submitLicenceAnonymous
 		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppAnonymousSubmitRequest; // TODO fix
+		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppAnonymousSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
 		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -684,112 +679,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceNewAnonymousDocuments(
+		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
-			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
-			body
-		);
-	}
-
-	/**
-	 * Submit the application data for anonymous new including documents
-	 * @returns
-	 */
-	private submitLicenceNewAnonymousDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppAnonymousSubmitRequest // TODO RetiredDogRequest
-	) {
-		if (documentsToSaveApis) {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						return forkJoin(documentsToSaveApis);
-					}),
-					switchMap((resps: string[]) => {
-						// pass in the list of document key codes
-						body.documentKeyCodes = [...resps];
-
-						return this.postSubmitAnonymous(body);
-					})
-				)
-				.pipe(take(1));
-		} else {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						return this.postSubmitAnonymous(body);
-					})
-				)
-				.pipe(take(1));
-		}
-	}
-
-	private postSubmitAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest // TODO RetiredDogRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
-			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
-				this.utilService.toasterSuccess(successMessage);
-			})
-		);
-	}
-
-	/**
-	 * Submit the application data for anonymous renewal or replacement
-	 */
-	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
-
-		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
-
-		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		// body.applicantId = originalLicenceData.originalLicenceHolderId;
-
-		const documentsToSaveApis: Observable<string>[] = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			// Only pass new documents and get a keyCode for each of those.
-			const newDocumentsOnly: Array<Blob> = [];
-			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
-					newDocumentsOnly.push(doc);
-				}
-			});
-
-			// should always be at least one new document
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
-						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
-		});
-
-		const existingDocumentIds: Array<string> =
-			body.documentInfos
-				?.filter((item: Document) => !!item.documentUrlId)
-				.map((item: Document) => item.documentUrlId!) ?? [];
-
-		delete body.documentInfos;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(
-			googleRecaptcha,
-			existingDocumentIds,
+			[],
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -803,25 +695,34 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			}
+		});
+
 		delete body.documentInfos;
 
-		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		// body.applicantId = originalLicenceData.originalLicenceHolderId;
+		const originalLicenceData = gdsdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
-		return this.submitLicenceRenewalOrReplaceAnonymousDocuments(googleRecaptcha, [], null, body);
+		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
 	/**
 	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
 	 */
-	private submitLicenceRenewalOrReplaceAnonymousDocuments(
+	private submitLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppChangeRequest // TODO RetiredDogChangeRequestExt
+		body: GdsdTeamLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		// TODO RetiredDogRequest
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -836,7 +737,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.postChangeAnonymous(body);
+						return this.postSubmitAnonymous(body);
 					})
 				)
 				.pipe(take(1));
@@ -849,16 +750,32 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.postChangeAnonymous(body);
+						return this.postSubmitAnonymous(body);
 					})
 				)
 				.pipe(take(1));
 		}
 	}
 
-	private postChangeAnonymous(
+	/**
+	 * Submit the application data for anonymous
+	 * @returns
+	 */
+	private postSubmitAnonymous(
 		body: GdsdTeamLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+		if (body.applicationTypeCode == ApplicationTypeCode.New) {
+			return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+				tap((_resp: any) => {
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						body.serviceTypeCode!,
+						body.applicationTypeCode!
+					);
+					this.utilService.toasterSuccess(successMessage);
+				})
+			);
+		}
+
 		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(

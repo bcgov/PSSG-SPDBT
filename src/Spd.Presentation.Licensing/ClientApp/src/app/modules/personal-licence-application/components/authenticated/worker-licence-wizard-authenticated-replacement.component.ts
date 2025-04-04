@@ -71,7 +71,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	}
 
 	onPayNow(): void {
-		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+		this.workerApplicationService.submitLicenceChangeAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					ServiceTypeCode.SecurityWorkerLicence,

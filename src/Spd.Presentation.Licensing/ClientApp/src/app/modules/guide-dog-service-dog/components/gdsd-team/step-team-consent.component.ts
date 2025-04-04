@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-team-consent',
@@ -35,7 +36,12 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="col-xl-6 col-lg-6 col-md-12 mt-4">
 							<mat-form-field>
 								<mat-label>Name of Applicant or Legal Guardian</mat-label>
-								<input matInput formControlName="applicantOrLegalGuardianName" maxlength="80" />
+								<input
+									matInput
+									formControlName="applicantOrLegalGuardianName"
+									maxlength="80"
+									[errorStateMatcher]="matcher"
+								/>
 								<mat-error *ngIf="form.get('applicantOrLegalGuardianName')?.hasError('required')">
 									This is required
 								</mat-error>
@@ -135,8 +141,9 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 })
 export class StepTeamConsentComponent implements OnInit, LicenceChildStepperStepComponent {
 	check1Name = '';
+	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationTeamFormGroup;
 
 	constructor(
 		private utilService: UtilService,

@@ -8,7 +8,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 		<div *ngFor="let train of otherTrainings; let i = index">
 			<div class="text-minor-heading-small mt-2">Other Training</div>
 			<div class="row mt-0">
-				<div class="col-lg-4 col-md-12">
+				<div class="col-lg-8 col-md-12">
 					<div class="text-label d-block text-muted">Training Details</div>
 					<div class="summary-text-data">{{ train.trainingDetail | default }}</div>
 				</div>
@@ -31,7 +31,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Trainer Phone Number</div>
-						<div class="summary-text-data">{{ train.trainerPhoneNumber | default }}</div>
+						<div class="summary-text-data">{{ train.trainerPhoneNumber | formatPhoneNumber | default }}</div>
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="text-label d-block text-muted">Trainer Email Address</div>

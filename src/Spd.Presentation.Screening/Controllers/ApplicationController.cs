@@ -261,6 +261,7 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? GenderCode.U : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = CleanString(data[22]);
                             oneRequest.DriversLicense = CleanString(data[23]);
+                            oneRequest.EmailAddress = CleanString(data[24]);
                             oneRequest.AgreeToCompleteAndAccurate = true;
                             oneRequest.HaveVerifiedIdentity = true;
                             oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;

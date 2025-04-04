@@ -16,13 +16,24 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
-import { FormControlValidators } from '../validators/form-control.validators';
+import { FormGroupValidators } from '../validators/form-group.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHelper {
-	medicalInformationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
-	});
+	medicalInformationFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isDoctorSendingGdsdMedicalForm: new FormControl('', [Validators.required]),
+			attachments: new FormControl([]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'attachments',
+					(form) => form.get('isDoctorSendingGdsdMedicalForm')?.value == BooleanTypeCode.No
+				),
+			],
+		}
+	);
 
 	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
 		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
@@ -40,18 +51,17 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		isAssistanceStillRequired: new FormControl('', [Validators.required]),
 	});
 
-	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
+	dogInoculationsFormGroup: FormGroup = this.formBuilder.group({
 		areInoculationsUpToDate: new FormControl('', [Validators.required]),
+	});
+
+	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog
 	});
 
 	graduationInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolId: new FormControl('', [Validators.required]),
 		accreditedSchoolName: new FormControl(''),
-		schoolContactGivenName: new FormControl(''),
-		schoolContactSurname: new FormControl('', [Validators.required]),
-		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
-		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
@@ -134,7 +144,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		const mailingAddressData = gdsdModelFormValue.mailingAddressData;
 		const photographOfYourselfData = gdsdModelFormValue.photographOfYourselfData;
 		const dogTasksData = gdsdModelFormValue.dogTasksData;
-		const dogInfoData = gdsdModelFormValue.dogInfoData;
+		let dogInfoData = gdsdModelFormValue.dogInfoData;
 		const dogRenewData = gdsdModelFormValue.dogRenewData;
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
@@ -150,7 +160,9 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			);
 		}
 
-		if (dogInfoData.dogDateOfBirth) {
+		if (!dogInfoData.dogName) {
+			dogInfoData = null;
+		} else if (dogInfoData.dogDateOfBirth) {
 			dogInfoData.dogDateOfBirth = this.utilService.dateToDbDate(dogInfoData.dogDateOfBirth);
 		}
 
@@ -178,31 +190,36 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		if (isTrainedByAccreditedSchools) {
 			const dogGdsdData = gdsdModelFormValue.dogGdsdData;
 			const isGuideDog = this.utilService.booleanTypeToBoolean(dogGdsdData.isGuideDog);
-			accreditedSchoolQuestionsData = {
-				isGuideDog,
-				serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
-			};
+			if (isGuideDog != null) {
+				accreditedSchoolQuestionsData = {
+					isGuideDog,
+					serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
+				};
+				// TODO add: medicalInformationData.isDoctorSendingGdsdMedicalForm
 
-			const graduationInfoData = gdsdModelFormValue.graduationInfoData;
+				const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 
-			if (graduationInfoData.schoolContactPhoneNumber) {
-				graduationInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
-					graduationInfoData.schoolContactPhoneNumber,
-					SPD_CONSTANTS.phone.backendMask
-				);
-			}
+				if (graduationInfoData.schoolContactPhoneNumber) {
+					graduationInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
+						graduationInfoData.schoolContactPhoneNumber,
+						SPD_CONSTANTS.phone.backendMask
+					);
+				}
 
-			graduationInfoData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+				graduationInfoData.attachments?.forEach((doc: any) => {
+					documentInfos.push({
+						documentUrlId: doc.documentUrlId,
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+					});
 				});
-			});
 
-			accreditedSchoolQuestionsData.graduationInfo = graduationInfoData;
+				accreditedSchoolQuestionsData.graduationInfo = graduationInfoData;
+			}
 		} else {
-			const dogMedicalData = gdsdModelFormValue.dogMedicalData;
-			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(dogMedicalData.areInoculationsUpToDate);
+			const dogInoculationsData = gdsdModelFormValue.dogInoculationsData;
+			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(
+				dogInoculationsData.areInoculationsUpToDate
+			);
 			nonAccreditedSchoolQuestionsData = {
 				areInoculationsUpToDate,
 			};
@@ -266,6 +283,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
 				});
 			});
+
+			const dogMedicalData = gdsdModelFormValue.dogMedicalData;
 			dogMedicalData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -366,15 +385,17 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			const hasAttendedTrainingSchool =
 				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
 
-			if (medicalInformationData.attachments) {
-				const docs: Array<Blob> = [];
-				medicalInformationData.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
-					documents: docs,
-				});
+			if (medicalInformationData.isDoctorSendingGdsdMedicalForm == BooleanTypeCode.No) {
+				if (medicalInformationData.attachments) {
+					const docs: Array<Blob> = [];
+					medicalInformationData.attachments.forEach((doc: SpdFile) => {
+						docs.push(doc);
+					});
+					documents.push({
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog,
+						documents: docs,
+					});
+				}
 			}
 
 			if (dogMedicalData.attachments) {
@@ -544,20 +565,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	getSummaryaccreditedSchoolName(gdsdModelData: any): string {
 		return gdsdModelData.graduationInfoData.accreditedSchoolName ?? '';
 	}
-	getSummaryaccreditedContactName(gdsdModelData: any): string {
-		return (
-			this.utilService.getFullName(
-				gdsdModelData.graduationInfoData.schoolContactGivenName,
-				gdsdModelData.graduationInfoData.schoolContactSurname
-			) ?? ''
-		);
-	}
-	getSummaryaccreditedPhoneNumber(gdsdModelData: any): string {
-		return gdsdModelData.graduationInfoData.schoolContactPhoneNumber ?? '';
-	}
-	getSummaryaccreditedEmailAddress(gdsdModelData: any): string {
-		return gdsdModelData.graduationInfoData.schoolContactEmailAddress ?? '';
-	}
 	getSummaryaccreditedAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.graduationInfoData.attachments ?? [];
 	}
@@ -620,18 +627,34 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		return gdsdModelData.dogInfoData.microchipNumber ?? '';
 	}
 
+	getSummaryapplicationTypeCode(gdsdModelData: any): ApplicationTypeCode | null {
+		return gdsdModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
 	getSummaryphotoOfYourselfAttachments(gdsdModelData: any): File[] | null {
-		return gdsdModelData.photographOfYourselfData.attachments ?? [];
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(gdsdModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return gdsdModelData.photographOfYourselfData.attachments ?? null;
+		} else {
+			const updatePhoto = gdsdModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = gdsdModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 
 	getSummaryareInoculationsUpToDate(gdsdModelData: any): string {
-		return gdsdModelData.dogMedicalData.areInoculationsUpToDate ?? '';
+		return gdsdModelData.dogInoculationsData.areInoculationsUpToDate ?? '';
 	}
 	getSummarydogMedicalAttachments(gdsdModelData: any): File[] | null {
 		return gdsdModelData.dogMedicalData.attachments ?? [];
 	}
 
+	getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData: any): string {
+		return gdsdModelData.medicalInformationData.isDoctorSendingGdsdMedicalForm ?? '';
+	}
 	getSummarymedicalInformationAttachments(gdsdModelData: any): File[] | null {
+		if (this.getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData) != BooleanTypeCode.Yes) {
+			return null;
+		}
 		return gdsdModelData.medicalInformationData.attachments ?? [];
 	}
 

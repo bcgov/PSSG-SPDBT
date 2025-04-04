@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -26,37 +27,65 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							>.
 						</app-alert>
 
-						<div class="text-minor-heading lh-base mt-3 mb-2">
-							Upload Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6
-							months.
+						<div class="col-xxl-6 col-xl-7 col-lg-7 col-md-10 col-sm-12 mx-auto">
+							<div class="text-minor-heading lh-base mb-2">Is your doctor sending the medical form?</div>
 						</div>
 
-						<app-file-upload
-							(fileUploaded)="onFileUploaded($event)"
-							(fileRemoved)="onFileRemoved()"
-							[control]="attachments"
-							[maxNumberOfFiles]="10"
-							[files]="attachments.value"
-							[previewImage]="true"
-						></app-file-upload>
-						<mat-error
-							class="mt-3 mat-option-error"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-						>
-							<app-alert type="danger" icon="dangerous">
-								This is required. You must have a Medical Form confirming requirement for Guide Dog or Service Dog.
-							</app-alert>
-						</mat-error>
+						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="isDoctorSendingGdsdMedicalForm">
+								<div class="d-flex justify-content-start">
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								</div>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('isDoctorSendingGdsdMedicalForm')?.dirty ||
+										form.get('isDoctorSendingGdsdMedicalForm')?.touched) &&
+									form.get('isDoctorSendingGdsdMedicalForm')?.invalid &&
+									form.get('isDoctorSendingGdsdMedicalForm')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
+
+						<div *ngIf="isDoctorSendingGdsdMedicalForm.value === booleanTypeCodes.No" @showHideTriggerSlideAnimation>
+							<mat-divider class="mt-3 mat-divider-primary"></mat-divider>
+
+							<div class="text-minor-heading lh-base mt-3 mb-2">
+								Upload Medical Form Confirming Requirement for Guide Dog or Service Dog. Exam date must be within last 6
+								months.
+							</div>
+
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[control]="attachments"
+								[maxNumberOfFiles]="10"
+								[files]="attachments.value"
+								[previewImage]="true"
+							></app-file-upload>
+							<mat-error
+								class="mt-3 mat-option-error"
+								*ngIf="
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								"
+							>
+								<app-alert type="danger" icon="dangerous">
+									This is required. You must have a Medical Form confirming requirement for Guide Dog or Service Dog.
+								</app-alert>
+							</mat-error>
+						</div>
 					</div>
 				</div>
 			</form>
 		</app-step-section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepTeamMedicalInfoComponent implements LicenceChildStepperStepComponent {
@@ -88,5 +117,8 @@ export class StepTeamMedicalInfoComponent implements LicenceChildStepperStepComp
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isDoctorSendingGdsdMedicalForm(): FormControl {
+		return this.form.get('isDoctorSendingGdsdMedicalForm') as FormControl;
 	}
 }

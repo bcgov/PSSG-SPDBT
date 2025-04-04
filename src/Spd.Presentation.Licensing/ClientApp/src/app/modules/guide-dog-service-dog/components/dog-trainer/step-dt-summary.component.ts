@@ -25,7 +25,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											class="go-to-step-button"
 											matTooltip="Go to Step 4"
 											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
+											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -34,12 +34,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Training School Information</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Training School Name</div>
 										<div class="summary-text-data">{{ accreditedSchoolName }}</div>
 									</div>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small">Chief Executive Officer/Executive Director</div>
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">CEO/Executive Director Name</div>
 										<div class="summary-text-data">{{ schoolDirectorName }}</div>
@@ -47,21 +49,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ schoolDirectorPhoneNumber | formatPhoneNumber }}
+											{{ schoolContactPhoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">{{ schoolDirectorEmailAddress | default }}</div>
+										<div class="summary-text-data">{{ schoolContactEmailAddress | default }}</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="dogTrainerModelData.trainingSchoolAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
 							</div>
 						</mat-expansion-panel>
 
@@ -76,7 +71,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											class="go-to-step-button"
 											matTooltip="Go to Step 2"
 											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -85,7 +80,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Dog Trainer Information</div>
+								<div class="text-minor-heading-small mt-2">Dog Trainer</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Dog Trainer Name</div>
@@ -100,7 +95,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ trainerPhoneNumber | formatPhoneNumber }}
+											{{ trainerPhoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 									<div class="col-lg-6 col-md-12">
@@ -116,20 +111,22 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<ng-container *ngIf="photoOfYourselfAttachments">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Photo of Yourself</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+									<div class="text-minor-heading-small">Photo of Yourself</div>
+									<div class="row mt-0">
+										<div class="col-lg-6 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
 									</div>
-								</div>
+								</ng-container>
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -228,11 +225,11 @@ export class StepDtSummaryComponent implements OnInit, LicenceChildStepperStepCo
 	get schoolDirectorName(): string {
 		return this.dogTrainerApplicationService.getSummaryschoolDirectorName(this.dogTrainerModelData);
 	}
-	get schoolDirectorEmailAddress(): string {
-		return this.dogTrainerApplicationService.getSummaryschoolDirectorEmailAddress(this.dogTrainerModelData);
+	get schoolContactEmailAddress(): string {
+		return this.dogTrainerApplicationService.getSummaryschoolContactEmailAddress(this.dogTrainerModelData);
 	}
-	get schoolDirectorPhoneNumber(): string {
-		return this.dogTrainerApplicationService.getSummaryschoolDirectorPhoneNumber(this.dogTrainerModelData);
+	get schoolContactPhoneNumber(): string {
+		return this.dogTrainerApplicationService.getSummaryschoolContactPhoneNumber(this.dogTrainerModelData);
 	}
 
 	get trainerName(): string {

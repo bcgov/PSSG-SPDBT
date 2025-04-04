@@ -14,17 +14,17 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="text-minor-heading lh-base mt-3 mb-3">
-								Is your dog trained by Assistance Dogs International or International Guide Dog Federation accredited
-								schools?
-							</div>
-
 							<app-alert type="info" icon="info">
 								Not sure if your dog was trained by an accredited school? You can check the
 								<a href="https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank"
 									>Guide Dog and Service Dog Certification</a
 								>.
 							</app-alert>
+
+							<div class="text-minor-heading lh-base mb-3">
+								Is your dog trained by Assistance Dogs International or International Guide Dog Federation accredited
+								schools?
+							</div>
 
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group

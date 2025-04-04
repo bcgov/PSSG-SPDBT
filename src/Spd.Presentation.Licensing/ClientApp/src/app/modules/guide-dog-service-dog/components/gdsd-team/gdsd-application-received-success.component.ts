@@ -3,6 +3,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 
 @Component({
 	selector: 'app-gdsd-application-received-success',
@@ -19,10 +20,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 						<mat-divider class="mat-divider-main mb-4"></mat-divider>
 
 						<app-alert type="info" icon="info">
-							<p>
-								Your application for a Guide Dog or Service Dog Certificate has been received. A confirmation email has
-								been sent you.
-							</p>
+							<p>{{ confirmationText }} A confirmation email has been sent you.</p>
 							<p>We will contact you if we need more information.</p>
 						</app-alert>
 					</div>
@@ -48,21 +46,32 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 })
 export class GdsdApplicationReceivedSuccessComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
+	confirmationText = '';
 
 	constructor(
 		private commonApplicationService: CommonApplicationService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService,
-		private dogTrainerApplicationService: DogTrainerApplicationService
+		private dogTrainerApplicationService: DogTrainerApplicationService,
+		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
 
 	ngOnInit(): void {
-		if (!this.gdsdTeamApplicationService.initialized && !this.dogTrainerApplicationService.initialized) {
+		if (this.gdsdTeamApplicationService.initialized) {
+			this.confirmationText = 'Your application for a Guide Dog or Service Dog Certificate has been received.';
+		} else if (this.dogTrainerApplicationService.initialized) {
+			this.confirmationText = 'Your application for a Dog Trainer Certificate has been received.';
+			return;
+		} else if (this.retiredDogApplicationService.initialized) {
+			this.confirmationText = 'Your application for a Retired Dog Certificate has been received.';
+			return;
+		} else {
 			this.commonApplicationService.onGoToHome();
 			return;
 		}
 
 		this.gdsdTeamApplicationService.reset();
 		this.dogTrainerApplicationService.reset();
+		this.retiredDogApplicationService.reset();
 	}
 
 	onPrint(): void {
