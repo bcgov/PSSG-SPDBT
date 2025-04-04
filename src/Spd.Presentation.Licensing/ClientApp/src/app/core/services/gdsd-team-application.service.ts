@@ -136,18 +136,16 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		// const isLoggedIn = this.authenticationService.isLoggedIn();
-		// if (!isLoggedIn) {
-		// 	return false;
-		// }
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
 
-		// if (!this.isSaveAndExit()) {
-		// 	return false;
-		// }
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
 
-		// return this.hasValueChanged;
-		// TODO hardcode isAutoSave
-		return false;
+		return this.hasValueChanged;
 	}
 
 	/**
@@ -155,13 +153,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
-		// if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
-		// 	return false;
-		// }
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
 
-		// return true;
-		// TODO hardcode isSaveAndExit
-		return false;
+		return true;
 	}
 
 	/**
