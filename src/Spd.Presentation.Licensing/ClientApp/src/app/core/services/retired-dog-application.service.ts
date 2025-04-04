@@ -40,6 +40,7 @@ import {
 	tap,
 } from 'rxjs';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { FileUtilService } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
@@ -84,6 +85,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		formBuilder: FormBuilder,
 		utilService: UtilService,
 		maskPipe: NgxMaskPipe,
+		private authenticationService: AuthenticationService,
 		private authUserBcscService: AuthUserBcscService,
 		private fileUtilService: FileUtilService,
 		private applicantProfileService: ApplicantProfileService,
@@ -298,18 +300,16 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		// const isLoggedIn = this.authenticationService.isLoggedIn();
-		// if (!isLoggedIn) {
-		// 	return false;
-		// }
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
 
-		// if (!this.isSaveAndExit()) {
-		// 	return false;
-		// }
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
 
-		// return this.hasValueChanged;
-		// TODO hardcode isAutoSave
-		return false;
+		return this.hasValueChanged;
 	}
 
 	/**
@@ -317,13 +317,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
-		// if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
-		// 	return false;
-		// }
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
 
-		// return true;
-		// TODO hardcode isSaveAndExit
-		return false;
+		return true;
 	}
 
 	/**

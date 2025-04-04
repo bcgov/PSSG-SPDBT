@@ -31,12 +31,24 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             throw new ArgumentException("Parent business licence application was not found.");
 
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
-        //check contact duplicate
-        contact? contact = SharedRepositoryFuncs.GetDuplicateContact(_context, _mapper.Map<contact>(cmd), ct);
-        //create or update contact
-        contact = contact == null ?
-            await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) :
+        if (bizContact == null) throw new ArgumentException("Business contact was not found.");
+        contact? contact = null;
+        if (bizContact._spd_contactid_value == null)
+        {
+            //check contact duplicate
+            contact = SharedRepositoryFuncs.GetDuplicateContact(_context, _mapper.Map<contact>(cmd), ct);
+            //create or update contact
+            contact = contact == null ?
+                await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) :
+                await UpdatePersonalInformationAsync(cmd, contact, ct);
+            //link bizContact with contact
+            _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
+        }
+        else
+        {
+            contact = _context.contacts.Where(c => c.contactid == bizContact._spd_contactid_value).FirstOrDefault();
             await UpdatePersonalInformationAsync(cmd, contact, ct);
+        }
 
         spd_application? app = _mapper.Map<spd_application>(cmd);
         _context.AddTospd_applications(app);
@@ -44,9 +56,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         //set applicant lookup
         _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
         _context.AddLink(contact, nameof(contact.spd_contact_spd_application_ApplicantId), app);
-
-        //link bizContact with contact
-        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
 
         //link to biz
         var account = _context.accounts
@@ -67,8 +76,8 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 
         //link to bizContact
         _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
-        await _context.SaveChangesAsync();
-        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid);
+        await _context.SaveChangesAsync(ct);
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact?.contactid);
     }
     #endregion
     public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct)
