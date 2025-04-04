@@ -31,6 +31,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             throw new ArgumentException("Parent business licence application was not found.");
 
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
+        if (bizContact == null) throw new ArgumentException("Business contact was not found.");
         contact? contact = null;
         if (bizContact._spd_contactid_value == null)
         {
@@ -76,7 +77,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         //link to bizContact
         _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
         await _context.SaveChangesAsync();
-        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid);
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact?.contactid);
     }
     #endregion
     public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct)
