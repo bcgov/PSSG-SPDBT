@@ -76,7 +76,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 
         //link to bizContact
         _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact?.contactid);
     }
     #endregion
