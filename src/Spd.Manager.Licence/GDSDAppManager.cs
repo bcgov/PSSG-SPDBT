@@ -173,7 +173,7 @@ internal class GDSDAppManager :
         {
             if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant�s face is required.");
+                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant's face is required.");
             }
         }
 
