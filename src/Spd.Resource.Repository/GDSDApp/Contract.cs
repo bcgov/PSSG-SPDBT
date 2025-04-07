@@ -55,6 +55,7 @@ public record AccreditedSchoolQuestions
 public record NonAccreditedSchoolQuestions
 {
     public bool? AreInoculationsUpToDate { get; set; }
+    public bool? DoctorIsProvidingNeedDogMedicalForm { get; set; }
     public bool? IsDogSterilized { get; set; }
     public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
