@@ -1131,8 +1131,11 @@ export class CommonApplicationService {
 
 		const today = moment().startOf('day');
 
+		const nameOnCard = basicLicence.nameOnCard?.toUpperCase().trim();
+		const licenceHolderName = licence.licenceHolderName?.toUpperCase().trim();
+
 		licence.licenceExpiryNumberOfDays = moment(licence.expiryDate).startOf('day').diff(today, 'days');
-		licence.hasLoginNameChanged = basicLicence.nameOnCard != licence.licenceHolderName;
+		licence.hasLoginNameChanged = nameOnCard != licenceHolderName;
 		licence.licenceCategoryCodes = basicLicence.categoryCodes?.sort() ?? [];
 
 		licence.hasSecurityGuardCategory =
