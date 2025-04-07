@@ -124,14 +124,14 @@ internal class GDSDAppRepository : IGDSDAppRepository
     private spd_application PrepareNewAppDataInDbContext(GDSDApp appData, contact applicant)
     {
         var app = _mapper.Map<spd_application>(appData);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        _context.AddTospd_applications(app);
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             if (appData.AccreditedSchoolQuestions != null)
             {
                 //accredited school
                 _mapper.Map<AccreditedSchoolQuestions, spd_application>(appData.AccreditedSchoolQuestions, app);
-                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-                _context.AddTospd_applications(app);
             }
             if (appData.AccreditedSchoolQuestions?.GraduationInfo != null)
             {
@@ -151,8 +151,6 @@ internal class GDSDAppRepository : IGDSDAppRepository
             {
                 _mapper.Map<NonAccreditedSchoolQuestions, spd_application>(appData.NonAccreditedSchoolQuestions, app);
                 app.spd_dogsassistanceindailyliving = appData.NonAccreditedSchoolQuestions?.TrainingInfo?.SpecializedTasksWhenPerformed;
-                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-                _context.AddTospd_applications(app);
             }
 
             if (appData.NonAccreditedSchoolQuestions?.TrainingInfo?.HasAttendedTrainingSchool != null && appData.NonAccreditedSchoolQuestions.TrainingInfo.HasAttendedTrainingSchool.Value)
