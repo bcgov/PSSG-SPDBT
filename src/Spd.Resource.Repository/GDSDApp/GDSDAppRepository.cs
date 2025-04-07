@@ -130,6 +130,8 @@ internal class GDSDAppRepository : IGDSDAppRepository
             {
                 //accredited school
                 _mapper.Map<AccreditedSchoolQuestions, spd_application>(appData.AccreditedSchoolQuestions, app);
+                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+                _context.AddTospd_applications(app);
             }
             if (appData.AccreditedSchoolQuestions?.GraduationInfo != null)
             {
@@ -149,6 +151,8 @@ internal class GDSDAppRepository : IGDSDAppRepository
             {
                 _mapper.Map<NonAccreditedSchoolQuestions, spd_application>(appData.NonAccreditedSchoolQuestions, app);
                 app.spd_dogsassistanceindailyliving = appData.NonAccreditedSchoolQuestions?.TrainingInfo?.SpecializedTasksWhenPerformed;
+                app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+                _context.AddTospd_applications(app);
             }
 
             if (appData.NonAccreditedSchoolQuestions?.TrainingInfo?.HasAttendedTrainingSchool != null && appData.NonAccreditedSchoolQuestions.TrainingInfo.HasAttendedTrainingSchool.Value)
@@ -177,8 +181,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                     }
             }
         }
-        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        _context.AddTospd_applications(app);
+
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         return app;
