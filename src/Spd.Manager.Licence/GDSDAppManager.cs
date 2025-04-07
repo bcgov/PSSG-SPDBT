@@ -194,7 +194,7 @@ internal class GDSDAppManager :
             else
             {
                 //dog is trained by non-accredited school: spdbt-3869
-                if (request.NonAccreditedSchoolQuestions?.DoctorIsProvidingNeedDogMedicalForm.Value != true)
+                if (request.NonAccreditedSchoolQuestions?.DoctorIsProvidingNeedDogMedicalForm != true)
                 {
                     if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog))
                     {
