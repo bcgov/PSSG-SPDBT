@@ -173,7 +173,7 @@ internal class GDSDAppManager :
         {
             if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant’s face is required.");
+                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant's face is required.");
             }
         }
 
@@ -193,11 +193,14 @@ internal class GDSDAppManager :
             }
             else
             {
-                //dog is trained by non-accredited school
-                //if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog))
-                //{
-                //    throw new ApiException(HttpStatusCode.BadRequest, "Medical Form Confirming Requirement for Guide Dog or Service completed by a Canadian or U.S. physician or nurse practitioner is required.");
-                //}
+                //dog is trained by non-accredited school: spdbt-3869
+                if (request.NonAccreditedSchoolQuestions?.DoctorIsProvidingNeedDogMedicalForm.Value != true)
+                {
+                    if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog))
+                    {
+                        throw new ApiException(HttpStatusCode.BadRequest, "Medical Form Confirming Requirement for Guide Dog or Service completed by a Canadian or U.S. physician or nurse practitioner is required.");
+                    }
+                }
                 if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, "Written confirmation from a Canadian or U.S. veterinarian or equivalent that your dog has been spayed or neutered is required.");
