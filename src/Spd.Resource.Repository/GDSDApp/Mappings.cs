@@ -79,9 +79,11 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => (int)DogTypeOptionSet.ServiceDog))
         .ForMember(d => d.spd_dogsinoculationsuptodate, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.AreInoculationsUpToDate))) //refine
         .ForMember(d => d.spd_dogspayedorneutered, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsDogSterilized)))
+        .ForMember(d => d.spd_doctorisprovidinggdsdmedicalform, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.DoctorIsProvidingNeedDogMedicalForm)))
         .ReverseMap()
         .ForMember(d => d.AreInoculationsUpToDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_dogsinoculationsuptodate)))
         .ForMember(d => d.TrainingInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetTrainingInfol(src, context)))
+        .ForMember(d => d.DoctorIsProvidingNeedDogMedicalForm, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_doctorisprovidinggdsdmedicalform)))
         ;
 
         _ = CreateMap<DogInfo, spd_application>()
