@@ -81,6 +81,7 @@ export interface MainLicenceResponse extends LicenceResponse {
 	restraintAuthorization: boolean;
 	restraintAuthorizationExpiryDate: string | null;
 	isSimultaneousFlow: boolean;
+	isExpiredLicenceRenewable: boolean;
 }
 
 @Injectable({
@@ -423,7 +424,7 @@ export class CommonApplicationService {
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
 						if (
 							this.utilService.isLicenceActive(resp.licenceStatusCode) ||
-							this.utilService.isExpiredLicenceRenewable(resp.serviceTypeCode!, resp.expiryDate!)
+							this.utilService.isExpiredLicenceRenewable(resp as MainLicenceResponse)
 						) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
@@ -1128,6 +1129,7 @@ export class CommonApplicationService {
 		licence.isUpdatePeriod = false;
 		licence.isReplacementPeriod = false;
 		licence.isSimultaneousFlow = false;
+		licence.isExpiredLicenceRenewable = this.utilService.isExpiredLicenceRenewable(licence);
 
 		const today = moment().startOf('day');
 

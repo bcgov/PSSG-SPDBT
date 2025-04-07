@@ -43,7 +43,7 @@ import { UtilService } from '@app/core/services/util.service';
 								</mat-chip-option>
 							</div>
 						</div>
-						<div class="row mt-2" *ngIf="isRenewAllowed(licence)">
+						<div class="row mt-2" *ngIf="licence.isExpiredLicenceRenewable">
 							<mat-divider class="my-2"></mat-divider>
 
 							<div class="col-lg-9">
@@ -103,9 +103,5 @@ export class FormLicenceListExpiredComponent implements OnInit {
 
 	onRenew(licence: MainLicenceResponse): void {
 		this.renewLicence.emit(licence);
-	}
-
-	isRenewAllowed(licence: MainLicenceResponse): boolean {
-		return this.utilService.isExpiredLicenceRenewable(licence.serviceTypeCode!, licence.expiryDate!);
 	}
 }
