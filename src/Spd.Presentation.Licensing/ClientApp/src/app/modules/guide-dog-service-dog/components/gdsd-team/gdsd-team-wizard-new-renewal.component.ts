@@ -45,7 +45,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-team-personal-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -62,7 +62,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-team-dog-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -79,7 +79,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				<ng-template matStepLabel>Training Information</ng-template>
 				<app-steps-team-training-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -97,7 +97,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-team-review-and-confirm
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
@@ -134,6 +134,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 	step3Complete = false;
 	step4Complete = false;
 
+	showSaveAndExit = false;
 	isLoggedIn = false;
 	licenceAppId: string | null = null;
 	isFormValid = false;
@@ -179,6 +180,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 				this.applicationTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
+
+				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
 
 				this.isServiceDog =
 					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===
