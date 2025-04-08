@@ -1304,9 +1304,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		);
 	}
 
-	/**
-	 * Submit the application data for anonymous new
-	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
@@ -1319,12 +1316,17 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			// Only pass new documents and get a keyCode for each of those.
 			const newDocumentsOnly: Array<Blob> = [];
 			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
+				if (doc.documentUrlId) {
+					existingDocumentIds.push(doc.documentUrlId);
+				} else {
 					newDocumentsOnly.push(doc);
 				}
 			});
@@ -1348,7 +1350,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
-			[],
+			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);

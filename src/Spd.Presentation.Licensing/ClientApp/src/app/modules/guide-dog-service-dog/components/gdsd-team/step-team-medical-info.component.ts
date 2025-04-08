@@ -32,7 +32,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						</div>
 
 						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
-							<mat-radio-group aria-label="Select an option" formControlName="isDoctorSendingGdsdMedicalForm">
+							<mat-radio-group aria-label="Select an option" formControlName="doctorIsProvidingNeedDogMedicalForm">
 								<div class="d-flex justify-content-start">
 									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -41,16 +41,19 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('isDoctorSendingGdsdMedicalForm')?.dirty ||
-										form.get('isDoctorSendingGdsdMedicalForm')?.touched) &&
-									form.get('isDoctorSendingGdsdMedicalForm')?.invalid &&
-									form.get('isDoctorSendingGdsdMedicalForm')?.hasError('required')
+									(form.get('doctorIsProvidingNeedDogMedicalForm')?.dirty ||
+										form.get('doctorIsProvidingNeedDogMedicalForm')?.touched) &&
+									form.get('doctorIsProvidingNeedDogMedicalForm')?.invalid &&
+									form.get('doctorIsProvidingNeedDogMedicalForm')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
 						</div>
 
-						<div *ngIf="isDoctorSendingGdsdMedicalForm.value === booleanTypeCodes.No" @showHideTriggerSlideAnimation>
+						<div
+							*ngIf="doctorIsProvidingNeedDogMedicalForm.value === booleanTypeCodes.No"
+							@showHideTriggerSlideAnimation
+						>
 							<mat-divider class="mt-3 mat-divider-primary"></mat-divider>
 
 							<div class="text-minor-heading lh-base mt-3 mb-2">
@@ -118,7 +121,7 @@ export class StepTeamMedicalInfoComponent implements LicenceChildStepperStepComp
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
-	get isDoctorSendingGdsdMedicalForm(): FormControl {
-		return this.form.get('isDoctorSendingGdsdMedicalForm') as FormControl;
+	get doctorIsProvidingNeedDogMedicalForm(): FormControl {
+		return this.form.get('doctorIsProvidingNeedDogMedicalForm') as FormControl;
 	}
 }
