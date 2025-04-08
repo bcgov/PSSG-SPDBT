@@ -221,6 +221,7 @@ public record ClearanceAccessResp
     public string Facility { get; set; } = null!;
     public string Status { get; set; } = null!;
     public Guid ClearanceId { get; set; }
+    public string ClearanceAccessNumber { get; set; } = null!;
 }
 public record ClearanceAccessDeleteCmd
 {

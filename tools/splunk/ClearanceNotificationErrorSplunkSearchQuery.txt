@@ -1,0 +1,1 @@
+index="prod_sparc" "*ClearanceAccessNotification failed*" | table _time, Error, Id, ClearanceAccessNumber, FirstName, LastName | rename Error AS ErrorMessage, Id AS ClearanceAccessId
