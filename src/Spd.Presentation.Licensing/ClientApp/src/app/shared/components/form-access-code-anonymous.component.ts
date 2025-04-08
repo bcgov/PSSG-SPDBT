@@ -3,13 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { LicenceResponseExt, WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
@@ -110,9 +108,8 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
-		private workerApplicationService: WorkerApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private workerApplicationService: WorkerApplicationService
+		// private permitApplicationService: PermitApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -146,11 +143,13 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 
 		switch (this.serviceTypeCode) {
 			case ServiceTypeCode.SecurityWorkerLicence:
-			case ServiceTypeCode.GdsdTeamCertification: {
+			case ServiceTypeCode.GdsdTeamCertification:
+			case ServiceTypeCode.DogTrainerCertification:
+			case ServiceTypeCode.RetiredServiceDogCertification: {
 				this.workerApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
-						tap((resp: LicenceResponse) => {
+						tap((resp: LicenceResponseExt) => {
 							this.handleLookupResponse(resp);
 						}),
 						take(1)
@@ -158,19 +157,20 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case ServiceTypeCode.ArmouredVehiclePermit:
-			case ServiceTypeCode.BodyArmourPermit: {
-				this.permitApplicationService
-					.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponse) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
+			// SPDBT-3425 - Remove anonymous permit flows
+			// case ServiceTypeCode.ArmouredVehiclePermit:
+			// case ServiceTypeCode.BodyArmourPermit: {
+			// 	this.permitApplicationService
+			// 		.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+			// 		.pipe(
+			// 			tap((resp: LicenceResponse) => {
+			// 				this.handleLookupResponse(resp);
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+			// 	break;
+			// }
 		}
 	}
 
@@ -186,7 +186,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		this.onCreateNewLicence();
 	}
 
-	private handleLookupResponse(resp: LicenceResponse): void {
+	private handleLookupResponse(resp: LicenceResponseExt): void {
 		if (!resp) {
 			// access code / licence are not found
 			this.errorMessage = `This ${this.label} number and access code are not a valid combination.`;
@@ -235,6 +235,14 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
 			this.errorMessage = `This ${this.label} is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
+			//  access code matches licence, but the licence has application in progress
+			if (resp.inProgressApplications) {
+				const selServiceTypeCodeDesc = this.optionsPipe.transform(resp.serviceTypeCode, 'ServiceTypes');
+				this.errorMessage = `This ${selServiceTypeCodeDesc} cannot be renewed, updated or replaced while an application is in progress.`;
+				this.resetRecaptcha.next(); // reset the recaptcha
+				return;
+			}
+
 			this.form.patchValue({
 				licenceNumber: resp.licenceNumber,
 				linkedLicenceTermCode: resp.licenceTermCode,
@@ -249,7 +257,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			this.linkSuccess.emit(resp);
 
 			const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.hotToastService.success(`The ${serviceTypeCodeDesc} has been found.`);
+			this.utilService.toasterSuccess(`The ${serviceTypeCodeDesc} has been found.`);
 		}
 
 		if (this.errorMessage) {

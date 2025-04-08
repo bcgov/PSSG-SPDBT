@@ -3,14 +3,16 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
+import { MainLicenceResponse } from './common-application.service';
 
 export interface LicenceStepperStepComponent {
 	onStepNext(formNumber: number): void;
@@ -37,7 +39,8 @@ export type SortWeight = -1 | 0 | 1;
 export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
-		private formatDatePipe: FormatDatePipe
+		private formatDatePipe: FormatDatePipe,
+		private hotToastService: HotToastService
 	) {}
 
 	//------------------------------------
@@ -130,6 +133,10 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
+	getToday(): moment.Moment {
+		return moment().startOf('day');
+	}
+
 	getBirthDateMax(): moment.Moment {
 		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
@@ -172,7 +179,7 @@ export class UtilService {
 		const dateDay = moment(aDate).startOf('day');
 
 		const today = moment().startOf('day');
-		const monthsDiff = today.diff(dateDay, 'months');
+		const monthsDiff = today.diff(dateDay, 'months', true);
 		return monthsDiff > periodMonths;
 	}
 
@@ -198,16 +205,33 @@ export class UtilService {
 	}
 
 	getAddressString(params: {
-		addressLine1: string;
-		addressLine2?: string;
-		city: string;
-		province: string;
-		country: string;
-		postalCode: string;
+		addressLine1: string | null | undefined;
+		addressLine2?: string | null | undefined;
+		city: string | null | undefined;
+		province: string | null | undefined;
+		country: string | null | undefined;
+		postalCode: string | null | undefined;
 	}): string {
-		return `${params.addressLine1}, ${params.addressLine2 ? params.addressLine2 + ',' : ''} ${params.city}, ${
-			params.province
-		}, ${params.country}, ${params.postalCode}`;
+		const addressArray: string[] = [];
+		if (params.addressLine1) {
+			addressArray.push(params.addressLine1);
+		}
+		if (params.addressLine2) {
+			addressArray.push(params.addressLine2);
+		}
+		if (params.city) {
+			addressArray.push(params.city);
+		}
+		if (params.province) {
+			addressArray.push(params.province);
+		}
+		if (params.country) {
+			addressArray.push(params.country);
+		}
+		if (params.postalCode) {
+			addressArray.push(params.postalCode);
+		}
+		return addressArray.join(' ');
 	}
 
 	//------------------------------------
@@ -500,6 +524,19 @@ export class UtilService {
 		return false;
 	}
 
+	isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {
+		if (
+			licence.licenceStatusCode != LicenceStatusCode.Expired ||
+			(licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+				licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification)
+		) {
+			return false;
+		}
+
+		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
+		return !this.getIsDateMonthsOrOlder(licence.expiryDate, period);
+	}
+
 	//------------------------------------
 	// Form related
 
@@ -529,5 +566,21 @@ export class UtilService {
 		formArray.controls.forEach((control) => {
 			control.disable({ emitEvent: false });
 		});
+	}
+
+	toasterSuccess(msg: string, autoDismiss = true): void {
+		if (autoDismiss) {
+			this.hotToastService.success(msg);
+			return;
+		}
+
+		this.hotToastService.success(msg, {
+			autoClose: false,
+			dismissible: true,
+		});
+	}
+
+	toasterError(msg: string): void {
+		this.hotToastService.error(msg);
 	}
 }

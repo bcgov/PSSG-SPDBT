@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-metal-dealers-registration-information',
 	template: `
-		<app-step-section title="Registration Information">
+		<app-step-section title="Registration information">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>

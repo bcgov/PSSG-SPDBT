@@ -9,11 +9,11 @@ import { AppRoutes } from '@app/app-routes';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
@@ -51,7 +51,6 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -152,7 +151,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -255,7 +254,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 						ServiceTypeCode.SecurityWorkerLicence,
 						this.applicationTypeCode
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(

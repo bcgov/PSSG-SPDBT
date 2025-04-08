@@ -7,7 +7,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 @Component({
 	selector: 'app-step-permit-summary-review-update-authenticated',
 	template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
@@ -62,6 +62,11 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 											</ul>
 										</div>
 									</div>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-criminal-history
+										[workerModelData]="permitModelData"
+									></app-worker-summary-criminal-history>
 
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-permit-summary-purpose [permitModelData]="permitModelData"></app-permit-summary-purpose>
@@ -130,7 +135,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 	}
 
 	onUpdateData(): void {

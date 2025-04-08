@@ -9,9 +9,9 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-identification-authenticated.component';
 import { StepsPermitPurposeAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-purpose-authenticated.component';
@@ -97,8 +97,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeCodeNew = ApplicationTypeCode.New;
@@ -135,7 +135,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {
@@ -246,7 +246,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					this.serviceTypeCode,
 					this.applicationTypeCode
 				);
-				this.hotToastService.success(successMessage);
+				this.utilService.toasterSuccess(successMessage);
 
 				this.payNow(_resp.body.licenceAppId!);
 			},

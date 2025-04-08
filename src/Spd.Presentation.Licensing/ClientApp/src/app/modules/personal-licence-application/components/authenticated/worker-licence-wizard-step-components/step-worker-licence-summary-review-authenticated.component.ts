@@ -14,7 +14,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-summary-review-authenticated',
 	template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
 					<mat-accordion multi="true">
@@ -67,8 +67,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 										</div>
 									</div>
-									<div class="col-xl-4 col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Licence Categories</div>
+								</div>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="text-minor-heading-small">Licence Categories</div>
+								<div class="row mt-0">
+									<div class="col-12">
 										<div class="summary-text-data">
 											<ul class="m-0">
 												<ng-container *ngFor="let category of categoryList; let i = index">
@@ -97,6 +101,59 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Background</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
+											(click)="$event.stopPropagation(); onEditStep(1)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								<app-worker-summary-police-background
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-police-background>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-mental-health-conditions
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-mental-health-conditions>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-criminal-history>
+
+								<ng-container *ngIf="isNotRenewal">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small">Fingerprints</div>
+									<div class="row mt-0">
+										<div class="col-12">
+											<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
+							</div>
+						</mat-expansion-panel>
+
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
 										<div class="panel-header">Identification</div>
 										<button
 											mat-mini-fab
@@ -112,33 +169,21 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
-								<div class="text-minor-heading-small">Identification</div>
+								<ng-container *ngIf="showCitizenshipStep">
+									<app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								</ng-container>
 
-								<app-worker-summary-citizenship
-									[workerModelData]="licenceModelData"
-									[showCitizenshipStep]="showCitizenshipStep"
-								></app-worker-summary-citizenship>
-
-								<app-worker-summary-photo-of-yourself
-									[workerModelData]="licenceModelData"
-								></app-worker-summary-photo-of-yourself>
+								<ng-container *ngIf="photoOfYourselfAttachments">
+									<app-worker-summary-photo-of-yourself
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-photo-of-yourself>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								</ng-container>
 
 								<app-worker-summary-bc-drivers-licence
 									[workerModelData]="licenceModelData"
 								></app-worker-summary-bc-drivers-licence>
-
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
-										<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</div>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -226,7 +271,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onEditStep(stepNumber: number) {
@@ -281,6 +326,10 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 	get soleProprietorBizTypeCode(): string {
 		return this.workerApplicationService.getSummarysoleProprietorBizTypeCode(this.licenceModelData);
+	}
+
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 
 	get licenceTermCode(): LicenceTermCode | null {

@@ -53,4 +53,17 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     {
         return await mediator.Send(new PrintJobStatusQuery(eventId), ct);
     }
+
+    /// <summary>
+    /// return the generated pdf of the event if the event is to print Biz licence.
+    /// </summary>
+    /// <param name="eventId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpGet("api/printjobs/images/{eventId}")]
+    public async Task<Results<FileContentHttpResult, BadRequest>> GetEventPrintingImage([FromRoute] Guid eventId, CancellationToken ct)
+    {
+        var previewResponse = await mediator.Send(new PrintingEventImageQuery(eventId), ct);
+        return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
+    }
 }

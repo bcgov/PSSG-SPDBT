@@ -29,7 +29,6 @@ import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -116,8 +115,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private applicantProfileService: ApplicantProfileService,
-		private hotToastService: HotToastService
+		private applicantProfileService: ApplicantProfileService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService, optionsPipe);
 
@@ -358,7 +356,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!permitModelFormValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -380,7 +378,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(applicantProfile, undefined, undefined).pipe(
+					return this.createEmptyPermitAuthenticated({
+						applicantProfile,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -470,12 +470,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit
 	 * @returns
 	 */
-	createNewPermitAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	createNewPermitAuthenticated(
+		serviceTypeCode: ServiceTypeCode,
+		previousExpiredPermit: MainLicenceResponse | undefined
+	): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+					return this.createEmptyPermitAuthenticated({
+						applicantProfile,
+						serviceTypeCode,
+						applicationTypeCode: ApplicationTypeCode.New,
+						previousExpiredPermit,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -516,13 +524,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(permitModelFormValue);
-		const existingDocumentIds = this.getProfileDocsToSaveKeep(permitModelFormValue);
-
-		body.previousDocumentIds = [...existingDocumentIds];
-
-		// console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
-		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		// console.debug('[saveUserProfile] getProfileSaveBody', body);
 
 		return this.applicantProfileService
 			.apiApplicantApplicantIdPut$Response({
@@ -645,10 +646,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const photoOfYourself = resps[1];
 
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					return this.applyRenewalDataUpdatesToModel(latestLicence, photoOfYourself);
+					return this.applyRenewalSpecificDataToModel(latestLicence, photoOfYourself);
 				}
 
-				return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
+				return this.applyUpdateSpecificDataToModel(latestLicence, photoOfYourself);
 			})
 		);
 	}
@@ -657,14 +658,25 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit just containing profile data
 	 * @returns
 	 */
-	private createEmptyPermitAuthenticated(
-		applicantProfile: ApplicantProfileResponse,
-		serviceTypeCode: ServiceTypeCode | undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined
-	): Observable<any> {
+	private createEmptyPermitAuthenticated({
+		applicantProfile,
+		serviceTypeCode,
+		applicationTypeCode,
+		previousExpiredPermit,
+	}: {
+		applicantProfile: ApplicantProfileResponse;
+		serviceTypeCode?: ServiceTypeCode | undefined;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		previousExpiredPermit?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		this.reset();
 
-		return this.applyPermitProfileIntoModel(applicantProfile, serviceTypeCode, applicationTypeCode);
+		return this.applyProfileIntoModel({
+			applicantProfile,
+			serviceTypeCode,
+			applicationTypeCode,
+			previousExpiredPermit,
+		});
 	}
 
 	/**
@@ -692,7 +704,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitLicenceAppl.expiredLicenceNumber = null;
 				permitLicenceAppl.hasExpiredLicence = false;
 
-				return this.applyPermitAndProfileIntoModel({
+				return this.applyApplAndProfileIntoModel({
 					permitLicenceAppl,
 					applicantProfile,
 					associatedLicence,
@@ -723,7 +735,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				if (permitLicenceAppl.expiredLicenceId) {
 					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
 						switchMap((associatedExpiredLicence: LicenceResponse) => {
-							return this.applyPermitAndProfileIntoModel({
+							return this.applyApplAndProfileIntoModel({
 								permitLicenceAppl: permitLicenceAppl,
 								applicantProfile,
 								associatedExpiredLicence,
@@ -731,7 +743,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						})
 					);
 				} else {
-					return this.applyPermitAndProfileIntoModel({
+					return this.applyApplAndProfileIntoModel({
 						permitLicenceAppl,
 						applicantProfile,
 					});
@@ -772,7 +784,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
+				const personalInformationData = _resp.personalInformationData;
 
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
@@ -825,10 +837,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const photoOfYourself = resps[1];
 
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					return this.applyRenewalDataUpdatesToModel(latestLicence, photoOfYourself);
+					return this.applyRenewalSpecificDataToModel(latestLicence, photoOfYourself);
 				}
 
-				return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
+				return this.applyUpdateSpecificDataToModel(latestLicence, photoOfYourself);
 			})
 		);
 	}
@@ -1001,7 +1013,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitLicenceAppl.expiredLicenceNumber = null;
 				permitLicenceAppl.hasExpiredLicence = false;
 
-				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl, associatedLicence });
+				return this.applyApplAndProfileIntoModel({ permitLicenceAppl, associatedLicence });
 			})
 		);
 	}
@@ -1010,7 +1022,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
-	private applyPermitAndProfileIntoModel({
+	private applyApplAndProfileIntoModel({
 		permitLicenceAppl,
 		applicantProfile,
 		associatedLicence,
@@ -1021,30 +1033,45 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		associatedLicence?: MainLicenceResponse | LicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
 	}): Observable<any> {
-		return this.applyPermitProfileIntoModel(
-			applicantProfile ?? permitLicenceAppl,
-			permitLicenceAppl.serviceTypeCode,
-			permitLicenceAppl.applicationTypeCode,
-			associatedLicence
-		).pipe(
+		return this.applyProfileIntoModel({
+			applicantProfile: applicantProfile ?? permitLicenceAppl,
+			serviceTypeCode: permitLicenceAppl.serviceTypeCode,
+			applicationTypeCode: permitLicenceAppl.applicationTypeCode,
+			associatedLicence,
+		}).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(permitLicenceAppl, associatedLicence, associatedExpiredLicence);
+				return this.applyApplIntoModel(permitLicenceAppl, associatedLicence, associatedExpiredLicence);
 			})
 		);
 	}
 
-	private applyPermitProfileIntoModel(
-		applicantProfile: ApplicantProfileResponse | PermitLicenceAppResponse,
-		serviceTypeCode: ServiceTypeCode | undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		associatedLicence?: MainLicenceResponse | LicenceResponse
-	): Observable<any> {
+	private applyProfileIntoModel({
+		applicantProfile,
+		serviceTypeCode,
+		applicationTypeCode,
+		associatedLicence,
+		previousExpiredPermit,
+	}: {
+		applicantProfile: ApplicantProfileResponse | PermitLicenceAppResponse;
+		serviceTypeCode?: ServiceTypeCode | undefined;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		previousExpiredPermit?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		let hasBcscNameChanged = false;
 		if (associatedLicence) {
 			hasBcscNameChanged = 'hasLoginNameChanged' in associatedLicence ? associatedLicence?.hasLoginNameChanged : false;
+		}
+
+		let expiredLicenceData: any = null;
+		if (previousExpiredPermit?.licenceId) {
+			expiredLicenceData = this.getExpiredLicenceData(
+				this.utilService.booleanToBooleanType(true),
+				previousExpiredPermit
+			);
 		}
 
 		const personalInformationData = {
@@ -1123,73 +1150,25 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			province: applicantProfile.mailingAddress?.province,
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(applicantProfile.hasCriminalHistory),
-			criminalChargeDescription: '',
-		};
-
-		const policeBackgroundDataAttachments: Array<File> = [];
-		const mentalHealthConditionsDataAttachments: Array<File> = [];
-
-		applicantProfile.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
-				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					mentalHealthConditionsDataAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					policeBackgroundDataAttachments.push(aFile);
-					break;
-				}
-			}
-		});
-
-		let policeBackgroundData = {};
-		let mentalHealthConditionsData = {};
-
-		if (
-			'isPoliceOrPeaceOfficer' in applicantProfile &&
-			'policeOfficerRoleCode' in applicantProfile &&
-			'otherOfficerRole' in applicantProfile
-		) {
-			policeBackgroundData = {
-				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(applicantProfile.isPoliceOrPeaceOfficer),
-				policeOfficerRoleCode: applicantProfile.policeOfficerRoleCode,
-				otherOfficerRole: applicantProfile.otherOfficerRole,
-				attachments: policeBackgroundDataAttachments,
-			};
-		}
-
-		if ('isTreatedForMHC' in applicantProfile) {
-			mentalHealthConditionsData = {
-				isTreatedForMHC: this.utilService.booleanToBooleanType(applicantProfile.isTreatedForMHC),
-				attachments: mentalHealthConditionsDataAttachments,
-			};
-		}
-
 		this.permitModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in applicantProfile ? applicantProfile.applicantId : null,
 				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
+				expiredLicenceData,
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
-				personalInformationData: { ...personalInformationData },
-				residentialAddressData: { ...residentialAddressData },
-				mailingAddressData: { ...mailingAddressData },
-				contactInformationData: { ...contactInformationData },
+				personalInformationData,
+				residentialAddressData,
+				mailingAddressData,
+				contactInformationData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						applicantProfile.aliases && applicantProfile.aliases.length > 0
 					),
 					aliases: [],
 				},
-				criminalHistoryData,
-				policeBackgroundData,
-				mentalHealthConditionsData,
 				characteristicsData,
 			},
 			{
@@ -1214,7 +1193,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyPermitIntoModel(
+	private applyApplIntoModel(
 		permitLicenceAppl: PermitLicenceAppResponse,
 		associatedLicence?: MainLicenceResponse | LicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
@@ -1441,7 +1420,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
@@ -1451,10 +1430,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
-		};
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
 		};
 
 		const photographOfYourselfData = resp.photographOfYourselfData;
@@ -1479,7 +1454,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
-				criminalHistoryData,
 				photographOfYourselfData,
 			},
 			{
@@ -1495,7 +1469,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	private applyUpdateDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyUpdateSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 
@@ -1504,10 +1478,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
-		};
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
 		};
 
 		this.permitModelFormGroup.patchValue(
@@ -1518,7 +1488,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
-				criminalHistoryData,
 			},
 			{
 				emitEvent: false,

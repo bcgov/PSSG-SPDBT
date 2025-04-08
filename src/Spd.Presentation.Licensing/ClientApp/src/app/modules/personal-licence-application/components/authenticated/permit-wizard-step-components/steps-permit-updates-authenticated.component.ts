@@ -6,6 +6,7 @@ import { StepPermitEmployerInformationComponent } from '@app/modules/personal-li
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 import { StepPermitReprintComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-reprint.component';
+import { StepPermitCriminalHistoryComponent } from '../../anonymous/permit-wizard-step-components/step-permit-criminal-history.component';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-change.component';
 
@@ -13,6 +14,18 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 	selector: 'app-steps-permit-updates-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step>
+				<app-step-permit-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-criminal-history>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-permit-review-name-change></app-step-permit-review-name-change>
 
@@ -29,7 +42,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-step-permit-photograph-of-yourself>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
 				></app-wizard-footer>
 			</mat-step>
@@ -41,7 +54,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-step-permit-reason>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_REASON)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_REASON)"
 				></app-wizard-footer>
 			</mat-step>
@@ -79,17 +92,18 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComponent {
-	readonly STEP_NAME_CHANGE = 0;
-	readonly STEP_REPRINT = 1;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 2;
-	readonly STEP_REASON = 3;
-	readonly STEP_EMPLOYER_INFORMATION = 4;
-	readonly STEP_RATIONALE = 5;
+	readonly STEP_CRIMINAL_HISTORY = 0;
+	readonly STEP_NAME_CHANGE = 1;
+	readonly STEP_REPRINT = 2;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 3;
+	readonly STEP_REASON = 4;
+	readonly STEP_EMPLOYER_INFORMATION = 5;
+	readonly STEP_RATIONALE = 6;
 
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
@@ -98,6 +112,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode = ApplicationTypeCode.Update;
 
+	@ViewChild(StepPermitCriminalHistoryComponent) criminalHistoryComponen!: StepPermitCriminalHistoryComponent;
 	@ViewChild(StepPermitReviewNameChangeComponent)
 	stepNameChangeComponent!: StepPermitReviewNameChangeComponent;
 	@ViewChild(StepPermitPhotographOfYourselfComponent)
@@ -111,30 +126,10 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 		super(utilService);
 	}
 
-	onStepUpdatePrevious(step: number): void {
-		switch (step) {
-			case this.STEP_REPRINT:
-			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
-			case this.STEP_REASON:
-				if (this.hasGenderChanged || this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
-			default:
-				console.error('Unknown Form', step);
-		}
-
-		this.previousStepperStep.emit(true);
-	}
-
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_CRIMINAL_HISTORY:
+				return this.criminalHistoryComponen.isFormValid();
 			case this.STEP_NAME_CHANGE:
 				return this.stepNameChangeComponent.isFormValid();
 			case this.STEP_REPRINT:
