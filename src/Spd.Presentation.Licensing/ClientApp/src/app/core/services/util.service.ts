@@ -12,6 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
+import { MainLicenceResponse } from './common-application.service';
 
 export interface LicenceStepperStepComponent {
 	onStepNext(formNumber: number): void;
@@ -523,16 +524,17 @@ export class UtilService {
 		return false;
 	}
 
-	isExpiredLicenceRenewable(serviceTypeCode: ServiceTypeCode, expiryDate: string): boolean {
+	isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {
 		if (
-			serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
-			serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification
+			licence.licenceStatusCode != LicenceStatusCode.Expired ||
+			(licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+				licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification)
 		) {
 			return false;
 		}
 
 		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
-		return !this.getIsDateMonthsOrOlder(expiryDate, period);
+		return !this.getIsDateMonthsOrOlder(licence.expiryDate, period);
 	}
 
 	//------------------------------------
