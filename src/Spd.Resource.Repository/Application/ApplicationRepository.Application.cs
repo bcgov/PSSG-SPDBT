@@ -11,22 +11,6 @@ internal partial class ApplicationRepository : IApplicationRepository
 {
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
-        //testing
-        spd_clearanceaccess? clearAccess = await _context.GetClearanceAccessById(Guid.Parse("21442733-4096-4ac5-87a5-6a825a9b9ee0"), ct);
-        if (clearAccess == null) throw new ApiException(HttpStatusCode.InternalServerError, "cannot find clearance access.");
-        var result = await clearAccess.spd_ClearanceAccessNotification().GetValueAsync(ct);
-        //testing code
-        result.IsSuccess = false;
-        result.Result = "artificial error for testing";
-        //testing
-        if (result.IsSuccess != true)
-        {
-            ClearanceAccessResp log = _mapper.Map<ClearanceAccessResp>(clearAccess);
-            _logger.LogError("ClearanceAccessNotification failed with error {Error} for clearance access = {log}", result.Result, log);
-        }
-        return Guid.Empty;
-
-        //testing
         //create application
         spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
@@ -197,10 +181,6 @@ internal partial class ApplicationRepository : IApplicationRepository
         spd_clearanceaccess? clearAccess = await _context.GetClearanceAccessById((Guid)clearanceaccess.spd_clearanceaccessid, ct);
         if (clearAccess == null) throw new ApiException(HttpStatusCode.InternalServerError, "cannot find clearance access.");
         var result = await clearAccess.spd_ClearanceAccessNotification().GetValueAsync(ct);
-        //testing code
-        result.IsSuccess = false;
-        result.Result = "artificial error for testing";
-        //testing
         if (result.IsSuccess != true)
         {
             ClearanceAccessResp log = _mapper.Map<ClearanceAccessResp>(clearAccess);
