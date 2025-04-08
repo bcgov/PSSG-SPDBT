@@ -183,7 +183,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         var result = await clearAccess.spd_ClearanceAccessNotification().GetValueAsync(ct);
         if (result.IsSuccess != true)
         {
-            _logger.LogError("ClearanceAccessNotification failed with error {Error}", result.Result);
+            ClearanceAccessResp log = _mapper.Map<ClearanceAccessResp>(clearAccess);
+            _logger.LogError("ClearanceAccessNotification failed with error {Error} for clearance access = {log}", result.Result, log);
         }
     }
 
