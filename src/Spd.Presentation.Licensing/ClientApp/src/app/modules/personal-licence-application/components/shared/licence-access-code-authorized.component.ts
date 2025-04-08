@@ -4,11 +4,10 @@ import { Router } from '@angular/router';
 import { IActionResult } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
 	selector: 'app-licence-access-code-authorized',
@@ -117,7 +116,7 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 
 	constructor(
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
@@ -150,7 +149,7 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 					return;
 				}
 
-				this.hotToastService.success('The licence or permit has been successfully linked to your account');
+				this.utilService.toasterSuccess('The licence or permit has been successfully linked to your account');
 				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: any) => {

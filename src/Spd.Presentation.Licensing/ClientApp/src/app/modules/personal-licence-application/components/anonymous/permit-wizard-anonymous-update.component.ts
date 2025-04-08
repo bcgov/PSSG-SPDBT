@@ -9,8 +9,8 @@ import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitContactComponent } from './permit-wizard-step-components/steps-permit-contact.component';
 import { StepsPermitDetailsUpdateComponent } from './permit-wizard-step-components/steps-permit-details-update.component';
@@ -29,7 +29,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel> Permit Details </ng-template>
+				<ng-template matStepLabel>Permit Details</ng-template>
 				<app-steps-permit-details-update
 					[isLoggedIn]="false"
 					[isFormValid]="isFormValid"
@@ -147,7 +147,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -289,7 +289,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 						this.serviceTypeCode,
 						this.applicationTypeCode
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					if (this.newLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();

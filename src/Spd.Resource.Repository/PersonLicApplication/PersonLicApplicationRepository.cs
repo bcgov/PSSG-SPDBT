@@ -29,17 +29,13 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
-            contact? existingContact = null;
-            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-            {
-                SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
-                existingContact = SharedRepositoryFuncs.GetLicenceHolderContact(_context, (Guid)cmd.ExpiredLicenceId);
-            }
-            else
-                existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
-
             //spdbt-3402: for unauth, always create new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
+            else
+                _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
         }
         else
         {
@@ -48,6 +44,10 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 spd_application originApp = await _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefaultAsync(ct);
                 //for replace, renew, update, "contact" is already exists, so, do update.
                 contact? existingContact = await _context.GetContactById((Guid)originApp._spd_applicantid_value, ct);
+
+                //for spdbt-3706, do not update contact mental health condition from application when the value from app is No.
+                if (contact.spd_mentalhealthcondition == (int)YesNoOptionSet.No)
+                    contact.spd_mentalhealthcondition = null;
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             }
             else
@@ -143,7 +143,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
-            _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
+            //_mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
         }
 
         return appResp;

@@ -7,15 +7,26 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BizLicensingService, LoginService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
+import { AuthProcessService } from '../services/auth-process.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private router: Router, private dialog: MatDialog) {}
+	constructor(
+		private authProcessService: AuthProcessService,
+		private router: Router,
+		private dialog: MatDialog
+	) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
 			catchError((errorResponse: HttpErrorResponse) => {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
+
+				if (errorResponse.status == 0 && errorResponse.url?.toLowerCase().endsWith('/token')) {
+					// the token refresh failed. logout to prevent app from being in invalid state.
+					this.authProcessService.logout();
+					return throwError(() => errorResponse);
+				}
 
 				// Certain 404s will be handled in the component
 				if (

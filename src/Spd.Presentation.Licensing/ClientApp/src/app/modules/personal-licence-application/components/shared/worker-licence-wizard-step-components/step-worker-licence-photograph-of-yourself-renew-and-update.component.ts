@@ -10,7 +10,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 		<app-step-section [title]="title">
 			<app-form-photograph-of-yourself-update
 				[form]="form"
-				label="licence"
 				[serviceTypeCode]="securityWorkerLicenceCode"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"

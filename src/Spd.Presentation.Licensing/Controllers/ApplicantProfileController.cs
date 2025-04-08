@@ -8,7 +8,6 @@ using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
@@ -52,7 +51,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-
         /// <summary>
         /// Submit applicant update
         /// </summary>
@@ -71,9 +69,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
-
-            ApplicantUpdateCommand command = new(applicantGuidId, request, newDocInfos);
+            ApplicantUpdateCommand command = new(applicantGuidId, request);
             await _mediator.Send(command, ct);
 
             return applicantGuidId;
@@ -116,6 +112,18 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
             return await _mediator.Send(new GetApplicantProfileQuery(Guid.Parse(applicantIdStr)));
+        }
+
+        /// <summary>
+        /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants-anonymous/licence-applications")]
+        [HttpGet]
+        public async Task<IEnumerable<LicenceAppListResponse>> GetApplicantLicenceApplicationsAnonymous(CancellationToken ct)
+        {
+            string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetLicenceAppListQuery(Guid.Parse(applicantIdStr)), ct);
         }
     }
 }

@@ -9,12 +9,12 @@ import { AppRoutes } from '@app/app-routes';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { StepsWorkerLicenceBackgroundComponent } from '../shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
@@ -47,16 +47,17 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-worker-licence-background-renew-and-update
+				<app-steps-worker-licence-background
+					[isLoggedIn]="false"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-worker-licence-background-renew-and-update>
+				></app-steps-worker-licence-background>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
@@ -112,8 +113,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
 
-	@ViewChild(StepsWorkerLicenceBackgroundRenewAndUpdateComponent)
-	stepBackgroundComponent!: StepsWorkerLicenceBackgroundRenewAndUpdateComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
@@ -129,14 +129,13 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	showPhotographOfYourself = true;
 	hasGenderChanged = false;
 	isSoleProprietorSimultaneousFlow = false;
-	policeOfficerRoleCode: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -172,10 +171,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				this.showCitizenshipStep =
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
-
-				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
-					'policeBackgroundData.policeOfficerRoleCode'
-				)?.value;
 
 				// for Update flow: only show unauthenticated user option to upload a new photo
 				// if they changed their sex selection earlier in the application
@@ -297,7 +292,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 							ServiceTypeCode.SecurityWorkerLicence,
 							ApplicationTypeCode.Update
 						);
-						this.hotToastService.success(successMessage);
+						this.utilService.toasterSuccess(successMessage);
 
 						this.router.navigateByUrl(
 							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
@@ -317,7 +312,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete(false);
 		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);

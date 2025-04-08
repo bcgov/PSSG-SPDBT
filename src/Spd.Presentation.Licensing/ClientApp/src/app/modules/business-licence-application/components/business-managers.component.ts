@@ -7,8 +7,8 @@ import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 
+import { UtilService } from '@app/core/services/util.service';
 import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({
@@ -252,7 +252,7 @@ export class BusinessManagersComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private authUserBceidService: AuthUserBceidService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
@@ -397,9 +397,9 @@ export class BusinessManagersComponent implements OnInit {
 			.subscribe((resp) => {
 				if (resp) {
 					if (isCreate) {
-						this.hotToastService.success('Business Manager was successfully added');
+						this.utilService.toasterSuccess('Business Manager was successfully added');
 					} else {
-						this.hotToastService.success('Business Manager was successfully updated');
+						this.utilService.toasterSuccess('Business Manager was successfully updated');
 					}
 					this.loadList();
 				}
@@ -431,7 +431,7 @@ export class BusinessManagersComponent implements OnInit {
 						.deleteBizPortalUser(params.user.id!)
 						.pipe()
 						.subscribe((_res) => {
-							this.hotToastService.success(params.success);
+							this.utilService.toasterSuccess(params.success);
 
 							this.loadList();
 						});

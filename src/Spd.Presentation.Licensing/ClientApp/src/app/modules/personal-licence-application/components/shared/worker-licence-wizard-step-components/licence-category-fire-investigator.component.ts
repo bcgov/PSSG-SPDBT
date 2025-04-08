@@ -7,14 +7,14 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
-    selector: 'app-licence-category-fire-investigator',
-    template: `
+	selector: 'app-licence-category-fire-investigator',
+	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="text-minor-heading mb-2">Experience:</div>
 					To qualify for a Fire Investigator security worker licence, you must meet both of the following experience
 					requirements:
 					<ul>
@@ -28,7 +28,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div class="my-2">
-				<div class="fs-5 mb-2">Upload a copy of your course certificate</div>
+				<div class="text-minor-heading mb-2">Upload a copy of your course certificate</div>
 				<app-file-upload
 					(fileUploaded)="onFileCertificateAdded($event)"
 					(fileRemoved)="onFileRemoved()"
@@ -50,7 +50,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div class="mt-3 mb-2">
-				<div class="fs-5 mb-2">Upload a verification letter</div>
+				<div class="text-minor-heading mb-2">Upload a verification letter</div>
 				<app-file-upload
 					(fileUploaded)="onFileVerificationAdded($event)"
 					(fileRemoved)="onFileRemoved()"
@@ -72,8 +72,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</form>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;

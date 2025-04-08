@@ -11,21 +11,21 @@ import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-    selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
-    template: `
+	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
+	template: `
 		<ng-container *ngIf="isInitialized$ | async">
 			<mat-stepper
-				[selectedIndex]="3"
+				[selectedIndex]="4"
 				linear
 				labelPosition="bottom"
 				[orientation]="orientation"
@@ -33,19 +33,29 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				#stepper
 			>
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Licence Selection</ng-template>
+					<ng-template matStepLabel
+						>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>election</ng-template
+					>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Worker Information</ng-template>
+					<ng-template matStepLabel>Background</ng-template>
 				</mat-step>
 
 				<mat-step [editable]="false" [completed]="true">
-					<ng-template matStepLabel>Review Worker Licence</ng-template>
+					<ng-template matStepLabel>Identification</ng-template>
+				</mat-step>
+
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+					>
 				</mat-step>
 
 				<mat-step [completed]="step1Complete">
-					<ng-template matStepLabel>Business Information</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+					>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
@@ -59,7 +69,9 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Business Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+					>
 					<app-steps-business-licence-selection
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
@@ -77,7 +89,9 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review Business Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
+					>
 					<app-steps-business-licence-review
 						[applicationTypeCode]="applicationTypeCode"
 						[showSaveAndExit]="true"
@@ -98,9 +112,13 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				</mat-step>
 			</mat-stepper>
 		</ng-container>
+
+		<ng-template #StepNameSpace>
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	extends BaseWizardComponent
@@ -108,9 +126,9 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 {
 	isInitialized$ = this.businessApplicationService.waitUntilInitialized$;
 
-	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_LICENCE_SELECTION = 4;
-	readonly STEP_REVIEW_AND_CONFIRM = 5;
+	readonly STEP_BUSINESS_INFORMATION = 4; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_LICENCE_SELECTION = 5;
+	readonly STEP_REVIEW_AND_CONFIRM = 6;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -137,7 +155,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -218,14 +236,14 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	onNextPayStep(): void {
 		this.businessApplicationService.submitBusinessLicenceWithSwlCombinedFlowNew().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(
+				this.utilService.toasterSuccess(
 					'Your business licence and security worker licence have been successfully submitted'
 				);
 				this.payNow(resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
+				this.utilService.toasterError('An error occurred during the save. Please try again.');
 			},
 		});
 	}

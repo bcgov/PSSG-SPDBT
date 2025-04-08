@@ -14,7 +14,7 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.LicenceTermCode).NotEmpty();
         RuleFor(r => r.HasExpiredLicence).NotEmpty();
         RuleFor(r => r.ExpiredLicenceId).NotEmpty().When(r => r.HasExpiredLicence == true);
-        RuleFor(r => r.HasCriminalHistory).NotEmpty();
+        RuleFor(r => r.HasCriminalHistory).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.HasBcDriversLicence).NotEmpty();
         RuleFor(r => r.HairColourCode).NotEmpty();
         RuleFor(r => r.EyeColourCode).NotEmpty();
@@ -33,7 +33,5 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ResidentialAddress.AddressLine1).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.Country).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty().MaximumLength(20).When(r => r.ResidentialAddress != null);
-        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
     }
 }

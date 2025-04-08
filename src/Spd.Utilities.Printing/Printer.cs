@@ -31,6 +31,14 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
         };
     }
 
+    public async Task<AssetResponse> Asset(AssetRequest assetRequest, CancellationToken ct)
+    {
+        var request = (BCMailPlusPrintImageRequest)assetRequest;
+        var asset = await bcMailPlusApi.GetAsset(request.PrintJobId, "RENDERED_PDF", ct);
+        if (asset == null) throw new InvalidOperationException($"asset was returned null for job {request.PrintJobId}");
+        return new AssetResponse(request.PrintJobId, asset, "application/pdf");
+    }
+
     private async Task<PreviewResponse> GeneratePreview(BCMailPlusPrintRequest req, CancellationToken ct)
     {
         var createStatus = await bcMailPlusApi.CreateJob(req.JobTemplate, req.payload, ct);

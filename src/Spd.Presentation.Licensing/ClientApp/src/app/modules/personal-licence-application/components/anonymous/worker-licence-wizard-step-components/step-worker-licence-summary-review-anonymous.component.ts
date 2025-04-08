@@ -15,7 +15,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
 	template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
 					<mat-accordion multi="true">
@@ -68,8 +68,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12" [ngClass]="soleProprietorBizTypeCode ? 'col-xl-4' : 'col-xl-8'">
-										<div class="text-label d-block text-muted">Licence Categories</div>
+								</div>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="text-minor-heading-small">Licence Categories</div>
+								<div class="row mt-0">
+									<div class="col-12">
 										<div class="summary-text-data">
 											<ul class="m-0">
 												<ng-container *ngFor="let category of categoryList; let i = index">
@@ -98,7 +102,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Background Information</div>
+										<div class="panel-header">Background</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -113,69 +117,20 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Police Background</div>
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
-										<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
-									</div>
-									<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Role</div>
-											<div class="summary-text-data">
-												<span
-													*ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-													>{{ policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default }}</span
-												>
-												<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
-											<div class="text-label d-block text-muted">Letter of No Conflict</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</ng-container>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-police-background
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-police-background>
 
-								<div class="text-minor-heading-small">Mental Health Conditions</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Mental Health Conditions</div>
-										<div class="summary-text-data">{{ isTreatedForMHC }}</div>
-									</div>
-									<ng-container *ngIf="isTreatedForMHC === booleanTypeCodes.Yes">
-										<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
-											<div class="text-label d-block text-muted">Mental Health Condition Form</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</ng-container>
-								</div>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-mental-health-conditions
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-mental-health-conditions>
 
-								<div class="text-minor-heading-small">Criminal History</div>
-								<div class="row mt-0">
-									<div class="col-12">
-										<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-										<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-									</div>
-									<div class="col-12" *ngIf="criminalChargeDescription">
-										<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-										<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-									</div>
-								</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-criminal-history>
+
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -236,6 +191,23 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 									</div>
 								</div>
+								<ng-container *ngIf="hasLegalNameChanged">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+
+									<div class="text-minor-heading-small">Legal Name Change</div>
+									<div class="row mt-0">
+										<div class="col-12">
+											<div class="text-label d-block text-muted">Legal Name Change Form</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of hasLegalNameChangedAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
 
 								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -261,21 +233,22 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											</ng-container>
 										</div>
 									</div>
-								</ng-container>
 
-								<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+									<ng-container *ngIf="showCitizenshipStep">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-worker-summary-citizenship
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-citizenship>
+									</ng-container>
+
+									<ng-container *ngIf="photoOfYourselfAttachments">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-worker-summary-photo-of-yourself
+											[workerModelData]="licenceModelData"
+										></app-worker-summary-photo-of-yourself>
+									</ng-container>
+
 									<mat-divider class="mt-3 mb-2"></mat-divider>
-
-									<div class="text-minor-heading-small">Identification</div>
-									<app-worker-summary-citizenship
-										[workerModelData]="licenceModelData"
-										[showCitizenshipStep]="showCitizenshipStep"
-									></app-worker-summary-citizenship>
-
-									<app-worker-summary-photo-of-yourself
-										[workerModelData]="licenceModelData"
-									></app-worker-summary-photo-of-yourself>
-
 									<app-worker-summary-bc-drivers-licence
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-bc-drivers-licence>
@@ -285,29 +258,24 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								<app-worker-summary-characteristics
 									[workerModelData]="licenceModelData"
 								></app-worker-summary-characteristics>
-							</div>
-						</mat-expansion-panel>
 
-						<mat-expansion-panel class="mb-2" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Contact Information</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(99)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-							<div class="panel-body">
-								<div class="text-minor-heading-small mt-4">Contact</div>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="licenceModelData.residentialAddressData"
+									headingLabel="Residential Address"
+									[isAddressTheSame]="false"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="licenceModelData.mailingAddressData"
+									headingLabel="Mailing Address"
+									[isAddressTheSame]="isAddressTheSame"
+									isAddressTheSameLabel="Mailing address is the same as the residential address"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="text-minor-heading-small">Contact</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
@@ -316,26 +284,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber }}
+											{{ phoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="licenceModelData.residentialAddressData"
-									headingLabel="Residential Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="licenceModelData.mailingAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="isAddressTheSame"
-									isAddressTheSameLabel="Mailing address is the same as the residential address"
-								></app-form-address-summary>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -428,7 +380,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onEditStep(stepNumber: number) {
@@ -451,6 +403,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	get soleProprietorBizTypeCode(): string {
 		return this.workerApplicationService.getSummarysoleProprietorBizTypeCode(this.licenceModelData);
+	}
+
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 
 	get licenceTermCode(): LicenceTermCode | null {
@@ -478,19 +434,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return fee ? (fee.amount ?? null) : null;
 	}
 
-	get isPoliceOrPeaceOfficer(): string {
-		return this.workerApplicationService.getSummaryisPoliceOrPeaceOfficer(this.licenceModelData);
-	}
-	get policeOfficerRoleCode(): string {
-		return this.workerApplicationService.getSummarypoliceOfficerRoleCode(this.licenceModelData);
-	}
-	get otherOfficerRole(): string {
-		return this.workerApplicationService.getSummaryotherOfficerRole(this.licenceModelData);
-	}
-	get letterOfNoConflictAttachments(): File[] {
-		return this.workerApplicationService.getSummaryletterOfNoConflictAttachments(this.licenceModelData);
-	}
-
 	get applicantName(): string {
 		return this.workerApplicationService.getSummaryapplicantName(this.licenceModelData);
 	}
@@ -500,29 +443,18 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	get dateOfBirth(): string {
 		return this.workerApplicationService.getSummarydateOfBirth(this.licenceModelData);
 	}
+	get hasLegalNameChanged(): boolean {
+		return this.workerApplicationService.getSummaryhasLegalNameChanged(this.licenceModelData);
+	}
+	get hasLegalNameChangedAttachments(): File[] {
+		return this.workerApplicationService.getSummaryhasLegalNameChangedAttachments(this.licenceModelData);
+	}
 
 	get previousNameFlag(): string {
 		return this.workerApplicationService.getSummarypreviousNameFlag(this.licenceModelData);
 	}
 	get aliases(): Array<any> {
 		return this.workerApplicationService.getSummaryaliases(this.licenceModelData);
-	}
-
-	get isTreatedForMHC(): string {
-		return this.workerApplicationService.getSummaryisTreatedForMHC(this.licenceModelData);
-	}
-	get mentalHealthConditionAttachments(): File[] {
-		return this.workerApplicationService.getSummarymentalHealthConditionAttachments(this.licenceModelData);
-	}
-
-	get criminalHistoryLabel(): string {
-		return this.workerApplicationService.getSummarycriminalHistoryLabel(this.licenceModelData);
-	}
-	get hasCriminalHistory(): string {
-		return this.workerApplicationService.getSummaryhasCriminalHistory(this.licenceModelData);
-	}
-	get criminalChargeDescription(): string {
-		return this.workerApplicationService.getSummarycriminalChargeDescription(this.licenceModelData);
 	}
 
 	get proofOfFingerprintAttachments(): File[] {

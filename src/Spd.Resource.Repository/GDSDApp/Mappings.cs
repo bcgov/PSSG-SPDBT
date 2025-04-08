@@ -76,11 +76,14 @@ internal class Mappings : Profile
         .ForMember(d => d.GraduationInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetGraduationInfo(src, context)));
 
         _ = CreateMap<NonAccreditedSchoolQuestions, spd_application>()
+        .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => (int)DogTypeOptionSet.ServiceDog))
         .ForMember(d => d.spd_dogsinoculationsuptodate, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.AreInoculationsUpToDate))) //refine
         .ForMember(d => d.spd_dogspayedorneutered, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsDogSterilized)))
+        .ForMember(d => d.spd_doctorisprovidinggdsdmedicalform, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.DoctorIsProvidingNeedDogMedicalForm)))
         .ReverseMap()
         .ForMember(d => d.AreInoculationsUpToDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_dogsinoculationsuptodate)))
         .ForMember(d => d.TrainingInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetTrainingInfol(src, context)))
+        .ForMember(d => d.DoctorIsProvidingNeedDogMedicalForm, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_doctorisprovidinggdsdmedicalform)))
         ;
 
         _ = CreateMap<DogInfo, spd_application>()
@@ -100,7 +103,8 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_contactfirstname, opt => opt.MapFrom(s => s.SchoolContactGivenName))
          .ForMember(d => d.spd_contactphone, opt => opt.MapFrom(s => s.SchoolContactPhoneNumber))
          .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress))
-         .ReverseMap();
+         .ReverseMap()
+         .ForMember(d => d.AccreditedSchoolId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
         _ = CreateMap<TrainingSchoolInfo, spd_dogtrainingschool>()
            .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.TrainingBizName))

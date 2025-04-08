@@ -8,9 +8,9 @@ import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-summary-review-update-authenticated',
-    template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+	selector: 'app-step-worker-licence-summary-review-update-authenticated',
+	template: `
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
@@ -64,20 +64,39 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											</div>
 										</ng-container>
 									</div>
-									<div class="col-xl-4 col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Licence Categories</div>
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let category of categoryList; let i = index">
-													<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-												</ng-container>
-											</ul>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<div class="text-minor-heading-small">Licence Categories</div>
+									<div class="row mt-0">
+										<div class="col-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let category of categoryList; let i = index">
+														<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
 									</div>
 
 									<app-worker-summary-dogs-restraints
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-dogs-restraints>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-police-background
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-police-background>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-mental-health-conditions
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-mental-health-conditions>
+
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-criminal-history
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-criminal-history>
 								</div>
 							</div>
 						</mat-expansion-panel>
@@ -86,8 +105,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -117,8 +136,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
@@ -158,7 +177,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
+		this.licenceModelData = this.workerApplicationService.workerModelFormGroup.getRawValue();
 	}
 
 	onUpdateData(): void {

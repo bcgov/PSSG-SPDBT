@@ -7,7 +7,7 @@ import { UtilService } from '@app/core/services/util.service';
 @Component({
 	selector: 'app-step-controlling-member-summary-review',
 	template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
 					<mat-accordion multi="true">
@@ -15,7 +15,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Identification</div>
+										<div class="panel-header">Personal Information</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -62,7 +62,7 @@ import { UtilService } from '@app/core/services/util.service';
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber }}
+											{{ phoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 								</div>

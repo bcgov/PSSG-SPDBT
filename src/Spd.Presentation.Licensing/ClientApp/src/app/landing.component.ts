@@ -16,7 +16,9 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 	selector: 'app-landing',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
-			<app-step-section title="Log in to manage your security licence or permit">
+			<app-step-section>
+				<app-step-title title="Log in to manage your security licence or permit"></app-step-title>
+
 				<div class="row">
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="row">
@@ -66,6 +68,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										color="primary"
 										class="xlarge mt-2"
 										aria-label="Log In with BC Services Card to manage your security worker licence"
+										matTooltip="Log In with BC Services Card to manage your security worker licence"
 										(click)="onRegisterWithBcServicesCard()"
 									>
 										Log In with <span class="fw-bold">BC Services Card</span>
@@ -78,6 +81,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 											tabindex="0"
 											class="large login-link"
 											aria-label="Continue without BC Services Card to manage your security worker licence"
+											matTooltip="Continue without BC Services Card to manage your security worker licence"
 											(click)="onContinue(serviceTypeCodes.SecurityWorkerLicence)"
 											(keydown)="onKeydownContinue($event, serviceTypeCodes.SecurityWorkerLicence)"
 										>
@@ -101,6 +105,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										color="primary"
 										class="xlarge mt-2"
 										aria-label="Log In with Business BCeID to manage your security business licence"
+										matTooltip="Log In with Business BCeID to manage your security business licence"
 										(click)="onRegisterWithBceid()"
 									>
 										Log In with <span class="fw-bold">Business BCeID</span>
@@ -112,7 +117,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										Don't have Business BCeID?<br />
 										<a
 											class="large login-link"
-											aria-label="Register for a Business BCeID"
+											aria-label="Register for Business BCeID"
+											matTooltip="Register for Business BCeID"
 											[href]="bceidGettingStartedUrl"
 											target="_blank"
 										>
@@ -136,6 +142,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										color="primary"
 										class="xlarge mt-2"
 										aria-label="Log In with BC Services Card to manage your body armour permit"
+										matTooltip="Log In with BC Services Card to manage your body armour permit"
 										(click)="onRegisterWithBcServicesCard()"
 									>
 										Log In with <span class="fw-bold">BC Services Card</span>
@@ -168,6 +175,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										color="primary"
 										class="xlarge mt-2"
 										aria-label="Log In with BC Services Card to manage your armoured vehicle permit"
+										matTooltip="Log In with BC Services Card to manage your armoured vehicle permit"
 										(click)="onRegisterWithBcServicesCard()"
 									>
 										Log In with <span class="fw-bold">BC Services Card</span>
@@ -244,7 +252,7 @@ export class LandingComponent implements OnInit {
 		switch (serviceTypeCode) {
 			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
-					.createNewLicenceAnonymous(serviceTypeCode)
+					.createNewApplAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(

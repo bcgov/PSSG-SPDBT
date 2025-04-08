@@ -7,12 +7,12 @@ import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
 } from '@app/shared/components/modal-lookup-by-licence-number.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
@@ -49,7 +49,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
 						<ng-container *ngIf="bizTradeNameReadonly; else EditBizTradeName">
-							<div class="text-primary-color fs-5">{{ bizTradeName.value | default }}</div>
+							<div class="text-minor-heading">{{ bizTradeName.value | default }}</div>
 						</ng-container>
 						<ng-template #EditBizTradeName>
 							<mat-form-field>
@@ -63,7 +63,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<ng-template #LegalBusinessName>
 					<div class="mb-3">
 						<div class="text-primary-color fw-semibold">Legal Business Name</div>
-						<div class="text-primary-color fs-5">{{ legalBusinessName.value | default }}</div>
+						<div class="text-minor-heading">{{ legalBusinessName.value | default }}</div>
 					</div>
 				</ng-template>
 
@@ -110,21 +110,21 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								<div class="row">
 									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Name</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
+										<div class="text-minor-heading">{{ soleProprietorLicenceHolderName.value }}</div>
 									</div>
 									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
+										<div class="text-minor-heading">{{ soleProprietorLicenceNumber.value }}</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-primary-color fs-5">
+										<div class="text-minor-heading">
 											{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Licence Status</div>
-										<div class="text-primary-color fs-5 fw-bold">
+										<div class="text-minor-heading fw-bold">
 											{{ soleProprietorLicenceStatusCode.value }}
 										</div>
 									</div>
@@ -235,7 +235,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
@@ -317,7 +317,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 						this.businessApplicationService
 							.applyBusinessLicenceSoleProprietorSelection(lookupData)
 							.subscribe((_resp: any) => {
-								this.hotToastService.success('A sole proprietor was successfully selected');
+								this.utilService.toasterSuccess('A sole proprietor was successfully selected');
 							});
 					}
 				}

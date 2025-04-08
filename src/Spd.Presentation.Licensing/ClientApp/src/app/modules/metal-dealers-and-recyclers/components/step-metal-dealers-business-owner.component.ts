@@ -7,7 +7,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-metal-dealers-business-owner',
 	template: `
-		<app-step-section title="Business Owner" subtitle="Provide the business owner information.">
+		<app-step-section title="Business owner" subtitle="Provide the business owner information.">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>

@@ -405,7 +405,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new LicenceFeeListResp());
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
-            request.HasNewMentalHealthCondition = true;
+            request.IsTreatedForMHC = true;
             request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
@@ -589,7 +589,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new LicenceFeeListResp());
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            request.HasNewMentalHealthCondition = true;
+            request.IsTreatedForMHC = true;
             request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
