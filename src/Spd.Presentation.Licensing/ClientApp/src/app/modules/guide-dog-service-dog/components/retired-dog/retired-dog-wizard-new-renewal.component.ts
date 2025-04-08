@@ -41,7 +41,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-rd-personal-info
 					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
@@ -55,6 +55,8 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Dog Information</ng-template>
 				<app-steps-rd-dog-info
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
@@ -94,6 +96,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	readonly STEP_REVIEW_AND_CONFIRM = 3;
 	readonly STEP_SUBMIT = 4;
 
+	showSaveAndExit = false;
 	isLoggedIn = false;
 	step2Complete = false;
 	step3Complete = false;
@@ -140,6 +143,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 				this.applicationTypeCode = this.retiredDogApplicationService.retiredDogModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
+
+				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
 
 				this.updateCompleteStatus();
 			}
