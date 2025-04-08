@@ -12,6 +12,7 @@ import {
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
+	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
@@ -33,7 +34,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -42,6 +42,7 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
+	map,
 	of,
 	switchMap,
 	take,
@@ -55,6 +56,10 @@ import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 import { WorkerApplicationHelper } from './worker-application.helper';
 
+export interface LicenceResponseExt extends LicenceResponse {
+	inProgressApplications: boolean;
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -66,6 +71,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicantId: new FormControl(), // when authenticated, the applicant id
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 		latestApplicationId: new FormControl(), // placeholder for id
+		isPreviouslyTreatedForMHC: new FormControl(''), // used to determine label to display
 
 		soleProprietorBizAppId: new FormControl(), // placeholder for Simultaneous flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for Simultaneous flow
@@ -130,8 +136,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private applicantProfileService: ApplicantProfileService,
-		private hotToastService: HotToastService
+		private applicantProfileService: ApplicantProfileService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService);
 
@@ -153,22 +158,20 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					);
 
 					const isSoleProprietorYesNo = this.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value;
-					if (isSoleProprietorYesNo) {
-						const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYesNo);
-						if (!isSoleProprietor) {
-							// if the sole proprietor flag is 'No', then set the bizTypeCode. This is not user selected.
-							const soleProprietorData = {
-								isSoleProprietor: isSoleProprietorYesNo,
-								bizTypeCode: null,
-							};
+					const bizTypeCode = this.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value;
+					if (isSoleProprietorYesNo === BooleanTypeCode.No && bizTypeCode) {
+						// if the sole proprietor flag is 'No', then empty the bizTypeCode. This is not user selected.
+						const soleProprietorData = {
+							isSoleProprietor: isSoleProprietorYesNo,
+							bizTypeCode: null,
+						};
 
-							this.workerModelFormGroup.patchValue(
-								{
-									soleProprietorData,
-								},
-								{ emitEvent: false }
-							);
-						}
+						this.workerModelFormGroup.patchValue(
+							{
+								soleProprietorData,
+							},
+							{ emitEvent: false }
+						);
 					}
 
 					this.updateModelChangeFlags();
@@ -176,6 +179,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					this.workerModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	getIsPreviouslyTreatedForMHC(): boolean {
+		return !!this.workerModelFormGroup.get('isPreviouslyTreatedForMHC')?.value;
 	}
 
 	/**
@@ -318,7 +325,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepBackgroundComplete(): boolean {
+	isStepBackgroundComplete(includeFingerprints: boolean = true): boolean {
 		// console.debug(
 		// 	'isStepBackgroundComplete',
 		// 	this.policeBackgroundFormGroup.valid,
@@ -326,17 +333,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		// 	this.criminalHistoryFormGroup.valid,
 		// 	this.fingerprintProofFormGroup.valid
 		// );
+		const isValid =
+			this.policeBackgroundFormGroup.valid &&
+			this.mentalHealthConditionsFormGroup.valid &&
+			this.criminalHistoryFormGroup.valid;
 
-		if (this.authenticationService.isLoggedIn()) {
-			return true;
-		} else {
-			return (
-				this.policeBackgroundFormGroup.valid &&
-				this.mentalHealthConditionsFormGroup.valid &&
-				this.criminalHistoryFormGroup.valid &&
-				this.fingerprintProofFormGroup.valid
-			);
+		if (includeFingerprints) {
+			return isValid && this.fingerprintProofFormGroup.valid;
 		}
+
+		return isValid;
 	}
 
 	/**
@@ -354,7 +360,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// );
 			return (
 				this.citizenshipFormGroup.valid &&
-				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -466,7 +471,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	/**
 	 * Partial Save - Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 * @returns StrictHttpResponse<WorkerLicenceAppUpsertRequest>
 	 */
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean
@@ -485,7 +490,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				if (isSaveAndExit) {
 					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
-				this.hotToastService.success(msg);
+				this.utilService.toasterSuccess(msg);
 
 				if (!licenceModelFormValue.licenceAppId) {
 					this.workerModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -507,7 +512,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyLicenceAuthenticated(applicantProfile, undefined).pipe(
+					return this.createEmptyApplAuthenticated({
+						applicantProfile,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -585,7 +592,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	getWorkerLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
-		return this.loadPartialLicenceWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -623,15 +630,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Create an empty authenticated licence
 	 * @returns
 	 */
-	createNewLicenceAuthenticated(): Observable<any> {
+	createNewLicenceAuthenticated(previousExpiredLicence: MainLicenceResponse | undefined): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					return this.createEmptyLicenceAuthenticated(applicantProfile, ApplicationTypeCode.New).pipe(
+					return this.createEmptyApplAuthenticated({
+						applicantProfile,
+						applicationTypeCode: ApplicationTypeCode.New,
+						previousExpiredLicence,
+					}).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
-
 							this.commonApplicationService.setApplicationTitle(
 								ServiceTypeCode.SecurityWorkerLicence,
 								ApplicationTypeCode.New
@@ -649,68 +659,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);
 
-		// Get the keyCode for the existing documents to save.
-		const documentsToSaveApis: Observable<string>[] = [];
-
-		const existingDocumentIds: Array<string> = [];
-
-		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
-			const newDocumentsOnly: Array<Blob> = [];
-
-			doc.documents.forEach((item: Blob) => {
-				const spdFile: SpdFile = item as SpdFile;
-				if (spdFile.documentUrlId) {
-					existingDocumentIds.push(spdFile.documentUrlId);
-				} else {
-					newDocumentsOnly.push(item);
-				}
-			});
-
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
-						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
 		});
-
-		// console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
-		// console.debug('[saveUserProfile] getProfileSaveBody', body);
-		// console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
-		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		// console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
-
-		if (documentsToSaveApis.length > 0) {
-			return forkJoin(documentsToSaveApis).pipe(
-				switchMap((resps: string[]) => {
-					// pass in the list of document key codes
-					body.documentKeyCodes = [...resps];
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-						applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-						body,
-					});
-				})
-			);
-		} else {
-			// pass in the list of document ids that were in the original
-			// application and are still being used
-			body.previousDocumentIds = [...existingDocumentIds];
-
-			return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-				body,
-			});
-		}
+		// }
 	}
 
 	/**
@@ -729,14 +683,14 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
 
-		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -796,16 +750,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		}
 	}
 
-	private createEmptyLicenceAuthenticated(
-		applicantProfile: ApplicantProfileResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined
-	): Observable<any> {
+	private createEmptyApplAuthenticated({
+		applicantProfile,
+		applicationTypeCode,
+		previousExpiredLicence,
+	}: {
+		applicantProfile: ApplicantProfileResponse;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		previousExpiredLicence?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(applicantProfile, applicationTypeCode);
+		return this.applyProfileIntoModel({
+			workerLicenceAppl: null,
+			applicantProfile,
+			applicationTypeCode,
+			previousExpiredLicence,
+		});
 	}
 
-	private loadPartialLicenceWithIdAuthenticated(licenceAppId: string): Observable<any> {
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -820,15 +784,63 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile);
+				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile).pipe(
+					tap((_resp: any) => {
+						// when resuming, populate the model with existing data for police, mhc and criminal history data
+						const policeBackgroundDataAttachments: Array<File> = [];
+						const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+						workerLicenceAppl.documentInfos?.forEach((doc: Document) => {
+							switch (doc.licenceDocumentTypeCode) {
+								case LicenceDocumentTypeCode.MentalHealthCondition: {
+									const aFile = this.fileUtilService.dummyFile(doc);
+									mentalHealthConditionsDataAttachments.push(aFile);
+									break;
+								}
+								case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+									const aFile = this.fileUtilService.dummyFile(doc);
+									policeBackgroundDataAttachments.push(aFile);
+									break;
+								}
+							}
+						});
+
+						const criminalHistoryData = {
+							hasCriminalHistory: this.utilService.booleanToBooleanType(workerLicenceAppl.hasCriminalHistory),
+							criminalChargeDescription: '',
+						};
+
+						const policeBackgroundData = {
+							isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(workerLicenceAppl.isPoliceOrPeaceOfficer),
+							policeOfficerRoleCode: workerLicenceAppl.policeOfficerRoleCode,
+							otherOfficerRole: workerLicenceAppl.otherOfficerRole,
+							attachments: policeBackgroundDataAttachments,
+						};
+
+						const mentalHealthConditionsData = {
+							isTreatedForMHC: this.utilService.booleanToBooleanType(workerLicenceAppl.isTreatedForMHC),
+							attachments: mentalHealthConditionsDataAttachments,
+						};
+
+						this.workerModelFormGroup.patchValue(
+							{
+								criminalHistoryData,
+								policeBackgroundData,
+								mentalHealthConditionsData,
+							},
+							{
+								emitEvent: false,
+							}
+						);
+
+						console.debug('[loadPartialLicenceWithIdAuthenticated] licenceFormGroup', this.workerModelFormGroup.value);
+					})
+				);
 			})
 		);
 	}
 
-	private loadExistingLicenceWithLatestAuthenticated(
-		applicantId: string,
-		associatedLicence: MainLicenceResponse
-	): Observable<any> {
+	private loadLatestApplAuthenticated(applicantId: string, associatedLicence: MainLicenceResponse): Observable<any> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -848,16 +860,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
+				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
 	}
 
 	/**
-	 * Loads the a business application and profile into the business model
+	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
-	private loadLicenceAppAndProfile(
+	private loadLicenceApplAndProfile(
 		workerLicenceAppl: WorkerLicenceAppResponse,
 		applicantProfile: ApplicantProfileResponse,
 		associatedLicence?: MainLicenceResponse
@@ -865,7 +877,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (workerLicenceAppl.expiredLicenceId) {
 			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceAppl.expiredLicenceId }).pipe(
 				switchMap((expiredLicence: LicenceResponse) => {
-					return this.applyLicenceAndProfileIntoModel(
+					return this.applyApplAndProfileIntoModel(
 						workerLicenceAppl,
 						applicantProfile,
 						associatedLicence,
@@ -875,22 +887,27 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			);
 		}
 
-		return this.applyLicenceAndProfileIntoModel(workerLicenceAppl, applicantProfile, associatedLicence);
+		return this.applyApplAndProfileIntoModel(workerLicenceAppl, applicantProfile, associatedLicence);
 	}
 
-	private applyLicenceAndProfileIntoModel(
+	private applyApplAndProfileIntoModel(
 		workerLicenceAppl: WorkerLicenceAppResponse,
 		applicantProfile: ApplicantProfileResponse | null | undefined,
 		associatedLicence?: MainLicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
-		return this.applyLicenceProfileIntoModel(
-			applicantProfile ?? workerLicenceAppl,
-			workerLicenceAppl.applicationTypeCode,
-			associatedLicence
-		).pipe(
+		return this.applyProfileIntoModel({
+			workerLicenceAppl,
+			applicantProfile,
+			applicationTypeCode: workerLicenceAppl.applicationTypeCode,
+			associatedLicence,
+		}).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence, associatedExpiredLicence);
+				return this.applyApplIntoModel({
+					workerLicenceAppl,
+					associatedLicence,
+					associatedExpiredLicence,
+				});
 			})
 		);
 	}
@@ -910,7 +927,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence),
+					this.loadLatestApplAuthenticated(applicantId, associatedLicence),
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -919,18 +936,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
+						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
 				// ApplicationTypeCode.Replacement
-				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence).pipe(
+				return this.loadLatestApplAuthenticated(applicantId, associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
 					})
 				);
 			}
@@ -952,10 +969,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceResponse> {
+	): Observable<LicenceResponseExt> {
 		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(take(1));
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
 	}
 
 	/**
@@ -969,7 +997,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				const personalInformationData = { ..._resp.personalInformationData };
+				const personalInformationData = _resp.personalInformationData;
 
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
@@ -1026,8 +1054,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
 				);
-
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.workerModelFormGroup.value);
 			})
 		);
 	}
@@ -1055,7 +1081,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.securityWorkerLicensingService.apiSpWorkerLicenceApplicationGet().pipe(
 			switchMap((resp: WorkerLicenceAppResponse) => {
-				return this.applyLicenceAndProfileIntoModel(resp, null);
+				return this.applyApplAndProfileIntoModel(resp, null);
 			})
 		);
 	}
@@ -1064,8 +1090,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewLicenceAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
-		return this.getLicenceEmptyAnonymous(serviceTypeCode).pipe(
+	createNewApplAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.getApplEmptyAnonymous(serviceTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -1074,7 +1100,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+	private getApplEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		const characteristicsData = {
@@ -1090,8 +1116,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		this.workerModelFormGroup.patchValue(
 			{
 				serviceTypeData: { serviceTypeCode: serviceTypeCode },
+				isPreviouslyTreatedForMHC: false,
 				profileConfirmationData: { isProfileUpToDate: true },
-				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 				characteristicsData,
 			},
 			{
@@ -1115,7 +1141,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceApplicationAnonymous(associatedLicence),
+					this.loadExistingLicenceApplAnonymous(associatedLicence),
 					this.licenceService.apiLicencesLicencePhotoGet(),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -1124,40 +1150,52 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
+							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
+						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceApplicationAnonymous(associatedLicence).pipe(
+				return this.loadExistingLicenceApplAnonymous(associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
+						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
 					})
 				);
 			}
 		}
 	}
 
-	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
+	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-			switchMap((workerLicenceAppl: WorkerLicenceAppResponse) => {
-				return this.applyLicenceProfileIntoModel(
+		const apis: Observable<any>[] = [
+			this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet(),
+			this.applicantProfileService.apiApplicantGet(),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const workerLicenceAppl = resps[0];
+				const applicantProfile = resps[1];
+
+				return this.applyProfileIntoModel({
 					workerLicenceAppl,
-					workerLicenceAppl.applicationTypeCode,
-					associatedLicence
-				).pipe(
+					applicantProfile,
+					applicationTypeCode: workerLicenceAppl.applicationTypeCode,
+					associatedLicence,
+				}).pipe(
 					switchMap((_resp: any) => {
 						// remove reference to expired licence - data is only used in the Resume authenticated flow.
 						workerLicenceAppl.expiredLicenceId = null;
 						workerLicenceAppl.expiredLicenceNumber = null;
 						workerLicenceAppl.hasExpiredLicence = false;
 
-						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
+						return this.applyApplIntoModel({
+							workerLicenceAppl,
+							associatedLicence,
+						});
 					})
 				);
 			})
@@ -1288,12 +1326,19 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	/*************************************************************/
 	// COMMON
 	/*************************************************************/
-
-	private applyLicenceProfileIntoModel(
-		applicantProfile: ApplicantProfileResponse | WorkerLicenceAppResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		associatedLicence?: MainLicenceResponse | LicenceResponse
-	): Observable<any> {
+	private applyProfileIntoModel({
+		workerLicenceAppl,
+		applicantProfile,
+		applicationTypeCode,
+		associatedLicence,
+		previousExpiredLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse | null | undefined;
+		applicantProfile: ApplicantProfileResponse | null | undefined;
+		applicationTypeCode: ApplicationTypeCode | undefined;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		previousExpiredLicence?: MainLicenceResponse | undefined;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
@@ -1302,21 +1347,30 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
 		}
 
+		let expiredLicenceData: any = null;
+		if (previousExpiredLicence?.licenceId) {
+			expiredLicenceData = this.getExpiredLicenceData(
+				this.utilService.booleanToBooleanType(true),
+				previousExpiredLicence
+			);
+		}
+
+		const profileData = applicantProfile ?? workerLicenceAppl;
 		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName1: applicantProfile.middleName1,
-			middleName2: applicantProfile.middleName2,
-			surname: applicantProfile.surname,
-			dateOfBirth: applicantProfile.dateOfBirth,
-			genderCode: applicantProfile.genderCode,
+			givenName: profileData?.givenName,
+			middleName1: profileData?.middleName1,
+			middleName2: profileData?.middleName2,
+			surname: profileData?.surname,
+			dateOfBirth: profileData?.dateOfBirth,
+			genderCode: profileData?.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged,
-			origGivenName: applicantProfile.givenName,
-			origMiddleName1: applicantProfile.middleName1,
-			origMiddleName2: applicantProfile.middleName2,
-			origSurname: applicantProfile.surname,
-			origDateOfBirth: applicantProfile.dateOfBirth,
-			origGenderCode: applicantProfile.genderCode,
+			origGivenName: profileData?.givenName,
+			origMiddleName1: profileData?.middleName1,
+			origMiddleName2: profileData?.middleName2,
+			origSurname: profileData?.surname,
+			origDateOfBirth: profileData?.dateOfBirth,
+			origGenderCode: profileData?.genderCode,
 			cardHolderName: associatedLicence?.nameOnCard ?? null,
 			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
 		};
@@ -1340,93 +1394,56 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
 		};
 
-		let height = applicantProfile.height ? applicantProfile.height + '' : null;
+		let height = profileData?.height ? profileData?.height + '' : null;
 		let heightInches = '';
-		if (
-			applicantProfile.heightUnitCode == HeightUnitCode.Inches &&
-			applicantProfile.height &&
-			applicantProfile.height > 0
-		) {
-			height = Math.trunc(applicantProfile.height / 12) + '';
-			heightInches = (applicantProfile.height % 12) + '';
+		if (profileData?.heightUnitCode == HeightUnitCode.Inches && profileData?.height && profileData?.height > 0) {
+			height = Math.trunc(profileData?.height / 12) + '';
+			heightInches = (profileData?.height % 12) + '';
 		}
 
 		const characteristicsData = {
-			hairColourCode: applicantProfile.hairColourCode,
-			eyeColourCode: applicantProfile.eyeColourCode,
+			hairColourCode: profileData?.hairColourCode,
+			eyeColourCode: profileData?.eyeColourCode,
 			height,
-			heightUnitCode: applicantProfile.heightUnitCode ?? HeightUnitCode.Inches,
+			heightUnitCode: profileData?.heightUnitCode ?? HeightUnitCode.Inches,
 			heightInches,
-			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
-			weightUnitCode: applicantProfile.weightUnitCode ?? WeightUnitCode.Pounds,
+			weight: profileData?.weight ? profileData?.weight + '' : null,
+			weightUnitCode: profileData?.weightUnitCode ?? WeightUnitCode.Pounds,
 		};
 
 		const contactInformationData = {
-			emailAddress: applicantProfile.emailAddress,
-			phoneNumber: applicantProfile.phoneNumber,
+			emailAddress: profileData?.emailAddress,
+			phoneNumber: profileData?.phoneNumber,
 		};
 
 		const residentialAddressData = {
 			addressSelected: true,
-			addressLine1: applicantProfile.residentialAddress?.addressLine1,
-			addressLine2: applicantProfile.residentialAddress?.addressLine2,
-			city: applicantProfile.residentialAddress?.city,
-			country: applicantProfile.residentialAddress?.country,
-			postalCode: applicantProfile.residentialAddress?.postalCode,
-			province: applicantProfile.residentialAddress?.province,
+			addressLine1: profileData?.residentialAddress?.addressLine1,
+			addressLine2: profileData?.residentialAddress?.addressLine2,
+			city: profileData?.residentialAddress?.city,
+			country: profileData?.residentialAddress?.country,
+			postalCode: profileData?.residentialAddress?.postalCode,
+			province: profileData?.residentialAddress?.province,
 		};
 
 		const mailingAddressData = {
-			addressSelected: !!applicantProfile.mailingAddress,
+			addressSelected: !!profileData?.mailingAddress,
 			isAddressTheSame: false,
-			addressLine1: applicantProfile.mailingAddress?.addressLine1,
-			addressLine2: applicantProfile.mailingAddress?.addressLine2,
-			city: applicantProfile.mailingAddress?.city,
-			country: applicantProfile.mailingAddress?.country,
-			postalCode: applicantProfile.mailingAddress?.postalCode,
-			province: applicantProfile.mailingAddress?.province,
-		};
-
-		const policeBackgroundDataAttachments: Array<File> = [];
-		const mentalHealthConditionsDataAttachments: Array<File> = [];
-
-		applicantProfile.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
-				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					mentalHealthConditionsDataAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					policeBackgroundDataAttachments.push(aFile);
-					break;
-				}
-			}
-		});
-
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(applicantProfile.hasCriminalHistory),
-			criminalChargeDescription: '',
-		};
-
-		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(applicantProfile.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: applicantProfile.policeOfficerRoleCode,
-			otherOfficerRole: applicantProfile.otherOfficerRole,
-			attachments: policeBackgroundDataAttachments,
-		};
-
-		const mentalHealthConditionsData = {
-			isTreatedForMHC: this.utilService.booleanToBooleanType(applicantProfile.isTreatedForMHC),
-			attachments: mentalHealthConditionsDataAttachments,
+			addressLine1: profileData?.mailingAddress?.addressLine1,
+			addressLine2: profileData?.mailingAddress?.addressLine2,
+			city: profileData?.mailingAddress?.city,
+			country: profileData?.mailingAddress?.country,
+			postalCode: profileData?.mailingAddress?.postalCode,
+			province: profileData?.mailingAddress?.province,
 		};
 
 		this.workerModelFormGroup.patchValue(
 			{
-				applicantId: 'applicantId' in applicantProfile ? applicantProfile.applicantId : null,
+				applicantId: profileData && 'applicantId' in profileData ? profileData.applicantId : null,
+				isPreviouslyTreatedForMHC: !!profileData?.isTreatedForMHC,
 				serviceTypeData,
 				applicationTypeData,
+				expiredLicenceData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData,
@@ -1435,13 +1452,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				contactInformationData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
-						applicantProfile.aliases && applicantProfile.aliases.length > 0
+						profileData?.aliases && profileData?.aliases.length > 0
 					),
 					aliases: [],
 				},
-				criminalHistoryData,
-				policeBackgroundData,
-				mentalHealthConditionsData,
 				characteristicsData,
 			},
 			{
@@ -1450,7 +1464,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 
 		const aliasesArray = this.workerModelFormGroup.get('aliasesData.aliases') as FormArray;
-		applicantProfile.aliases?.forEach((alias: Alias) => {
+		profileData?.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -1466,11 +1480,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return of(this.workerModelFormGroup.value);
 	}
 
-	private applyLicenceIntoModel(
-		workerLicenceAppl: WorkerLicenceAppResponse,
-		associatedLicence?: MainLicenceResponse | LicenceResponse,
-		associatedExpiredLicence?: LicenceResponse
-	): Observable<any> {
+	private applyApplIntoModel({
+		workerLicenceAppl,
+		associatedLicence,
+		associatedExpiredLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+		associatedExpiredLicence?: LicenceResponse;
+	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
@@ -1518,21 +1536,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			bcDriversLicenceNumber: workerLicenceAppl.bcDriversLicenceNumber,
 		};
 
-		let restraintsAuthorizationData: any = {
-			carryAndUseRestraints: BooleanTypeCode.No,
-			carryAndUseRestraintsDocument: null,
-			attachments: [],
-		};
-		let dogsAuthorizationData: any = {
-			useDogs: BooleanTypeCode.No,
-			dogsPurposeFormGroup: {
-				isDogsPurposeDetectionDrugs: null,
-				isDogsPurposeDetectionExplosives: null,
-				isDogsPurposeProtection: null,
-			},
-			attachments: [],
-		};
-
 		const initialCategoryData = this.initializeCategoryFormGroups(workerLicenceAppl.categoryCodes);
 
 		let categoryArmouredCarGuardFormGroup = initialCategoryData[0];
@@ -1552,6 +1555,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const categorySecurityConsultantFormGroup = initialCategoryData[14];
 		let categorySecurityGuardFormGroup = initialCategoryData[15];
 		const categorySecurityGuardSupFormGroup = initialCategoryData[16];
+
+		let restraintsAuthorizationData: any = {
+			carryAndUseRestraints: this.utilService.booleanToBooleanType(workerLicenceAppl.carryAndUseRestraints),
+			carryAndUseRestraintsDocument: null,
+			attachments: [],
+		};
+		let dogsAuthorizationData: any = {
+			useDogs: this.utilService.booleanToBooleanType(workerLicenceAppl.useDogs),
+			dogsPurposeFormGroup: {
+				isDogsPurposeDetectionDrugs: null,
+				isDogsPurposeDetectionExplosives: null,
+				isDogsPurposeProtection: null,
+			},
+			attachments: [],
+		};
 
 		const fingerprintProofDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
@@ -2029,7 +2047,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		];
 	}
 
-	private applyRenewalDataUpdatesToModel(
+	private applyRenewalSpecificDataToModel(
 		resp: any,
 		isAuthenticated: boolean,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
@@ -2055,7 +2073,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		} else {
 			soleProprietorData = {
-				isSoleProprietor: null, // Remove data that should be re-prompted for
+				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for // TODO is this ok?
 				bizTypeCode: null,
 			};
 		}
@@ -2096,28 +2114,27 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		}
 
-		const mentalHealthConditionsData = {
-			isTreatedForMHC: null,
-			attachments: [],
-			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
-		};
+		// const mentalHealthConditionsData = {
+		// 	isTreatedForMHC: null,
+		// 	attachments: [],
+		// };
 
-		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: null,
-			policeOfficerRoleCode: null,
-			otherOfficerRole: null,
-			attachments: [],
-		};
+		// const policeBackgroundData = {
+		// 	isPoliceOrPeaceOfficer: null,
+		// 	policeOfficerRoleCode: null,
+		// 	otherOfficerRole: null,
+		// 	attachments: [],
+		// };
 
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
+		// const criminalHistoryData = {
+		// 	hasCriminalHistory: null,
+		// 	criminalChargeDescription: null,
+		// };
 
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
-		const photographOfYourselfData = { ...resp.photographOfYourselfData };
+		const photographOfYourselfData = resp.photographOfYourselfData;
 
 		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
@@ -2166,9 +2183,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
-				mentalHealthConditionsData,
-				policeBackgroundData,
-				criminalHistoryData,
+				// mentalHealthConditionsData,
+				// policeBackgroundData,
+				// criminalHistoryData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2201,7 +2218,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private applyUpdateDataUpdatesToModel(
+	private applyUpdateSpecificDataToModel(
 		resp: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
@@ -2238,7 +2255,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
 			attachments: [],
-			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
 
 		const [
@@ -2315,7 +2331,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private applyReplacementDataUpdatesToModel(
+	private applyReplacementSpecificDataToModel(
 		resp: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
@@ -2354,7 +2370,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				mailingAddressData: { ...mailingAddressData },
+				mailingAddressData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,

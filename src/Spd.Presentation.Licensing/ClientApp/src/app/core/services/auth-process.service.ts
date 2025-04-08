@@ -212,7 +212,7 @@ export class AuthProcessService {
 
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const returningRoute = GuideDogServiceDogRoutes.pathGdsdUserApplications();
+		const returningRoute = GuideDogServiceDogRoutes.pathGdsdMainApplications();
 
 		const loginInfo = await this.authenticationService.login(
 			this.identityProvider,

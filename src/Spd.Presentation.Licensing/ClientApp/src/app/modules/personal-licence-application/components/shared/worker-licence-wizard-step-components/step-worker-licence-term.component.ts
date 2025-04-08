@@ -6,8 +6,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-term',
-    template: `
+	selector: 'app-step-worker-licence-term',
+	template: `
 		<app-step-section
 			title="Select your licence term"
 			subtitle="The licence term will apply to all licence categories"
@@ -41,8 +41,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepComponent {
 	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
@@ -60,7 +60,24 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		return this.form.valid;
+		const isValid = this.form.valid;
+
+		if (isValid) {
+			// Make sure the selected term is shown in the list
+			// For example, user could select 'Electronic Locking Device Installer' then 1 Year term.
+			// Then the user goes back and selects 'Security Guard - Under Supervision' instead.
+			// This only has 90 days as an option, but the user previously selected 1 year.
+			const licenceTermCode = this.form.get('licenceTermCode')?.value;
+			const isFound = this.termCodes.findIndex((item: LicenceFeeResponse) => item.licenceTermCode === licenceTermCode);
+
+			// Selected item is not valid
+			if (isFound < 0) {
+				this.form.patchValue({ licenceTermCode: null });
+				return false;
+			}
+		}
+
+		return isValid;
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
@@ -82,6 +99,10 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			? this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value
 			: BizTypeCode.None;
 
+		const categorySecurityGuardSupIsSelected = !!this.workerApplicationService.workerModelFormGroup.get(
+			'categorySecurityGuardSupFormGroup.isInclude'
+		)?.value;
+
 		const originalLicenceTermCode = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalLicenceTermCode'
 		)?.value;
@@ -90,7 +111,8 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			serviceTypeCode,
 			applicationTypeCode,
 			bizTypeCode,
-			originalLicenceTermCode
+			originalLicenceTermCode,
+			categorySecurityGuardSupIsSelected
 		);
 	}
 }

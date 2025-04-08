@@ -17,7 +17,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Training:</div>
+					<div class="text-minor-heading mb-2">Training:</div>
 					To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
 					requirements:
 
@@ -68,7 +68,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-5 mb-2">
+				<div class="text-minor-heading mb-2">
 					<span
 						*ngIf="
 							requirementCode.value ===

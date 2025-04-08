@@ -5,5 +5,6 @@
 import { TrainingInfo } from '../models/training-info';
 export interface NonAccreditedSchoolQuestions {
   areInoculationsUpToDate?: boolean | null;
+  doctorIsProvidingNeedDogMedicalForm?: boolean | null;
   trainingInfo?: TrainingInfo;
 }

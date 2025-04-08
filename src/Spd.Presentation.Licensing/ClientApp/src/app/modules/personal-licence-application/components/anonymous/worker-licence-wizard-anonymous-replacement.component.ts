@@ -6,9 +6,9 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-mailing-address-replacement-anonymous.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -50,7 +50,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -85,15 +85,13 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			} else {
 				this.workerApplicationService.submitLicenceReplacementAnonymous().subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-						console.debug('[onPay] submitLicenceReplacementAnonymous', resp.body);
-
 						// save this locally just in application payment fails
 						this.newLicenceAppId = resp.body.licenceAppId!;
 						const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 							ServiceTypeCode.SecurityWorkerLicence,
 							ApplicationTypeCode.Replacement
 						);
-						this.hotToastService.success(successMessage);
+						this.utilService.toasterSuccess(successMessage);
 
 						this.payNow(this.newLicenceAppId);
 					},

@@ -8,11 +8,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
-    selector: 'app-business-category-security-guard',
-    template: `
+	selector: 'app-business-category-security-guard',
+	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="fs-5 lh-base mt-3 mb-2">
+				<div class="text-minor-heading lh-base mt-3 mb-2">
 					Do you want to request authorization to use dogs for the purpose of security work?
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
@@ -83,9 +83,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</div>
 		</form>
 	`,
-    styles: [],
-    animations: [showHideTriggerSlideAnimation],
-    standalone: false
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+	standalone: false,
 })
 export class BusinessCategorySecurityGuardComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categorySecurityGuardFormGroup;

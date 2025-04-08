@@ -89,6 +89,7 @@ internal class SecurityWorkerAppManager :
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, cancellationToken);
+        await UpdateApplicantProfile(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.ApplicantId, cancellationToken);
         decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -155,7 +156,6 @@ internal class SecurityWorkerAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
-
         if (IsSoleProprietorComboApp(request)) //for sole proprietor, we only commit application until user submit the biz liz app. spdbt-2936 item 3
         {
             return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = 0 };
@@ -341,6 +341,7 @@ internal class SecurityWorkerAppManager :
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            createApp.ChangeSummary = changes.ChangeSummary;
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
             //copying all old files to new application in PreviousFileIds 
@@ -358,9 +359,7 @@ internal class SecurityWorkerAppManager :
         else
         {
             //update contact directly
-            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-            updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
-            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            await UpdateApplicantProfile(request, originalLic.LicenceHolderId.Value, cancellationToken);
         }
 
         await UploadNewDocsAsync(request.DocumentRelatedInfos,
@@ -375,6 +374,12 @@ internal class SecurityWorkerAppManager :
             cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
 
+    }
+    private async Task UpdateApplicantProfile(WorkerLicenceAppBase r, Guid contactId, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
+        updateCmd.Id = contactId;
+        await _contactRepository.ManageAsync(updateCmd, ct);
     }
 
     private async Task<ChangeSpec> MakeChanges(
@@ -440,7 +445,7 @@ internal class SecurityWorkerAppManager :
         }
 
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
-        if (newRequest.HasNewMentalHealthCondition == true)
+        if (newRequest.IsTreatedForMHC == true)
         {
             changes.MentalHealthStatusChanged = true;
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
@@ -457,7 +462,7 @@ internal class SecurityWorkerAppManager :
         }
 
         //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
-        if (newRequest.HasNewCriminalRecordCharge == true)
+        if (newRequest.HasCriminalHistory == true)
         {
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
@@ -470,6 +475,36 @@ internal class SecurityWorkerAppManager :
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
+        }
+
+        var newData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(newRequest);
+        var oldData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(originalLic);
+        _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        changes.ChangeSummary = string.Join("\r\n", summary);
+        if (newRequest.IsPoliceOrPeaceOfficer.HasValue)
+        {
+            // If any police officer data has changed, just add one change summary message
+            // IsPoliceOrPeaceOfficer changed from true -> false or vice versa
+            if (contactResp.IsPoliceOrPeaceOfficer == null || contactResp.IsPoliceOrPeaceOfficer.Value != newRequest.IsPoliceOrPeaceOfficer.Value)
+            {
+                changes.ChangeSummary += "\r\nPeace Officer has been updated";
+            }
+            // PoliceOfficerRoleCode or OtherOfficerRole changed. Only need to check if IsPoliceOrPeaceOfficer is true
+            else if (newRequest.IsPoliceOrPeaceOfficer.Value &&
+                (((newRequest.PoliceOfficerRoleCode != null || contactResp.PoliceOfficerRoleCode != null) && !Equals(newRequest.PoliceOfficerRoleCode.Value.ToString(), contactResp.PoliceOfficerRoleCode.Value.ToString())) ||
+                    ((newRequest.OtherOfficerRole != null || contactResp.OtherOfficerRole != null) && !Equals(newRequest.OtherOfficerRole, contactResp.OtherOfficerRole))))
+            {
+                changes.ChangeSummary += "\r\nPeace Officer has been updated";
+            }
+        }
+        if (newRequest.IsTreatedForMHC.HasValue && newRequest.IsTreatedForMHC.Value)
+        {
+            changes.ChangeSummary += "\r\nMental Health Condition has been updated";
+        }
+        if (newRequest.HasCriminalHistory.HasValue && newRequest.HasCriminalHistory.Value)
+        {
+            changes.ChangeSummary += "\r\nSelf Disclosure has been updated";
         }
         return changes;
     }
@@ -544,7 +579,7 @@ internal class SecurityWorkerAppManager :
             }
         }
 
-        if (request.HasNewMentalHealthCondition == true &&
+        if (request.IsTreatedForMHC == true &&
             isAuthenticated == false &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
@@ -611,5 +646,8 @@ internal class SecurityWorkerAppManager :
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+        public string ChangeSummary { get; set; }
     }
 }
+
+

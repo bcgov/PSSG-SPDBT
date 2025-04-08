@@ -9,7 +9,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	selector: 'app-business-licence-main-applications-list',
 	template: `
 		<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
-			<div class="text-primary-color fs-5 py-3">Applications</div>
+			<div class="text-minor-heading py-3">Applications</div>
 
 			<div class="row summary-card-section summary-card-section__orange m-0 pt-2">
 				<div class="col-12">

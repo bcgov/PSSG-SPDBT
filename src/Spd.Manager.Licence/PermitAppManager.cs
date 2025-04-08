@@ -87,6 +87,7 @@ internal class PermitAppManager :
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
+        await UpdateApplicantProfile(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.ApplicantId, cancellationToken);
         decimal cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -236,14 +237,12 @@ internal class PermitAppManager :
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint == true))
         {
-            createLicResponse = await HandleReprintRequest(request, cmd.LicAppFileInfos, cancellationToken);
+            createLicResponse = await HandleReprintRequest(request, cmd.LicAppFileInfos, changes, cancellationToken);
         }
         else
         {
             //update contact directly
-            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-            updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
-            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
+            await UpdateApplicantProfile(cmd.LicenceAnonymousRequest, originalLic.LicenceHolderId.Value, cancellationToken);
             //clean up old files
             await CleanUpOldFiles(request, originalLic, cancellationToken);
 
@@ -267,6 +266,13 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
+    private async Task UpdateApplicantProfile(PermitLicenceAppBase r, Guid contactId, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(r);
+        updateCmd.Id = contactId;
+        await _contactRepository.ManageAsync(updateCmd, ct);
+    }
+
     private async Task CleanUpOldFiles(PermitAppSubmitRequest request, LicenceResp? originalLic, CancellationToken cancellationToken)
     {
         DocumentListResp docResp = await _documentRepository.QueryAsync(
@@ -286,9 +292,10 @@ internal class PermitAppManager :
             await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
         }
     }
-    private async Task<LicenceApplicationCmdResp?> HandleReprintRequest(PermitAppSubmitRequest? request, IEnumerable<LicAppFileInfo> licAppFileInfos, CancellationToken cancellationToken)
+    private async Task<LicenceApplicationCmdResp?> HandleReprintRequest(PermitAppSubmitRequest? request, IEnumerable<LicAppFileInfo> licAppFileInfos, ChangeSpec spec, CancellationToken cancellationToken)
     {
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.ChangeSummary = spec.ChangeSummary;
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(licAppFileInfos, new List<LicAppFileInfo>());
         var createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
@@ -376,7 +383,7 @@ internal class PermitAppManager :
         }
 
         // Criminal history changed, create a task for Licensing RA team
-        if (newRequest.HasNewCriminalRecordCharge == true)
+        if (newRequest.HasCriminalHistory == true)
         {
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
@@ -392,8 +399,16 @@ internal class PermitAppManager :
             }, ct)).TaskId;
         }
 
-        return changes;
+        var newData = _mapper.Map<PermitCompareEntity>(newRequest);
+        var oldData = _mapper.Map<PermitCompareEntity>(originalLic);
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        changes.ChangeSummary = string.Join("\r\n", summary);
+        if (newRequest.HasCriminalHistory.HasValue && newRequest.HasCriminalHistory.Value)
+        {
+            changes.ChangeSummary += "\r\nSelf Disclosure has been updated";
+        }
 
+        return changes;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppSubmitRequest request,
@@ -532,5 +547,6 @@ internal class PermitAppManager :
         public bool RationaleChanged { get; set; } //task
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+        public string? ChangeSummary { get; set; }
     }
 }

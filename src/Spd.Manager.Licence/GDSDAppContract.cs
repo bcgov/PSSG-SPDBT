@@ -107,10 +107,12 @@ public record AccreditedSchoolQuestions
 public record NonAccreditedSchoolQuestions
 {
     public bool? AreInoculationsUpToDate { get; set; }
+    public bool? DoctorIsProvidingNeedDogMedicalForm { get; set; }
     public TrainingInfo? TrainingInfo { get; set; } //not null if it is New
 }
 public record GraduationInfo
 {
+    public Guid? AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
     public string? SchoolContactSurname { get; set; }
     public string? SchoolContactGivenName { get; set; }

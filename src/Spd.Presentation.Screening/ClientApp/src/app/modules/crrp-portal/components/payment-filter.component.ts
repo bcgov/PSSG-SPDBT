@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import moment from 'moment';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
@@ -8,8 +8,7 @@ export class PaymentFilter {
 	search = '';
 	fromDate = '';
 	toDate = '';
-	paid = '';
-	notPaid = '';
+	paid = false;
 }
 
 export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
@@ -17,12 +16,11 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	fromDate: 'fromDate',
 	toDate: 'toDate',
 	paid: 'paid',
-	notPaid: 'notpaid',
 };
 
 @Component({
-    selector: 'app-payment-filter',
-    template: `
+	selector: 'app-payment-filter',
+	template: `
 		<div class="filter-panel">
 			<form [formGroup]="formGroup" novalidate>
 				<mat-toolbar>
@@ -52,9 +50,13 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 								</mat-form-field>
 							</div>
 							<div class="col-sm-12">
-								<strong>Statuses</strong>
-								<mat-checkbox formControlName="paid" class="text-start"> Paid </mat-checkbox>
-								<mat-checkbox formControlName="notPaid" class="text-start"> Not Paid </mat-checkbox>
+								<strong>Status</strong>
+								<mat-radio-group aria-label="Select an option" formControlName="paid">
+									<div class="d-flex justify-content-start">
+										<mat-radio-button class="w-auto radio-label" [value]="true">Paid</mat-radio-button>
+										<mat-radio-button class="w-auto radio-label" [value]="false">Not Paid</mat-radio-button>
+									</div>
+								</mat-radio-group>
 							</div>
 						</div>
 					</mat-card-content>
@@ -67,8 +69,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 			</form>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.filter-panel {
 				border: 2px solid var(--color-sidebar);
 			}
@@ -89,22 +91,16 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 				justify-content: space-between;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
 	minDate = moment().subtract(1, 'year');
 	maxDate = moment();
 
-	@Input() formGroup: FormGroup = this.formBuilder.group({
-		search: new FormControl(''),
-		fromDate: new FormControl(''),
-		toDate: new FormControl(''),
-		paid: new FormControl(''),
-		notPaid: new FormControl(''),
-	});
+	@Input() formGroup!: FormGroup;
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
+	constructor(private utilService: UtilService) {
 		super();
 	}
 
@@ -113,7 +109,7 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 	}
 
 	override emitFilterClear() {
-		this.formGroup.reset();
+		this.formGroup.patchValue(new PaymentFilter());
 		this.filterClear.emit();
 	}
 
@@ -138,21 +134,11 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 			});
 		}
 
-		if (formGroupValue.paid && formGroupValue.notPaid) {
-			// do nothing
-		} else if (formGroupValue.paid) {
-			filterList.push({
-				key: PaymentFilterMap['paid'],
-				operator: 'equals',
-				value: true,
-			});
-		} else if (formGroupValue.notPaid) {
-			filterList.push({
-				key: PaymentFilterMap['paid'],
-				operator: 'equals',
-				value: false,
-			});
-		}
+		filterList.push({
+			key: PaymentFilterMap['paid'],
+			operator: 'equals',
+			value: formGroupValue.paid,
+		});
 
 		return filterList;
 	}
