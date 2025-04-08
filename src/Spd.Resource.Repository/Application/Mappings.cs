@@ -107,6 +107,7 @@ namespace Spd.Resource.Repository.Application
             .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value))
+            .ForMember(d => d.ClearanceAccessNumber, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => ((ClearanceAccessStatusOptionSet)(s.statuscode)).ToString()));
 
             _ = CreateMap<spd_genericupload, BulkHistoryResp>()
