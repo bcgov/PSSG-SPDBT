@@ -1,0 +1,1 @@
+index="prod_sparc" "*Get trnApproved = 1 from Paybc, exception thrown for creating payment for application*" | table _time, TransAmount, TransOrderId, TransNumber, PaymentMethod, ApplicationId, MessageText, Success, MessageText, PaymentId, RequestPath
