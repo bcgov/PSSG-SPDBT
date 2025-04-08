@@ -136,7 +136,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								In accessing or using the Site, you represent and warrant that:
 								<ol type="a">
-									<li>You are at least 19 years of age; and</li>
+									<li>You are at least 16 years of age; and</li>
 									<li>You have the power and capacity to accept, execute and comply with these Terms of Use.</li>
 								</ol>
 							</li>

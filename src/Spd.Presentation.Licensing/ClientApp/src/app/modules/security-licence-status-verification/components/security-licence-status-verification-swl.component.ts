@@ -112,7 +112,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								<div class="row">
 									<div class="col-xl-2 col-lg-2">
 										<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-										<div class="fs-5" style="color: var(--color-primary);">
+										<div class="text-minor-heading">
 											{{ licence.licenceNumber }}
 										</div>
 									</div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -52,14 +52,8 @@ import { UtilService } from '@app/core/services/util.service';
 								<li>
 									Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 									Services and the Site in general. However, you are encouraged to refer to the
-									<i>Security Services Act</i>, <i>Body Armour Control Act</i>, or
-									<i>Armoured Vehicle and After Market Compartment Control Act</i>, as applicable, and any related
-									Regulations and other official information materials before submitting an online application for a
-									security licence or permit described above, including Prescribed Checks. Reasonable efforts have been
-									made to provide accurate, complete and timely information regarding the Services and the Site in
-									general. However, you are encouraged to refer to the <i>Security Services Act</i> and
-									<i>Regulation</i>, any other legislation as it applies specifically to your security business,
-									including the
+									<i>Security Services Act</i> and <i>Regulation</i>, any other legislation as it applies specifically
+									to your security business, including the
 									<i>Body Armour Control Act, Armoured Vehicle and After Market Compartment Control Act</i> and related
 									<i>Regulations</i>, and other official information materials before submitting an online application
 									for a new or renewed security business licence, including where applicable Prescribed Checks for
@@ -538,16 +532,30 @@ import { UtilService } from '@app/core/services/util.service';
 					>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-12 col-sm-12 mb-2">
-					<a
-						mat-stroked-button
-						color="primary"
-						class="large w-100"
-						aria-label="Download the Security Services Business Applicant Terms of Use document"
-						download="Security Services Business Applicant Terms of Use"
-						[href]="downloadFilePath"
-					>
-						<mat-icon>file_download</mat-icon>Terms of Use
-					</a>
+					<ng-container *ngIf="isNewOrRenewal; else isUpdateFile">
+						<a
+							mat-stroked-button
+							color="primary"
+							class="large w-100"
+							aria-label="Download the Security Services Business Applicant Terms of Use document"
+							download="Security Services Business Applicant Terms of Use"
+							[href]="downloadFilePath"
+						>
+							<mat-icon>file_download</mat-icon>Terms of Use
+						</a>
+					</ng-container>
+					<ng-template #isUpdateFile>
+						<a
+							mat-stroked-button
+							color="primary"
+							class="large w-100"
+							aria-label="Download the Security Services Business Applicant Update Terms of Use document"
+							download="Security Services Business Applicant Update Terms of Use"
+							[href]="downloadFileUpdatePath"
+						>
+							<mat-icon>file_download</mat-icon>Terms of Use
+						</a>
+					</ng-template>
 				</div>
 			</div>
 
@@ -572,7 +580,7 @@ import { UtilService } from '@app/core/services/util.service';
 	],
 	standalone: false,
 })
-export class FormBusinessTermsComponent implements OnInit {
+export class FormBusinessTermsComponent {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
@@ -581,17 +589,12 @@ export class FormBusinessTermsComponent implements OnInit {
 	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
 	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesBusinessApplicantTerms;
+	downloadFileUpdatePath = SPD_CONSTANTS.files.securityServicesBusinessApplicantUpdateTerms;
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService) {}
-
-	ngOnInit(): void {
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			this.downloadFilePath = SPD_CONSTANTS.files.securityServicesBusinessApplicantUpdateTerms;
-		}
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

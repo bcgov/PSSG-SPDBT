@@ -405,9 +405,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	}
 
 	getDocsToSaveBlobs(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
-		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
-		const liabilityData = { ...businessModelFormValue.liabilityData };
-		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
+		const companyBrandingData = businessModelFormValue.companyBrandingData;
+		const liabilityData = businessModelFormValue.liabilityData;
+		const controllingMembersData = businessModelFormValue.controllingMembersData;
 
 		const documents: Array<LicenceDocumentsToSave> = [];
 
@@ -433,7 +433,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			});
 		}
 
-		const categoryData = { ...businessModelFormValue.categoryData };
+		const categoryData = businessModelFormValue.categoryData;
 
 		if (categoryData.ArmouredCarGuard) {
 			const docs: Array<Blob> = [];
@@ -483,12 +483,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
 		const soleProprietorSWLAppOriginTypeCode = businessModelFormValue.soleProprietorSWLAppOriginTypeCode;
-		const serviceTypeData = { ...businessModelFormValue.serviceTypeData };
-		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
-		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
-		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
-		const applicantData = { ...businessModelFormValue.applicantData };
-		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
+		const serviceTypeData = businessModelFormValue.serviceTypeData;
+		const applicationTypeData = businessModelFormValue.applicationTypeData;
+		const expiredLicenceData = businessModelFormValue.expiredLicenceData;
+		const companyBrandingData = businessModelFormValue.companyBrandingData;
+		const applicantData = businessModelFormValue.applicantData;
+		const originalLicenceData = businessModelFormValue.originalLicenceData;
 
 		const businessInformationData = businessModelFormValue.businessInformationData;
 		const bizTypeCode = businessInformationData.bizTypeCode;
@@ -521,7 +521,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			};
 		}
 
-		const categoryData = { ...businessModelFormValue.categoryData };
+		const categoryData = businessModelFormValue.categoryData;
 
 		if (categoryData.SecurityGuard) {
 			const dogsPurposeFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
@@ -652,9 +652,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	}
 
 	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
-		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
-		const liabilityData = { ...businessModelFormValue.liabilityData };
-		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
+		const companyBrandingData = businessModelFormValue.companyBrandingData;
+		const liabilityData = businessModelFormValue.liabilityData;
+		const controllingMembersData = businessModelFormValue.controllingMembersData;
 
 		const documents: Array<Document> = [];
 
@@ -676,7 +676,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			});
 		}
 
-		const categoryData = { ...businessModelFormValue.categoryData };
+		const categoryData = businessModelFormValue.categoryData;
 
 		if (categoryData.ArmouredCarGuard) {
 			businessModelFormValue.categoryArmouredCarGuardFormGroup.attachments?.forEach((doc: any) => {
@@ -794,7 +794,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	getSummarycategoryList(businessLicenceModelData: any): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];
-		const categoryData = { ...businessLicenceModelData.categoryData };
+		const categoryData = businessLicenceModelData.categoryData;
 
 		for (const [key, value] of Object.entries(categoryData)) {
 			if (value && key in WorkerCategoryTypeCode) {

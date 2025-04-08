@@ -112,7 +112,9 @@ namespace Spd.Presentation.Licensing.Controllers
                 return response;
             else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else
+            else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
+                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
@@ -123,6 +125,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (response != null)
             {
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
                 string str = $"{response.LicenceId}*{latestAppId}";
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
             }

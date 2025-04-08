@@ -9,12 +9,12 @@ import { AppRoutes } from '@app/app-routes';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { StepsWorkerLicenceBackgroundComponent } from '../shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-anonymous.component';
 
@@ -32,7 +32,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-worker-licence-selection
 					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
@@ -47,16 +47,17 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-worker-licence-background-renew-and-update
+				<app-steps-worker-licence-background
+					[isLoggedIn]="false"
+					[showSaveAndExit]="false"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-worker-licence-background-renew-and-update>
+				></app-steps-worker-licence-background>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
@@ -128,8 +129,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
 
-	@ViewChild(StepsWorkerLicenceBackgroundRenewAndUpdateComponent)
-	stepBackgroundComponent!: StepsWorkerLicenceBackgroundRenewAndUpdateComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
@@ -140,11 +140,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	isSoleProprietorSimultaneousFlow = false;
 	showWorkerLicenceSoleProprietorStep = false;
 	isSoleProprietor = false;
-	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
-	policeOfficerRoleCode: string | null = null;
 	linkedSoleProprietorBizLicId: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -152,7 +150,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -176,10 +174,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
-					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
@@ -307,7 +301,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 						ServiceTypeCode.SecurityWorkerLicence,
 						this.applicationTypeCode
 					);
-					this.hotToastService.success(successMessage);
+					this.utilService.toasterSuccess(successMessage);
 
 					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(

@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
 	ApplicationInviteStatusCode,
+	ApplicationTypeCode,
 	BizMemberResponse,
 	ControllingMemberAppInviteTypeCode,
 	ControllingMemberInvitesCreateResponse,
@@ -28,7 +29,6 @@ import {
 	ModalLookupByLicenceNumberComponent,
 } from '@app/shared/components/modal-lookup-by-licence-number.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 import {
@@ -104,7 +104,9 @@ import {
 						</div>
 					</div>
 					<ng-template #noControllingMembersWithSwlExist>
-						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">No controlling members with a Security Worker Licence</div>
+						<div class="text-minor-heading mt-4 mb-2" *ngIf="isReadonly">
+							No controlling members with a Security Worker Licence
+						</div>
 					</ng-template>
 
 					<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember1">
@@ -245,7 +247,7 @@ import {
 						</ng-container>
 					</div>
 					<ng-template #noControllingMembersWithoutSwlExist>
-						<div class="fs-5 mt-4 mb-2" *ngIf="isReadonly">
+						<div class="text-minor-heading mt-4 mb-2" *ngIf="isReadonly">
 							No controlling members without a Security Worker Licence
 						</div>
 					</ng-template>
@@ -277,7 +279,7 @@ import {
 				</mat-expansion-panel>
 			</mat-accordion>
 
-			<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
+			<div class="mt-2" *ngIf="requireDocumentUpload" @showHideTriggerSlideAnimation>
 				<mat-divider class="mat-divider-main my-3"></mat-divider>
 				<div class="text-minor-heading lh-base mb-2">
 					Upload a copy of the corporate registry documents for your business in the province in which you are
@@ -357,9 +359,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	@Input() isApplExists = false;
 	@Input() isLicenceExists = false;
 	@Input() isReadonly = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	isBcBusinessAddress = true;
-	allowDocumentUpload = false;
+	requireDocumentUpload = false;
 
 	allowNewInvitationsToBeSent = false;
 	allowUpdateInvitationsToBeSent = false;
@@ -379,7 +381,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
 		private authUserBceidService: AuthUserBceidService,
-		private hotToastService: HotToastService,
 		private bizMembersService: BizMembersService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
@@ -391,7 +392,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		}
 
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
 		//  'action1' - EDIT
 		//  'action2' - REMOVE
@@ -402,6 +402,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		if (this.isWizard) {
 			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
+			this.requireDocumentUpload = this.applicationTypeCode === ApplicationTypeCode.Renewal;
 		} else {
 			if (this.isApplExists) {
 				// User should not be in here for Draft
@@ -432,6 +433,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2', 'action3'];
 			}
 		}
+
+		this.form.patchValue({ attachmentIsRequired: this.requireDocumentUpload });
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
 		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
@@ -468,8 +471,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
-				this.controllingMemberChanged();
-
 				if (response) {
 					this.bizMembersService
 						.apiBusinessBizIdMembersBizContactIdDelete({
@@ -485,7 +486,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 							}
 
-							this.hotToastService.success('The member has been successfully removed');
+							this.utilService.toasterSuccess('The member has been successfully removed');
 						});
 				}
 			});
@@ -518,8 +519,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						return;
 					}
 
-					this.controllingMemberChanged();
-
 					const body = {
 						bizContactId: null,
 						contactId: memberData.licenceHolderId,
@@ -535,7 +534,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 							this.membersWithSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
 							this.dataSourceWithSWL.data = this.membersWithSwlList.value;
 
-							this.hotToastService.success('The member has been successfully added');
+							this.utilService.toasterSuccess('The member has been successfully added');
 						});
 				}
 			});
@@ -576,7 +575,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
-									this.hotToastService.success('Invitation was successfully sent');
+									this.utilService.toasterSuccess('Invitation was successfully sent');
 
 									if (!member.inviteStatusCode) {
 										const memberIndex = this.membersWithoutSwlList.value.findIndex(
@@ -655,16 +654,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.dialog.open(DialogComponent, { data });
 	}
 
-	private controllingMemberChanged(): void {
-		// document upload only needed in wizard flow
-		if (!this.isWizard) {
-			return;
-		}
-
-		this.allowDocumentUpload = true;
-		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
-	}
-
 	private memberDialogWithoutSWL(dialogOptions: NonSwlContactInfo | null, isCreate: boolean): void {
 		const dialogData: MemberWithoutSWLDialogData = dialogOptions ?? {};
 		dialogData.bizId = this.bizId;
@@ -682,21 +671,16 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 				if (memberData) {
 					if (isCreate) {
-						this.controllingMemberChanged();
-
 						this.membersWithoutSwlList.push(this.newMemberRow(memberData.bizContactId!, memberData));
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
 						if (this.allowNewInvitationsToBeSent && memberData.emailAddress) {
-							this.hotToastService.success(
+							this.utilService.toasterSuccess(
 								'The member has been successfully added and an invitation has been sent.<br><br><strong>The controlling member will receive a link to an online application form via email. They must provide personal information and consent to a criminal record check.</strong>',
-								{
-									autoClose: false,
-									dismissible: true,
-								}
+								false
 							);
 						} else {
-							this.hotToastService.success('The member has been successfully added');
+							this.utilService.toasterSuccess('The member has been successfully added');
 						}
 					} else {
 						const memberIndex = this.membersWithoutSwlList.value.findIndex(
@@ -705,7 +689,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 						this.patchMemberData(memberIndex, memberData);
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
-						this.hotToastService.success('The member has been successfully updated');
+						this.utilService.toasterSuccess('The member has been successfully updated');
 					}
 				}
 			});

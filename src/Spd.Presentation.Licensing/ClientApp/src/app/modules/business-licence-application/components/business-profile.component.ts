@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { HotToastService } from '@ngxpert/hot-toast';
 
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
@@ -20,7 +19,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<ng-container *ngIf="isReadonly; else IsEditable">
+								<ng-container *ngIf="isReadonly">
 									<button
 										mat-stroked-button
 										color="primary"
@@ -31,26 +30,6 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 										<mat-icon>arrow_back</mat-icon>Back
 									</button>
 								</ng-container>
-								<ng-template #IsEditable>
-									<button
-										mat-stroked-button
-										color="primary"
-										class="large mx-3 mb-3"
-										aria-label="Cancel and return to main page"
-										(click)="onCancel()"
-									>
-										Cancel
-									</button>
-									<button
-										mat-flat-button
-										color="primary"
-										class="large mx-3 mb-3"
-										aria-label="Save and return to main page"
-										(click)="onSave()"
-									>
-										Save
-									</button>
-								</ng-template>
 							</div>
 						</div>
 					</div>
@@ -68,6 +47,31 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					></app-common-business-profile>
 
 					<app-collection-notice></app-collection-notice>
+
+					<div class="row mt-3" *ngIf="!isReadonly">
+						<div class="offset-xl-6 col-xl-6 offset-lg-6 col-lg-6 col-md-12">
+							<div class="d-flex justify-content-end">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large mx-3 mb-3"
+									aria-label="Cancel and return to main page"
+									(click)="onCancel()"
+								>
+									Cancel
+								</button>
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mx-3 mb-3"
+									aria-label="Save and return to main page"
+									(click)="onSave()"
+								>
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -90,7 +94,6 @@ export class BusinessProfileComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
@@ -119,7 +122,7 @@ export class BusinessProfileComponent implements OnInit {
 
 		this.businessApplicationService.saveLoginBusinessProfile().subscribe({
 			next: (_resp: any) => {
-				this.hotToastService.success('Your business profile has been successfully updated');
+				this.utilService.toasterSuccess('Your business profile has been successfully updated');
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 			},
 			error: (error: any) => {

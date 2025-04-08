@@ -259,6 +259,7 @@ internal class BizLicAppManager :
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
             createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
+            createApp.ChangeSummary = changes.ChangeSummary;
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
             if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create biz application failed.");
@@ -500,6 +501,10 @@ internal class BizLicAppManager :
             }, ct);
         }
 
+        var newData = _mapper.Map<BizLicenceAppCompareEntity>(newRequest);
+        var oldData = _mapper.Map<BizLicenceAppCompareEntity>(originalLic);
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        changes.ChangeSummary = string.Join("\r\n", summary);
         return changes;
     }
 
@@ -545,5 +550,6 @@ internal class BizLicAppManager :
     {
         public bool CategoriesChanged { get; set; }
         public bool UseDogsChanged { get; set; }
+        public string? ChangeSummary { get; set; }
     }
 }

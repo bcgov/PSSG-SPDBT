@@ -6,25 +6,25 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 	selector: 'app-gdsd-licence-main-licences-list',
 	template: `
 		<div class="mb-3" *ngIf="activeLicences.length > 0">
-			<div class="text-primary-color fs-5 py-3">Active Certifications</div>
+			<div class="text-minor-heading py-3">Active Certificates</div>
 			<div
 				class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 				*ngFor="let licence of activeLicences; let i = index"
 			>
 				<div class="row">
 					<div class="col-lg-2">
-						<div class="fs-5" style="color: var(--color-primary);">
+						<div class="text-minor-heading">
 							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-10">
 						<div class="row">
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Certification Number</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">Certificate Number</div>
 								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
 							</div>
 							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Certification Term</div>
+								<div class="d-block text-muted mt-2 mt-lg-0">Certificate Term</div>
 								<div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
@@ -45,30 +45,32 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 						<div class="row mt-2">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Dog Name</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogName | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">
+									{{ licence.dogInfo?.dogDateOfBirth | formatDate: formalDateFormat | default }}
+								</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Breed</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogBreed | default }}</div>
 							</div>
 						</div>
 
 						<div class="row mt-2">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Colour and Markings</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogColorAndMarkings | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Gender</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.dogGender | options: 'GenderTypes' | default }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Microchip Number</div>
-								<div class="text-data fw-bold">Todo</div>
+								<div class="text-data fw-bold">{{ licence.dogInfo?.microchipNumber | default }}</div>
 							</div>
 
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
@@ -83,13 +85,19 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									<mat-icon>restore</mat-icon>Renew
 								</button>
 							</div>
+							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+								<app-alert type="info" icon="info">
+									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or replaced while an
+									application is in progress.
+								</app-alert>
+							</div>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-12">
 							<mat-divider class="my-2"></mat-divider>
-							<span class="fw-semibold">Lost your certification? </span>
+							<span class="fw-semibold">Lost your certificate? </span>
 							<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 							<a
 								*ngIf="!applicationIsInProgress"

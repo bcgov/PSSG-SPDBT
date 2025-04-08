@@ -7,7 +7,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 @Component({
 	selector: 'app-step-permit-summary-anonymous',
 	template: `
-		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
 					<mat-accordion multi="true">
@@ -72,20 +72,14 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 										</div>
 									</div>
 								</ng-container>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-								<app-permit-summary-purpose [permitModelData]="permitModelData"></app-permit-summary-purpose>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-								<app-permit-summary-rationale [permitModelData]="permitModelData"></app-permit-summary-rationale>
 							</div>
 						</mat-expansion-panel>
 
-						<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="showEmployerInformation">
+						<mat-expansion-panel class="mb-2" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Employer Information</div>
+										<div class="panel-header">Purpose & Rationale</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -100,9 +94,17 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								</mat-panel-title>
 							</mat-expansion-panel-header>
 							<div class="panel-body">
-								<app-permit-summary-employer-information
-									[permitModelData]="permitModelData"
-								></app-permit-summary-employer-information>
+								<app-permit-summary-purpose [permitModelData]="permitModelData"></app-permit-summary-purpose>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-permit-summary-rationale [permitModelData]="permitModelData"></app-permit-summary-rationale>
+
+								<ng-container *ngIf="showEmployerInformation">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-permit-summary-employer-information
+										[permitModelData]="permitModelData"
+									></app-permit-summary-employer-information>
+								</ng-container>
 							</div>
 						</mat-expansion-panel>
 
@@ -250,39 +252,27 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 								</ng-container>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Criminal History</div>
-								<div class="row mt-0">
-									<div class="col-12">
-										<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-										<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-									</div>
-									<div class="col-12" *ngIf="criminalChargeDescription">
-										<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-										<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-									</div>
-								</div>
-							</div>
-						</mat-expansion-panel>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="permitModelData"
+								></app-worker-summary-criminal-history>
 
-						<mat-expansion-panel class="mb-2" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Contact Information</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-							<div class="panel-body">
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="permitModelData.residentialAddressData"
+									headingLabel="Residential Address"
+									[isAddressTheSame]="false"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-form-address-summary
+									[formData]="permitModelData.mailingAddressData"
+									headingLabel="Mailing Address"
+									[isAddressTheSame]="isAddressTheSame"
+									isAddressTheSameLabel="Mailing address is the same as the residential address"
+								></app-form-address-summary>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading-small mt-4">Contact</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
@@ -292,26 +282,10 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber }}
+											{{ phoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="permitModelData.residentialAddressData"
-									headingLabel="Residential Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="permitModelData.mailingAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="isAddressTheSame"
-									isAddressTheSameLabel="Mailing address is the same as the residential address"
-								></app-form-address-summary>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -374,7 +348,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.permitModelData = this.permitApplicationService.permitModelFormGroup.getRawValue();
 	}
 
 	onEditStep(stepNumber: number) {

@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
@@ -57,11 +56,6 @@ namespace Spd.Manager.Licence
         {
             var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
-
-            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId, OnlyReturnLatestSet: false), ct);
-            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition ||
-                d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
-
             return result;
         }
 
@@ -162,39 +156,11 @@ namespace Spd.Manager.Licence
             if (response.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
 
-            //await ValidateFilesAsync(cmd, ct);
-
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
             UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ApplicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             await _contactRepository.ManageAsync(updateContactCmd, ct);
-
-            // Remove documents that are not in previous document ids
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId, OnlyReturnLatestSet: false), ct);
-            List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
-            List<Guid> documentsToRemove = docListResps.Items
-                .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
-                .Select(d => d.DocumentUrlId)
-                .ToList();
-
-            foreach (var documentUrlId in documentsToRemove)
-                await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
-
-            if ((cmd.ApplicantUpdateRequest?.IsTreatedForMHC == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) ||
-                (cmd.ApplicantUpdateRequest?.IsPoliceOrPeaceOfficer == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
-            {
-                foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
-                {
-                    SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                    CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                    fileCmd.ApplicantId = contact.Id;
-                    fileCmd.TempFile = tempFile;
-                    fileCmd.SubmittedByApplicantId = contact.Id;
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(fileCmd, ct);
-                }
-            }
 
             await ProcessAliases(contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
             return default;
@@ -205,40 +171,6 @@ namespace Spd.Manager.Licence
             MergeContactsCmd mergeContactCmd = new() { OldContactId = cmd.OldApplicantId, NewContactId = cmd.NewApplicantId };
             await _contactRepository.MergeContactsAsync(mergeContactCmd, ct);
             return default;
-        }
-
-        private async Task ValidateFilesAsync(ApplicantUpdateCommand cmd, CancellationToken ct)
-        {
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
-            IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-            if (cmd.ApplicantUpdateRequest.PreviousDocumentIds != null)
-            {
-                existingFileInfos = docListResps.Items.Where(d => cmd.ApplicantUpdateRequest.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-                .Select(f => new LicAppFileInfo()
-                {
-                    FileName = f.FileName ?? String.Empty,
-                    LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-                }).ToList();
-            }
-
-            if (cmd.ApplicantUpdateRequest.IsTreatedForMHC == true)
-            {
-                if (!(cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition) ||
-                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
-                }
-            }
-
-            if (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer == true)
-            {
-                if (!(cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) ||
-                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
-                }
-            }
         }
 
         private async Task ProcessAliases(List<AliasResp> aliases,

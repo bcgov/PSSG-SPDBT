@@ -16,7 +16,7 @@ import {
 		<form [formGroup]="form" novalidate>
 			<div class="row mt-3">
 				<div class="col-lg-8 col-md-12 col-sm-12">
-					<div class="fs-5 lh-base">
+					<div class="text-minor-heading lh-base">
 						To qualify for a private investigator business licence, you must have a manager with a valid security worker
 						licence.
 					</div>
@@ -39,21 +39,21 @@ import {
 							<div class="row">
 								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Name</div>
-									<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
+									<div class="text-minor-heading">{{ managerLicenceHolderName.value }}</div>
 								</div>
 								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Security Worker Licence Number</div>
-									<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
+									<div class="text-minor-heading">{{ managerLicenceNumber.value }}</div>
 								</div>
 								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Expiry Date</div>
-									<div class="text-primary-color fs-5">
+									<div class="text-minor-heading">
 										{{ managerLicenceExpiryDate.value | formatDate: formalDateFormat }}
 									</div>
 								</div>
 								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Licence Status</div>
-									<div class="text-primary-color fs-5 fw-bold">{{ managerLicenceStatusCode.value }}</div>
+									<div class="text-minor-heading fw-bold">{{ managerLicenceStatusCode.value }}</div>
 								</div>
 							</div>
 						</app-alert>

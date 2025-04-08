@@ -4,7 +4,6 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-citizenship.component';
-import { StepWorkerLicenceFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-fingerprints.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 
 @Component({
@@ -23,19 +22,6 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
 					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNotRenewal">
-				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
-					(previousStepperStep)="onFingerprintStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_FINGERPRINTS)"
-					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -70,15 +56,14 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;
-	readonly STEP_FINGERPRINTS = 2;
-	readonly STEP_BC_DRIVERS_LICENCE = 3;
-	readonly STEP_PHOTO = 4;
+	readonly STEP_BC_DRIVERS_LICENCE = 2;
+	readonly STEP_PHOTO = 3;
 
 	@Input() isFormValid = false;
 	@Input() showCitizenshipStep = true;
@@ -86,7 +71,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
-	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
 	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
@@ -96,17 +80,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 		super(utilService);
 	}
 
-	onFingerprintStepPrevious(): void {
-		if (this.showCitizenshipStep) {
-			this.childstepper.previous();
-			return;
-		}
-
-		this.previousStepperStep.emit(true);
-	}
-
 	onDriversLicenceStepPrevious(): void {
-		if (this.showCitizenshipStep || this.isNotRenewal) {
+		if (this.showCitizenshipStep) {
 			this.childstepper.previous();
 			return;
 		}
@@ -122,8 +97,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 		switch (step) {
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();
-			case this.STEP_FINGERPRINTS:
-				return this.fingerprintsComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.bcDriverLicenceComponent.isFormValid();
 			case this.STEP_PHOTO:
