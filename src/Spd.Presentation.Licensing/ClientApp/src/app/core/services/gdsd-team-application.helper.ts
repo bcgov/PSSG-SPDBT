@@ -22,14 +22,14 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHelper {
 	medicalInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isDoctorSendingGdsdMedicalForm: new FormControl('', [Validators.required]),
+			doctorIsProvidingNeedDogMedicalForm: new FormControl('', [Validators.required]),
 			attachments: new FormControl([]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'attachments',
-					(form) => form.get('isDoctorSendingGdsdMedicalForm')?.value == BooleanTypeCode.No
+					(form) => form.get('doctorIsProvidingNeedDogMedicalForm')?.value == BooleanTypeCode.No
 				),
 			],
 		}
@@ -195,7 +195,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					isGuideDog,
 					serviceDogTasks: isGuideDog ? null : dogTasksData.tasks,
 				};
-				// TODO add: medicalInformationData.isDoctorSendingGdsdMedicalForm
 
 				const graduationInfoData = gdsdModelFormValue.graduationInfoData;
 
@@ -220,8 +219,13 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			const areInoculationsUpToDate = this.utilService.booleanTypeToBoolean(
 				dogInoculationsData.areInoculationsUpToDate
 			);
+			const medicalInformationData = gdsdModelFormValue.medicalInformationData;
+			const doctorIsProvidingNeedDogMedicalForm = this.utilService.booleanTypeToBoolean(
+				medicalInformationData.doctorIsProvidingNeedDogMedicalForm
+			);
 			nonAccreditedSchoolQuestionsData = {
 				areInoculationsUpToDate,
+				doctorIsProvidingNeedDogMedicalForm,
 			};
 
 			const trainingHistoryData = gdsdModelFormValue.trainingHistoryData;
@@ -276,7 +280,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 				nonAccreditedSchoolQuestionsData.trainingInfo = trainingInfoData;
 			}
 
-			const medicalInformationData = gdsdModelFormValue.medicalInformationData;
 			medicalInformationData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -385,7 +388,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 			const hasAttendedTrainingSchool =
 				this.utilService.booleanTypeToBoolean(trainingHistoryData.hasAttendedTrainingSchool) ?? false;
 
-			if (medicalInformationData.isDoctorSendingGdsdMedicalForm == BooleanTypeCode.No) {
+			if (medicalInformationData.doctorIsProvidingNeedDogMedicalForm == BooleanTypeCode.No) {
 				if (medicalInformationData.attachments) {
 					const docs: Array<Blob> = [];
 					medicalInformationData.attachments.forEach((doc: SpdFile) => {
@@ -649,7 +652,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	}
 
 	getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData: any): string {
-		return gdsdModelData.medicalInformationData.isDoctorSendingGdsdMedicalForm ?? '';
+		return gdsdModelData.medicalInformationData.doctorIsProvidingNeedDogMedicalForm ?? '';
 	}
 	getSummarymedicalInformationAttachments(gdsdModelData: any): File[] | null {
 		if (this.getSummaryisDoctorSendingGdsdMedicalForm(gdsdModelData) != BooleanTypeCode.Yes) {

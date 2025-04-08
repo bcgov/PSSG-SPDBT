@@ -110,7 +110,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Doctor Sends Medical Forms</div>
 											<div class="summary-text-data">
-												{{ isDoctorSendingGdsdMedicalForm | default }}
+												{{ doctorIsProvidingNeedDogMedicalForm | default }}
 											</div>
 										</div>
 										<div class="col-lg-8 col-md-12" *ngIf="medicalInformationAttachments">
@@ -431,7 +431,7 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 	get medicalInformationAttachments(): File[] | null {
 		return this.gdsdTeamApplicationService.getSummarymedicalInformationAttachments(this.gdsdModelData);
 	}
-	get isDoctorSendingGdsdMedicalForm(): string {
+	get doctorIsProvidingNeedDogMedicalForm(): string {
 		return this.gdsdTeamApplicationService.getSummaryisDoctorSendingGdsdMedicalForm(this.gdsdModelData);
 	}
 

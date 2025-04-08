@@ -266,6 +266,27 @@ export class GdsdLicenceMainComponent implements OnInit {
 				}
 				this.activeRetiredDogExist = activeRetiredDogExist;
 				this.activeGdsdTeamExist = activeGdsdTeamExist;
+
+				if (activeGdsdTeamExist) {
+					// Since there is an active licence or application, make sure expired licence renewal is false
+					expiredLicencesList
+						.filter((item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.GdsdTeamCertification)
+						.forEach((item: MainLicenceResponse) => {
+							item.isExpiredLicenceRenewable = false;
+						});
+				}
+
+				if (activeRetiredDogExist) {
+					// Since there is an active licence or application, make sure expired licence renewal is false
+					expiredLicencesList
+						.filter(
+							(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.RetiredServiceDogCertification
+						)
+						.forEach((item: MainLicenceResponse) => {
+							item.isExpiredLicenceRenewable = false;
+						});
+				}
+
 				[this.warningMessages, this.errorMessages] =
 					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
 						userGdsdApplicationsList,
