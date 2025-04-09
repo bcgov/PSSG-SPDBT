@@ -167,6 +167,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 
 		this.isLoggedIn = this.authenticationService.isLoggedIn();
+		this.showSaveAndExit = this.gdsdTeamApplicationService.isSaveAndExit();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -180,8 +181,6 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 				this.applicationTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-
-				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
 
 				this.isServiceDog =
 					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===

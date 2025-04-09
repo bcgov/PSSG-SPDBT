@@ -136,11 +136,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		const isLoggedIn = this.authenticationService.isLoggedIn();
-		if (!isLoggedIn) {
-			return false;
-		}
-
 		if (!this.isSaveAndExit()) {
 			return false;
 		}
@@ -153,6 +148,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
+
 		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
 			return false;
 		}
