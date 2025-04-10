@@ -19,7 +19,7 @@ namespace Spd.Resource.Repository.JobSchedule.ScheduleJobSession
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => s.JobSessionStatusCode == JobSessionStatusCode.Success ? DynamicsConstants.StatusCode_Inactive : DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.JobSessionStatusCode == JobSessionStatusCode.Success ? (int)BcGoV_ScheduleJObsession_StatusCode_OptionSet.Success : (int)BcGoV_ScheduleJObsession_StatusCode_OptionSet.Failed))
              .ForMember(d => d.bcgov_error, opt => opt.MapFrom(s => s.ErrorMsg))
-             .ForMember(d => d.bcgov_duration, opt => opt.MapFrom(s => s.Duration));
+             .ForMember(d => d.bcgov_duration, opt => opt.Ignore());
         }
     }
 }
