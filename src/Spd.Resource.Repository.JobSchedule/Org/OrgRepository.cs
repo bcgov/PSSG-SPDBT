@@ -42,11 +42,6 @@ internal class OrgRepository : IOrgRepository
         });
 
         var results = await Task.WhenAll(tasks);
-
-        foreach (var result in results)
-        {
-            Console.WriteLine(result);
-        }
         return results;
     }
 
