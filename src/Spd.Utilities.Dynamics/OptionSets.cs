@@ -431,4 +431,11 @@ namespace Spd.Utilities.Dynamics
         DogTrainerAccreditedSchool = 100000002,
         Other = 100000003
     }
+
+    public enum BcGoV_ScheduleJObsession_StatusCode_OptionSet
+    {
+        Failed = 931490000,
+        InProgress = 1,
+        Success = 2,
+    }
 }
