@@ -36,10 +36,22 @@ internal class ScheduleJobSessionRepository : IScheduleJobSessionRepository
         return _mapper.Map<ScheduleJobSessionResp>(jobSession);
     }
 
+    public async Task<ScheduleJobSessionResp> ManageAsync(UpdateScheduleJobSessionCmd updateCmd, CancellationToken ct)
+    {
+        bcgov_schedulejobsession? jobSession = await _context.bcgov_schedulejobsessions
+                .Where(l => l.bcgov_schedulejobsessionid == updateCmd.ScheduleJobSessionId)
+                .FirstOrDefaultAsync(ct);
+        if (jobSession == null)
+            throw new ArgumentException("Invalid jobsession id, cannot find corresponding bcgov_schedulejobsession");
+
+        _mapper.Map<UpdateScheduleJobSessionCmd, bcgov_schedulejobsession>(updateCmd, jobSession);
+        _context.UpdateObject(jobSession);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<ScheduleJobSessionResp>(jobSession);
+    }
     public async Task<ScheduleJobSessionListResp> QueryAsync(ScheduleJobSessionQry qry, CancellationToken ct)
     {
-
-        return null;
+        throw new NotImplementedException();
     }
 }
 
