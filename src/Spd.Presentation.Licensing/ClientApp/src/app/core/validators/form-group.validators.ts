@@ -101,7 +101,7 @@ export class FormGroupValidators {
 				checkControl?.value == BizTypeCode.NonRegisteredSoleProprietor ||
 				checkControl?.value == BizTypeCode.RegisteredSoleProprietor
 			) {
-				if (control?.value != LicenceStatusCode.Active && control?.value != LicenceStatusCode.Preview) {
+				if (control?.value != LicenceStatusCode.Active) {
 					return { licencemustbeactive: true };
 				}
 			}
