@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.JobSchedule.Org;
@@ -47,64 +49,108 @@ internal class OrgRepository : IOrgRepository
 
     public async Task<IEnumerable<ResultResp>> RunGeneralFunctionAsync(CancellationToken ct)
     {
-
         string primaryEntityName = "accounts";
-        string typeStr = "Microsoft.Dynamics.CRM.account, Spd.Utilities.Dynamics";
+        string filterStr = "statecode eq 0 && spd_eligibleforcreditpayment eq 100000001";
+        string actionStr = "spd_MonthlyInvoice";
 
-        Type type = Type.GetType(typeStr);
-        if (type == null) throw new Exception("Type not found.");
 
         var property = _context.GetType().GetProperty(primaryEntityName);
         if (property == null) throw new Exception("Property not found.");
 
-        dynamic query = property.GetValue(_context) as IQueryable;
+        dynamic query = property.GetValue(_context) as DataServiceQuery;
         query.AddQueryOption("$filter", $"{filterStr}");
+        var result = await query.ExecuteAsync(ct);
+        //var data = ((IEnumerable<dynamic>)result).ToList();
+        var data = ((IEnumerable<account>)result).ToList();
 
-        string filter = "statecode == @0 && spd_eligibleforcreditpayment == @1";
-        object[] values = { DynamicsConstants.StateCode_Active, (int)YesNoOptionSet.Yes };
-        // Now you can write dynamic LINQ
-        var filtered = query
-            .Where(filter, values)
-            .ToDynamicList();
+        using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
 
-        //string primaryEntityName = "accounts";
-        //string typeStr = "Microsoft.Dynamics.CRM.account";
-        //Type type = Type.GetType(typeStr);
-        //var value = (DataServiceQuery)_context.GetType().GetProperty(primaryEntityName)?.GetValue(_context);
-        //var temp = value.Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-        //    .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
-        //    .ToList();
+        var tasks = data.Select(async a =>
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                var method = a.GetType().GetMethod(actionStr);
+                var result = method?.Invoke(a, null);
+                var getValueAsyncMethod = result.GetType().GetMethod(
+                    "GetValueAsync",
+                    new[] { typeof(CancellationToken) });
+                if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
+                var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
+                await task.ConfigureAwait(false);
+                // If it's Task<T>, get the result via reflection
+                var resultProperty = task.GetType().GetProperty("Result");
+                var value = resultProperty?.GetValue(task);
+                ResultResp rr = _mapper.Map<ResultResp>(value);
 
-        //var accounts = value.Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-        //    .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
-        //    .ToList();
+                var idProperty = a.GetType().GetProperty("accountid");
+                rr.OrgId = Guid.Parse(idProperty?.GetValue(a) as string);
+                return rr;
+            }
+            catch (Exception ex)
+            {
+                return new ResultResp { IsSuccess = false, ResultStr = ex.Message, OrgId = a.accountid.Value };
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
 
-        //using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
-
-        //var tasks = accounts.Select(async a =>
-        //{
-        //    await semaphore.WaitAsync();
-        //    try
-        //    {
-        //        var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
-        //        ResultResp rr = _mapper.Map<ResultResp>(response);
-        //        rr.OrgId = a.accountid.Value;
-        //        return rr;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ResultResp { IsSuccess = false, ResultStr = ex.Message, OrgId = a.accountid.Value };
-        //    }
-        //    finally
-        //    {
-        //        semaphore.Release();
-        //    }
-        //});
-
-        //var results = await Task.WhenAll(tasks);
-        //return results;
-        return null;
+        var results = await Task.WhenAll(tasks);
+        return results;
     }
 
+    public async Task<IEnumerable<ResultResp>> RunGenericFunctionAsync<T>(CancellationToken ct)
+    {
+        string primaryEntityName = "accounts";
+        string filterStr = "statecode eq 0 && spd_eligibleforcreditpayment eq 100000001";
+        string actionStr = "spd_MonthlyInvoice";
+
+        var property = _context.GetType().GetProperty(primaryEntityName);
+        if (property == null) throw new Exception("Property not found.");
+
+        dynamic query = property.GetValue(_context) as DataServiceQuery;
+        query.AddQueryOption("$filter", $"{filterStr}");
+        var result = await query.ExecuteAsync(ct);
+        var data = ((IEnumerable<dynamic>)result).ToList();
+        //var data = ((IEnumerable<T>)result).ToList();
+
+        using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
+
+        var tasks = data.Select(async a =>
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                var method = a.GetType().GetMethod(actionStr);
+                var result = method?.Invoke(a, null);
+                var getValueAsyncMethod = result.GetType().GetMethod(
+                    "GetValueAsync",
+                    new[] { typeof(CancellationToken) });
+                if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
+
+                var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
+                await task.ConfigureAwait(false);
+                // If it's Task<T>, get the result via reflection
+                var resultProperty = task.GetType().GetProperty("Result");
+                var value = resultProperty?.GetValue(task);
+                ResultResp rr = _mapper.Map<ResultResp>(value);
+                rr.OrgId = a.accountid.Value;
+                return rr;
+            }
+            catch (Exception ex)
+            {
+                return new ResultResp { IsSuccess = false, ResultStr = ex.Message, OrgId = a.accountid.Value };
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        var results = await Task.WhenAll(tasks);
+        return results;
+    }
 }
 
