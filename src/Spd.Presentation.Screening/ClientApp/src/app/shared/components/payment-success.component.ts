@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaymentResponse, PaymentTypeCode, ServiceTypeCode } from 'src/app/api/models';
+import { PaymentResponse, ServiceTypeCode } from 'src/app/api/models';
 import { AppRoutes } from 'src/app/app-routes';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
-    selector: 'app-payment-success',
-    template: `
+	selector: 'app-payment-success',
+	template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">Payment Succeeded</h3>
@@ -29,7 +29,6 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						class="large w-auto m-2"
 						aria-label="Download Receipt"
 						(click)="onDownloadReceipt()"
-						*ngIf="showDownloadReceipt"
 					>
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
@@ -122,14 +121,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PaymentSuccessComponent implements OnInit {
 	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
-
-	showDownloadReceipt = false;
 
 	@Input() isApplicationReceived = false;
 	@Input() showCloseButton = true;
@@ -147,11 +144,6 @@ export class PaymentSuccessComponent implements OnInit {
 		if (data.paidSuccess != true) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
-
-		// SPDBT-3286 if paymentTypeCode == Paybc_submission or PayBC_SecurePaymentLink, then show download receipt.
-		this.showDownloadReceipt =
-			data.paymentTypeCode == PaymentTypeCode.PayBcOnSubmission ||
-			data.paymentTypeCode == PaymentTypeCode.PayBcSecurePaymentLink;
 	}
 	get payment(): PaymentResponse | null {
 		return this._payment;
