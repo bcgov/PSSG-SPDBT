@@ -2,10 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.JobSchedule.Org;
 using Spd.Resource.Repository.JobSchedule.ScheduleJobSession;
-using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
 using System.Diagnostics;
-using System.Net;
 using System.Text.Json;
 
 namespace Spd.Manager.ScheduleJob;
@@ -28,22 +26,22 @@ public class ScheduleJobManager :
     }
     public async Task<Unit> Handle(RunScheduleJobSessionCommand cmd, CancellationToken ct)
     {
-        ScheduleJobSessionResp? resp = await _scheduleJobSessionRepository.GetAsync(cmd.JobSessionId, ct);
-        if (resp == null)
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "The schedule job session does not exist.");
-        }
+        //ScheduleJobSessionResp? resp = await _scheduleJobSessionRepository.GetAsync(cmd.JobSessionId, ct);
+        //if (resp == null)
+        //{
+        //    throw new ApiException(HttpStatusCode.BadRequest, "The schedule job session does not exist.");
+        //}
 
-        if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoiceJob"))
-        {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
-            stopwatch.Stop();
+        //if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoiceJob"))
+        //{
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        var result = await _orgRepository.RunGeneralFunctionAsync(ct);
+        stopwatch.Stop();
 
-            //update result in JobSession
-            UpdateScheduleJobSessionCmd updateResultCmd = GetUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
-            await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
-        }
+        //update result in JobSession
+        //UpdateScheduleJobSessionCmd updateResultCmd = GetUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
+        //await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
+        //}
         return default;
     }
 
