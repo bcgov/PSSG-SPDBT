@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.ScheduleJob;
 using Spd.Utilities.Shared;
@@ -9,7 +8,7 @@ namespace Spd.Presentation.Dynamics.Controllers;
 /// <summary>
 /// ScheduleJob support for dynamics
 /// </summary>
-[Authorize]
+//[Authorize]
 public class ScheduleJobController : SpdControllerBase
 {
     private readonly IMediator _mediator;
