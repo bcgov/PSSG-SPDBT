@@ -423,7 +423,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	isBcBranchValid(branch: BranchResponse): boolean {
 		const branchFormGroup = this.createBranchInBcFormGroup();
 		branchFormGroup.patchValue(branch);
-
 		return branchFormGroup.valid;
 	}
 

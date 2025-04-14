@@ -195,9 +195,9 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 		let isValid = true;
 		if (!this.isBusinessLicenceSoleProprietor) {
 			isValid = this.isBusinessBcBranchesFormGroupValid(this.branchesInBcFormGroup);
+			this.isBusinessBcBranchesValid = isValid;
 		}
 
-		this.isBusinessBcBranchesValid = isValid;
 		return isValid;
 	}
 
