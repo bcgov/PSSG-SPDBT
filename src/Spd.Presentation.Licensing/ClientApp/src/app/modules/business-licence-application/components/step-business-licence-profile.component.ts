@@ -6,8 +6,8 @@ import { UtilService } from '@app/core/services/util.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({
-    selector: 'app-step-business-licence-profile',
-    template: `
+	selector: 'app-step-business-licence-profile',
+	template: `
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -64,8 +64,8 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			(nextStepperStep)="onContinue()"
 		></app-wizard-footer>
 	`,
-    styles: ``,
-    standalone: false
+	styles: ``,
+	standalone: false,
 })
 export class StepBusinessLicenceProfileComponent {
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -124,11 +124,13 @@ export class StepBusinessLicenceProfileComponent {
 			this.profileConfirmationFormGroup.markAllAsTouched();
 		}
 
-		const isValid =
-			this.businessProfileComponent.isFormValid() &&
-			(this.showConfirmation ? this.profileConfirmationFormGroup.valid : true);
+		const { isValid: isProfileValid, areBranchesValid } = this.businessProfileComponent.isFormValid();
 
-		if (!isValid) {
+		const isValid = isProfileValid && (this.showConfirmation ? this.profileConfirmationFormGroup.valid : true);
+
+		if (!areBranchesValid) {
+			return;
+		} else if (!isValid) {
 			this.utilService.scrollToErrorSection();
 			return;
 		}
