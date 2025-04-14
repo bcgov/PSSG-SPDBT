@@ -35,7 +35,7 @@ public class ScheduleJobController : SpdControllerBase
         [FromRoute] Guid sessionId,
         CancellationToken ct)
     {
-        _mediator.Send(new RunScheduleJobSessionCommand(sessionId), ct);
+        await _mediator.Send(new RunScheduleJobSessionCommand(sessionId), ct);
         return Ok();
     }
 }
