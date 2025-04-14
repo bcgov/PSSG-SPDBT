@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.JobSchedule.Org;
 using Spd.Resource.Repository.JobSchedule.ScheduleJobSession;

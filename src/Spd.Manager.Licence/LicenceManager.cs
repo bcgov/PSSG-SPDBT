@@ -113,7 +113,7 @@ internal class LicenceManager :
         }
 
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview));
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired));
     }
 
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
@@ -194,7 +194,7 @@ internal class LicenceManager :
                 }, cancellationToken);
         }
 
-        var result = response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview)
+        var result = response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired)
             .GroupBy(r => r.LicenceNumber)
             .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
             .ToList();
