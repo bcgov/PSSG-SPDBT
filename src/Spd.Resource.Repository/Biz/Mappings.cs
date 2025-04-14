@@ -52,8 +52,7 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
             .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.Ignore())
-            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses
-                .Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch && a.statecode == DynamicsConstants.StateCode_Active)));
+            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom((s, d, dm, context) => GetBranchAddrs(s, context)));
 
             CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
@@ -95,6 +94,16 @@ namespace Spd.Resource.Repository.Biz
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
         {
             return serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
+        }
+
+        private static IEnumerable<BranchAddr>? GetBranchAddrs(account account, ResolutionContext context)
+        {
+            if ((bool)context.Items["includeMainOffice"])
+                return context.Mapper.Map<IEnumerable<BranchAddr>>(account.spd_Organization_Addresses
+                   .Where(a => (a.spd_type == (int)AddressTypeOptionSet.Branch || a.spd_type == (int)AddressTypeOptionSet.MainOffice) && a.statecode == DynamicsConstants.StateCode_Active));
+            else
+                return context.Mapper.Map<IEnumerable<BranchAddr>>(account.spd_Organization_Addresses
+                   .Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch && a.statecode == DynamicsConstants.StateCode_Active));
         }
     }
 }
