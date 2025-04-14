@@ -306,7 +306,7 @@ export abstract class CommonApplicationHelper {
 	});
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
-		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
 	});
 
