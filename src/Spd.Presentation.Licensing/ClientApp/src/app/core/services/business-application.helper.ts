@@ -18,6 +18,7 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { BranchResponse } from '@app/modules/business-licence-application/components/business-bc-branches.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 
 export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
@@ -334,6 +335,35 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
+	createBranchInBcFormGroup(): FormGroup {
+		return this.formBuilder.group({
+			addressLine1: ['', FormControlValidators.required],
+			addressLine2: [''],
+			city: ['', FormControlValidators.required],
+			postalCode: ['', FormControlValidators.required],
+			province: [
+				'',
+				[
+					FormControlValidators.required,
+					FormControlValidators.requiredValue(
+						SPD_CONSTANTS.address.provinceBC,
+						SPD_CONSTANTS.address.provinceBritishColumbia
+					),
+				],
+			],
+			country: [
+				'',
+				[
+					FormControlValidators.required,
+					FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
+				],
+			],
+			branchManager: ['', FormControlValidators.required],
+			branchPhoneNumber: ['', FormControlValidators.required],
+			branchEmailAddr: ['', FormControlValidators.email],
+		});
+	}
+
 	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
@@ -388,6 +418,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		protected fileUtilService: FileUtilService
 	) {
 		super(formBuilder);
+	}
+
+	isBcBranchValid(branch: BranchResponse): boolean {
+		const branchFormGroup = this.createBranchInBcFormGroup();
+		branchFormGroup.patchValue(branch);
+		return branchFormGroup.valid;
 	}
 
 	/**

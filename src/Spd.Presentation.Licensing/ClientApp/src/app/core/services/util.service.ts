@@ -25,7 +25,7 @@ export interface LicenceStepperStepComponent {
 }
 
 export interface LicenceChildStepperStepComponent {
-	isFormValid(): boolean;
+	isFormValid(): any;
 }
 
 export class LicenceDocumentsToSave {
