@@ -124,15 +124,14 @@ export class StepBusinessLicenceProfileComponent {
 			this.profileConfirmationFormGroup.markAllAsTouched();
 		}
 
-		const isBcBranchesFormValid = this.businessProfileComponent.isBcBranchesFormValid();
-		const isTheRestValid =
-			this.businessProfileComponent.isFormValid() &&
-			(this.showConfirmation ? this.profileConfirmationFormGroup.valid : true);
+		const { isValid: isProfileValid, areBranchesValid } = this.businessProfileComponent.isFormValid();
 
-		if (!isTheRestValid) {
-			this.utilService.scrollToErrorSection();
+		const isValid = isProfileValid && (this.showConfirmation ? this.profileConfirmationFormGroup.valid : true);
+
+		if (!areBranchesValid) {
 			return;
-		} else if (!isBcBranchesFormValid) {
+		} else if (!isValid) {
+			this.utilService.scrollToErrorSection();
 			return;
 		}
 

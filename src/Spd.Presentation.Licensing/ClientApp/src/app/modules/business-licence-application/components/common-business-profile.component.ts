@@ -168,20 +168,30 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
-	isFormValid(): boolean {
+	isFormValid(): { isValid: boolean; areBranchesValid: boolean } {
 		const isValid1 = this.isFormGroupValid(this.businessInformationFormGroup);
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
-		// see below 'isBcBranchesFormValid' for rest of validation
+		const areBranchesValid = this.isBcBranchesFormValid();
 
-		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
+		console.debug(
+			'[CommonBusinessProfileComponent] isFormValid',
+			isValid1,
+			isValid2,
+			isValid3,
+			isValid4,
+			isValid5,
+			areBranchesValid
+		);
 
-		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && areBranchesValid;
+
+		return { isValid, areBranchesValid };
 	}
 
-	isBcBranchesFormValid(): boolean {
+	private isBcBranchesFormValid(): boolean {
 		let isValid = true;
 		if (!this.isBusinessLicenceSoleProprietor) {
 			isValid = this.isBusinessBcBranchesFormGroupValid(this.branchesInBcFormGroup);
