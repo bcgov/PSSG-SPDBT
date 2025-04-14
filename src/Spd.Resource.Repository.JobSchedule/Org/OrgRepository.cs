@@ -1,6 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Client;
+using Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.JobSchedule.Org;
@@ -30,12 +29,12 @@ internal class OrgRepository : IOrgRepository
             {
                 var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
                 ResultResp rr = _mapper.Map<ResultResp>(response);
-                rr.OrgId = a.accountid.Value;
+                rr.PrimaryEntityId = a.accountid.Value;
                 return rr;
             }
             catch (Exception ex)
             {
-                return new ResultResp { IsSuccess = false, ResultStr = ex.Message, OrgId = a.accountid.Value };
+                return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
             }
             finally
             {
