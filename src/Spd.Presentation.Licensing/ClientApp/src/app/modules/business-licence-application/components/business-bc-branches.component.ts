@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -62,7 +62,7 @@ export interface BranchResponse {
 										*ngIf="!isBranchValid(branch)"
 										class="error-icon me-2"
 										color="warn"
-										matTooltip="Edit this branch to fix the errors"
+										matTooltip="Edit this branch and fix the incomplete data"
 										>error</mat-icon
 									>
 									{{ branch.addressLine1 | default }}
@@ -166,6 +166,8 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 	@Input() form!: FormGroup;
 	@Input() isReadonly!: boolean;
 
+	@Output() branchChange: EventEmitter<any> = new EventEmitter();
+
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
@@ -241,6 +243,9 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 					}
 
 					this.dataSource.data = this.branchesArray.value;
+
+					// A branch change has been made. Check if error message should display in parent
+					this.branchChange.emit();
 				}
 			});
 	}

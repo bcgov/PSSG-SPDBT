@@ -130,11 +130,13 @@ import { BranchResponse, BusinessBcBranchesComponent } from './business-bc-branc
 								<app-business-bc-branches
 									[form]="branchesInBcFormGroup"
 									[isReadonly]="isReadonly"
+									(branchChange)="onBranchChange()"
 								></app-business-bc-branches>
 
 								<div class="mt-3" *ngIf="!isBusinessBcBranchesValid">
 									<app-alert type="danger" icon="dangerous">
-										There are one or more branches with invalid data. Edit the branch and fix the data.
+										Some branch details for your organization are incomplete. Edit the marked branches and provide the
+										missing information before proceeding.
 									</app-alert>
 								</div>
 							</div>
@@ -186,7 +188,15 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 		}
 
 		this.isBusinessBcBranchesValid = isValid;
-		return this.isBusinessBcBranchesValid;
+		return isValid;
+	}
+
+	onBranchChange(): void {
+		// A branch change has been made. If the error message is displaying,
+		// check if data is valid yet.
+		if (!this.isBusinessBcBranchesValid) {
+			this.isBcBranchesFormValid();
+		}
 	}
 
 	private isFormGroupValid(form: FormGroup): boolean {
