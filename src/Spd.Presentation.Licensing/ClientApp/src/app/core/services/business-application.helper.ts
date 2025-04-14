@@ -39,7 +39,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			bizTypeCode: new FormControl('', [Validators.required]),
+			bizTypeCode: new FormControl('', [FormControlValidators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
 			bizTradeName: new FormControl(''),
 			isBizTradeNameReadonly: new FormControl(''),
@@ -178,8 +178,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
 	});
 
 	applicantFormGroup: FormGroup = this.formBuilder.group(

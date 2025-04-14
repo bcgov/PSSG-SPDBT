@@ -81,7 +81,6 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"

@@ -1480,7 +1480,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				{
 					trainingId: new FormControl(train?.trainingId ?? null), // placeholder for ID
 					trainingDetail: new FormControl(train?.trainingDetail ?? null, [FormControlValidators.required]),
-					usePersonalDogTrainer: new FormControl(usePersonalDogTrainer, [Validators.required]),
+					usePersonalDogTrainer: new FormControl(usePersonalDogTrainer, [FormControlValidators.required]),
 					dogTrainerCredential: new FormControl(train?.dogTrainerCredential ?? null),
 					trainingTime: new FormControl(train?.trainingTime ?? null),
 					trainerGivenName: new FormControl(train?.trainerGivenName ?? null),
@@ -1537,13 +1537,13 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					trainingBizName: new FormControl(train?.trainingBizName ?? null, [FormControlValidators.required]),
 					contactGivenName: new FormControl(train?.contactGivenName ?? null),
 					contactSurname: new FormControl(train?.contactSurname ?? null, [FormControlValidators.required]),
-					contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [Validators.required]),
+					contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [FormControlValidators.required]),
 					contactEmailAddress: new FormControl(train?.contactEmailAddress ?? null, [FormControlValidators.email]),
 					trainingStartDate: new FormControl(train?.trainingStartDate ?? null, [Validators.required]),
 					trainingEndDate: new FormControl(train?.trainingEndDate ?? null, [Validators.required]),
-					trainingName: new FormControl(train?.trainingName ?? null, [Validators.required]),
-					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
-					whatLearned: new FormControl(train?.whatLearned ?? null, [Validators.required]),
+					trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
+					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [FormControlValidators.required]),
+					whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
 					addressSelected: new FormControl(!!train?.trainingBizMailingAddress?.addressLine1, [Validators.requiredTrue]),
 					addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
 						FormControlValidators.required,

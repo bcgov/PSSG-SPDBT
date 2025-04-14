@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -8,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-dt-training-school-info',
 	template: `
-		<app-step-section title="Information about the accredited training school">
+		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -16,6 +17,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							schoolLabel="Name of Assistance Dogs International or International Guide Dog Federation Accredited School"
 							[accreditedSchoolIdControl]="accreditedSchoolId"
 							[accreditedSchoolNameControl]="accreditedSchoolName"
+							[applicationTypeCode]="applicationTypeCode"
 						></app-form-accredited-school>
 					</div>
 				</div>
@@ -103,17 +105,33 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepDtTrainingSchoolInfoComponent implements LicenceChildStepperStepComponent {
+export class StepDtTrainingSchoolInfoComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.dogTrainerApplicationService.trainingSchoolInfoFormGroup;
 
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+
 	constructor(private dogTrainerApplicationService: DogTrainerApplicationService) {}
+
+	ngOnInit(): void {
+		this.title = this.isRenewal
+			? 'Confirm accredited training school information'
+			: 'Information about the accredited training school';
+		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get isRenewal(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
 	}
 
 	get accreditedSchoolId(): FormControl {
