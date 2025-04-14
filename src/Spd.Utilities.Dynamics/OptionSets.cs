@@ -344,7 +344,8 @@ namespace Spd.Utilities.Dynamics
     {
         Physical = 100000000,
         Mailing = 100000001,
-        Branch = 100000002
+        Branch = 100000002,
+        MainOffice = 100000003
     }
 
     public enum TaskPriorityOptionSet
