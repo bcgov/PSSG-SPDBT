@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Polly" />
-    <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>
 
   <ItemGroup>
