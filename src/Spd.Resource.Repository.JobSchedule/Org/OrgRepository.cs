@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob;
 using Spd.Utilities.Dynamics;
 
@@ -20,6 +21,10 @@ internal class OrgRepository : IOrgRepository
             .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
             .ToList();
 
+        accounts = new List<account>()
+        {
+            accounts.FirstOrDefault()
+        };
         using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
 
         var tasks = accounts.Select(async a =>
