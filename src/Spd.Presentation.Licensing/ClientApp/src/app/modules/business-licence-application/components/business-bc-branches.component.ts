@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
@@ -57,6 +58,13 @@ export interface BranchResponse {
 								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">Address Line 1:</span>
+									<mat-icon
+										*ngIf="!isBranchValid(branch)"
+										class="error-icon me-2"
+										color="warn"
+										matTooltip="Edit this branch to fix the errors"
+										>error</mat-icon
+									>
 									{{ branch.addressLine1 | default }}
 								</mat-cell>
 							</ng-container>
@@ -160,7 +168,8 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -173,14 +182,8 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 		}
 	}
 
-	onHasBranchesInBcChange(): void {
-		if (this.form.value.hasBranchesInBc != BooleanTypeCode.Yes) {
-			const branchesArray = this.branchesArray;
-			while (branchesArray.length) {
-				branchesArray.removeAt(0);
-			}
-			this.form.setControl('branches', branchesArray);
-		}
+	isBranchValid(branch: BranchResponse): boolean {
+		return this.businessApplicationService.isBcBranchValid(branch);
 	}
 
 	isFormValid(): boolean {

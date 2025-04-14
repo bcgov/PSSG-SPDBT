@@ -1,10 +1,11 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BizTypeCode } from '@app/api/models';
-import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode, BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { BusinessBcBranchesComponent } from './business-bc-branches.component';
+import { BranchResponse, BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
 	selector: 'app-common-business-profile',
@@ -130,6 +131,12 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									[form]="branchesInBcFormGroup"
 									[isReadonly]="isReadonly"
 								></app-business-bc-branches>
+
+								<div class="mt-3" *ngIf="!isBusinessBcBranchesValid">
+									<app-alert type="danger" icon="dangerous">
+										There are one or more branches with invalid data. Edit the branch and fix the data.
+									</app-alert>
+								</div>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -144,6 +151,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
 
 	businessTypes = BusinessLicenceTypes;
+	isBusinessBcBranchesValid = true;
 
 	@Input() businessInformationFormGroup!: FormGroup;
 	@Input() businessManagerFormGroup!: FormGroup;
@@ -156,30 +164,48 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 
 	@ViewChild(BusinessBcBranchesComponent) businessBcBranchesComponent!: BusinessBcBranchesComponent;
 
+	constructor(private businessApplicationService: BusinessApplicationService) {}
+
 	isFormValid(): boolean {
 		const isValid1 = this.isFormGroupValid(this.businessInformationFormGroup);
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
-		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.businessBcBranchesComponent.isFormValid();
-		const isValid6 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
+		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
+		// see below 'isBcBranchesFormValid' for rest of validation
 
-		console.debug(
-			'[CommonBusinessProfileComponent] isFormValid',
-			isValid1,
-			isValid2,
-			isValid3,
-			isValid4,
-			isValid5,
-			isValid6
-		);
+		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
 
-		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && isValid6;
+		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+	}
+
+	isBcBranchesFormValid(): boolean {
+		let isValid = true;
+		if (!this.isBusinessLicenceSoleProprietor) {
+			isValid = this.isBusinessBcBranchesFormGroupValid(this.branchesInBcFormGroup);
+		}
+
+		this.isBusinessBcBranchesValid = isValid;
+		return this.isBusinessBcBranchesValid;
 	}
 
 	private isFormGroupValid(form: FormGroup): boolean {
 		form.markAllAsTouched();
 		return form.valid;
+	}
+
+	private isBusinessBcBranchesFormGroupValid(branchesInBcFormGroup: FormGroup): boolean {
+		const hasBranchesInBc = branchesInBcFormGroup.get('hasBranchesInBc') as FormControl;
+		if (hasBranchesInBc.value === BooleanTypeCode.Yes) {
+			const branchesArray = <FormArray>branchesInBcFormGroup.get('branches');
+			const allValid = branchesArray.value.every((branch: BranchResponse) => {
+				return this.businessApplicationService.isBcBranchValid(branch);
+			});
+
+			return allValid;
+		}
+
+		return true;
 	}
 
 	get showBcBusinessAddress(): boolean {
