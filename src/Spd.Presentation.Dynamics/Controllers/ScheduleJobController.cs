@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.ScheduleJob;
 using Spd.Utilities.Shared;
@@ -9,7 +8,7 @@ namespace Spd.Presentation.Dynamics.Controllers;
 /// <summary>
 /// ScheduleJob support for dynamics
 /// </summary>
-[Authorize]
+//[Authorize]
 public class ScheduleJobController : SpdControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,13 +29,13 @@ public class ScheduleJobController : SpdControllerBase
     /// <response code="400">if the job session cannot be found</response>
     /// <returns>
     /// </returns>
-    [HttpPut]
+    [HttpGet]
     [Route("api/schedule-job-session/{sessionId}/run")]
     public async Task<IActionResult> RunJobSessionAsync(
         [FromRoute] Guid sessionId,
         CancellationToken ct)
     {
-        await _mediator.Send(new RunScheduleJobSessionCommand(sessionId), ct);
+        _mediator.Send(new RunScheduleJobSessionCommand(sessionId), ct);
         return Ok();
     }
 }
