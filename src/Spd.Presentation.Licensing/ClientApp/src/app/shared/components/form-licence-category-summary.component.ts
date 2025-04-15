@@ -5,7 +5,7 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 	selector: 'app-form-licence-category-summary',
 	template: `
 		<ng-container *ngIf="categoryList">
-			<mat-divider class="mt-3 mb-2"></mat-divider>
+			<mat-divider class="mt-3 mb-2" *ngIf="showDivider"></mat-divider>
 			<div class="text-minor-heading-small">Licence Categories</div>
 			<div class="row mt-0">
 				<div class="col-12">
@@ -26,4 +26,5 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 })
 export class FormLicenceCategorySummaryComponent {
 	@Input() categoryList!: Array<WorkerCategoryTypeCode>;
+	@Input() showDivider = true;
 }

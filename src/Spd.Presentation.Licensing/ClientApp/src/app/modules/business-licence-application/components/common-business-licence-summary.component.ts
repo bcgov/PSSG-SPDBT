@@ -217,8 +217,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</mat-expansion-panel-header>
 
 								<div class="panel-body">
-									<div class="text-minor-heading-small mt-4">Licence Information</div>
 									<ng-container *ngIf="!isUpdate">
+										<div class="text-minor-heading-small mt-4">Licence Information</div>
 										<div class="row mt-0">
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
@@ -233,7 +233,10 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 									</ng-container>
 
-									<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
+									<app-form-licence-category-summary
+										[categoryList]="categoryList"
+										[showDivider]="!isUpdate"
+									></app-form-licence-category-summary>
 
 									<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
