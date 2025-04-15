@@ -10,21 +10,21 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationHelper {
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [FormControlValidators.required]),
 		accreditedSchoolName: new FormControl(''),
 		schoolDirectorGivenName: new FormControl(''),
 		schoolDirectorMiddleName: new FormControl(''),
-		schoolDirectorSurname: new FormControl('', [Validators.required]),
-		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
+		schoolDirectorSurname: new FormControl('', [FormControlValidators.required]),
+		schoolContactPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
 		trainerGivenName: new FormControl(''),
 		trainerMiddleName: new FormControl(''),
-		trainerSurname: new FormControl('', [Validators.required]),
+		trainerSurname: new FormControl('', [FormControlValidators.required]),
 		trainerDateOfBirth: new FormControl('', [Validators.required]),
-		trainerPhoneNumber: new FormControl('', [Validators.required]),
+		trainerPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 

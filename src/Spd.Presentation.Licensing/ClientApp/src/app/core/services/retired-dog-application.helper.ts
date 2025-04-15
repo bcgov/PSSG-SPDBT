@@ -5,11 +5,12 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
-		gdsdCertificateNumber: new FormControl('', [Validators.required]),
+		gdsdCertificateNumber: new FormControl('', [FormControlValidators.required]),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
@@ -18,7 +19,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	});
 
 	dogLivingForm: FormGroup = this.formBuilder.group({
-		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
+		isContinueToLiveWithDog: new FormControl('', [FormControlValidators.required]),
 	});
 
 	constructor(
