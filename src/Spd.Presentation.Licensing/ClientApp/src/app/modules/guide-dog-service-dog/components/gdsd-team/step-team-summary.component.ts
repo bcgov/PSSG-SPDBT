@@ -292,7 +292,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-container *ngIf="(isTrainedByAccreditedSchools && isServiceDog) || !isTrainedByAccreditedSchools">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<div class="text-minor-heading-small">Specialized Tasks</div>
+									<div class="text-minor-heading-small mb-2">Specialized Tasks</div>
 									<div class="row mt-0">
 										<div class="col-lg-12 col-md-12">
 											<div class="summary-text-data">

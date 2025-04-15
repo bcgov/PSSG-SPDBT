@@ -33,11 +33,11 @@ export abstract class CommonApplicationHelper {
 	});
 
 	serviceTypeFormGroup: FormGroup = this.formBuilder.group({
-		serviceTypeCode: new FormControl('', [Validators.required]),
+		serviceTypeCode: new FormControl('', [FormControlValidators.required]),
 	});
 
 	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl('', [Validators.required]),
+		applicationTypeCode: new FormControl('', [FormControlValidators.required]),
 	});
 
 	accessCodeFormGroup: FormGroup = this.formBuilder.group({
@@ -240,7 +240,7 @@ export abstract class CommonApplicationHelper {
 		{
 			updatePhoto: new FormControl(''), // used by update/renewal
 			uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
-			attachments: new FormControl([], [FormControlValidators.required]),
+			attachments: new FormControl([], [Validators.required]),
 			updateAttachments: new FormControl([]), // used by update/renewal
 		},
 		{
@@ -307,7 +307,7 @@ export abstract class CommonApplicationHelper {
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
 	});
 
 	residentialAddressFormGroup: FormGroup = this.formBuilder.group({
