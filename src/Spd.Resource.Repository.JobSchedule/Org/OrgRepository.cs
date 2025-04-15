@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob;
 using Spd.Utilities.Dynamics;
 
@@ -8,23 +8,32 @@ internal class OrgRepository : IOrgRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<IOrgRepository> _logger;
+
     public OrgRepository(IDynamicsContextFactory ctx,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<IOrgRepository> logger)
     {
         _context = ctx.Create();
         _mapper = mapper;
+        this._logger = logger;
     }
 
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(CancellationToken ct)
     {
+        int completed = 0;
         var accounts = _context.accounts.Where(a => a.statecode == DynamicsConstants.StateCode_Active)
             .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
             .ToList();
 
-        accounts = new List<account>()
+        void ReportProgress(int current)
         {
-            accounts.FirstOrDefault()
-        };
+            if (current % 100 == 0 || current == accounts.Count())
+            {
+                _logger.LogInformation($"Processed {current} of {accounts.Count()} accounts");
+            }
+        }
+
         using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
 
         var tasks = accounts.Select(async a =>
@@ -44,11 +53,15 @@ internal class OrgRepository : IOrgRepository
             finally
             {
                 semaphore.Release();
+                int current = Interlocked.Increment(ref completed);
+                ReportProgress(current);
             }
         });
 
         var results = await Task.WhenAll(tasks);
         return results;
     }
+
+
 }
 
