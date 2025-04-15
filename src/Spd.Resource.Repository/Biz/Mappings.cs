@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
