@@ -94,7 +94,11 @@ public class ScheduleJobManager :
         if (cmd.JobSessionStatusCode == JobSessionStatusCode.Failed)
         {
             string error = JsonSerializer.Serialize(results.Where(r => !r.IsSuccess).ToList());
-            _logger.LogError(error);
+            _logger.LogError($"job failed with {error}");
+        }
+        else
+        {
+            _logger.LogInformation($"job runs successfully");
         }
         return cmd;
     }
