@@ -67,7 +67,7 @@ internal class PermitAppManager :
 
         if (hasDuplicate)
         {
-            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of permit or permit application");
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
