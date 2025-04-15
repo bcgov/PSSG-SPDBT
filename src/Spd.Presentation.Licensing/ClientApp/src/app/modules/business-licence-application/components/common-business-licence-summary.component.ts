@@ -216,8 +216,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 								<div class="panel-body">
 									<div class="text-minor-heading-small mt-4">Licence Information</div>
-									<div class="row mt-0">
-										<ng-container *ngIf="!isUpdate">
+									<ng-container *ngIf="!isUpdate">
+										<div class="row mt-0">
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
@@ -228,96 +228,87 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
-										</ng-container>
+										</div>
+									</ng-container>
 
-										<div class="col-lg-6 col-md-12">
-											<div class="text-label d-block text-muted">Licence Categories</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let category of categoryList; let i = index">
-														<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-													</ng-container>
-												</ul>
+									<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
+
+									<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading-small">Private Investigator Information</div>
+										<div class="row mt-0">
+											<div class="col-lg-5 col-md-12">
+												<div class="text-label d-block text-muted">Manager Name</div>
+												<div class="summary-text-data">
+													{{ privateInvestigatorName | default }}
+												</div>
+											</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Licence Number</div>
+												<div class="summary-text-data">
+													{{ privateInvestigatorLicenceNumber | default }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Expiry Date</div>
+												<div class="summary-text-data">
+													{{ privateInvestigatorExpiryDate | formatDate | default }}
+												</div>
 											</div>
 										</div>
+									</ng-container>
 
-										<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Private Investigator Information</div>
-											<div class="row mt-0">
-												<div class="col-lg-5 col-md-12">
-													<div class="text-label d-block text-muted">Manager Name</div>
-													<div class="summary-text-data">
-														{{ privateInvestigatorName | default }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Licence Number</div>
-													<div class="summary-text-data">
-														{{ privateInvestigatorLicenceNumber | default }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Expiry Date</div>
-													<div class="summary-text-data">
-														{{ privateInvestigatorExpiryDate | formatDate | default }}
-													</div>
-												</div>
+									<ng-container *ngIf="isDogs">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading-small">Dogs Authorization</div>
+										<div class="row mt-0">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Request to Use Dogs</div>
+												<div class="summary-text-data">{{ useDogs }}</div>
 											</div>
-										</ng-container>
-
-										<ng-container *ngIf="isDogs">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Dogs Authorization</div>
-											<div class="row mt-0">
+											<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
 												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Request to Use Dogs</div>
-													<div class="summary-text-data">{{ useDogs }}</div>
-												</div>
-												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Reason</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<li *ngIf="isDogsPurposeProtection">Protection</li>
-																<li *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</li>
-																<li *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</li>
-															</ul>
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-												</ng-container>
-											</div>
-										</ng-container>
-
-										<ng-container *ngIf="isAnyDocuments">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Documents Uploaded</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
-													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
-													</div>
+													<div class="text-label d-block text-muted">Reason</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
-															<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+															<li *ngIf="isDogsPurposeProtection">Protection</li>
+															<li *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</li>
+															<li *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</li>
+														</ul>
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
 																<li>{{ doc.name }}</li>
 															</ng-container>
 														</ul>
 													</div>
 												</div>
+											</ng-container>
+										</div>
+									</ng-container>
+
+									<ng-container *ngIf="isAnyDocuments">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading-small">Documents Uploaded</div>
+										<div class="row mt-0">
+											<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
+												<div class="text-label d-block text-muted">
+													{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
+												</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
+												</div>
 											</div>
-										</ng-container>
-									</div>
+										</div>
+									</ng-container>
 								</div>
 							</mat-expansion-panel>
 
