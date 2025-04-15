@@ -517,11 +517,7 @@ export class UtilService {
 	isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
 		if (!licenceStatusCode) return false;
 
-		if (licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview) {
-			return true;
-		}
-
-		return false;
+		return licenceStatusCode === LicenceStatusCode.Active;
 	}
 
 	isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
@@ -98,7 +98,8 @@ namespace Spd.Resource.Repository.Biz
 
         private static IEnumerable<BranchAddr>? GetBranchAddrs(account account, ResolutionContext context)
         {
-            if ((bool)context.Items["includeMainOffice"])
+            bool hasItems = context.TryGetItems(out var items);
+            if (hasItems && (bool)items["includeMainOffice"])
                 return context.Mapper.Map<IEnumerable<BranchAddr>>(account.spd_Organization_Addresses
                    .Where(a => (a.spd_type == (int)AddressTypeOptionSet.Branch || a.spd_type == (int)AddressTypeOptionSet.MainOffice) && a.statecode == DynamicsConstants.StateCode_Active));
             else
