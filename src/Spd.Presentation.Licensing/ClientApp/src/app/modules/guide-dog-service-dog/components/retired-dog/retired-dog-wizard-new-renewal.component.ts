@@ -130,6 +130,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		}
 
 		this.isLoggedIn = this.authenticationService.isLoggedIn();
+		this.showSaveAndExit = this.retiredDogApplicationService.isSaveAndExit();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -143,8 +144,6 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 				this.applicationTypeCode = this.retiredDogApplicationService.retiredDogModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-
-				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
 
 				this.updateCompleteStatus();
 			}

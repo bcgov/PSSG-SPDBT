@@ -9,7 +9,9 @@ import { StepDtTrainingSchoolInfoComponent } from './step-dt-training-school-inf
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-dt-training-school-info></app-step-dt-training-school-info>
+				<app-step-dt-training-school-info
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-dt-training-school-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
