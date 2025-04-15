@@ -160,12 +160,13 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									<ng-container *ngIf="!isUpdate">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Company Branding</div>
-										<div class="row mt-3">
-											<div class="col-lg-6 col-md-12">
+										<div class="row">
+											<div class="col-12">
 												<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
-													<div class="summary-text-data">There is no logo or branding</div>
+													<div class="summary-text-data mt-3">There is no logo or branding</div>
 												</ng-container>
 												<ng-template #CompanyBrandingExamples>
+													<div class="text-label d-block text-muted">Documents</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
 															<ng-container *ngFor="let doc of companyBrandingAttachments; let i = index">
@@ -179,8 +180,9 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Proof of Insurance</div>
-										<div class="row mt-3">
-											<div class="col-lg-6 col-md-12">
+										<div class="row">
+											<div class="col-12">
+												<div class="text-label d-block text-muted">Documents</div>
 												<div class="summary-text-data">
 													<ul class="m-0">
 														<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
