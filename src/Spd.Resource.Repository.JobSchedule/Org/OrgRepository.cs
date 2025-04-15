@@ -35,7 +35,7 @@ internal class OrgRepository : IOrgRepository
         }
 
         using var semaphore = new SemaphoreSlim(2); // Limit to 2 concurrent requests
-
+        _logger.LogInformation("2 concurrent requests");
         var tasks = accounts.Select(async a =>
         {
             await semaphore.WaitAsync();
