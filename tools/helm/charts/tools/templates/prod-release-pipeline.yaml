@@ -6,8 +6,7 @@ metadata:
     DataClass: Low
 spec:
   tasks:
-
-   ## Promote staging to prod ##
+    ## Promote staging to prod ##
     - name: prod-screening-portal
       params:
         - name: imageName
@@ -22,19 +21,19 @@ spec:
         kind: Task
         name: promote-image-task
 
-    - name: prod-licensing-portal
-      params:
-        - name: imageName
-          value: licensing-portal
-        - name: fromTag
-          value: staging
-        - name: toTag
-          value: prod
-        - name: referencePolicy
-          value: local
-      taskRef:
-        kind: Task
-        name: promote-image-task
+    # - name: prod-licensing-portal
+    #   params:
+    #     - name: imageName
+    #       value: licensing-portal
+    #     - name: fromTag
+    #       value: staging
+    #     - name: toTag
+    #       value: prod
+    #     - name: referencePolicy
+    #       value: local
+    #   taskRef:
+    #     kind: Task
+    #     name: promote-image-task
 
     - name: prod-dynamics-helper
       params:
