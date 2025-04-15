@@ -26,6 +26,7 @@ internal class OrgRepository : IOrgRepository
             .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
             .ToList();
 
+        //delegate, for reporting progress
         void ReportProgress(int current)
         {
             if (current % 100 == 0 || current == accounts.Count())
