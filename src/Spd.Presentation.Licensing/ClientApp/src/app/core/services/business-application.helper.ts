@@ -39,7 +39,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			bizTypeCode: new FormControl('', [Validators.required]),
+			bizTypeCode: new FormControl('', [FormControlValidators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
 			bizTradeName: new FormControl(''),
 			isBizTradeNameReadonly: new FormControl(''),
@@ -179,7 +179,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
 	});
 
 	applicantFormGroup: FormGroup = this.formBuilder.group(
@@ -268,14 +268,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		city: new FormControl('', [FormControlValidators.required]),
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
-			FormControlValidators.required,
+			Validators.required,
 			FormControlValidators.requiredValue(
 				SPD_CONSTANTS.address.provinceBC,
 				SPD_CONSTANTS.address.provinceBritishColumbia
 			),
 		]),
 		country: new FormControl('', [
-			FormControlValidators.required,
+			Validators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 	});
@@ -381,7 +381,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
+				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'emailAddress',
 					(_form) => _form.get('noEmailAddress')?.value != true
 				),
@@ -395,7 +395,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		firstName: new FormControl(''),
 		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 		jobTitle: new FormControl(''),
 	});
 
