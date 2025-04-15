@@ -35,7 +35,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 				></app-steps-dt-details>
 			</mat-step>
 
-			<mat-step [completed]="step2Complete" *ngIf="isNew">
+			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
