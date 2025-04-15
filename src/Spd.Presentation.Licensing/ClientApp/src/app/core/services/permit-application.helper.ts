@@ -86,7 +86,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	employerInformationFormGroup: FormGroup = this.formBuilder.group({
 		employerName: new FormControl('', [FormControlValidators.required]),
 		supervisorName: new FormControl('', [FormControlValidators.required]),
-		supervisorEmailAddress: new FormControl('', [FormControlValidators.required]),
+		supervisorEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		supervisorPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
