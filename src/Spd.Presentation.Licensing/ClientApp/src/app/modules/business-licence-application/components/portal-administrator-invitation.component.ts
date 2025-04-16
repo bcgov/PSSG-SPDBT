@@ -3,24 +3,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationRequest } from '@app/api/models';
 import { BizPortalUserService } from '@app/api/services';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { takeWhile } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
+import { takeWhile } from 'rxjs';
 
 @Component({
-    selector: 'app-business-manager-invitation',
-    template: `
+	selector: 'app-portal-administrator-invitation',
+	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon class="my-4">error</mat-icon>
-			<h1>Business Manager Invitation</h1>
+			<h1>Portal Administrator Invitation</h1>
 			<h4 class="mt-4">
 				{{ message }}
 			</h4>
 			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -29,10 +28,10 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 				margin-right: 4px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
-export class BusinessManagerInvitationComponent implements OnInit {
+export class PortalAdministratorInvitationComponent implements OnInit {
 	message = '';
 
 	private subscribeAlive = true;
@@ -48,7 +47,7 @@ export class BusinessManagerInvitationComponent implements OnInit {
 		const id = this.route.snapshot.paramMap.get('id');
 
 		const redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
-			BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION
+			BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATOR_INVITATION
 		)}/${id}`;
 
 		// if the user is logged in to BCSC, log them out.

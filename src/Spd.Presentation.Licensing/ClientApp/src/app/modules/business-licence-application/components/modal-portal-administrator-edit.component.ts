@@ -7,13 +7,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 export interface BizPortalUserDialogData {
 	user: BizPortalUserResponse;
-	isAllowedNonPrimaryManager: boolean;
-	isAllowedPrimaryManager: boolean;
+	isAllowedNonPrimaryAdmin: boolean;
+	isAllowedPrimaryAdmin: boolean;
 	emails: string[]; // used to determine if email is unique within the set
 }
 
 @Component({
-	selector: 'app-modal-business-manager-edit',
+	selector: 'app-modal-portal-administrator-edit',
 	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
@@ -76,7 +76,7 @@ export interface BizPortalUserDialogData {
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<mat-error *ngIf="emailNotUnique">This email has been used by another manager</mat-error>
+					<mat-error *ngIf="emailNotUnique">This email has been used by another portal administrator</mat-error>
 				</div>
 			</form>
 		</mat-dialog-content>
@@ -111,18 +111,18 @@ export interface BizPortalUserDialogData {
 	styles: [],
 	standalone: false,
 })
-export class ModalBusinessManagerEditComponent implements OnInit {
+export class ModalPortalAdministratorEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
 	emailNotUnique = false;
 	authorizationTypes!: SelectOptions[];
 
-	form = this.businessApplicationService.managerFormGroup;
+	form = this.businessApplicationService.portalAdministratorFormGroup;
 
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
-		private dialogRef: MatDialogRef<ModalBusinessManagerEditComponent>,
+		private dialogRef: MatDialogRef<ModalPortalAdministratorEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: BizPortalUserDialogData
 	) {}
@@ -132,12 +132,12 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 		this.form.reset();
 		this.form.patchValue(data);
 		this.isEdit = !!data?.id;
-		this.title = this.isEdit ? 'Edit Business Manager' : 'Add Business Manager';
+		this.title = this.isEdit ? 'Edit Portal Administrator' : 'Add Portal Administrator';
 
 		this.authorizationTypes = ContactAuthorizationTypes.filter((item: SelectOptions) => {
 			return (
-				(this.dialogData.isAllowedNonPrimaryManager && item.code === ContactAuthorizationTypeCode.BusinessManager) ||
-				(this.dialogData.isAllowedPrimaryManager && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
+				(this.dialogData.isAllowedNonPrimaryAdmin && item.code === ContactAuthorizationTypeCode.BusinessManager) ||
+				(this.dialogData.isAllowedPrimaryAdmin && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
 			);
 		});
 	}

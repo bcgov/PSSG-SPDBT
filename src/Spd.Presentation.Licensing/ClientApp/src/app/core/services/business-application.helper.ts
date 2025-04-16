@@ -389,7 +389,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
-	managerFormGroup: FormGroup = this.formBuilder.group({
+	portalAdministratorFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
 		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl(''),
