@@ -625,7 +625,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Save a business manager
+	 * Save a portal administrator
 	 * @returns
 	 */
 	getBizPortalUsers(): Observable<BizPortalUserListResponse> {
@@ -637,7 +637,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Save a business manager
+	 * Save a portal administrator
 	 * @returns
 	 */
 	saveBizPortalUserCreate(body: BizPortalUserCreateRequest): Observable<BizPortalUserResponse> {
@@ -651,7 +651,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Save a business manager
+	 * Save a portal administrator
 	 * @returns
 	 */
 	saveBizPortalUserUpdate(userId: string, body: BizPortalUserUpdateRequest): Observable<BizPortalUserResponse> {
@@ -666,7 +666,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Delete a business manager
+	 * Delete a portal administrator
 	 * @returns
 	 */
 	deleteBizPortalUser(userId: string): Observable<ActionResult> {
