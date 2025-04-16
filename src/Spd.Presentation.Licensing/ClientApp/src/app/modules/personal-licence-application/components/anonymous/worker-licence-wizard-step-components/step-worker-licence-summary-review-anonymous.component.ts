@@ -70,19 +70,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</div>
 								</div>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-								<div class="text-minor-heading-small">Licence Categories</div>
-								<div class="row mt-0">
-									<div class="col-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let category of categoryList; let i = index">
-													<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</div>
+								<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
 
 								<app-worker-summary-document-uploaded
 									[workerModelData]="licenceModelData"
