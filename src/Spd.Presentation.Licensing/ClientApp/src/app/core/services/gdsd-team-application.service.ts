@@ -1542,7 +1542,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					trainingStartDate: new FormControl(train?.trainingStartDate ?? null, [Validators.required]),
 					trainingEndDate: new FormControl(train?.trainingEndDate ?? null, [Validators.required]),
 					trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
-					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [FormControlValidators.required]),
+					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
 					whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
 					addressSelected: new FormControl(!!train?.trainingBizMailingAddress?.addressLine1, [Validators.requiredTrue]),
 					addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
