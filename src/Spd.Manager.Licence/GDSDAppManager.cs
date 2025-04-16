@@ -59,8 +59,7 @@ internal class GDSDAppManager :
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
         return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
@@ -96,8 +95,7 @@ internal class GDSDAppManager :
         await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
         {
-            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId
         }, ct);
         return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
@@ -129,8 +127,7 @@ internal class GDSDAppManager :
         }
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
         return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
@@ -157,8 +154,7 @@ internal class GDSDAppManager :
         }
         await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
         return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }

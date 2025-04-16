@@ -106,16 +106,22 @@ internal class GDSDAppRepository : IGDSDAppRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
-        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(cmd.ApplicationStatusCode.ToString());
-
-        if (cmd.ApplicationStatusCode == ApplicationStatusEnum.Submitted)
+        if (app.spd_identityconfirmed != null && app.spd_identityconfirmed.Value)
         {
+            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.Submitted.ToString());
             app.statecode = DynamicsConstants.StateCode_Inactive;
-
             app.spd_submittedon = DateTimeOffset.Now;
             app.spd_portalmodifiedon = DateTimeOffset.Now;
             app.spd_licencefee = 0;
-
+            _context.UpdateObject(app);
+            await _context.SaveChangesAsync(ct);
+        }
+        else
+        {
+            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.ApplicantVerification.ToString());
+            app.statecode = DynamicsConstants.StateCode_Active;
+            app.spd_portalmodifiedon = DateTimeOffset.Now;
+            app.spd_licencefee = 0;
             _context.UpdateObject(app);
             await _context.SaveChangesAsync(ct);
         }
