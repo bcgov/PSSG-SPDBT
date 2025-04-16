@@ -179,7 +179,7 @@ export class AuthProcessService {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = BusinessLicenceApplicationRoutes.path(
-			`${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/${invitationId}`
+			`${BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATOR_INVITATION}/${invitationId}`
 		);
 
 		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID returningRoute', returningRoute);
