@@ -44,11 +44,11 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 									mat-flat-button
 									color="primary"
 									class="large w-auto ms-2 mb-3"
-									aria-label="Manage the business managers"
-									(click)="onBusinessManagers()"
+									aria-label="Manage the portal administrators"
+									(click)="onPortalAdministrators()"
 								>
 									<mat-icon class="d-none d-md-block">people</mat-icon>
-									Business Managers
+									Portal Administrators
 								</button>
 							</div>
 						</div>
@@ -372,9 +372,9 @@ export class BusinessLicenceMainComponent implements OnInit {
 			.subscribe();
 	}
 
-	onBusinessManagers(): void {
+	onPortalAdministrators(): void {
 		this.router.navigateByUrl(
-			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.BUSINESS_MANAGERS)
+			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATORS)
 		);
 	}
 

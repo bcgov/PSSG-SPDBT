@@ -319,10 +319,10 @@ export const ServiceTypes: SelectOptions[] = [
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [
-	{ desc: 'Business Manager', code: ContactAuthorizationTypeCode.BusinessManager },
 	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
+	{ desc: 'Portal Administrator', code: ContactAuthorizationTypeCode.BusinessManager },
 	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
-	{ desc: 'Primary Business Manager', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
+	{ desc: 'Primary Portal Administrator', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const HairColourTypes: SelectOptions[] = [

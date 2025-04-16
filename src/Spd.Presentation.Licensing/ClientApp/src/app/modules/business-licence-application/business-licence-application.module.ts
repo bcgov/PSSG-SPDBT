@@ -32,12 +32,12 @@ import { BusinessLicenceWizardRenewalSwlSoleProprietorComponent } from './compon
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
-import { BusinessManagerInvitationComponent } from './components/business-manager-invitation.component';
-import { BusinessManagersComponent } from './components/business-managers.component';
+import { PortalAdministratorInvitationComponent } from './components/portal-administrator-invitation.component';
+import { PortalAdministratorsComponent } from './components/portal-administrators.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
 import { CommonBusinessInformationComponent } from './components/common-business-information.component';
 import { ModalBcBranchEditComponent } from './components/modal-bc-branch-edit.component';
-import { ModalBusinessManagerEditComponent } from './components/modal-business-manager-edit.component';
+import { ModalPortalAdministratorEditComponent } from './components/modal-portal-administrator-edit.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBusinessAddressComponent } from './components/step-business-licence-business-address.component';
@@ -63,9 +63,9 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 
 @NgModule({
 	declarations: [
-		BusinessManagerInvitationComponent,
+		PortalAdministratorInvitationComponent,
 		ModalBcBranchEditComponent,
-		ModalBusinessManagerEditComponent,
+		ModalPortalAdministratorEditComponent,
 		BusinessFirstTimeUserTermsOfUseComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
@@ -118,7 +118,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessCategoryArmouredCarGuardComponent,
 		BusinessCategoryPrivateInvestigatorComponent,
 		BusinessCategorySecurityGuardComponent,
-		BusinessManagersComponent,
+		PortalAdministratorsComponent,
 		BusinessProfileComponent,
 		BusinessControllingMembersAndEmployeesComponent,
 		BusinessLicenceMainApplicationsListComponent,
