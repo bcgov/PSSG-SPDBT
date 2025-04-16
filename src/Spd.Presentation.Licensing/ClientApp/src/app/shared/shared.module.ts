@@ -9,12 +9,12 @@ import { AlertComponent } from './components/alert.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
-import { FormAccessCodeAnonymousComponent } from './components/form-access-code-anonymous.component';
 import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { FormAccessCodeAnonymousComponent } from './components/form-access-code-anonymous.component';
 import { FormAddressAndIsSameFlagComponent } from './components/form-address-and-is-same-flag.component';
 import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
 import { FormAddressSummaryComponent } from './components/form-address-summary.component';
@@ -26,6 +26,10 @@ import { FormBusinessTermsComponent } from './components/form-business-terms.com
 import { FormContactInformationComponent } from './components/form-contact-information.component';
 import { FormExpiredLicenceComponent } from './components/form-expired-licence.component';
 import { FormFingerprintsComponent } from './components/form-fingerprints.component';
+import { FormLicenceCategoryPanelSimpleComponent } from './components/form-licence-category-panel-simple.component';
+import { FormLicenceCategorySummaryComponent } from './components/form-licence-category-summary.component';
+import { FormLicenceListExpiredComponent } from './components/form-licence-list-expired.component';
+import { FormLicenceReprintComponent } from './components/form-licence-reprint.component';
 import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
 import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
 import { FormPersonalInformationRenewUpdateAnonymousComponent } from './components/form-personal-information-renew-update-anonymous.component';
@@ -35,9 +39,6 @@ import { FormPhotographOfYourselfComponent } from './components/form-photograph-
 import { FormPhysicalCharacteristicsComponent } from './components/form-physical-characteristics.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
-import { FormLicenceCategoryPanelSimpleComponent } from './components/form-licence-category-panel-simple.component';
-import { FormLicenceListExpiredComponent } from './components/form-licence-list-expired.component';
-import { FormLicenceReprintComponent } from './components/form-licence-reprint.component';
 import { ModalAddressComponent } from './components/modal-address.component';
 import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
@@ -103,6 +104,7 @@ const SHARED_COMPONENTS = [
 	FormAddressAutocompleteComponent,
 	FormAddressComponent,
 	FormAddressSummaryComponent,
+	FormLicenceCategorySummaryComponent,
 	FormAliasesComponent,
 	FormBusinessTermsComponent,
 	FormFingerprintsComponent,
