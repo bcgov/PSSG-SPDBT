@@ -126,7 +126,6 @@ public record CreateGDSDAppCmd() : GDSDApp
 public record CommitGDSDAppCmd()
 {
     public Guid LicenceAppId { get; set; }
-    public ApplicationStatusEnum ApplicationStatusCode { get; set; } = ApplicationStatusEnum.Submitted;
 }
 
 public record GDSDAppResp() : GDSDApp
