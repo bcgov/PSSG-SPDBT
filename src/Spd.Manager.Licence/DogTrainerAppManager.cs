@@ -16,6 +16,7 @@ internal class DogTrainerAppManager :
         IRequestHandler<DogTrainerLicenceAppAnonymousSubmitCommand, DogTrainerAppCommandResponse>,
         IRequestHandler<DogTrainerLicenceAppRenewCommand, DogTrainerAppCommandResponse>,
         IRequestHandler<DogTrainerLicenceAppReplaceCommand, DogTrainerAppCommandResponse>,
+        IRequestHandler<GetDogTrainerAppQuery, DogTrainerAppResponse>,
         IDogTrainerAppManager
 {
     private readonly IContactRepository _contactRepository;
@@ -60,6 +61,12 @@ internal class DogTrainerAppManager :
         return new DogTrainerAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
+    public async Task<DogTrainerAppResponse> Handle(GetDogTrainerAppQuery request, CancellationToken cancellationToken)
+    {
+        var response = await _dogTrainerAppRepository.GetDogTrainerAppAsync(request.LicenceApplicationId, cancellationToken);
+        return _mapper.Map<DogTrainerAppResponse>(response);
+    }
+
     public async Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppRenewCommand cmd, CancellationToken ct)
     {
         throw new NotImplementedException();
@@ -94,4 +101,5 @@ internal class DogTrainerAppManager :
         }
 
     }
+
 }
