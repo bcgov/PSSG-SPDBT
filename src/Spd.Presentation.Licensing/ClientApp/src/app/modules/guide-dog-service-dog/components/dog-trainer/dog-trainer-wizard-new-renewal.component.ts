@@ -3,7 +3,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
@@ -143,16 +144,16 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		// this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
