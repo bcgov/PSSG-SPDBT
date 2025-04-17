@@ -499,6 +499,7 @@ internal class Mappings : Profile
         CreateMap<LicenceResp, PermitCompareEntity>();
         CreateMap<BizLicAppSubmitRequest, BizLicenceAppCompareEntity>();
         CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
+        CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
