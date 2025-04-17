@@ -10,8 +10,6 @@ public class DogTrainerRequestValidator : AbstractValidator<DogTrainerRequest>
         RuleFor(r => r.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty);
         RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.DogTrainerCertification); //must be team, dog trainer or retired dog
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        RuleFor(r => r.SchoolMailingAddress).SetValidator(new MailingAddressValidator())
-            .When(r => r.SchoolMailingAddress != null);
         RuleFor(x => x.AccreditedSchoolName).NotEmpty().MaximumLength(250);
         RuleFor(r => r.SchoolContactEmailAddress).MaximumLength(75)
             .EmailAddress()
@@ -28,5 +26,14 @@ public class DogTrainerRequestValidator : AbstractValidator<DogTrainerRequest>
         RuleFor(r => r.TrainerDateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.TrainerPhoneNumber).MaximumLength(30);
         RuleFor(r => r.TrainerEmailAddress).EmailAddress().MaximumLength(75).When(r => r.TrainerEmailAddress != null);
+    }
+}
+
+public class DogTrainerChangeRequestValidator : AbstractValidator<DogTrainerChangeRequest>
+{
+    public DogTrainerChangeRequestValidator()
+    {
+        Include(new DogTrainerRequestValidator());
+        RuleFor(r => r.OriginalLicenceId).NotEmpty();
     }
 }

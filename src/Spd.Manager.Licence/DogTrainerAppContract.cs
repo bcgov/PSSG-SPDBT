@@ -4,12 +4,14 @@ namespace Spd.Manager.Licence;
 public interface IDogTrainerAppManager
 {
     //anonymous
+    public Task<DogTrainerAppResponse> Handle(GetDogTrainerAppQuery query, CancellationToken ct);
     public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
     public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppReplaceCommand command, CancellationToken ct);
     public Task<DogTrainerAppCommandResponse> Handle(DogTrainerLicenceAppRenewCommand command, CancellationToken ct);
 }
 
 #region anonymous
+public record GetDogTrainerAppQuery(Guid LicenceApplicationId) : IRequest<DogTrainerAppResponse>;
 public record DogTrainerLicenceAppAnonymousSubmitCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
 public record DogTrainerLicenceAppReplaceCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
 public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
@@ -20,7 +22,6 @@ public record DogTrainerRequest : LicenceAppBase
 {
     public Guid AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
-    public MailingAddress? SchoolMailingAddress { get; set; }
     public string? SchoolDirectorSurname { get; set; }
     public string? SchoolDirectorGivenName { get; set; }
     public string? SchoolDirectorMiddleName { get; set; }
@@ -48,5 +49,13 @@ public record DogTrainerChangeRequest : DogTrainerRequest
 public record DogTrainerAppCommandResponse
 {
     public Guid? LicenceAppId { get; set; }
+}
+
+public record DogTrainerAppResponse : DogTrainerRequest
+{
+    public Guid? LicenceAppId { get; set; }
+    public string? CaseNumber { get; set; }
+    public Guid? ContactId { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
