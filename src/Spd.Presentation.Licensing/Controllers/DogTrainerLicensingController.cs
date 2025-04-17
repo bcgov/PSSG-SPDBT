@@ -115,16 +115,17 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<DogTrainerAppResponse> GetSecurityWorkerLicenceApplicationAnonymous()
         {
-            string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
-            string? licenceAppId;
-            try
-            {
-                licenceAppId = licenceIdsStr.Split("*")[1];
-            }
-            catch
-            {
-                throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
-            }
+            //string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            //string? licenceAppId;
+            //try
+            //{
+            //    licenceAppId = licenceIdsStr.Split("*")[1];
+            //}
+            //catch
+            //{
+            //    throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
+            //}
+            string licenceAppId = "374f5992-5382-44af-a24d-1abde1f20643";
             return await _mediator.Send(new GetDogTrainerAppQuery(Guid.Parse(licenceAppId)));
         }
         #endregion anonymous
