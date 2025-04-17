@@ -49,13 +49,13 @@ public record DogTrainerChangeRequest : DogTrainerRequest
 public record DogTrainerAppCommandResponse
 {
     public Guid? LicenceAppId { get; set; }
-    public string? CaseNumber { get; set; }
-    public Guid? ContactId { get; set; }
-    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
 public record DogTrainerAppResponse : DogTrainerRequest
 {
     public Guid? LicenceAppId { get; set; }
+    public string? CaseNumber { get; set; }
+    public Guid? ContactId { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
