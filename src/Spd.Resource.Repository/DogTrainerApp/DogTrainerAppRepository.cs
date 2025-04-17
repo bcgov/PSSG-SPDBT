@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -65,6 +66,34 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
             _context.UpdateObject(app);
             await _context.SaveChangesAsync(ct);
         }
+    }
+
+    public async Task<DogTrainerAppResp> GetDogTrainerAppAsync(Guid appId, CancellationToken ct)
+    {
+        spd_application? app;
+        try
+        {
+            app = await _context.spd_applications
+                .Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
+                .Where(a => a.spd_applicationid == appId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                app = null;
+            else
+                throw;
+        }
+
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {appId} ");
+
+        var response = _mapper.Map<DogTrainerAppResp>(app);
+        _mapper.Map<spd_dogtrainingschool, DogTrainerAppResp>(app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(), response);
+        return response;
     }
 
     private contact UpdateContact(DogTrainerApp appData, Guid applicantId)
