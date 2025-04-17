@@ -974,6 +974,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(
 				switchMap((resp: LicenceResponse) => {
+					if (!resp) {
+						// lookup does not match a licence
+						return of({} as LicenceResponseExt);
+					}
+
 					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
 						map((appls: Array<LicenceAppListResponse>) => {
 							return {
