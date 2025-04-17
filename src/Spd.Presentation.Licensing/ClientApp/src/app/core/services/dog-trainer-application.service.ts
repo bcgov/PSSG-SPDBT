@@ -466,7 +466,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Submit the application data for anonymous new
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		// TODO fix dt submitLicenceAnonymous
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
