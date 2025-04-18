@@ -4,6 +4,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.DogBase;
 using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -57,7 +58,7 @@ internal class GDSDAppManager :
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
@@ -93,7 +94,7 @@ internal class GDSDAppManager :
         var response = await this.Handle((GDSDTeamLicenceAppUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId
         }, ct);
@@ -125,7 +126,7 @@ internal class GDSDAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
@@ -152,7 +153,7 @@ internal class GDSDAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
