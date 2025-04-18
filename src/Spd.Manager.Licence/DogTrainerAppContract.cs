@@ -13,8 +13,8 @@ public interface IDogTrainerAppManager
 #region anonymous
 public record GetDogTrainerAppQuery(Guid LicenceApplicationId) : IRequest<DogTrainerAppResponse>;
 public record DogTrainerLicenceAppAnonymousSubmitCommand(DogTrainerRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
-public record DogTrainerLicenceAppReplaceCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
-public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppReplaceCommand(DogTrainerChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
+public record DogTrainerLicenceAppRenewCommand(DogTrainerChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<DogTrainerAppCommandResponse>;
 
 #endregion
 
@@ -43,7 +43,9 @@ public record DogTrainerRequest : LicenceAppBase
 
 public record DogTrainerChangeRequest : DogTrainerRequest
 {
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid OriginalLicenceId { get; set; }
+    public Guid ContactId { get; set; }
 }
 
 public record DogTrainerAppCommandResponse
@@ -57,5 +59,6 @@ public record DogTrainerAppResponse : DogTrainerRequest
     public string? CaseNumber { get; set; }
     public Guid? ContactId { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }
 
