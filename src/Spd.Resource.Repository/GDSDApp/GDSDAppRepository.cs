@@ -1,20 +1,16 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
+using Spd.Resource.Repository.DogBase;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Repository.GDSDApp;
-internal class GDSDAppRepository : IGDSDAppRepository
+internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
 {
-    private readonly DynamicsContext _context;
-    private readonly IMapper _mapper;
-
-    public GDSDAppRepository(IDynamicsContextFactory ctx, IMapper mapper)
+    public GDSDAppRepository(IDynamicsContextFactory ctx, IMapper mapper) : base(ctx, mapper)
     {
-        _context = ctx.CreateChangeOverwrite();
-        _mapper = mapper;
     }
 
     public async Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct)
@@ -98,33 +94,6 @@ internal class GDSDAppRepository : IGDSDAppRepository
 
         var response = _mapper.Map<GDSDAppResp>(app);
         return response;
-    }
-
-    public async Task CommitGDSDAppAsync(CommitGDSDAppCmd cmd, CancellationToken ct)
-    {
-        spd_application? app = await _context.GetApplicationById(cmd.LicenceAppId, ct);
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
-
-        if (app.spd_identityconfirmed != null && app.spd_identityconfirmed.Value)
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.Submitted.ToString());
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-            app.spd_submittedon = DateTimeOffset.Now;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
-            app.spd_licencefee = 0;
-            _context.UpdateObject(app);
-            await _context.SaveChangesAsync(ct);
-        }
-        else
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.ApplicantVerification.ToString());
-            app.statecode = DynamicsConstants.StateCode_Active;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
-            app.spd_licencefee = 0;
-            _context.UpdateObject(app);
-            await _context.SaveChangesAsync(ct);
-        }
     }
 
     private spd_application PrepareNewAppDataInDbContext(GDSDApp appData, contact applicant)
