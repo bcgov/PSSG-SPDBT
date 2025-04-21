@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, GdsdTeamAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -207,7 +207,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		if (this.isLoggedIn) {
 			if (this.isNew) {
 				this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
-					next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+					next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 					},
 					error: (error: any) => {
@@ -218,7 +218,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 			}
 
 			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
-				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+				next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
@@ -229,7 +229,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 
 		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);
