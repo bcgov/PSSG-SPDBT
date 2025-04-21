@@ -2053,7 +2053,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	}
 
 	private applyRenewalSpecificDataToModel(
-		resp: any,
+		latestApplication: any,
 		isAuthenticated: boolean,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
@@ -2066,7 +2066,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
-			resp.soleProprietorData.bizTypeCode,
+			latestApplication.soleProprietorData.bizTypeCode,
 			associatedLicence
 		);
 
@@ -2074,7 +2074,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (isSoleProprietorSimultaneousFlow) {
 			soleProprietorData = {
 				isSoleProprietor: null, // Remove data that should be re-prompted for
-				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+				bizTypeCode: latestApplication.soleProprietorData.bizTypeCode,
 			};
 		} else {
 			soleProprietorData = {
@@ -2105,7 +2105,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
-		const isCanadianCitizen = resp.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
+		const isCanadianCitizen = latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
 		if (!isCanadianCitizen) {
 			citizenshipData = {
 				isCanadianCitizen: BooleanTypeCode.No,
@@ -2119,29 +2119,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		}
 
-		// const mentalHealthConditionsData = {
-		// 	isTreatedForMHC: null,
-		// 	attachments: [],
-		// };
+		const originalLicenceData = latestApplication.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
 
-		// const policeBackgroundData = {
-		// 	isPoliceOrPeaceOfficer: null,
-		// 	policeOfficerRoleCode: null,
-		// 	otherOfficerRole: null,
-		// 	attachments: [],
-		// };
+		const photographOfYourselfData = latestApplication.photographOfYourselfData;
 
-		// const criminalHistoryData = {
-		// 	hasCriminalHistory: null,
-		// 	criminalChargeDescription: null,
-		// };
-
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
-
-		const photographOfYourselfData = resp.photographOfYourselfData;
-
-		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		const originalPhotoOfYourselfLastUploadDateTime = latestApplication.photographOfYourselfData.uploadedDateTime;
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
@@ -2153,12 +2136,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,
 		// clear attachments to force user to upload a new proof of qualification.
-		originalLicenceData.originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
-		const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
+		originalLicenceData.originalDogAuthorizationExists =
+			latestApplication.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		const dogsPurposeFormGroup = latestApplication.dogsAuthorizationData.dogsPurposeFormGroup;
 		let dogsAuthorizationData = {};
 		if (originalLicenceData.originalDogAuthorizationExists) {
 			dogsAuthorizationData = {
-				useDogs: resp.dogsAuthorizationData.useDogs,
+				useDogs: latestApplication.dogsAuthorizationData.useDogs,
 				dogsPurposeFormGroup: {
 					isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
 					isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
@@ -2188,9 +2172,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
-				// mentalHealthConditionsData,
-				// policeBackgroundData,
-				// criminalHistoryData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2224,18 +2205,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	}
 
 	private applyUpdateSpecificDataToModel(
-		resp: any,
+		latestApplication: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+		const originalLicenceData = latestApplication.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
-			resp.soleProprietorData.bizTypeCode,
+			latestApplication.soleProprietorData.bizTypeCode,
 			associatedLicence
 		);
 
@@ -2243,7 +2224,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (isSoleProprietorSimultaneousFlow) {
 			soleProprietorData = {
 				isSoleProprietor: BooleanTypeCode.Yes,
-				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+				bizTypeCode: latestApplication.soleProprietorData.bizTypeCode,
 			};
 		} else {
 			// If not a simultaneous flow, clear out any bad data
@@ -2337,13 +2318,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	}
 
 	private applyReplacementSpecificDataToModel(
-		resp: any,
+		latestApplication: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+		const originalLicenceData = latestApplication.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
 
 		const mailingAddressData = {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.

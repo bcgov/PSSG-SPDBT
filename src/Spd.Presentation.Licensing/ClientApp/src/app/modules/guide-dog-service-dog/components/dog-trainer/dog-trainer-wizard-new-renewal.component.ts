@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, DogTrainerAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
@@ -145,7 +145,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 
 	onSubmit(): void {
 		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);
