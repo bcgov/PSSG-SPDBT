@@ -24,7 +24,7 @@ export class StepDtMailingAddressComponent implements OnInit, LicenceChildSteppe
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.dogTrainerApplicationService.dogTrainerAddressFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.trainerMailingAddressFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 

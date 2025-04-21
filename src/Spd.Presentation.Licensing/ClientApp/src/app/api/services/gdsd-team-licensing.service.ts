@@ -11,23 +11,23 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { apiGdsdTeamAppAnonymousChangePost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-change-post';
-import { ApiGdsdTeamAppAnonymousChangePost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-change-post';
-import { apiGdsdTeamAppAnonymousSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
-import { ApiGdsdTeamAppAnonymousSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-anonymous-submit-post';
-import { apiGdsdTeamAppChangePost } from '../fn/gdsd-licensing/api-gdsd-team-app-change-post';
-import { ApiGdsdTeamAppChangePost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-change-post';
-import { apiGdsdTeamAppLicenceAppIdGet } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
-import { ApiGdsdTeamAppLicenceAppIdGet$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-licence-app-id-get';
-import { apiGdsdTeamAppPost } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
-import { ApiGdsdTeamAppPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-post';
-import { apiGdsdTeamAppSubmitPost } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
-import { ApiGdsdTeamAppSubmitPost$Params } from '../fn/gdsd-licensing/api-gdsd-team-app-submit-post';
-import { GdsdAppCommandResponse } from '../models/gdsd-app-command-response';
+import { apiGdsdTeamAppAnonymousChangePost } from '../fn/gdsd-team-licensing/api-gdsd-team-app-anonymous-change-post';
+import { ApiGdsdTeamAppAnonymousChangePost$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-anonymous-change-post';
+import { apiGdsdTeamAppAnonymousSubmitPost } from '../fn/gdsd-team-licensing/api-gdsd-team-app-anonymous-submit-post';
+import { ApiGdsdTeamAppAnonymousSubmitPost$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-anonymous-submit-post';
+import { apiGdsdTeamAppChangePost } from '../fn/gdsd-team-licensing/api-gdsd-team-app-change-post';
+import { ApiGdsdTeamAppChangePost$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-change-post';
+import { apiGdsdTeamAppLicenceAppIdGet } from '../fn/gdsd-team-licensing/api-gdsd-team-app-licence-app-id-get';
+import { ApiGdsdTeamAppLicenceAppIdGet$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-licence-app-id-get';
+import { apiGdsdTeamAppPost } from '../fn/gdsd-team-licensing/api-gdsd-team-app-post';
+import { ApiGdsdTeamAppPost$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-post';
+import { apiGdsdTeamAppSubmitPost } from '../fn/gdsd-team-licensing/api-gdsd-team-app-submit-post';
+import { ApiGdsdTeamAppSubmitPost$Params } from '../fn/gdsd-team-licensing/api-gdsd-team-app-submit-post';
+import { GdsdTeamAppCommandResponse } from '../models/gdsd-team-app-command-response';
 import { GdsdTeamLicenceAppResponse } from '../models/gdsd-team-licence-app-response';
 
 @Injectable({ providedIn: 'root' })
-export class GdsdLicensingService extends BaseService {
+export class GdsdTeamLicensingService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
@@ -45,7 +45,7 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppPost$Response(params: ApiGdsdTeamAppPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiGdsdTeamAppPost$Response(params: ApiGdsdTeamAppPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
     return apiGdsdTeamAppPost(this.http, this.rootUrl, params, context);
   }
 
@@ -59,9 +59,9 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppPost(params: ApiGdsdTeamAppPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiGdsdTeamAppPost(params: ApiGdsdTeamAppPost$Params, context?: HttpContext): Observable<GdsdTeamAppCommandResponse> {
     return this.apiGdsdTeamAppPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<GdsdTeamAppCommandResponse>): GdsdTeamAppCommandResponse => r.body)
     );
   }
 
@@ -111,7 +111,7 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppSubmitPost$Response(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiGdsdTeamAppSubmitPost$Response(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
     return apiGdsdTeamAppSubmitPost(this.http, this.rootUrl, params, context);
   }
 
@@ -125,9 +125,9 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppSubmitPost(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiGdsdTeamAppSubmitPost(params: ApiGdsdTeamAppSubmitPost$Params, context?: HttpContext): Observable<GdsdTeamAppCommandResponse> {
     return this.apiGdsdTeamAppSubmitPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<GdsdTeamAppCommandResponse>): GdsdTeamAppCommandResponse => r.body)
     );
   }
 
@@ -135,8 +135,9 @@ export class GdsdLicensingService extends BaseService {
   static readonly ApiGdsdTeamAppChangePostPath = '/api/gdsd-team-app/change';
 
   /**
-   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * Renew, Replace GDSD Team application
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   * The session keycode is stored in the cookies.
    *
    *
    *
@@ -145,13 +146,14 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppChangePost$Response(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiGdsdTeamAppChangePost$Response(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
     return apiGdsdTeamAppChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Submit GDSD Application for authenticated users, supports only: renewal and replace
+   * Renew, Replace GDSD Team application
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   * The session keycode is stored in the cookies.
    *
    *
    *
@@ -160,9 +162,9 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppChangePost(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiGdsdTeamAppChangePost(params?: ApiGdsdTeamAppChangePost$Params, context?: HttpContext): Observable<GdsdTeamAppCommandResponse> {
     return this.apiGdsdTeamAppChangePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<GdsdTeamAppCommandResponse>): GdsdTeamAppCommandResponse => r.body)
     );
   }
 
@@ -181,7 +183,7 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousSubmitPost$Response(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiGdsdTeamAppAnonymousSubmitPost$Response(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
     return apiGdsdTeamAppAnonymousSubmitPost(this.http, this.rootUrl, params, context);
   }
 
@@ -197,9 +199,9 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousSubmitPost(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiGdsdTeamAppAnonymousSubmitPost(params?: ApiGdsdTeamAppAnonymousSubmitPost$Params, context?: HttpContext): Observable<GdsdTeamAppCommandResponse> {
     return this.apiGdsdTeamAppAnonymousSubmitPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<GdsdTeamAppCommandResponse>): GdsdTeamAppCommandResponse => r.body)
     );
   }
 
@@ -207,7 +209,7 @@ export class GdsdLicensingService extends BaseService {
   static readonly ApiGdsdTeamAppAnonymousChangePostPath = '/api/gdsd-team-app/anonymous/change';
 
   /**
-   * Submit/new GDSD Team Certification application Anonymously
+   * Renew, Replace GDSD Team application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
@@ -218,12 +220,12 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousChangePost$Response(params?: ApiGdsdTeamAppAnonymousChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+  apiGdsdTeamAppAnonymousChangePost$Response(params?: ApiGdsdTeamAppAnonymousChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
     return apiGdsdTeamAppAnonymousChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Submit/new GDSD Team Certification application Anonymously
+   * Renew, Replace GDSD Team application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
@@ -234,9 +236,9 @@ export class GdsdLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiGdsdTeamAppAnonymousChangePost(params?: ApiGdsdTeamAppAnonymousChangePost$Params, context?: HttpContext): Observable<GdsdAppCommandResponse> {
+  apiGdsdTeamAppAnonymousChangePost(params?: ApiGdsdTeamAppAnonymousChangePost$Params, context?: HttpContext): Observable<GdsdTeamAppCommandResponse> {
     return this.apiGdsdTeamAppAnonymousChangePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<GdsdAppCommandResponse>): GdsdAppCommandResponse => r.body)
+      map((r: StrictHttpResponse<GdsdTeamAppCommandResponse>): GdsdTeamAppCommandResponse => r.body)
     );
   }
 
