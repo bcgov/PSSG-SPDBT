@@ -16,7 +16,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class GDSDLicensingController : SpdLicenceControllerBase
+    public class GDSDTeamLicensingController : SpdLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
@@ -24,7 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IValidator<GDSDTeamLicenceAppUpsertRequest> _teamAppUpsertValidator;
         private readonly IValidator<GDSDTeamLicenceAppChangeRequest> _teamAppChangeValidator;
 
-        public GDSDLicensingController(IPrincipal currentUser,
+        public GDSDTeamLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> teamAppAnonymousSubmitRequestValidator,
@@ -51,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/gdsd-team-app")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest licenceUpsertRequest)
+        public async Task<GDSDTeamAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest licenceUpsertRequest)
         {
             if (licenceUpsertRequest.ApplicantId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
@@ -80,7 +80,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/gdsd-team-app/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
+        public async Task<GDSDTeamAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
         {
             var validateResult = await _teamAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
             if (!validateResult.IsValid)
@@ -91,8 +91,9 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Submit GDSD Application for authenticated users, supports only: renewal and replace
+        /// Renew, Replace GDSD Team application
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// The session keycode is stored in the cookies.        
         /// </summary>
         /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <param name="ct"></param>
@@ -100,9 +101,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/gdsd-team-app/change")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse?> RenewReplaceGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        public async Task<GDSDTeamAppCommandResponse?> RenewReplaceGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
         {
-            GDSDAppCommandResponse? response = null;
+            GDSDTeamAppCommandResponse? response = null;
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(changeRequest.DocumentKeyCodes, ct);
             var validateResult = await _teamAppChangeValidator.ValidateAsync(changeRequest, ct);
@@ -137,7 +138,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/gdsd-team-app/anonymous/submit")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
+        public async Task<GDSDTeamAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
@@ -147,7 +148,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             anonymousSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            GDSDAppCommandResponse? response = null;
+            GDSDTeamAppCommandResponse? response = null;
             if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 GDSDTeamLicenceAppAnonymousSubmitCommand command = new(anonymousSubmitRequest, newDocInfos);
@@ -155,20 +156,20 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
+            return new GDSDTeamAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
 
         /// <summary>
-        /// Submit/new GDSD Team Certification application Anonymously
+        /// Renew, Replace GDSD Team application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
-        /// <param name="anonymousChangeRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="anonymousChangeRequest">GDSDTeamLicenceAppChangeRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/gdsd-team-app/anonymous/change")]
         [HttpPost]
-        public async Task<GDSDAppCommandResponse> RenewReplaceGDSDTeamAppAnonymous(GDSDTeamLicenceAppChangeRequest anonymousChangeRequest, CancellationToken ct)
+        public async Task<GDSDTeamAppCommandResponse> RenewReplaceGDSDTeamAppAnonymous(GDSDTeamLicenceAppChangeRequest anonymousChangeRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
@@ -178,7 +179,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             anonymousChangeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            GDSDAppCommandResponse? response = null;
+            GDSDTeamAppCommandResponse? response = null;
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "New GDSD is not supported in this endpoint");
@@ -197,7 +198,7 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return new GDSDAppCommandResponse { LicenceAppId = response?.LicenceAppId };
+            return new GDSDTeamAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
         #endregion anonymous
     }

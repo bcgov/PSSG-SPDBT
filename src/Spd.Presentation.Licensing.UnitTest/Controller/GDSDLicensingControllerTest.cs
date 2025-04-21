@@ -28,7 +28,7 @@ public class GDSDLicensingControllerTests
     private readonly Mock<ITimeLimitedDataProtector> _mockTimeLimitDataProvider;
     private readonly Mock<IConfiguration> _mockConfiguration;
 
-    private readonly GDSDLicensingController _controller;
+    private readonly GDSDTeamLicensingController _controller;
 
     public GDSDLicensingControllerTests()
     {
@@ -46,7 +46,7 @@ public class GDSDLicensingControllerTests
         _mockDataProtectionProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
             .Returns(_mockTimeLimitDataProvider.Object);
 
-        _controller = new GDSDLicensingController(
+        _controller = new GDSDTeamLicensingController(
             _mockCurrentUser.Object,
             _mockMediator.Object,
             _mockConfiguration.Object,
@@ -89,7 +89,7 @@ public class GDSDLicensingControllerTests
 
         _mockMediator
             .Setup(m => m.Send(It.IsAny<GDSDTeamLicenceAppAnonymousSubmitCommand>(), cancellationToken))
-            .ReturnsAsync(new GDSDAppCommandResponse { LicenceAppId = licenceAppId });
+            .ReturnsAsync(new GDSDTeamAppCommandResponse { LicenceAppId = licenceAppId });
 
         var cachedBytes = Encoding.UTF8.GetBytes("{\"Items\": []}");
         _mockCache

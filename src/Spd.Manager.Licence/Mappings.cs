@@ -457,7 +457,7 @@ internal class Mappings : Profile
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppChangeRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
-        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppCmdResp, GDSDTeamAppCommandResponse>();
         CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
         CreateMap<AccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.AccreditedSchoolQuestions>()
          .ReverseMap();
