@@ -55,7 +55,7 @@ export { DogTrainerAppResponse } from './models/dog-trainer-app-response';
 export { DogTrainerChangeRequest } from './models/dog-trainer-change-request';
 export { DogTrainerRequest } from './models/dog-trainer-request';
 export { EyeColourCode } from './models/eye-colour-code';
-export { GdsdAppCommandResponse } from './models/gdsd-app-command-response';
+export { GdsdTeamAppCommandResponse } from './models/gdsd-team-app-command-response';
 export { GdsdTeamLicenceAppAnonymousSubmitRequest } from './models/gdsd-team-licence-app-anonymous-submit-request';
 export { GdsdTeamLicenceAppChangeRequest } from './models/gdsd-team-licence-app-change-request';
 export { GdsdTeamLicenceAppResponse } from './models/gdsd-team-licence-app-response';
