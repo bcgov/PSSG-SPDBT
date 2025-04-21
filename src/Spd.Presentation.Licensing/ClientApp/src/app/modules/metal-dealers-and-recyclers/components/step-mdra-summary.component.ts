@@ -2,10 +2,10 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-branch.component';
+import { MetalDealersAndRecyclersBranchResponse } from './modal-mdra-branch.component';
 
 @Component({
-	selector: 'app-step-metal-dealers-summary',
+	selector: 'app-step-mdra-summary',
 	template: `
 		<app-step-section
 			title="Registration summary"
@@ -206,10 +206,10 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 
 							<div class="panel-body">
 								<ng-container *ngIf="branchesExist; else noBranchesExist">
-									<app-form-metal-dealers-branches
+									<app-form-mdra-branches
 										[form]="branchesFormGroup"
 										[isReadonly]="true"
-									></app-form-metal-dealers-branches>
+									></app-form-mdra-branches>
 								</ng-container>
 								<ng-template #noBranchesExist>
 									<div class="text-minor-heading-small mt-3">No branches have been entered.</div>
@@ -260,7 +260,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 	],
 	standalone: false,
 })
-export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepMdraSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
 	metalDealersModelData: any = {};
 
 	attachmentsExist!: boolean;

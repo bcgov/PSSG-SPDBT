@@ -6,11 +6,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import {
 	MetalDealersAndRecyclersBranchResponse,
-	ModalMetalDealersBranchComponent,
-} from './modal-metal-dealers-branch.component';
+	ModalMdraBranchComponent,
+} from './modal-mdra-branch.component';
 
 @Component({
-	selector: 'app-form-metal-dealers-branches',
+	selector: 'app-form-mdra-branches',
 	template: `
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
@@ -112,7 +112,7 @@ import {
 	],
 	standalone: false,
 })
-export class FormMetalDealersBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
+export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	branchesExist = false;
 
 	dataSource!: MatTableDataSource<MetalDealersAndRecyclersBranchResponse>;
@@ -175,7 +175,7 @@ export class FormMetalDealersBranchesComponent implements OnInit, LicenceChildSt
 		dialogOptions.isCreate = isCreate;
 
 		this.dialog
-			.open(ModalMetalDealersBranchComponent, {
+			.open(ModalMdraBranchComponent, {
 				width: '1200px',
 				data: dialogOptions,
 				autoFocus: true,

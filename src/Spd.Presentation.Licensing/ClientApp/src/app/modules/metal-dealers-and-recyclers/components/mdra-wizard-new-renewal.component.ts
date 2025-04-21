@@ -5,18 +5,17 @@ import { Router } from '@angular/router';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { distinctUntilChanged, Subscription } from 'rxjs';
-import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
-import { StepMetalDealersBranchesComponent } from './step-metal-dealers-branches.component';
-import { StepMetalDealersBusinessAddressComponent } from './step-metal-dealers-business-address.component';
-import { StepMetalDealersBusinessManagerComponent } from './step-metal-dealers-business-manager.component';
-import { StepMetalDealersBusinessOwnerComponent } from './step-metal-dealers-business-owner.component';
-import { StepMetalDealersConsentComponent } from './step-metal-dealers-consent.component';
-import { MetalDealersRegistrationInformationComponent } from './step-metal-dealers-registration-information.component';
-import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.component';
+import { StepMdraBranchesComponent } from './step-mdra-branches.component';
+import { StepMdraBusinessAddressComponent } from './step-mdra-business-address.component';
+import { StepMdraBusinessManagerComponent } from './step-mdra-business-manager.component';
+import { StepMdraBusinessOwnerComponent } from './step-mdra-business-owner.component';
+import { StepMdraConsentComponent } from './step-mdra-consent.component';
+import { StepMdraSummaryComponent } from './step-mdra-summary.component';
 
 @Component({
-	selector: 'app-metal-dealers-wizard',
+	selector: 'app-mdra-wizard-new-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -26,21 +25,20 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Registration<br />Information</ng-template>
+				<ng-template matStepLabel>Checklist</ng-template>
 
-				<app-step-metal-dealers-registration-information></app-step-metal-dealers-registration-information>
+				<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
-					[isWideNext]="true"
-					(nextStepperStep)="onFormValidNextStep(STEP_REGISTRATION_INFORMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
 				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Business<br />Owner</ng-template>
 
-				<app-step-metal-dealers-business-owner></app-step-metal-dealers-business-owner>
+				<app-step-mdra-business-owner></app-step-mdra-business-owner>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -52,7 +50,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Business<br />Manager</ng-template>
 
-				<app-step-metal-dealers-business-manager></app-step-metal-dealers-business-manager>
+				<app-step-mdra-business-manager></app-step-mdra-business-manager>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -64,7 +62,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Business<br />Addresses</ng-template>
 
-				<app-step-metal-dealers-business-address></app-step-metal-dealers-business-address>
+				<app-step-mdra-business-address></app-step-mdra-business-address>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -76,7 +74,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			<mat-step [completed]="step5Complete">
 				<ng-template matStepLabel>Branch<br />Offices</ng-template>
 
-				<app-step-metal-dealers-branches></app-step-metal-dealers-branches>
+				<app-step-mdra-branches></app-step-mdra-branches>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -88,7 +86,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			<mat-step [completed]="step6Complete">
 				<ng-template matStepLabel>Registration<br />Summary</ng-template>
 
-				<app-step-metal-dealers-summary (editStep)="onGoToStep($event)"></app-step-metal-dealers-summary>
+				<app-step-mdra-summary (editStep)="onGoToStep($event)"></app-step-mdra-summary>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -100,7 +98,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 			<mat-step completed="false">
 				<ng-template matStepLabel>Consent and<br />Declaration</ng-template>
 
-				<app-step-metal-dealers-consent></app-step-metal-dealers-consent>
+				<app-step-mdra-consent></app-step-mdra-consent>
 
 				<app-wizard-footer
 					cancelLabel="Cancel"
@@ -114,7 +112,7 @@ import { StepMetalDealersSummaryComponent } from './step-metal-dealers-summary.c
 	styles: ``,
 	standalone: false,
 })
-export class MetalDealersWizardComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class MdraWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
@@ -122,7 +120,7 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 	step5Complete = false;
 	step6Complete = false;
 
-	readonly STEP_REGISTRATION_INFORMATION = 0;
+	readonly STEP_CHECKLIST = 0;
 	readonly STEP_BUSINESS_OWNER = 1;
 	readonly STEP_BUSINESS_MANAGER = 2;
 	readonly STEP_BUSINESS_ADDRESSES = 3;
@@ -130,16 +128,14 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 	readonly STEP_REVIEW = 5;
 	readonly STEP_CONSENT = 6;
 
-	@ViewChild(MetalDealersRegistrationInformationComponent)
-	stepRegisterInfo!: MetalDealersRegistrationInformationComponent;
-	@ViewChild(StepMetalDealersBusinessOwnerComponent)
-	stepBusinessOwner!: StepMetalDealersBusinessOwnerComponent;
-	@ViewChild(StepMetalDealersBusinessManagerComponent)
-	stepBusinessManager!: StepMetalDealersBusinessManagerComponent;
-	@ViewChild(StepMetalDealersBusinessAddressComponent) stepAddresses!: StepMetalDealersBusinessAddressComponent;
-	@ViewChild(StepMetalDealersBranchesComponent) stepBranches!: StepMetalDealersBranchesComponent;
-	@ViewChild(StepMetalDealersSummaryComponent) stepReview!: StepMetalDealersSummaryComponent;
-	@ViewChild(StepMetalDealersConsentComponent) stepConsent!: StepMetalDealersConsentComponent;
+	@ViewChild(StepMdraBusinessOwnerComponent)
+	stepBusinessOwner!: StepMdraBusinessOwnerComponent;
+	@ViewChild(StepMdraBusinessManagerComponent)
+	stepBusinessManager!: StepMdraBusinessManagerComponent;
+	@ViewChild(StepMdraBusinessAddressComponent) stepAddresses!: StepMdraBusinessAddressComponent;
+	@ViewChild(StepMdraBranchesComponent) stepBranches!: StepMdraBranchesComponent;
+	@ViewChild(StepMdraSummaryComponent) stepReview!: StepMdraSummaryComponent;
+	@ViewChild(StepMdraConsentComponent) stepConsent!: StepMdraConsentComponent;
 
 	private metalDealersModelValueChangedSubscription!: Subscription;
 
@@ -154,7 +150,7 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 
 	ngOnInit(): void {
 		if (!this.metalDealersApplicationService.initialized) {
-			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMdra());
 			return;
 		}
 
@@ -206,16 +202,14 @@ export class MetalDealersWizardComponent extends BaseWizardComponent implements 
 		if (!this.stepConsent.isFormValid()) return;
 
 		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.path(
-				MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTRATION_RECEIVED
-			)
+			MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
 		);
 	}
 
 	private dirtyForm(step: number): boolean {
 		switch (step) {
-			case this.STEP_REGISTRATION_INFORMATION:
-				return this.stepRegisterInfo.isFormValid();
+			case this.STEP_CHECKLIST:
+				return true;
 			case this.STEP_BUSINESS_OWNER:
 				return this.stepBusinessOwner.isFormValid();
 			case this.STEP_BUSINESS_MANAGER:

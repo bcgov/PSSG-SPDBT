@@ -118,7 +118,7 @@ export class MetalDealersMainComponent {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER)
+						MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
 					);
 				}),
 				take(1)

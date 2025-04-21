@@ -1,5 +1,4 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -9,22 +8,9 @@ import { FormGroupValidators } from '@app/core/validators/form-group.validators'
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
-	registrationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			applicationTypeCode: new FormControl('', [FormControlValidators.required]),
-			registrationNumber: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'registrationNumber',
-					(_form) =>
-						_form.get('applicationTypeCode')?.value === ApplicationTypeCode.Update ||
-						_form.get('applicationTypeCode')?.value === ApplicationTypeCode.Renewal
-				),
-			],
-		}
-	);
+	registrationFormGroup: FormGroup = this.formBuilder.group({
+		applicationTypeCode: new FormControl('', [FormControlValidators.required]),
+	});
 
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		legalBusinessName: new FormControl('', [FormControlValidators.required]),

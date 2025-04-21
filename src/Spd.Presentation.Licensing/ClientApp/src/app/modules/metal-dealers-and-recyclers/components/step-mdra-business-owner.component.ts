@@ -5,7 +5,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-metal-dealers-business-owner',
+	selector: 'app-step-mdra-business-owner',
 	template: `
 		<app-step-section title="Business owner" subtitle="Provide the business owner information.">
 			<div class="row">
@@ -80,7 +80,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersBusinessOwnerComponent implements LicenceChildStepperStepComponent {
+export class StepMdraBusinessOwnerComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form = this.metalDealersApplicationService.businessOwnerFormGroup;
