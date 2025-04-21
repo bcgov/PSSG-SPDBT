@@ -205,6 +205,9 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		const today = moment().startOf('day');
 		const expiryDate = moment(resp.expiryDate).startOf('day');
 		const daysBetween = expiryDate.diff(today, 'days');
+		// console.log('************ today', today);
+		// console.log('************ expiryDate', expiryDate);
+		// console.log('************ daysBetween', daysBetween);
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
