@@ -418,9 +418,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 		body.agreeToCompleteAndAccurate = true;
 
-		// Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			// Only pass new documents and get a keyCode for each of those.
@@ -454,8 +451,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		delete body.hasBankruptcyHistory;
 		delete body.bankruptcyHistoryDetail;
 		delete body.documentInfos;
-
-		//*********************** */
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(

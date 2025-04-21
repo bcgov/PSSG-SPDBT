@@ -77,7 +77,7 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 		if (!this.stepAddressComponent.isFormValid()) {
 			return;
 		}
-		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
+		this.dogTrainerApplicationService.submitLicenceReplacementAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
