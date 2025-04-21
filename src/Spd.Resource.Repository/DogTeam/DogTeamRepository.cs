@@ -19,6 +19,7 @@ internal class DogTeamRepository : IDogTeamRepository
     {
         spd_dogteam? dogteam = _context.spd_dogteams
             .Expand(d => d.spd_DogId)
+            .Expand(d => d.spd_ContactId)
             .Where(d => d.spd_dogteamid == id)
             .FirstOrDefault();
 
