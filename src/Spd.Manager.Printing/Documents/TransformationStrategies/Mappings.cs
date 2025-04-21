@@ -41,7 +41,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.AddressCountry));
 
             CreateMap<LicenceResp, LicencePreviewJson>()
-                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => $"{s.NameOnCard}"))
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => GetApplicantName(s)))
                 .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
                 .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
                 .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => s.IssuedDate.ToString("yyyy-MM-dd")))
@@ -74,7 +74,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             CreateMap<DogTeamResp, SPD_CARD>()
                  .ForMember(d => d.Handler, opt => opt.MapFrom(s => GetHandlerName(s)))
                  .ForMember(d => d.DogName, opt => opt.MapFrom(s => s.DogName))
-                 .ForMember(d => d.DogDescription, opt => opt.MapFrom(s => $"{s.DogGender} {s.DogColorAndMarkings} {s.DogBreed}"))
+                 .ForMember(d => d.DogDescription, opt => opt.MapFrom(s => GetDogDescription(s)))
                  .ForMember(d => d.DogDOB, opt => opt.MapFrom(s => s.DogDateOfBirth.Value.ToString("yyyy-MM-dd")))
                  .ForMember(d => d.MicrochipNumber, opt => opt.MapFrom(s => s.MicrochipNumber))
                  .ForMember(d => d.CardType, opt => opt.MapFrom(s => "GUIDE-DOG"));
@@ -145,6 +145,27 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
         }
 
+        private static string GetApplicantName(LicenceResp resp)
+        {
+            string[] parts = { resp.LicenceHolderFirstName, resp.LicenceHolderMiddleName1, resp.LicenceHolderLastName };
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private static string GetDogDescription(DogTeamResp resp)
+        {
+            string[] parts = { GetDogGenderName(resp.DogGender), resp.DogColorAndMarkings, resp.DogBreed };
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private static string? GetDogGenderName(GenderEnum? gender)
+        {
+            return gender switch
+            {
+                GenderEnum.F => "Female",
+                GenderEnum.M => "Male",
+                _ => null,
+            };
+        }
         private static readonly Dictionary<string, string> NorthAmericaProvinceStateDict = new(StringComparer.InvariantCultureIgnoreCase)
         {
             //canada

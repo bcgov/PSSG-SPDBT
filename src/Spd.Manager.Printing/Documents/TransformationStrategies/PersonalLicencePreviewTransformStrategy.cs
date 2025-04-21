@@ -86,11 +86,22 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             DogTeamResp team = await dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, ct);
             preview.SPD_CARD = mapper.Map<SPD_CARD>(team);
         }
-        //wait for dog trainer and retired dog data structure
-
+        else if (lic.ServiceTypeCode == ServiceTypeEnum.DogTrainerCertification)
+        {
+            preview.SPD_CARD = new SPD_CARD();
+            preview.SPD_CARD.Handler = preview.ApplicantName;
+            preview.SPD_CARD.CardType = "GUIDE-DOG-TRAINER";
+        }
+        else
+        {
+            //todo: wait for retired dog data structure
+            preview.SPD_CARD = new SPD_CARD();
+            preview.SPD_CARD.CardType = "GUIDE-DOG-RETIRED";
+        }
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
         return preview;
     }
+
     private async Task<IEnumerable<string>> GetCategoryNamesAsync(IEnumerable<WorkerCategoryTypeEnum> categoryTypeEnums, CancellationToken ct)
     {
         List<string> names = new();
@@ -259,7 +270,7 @@ public record SPD_CARD
     public string? DogDOB { get; set; } //67kg
 
     [JsonPropertyName("microchipNumber")]
-    public bool MicrochipNumber { get; set; }
+    public string MicrochipNumber { get; set; }
 }
 
 public record BranchAddress
