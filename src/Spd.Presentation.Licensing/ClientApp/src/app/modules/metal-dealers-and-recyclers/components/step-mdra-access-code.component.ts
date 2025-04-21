@@ -61,7 +61,7 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
 		);
 	}
 

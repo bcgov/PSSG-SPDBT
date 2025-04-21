@@ -117,15 +117,13 @@ export class StepMdraApplicationTypeComponent implements LicenceChildStepperStep
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_NEW));
+				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
 				break;
 			}
 			case ApplicationTypeCode.Update:
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Replacement: {
-				this.router.navigateByUrl(
-					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_ACCESS_CODE)
-				);
+				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_ACCESS_CODE));
 				break;
 			}
 		}

@@ -166,7 +166,7 @@ export class CommonApplicationService {
 		}
 
 		if (currentPath.includes(MetalDealersAndRecyclersRoutes.MODULE_PATH)) {
-			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMdra());
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
 		} else if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 		} else {

@@ -150,7 +150,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 
 	ngOnInit(): void {
 		if (!this.metalDealersApplicationService.initialized) {
-			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.pathMdra());
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
 			return;
 		}
 
@@ -202,7 +202,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 		if (!this.stepConsent.isFormValid()) return;
 
 		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
 		);
 	}
 

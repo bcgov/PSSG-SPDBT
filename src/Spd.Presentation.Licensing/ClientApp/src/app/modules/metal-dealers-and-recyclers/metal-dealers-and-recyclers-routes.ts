@@ -11,7 +11,7 @@ export class MetalDealersAndRecyclersRoutes {
 	public static readonly MDRA_REPLACEMENT = 'mdra-replacement';
 	public static readonly MDRA_REGISTRATION_RECEIVED = 'mdra-received';
 
-	public static pathMdra(route: string | null = null): string {
+	public static path(route: string | null = null): string {
 		return route
 			? `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}/${route}`
 			: `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}`;
