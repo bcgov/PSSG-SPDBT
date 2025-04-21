@@ -232,7 +232,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[createEmptyRdAuthenticated] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -415,7 +414,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 				return of(this.retiredDogModelFormGroup.value);
 			})
 		);
@@ -437,7 +435,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -491,7 +488,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -571,7 +567,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 

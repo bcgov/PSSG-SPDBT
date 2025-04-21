@@ -193,10 +193,10 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the renewal flow
 	 */
-	private applyRenewalDataUpdatesToModel(
+	private applyApplDataToModel(
 		dogTrainerModelData: any,
 		latestApplication: DogTrainerAppResponse,
-		photoOfYourself: Blob
+		photoOfYourself: Blob | null
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
@@ -238,7 +238,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 				return of(this.dogTrainerModelFormGroup.value);
 			})
 		);
@@ -275,7 +274,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -328,7 +326,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -408,7 +405,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -457,15 +453,15 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			switchMap((resps: any[]) => {
 				const applicantProfile = resps[0];
 				const latestApplication = resps[1];
-				const photoOfYourself: any = null;
+				let photoOfYourself: any = null;
 
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					const photoOfYourself = resps[2];
+					photoOfYourself = resps[2];
 				}
 
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
 					switchMap((dogTrainerModelData: any) => {
-						return this.applyRenewalDataUpdatesToModel(dogTrainerModelData, latestApplication, photoOfYourself).pipe(
+						return this.applyApplDataToModel(dogTrainerModelData, latestApplication, photoOfYourself).pipe(
 							tap((_resp: any) => {
 								if (applicationTypeCode === ApplicationTypeCode.Replacement) {
 									return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
@@ -492,6 +488,11 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
+		if (body.applicationTypeCode == ApplicationTypeCode.Renewal) {
+			const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
+			body.contactId = originalLicenceData.originalLicenceHolderId;
+		}
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,

@@ -750,10 +750,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			);
 		});
 
-		console.debug(
-			'[applyCrcAppIntoModel] controllingMembersModelFormGroup',
-			this.controllingMembersModelFormGroup.value
-		);
 		return of(this.controllingMembersModelFormGroup.value);
 	}
 

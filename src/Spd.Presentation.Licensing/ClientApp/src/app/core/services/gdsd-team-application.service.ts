@@ -197,10 +197,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
 
-		// console.debug('isStepPersonalInformationComplete', isTrainedByAccreditedSchools, this.gdsdPersonalInformationFormGroup.valid,
-		// this.medicalInformationFormGroup.valid, this.photographOfYourselfFormGroup.valid, this.governmentPhotoIdFormGroup.valid,
-		// this.mailingAddressFormGroup.valid );
-
 		if (isTrainedByAccreditedSchools) {
 			return (
 				this.personalInformationFormGroup.valid &&
@@ -327,7 +323,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
 
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
@@ -474,7 +469,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.schoolTrainingRowAdd();
 		this.otherTrainingRowAdd();
 
-		console.debug('[createEmptyGdsdAuthenticated] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -745,7 +739,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 				return of(this.gdsdTeamModelFormGroup.value);
 			})
 		);
@@ -769,7 +762,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -837,7 +829,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -917,7 +908,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -1189,7 +1179,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			this.otherTrainingRowAdd();
 		}
 
-		console.debug('[applyApplicationIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 

@@ -832,8 +832,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 								emitEvent: false,
 							}
 						);
-
-						console.debug('[loadPartialLicenceWithIdAuthenticated] licenceFormGroup', this.workerModelFormGroup.value);
 					})
 				);
 			})
@@ -1481,7 +1479,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			);
 		});
 
-		console.debug('[applyLicenceProfileIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 
@@ -1519,12 +1516,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const originalLicenceData = this.originalLicenceFormGroup.value;
 		originalLicenceData.originalBizTypeCode = bizTypeCode;
-
-		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
-		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
-		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
-		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
-		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
@@ -1952,7 +1943,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 
@@ -2198,7 +2188,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 				return of(this.workerModelFormGroup.value);
 			})
 		);
@@ -2311,7 +2300,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 				return of(this.workerModelFormGroup.value);
 			})
 		);
@@ -2381,7 +2369,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 
