@@ -936,8 +936,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
 				);
-
-				console.debug('[getBusinessLicenceWithSelection] businessModelFormGroup', this.businessModelFormGroup.value);
 			})
 		);
 	}
@@ -1574,9 +1572,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		privateInvestigatorSwlLicence?: LicenceResponse;
 		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
-		console.debug('[applyLicenceAndProfileIntoModel] businessLicenceAppl', businessLicenceAppl);
-		console.debug('[applyLicenceAndProfileIntoModel] soleProprietorSwlLicence', soleProprietorSwlLicence);
-
 		return this.applyProfileIntoModel({
 			businessProfile,
 			applicationTypeCode,
@@ -1709,9 +1704,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			categoryData[item] = false;
 		});
 
-		console.debug('[applyLicenceIntoModel] isSoleProprietor', this.isSoleProprietor(businessLicenceAppl.bizTypeCode));
-		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
-
 		const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
 			// if sole proprietor business application, use the 'businessInformation.soleProprietorCategoryCodes'
@@ -1817,10 +1809,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
 		}
 
-		// console.debug('*********** isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
-		// console.debug('*********** associatedLicence', associatedLicence);
-		// console.debug('*********** soleProprietorSWLAppId', soleProprietorSWLAppId);
-
 		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
 			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
 			: null;
@@ -1858,7 +1846,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return this.loadBrandingFiles(brandingDocumentInfos);
 		}
 
-		console.debug('[applyLicenceIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 
@@ -1879,8 +1866,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		soleProprietorSWLAppId?: string;
 		previousExpiredLicence?: MainLicenceResponse;
 	}): Observable<any> {
-		console.debug('[applyLicenceProfileIntoModel] soleProprietor', soleProprietorSwlLicence, soleProprietorSWLAppId);
-
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
@@ -2019,10 +2004,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		// console.debug('applicationTypeCode', applicationTypeCode);
-		// console.debug('soleProprietorSwlLicence?.licenceAppId', soleProprietorSwlLicence?.licenceAppId);
-		// console.debug('soleProprietorSWLAppId', soleProprietorSWLAppId);
-
 		// if there is no applicationTypeCode, then we are supporting just loading the profile
 		if (applicationTypeCode) {
 			if (soleProprietorSWLAppId && applicationTypeCode != ApplicationTypeCode.Update) {
@@ -2034,15 +2015,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		}
 
-		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 
 	private applySoleProprietorSwlIntoModel(licenceAppId: string): Observable<any> {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceAppResponse) => {
-				console.debug('[applyBusinessLicenceSoleProprietorSwl] resp', resp);
-
 				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
 
 				businessInformationData.bizTypeCode = resp.bizTypeCode;
@@ -2115,8 +2093,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence: LicenceResponse): Observable<any> {
-		console.debug('[applyBusinessLicenceSoleProprietorSelection] soleProprietorSwlLicence', soleProprietorSwlLicence);
-
 		const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
 		businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
 
@@ -2330,7 +2306,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		console.debug('[applyRenewalDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 
@@ -2347,7 +2322,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		console.debug('[applyUpdateDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 
@@ -2364,7 +2338,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 

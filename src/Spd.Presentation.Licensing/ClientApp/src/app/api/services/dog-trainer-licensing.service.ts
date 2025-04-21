@@ -15,7 +15,10 @@ import { apiDogTrainerAppAnonymousChangePost } from '../fn/dog-trainer-licensing
 import { ApiDogTrainerAppAnonymousChangePost$Params } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-change-post';
 import { apiDogTrainerAppAnonymousSubmitPost } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-submit-post';
 import { ApiDogTrainerAppAnonymousSubmitPost$Params } from '../fn/dog-trainer-licensing/api-dog-trainer-app-anonymous-submit-post';
+import { apiDogTrainerAppGet } from '../fn/dog-trainer-licensing/api-dog-trainer-app-get';
+import { ApiDogTrainerAppGet$Params } from '../fn/dog-trainer-licensing/api-dog-trainer-app-get';
 import { DogTrainerAppCommandResponse } from '../models/dog-trainer-app-command-response';
+import { DogTrainerAppResponse } from '../models/dog-trainer-app-response';
 
 @Injectable({ providedIn: 'root' })
 export class DogTrainerLicensingService extends BaseService {
@@ -94,6 +97,39 @@ export class DogTrainerLicensingService extends BaseService {
   apiDogTrainerAppAnonymousChangePost(params?: ApiDogTrainerAppAnonymousChangePost$Params, context?: HttpContext): Observable<DogTrainerAppCommandResponse> {
     return this.apiDogTrainerAppAnonymousChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<DogTrainerAppCommandResponse>): DogTrainerAppCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiDogTrainerAppGet()` */
+  static readonly ApiDogTrainerAppGetPath = '/api/dog-trainer-app';
+
+  /**
+   * Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiDogTrainerAppGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiDogTrainerAppGet$Response(params?: ApiDogTrainerAppGet$Params, context?: HttpContext): Observable<StrictHttpResponse<DogTrainerAppResponse>> {
+    return apiDogTrainerAppGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiDogTrainerAppGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiDogTrainerAppGet(params?: ApiDogTrainerAppGet$Params, context?: HttpContext): Observable<DogTrainerAppResponse> {
+    return this.apiDogTrainerAppGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<DogTrainerAppResponse>): DogTrainerAppResponse => r.body)
     );
   }
 

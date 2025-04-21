@@ -212,8 +212,6 @@ export class CommonApplicationService {
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined,
 		categorySecurityGuardSupIsSelected = false
 	): Array<LicenceFeeResponse> {
-		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode);
-
 		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
@@ -700,7 +698,6 @@ export class CommonApplicationService {
 			}
 		}
 
-		console.debug('[getSubmitSuccessMessage]', message);
 		return message;
 	}
 
@@ -1107,8 +1104,6 @@ export class CommonApplicationService {
 			isInRenewalPeriod,
 			searchResult: licence,
 		};
-
-		console.debug('getLicenceSearchFlags lookupResp', lookupResp);
 
 		return lookupResp;
 	}
