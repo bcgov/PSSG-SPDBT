@@ -9,7 +9,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 internal class PersonalLicencePrintingTransformStrategy(
     ILicenceRepository licenceRepository,
     IMapper mapper)
-    : BcMailPlusTransformStrategyBase<PersonalLicencePrintingTransformRequest, PersonalLicencePrinting>(Jobs.SecurityWorkerLicenseRelease)
+    : BcMailPlusTransformStrategyBase<PersonalLicencePrintingTransformRequest, PersonalLicencePrinting>(Jobs.PersonalLicenseRelease)
 {
     protected override async Task<PersonalLicencePrinting> CreateDocument(PersonalLicencePrintingTransformRequest request, CancellationToken cancellationToken)
     {

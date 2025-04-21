@@ -130,7 +130,7 @@ public static class Jobs
     /// <summary>
     /// Release Security worker licence job: the job will be routed to the physical printing queue
     /// </summary>
-    public const string SecurityWorkerLicenseRelease = "PSSG-SPD-CARD-RELEASE";
+    public const string PersonalLicenseRelease = "PSSG-SPD-CARD-RELEASE";
 }
 
 internal static class JobStatusValues
