@@ -5,7 +5,7 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
-	GdsdAppCommandResponse,
+	GdsdTeamAppCommandResponse,
 	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GdsdTeamLicenceAppChangeRequest,
 	GoogleRecaptcha,
@@ -18,7 +18,7 @@ import {
 } from '@app/api/models';
 import {
 	ApplicantProfileService,
-	GdsdLicensingService,
+	GdsdTeamLicensingService,
 	LicenceAppDocumentService,
 	LicenceService,
 } from '@app/api/services';
@@ -91,7 +91,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private gdsdLicensingService: GdsdLicensingService,
+		private gdsdTeamLicensingService: GdsdTeamLicensingService,
 		private licenceService: LicenceService
 	) {
 		super(formBuilder, utilService, maskPipe);
@@ -232,7 +232,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[createEmptyRdAuthenticated] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -415,7 +414,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 				return of(this.retiredDogModelFormGroup.value);
 			})
 		);
@@ -437,7 +435,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -491,7 +488,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -571,7 +567,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -640,7 +635,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		// TODO fix rt submitLicenceAnonymous
 		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppAnonymousSubmitRequest;
@@ -690,7 +685,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Submit the application data for anonymous replacement
 	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
@@ -721,7 +716,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		// TODO RetiredDogRequest
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
@@ -763,9 +758,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 */
 	private postSubmitAnonymous(
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
-			return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
@@ -776,7 +771,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			);
 		}
 
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,

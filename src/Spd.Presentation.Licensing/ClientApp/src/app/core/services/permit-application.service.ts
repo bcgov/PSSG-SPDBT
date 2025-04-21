@@ -555,7 +555,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		console.debug('[submitPermitRenewalOrUpdateAuthenticated] permitModelFormValue', permitModelFormValue);
 
 		const bodyUpsert = this.getSaveBodyBaseSubmitAuthenticated(permitModelFormValue) as any;
 		delete bodyUpsert.documentInfos;
@@ -596,10 +595,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				);
 			}
 		});
-
-		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] body', body);
-		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
-		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -798,8 +793,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
 				);
-
-				console.debug('[getPermitWithAccessCodeDataAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
 			})
 		);
 	}
@@ -885,7 +878,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
 
 		const body = this.getSaveBodyBaseSubmitAnonymous(permitModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
@@ -907,7 +899,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		});
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
 
 		if (newDocumentsExist) {
 			return this.postPermitAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
@@ -925,8 +916,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		existingDocumentIds: Array<string>,
 		body: PermitAppSubmitRequest
 	) {
-		console.debug('[postPermitAnonymousNoNewDocuments]');
-
 		return this.licenceAppDocumentService
 			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
@@ -953,8 +942,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		documentsToSave: Array<PermitDocumentsToSave>,
 		body: PermitAppSubmitRequest
 	) {
-		console.debug('[postPermitAnonymousNewDocuments]');
-
 		return this.licenceAppDocumentService
 			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
@@ -1189,7 +1176,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			);
 		});
 
-		console.debug('[applyPermitProfileIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
 		return of(this.permitModelFormGroup.value);
 	}
 
@@ -1416,7 +1402,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 
-		console.debug('[applyPermitIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
 		return of(this.permitModelFormGroup.value);
 	}
 
@@ -1463,7 +1448,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyUpdateDataUpdatesToModel] permitModel', this.permitModelFormGroup.value);
 				return of(this.permitModelFormGroup.value);
 			})
 		);
@@ -1496,7 +1480,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyUpdateDataUpdatesToModel] permitModel', this.permitModelFormGroup.value);
 				return of(this.permitModelFormGroup.value);
 			})
 		);

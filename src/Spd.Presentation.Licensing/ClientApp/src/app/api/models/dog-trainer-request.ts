@@ -23,7 +23,6 @@ export interface DogTrainerRequest {
   schoolDirectorGivenName?: string | null;
   schoolDirectorMiddleName?: string | null;
   schoolDirectorSurname?: string | null;
-  schoolMailingAddress?: MailingAddress;
   serviceTypeCode?: ServiceTypeCode;
   trainerDateOfBirth?: string | null;
   trainerEmailAddress?: string | null;
