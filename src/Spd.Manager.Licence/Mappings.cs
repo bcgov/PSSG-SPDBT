@@ -457,7 +457,7 @@ internal class Mappings : Profile
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppChangeRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
-        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppCmdResp, GDSDTeamAppCommandResponse>();
         CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
         CreateMap<AccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.AccreditedSchoolQuestions>()
          .ReverseMap();
@@ -476,6 +476,7 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<DogTeamResp, DogInfo>();
         CreateMap<DogTrainerRequest, CreateDogTrainerAppCmd>();
+        CreateMap<DogTrainerChangeRequest, CreateDogTrainerAppCmd>();
         CreateMap<WorkerLicenceAppSubmitRequest, SecureWorkerLicenceAppCompareEntity>()
            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))

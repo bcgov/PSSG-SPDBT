@@ -74,7 +74,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_chiefexecutivelegalsurname, opt => opt.MapFrom(s => s.SchoolDirectorSurname));
 
         _ = CreateMap<spd_dogtrainingschool, DogTrainerApp>()
-           .ForMember(d => d.AccreditedSchoolId, opt => opt.MapFrom(s => s.spd_dogtrainingschoolid))
+           .ForMember(d => d.AccreditedSchoolId, opt => opt.MapFrom(s => s._spd_organizationid_value))
            .ForMember(d => d.AccreditedSchoolName, opt => opt.MapFrom(s => s.spd_trainingschoolname))
            .ForMember(d => d.SchoolContactEmailAddress, opt => opt.MapFrom(s => s.spd_contactemail))
            .ForMember(d => d.SchoolContactPhoneNumber, opt => opt.MapFrom(s => s.spd_contactphone))
