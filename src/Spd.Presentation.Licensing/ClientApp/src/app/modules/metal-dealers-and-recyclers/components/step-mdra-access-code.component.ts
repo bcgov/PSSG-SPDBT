@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
-import { GuideDogServiceDogRoutes } from '../../guide-dog-service-dog-routes';
-import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-access-code.component';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { FormGdsdLicenceAccessCodeComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-licence-access-code.component';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 
 @Component({
-	selector: 'app-step-rd-licence-access-code',
+	selector: 'app-step-mdra-licence-access-code',
 	template: `
 		<app-step-section
 			title="Provide your access code"
@@ -22,12 +22,12 @@ import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-
 						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 					</p>"
 		>
-			<app-form-gdsd-licence-access-code
+			<app-form-mdra-licence-access-code
 				(linkSuccess)="onLinkSuccess($event)"
 				[form]="form"
-				[serviceTypeCode]="serviceTypeRetiredDog"
+				[serviceTypeCode]="serviceTypeMdraTeam"
 				[applicationTypeCode]="applicationTypeCode"
-			></app-form-gdsd-licence-access-code>
+			></app-form-mdra-licence-access-code>
 		</app-step-section>
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
@@ -35,33 +35,33 @@ import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-
 	styles: [],
 	standalone: false,
 })
-export class StepRdLicenceAccessCodeComponent implements OnInit {
+export class StepMdraLicenceAccessCodeComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.retiredDogApplicationService.accessCodeFormGroup;
+	form: FormGroup = this.mdraDealersApplicationService.accessCodeFormGroup;
 
-	readonly serviceTypeRetiredDog = ServiceTypeCode.RetiredServiceDogCertification;
+	readonly serviceTypeMdraTeam = ServiceTypeCode.Mdra;
 	applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FormGdsdLicenceAccessCodeComponent) accessCodeComponent!: FormGdsdLicenceAccessCodeComponent;
 
 	constructor(
 		private router: Router,
-		private retiredDogApplicationService: RetiredDogApplicationService,
+		private mdraDealersApplicationService: MetalDealersApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.applicationTypeCode = this.retiredDogApplicationService.retiredDogModelFormGroup.get(
+		this.applicationTypeCode = this.mdraDealersApplicationService.metalDealersModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		this.commonApplicationService.setGdsdApplicationTitle(this.serviceTypeRetiredDog, this.applicationTypeCode);
+		this.commonApplicationService.setMdraApplicationTitle(this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_APPLICATION_TYPE_ANONYMOUS)
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
 		);
 	}
 
@@ -70,23 +70,29 @@ export class StepRdLicenceAccessCodeComponent implements OnInit {
 	}
 
 	onLinkSuccess(linkLicence: LicenceResponse): void {
-		this.retiredDogApplicationService
-			.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
-			.subscribe((_resp: any) => {
-				switch (this.applicationTypeCode) {
-					case ApplicationTypeCode.Renewal: {
-						this.router.navigateByUrl(
-							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_RENEWAL_ANONYMOUS)
-						);
-						break;
-					}
-					case ApplicationTypeCode.Replacement: {
-						this.router.navigateByUrl(
-							GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.RETIRED_DOG_REPLACEMENT_ANONYMOUS)
-						);
-						break;
-					}
-				}
-			});
+		// this.mdraDealersApplicationService
+		// 	.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
+		// 	.subscribe((_resp: any) => {
+		// 		switch (this.applicationTypeCode) {
+		// 			case ApplicationTypeCode.Renewal: {
+		// 				this.router.navigateByUrl(
+		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_RENEWAL)
+		// 				);
+		// 				break;
+		// 			}
+		// 			case ApplicationTypeCode.Replacement: {
+		// 				this.router.navigateByUrl(
+		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_REPLACEMENT)
+		// 				);
+		// 				break;
+		// 			}
+		// 			case ApplicationTypeCode.Update: {
+		// 				this.router.navigateByUrl(
+		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_UPDATE)
+		// 				);
+		// 				break;
+		// 			}
+		// 		}
+		// 	});
 	}
 }

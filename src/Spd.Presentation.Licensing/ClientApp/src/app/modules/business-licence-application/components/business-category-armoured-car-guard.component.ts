@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-business-category-armoured-car-guard',
@@ -50,22 +49,14 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: ``,
 	standalone: false,
 })
-export class BusinessCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
+export class BusinessCategoryArmouredCarGuardComponent implements LicenceChildStepperStepComponent {
 	safetyCertificateChecklistUrl = SPD_CONSTANTS.urls.safetyCertificateChecklistUrl;
 
 	form = this.businessApplicationService.categoryArmouredCarGuardFormGroup;
-	title = '';
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private businessApplicationService: BusinessApplicationService
-	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
-	}
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;

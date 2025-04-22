@@ -3,7 +3,7 @@ import { MetalDealersApplicationService } from '@app/core/services/metal-dealers
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-metal-dealers-business-address',
+	selector: 'app-step-mdra-business-address',
 	template: `
 		<app-step-section title="Business addresses">
 			<div class="row">
@@ -58,7 +58,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersBusinessAddressComponent implements LicenceChildStepperStepComponent {
+export class StepMdraBusinessAddressComponent implements LicenceChildStepperStepComponent {
 	businessAddressForm = this.metalDealersApplicationService.businessAddressFormGroup;
 	businessMailingAddressForm = this.metalDealersApplicationService.businessMailingAddressFormGroup;
 

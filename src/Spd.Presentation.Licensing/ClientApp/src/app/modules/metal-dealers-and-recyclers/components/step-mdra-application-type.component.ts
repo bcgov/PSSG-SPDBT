@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { take, tap } from 'rxjs';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 
 @Component({
-	selector: 'app-step-metal-dealers-registration-information',
+	selector: 'app-step-mdra-application-type',
 	template: `
 		<app-step-section title="Registration information">
 			<div class="row">
@@ -62,45 +63,61 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								>
 							</div>
 						</div>
-						<div class="row" *ngIf="applicationTypeIsRenewalOrUpdate" @showHideTriggerSlideAnimation>
-							<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
-								<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
-								<div class="text-minor-heading mb-3">Your existing registration number</div>
-								<mat-form-field>
-									<mat-label>Registration Number</mat-label>
-									<input matInput formControlName="registrationNumber" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('registrationNumber')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-						</div>
 					</form>
 				</div>
 			</div>
 		</app-step-section>
+
+		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class MetalDealersRegistrationInformationComponent implements LicenceChildStepperStepComponent {
+export class StepMdraApplicationTypeComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	matcher = new FormErrorStateMatcher();
+	form = this.metalDealersApplicationService.applicationTypeFormGroup;
 
-	form = this.metalDealersApplicationService.registrationFormGroup;
-
-	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
+	constructor(
+		private router: Router,
+		private utilService: UtilService,
+		private metalDealersApplicationService: MetalDealersApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	get applicationTypeIsRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode.value === ApplicationTypeCode.Update ||
-			this.applicationTypeCode.value === ApplicationTypeCode.Renewal
-		);
+	onStepNext(): void {
+		if (!this.isFormValid()) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
+
+		const applicationTypeCode = this.applicationTypeCode.value;
+
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.metalDealersApplicationService
+					.createNewRegistration()
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
+						}),
+						take(1)
+					)
+					.subscribe();
+
+				break;
+			}
+			case ApplicationTypeCode.Update:
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Replacement: {
+				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_ACCESS_CODE));
+				break;
+			}
+		}
 	}
 
 	get applicationTypeCode(): FormControl {
