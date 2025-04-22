@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 
 @Component({
@@ -15,7 +16,7 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 							<h2 class="fs-3">Metal Dealers & Recyclers</h2>
 						</div>
 					</div>
-					<mat-divider class="mat-divider-main mb-4"></mat-divider>
+					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-12 my-auto">
@@ -43,6 +44,7 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 								legally required for metal dealers and recyclers in most cases.
 							</p>
 
+							<mat-divider class="mt-3 mb-2"></mat-divider>
 							<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
 							<ul>
 								<li class="metal-dealers-checklist-label">No registration fee</li>
@@ -108,10 +110,13 @@ export class MetalDealersMainComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private metalDealersApplicationService: MetalDealersApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.metalDealersApplicationService.reset(); // prevent back button into wizard
+
 		this.commonApplicationService.setMdraApplicationTitle();
 	}
 

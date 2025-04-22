@@ -8,10 +8,6 @@ import { FormGroupValidators } from '@app/core/validators/form-group.validators'
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
-	registrationFormGroup: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl('', [FormControlValidators.required]),
-	});
-
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		legalBusinessName: new FormControl('', [FormControlValidators.required]),
 		tradeName: new FormControl('', [FormControlValidators.required]),

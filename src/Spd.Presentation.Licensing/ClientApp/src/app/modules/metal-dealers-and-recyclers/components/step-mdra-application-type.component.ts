@@ -42,19 +42,6 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 										<mat-divider class="mb-3"></mat-divider>
 										<div class="row">
 											<div class="col-lg-4">
-												<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
-													Replacement
-												</mat-radio-button>
-											</div>
-											<div class="col-lg-8">
-												<app-alert type="info" icon="">
-													If you’ve lost your registration, request a replacement card.
-												</app-alert>
-											</div>
-										</div>
-										<mat-divider class="mb-3"></mat-divider>
-										<div class="row">
-											<div class="col-lg-4">
 												<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
 													>Update</mat-radio-button
 												>
@@ -89,7 +76,7 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 export class StepMdraApplicationTypeComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form = this.metalDealersApplicationService.registrationFormGroup;
+	form = this.metalDealersApplicationService.applicationTypeFormGroup;
 
 	constructor(
 		private router: Router,

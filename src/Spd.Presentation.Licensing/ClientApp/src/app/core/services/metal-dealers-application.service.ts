@@ -15,7 +15,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	metalDealersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	metalDealersModelFormGroup: FormGroup = this.formBuilder.group({
-		registrationData: this.registrationFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
 		businessOwnerData: this.businessOwnerFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
