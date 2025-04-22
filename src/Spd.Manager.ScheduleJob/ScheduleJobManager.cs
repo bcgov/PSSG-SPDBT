@@ -40,7 +40,7 @@ public class ScheduleJobManager :
         }
 
         //used for Org MonthlyInvoice
-        if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoiceJob"))
+        if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoice"))
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
