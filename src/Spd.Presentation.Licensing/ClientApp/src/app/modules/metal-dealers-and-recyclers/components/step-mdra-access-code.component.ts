@@ -56,7 +56,7 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		this.commonApplicationService.setApplicationTitle(this.serviceTypeMdraTeam, this.applicationTypeCode);
+		this.commonApplicationService.setMdraApplicationTitle(this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {

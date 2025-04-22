@@ -45,7 +45,7 @@ export class StepTeamApplicationTypeComponent implements OnInit {
 
 		const applicationTypeCode = this.applicationTypeCode.value;
 
-		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.GdsdTeamCertification, applicationTypeCode);
+		this.commonApplicationService.setGdsdApplicationTitle(ServiceTypeCode.GdsdTeamCertification, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {

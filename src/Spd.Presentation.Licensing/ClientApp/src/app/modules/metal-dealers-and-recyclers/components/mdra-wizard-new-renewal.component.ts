@@ -1,18 +1,17 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { distinctUntilChanged, Subscription } from 'rxjs';
-import { StepMdraBranchesComponent } from './step-mdra-branches.component';
-import { StepMdraBusinessAddressComponent } from './step-mdra-business-address.component';
-import { StepMdraBusinessManagerComponent } from './step-mdra-business-manager.component';
-import { StepMdraBusinessOwnerComponent } from './step-mdra-business-owner.component';
-import { StepMdraConsentComponent } from './step-mdra-consent.component';
-import { StepMdraSummaryComponent } from './step-mdra-summary.component';
+import { StepsMdraBranchesComponent } from './steps-mdra-branches.component';
+import { StepsMdraBusinessInfoComponent } from './steps-mdra-business-info.component';
+import { StepsMdraDetailsComponent } from './steps-mdra-details.component';
+import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-confirm.component';
 
 @Component({
 	selector: 'app-mdra-wizard-new-renewal',
@@ -27,85 +26,57 @@ import { StepMdraSummaryComponent } from './step-mdra-summary.component';
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Checklist</ng-template>
 
-				<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(nextStepperStep)="onFormValidNextStep(STEP_CHECKLIST)"
-				></app-wizard-footer>
+				<app-steps-mdra-details
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-mdra-details>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Business<br />Owner</ng-template>
+				<ng-template matStepLabel>Business Information</ng-template>
 
-				<app-step-mdra-business-owner></app-step-mdra-business-owner>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_OWNER)"
-				></app-wizard-footer>
+				<app-steps-mdra-business-info
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-mdra-business-info>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
-				<ng-template matStepLabel>Business<br />Manager</ng-template>
+				<ng-template matStepLabel>Branch Offices</ng-template>
 
-				<app-step-mdra-business-manager></app-step-mdra-business-manager>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_MANAGER)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step [completed]="step4Complete">
-				<ng-template matStepLabel>Business<br />Addresses</ng-template>
-
-				<app-step-mdra-business-address></app-step-mdra-business-address>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_ADDRESSES)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step [completed]="step5Complete">
-				<ng-template matStepLabel>Branch<br />Offices</ng-template>
-
-				<app-step-mdra-branches></app-step-mdra-branches>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BRANCH_OFFICES)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step [completed]="step6Complete">
-				<ng-template matStepLabel>Registration<br />Summary</ng-template>
-
-				<app-step-mdra-summary (editStep)="onGoToStep($event)"></app-step-mdra-summary>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_REVIEW)"
-				></app-wizard-footer>
+				<app-steps-mdra-branches
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-mdra-branches>
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Consent and<br />Declaration</ng-template>
+				<ng-template matStepLabel>Review & Confirm</ng-template>
 
-				<app-step-mdra-consent></app-step-mdra-consent>
-
-				<app-wizard-footer
-					cancelLabel="Cancel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					nextButtonLabel="Submit"
+				<app-steps-mdra-review-and-confirm
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onSubmit()"
-				></app-wizard-footer>
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+				></app-steps-mdra-review-and-confirm>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -116,34 +87,26 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
-	step4Complete = false;
-	step5Complete = false;
-	step6Complete = false;
 
 	readonly STEP_CHECKLIST = 0;
-	readonly STEP_BUSINESS_OWNER = 1;
-	readonly STEP_BUSINESS_MANAGER = 2;
-	readonly STEP_BUSINESS_ADDRESSES = 3;
-	readonly STEP_BRANCH_OFFICES = 4;
-	readonly STEP_REVIEW = 5;
-	readonly STEP_CONSENT = 6;
+	readonly STEP_BUSINESS_INFO = 1;
+	readonly STEP_BRANCH_OFFICES = 2;
+	readonly STEP_REVIEW_AND_CONFIRM = 3;
 
-	@ViewChild(StepMdraBusinessOwnerComponent)
-	stepBusinessOwner!: StepMdraBusinessOwnerComponent;
-	@ViewChild(StepMdraBusinessManagerComponent)
-	stepBusinessManager!: StepMdraBusinessManagerComponent;
-	@ViewChild(StepMdraBusinessAddressComponent) stepAddresses!: StepMdraBusinessAddressComponent;
-	@ViewChild(StepMdraBranchesComponent) stepBranches!: StepMdraBranchesComponent;
-	@ViewChild(StepMdraSummaryComponent) stepReview!: StepMdraSummaryComponent;
-	@ViewChild(StepMdraConsentComponent) stepConsent!: StepMdraConsentComponent;
+	@ViewChild(StepsMdraDetailsComponent) stepChecklist!: StepsMdraDetailsComponent;
+	@ViewChild(StepsMdraBusinessInfoComponent) stepsBusinessInfo!: StepsMdraBusinessInfoComponent;
+	@ViewChild(StepsMdraBranchesComponent) stepBranches!: StepsMdraBranchesComponent;
+	@ViewChild(StepsMdraReviewAndConfirmComponent) stepReview!: StepsMdraReviewAndConfirmComponent;
 
-	private metalDealersModelValueChangedSubscription!: Subscription;
+	isFormValid = false;
+	applicationTypeCode!: ApplicationTypeCode;
+
+	private mdraModelValueChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private metalDealersApplicationService: MetalDealersApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private metalDealersApplicationService: MetalDealersApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -154,100 +117,109 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 			return;
 		}
 
-		this.commonApplicationService.setMetalDealersApplicationTitle();
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.metalDealersModelValueChangedSubscription =
+		this.mdraModelValueChangedSubscription =
 			this.metalDealersApplicationService.metalDealersModelValueChanges$.subscribe((_resp: boolean) => {
+				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.metalDealersApplicationService.metalDealersModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
 				this.updateCompleteStatus();
 			});
 	}
 
 	ngOnDestroy() {
-		if (this.metalDealersModelValueChangedSubscription) this.metalDealersModelValueChangedSubscription.unsubscribe();
-	}
-
-	onGoToStep(step: number) {
-		this.stepper.selectedIndex = step;
-	}
-
-	onGoToPreviousStep() {
-		this.stepper.previous();
-	}
-
-	onGoToNextStep() {
-		this.stepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.stepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.stepper.selectedIndex = this.stepper.steps.length - 1;
-	}
-
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.stepper.next();
+		if (this.mdraModelValueChangedSubscription) this.mdraModelValueChangedSubscription.unsubscribe();
 	}
 
 	onSubmit(): void {
-		if (!this.stepConsent.isFormValid()) return;
-
-		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
-		);
-	}
-
-	private dirtyForm(step: number): boolean {
-		switch (step) {
-			case this.STEP_CHECKLIST:
-				return true;
-			case this.STEP_BUSINESS_OWNER:
-				return this.stepBusinessOwner.isFormValid();
-			case this.STEP_BUSINESS_MANAGER:
-				return this.stepBusinessManager.isFormValid();
-			case this.STEP_BUSINESS_ADDRESSES:
-				return this.stepAddresses.isFormValid();
-			case this.STEP_BRANCH_OFFICES:
-				return this.stepBranches.isFormValid();
-			case this.STEP_REVIEW:
-				return this.stepReview.isFormValid();
-			case this.STEP_CONSENT:
-				return this.stepConsent.isFormValid();
-		}
-		return false;
-	}
-
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.metalDealersApplicationService.isStepRegistrationInformationComplete();
-		this.step2Complete = this.metalDealersApplicationService.isStepBusinessOwnerComplete();
-		this.step3Complete = this.metalDealersApplicationService.isStepBusinessManagerComplete();
-		this.step4Complete = this.metalDealersApplicationService.isStepBusinessAddressesComplete();
-		this.step5Complete = this.metalDealersApplicationService.isStepBranchOfficesComplete();
-		this.step6Complete =
-			this.step1Complete && this.step2Complete && this.step3Complete && this.step4Complete && this.step5Complete;
-
-		console.debug(
-			'Complete Status',
-			this.step1Complete,
-			this.step2Complete,
-			this.step3Complete,
-			this.step4Complete,
-			this.step5Complete
-		);
+		// TODO mdra submit
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		this.stepReview.onUpdateData();
+		const index = event.selectedIndex;
+		switch (index) {
+			case this.STEP_CHECKLIST:
+				this.stepChecklist?.onGoToFirstStep();
+				break;
+			case this.STEP_BUSINESS_INFO:
+				this.stepsBusinessInfo?.onGoToFirstStep();
+				break;
+			case this.STEP_BRANCH_OFFICES:
+				this.stepBranches?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepReview?.onGoToFirstStep();
+				break;
+		}
 
 		super.onStepSelectionChange(event);
+	}
+
+	onPreviousStepperStep(stepper: MatStepper): void {
+		stepper.previous();
+
+		const index = stepper.selectedIndex;
+		switch (index) {
+			case this.STEP_CHECKLIST:
+				this.stepChecklist?.onGoToLastStep();
+				break;
+			case this.STEP_BUSINESS_INFO:
+				this.stepsBusinessInfo?.onGoToLastStep();
+				break;
+			case this.STEP_BRANCH_OFFICES:
+				this.stepBranches?.onGoToLastStep();
+				break;
+		}
+	}
+
+	onNextStepperStep(stepper: MatStepper): void {
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
+	}
+
+	onGoToReview() {
+		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+	}
+
+	onGoToStep(stepIndex: number) {
+		this.stepChecklist?.onGoToFirstStep();
+		this.stepsBusinessInfo?.onGoToFirstStep();
+		this.stepBranches?.onGoToFirstStep();
+		this.stepReview?.onGoToFirstStep();
+
+		this.stepper.selectedIndex = stepIndex;
+	}
+
+	onChildNextStep() {
+		const index = this.stepper.selectedIndex;
+		switch (index) {
+			case this.STEP_CHECKLIST:
+				this.stepChecklist?.onGoToNextStep();
+				break;
+			case this.STEP_BUSINESS_INFO:
+				this.stepsBusinessInfo?.onGoToNextStep();
+				break;
+			case this.STEP_BRANCH_OFFICES:
+				this.stepBranches?.onGoToNextStep();
+				break;
+		}
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+
+	private updateCompleteStatus(): void {
+		this.step2Complete = this.metalDealersApplicationService.isStepBusinessInfoComplete();
+		this.step3Complete = this.metalDealersApplicationService.isStepBranchOfficesComplete();
+
+		console.debug('Complete Status', this.step2Complete, this.step3Complete);
 	}
 }

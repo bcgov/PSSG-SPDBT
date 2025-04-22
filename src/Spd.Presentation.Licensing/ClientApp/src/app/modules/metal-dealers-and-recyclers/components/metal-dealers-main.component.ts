@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
-import { take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-metal-dealers-main',
@@ -107,22 +105,11 @@ import { take, tap } from 'rxjs';
 export class MetalDealersMainComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	constructor(
-		private router: Router,
-		private metalDealersApplicationService: MetalDealersApplicationService
-	) {}
+	constructor(private router: Router) {}
 
 	onRegister(): void {
-		this.metalDealersApplicationService
-			.createNewRegistration()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		this.router.navigateByUrl(
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
+		);
 	}
 }

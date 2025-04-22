@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { ApplicationTypeCode } from '@app/api/models';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { take, tap } from 'rxjs';
 import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 
 @Component({
@@ -85,7 +84,6 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 		<app-wizard-footer (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepMdraApplicationTypeComponent implements LicenceChildStepperStepComponent {
@@ -96,8 +94,7 @@ export class StepMdraApplicationTypeComponent implements LicenceChildStepperStep
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private metalDealersApplicationService: MetalDealersApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private metalDealersApplicationService: MetalDealersApplicationService
 	) {}
 
 	isFormValid(): boolean {
@@ -113,11 +110,18 @@ export class StepMdraApplicationTypeComponent implements LicenceChildStepperStep
 
 		const applicationTypeCode = this.applicationTypeCode.value;
 
-		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.Mdra, applicationTypeCode);
-
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
+				this.metalDealersApplicationService
+					.createNewRegistration()
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
+						}),
+						take(1)
+					)
+					.subscribe();
+
 				break;
 			}
 			case ApplicationTypeCode.Update:

@@ -18,6 +18,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		givenName: new FormControl(''),
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
 		attachments: new FormControl([], [Validators.required]),
 	});
 

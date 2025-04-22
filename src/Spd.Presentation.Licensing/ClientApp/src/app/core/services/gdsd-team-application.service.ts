@@ -412,7 +412,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					tap((_resp: any) => {
 						this.initialized = true;
 
-						this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+						this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 					})
 				);
 			})
@@ -589,7 +589,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
@@ -631,7 +631,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
@@ -1247,7 +1247,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!

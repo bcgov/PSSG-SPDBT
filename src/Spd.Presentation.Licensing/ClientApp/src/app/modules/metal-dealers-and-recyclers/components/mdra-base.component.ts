@@ -20,6 +20,6 @@ export class MdraBaseComponent implements OnInit {
 	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	ngOnInit(): void {
-		this.commonApplicationService.setMetalDealersApplicationTitle();
+		this.commonApplicationService.setMdraApplicationTitle();
 	}
 }

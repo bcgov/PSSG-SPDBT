@@ -17,6 +17,11 @@ import { StepMdraBusinessOwnerComponent } from './components/step-mdra-business-
 import { StepMdraChecklistNewComponent } from './components/step-mdra-checklist-new.component';
 import { StepMdraConsentComponent } from './components/step-mdra-consent.component';
 import { StepMdraSummaryComponent } from './components/step-mdra-summary.component';
+import { StepMdraTermsOfUseComponent } from './components/step-mdra-terms-of-use.component';
+import { StepsMdraBranchesComponent } from './components/steps-mdra-branches.component';
+import { StepsMdraBusinessInfoComponent } from './components/steps-mdra-business-info.component';
+import { StepsMdraDetailsComponent } from './components/steps-mdra-details.component';
+import { StepsMdraReviewAndConfirmComponent } from './components/steps-mdra-review-and-confirm.component';
 import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyclers-routing.module';
 
 @NgModule({
@@ -24,6 +29,7 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 		MdraBaseComponent,
 		MetalDealersMainComponent,
 		MdraWizardNewRenewalComponent,
+		StepMdraTermsOfUseComponent,
 		StepMdraLicenceAccessCodeComponent,
 		StepMdraChecklistNewComponent,
 		StepMdraApplicationTypeComponent,
@@ -33,6 +39,10 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 		StepMdraBranchesComponent,
 		StepMdraSummaryComponent,
 		StepMdraConsentComponent,
+		StepsMdraBusinessInfoComponent,
+		StepsMdraDetailsComponent,
+		StepsMdraBranchesComponent,
+		StepsMdraReviewAndConfirmComponent,
 		ModalMdraBranchComponent,
 		MetalDealersRegistrationReceivedComponent,
 		FormMdraBranchesComponent,
