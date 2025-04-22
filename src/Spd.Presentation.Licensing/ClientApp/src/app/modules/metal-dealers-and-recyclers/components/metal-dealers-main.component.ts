@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
-import { take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-metal-dealers-main',
@@ -16,7 +16,7 @@ import { take, tap } from 'rxjs';
 							<h2 class="fs-3">Metal Dealers & Recyclers</h2>
 						</div>
 					</div>
-					<mat-divider class="mat-divider-main mb-4"></mat-divider>
+					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-12 my-auto">
@@ -44,6 +44,7 @@ import { take, tap } from 'rxjs';
 								legally required for metal dealers and recyclers in most cases.
 							</p>
 
+							<mat-divider class="mt-3 mb-2"></mat-divider>
 							<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
 							<ul>
 								<li class="metal-dealers-checklist-label">No registration fee</li>
@@ -104,25 +105,24 @@ import { take, tap } from 'rxjs';
 	],
 	standalone: false,
 })
-export class MetalDealersMainComponent {
+export class MetalDealersMainComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	constructor(
 		private router: Router,
-		private metalDealersApplicationService: MetalDealersApplicationService
+		private metalDealersApplicationService: MetalDealersApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
+	ngOnInit(): void {
+		this.metalDealersApplicationService.reset(); // prevent back button into wizard
+
+		this.commonApplicationService.setMdraApplicationTitle();
+	}
+
 	onRegister(): void {
-		this.metalDealersApplicationService
-			.createNewRegistration()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.METAL_DEALERS_AND_RECYCLERS_REGISTER)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		this.router.navigateByUrl(
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_APPLICATION_TYPE)
+		);
 	}
 }

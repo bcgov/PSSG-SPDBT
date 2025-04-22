@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-goverment-photo-id.component';
 
@@ -16,7 +15,6 @@ import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-servic
 		</app-step-section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepTeamGovermentPhotoIdComponent {

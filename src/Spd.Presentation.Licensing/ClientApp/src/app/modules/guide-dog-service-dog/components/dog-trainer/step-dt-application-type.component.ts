@@ -44,7 +44,7 @@ export class StepDtApplicationTypeComponent implements OnInit {
 		}
 
 		const applicationTypeCode = this.applicationTypeCode.value;
-		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.DogTrainerCertification, applicationTypeCode);
+		this.commonApplicationService.setGdsdApplicationTitle(ServiceTypeCode.DogTrainerCertification, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {

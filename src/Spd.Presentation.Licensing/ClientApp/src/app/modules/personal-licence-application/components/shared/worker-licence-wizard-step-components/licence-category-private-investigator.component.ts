@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
-import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
 	PrivateInvestigatorRequirementCode,
@@ -10,7 +9,6 @@ import {
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-licence-category-private-investigator',
@@ -228,9 +226,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
-	title = '';
 
 	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
 	privateInvestigatorTrainingCodes = PrivateInvestigatorTrainingCode;
@@ -238,14 +235,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private workerApplicationService: WorkerApplicationService
-	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
-	}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;

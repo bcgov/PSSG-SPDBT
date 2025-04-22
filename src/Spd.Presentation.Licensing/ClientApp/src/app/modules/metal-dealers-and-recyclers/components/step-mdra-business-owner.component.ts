@@ -5,7 +5,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-metal-dealers-business-owner',
+	selector: 'app-step-mdra-business-owner',
 	template: `
 		<app-step-section title="Business owner" subtitle="Provide the business owner information.">
 			<div class="row">
@@ -34,14 +34,32 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-form-field>
 							</div>
 
-							<div class="col-xl-6 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<mat-form-field>
+									<mat-label>Email Address</mat-label>
+									<input
+										matInput
+										formControlName="emailAddress"
+										[errorStateMatcher]="matcher"
+										placeholder="name@domain.com"
+										maxlength="75"
+									/>
+									<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+									<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
+										Must be a valid email address
+									</mat-error>
+								</mat-form-field>
+							</div>
+
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Legal Business Name</mat-label>
 									<input matInput formControlName="legalBusinessName" [errorStateMatcher]="matcher" maxlength="40" />
 									<mat-error *ngIf="form.get('legalBusinessName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xl-6 col-lg-6 col-md-12">
+
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Trade or 'Doing Business As' Name</mat-label>
 									<input matInput formControlName="tradeName" [errorStateMatcher]="matcher" maxlength="40" />
@@ -80,7 +98,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepMetalDealersBusinessOwnerComponent implements LicenceChildStepperStepComponent {
+export class StepMdraBusinessOwnerComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form = this.metalDealersApplicationService.businessOwnerFormGroup;
@@ -93,11 +111,11 @@ export class StepMetalDealersBusinessOwnerComponent implements LicenceChildStepp
 	}
 
 	onFileUploaded(_file: File): void {
-		// this.metalDealersApplicationService.hasValueChanged = true;
+		this.metalDealersApplicationService.hasValueChanged = true;
 	}
 
 	onFileRemoved(): void {
-		// this.metalDealersApplicationService.hasValueChanged = true;
+		this.metalDealersApplicationService.hasValueChanged = true;
 	}
 
 	get attachments(): FormControl {
