@@ -22,7 +22,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 }
 
 @Component({
-	selector: 'app-modal-metal-dealers-branch',
+	selector: 'app-modal-mdra-branch',
 	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content">
@@ -122,7 +122,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 	styles: [],
 	standalone: false,
 })
-export class ModalMetalDealersBranchComponent implements OnInit {
+export class ModalMdraBranchComponent implements OnInit {
 	title = '';
 	isCreate = false;
 
@@ -133,7 +133,7 @@ export class ModalMetalDealersBranchComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
-		private dialogRef: MatDialogRef<ModalMetalDealersBranchComponent>,
+		private dialogRef: MatDialogRef<ModalMdraBranchComponent>,
 		private metalDealersAndRecyclersApplicationService: MetalDealersApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: MetalDealersAndRecyclersBranchResponse
 	) {}

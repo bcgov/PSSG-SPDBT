@@ -44,7 +44,7 @@ export class StepRdApplicationTypeComponent implements OnInit {
 		}
 
 		const applicationTypeCode = this.applicationTypeCode.value;
-		this.commonApplicationService.setApplicationTitle(
+		this.commonApplicationService.setGdsdApplicationTitle(
 			ServiceTypeCode.RetiredServiceDogCertification,
 			applicationTypeCode
 		);

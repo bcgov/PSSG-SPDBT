@@ -26,7 +26,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			#stepper
 		>
 			<mat-step [completed]="true">
-				<ng-template matStepLabel>Certificate Details</ng-template>
+				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-rd-details
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"

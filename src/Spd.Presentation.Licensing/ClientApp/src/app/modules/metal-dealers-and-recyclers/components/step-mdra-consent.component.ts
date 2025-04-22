@@ -4,7 +4,7 @@ import { MetalDealersApplicationService } from '@app/core/services/metal-dealers
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-metal-dealers-consent',
+	selector: 'app-step-mdra-consent',
 	template: `
 		<app-step-section title="Consent and Declaration">
 			<form [formGroup]="form" novalidate>
@@ -111,7 +111,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	],
 	standalone: false,
 })
-export class StepMetalDealersConsentComponent implements LicenceChildStepperStepComponent {
+export class StepMdraConsentComponent implements LicenceChildStepperStepComponent {
 	collectionNoticeActName = 'Metal Dealers and Recyclers Act';
 
 	form: FormGroup = this.metalDealersApplicationService.consentAndDeclarationFormGroup;

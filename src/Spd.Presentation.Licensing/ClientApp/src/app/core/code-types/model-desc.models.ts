@@ -304,7 +304,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Dog Trainer Certification', code: ServiceTypeCode.DogTrainerCertification },
 	{ desc: 'GDSD Team Certification', code: ServiceTypeCode.GdsdTeamCertification },
 	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
-	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
+	{ desc: 'Metal Dealers & Recyclers', code: ServiceTypeCode.Mdra },
 	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },
