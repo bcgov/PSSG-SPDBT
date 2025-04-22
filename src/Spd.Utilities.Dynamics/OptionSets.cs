@@ -399,7 +399,10 @@ namespace Spd.Utilities.Dynamics
         BCMPArmouredVehiclePermitPrinting = 100000010,
         BCMPBodyArmourPermitPrinting = 100000011,
         BCMPBusinessLicencePrinting = 100000012,
-        BCMPMetalDealersPermitPrinting = 100000013
+        BCMPMetalDealersPermitPrinting = 100000013,
+        BCMPGuideDogServiceDogTeamPrinting = 100000016,
+        BCMPDogTrainerPrinting = 100000018,
+        BCMPRetiredServiceDogPrinting = 100000017,
     }
 
     public enum EventStatusReasonOptionSet
