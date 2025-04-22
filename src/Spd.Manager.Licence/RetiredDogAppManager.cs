@@ -5,9 +5,9 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DogBase;
-using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.RetiredDogApp;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
@@ -24,15 +24,14 @@ internal class RetiredDogAppManager :
         IRequestHandler<RetiredDogLicenceAppReplaceCommand, RetiredDogAppCommandResponse>,
         IRetiredDogAppManager
 {
-    private readonly IContactRepository _contactRepository;
-    private readonly IGDSDAppRepository _gdsdRepository;
+    private readonly IRetiredDogAppRepository _retiredDogRepository;
 
     public RetiredDogAppManager(
         ILicenceRepository licenceRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         IContactRepository contactRepository,
-        IGDSDAppRepository gdsdRepository,
+        IRetiredDogAppRepository retiredDogRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
         ILicAppRepository licAppRepository)
@@ -44,8 +43,7 @@ internal class RetiredDogAppManager :
             transientFileStorageService,
             licAppRepository)
     {
-        _contactRepository = contactRepository;
-        _gdsdRepository = gdsdRepository;
+        _retiredDogRepository = retiredDogRepository;
     }
 
     #region anonymous
@@ -55,10 +53,10 @@ internal class RetiredDogAppManager :
         ValidateFilesForNewApp(cmd);
 
         //save the application
-        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
-        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        CreateRetiredDogAppCmd createApp = _mapper.Map<CreateRetiredDogAppCmd>(request);
+        var response = await _retiredDogRepository.CreateRetiredDogAppAsync(createApp, ct);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
-        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
+        await _retiredDogRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
@@ -69,7 +67,7 @@ internal class RetiredDogAppManager :
     #region auth
     public async Task<RetiredDogLicenceAppResponse> Handle(RetiredDogLicenceApplicationQuery query, CancellationToken ct)
     {
-        var resp = await _gdsdRepository.GetGDSDAppAsync(query.LicenceApplicationId, ct);
+        var resp = await _retiredDogRepository.GetRetiredDogAppAsync(query.LicenceApplicationId, ct);
         RetiredDogLicenceAppResponse result = _mapper.Map<RetiredDogLicenceAppResponse>(resp);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
@@ -78,8 +76,8 @@ internal class RetiredDogAppManager :
     }
     public async Task<RetiredDogAppCommandResponse> Handle(RetiredDogLicenceAppUpsertCommand cmd, CancellationToken ct)
     {
-        SaveGDSDAppCmd saveCmd = _mapper.Map<SaveGDSDAppCmd>(cmd.UpsertRequest);
-        var response = await _gdsdRepository.SaveGDSDAppAsync(saveCmd, ct);
+        SaveRetiredDogAppCmd saveCmd = _mapper.Map<SaveRetiredDogAppCmd>(cmd.UpsertRequest);
+        var response = await _retiredDogRepository.SaveRetiredDogAppAsync(saveCmd, ct);
         if (cmd.UpsertRequest.LicenceAppId == null)
             cmd.UpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
@@ -94,7 +92,7 @@ internal class RetiredDogAppManager :
         var response = await this.Handle((RetiredDogLicenceAppUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
-        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
+        await _retiredDogRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId
         }, ct);
@@ -113,8 +111,8 @@ internal class RetiredDogAppManager :
             throw new ArgumentException($"the certification can only be renewed within {Constants.GDSDRenewValidAfterExpirationInMonths} months after expiry date.");
 
         var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
-        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
-        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        CreateRetiredDogAppCmd createApp = _mapper.Map<CreateRetiredDogAppCmd>(cmd.ChangeRequest);
+        var response = await _retiredDogRepository.CreateRetiredDogAppAsync(createApp, ct);
         await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         //copying all old files to new application in PreviousFileIds 
         if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
@@ -126,7 +124,7 @@ internal class RetiredDogAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
+        await _retiredDogRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
@@ -140,8 +138,8 @@ internal class RetiredDogAppManager :
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
 
         var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
-        CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
-        var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
+        CreateRetiredDogAppCmd createApp = _mapper.Map<CreateRetiredDogAppCmd>(cmd.ChangeRequest);
+        var response = await _retiredDogRepository.CreateRetiredDogAppAsync(createApp, ct);
         await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         //copying all old files to new application in PreviousFileIds 
         if (cmd.ChangeRequest.PreviousDocumentIds != null && cmd.ChangeRequest.PreviousDocumentIds.Any())
@@ -153,7 +151,7 @@ internal class RetiredDogAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
+        await _retiredDogRepository.CommitAppAsync(new CommitAppCmd()
         {
             LicenceAppId = response.LicenceAppId
         }, ct);
@@ -180,9 +178,9 @@ internal class RetiredDogAppManager :
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "A valid government issued photo identification is required.");
             }
-            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.))
+            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.GDSDCertificate))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant's face is required.");
+                throw new ApiException(HttpStatusCode.BadRequest, "A GDSD Certificate is required.");
             }
         }
 

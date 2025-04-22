@@ -785,7 +785,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -852,7 +853,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)
