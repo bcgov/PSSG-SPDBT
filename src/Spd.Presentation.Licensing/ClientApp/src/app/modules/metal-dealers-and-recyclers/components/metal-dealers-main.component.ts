@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 
 @Component({
@@ -102,10 +103,17 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 	],
 	standalone: false,
 })
-export class MetalDealersMainComponent {
+export class MetalDealersMainComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	constructor(private router: Router) {}
+	constructor(
+		private router: Router,
+		private commonApplicationService: CommonApplicationService
+	) {}
+
+	ngOnInit(): void {
+		this.commonApplicationService.setMdraApplicationTitle();
+	}
 
 	onRegister(): void {
 		this.router.navigateByUrl(

@@ -77,9 +77,9 @@ export class StepMdraTermsOfUseComponent implements LicenceChildStepperStepCompo
 	hasScrolledToBottom = true; // TODO mdra undo false;
 	displayValidationErrors = false;
 
-	bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;
-	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
-	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
+	// bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;
+	// bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
+	// bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
 	form = this.gdsdTeamApplicationService.termsAndConditionsFormGroup;

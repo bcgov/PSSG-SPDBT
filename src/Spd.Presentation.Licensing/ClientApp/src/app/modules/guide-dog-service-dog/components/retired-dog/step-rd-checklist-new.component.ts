@@ -11,7 +11,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<ul>
 						<li>
 							<div class="checklist-label">Guide or Service Dog Certificate</div>
-							<p class="checklist-info">The certification needs to be issued by an accredited dog training school.</p>
+							<p class="checklist-info">
+								Proof of formal GDSDA certification, or an identification card issued by a school that is accredited by
+								ADI or IGDF
+							</p>
 						</li>
 
 						<li>
