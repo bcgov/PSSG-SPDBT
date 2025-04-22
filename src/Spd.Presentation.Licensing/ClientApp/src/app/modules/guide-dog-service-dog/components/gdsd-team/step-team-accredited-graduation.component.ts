@@ -5,7 +5,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-team-accredited-graduation',
@@ -54,7 +53,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepTeamAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
-	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.gdsdTeamApplicationService.graduationInfoFormGroup;

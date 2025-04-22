@@ -178,7 +178,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 						tap((_resp: any) => {
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+							this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 						})
 					);
 				})
@@ -583,7 +583,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!

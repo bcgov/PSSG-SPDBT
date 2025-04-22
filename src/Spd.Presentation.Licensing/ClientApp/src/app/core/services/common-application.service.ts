@@ -579,59 +579,11 @@ export class CommonApplicationService {
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
 	) {
-		let title = '';
-		let mobileTitle = '';
-
-		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-			switch (serviceTypeCode) {
-				case ServiceTypeCode.SecurityBusinessLicence: {
-					mobileTitle = 'SBL';
-					break;
-				}
-				case ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
-					mobileTitle = 'CM CRC';
-					break;
-				}
-				case ServiceTypeCode.SecurityWorkerLicence: {
-					mobileTitle = 'SWL';
-					break;
-				}
-				case ServiceTypeCode.ArmouredVehiclePermit: {
-					mobileTitle = 'AVP';
-					break;
-				}
-				case ServiceTypeCode.BodyArmourPermit: {
-					mobileTitle = 'BAP';
-					break;
-				}
-				case ServiceTypeCode.GdsdTeamCertification: {
-					mobileTitle = 'GDSDTC';
-					break;
-				}
-				case ServiceTypeCode.DogTrainerCertification: {
-					mobileTitle = 'DTC';
-					break;
-				}
-				case ServiceTypeCode.RetiredServiceDogCertification: {
-					mobileTitle = 'RSDC';
-					break;
-				}
-			}
-
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
-			}
-
-			if (originalLicenceNumber) {
-				title += ` - ${originalLicenceNumber}`;
-				mobileTitle += ` ${originalLicenceNumber}`;
-			}
-		} else {
-			mobileTitle = title = 'Security Services Application';
-		}
+		const { title, mobileTitle } = this.getApplicationTitle(
+			serviceTypeCode,
+			applicationTypeCode,
+			originalLicenceNumber
+		);
 
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
@@ -645,41 +597,91 @@ export class CommonApplicationService {
 		let mobileTitle = 'GDSD';
 
 		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
-			}
-
-			if (originalLicenceNumber) {
-				title += ` - ${originalLicenceNumber}`;
-				mobileTitle += ` ${originalLicenceNumber}`;
-			}
+			({ title, mobileTitle } = this.getApplicationTitle(serviceTypeCode, applicationTypeCode, originalLicenceNumber));
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
-	setMetalDealersApplicationTitle(
-		serviceTypeCode: ServiceTypeCode | undefined = undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined = undefined
+	setMdraApplicationTitle(
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
 	) {
-		let title = 'Metal Dealers & Recyclers';
-		let mobileTitle = 'MD&R';
+		const { title, mobileTitle } = this.getApplicationTitle(
+			ServiceTypeCode.Mdra,
+			applicationTypeCode,
+			originalLicenceNumber
+		);
 
-		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
 
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
+	private getApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
+	): {
+		title: string;
+		mobileTitle: string;
+	} {
+		if (!serviceTypeCode) {
+			return { title: 'Security Services Application', mobileTitle: 'SSA' };
+		}
+
+		let title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		let mobileTitle: string = serviceTypeCode;
+
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.SecurityBusinessLicence: {
+				mobileTitle = 'SBL';
+				break;
+			}
+			case ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
+				mobileTitle = 'CM CRC';
+				break;
+			}
+			case ServiceTypeCode.SecurityWorkerLicence: {
+				mobileTitle = 'SWL';
+				break;
+			}
+			case ServiceTypeCode.ArmouredVehiclePermit: {
+				mobileTitle = 'AVP';
+				break;
+			}
+			case ServiceTypeCode.BodyArmourPermit: {
+				mobileTitle = 'BAP';
+				break;
+			}
+			case ServiceTypeCode.GdsdTeamCertification: {
+				mobileTitle = 'GDSD Team';
+				break;
+			}
+			case ServiceTypeCode.DogTrainerCertification: {
+				mobileTitle = 'Dog Trainer';
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				mobileTitle = 'Retired Dog';
+				break;
+			}
+			case ServiceTypeCode.Mdra: {
+				mobileTitle = 'MD&R';
+				break;
 			}
 		}
 
-		this.applicationTitle$.next([title, mobileTitle]);
+		if (applicationTypeCode) {
+			const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+			title += ` - ${applicationTypeDesc}`;
+			mobileTitle += ` ${applicationTypeDesc}`;
+		}
+
+		if (originalLicenceNumber) {
+			title += ` - ${originalLicenceNumber}`;
+			mobileTitle += ` ${originalLicenceNumber}`;
+		}
+
+		return { title, mobileTitle };
 	}
 
 	getSubmitSuccessMessage(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): string {
