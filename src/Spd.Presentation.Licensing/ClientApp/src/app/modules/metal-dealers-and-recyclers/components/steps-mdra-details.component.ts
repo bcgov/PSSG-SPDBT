@@ -18,6 +18,8 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 				></app-wizard-footer>
 			</mat-step>
 
+			<!-- // TODO MDRA add do you have an expired licence question -->
+
 			<mat-step>
 				<ng-container *ngIf="isNew; else isRenewal">
 					<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
