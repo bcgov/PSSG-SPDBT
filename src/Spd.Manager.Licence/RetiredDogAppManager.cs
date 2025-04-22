@@ -180,7 +180,10 @@ internal class RetiredDogAppManager :
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "A valid government issued photo identification is required.");
             }
-
+            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant's face is required.");
+            }
         }
 
     }

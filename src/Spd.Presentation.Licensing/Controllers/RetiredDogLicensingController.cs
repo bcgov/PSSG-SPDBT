@@ -20,93 +20,93 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        private readonly IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> _teamAppAnonymousSubmitRequestValidator;
-        private readonly IValidator<GDSDTeamLicenceAppUpsertRequest> _teamAppUpsertValidator;
-        private readonly IValidator<GDSDTeamLicenceAppChangeRequest> _teamAppChangeValidator;
+        private readonly IValidator<RetiredDogLicenceAppAnonymousSubmitRequest> _retiredDogAppAnonymousSubmitRequestValidator;
+        private readonly IValidator<RetiredDogLicenceAppUpsertRequest> _retiredDogAppUpsertValidator;
+        private readonly IValidator<RetiredDogLicenceAppChangeRequest> _retiredDogAppChangeValidator;
 
         public RetiredDogLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<GDSDTeamLicenceAppAnonymousSubmitRequest> teamAppAnonymousSubmitRequestValidator,
-            IValidator<GDSDTeamLicenceAppUpsertRequest> teamAppUpsertValidator,
-            IValidator<GDSDTeamLicenceAppChangeRequest> teamAppChangeValidator,
+            IValidator<RetiredDogLicenceAppAnonymousSubmitRequest> retiredDogAppAnonymousSubmitRequestValidator,
+            IValidator<RetiredDogLicenceAppUpsertRequest> retiredDogAppUpsertValidator,
+            IValidator<RetiredDogLicenceAppChangeRequest> retiredDogAppChangeValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _currentUser = currentUser;
             _mediator = mediator;
-            _teamAppAnonymousSubmitRequestValidator = teamAppAnonymousSubmitRequestValidator;
-            _teamAppUpsertValidator = teamAppUpsertValidator;
-            _teamAppChangeValidator = teamAppChangeValidator;
+            _retiredDogAppAnonymousSubmitRequestValidator = retiredDogAppAnonymousSubmitRequestValidator;
+            _retiredDogAppUpsertValidator = retiredDogAppUpsertValidator;
+            _retiredDogAppChangeValidator = retiredDogAppChangeValidator;
         }
 
         #region authenticated
 
         /// <summary>
-        /// Create/partial save gdsd team certification application
+        /// Create/partial save retired dog certification application
         /// </summary>
         /// <param name="licenceUpsertRequest"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app")]
+        [Route("api/retired-dog-app")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDTeamAppCommandResponse> SaveGDSDTeamCertApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest licenceUpsertRequest)
+        public async Task<RetiredDogAppCommandResponse> SaveRetiredDogCertApplication([FromBody][Required] RetiredDogLicenceAppUpsertRequest licenceUpsertRequest)
         {
             if (licenceUpsertRequest.ApplicantId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
             licenceUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
-            return await _mediator.Send(new GDSDTeamLicenceAppUpsertCommand(licenceUpsertRequest));
+            return await _mediator.Send(new RetiredDogLicenceAppUpsertCommand(licenceUpsertRequest));
         }
 
         /// <summary>
-        /// Get gdsd team certification application
+        /// Get retired dog certification application
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/{licenceAppId}")]
+        [Route("api/retired-dog-app/{licenceAppId}")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<GDSDTeamLicenceAppResponse> GetGDSDTeamApplication([FromRoute][Required] Guid licenceAppId)
+        public async Task<RetiredDogLicenceAppResponse> GetRetiredDogApplication([FromRoute][Required] Guid licenceAppId)
         {
-            return await _mediator.Send(new GDSDTeamLicenceApplicationQuery(licenceAppId));
+            return await _mediator.Send(new RetiredDogLicenceApplicationQuery(licenceAppId));
         }
 
         /// <summary>
-        /// Submit new gdsd team Application authenticated with bcsc
+        /// Submit new retired dog certification Application authenticated with bcsc
         /// </summary>
         /// <param name="gdsdSubmitRequest"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/submit")]
+        [Route("api/retired-dog-app/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDTeamAppCommandResponse> SubmitGDSDTeamApplication([FromBody][Required] GDSDTeamLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
+        public async Task<RetiredDogAppCommandResponse> SubmitRetiredDogApplication([FromBody][Required] RetiredDogLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
         {
-            var validateResult = await _teamAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
+            var validateResult = await _retiredDogAppUpsertValidator.ValidateAsync(gdsdSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             gdsdSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
-            return await _mediator.Send(new GDSDTeamLicenceAppSubmitCommand(gdsdSubmitRequest));
+            return await _mediator.Send(new RetiredDogLicenceAppSubmitCommand(gdsdSubmitRequest));
         }
 
         /// <summary>
-        /// Renew, Replace GDSD Team application
+        /// Renew, Replace retired dog certification app
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.        
         /// </summary>
-        /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="changeRequest">RetiredDogLicenceAppChangeRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/change")]
+        [Route("api/retired-dog-app/change")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<GDSDTeamAppCommandResponse?> RenewReplaceGDSDApplicationAuthenticated(GDSDTeamLicenceAppChangeRequest changeRequest, CancellationToken ct)
+        public async Task<RetiredDogAppCommandResponse?> RenewReplaceRetiredDogApplicationAuthenticated(RetiredDogLicenceAppChangeRequest changeRequest, CancellationToken ct)
         {
-            GDSDTeamAppCommandResponse? response = null;
+            RetiredDogAppCommandResponse? response = null;
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(changeRequest.DocumentKeyCodes, ct);
-            var validateResult = await _teamAppChangeValidator.ValidateAsync(changeRequest, ct);
+            var validateResult = await _retiredDogAppChangeValidator.ValidateAsync(changeRequest, ct);
 
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
@@ -114,12 +114,12 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                GDSDTeamLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
+                RetiredDogLicenceAppRenewCommand command = new(changeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             if (changeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                GDSDTeamLicenceAppReplaceCommand command = new(changeRequest, newDocInfos);
+                RetiredDogLicenceAppReplaceCommand command = new(changeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             return response;
@@ -129,57 +129,57 @@ namespace Spd.Presentation.Licensing.Controllers
         #region anonymous
 
         /// <summary>
-        /// Submit/new GDSD Team Certification application Anonymously
+        /// Submit/new retired dog certification application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
-        /// <param name="anonymousSubmitRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="anonymousSubmitRequest">RetiredDogLicenceAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/anonymous/submit")]
+        [Route("api/retired-dog-app/anonymous/submit")]
         [HttpPost]
-        public async Task<GDSDTeamAppCommandResponse> SubmitGDSDTeamAppAnonymous(GDSDTeamLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
+        public async Task<RetiredDogAppCommandResponse> SubmitRetiredDogAppAnonymous(RetiredDogLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
-            var validateResult = await _teamAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
+            var validateResult = await _retiredDogAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             anonymousSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            GDSDTeamAppCommandResponse? response = null;
+            RetiredDogAppCommandResponse? response = null;
             if (anonymousSubmitRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                GDSDTeamLicenceAppAnonymousSubmitCommand command = new(anonymousSubmitRequest, newDocInfos);
+                RetiredDogLicenceAppAnonymousSubmitCommand command = new(anonymousSubmitRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return new GDSDTeamAppCommandResponse { LicenceAppId = response?.LicenceAppId };
+            return new RetiredDogAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
 
         /// <summary>
-        /// Renew, Replace GDSD Team application Anonymously
+        /// Renew, Replace retired dog certification application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
-        /// <param name="anonymousChangeRequest">GDSDTeamLicenceAppChangeRequest data</param>
+        /// <param name="anonymousChangeRequest">RetiredDogLicenceAppChangeRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/gdsd-team-app/anonymous/change")]
+        [Route("api/retired-dog-app/anonymous/change")]
         [HttpPost]
-        public async Task<GDSDTeamAppCommandResponse> RenewReplaceGDSDTeamAppAnonymous(GDSDTeamLicenceAppChangeRequest anonymousChangeRequest, CancellationToken ct)
+        public async Task<RetiredDogAppCommandResponse> RenewReplaceRetiredDogAppAnonymous(RetiredDogLicenceAppChangeRequest anonymousChangeRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousChangeRequest.DocumentKeyCodes, ct);
-            var validateResult = await _teamAppChangeValidator.ValidateAsync(anonymousChangeRequest, ct);
+            var validateResult = await _retiredDogAppChangeValidator.ValidateAsync(anonymousChangeRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             anonymousChangeRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            GDSDTeamAppCommandResponse? response = null;
+            RetiredDogAppCommandResponse? response = null;
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "New GDSD is not supported in this endpoint");
@@ -187,18 +187,18 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                GDSDTeamLicenceAppRenewCommand command = new(anonymousChangeRequest, newDocInfos);
+                RetiredDogLicenceAppRenewCommand command = new(anonymousChangeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (anonymousChangeRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                GDSDTeamLicenceAppReplaceCommand command = new(anonymousChangeRequest, newDocInfos);
+                RetiredDogLicenceAppReplaceCommand command = new(anonymousChangeRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-            return new GDSDTeamAppCommandResponse { LicenceAppId = response?.LicenceAppId };
+            return new RetiredDogAppCommandResponse { LicenceAppId = response?.LicenceAppId };
         }
         #endregion anonymous
     }

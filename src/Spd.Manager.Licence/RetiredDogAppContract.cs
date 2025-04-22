@@ -43,7 +43,9 @@ public abstract record RetiredDogLicenceAppBase : LicenceAppBase
 
 public abstract record RetiredDogLicenceAppNew : RetiredDogLicenceAppBase
 {
-
+    public string? CurrentGDSDCertificateNumber { get; set; }
+    public DateOnly? DogRetiredDate { get; set; }
+    public bool? ConfirmDogLiveWithYouAfterRetire { get; set; }
 }
 
 public record RetiredDogLicenceAppUpsertRequest : RetiredDogLicenceAppNew
@@ -64,7 +66,6 @@ public record RetiredDogLicenceAppChangeRequest : RetiredDogLicenceAppBase
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid OriginalLicenceId { get; set; } //for renew, replace, it should be original licence id.
     public Guid ApplicantId { get; set; }
-    public bool IsAssistanceStillRequired { get; set; }
     public Guid? DogId { get; set; }
 }
 
