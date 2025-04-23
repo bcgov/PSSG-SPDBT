@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 
@@ -8,11 +9,14 @@ internal class ScheduleJobSessionRepository : IScheduleJobSessionRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<IScheduleJobSessionRepository> _logger;
     public ScheduleJobSessionRepository(IDynamicsContextFactory ctx,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<IScheduleJobSessionRepository> logger)
     {
         _context = ctx.Create();
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<ScheduleJobSessionResp?> GetAsync(Guid jobSessionId, CancellationToken ct)
@@ -38,16 +42,25 @@ internal class ScheduleJobSessionRepository : IScheduleJobSessionRepository
 
     public async Task<ScheduleJobSessionResp> ManageAsync(UpdateScheduleJobSessionCmd updateCmd, CancellationToken ct)
     {
-        bcgov_schedulejobsession? jobSession = await _context.bcgov_schedulejobsessions
-                .Where(l => l.bcgov_schedulejobsessionid == updateCmd.ScheduleJobSessionId)
-                .FirstOrDefaultAsync(ct);
-        if (jobSession == null)
-            throw new ArgumentException("Invalid jobsession id, cannot find corresponding bcgov_schedulejobsession");
+        try
+        {
+            _logger.LogInformation($"will update job session with {updateCmd}");
+            bcgov_schedulejobsession? jobSession = await _context.bcgov_schedulejobsessions
+                    .Where(l => l.bcgov_schedulejobsessionid == updateCmd.ScheduleJobSessionId)
+                    .FirstOrDefaultAsync(ct);
+            if (jobSession == null)
+                throw new ArgumentException("Invalid jobsession id, cannot find corresponding bcgov_schedulejobsession");
 
-        _mapper.Map<UpdateScheduleJobSessionCmd, bcgov_schedulejobsession>(updateCmd, jobSession);
-        _context.UpdateObject(jobSession);
-        await _context.SaveChangesAsync(ct);
-        return _mapper.Map<ScheduleJobSessionResp>(jobSession);
+            _mapper.Map<UpdateScheduleJobSessionCmd, bcgov_schedulejobsession>(updateCmd, jobSession);
+            _context.UpdateObject(jobSession);
+            await _context.SaveChangesAsync(ct);
+            return _mapper.Map<ScheduleJobSessionResp>(jobSession);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return null;
+        }
     }
     public async Task<ScheduleJobSessionListResp> QueryAsync(ScheduleJobSessionQry qry, CancellationToken ct)
     {
