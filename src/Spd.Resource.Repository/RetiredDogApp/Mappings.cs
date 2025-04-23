@@ -36,6 +36,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode.Value)))
         .ForMember(d => d.spd_dogsretirementdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DogRetiredDate)))
         .ForMember(d => d.spd_gdsdcertificatenumber, opt => opt.MapFrom(s => s.CurrentGDSDCertificateNumber))
+        .ForMember(d => d.spd_willdoglivewithhandlerinretirement, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.ConfirmDogLiveWithYouAfterRetire)))
         .AfterMap((s, d, context) =>
         {
             context.Mapper.Map<DogInfo, spd_application>(s.DogInfo, d);
@@ -48,7 +49,8 @@ internal class Mappings : Profile
         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
         .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
         .ForMember(d => d.DogInfo, opt => opt.MapFrom((src, dest, destMember, context) => GetDogInfo(src, context)))
-        .ForMember(d => d.DogRetiredDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.spd_dogsretirementdate)));
+        .ForMember(d => d.DogRetiredDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.spd_dogsretirementdate)))
+        .ForMember(d => d.ConfirmDogLiveWithYouAfterRetire, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_willdoglivewithhandlerinretirement)));
 
         _ = CreateMap<RetiredDogApp, contact>()
         .ForMember(d => d.contactid, opt => opt.Condition((src, dest, srcMember) => dest.contactid == null))

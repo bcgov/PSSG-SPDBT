@@ -19,6 +19,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.RetiredDogApp;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -501,6 +502,7 @@ internal class Mappings : Profile
         CreateMap<BizLicAppSubmitRequest, BizLicenceAppCompareEntity>();
         CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
         CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
+        CreateMap<RetiredDogLicenceAppAnonymousSubmitRequest, CreateRetiredDogAppCmd>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
