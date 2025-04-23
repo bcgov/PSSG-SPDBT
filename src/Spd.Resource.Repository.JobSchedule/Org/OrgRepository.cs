@@ -43,6 +43,7 @@ internal class OrgRepository : IOrgRepository
             try
             {
                 var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                _logger.LogInformation($"{response.IsSuccess} {response.Result} {a.accountid.Value}");
                 ResultResp rr = _mapper.Map<ResultResp>(response);
                 rr.PrimaryEntityId = a.accountid.Value;
                 return rr;
