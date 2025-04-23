@@ -30,7 +30,9 @@ public record RetiredDogApp
     public string? ApplicantOrLegalGuardianName { get; set; }
 
     public DogInfo? DogInfo { get; set; }
-    public bool? IsDogTrainedByAccreditedSchool { get; set; }
+    public string? CurrentGDSDCertificateNumber { get; set; }
+    public DateOnly? DogRetiredDate { get; set; }
+    public bool? ConfirmDogLiveWithYouAfterRetire { get; set; }
 }
 
 
