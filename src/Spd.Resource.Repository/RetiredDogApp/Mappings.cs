@@ -87,7 +87,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
          .IncludeBase<RetiredDogApp, spd_application>();
 
-        CreateMap<CreateGDSDAppCmd, spd_application>()
+        CreateMap<CreateRetiredDogAppCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .IncludeBase<RetiredDogApp, spd_application>();

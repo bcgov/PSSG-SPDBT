@@ -140,7 +140,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<RetiredDogAppCommandResponse> SubmitRetiredDogAppAnonymous(RetiredDogLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            await VerifyKeyCode();
+            //await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
             var validateResult = await _retiredDogAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);
