@@ -13,11 +13,11 @@ public interface IBizMemberManager
     public Task<Unit> Handle(DeleteBizMemberCommand cmd, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<StakeholderInvitesCreateResponse> Handle(BizStakeholderNewInviteCommand command, CancellationToken ct);
-    public Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand command, CancellationToken ct);
+    public Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizStakeholderInviteCommand command, CancellationToken ct);
 }
 
 public record BizStakeholderNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl, StakeholderAppInviteTypeCode InviteTypeCode = StakeholderAppInviteTypeCode.New) : IRequest<StakeholderInvitesCreateResponse>;
-public record VerifyBizControllingMemberInviteCommand(string InviteEncryptedCode) : IRequest<StakeholderAppInviteVerifyResponse>;
+public record VerifyBizStakeholderInviteCommand(string InviteEncryptedCode) : IRequest<StakeholderAppInviteVerifyResponse>;
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
 public record GetNonSwlBizMemberCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
 public record UpsertBizMembersCommand(

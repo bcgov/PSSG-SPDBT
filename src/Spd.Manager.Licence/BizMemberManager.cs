@@ -24,7 +24,7 @@ internal class BizMemberManager :
         IRequestHandler<GetNonSwlBizMemberCommand, NonSwlContactInfo>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizStakeholderNewInviteCommand, StakeholderInvitesCreateResponse>,
-        IRequestHandler<VerifyBizControllingMemberInviteCommand, StakeholderAppInviteVerifyResponse>,
+        IRequestHandler<VerifyBizStakeholderInviteCommand, StakeholderAppInviteVerifyResponse>,
         IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
         IRequestHandler<CreateBizSwlStakeholderCommand, BizMemberResponse>,
         IRequestHandler<CreateBizNonSwlStakeholderCommand, BizMemberResponse>,
@@ -64,7 +64,7 @@ internal class BizMemberManager :
         _cmCrcRepository = cmCrcRepository;
     }
 
-    public async Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
+    public async Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizStakeholderInviteCommand cmd, CancellationToken cancellationToken)
     {
         ControllingMemberInviteVerifyResp resp = await _cmInviteRepository.VerifyControllingMemberInviteAsync(new ControllingMemberInviteVerifyCmd(cmd.InviteEncryptedCode), cancellationToken);
 

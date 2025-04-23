@@ -221,7 +221,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [AllowAnonymous]
         public async Task<StakeholderAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] StakeholderAppInviteVerifyRequest inviteVerifyRequest)
         {
-            StakeholderAppInviteVerifyResponse response = await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+            StakeholderAppInviteVerifyResponse response = await _mediator.Send(new VerifyBizStakeholderInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
             if (response.ContactId != null)
             {
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.ContactId.Value.ToString());
