@@ -389,7 +389,8 @@ namespace Spd.Utilities.Dynamics
     public enum BizContactRoleOptionSet
     {
         ControllingMember = 100000000,
-        Employee = 100000001
+        Employee = 100000001,
+        BusinessManager = 100000002
     }
 
     public enum EventTypeOptionSet
