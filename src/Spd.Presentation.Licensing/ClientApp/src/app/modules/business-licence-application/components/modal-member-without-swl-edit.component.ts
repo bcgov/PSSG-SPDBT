@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
 	BizMemberResponse,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberInvitesCreateResponse,
 	NonSwlContactInfo,
+	StakeholderAppInviteTypeCode,
+	StakeholderInvitesCreateResponse,
 } from '@app/api/models';
 import { BizMembersService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -163,9 +163,9 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 					if (this.dialogData.allowNewInvitationsToBeSent) {
 						if (formValue.emailAddress) {
 							this.businessApplicationService
-								.sendControllingMembersWithoutSwlInvitation(resp.bizContactId!, ControllingMemberAppInviteTypeCode.New)
+								.sendControllingMembersWithoutSwlInvitation(resp.bizContactId!, StakeholderAppInviteTypeCode.New)
 								.pipe(
-									tap((_resp: ControllingMemberInvitesCreateResponse) => {
+									tap((_resp: StakeholderInvitesCreateResponse) => {
 										this.dialogRef.close({
 											data: formValue,
 										});
@@ -177,10 +177,10 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 							this.businessApplicationService
 								.sendControllingMembersWithoutSwlInvitation(
 									resp.bizContactId!,
-									ControllingMemberAppInviteTypeCode.CreateShellApp
+									StakeholderAppInviteTypeCode.CreateShellApp
 								)
 								.pipe(
-									tap((_resp: ControllingMemberInvitesCreateResponse) => {
+									tap((_resp: StakeholderInvitesCreateResponse) => {
 										this.dialogRef.close({
 											data: formValue,
 										});

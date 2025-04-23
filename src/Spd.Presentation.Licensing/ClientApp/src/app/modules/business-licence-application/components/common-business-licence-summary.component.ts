@@ -460,6 +460,21 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</ng-container>
 											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
 										</div>
+
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading-small">Corporate Registry Documents</div>
+										<div class="row">
+											<div class="col-12">
+												<div class="text-label d-block text-muted">Documents</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of corporateRegistryDocumentsAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
+												</div>
+											</div>
+										</div>
 									</div>
 								</mat-expansion-panel>
 							</ng-container>
@@ -740,6 +755,10 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 
 	get employeesList(): Array<any> {
 		return this.businessApplicationService.getSummaryemployeesList(this.businessModelData);
+	}
+
+	get corporateRegistryDocumentsAttachments(): File[] {
+		return this.businessApplicationService.getSummarycorporateRegistryDocumentsAttachments(this.businessModelData);
 	}
 
 	get isUpdate(): boolean {

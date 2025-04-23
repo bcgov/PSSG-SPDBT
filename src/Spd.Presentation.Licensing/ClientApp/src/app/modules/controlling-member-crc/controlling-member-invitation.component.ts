@@ -7,8 +7,8 @@ import { UtilService } from '@app/core/services/util.service';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
-    selector: 'app-controlling-member-invitation',
-    template: `
+	selector: 'app-stakeholder-invitation',
+	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon class="my-4">error</mat-icon>
 			<h1>CRC Invitation</h1>
@@ -18,8 +18,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 			<p class="mt-4">Please contact your business manager for assistance.</p>
 		</div>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.mat-icon {
 				font-size: 50px;
 				width: 50px;
@@ -28,10 +28,10 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 				margin-right: 4px;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
-export class ControllingMemberInvitationComponent implements OnInit {
+export class StakeholderInvitationComponent implements OnInit {
 	message = '';
 
 	constructor(
@@ -44,7 +44,7 @@ export class ControllingMemberInvitationComponent implements OnInit {
 	ngOnInit(): void {
 		const id = this.route.snapshot.paramMap.get('id');
 		if (!id) {
-			console.debug('ControllingMemberInvitationComponent - missing id');
+			console.debug('StakeholderInvitationComponent - missing id');
 			this.message = 'A CRC Invitation link must be clicked before navigating to this page';
 			return;
 		}
@@ -53,7 +53,7 @@ export class ControllingMemberInvitationComponent implements OnInit {
 
 		const body = { inviteEncryptedCode: id };
 		this.bizMembersService
-			.apiControllingMembersInvitesPost$Response({ body })
+			.apiStakeholdersInvitesPost$Response({ body })
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<any>) => {
 				if (resp.status == 202) {

@@ -14,7 +14,6 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					<div class="text-minor-heading lh-base mb-2">
 						Upload a copy of the corporate registry documents for your business in the province in which you are
 						originally registered
-						<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
 					</div>
 					<app-file-upload
 						(fileUploaded)="onFileUploaded($event)"

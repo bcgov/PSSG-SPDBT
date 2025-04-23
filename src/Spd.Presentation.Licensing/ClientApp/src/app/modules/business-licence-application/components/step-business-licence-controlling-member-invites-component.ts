@@ -1,10 +1,8 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
 	selector: 'app-step-business-licence-controlling-member-invites',
@@ -45,31 +43,6 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					</div>
 				</div>
 			</div>
-
-			<div class="mt-2" *ngIf="requireDocumentUpload" @showHideTriggerSlideAnimation>
-				<mat-divider class="mat-divider-main my-3"></mat-divider>
-				<div class="text-minor-heading lh-base mb-2">
-					Upload a copy of the corporate registry documents for your business in the province in which you are
-					originally registered
-					<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
-				</div>
-				<app-file-upload
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-					[control]="attachments"
-					[maxNumberOfFiles]="10"
-					[files]="attachments.value"
-				></app-file-upload>
-				<mat-error
-					class="mat-option-error d-block"
-					*ngIf="
-						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-						form.get('attachments')?.invalid &&
-						form.get('attachments')?.hasError('required')
-					"
-					>This is required</mat-error
-				>
-			</div>
 		</app-step-section>
 	`,
 	styles: [],
@@ -87,8 +60,6 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements OnI
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
@@ -99,39 +70,7 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements OnI
 		return true;
 	}
 
-	onFileUploaded(file: File): void {
-		this.businessApplicationService.hasValueChanged = true;
-
-		if (!this.businessApplicationService.isAutoSave()) {
-			return;
-		}
-
-		this.businessApplicationService
-			.addUploadDocument(LicenceDocumentTypeCode.CorporateRegistryDocument, file)
-			.subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
-	}
-
-	onFileRemoved(): void {
-		this.businessApplicationService.hasValueChanged = true;
-	}
-
 	get membersWithoutSwlArray(): Array<any> {
 		return this.controllingMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
-	}
-
-	get attachments(): FormControl {
-		return this.form.get('attachments') as FormControl;
-	}
-	get attachmentIsRequired(): FormControl {
-		return this.form.get('attachmentIsRequired') as FormControl;
 	}
 }

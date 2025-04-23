@@ -16,8 +16,6 @@ import {
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberInvitesCreateResponse,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -25,6 +23,8 @@ import {
 	Members,
 	NonSwlContactInfo,
 	ServiceTypeCode,
+	StakeholderAppInviteTypeCode,
+	StakeholderInvitesCreateResponse,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
@@ -61,7 +61,7 @@ import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
-export interface ControllingMemberContactInfo extends NonSwlContactInfo {
+export interface BusinessStakeholderContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
 	contactId?: string | null;
 	licenceHolderName: string;
@@ -609,9 +609,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		inviteTypeCode: ControllingMemberAppInviteTypeCode
-	): Observable<ControllingMemberInvitesCreateResponse> {
-		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+		inviteTypeCode: StakeholderAppInviteTypeCode
+	): Observable<StakeholderInvitesCreateResponse> {
+		return this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 			bizContactId,
 			inviteType: inviteTypeCode,
 		});
@@ -2170,7 +2170,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
-		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
+		const controllingMembersWithSwlData: Array<BusinessStakeholderContactInfo> = [];
 
 		members.forEach((item: SwlContactInfo) => {
 			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
@@ -2194,7 +2194,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			'controllingMembersData.membersWithSwl'
 		) as FormArray;
 
-		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
+		sortedControllingMembersWithSwlData.forEach((item: BusinessStakeholderContactInfo) => {
 			controllingMembersWithSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
@@ -2210,7 +2210,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>): void {
-		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
+		const controllingMembersWithoutSwlData: Array<BusinessStakeholderContactInfo> = [];
 
 		members.forEach((item: NonSwlContactInfo) => {
 			controllingMembersWithoutSwlData.push({
@@ -2235,7 +2235,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
 			'controllingMembersData.membersWithoutSwl'
 		) as FormArray;
-		sortedControllingMembersWithoutSwlData.forEach((item: ControllingMemberContactInfo) => {
+		sortedControllingMembersWithoutSwlData.forEach((item: BusinessStakeholderContactInfo) => {
 			controllingMembersWithoutSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
@@ -2256,7 +2256,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
-		const employeesData: Array<ControllingMemberContactInfo> = [];
+		const employeesData: Array<BusinessStakeholderContactInfo> = [];
 
 		employees.forEach((item: SwlContactInfo) => {
 			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
@@ -2277,7 +2277,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
-		sortedEmployeesData.forEach((item: ControllingMemberContactInfo) => {
+		sortedEmployeesData.forEach((item: BusinessStakeholderContactInfo) => {
 			employeesArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
@@ -2360,16 +2360,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
 			if (item.emailAddress) {
 				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+					this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.New,
+						inviteType: StakeholderAppInviteTypeCode.New,
 					})
 				);
 			} else {
 				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+					this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.CreateShellApp,
+						inviteType: StakeholderAppInviteTypeCode.CreateShellApp,
 					})
 				);
 			}

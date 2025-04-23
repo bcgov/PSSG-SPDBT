@@ -285,40 +285,19 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		branches: this.formBuilder.array([]),
 	});
 
-	controllingMembersFormGroup: FormGroup = this.formBuilder.group(
-		{
-			membersWithSwl: this.formBuilder.array([]),
-			membersWithoutSwl: this.formBuilder.array([]),
-		}
-		// {// TODO SPDBT-3981
-		// 	validators: [FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl')],
-		// }
-	);
+	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
+	});
 
-	businessMembersFormGroup: FormGroup = this.formBuilder.group(
-		{
-			membersWithSwl: this.formBuilder.array([]),
-			membersWithoutSwl: this.formBuilder.array([]),
-		}
-		// {// TODO SPDBT-3981
-		// 	validators: [FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl')],
-		// }
-	);
+	businessMembersFormGroup: FormGroup = this.formBuilder.group({
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
+	});
 
-	corporateRegistryDocumentFormGroup: FormGroup = this.formBuilder.group(
-		{
-			attachmentIsRequired: new FormControl(false),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('attachmentIsRequired')?.value
-				),
-			],
-		}
-	);
+	corporateRegistryDocumentFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]),
+	});
 
 	employeesFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -443,6 +422,25 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	}
 
 	/**
+	 * Is the count of stakeholders valid?
+	 * @param
+	 * @returns minCountValid, maxCountValid
+	 */
+	isBusinessStakeholdersCountValid(): { minCountValid: boolean; maxCountValid: boolean } {
+		const maxCount = SPD_CONSTANTS.maxCount.controllingMembersAndBusinessManagers;
+		const controllingMembersFormGroup = this.controllingMembersFormGroup;
+		const businessMembersFormGroup = this.businessMembersFormGroup;
+
+		const total =
+			+controllingMembersFormGroup.get('membersWithSwl')?.value.length +
+			+controllingMembersFormGroup.get('membersWithoutSwl')?.value.length +
+			+businessMembersFormGroup.get('membersWithSwl')?.value.length +
+			+businessMembersFormGroup.get('membersWithoutSwl')?.value.length;
+
+		return { minCountValid: total != 0, maxCountValid: total > 0 && total <= maxCount };
+	}
+
+	/**
 	 * Get the valid list of categories based upon the current selections
 	 * @param categoryList
 	 * @returns
@@ -459,7 +457,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getDocsToSaveBlobs(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const companyBrandingData = businessModelFormValue.companyBrandingData;
 		const liabilityData = businessModelFormValue.liabilityData;
-		const controllingMembersData = businessModelFormValue.controllingMembersData;
+		const corporateRegistryDocumentData = businessModelFormValue.corporateRegistryDocumentData;
 
 		const documents: Array<LicenceDocumentsToSave> = [];
 
@@ -516,9 +514,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			}
 		}
 
-		if (controllingMembersData.attachments) {
+		if (corporateRegistryDocumentData.attachments) {
 			const docs: Array<Blob> = [];
-			controllingMembersData.attachments.forEach((doc: any) => {
+			corporateRegistryDocumentData.attachments.forEach((doc: any) => {
 				docs.push(doc);
 			});
 			documents.push({
@@ -706,7 +704,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
 		const companyBrandingData = businessModelFormValue.companyBrandingData;
 		const liabilityData = businessModelFormValue.liabilityData;
-		const controllingMembersData = businessModelFormValue.controllingMembersData;
+		const corporateRegistryDocumentData = businessModelFormValue.corporateRegistryDocumentData;
 
 		const documents: Array<Document> = [];
 
@@ -755,8 +753,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			}
 		}
 
-		if (controllingMembersData.attachments) {
-			controllingMembersData.attachments?.forEach((doc: any) => {
+		if (corporateRegistryDocumentData.attachments) {
+			corporateRegistryDocumentData.attachments?.forEach((doc: any) => {
 				documents.push({
 					documentUrlId: doc.documentUrlId,
 					licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
@@ -965,6 +963,10 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
 		return businessLicenceModelData.employeesData.employees ?? [];
+	}
+
+	getSummarycorporateRegistryDocumentsAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.corporateRegistryDocumentData.attachments ?? [];
 	}
 
 	getSummaryisAddressTheSame(businessLicenceModelData: any): boolean {

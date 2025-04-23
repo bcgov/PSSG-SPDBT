@@ -110,23 +110,6 @@ export class FormGroupValidators {
 		};
 	}
 
-	public static controllingmembersValidator(controlArrayName1: string, controlArrayName2: string): ValidatorFn {
-		return (controls: AbstractControl) => {
-			const control1 = controls.get(controlArrayName1);
-			const control2 = controls.get(controlArrayName2);
-
-			const value1 = control1?.value;
-			const value2 = control2?.value;
-
-			const count = value1.length + value2.length;
-
-			if (count === 0) return { controllingmembersmin: true };
-			if (count > SPD_CONSTANTS.maxCount.controllingMembers) return { controllingmembersmax: true };
-
-			return null;
-		};
-	}
-
 	public static employeesValidator(controlArrayName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
 			const control = controls.get(controlArrayName);

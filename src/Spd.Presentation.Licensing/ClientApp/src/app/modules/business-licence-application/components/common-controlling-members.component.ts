@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	template: `
 		<app-common-controlling-or-business-members
 			[form]="form"
-			[memberTypeCode]="controllingMemberTypeCode"
+			[isControllingMember]="true"
 			memberLabel="Controlling Member"
 			[defaultExpanded]="true"
 			[isWizard]="false"

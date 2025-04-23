@@ -6,12 +6,11 @@ import { Router } from '@angular/router';
 import {
 	ApplicationInviteStatusCode,
 	BizMemberResponse,
-	ContactRoleCode,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberInvitesCreateResponse,
 	LicenceResponse,
 	NonSwlContactInfo,
 	ServiceTypeCode,
+	StakeholderAppInviteTypeCode,
+	StakeholderInvitesCreateResponse,
 	SwlContactInfo,
 } from '@app/api/models';
 import { BizMembersService } from '@app/api/services';
@@ -322,7 +321,7 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 	bizId!: string;
 
 	@Input() form!: FormGroup; // must be either 'controllingMembersFormGroup' or 'businessMembersFormGroup'
-	@Input() memberTypeCode!: ContactRoleCode; // TODO SPDBT-3981
+	@Input() isControllingMember!: boolean;
 	@Input() memberLabel!: string;
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;
@@ -489,19 +488,34 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 						licenceId: memberData.licenceId,
 					} as SwlContactInfo;
 
-					this.bizMembersService
-						.apiBusinessBizIdSwlControllingMembersPost({
-							bizId: this.bizId,
-							body,
-						})
-						.subscribe((resp: BizMemberResponse) => {
-							this.membersWithSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
-							this.dataSourceWithSWL.data = this.membersWithSwlList.value;
-
-							this.utilService.toasterSuccess('The member has been successfully added');
-						});
+					if (this.isControllingMember) {
+						this.bizMembersService
+							.apiBusinessBizIdSwlControllingMembersPost({
+								bizId: this.bizId,
+								body,
+							})
+							.subscribe((resp: BizMemberResponse) => {
+								this.addNewMember(resp, memberData);
+							});
+					} else {
+						this.bizMembersService
+							.apiBusinessBizIdSwlBusinessManagersPost({
+								bizId: this.bizId,
+								body,
+							})
+							.subscribe((resp: BizMemberResponse) => {
+								this.addNewMember(resp, memberData);
+							});
+					}
 				}
 			});
+	}
+
+	private addNewMember(member: BizMemberResponse, memberData: LicenceResponse) {
+		this.membersWithSwlList.push(this.newMemberRow(member.bizContactId!, memberData));
+		this.dataSourceWithSWL.data = this.membersWithSwlList.value;
+
+		this.utilService.toasterSuccess(`The ${this.memberLabel} has been successfully added`);
 	}
 
 	onKeydownAddMemberWithSWL(event: KeyboardEvent) {
@@ -535,9 +549,9 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.businessApplicationService
-						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, ControllingMemberAppInviteTypeCode.Update)
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, StakeholderAppInviteTypeCode.Update)
 						.pipe(
-							tap((_resp: ControllingMemberInvitesCreateResponse) => {
+							tap((_resp: StakeholderInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
 									this.utilService.toasterSuccess('Invitation was successfully sent');
 
@@ -595,6 +609,7 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 
 	private memberDialogWithoutSWL(contactInfo: NonSwlContactInfo | null, isCreate: boolean): void {
 		const dialogData: MemberWithoutSWLDialogData = {
+			isControllingMember: this.isControllingMember,
 			memberLabel: this.memberLabel,
 			bizId: this.bizId,
 			allowNewInvitationsToBeSent: this.allowNewInvitationsToBeSent,
@@ -701,6 +716,6 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 		return this.dataSourceWithSWL.data.length + this.dataSourceWithoutSWL.data.length;
 	}
 	get isMaxNumberOfControllingMembers(): boolean {
-		return this.numberOfControllingMembers >= SPD_CONSTANTS.maxCount.controllingMembers;
+		return this.numberOfControllingMembers >= SPD_CONSTANTS.maxCount.controllingMembersAndBusinessManagers;
 	}
 }
