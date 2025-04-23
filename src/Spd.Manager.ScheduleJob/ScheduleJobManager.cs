@@ -48,6 +48,7 @@ public class ScheduleJobManager :
                 var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
                 stopwatch.Stop();
 
+                _logger.LogInformation("Monthly Invoice job completed.");
                 //update result in JobSession
                 UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
                 await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
