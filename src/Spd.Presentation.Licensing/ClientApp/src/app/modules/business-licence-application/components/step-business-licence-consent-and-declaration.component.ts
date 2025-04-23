@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="mb-3" *ngIf="isControllingMembersWithoutSwlExist">
+						<div class="mb-3" *ngIf="isBusinessStakeholdersWithoutSwlExist">
 							<app-alert type="warning" icon="warning">
 								<p>
 									After you submit your application, it will not proceed until we receive criminal record check consent
@@ -216,8 +216,8 @@ export class StepBusinessLicenceConsentAndDeclarationComponent implements OnInit
 
 	form: FormGroup = this.businessApplicationService.consentAndDeclarationFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	@Input() isControllingMembersWithoutSwlExist!: boolean;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isBusinessStakeholdersWithoutSwlExist!: boolean;
 
 	constructor(
 		private utilService: UtilService,

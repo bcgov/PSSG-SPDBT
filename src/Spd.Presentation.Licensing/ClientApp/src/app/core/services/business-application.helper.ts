@@ -289,9 +289,26 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		{
 			membersWithSwl: this.formBuilder.array([]),
 			membersWithoutSwl: this.formBuilder.array([]),
+		}
+		// {// TODO SPDBT-3981
+		// 	validators: [FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl')],
+		// }
+	);
+
+	businessMembersFormGroup: FormGroup = this.formBuilder.group(
+		{
+			membersWithSwl: this.formBuilder.array([]),
+			membersWithoutSwl: this.formBuilder.array([]),
+		}
+		// {// TODO SPDBT-3981
+		// 	validators: [FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl')],
+		// }
+	);
+
+	corporateRegistryDocumentFormGroup: FormGroup = this.formBuilder.group(
+		{
 			attachmentIsRequired: new FormControl(false),
 			attachments: new FormControl([]),
-			applicationIsInDraftOrWaitingForPayment: new FormControl(null),
 		},
 		{
 			validators: [
@@ -299,7 +316,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 					'attachments',
 					(form) => form.get('attachmentIsRequired')?.value
 				),
-				FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl'),
 			],
 		}
 	);
@@ -937,10 +953,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	}
 
 	getSummarymembersWithSwlList(businessLicenceModelData: any): Array<any> {
-		return businessLicenceModelData.controllingMembersData.membersWithSwl;
+		const cm = businessLicenceModelData.controllingMembersData.membersWithSwl;
+		const bm = businessLicenceModelData.businessMembersData.membersWithSwl;
+		return cm.concat(bm);
 	}
 	getSummarymembersWithoutSwlList(businessLicenceModelData: any): Array<any> {
-		return businessLicenceModelData.controllingMembersData.membersWithoutSwl;
+		const cm = businessLicenceModelData.controllingMembersData.membersWithoutSwl;
+		const bm = businessLicenceModelData.businessMembersData.membersWithoutSwl;
+		return cm.concat(bm);
 	}
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {

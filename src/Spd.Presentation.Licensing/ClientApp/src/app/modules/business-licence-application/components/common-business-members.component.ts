@@ -4,12 +4,12 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-controlling-members',
+	selector: 'app-common-business-members',
 	template: `
 		<app-common-controlling-or-business-members
 			[form]="form"
-			[memberTypeCode]="controllingMemberTypeCode"
-			memberLabel="Controlling Member"
+			[memberTypeCode]="businessManagerTypeCode"
+			memberLabel="Business Manager"
 			[defaultExpanded]="true"
 			[isWizard]="false"
 			[isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
@@ -21,9 +21,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class CommonControllingMembersComponent implements LicenceChildStepperStepComponent {
-	controllingMemberTypeCode = ContactRoleCode.Contact;
-	form = this.businessApplicationService.controllingMembersFormGroup;
+export class CommonBusinessMembersComponent implements LicenceChildStepperStepComponent {
+	businessManagerTypeCode = ContactRoleCode.BusinessManager;
+	form = this.businessApplicationService.businessMembersFormGroup;
 
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;

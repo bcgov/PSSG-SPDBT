@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
-import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
+import { BusinessLicenceStakeholdersComponent } from './components/business-licence-stakeholders.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
 import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
@@ -68,7 +68,7 @@ const routes: Routes = [
 			},
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES,
-				component: BusinessControllingMembersAndEmployeesComponent,
+				component: BusinessLicenceStakeholdersComponent,
 			},
 			{
 				path: '',

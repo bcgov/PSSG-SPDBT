@@ -82,7 +82,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		isControllingMembersWithoutSwlExist: new FormControl(), // placeholder
+		isBusinessStakeholdersWithoutSwlExist: new FormControl(), // placeholder
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppPortalStatus: new FormControl(), // placeholder for sole proprietor flow
@@ -117,7 +117,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		branchesInBcData: this.branchesInBcFormGroup,
 		controllingMembersData: this.controllingMembersFormGroup,
+		businessMembersData: this.businessMembersFormGroup,
 		employeesData: this.employeesFormGroup,
+		corporateRegistryDocumentData: this.corporateRegistryDocumentFormGroup,
 	});
 
 	businessModelChangedSubscription!: Subscription;
@@ -158,19 +160,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 
-					let isControllingMembersWithoutSwlExist = false;
+					let isBusinessStakeholdersWithoutSwlExist = false;
 					if (!isBusinessLicenceSoleProprietor) {
-						const membersWithoutSwl =
+						const controllingMembersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
+						const businessMembersWithoutSwl =
+							this.businessModelFormGroup.get('businessMembersData.membersWithoutSwl')?.value ?? [];
 
-						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
+						isBusinessStakeholdersWithoutSwlExist =
+							controllingMembersWithoutSwl?.length > 0 || businessMembersWithoutSwl?.length > 0;
 					}
 
 					this.businessModelFormGroup.patchValue(
 						{
 							isBcBusinessAddress,
 							isBusinessLicenceSoleProprietor,
-							isControllingMembersWithoutSwlExist,
+							isBusinessStakeholdersWithoutSwlExist,
 						},
 						{ emitEvent: false }
 					);
@@ -178,9 +183,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const step1Complete = this.isStepBackgroundInformationComplete();
 					const step2Complete = this.isStepLicenceSelectionComplete();
 					const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
-					const step4Complete = isBusinessLicenceSoleProprietor
-						? true
-						: this.isStepControllingMembersAndEmployeesComplete();
+					const step4Complete = isBusinessLicenceSoleProprietor ? true : this.isStepBusinessStakeholdersComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
@@ -284,7 +287,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			ApplicationTypeCode.New
 		);
 
-		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
+		if (businessModelFormValue.isBusinessStakeholdersWithoutSwlExist) {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
 
 			// Send the controlling member invitations
@@ -339,8 +342,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			ApplicationTypeCode.Renewal
 		);
 
-		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
+		if (businessModelFormValue.isBusinessStakeholdersWithoutSwlExist) {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+			// TODO SPDBT-3981 - send to business managers
 
 			// Send the controlling member invitations
 			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
@@ -579,11 +583,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepControllingMembersAndEmployeesComplete(): boolean {
+	isStepBusinessStakeholdersComplete(): boolean {
 		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
 
 		// console.debug(
-		// 	'isStepControllingMembersAndEmployeesComplete',
+		// 	'isStepBusinessStakeholdersComplete',
 		// 	isBusinessLicenceSoleProprietor,
 		// 	this.controllingMembersFormGroup.valid,
 		// 	this.employeesFormGroup.valid
@@ -591,7 +595,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
-		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
+		const applicationTypeCode = this.businessModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+		const corporateRegistryDocumentValid =
+			applicationTypeCode == ApplicationTypeCode.New ? this.corporateRegistryDocumentFormGroup.valid : true;
+
+		return (
+			this.controllingMembersFormGroup.valid &&
+			this.businessMembersFormGroup.valid &&
+			this.employeesFormGroup.valid &&
+			corporateRegistryDocumentValid
+		);
 	}
 
 	sendControllingMembersWithoutSwlInvitation(
@@ -828,10 +841,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						bizId,
 					})
 					.pipe(
-						switchMap((controllingMembersAndEmployees: Members) => {
+						switchMap((businessStakeholders: Members) => {
 							return this.createEmptyLicence({
 								businessProfile,
-								controllingMembersAndEmployees,
+								businessStakeholders,
 								previousExpiredLicence,
 							}).pipe(
 								tap((_resp: any) => {
@@ -940,7 +953,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(applicationIsInDraftOrWaitingForPayment: boolean): Observable<any> {
+	getBusinessStakeholders(applicationIsInDraftOrWaitingForPayment: boolean): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -1166,18 +1179,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private createEmptyLicence({
 		businessProfile,
 		soleProprietorSwlLicence,
-		controllingMembersAndEmployees,
+		businessStakeholders,
 		previousExpiredLicence,
 	}: {
 		businessProfile: BizProfileResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
-		controllingMembersAndEmployees?: Members;
+		businessStakeholders?: Members;
 		previousExpiredLicence?: MainLicenceResponse;
 	}): Observable<any> {
 		this.reset();
 
-		if (controllingMembersAndEmployees) {
-			return this.applyMembersIntoModel(controllingMembersAndEmployees, false).pipe(
+		if (businessStakeholders) {
+			return this.applyMembersIntoModel(businessStakeholders, false).pipe(
 				switchMap((_resp: any) => {
 					return this.applyProfileIntoModel({
 						businessProfile,
@@ -1199,6 +1212,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	private applyMembersIntoModel(members: Members, applicationIsInDraftOrWaitingForPayment: boolean) {
 		const apis: Observable<any>[] = [];
+		// TODO SPDBT-3981 add nonSwlBusinessManagers and swlBusinessManagers
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
 				this.licenceService.apiLicencesLicenceIdGet({
@@ -1216,7 +1230,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const modelFormValue = this.businessModelFormGroup.value;
 		const controllingMembersData = modelFormValue.controllingMembersData;
-		controllingMembersData.applicationIsInDraftOrWaitingForPayment = applicationIsInDraftOrWaitingForPayment;
+		// TODO SPDBT-3981 controllingMembersData.applicationIsInDraftOrWaitingForPayment = applicationIsInDraftOrWaitingForPayment;//TODO needed?
 
 		this.businessModelFormGroup.patchValue({ controllingMembersData }, { emitEvent: false });
 
@@ -2208,12 +2222,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				middleName2: item.middleName2,
 				phoneNumber: item.phoneNumber,
 				surname: item.surname,
-				licenceHolderName: this.utilService.getFullNameWithMiddle(
-					item.givenName,
-					item.middleName1,
-					item.middleName2,
-					item.surname
-				),
+				licenceHolderName: this.utilService.getFullName(item.givenName, item.surname)!,
 				controllingMemberAppStatusCode: item.controllingMemberAppStatusCode,
 				inviteStatusCode: item.inviteStatusCode,
 			});

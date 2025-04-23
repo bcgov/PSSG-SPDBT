@@ -15,8 +15,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { take, tap } from 'rxjs';
 
 export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
-	allowNewInvitationsToBeSent?: boolean;
-	bizId?: string;
+	memberLabel: string;
+	allowNewInvitationsToBeSent: boolean;
+	bizId: string;
 }
 
 @Component({
@@ -128,7 +129,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 		private bizMembersService: BizMembersService,
 		private dialogRef: MatDialogRef<ModalMemberWithoutSwlEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: any
+		@Inject(MAT_DIALOG_DATA) public dialogData: MemberWithoutSWLDialogData
 	) {}
 
 	ngOnInit(): void {
@@ -136,8 +137,8 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 		this.form.patchValue(this.dialogData);
 		this.isEdit = !!this.dialogData.bizContactId;
 		this.title = this.isEdit
-			? 'Edit Controlling Member without Security Worker Licence'
-			: 'Add Controlling Member without Security Worker Licence';
+			? `Edit ${this.dialogData.memberLabel} without Security Worker Licence`
+			: `Add ${this.dialogData.memberLabel} without Security Worker Licence`;
 	}
 
 	onSave(): void {

@@ -56,15 +56,15 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="row" *ngIf="showManageMembersAndEmployees">
+					<div class="row" *ngIf="showManageBusinessStakeholders">
 						<div class="col-12 text-end">
 							<a
 								class="large"
 								tabindex="0"
-								(click)="onManageMembersAndEmployees()"
-								(keydown)="onKeydownManageMembersAndEmployees($event)"
+								(click)="onManageBusinessStakeholders()"
+								(keydown)="onKeydownManageBusinessStakeholders($event)"
 							>
-								Controlling Members & Employees
+								Controlling Members, Business Managers & Employees
 							</a>
 						</div>
 					</div>
@@ -80,7 +80,8 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 							<app-alert type="warning" icon="warning">
 								<div>Your business licence application is pending controlling member criminal record checks.</div>
 								<div class="mt-2">
-									View <strong>'Controlling Members & Employees'</strong> to see the status of each of member.
+									View <strong>'Controlling Members, Business Managers & Employees'</strong> to see the status of each
+									of member.
 								</div>
 							</app-alert>
 						</ng-container>
@@ -99,7 +100,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onDelete($event)"
-						(manageMembersAndEmployees)="onManageMembersAndEmployees()"
+						(manageBusinessStakeholders)="onManageBusinessStakeholders()"
 					></app-business-licence-main-applications-list>
 
 					<app-business-licence-main-licence-list
@@ -142,7 +143,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 	errorMessages: Array<string> = [];
 
 	// these are calculated when the data is loaded
-	showManageMembersAndEmployees = false;
+	showManageBusinessStakeholders = false;
 	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
 	applicationIsDraftOrWaitingForPayment = false;
@@ -178,13 +179,13 @@ export class BusinessLicenceMainComponent implements OnInit {
 		this.loadData();
 	}
 
-	onManageMembersAndEmployees(): void {
+	onManageBusinessStakeholders(): void {
 		const isApplExists = this.applicationIsInProgress || this.applicationIsDraftOrWaitingForPayment;
 		const isApplDraftOrWaitingForPayment = this.applicationIsDraftOrWaitingForPayment;
 		const isLicenceExists = this.activeLicencesList.length > 0;
 
 		this.businessApplicationService
-			.getMembersAndEmployees(isApplDraftOrWaitingForPayment)
+			.getBusinessStakeholders(isApplDraftOrWaitingForPayment)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -205,10 +206,10 @@ export class BusinessLicenceMainComponent implements OnInit {
 			.subscribe();
 	}
 
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+	onKeydownManageBusinessStakeholders(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onManageMembersAndEmployees();
+		this.onManageBusinessStakeholders();
 	}
 
 	onDelete(appl: MainApplicationResponse): void {
@@ -404,7 +405,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 						);
 
 						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
-						this.showManageMembersAndEmployees = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
+						this.showManageBusinessStakeholders = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
 
 						this.expiredLicencesList = this.commonApplicationService.userExpiredLicences(businessLicencesList);
 

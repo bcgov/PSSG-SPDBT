@@ -494,8 +494,8 @@ export class CommonApplicationService {
 						}
 					} else {
 						return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
-							switchMap((controllingMembersAndEmployees: Members) => {
-								const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
+							switchMap((businessStakeholders: Members) => {
+								const nonSwlControllingMembers = businessStakeholders.nonSwlControllingMembers ?? [];
 								const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
 									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
 								);
