@@ -1,13 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
-import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityConsultantRequirementCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-licence-category-security-consultant',
@@ -135,23 +134,15 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class LicenceCategorySecurityConsultantComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategorySecurityConsultantComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categorySecurityConsultantFormGroup;
-	title = '';
 
 	securityConsultantRequirementCodes = SecurityConsultantRequirementCode;
 
 	@ViewChild('resumeAttachmentsRef') fileUploadResumeComponent!: FileUploadComponent;
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private workerApplicationService: WorkerApplicationService
-	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'WorkerCategoryTypes');
-	}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	onFileResumeAdded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;

@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-team-dog-info',
@@ -17,8 +16,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class StepTeamDogInfoComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
-
-	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.gdsdTeamApplicationService.dogInfoFormGroup;
 

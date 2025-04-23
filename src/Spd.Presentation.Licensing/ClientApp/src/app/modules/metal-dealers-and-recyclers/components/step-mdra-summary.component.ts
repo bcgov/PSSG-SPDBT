@@ -1,11 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApplicationTypeCode } from '@app/api/models';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-branch.component';
+import { MetalDealersAndRecyclersBranchResponse } from './modal-mdra-branch.component';
 
 @Component({
-	selector: 'app-step-metal-dealers-summary',
+	selector: 'app-step-mdra-summary',
 	template: `
 		<app-step-section
 			title="Registration summary"
@@ -19,40 +20,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Registration Information</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 1"
-											aria-label="Go to Step 1"
-											(click)="$event.stopPropagation(); onEditStep(0)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="panel-body">
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Registration Type</div>
-										<div class="summary-text-data">Abc</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Registration Number</div>
-										<div class="summary-text-data">Def</div>
-									</div>
-								</div>
-							</div>
-						</mat-expansion-panel>
-
-						<mat-expansion-panel class="mb-4" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Business Owner</div>
+										<div class="panel-header">Business Information</div>
 										<button
 											mat-mini-fab
 											color="primary"
@@ -68,6 +36,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
+								<div class="text-minor-heading-small">Business Owner</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Owner Name</div>
@@ -103,29 +72,9 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 										</ng-template>
 									</div>
 								</div>
-							</div>
-						</mat-expansion-panel>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-						<mat-expansion-panel class="mb-4" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Business Manager</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(2)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="panel-body">
+								<div class="text-minor-heading-small">Business Manager</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Manager Name</div>
@@ -146,29 +95,8 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 										</div>
 									</div>
 								</div>
-							</div>
-						</mat-expansion-panel>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-						<mat-expansion-panel class="mb-4" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Business Addresses</div>
-										<button
-											mat-mini-fab
-											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
-										>
-											<mat-icon>edit</mat-icon>
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="panel-body">
 								<app-form-address-summary
 									[formData]="metalDealersModelData.businessAddressData"
 									headingLabel="Business Address"
@@ -194,9 +122,9 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 5"
-											aria-label="Go to Step 5"
-											(click)="$event.stopPropagation(); onEditStep(4)"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -206,10 +134,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 
 							<div class="panel-body">
 								<ng-container *ngIf="branchesExist; else noBranchesExist">
-									<app-form-metal-dealers-branches
-										[form]="branchesFormGroup"
-										[isReadonly]="true"
-									></app-form-metal-dealers-branches>
+									<app-form-mdra-branches [form]="branchesFormGroup" [isReadonly]="true"></app-form-mdra-branches>
 								</ng-container>
 								<ng-template #noBranchesExist>
 									<div class="text-minor-heading-small mt-3">No branches have been entered.</div>
@@ -260,7 +185,7 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-metal-dealers-br
 	],
 	standalone: false,
 })
-export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepMdraSummaryComponent implements OnInit, LicenceChildStepperStepComponent {
 	metalDealersModelData: any = {};
 
 	attachmentsExist!: boolean;
@@ -268,6 +193,8 @@ export class StepMetalDealersSummaryComponent implements OnInit, LicenceChildSte
 	branchesFormGroup = this.metalDealersApplicationService.branchesFormGroup;
 	dataSource!: MatTableDataSource<MetalDealersAndRecyclersBranchResponse>;
 	columns: string[] = ['addressLine1', 'city', 'branchManager'];
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

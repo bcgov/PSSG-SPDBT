@@ -130,7 +130,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 	ngOnInit(): void {
 		this.gdsdTeamApplicationService.reset(); // prevent back button into wizard
 
-		this.commonApplicationService.setApplicationTitle();
+		this.commonApplicationService.setGdsdApplicationTitle();
 
 		this.loadData();
 	}

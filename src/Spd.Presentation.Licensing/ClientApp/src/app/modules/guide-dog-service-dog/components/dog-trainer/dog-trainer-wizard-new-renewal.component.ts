@@ -25,7 +25,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 			#stepper
 		>
 			<mat-step [completed]="true">
-				<ng-template matStepLabel>Certificate Details</ng-template>
+				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-dt-details
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -85,7 +85,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 	standalone: false,
 })
 export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	readonly STEP_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_CHECKLIST = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_TRAINING_SCHOOL_INFO = 1;
 	readonly STEP_DOG_TRAINER_PERSONAL_INFO = 2;
 	readonly STEP_REVIEW_AND_CONFIRM = 3;
@@ -159,7 +159,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		const index = event.selectedIndex;
 		switch (index) {
-			case this.STEP_DETAILS:
+			case this.STEP_CHECKLIST:
 				this.stepsDetails?.onGoToFirstStep();
 				break;
 			case this.STEP_TRAINING_SCHOOL_INFO:
@@ -181,7 +181,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 
 		const index = stepper.selectedIndex;
 		switch (index) {
-			case this.STEP_DETAILS:
+			case this.STEP_CHECKLIST:
 				this.stepsDetails?.onGoToLastStep();
 				break;
 			case this.STEP_TRAINING_SCHOOL_INFO:
@@ -214,7 +214,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onChildNextStep() {
 		const index = this.stepper.selectedIndex;
 		switch (index) {
-			case this.STEP_DETAILS:
+			case this.STEP_CHECKLIST:
 				this.stepsDetails?.onGoToNextStep();
 				break;
 			case this.STEP_TRAINING_SCHOOL_INFO:

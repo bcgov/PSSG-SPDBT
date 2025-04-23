@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
@@ -65,11 +64,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 	standalone: false,
 })
-export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategoryArmouredCarGuardComponent implements LicenceChildStepperStepComponent {
 	rcmpUrl = SPD_CONSTANTS.urls.rcmpUrl;
 
 	form: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
-	title = '';
 
 	minDate = this.utilService.getDateMin();
 	matcher = new FormErrorStateMatcher();
@@ -77,14 +75,9 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
-		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService
 	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
-	}
 
 	onFileUploaded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;

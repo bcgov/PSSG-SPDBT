@@ -94,7 +94,6 @@ import { Subject, take, tap } from 'rxjs';
 })
 export class FormAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	licenceApplicationRoutes = PersonalLicenceApplicationRoutes;
 
 	resetRecaptcha: Subject<void> = new Subject<void>();
