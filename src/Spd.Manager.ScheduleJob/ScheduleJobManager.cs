@@ -42,13 +42,25 @@ public class ScheduleJobManager :
         //used for Org MonthlyInvoice
         if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoice"))
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
-            stopwatch.Stop();
+            try
+            {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
+                stopwatch.Stop();
 
-            //update result in JobSession
-            UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
-            await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
+                //update result in JobSession
+                UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
+                await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
+            }
+            catch (Exception ex)
+            {
+                UpdateScheduleJobSessionCmd updateCmd = new UpdateScheduleJobSessionCmd();
+                updateCmd.ScheduleJobSessionId = cmd.JobSessionId;
+                updateCmd.JobSessionStatusCode = JobSessionStatusCode.Failed;
+                updateCmd.ErrorMsg = ex.Message;
+                //update result in JobSession
+                await _scheduleJobSessionRepository.ManageAsync(updateCmd, ct);
+            }
         }
 
         return default;
