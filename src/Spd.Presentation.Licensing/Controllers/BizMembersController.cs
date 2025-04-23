@@ -95,7 +95,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<BizMemberResponse> CreateSwlControllingMember([FromRoute] Guid bizId, [FromBody] SwlContactInfo controllingMember, CancellationToken ct)
         {
-            return await _mediator.Send(new CreateBizSwlControllingMemberCommand(bizId, controllingMember), ct);
+            return await _mediator.Send(new CreateBizSwlStakeholderCommand(bizId, controllingMember, BizContactRoleCode.ControllingMember), ct);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<BizMemberResponse> CreateNonSwlControllingMember([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo controllingMember, CancellationToken ct)
         {
-            return await _mediator.Send(new CreateBizNonSwlControllingMemberCommand(bizId, controllingMember), ct);
+            return await _mediator.Send(new CreateBizNonSwlStakeholderCommand(bizId, controllingMember, BizContactRoleCode.ControllingMember), ct);
         }
 
         /// <summary>
@@ -125,11 +125,56 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<BizMemberResponse> UpdateNonSwlControllingMember([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, NonSwlContactInfo controllingMember, CancellationToken ct)
         {
-            return await _mediator.Send(new UpdateBizNonSwlControllingMemberCommand(bizId, bizContactId, controllingMember), ct);
+            return await _mediator.Send(new UpdateBizNonSwlStakeholderCommand(bizId, bizContactId, controllingMember, BizContactRoleCode.BusinessManager), ct);
         }
 
         /// <summary>
-        /// Delete Biz swl controlling member
+        /// Create Biz swl business manager
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizManager"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/swl-business-managers")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateSwlBusinessManager([FromRoute] Guid bizId, [FromBody] SwlContactInfo bizManager, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizSwlStakeholderCommand(bizId, bizManager, BizContactRoleCode.BusinessManager), ct);
+        }
+
+        /// <summary>
+        /// Create Biz non-swl business manager
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-business-managers")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateNonSwlBusinessManager([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo bizManager, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizNonSwlStakeholderCommand(bizId, bizManager, BizContactRoleCode.BusinessManager), ct);
+        }
+
+        /// <summary>
+        /// Update Non swl biz business manager
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-business-managers/{bizContactId}")]
+        [HttpPut]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> UpdateNonSwlBusinessManager([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, NonSwlContactInfo bizManager, CancellationToken ct)
+        {
+            return await _mediator.Send(new UpdateBizNonSwlStakeholderCommand(bizId, bizContactId, bizManager, BizContactRoleCode.BusinessManager), ct);
+        }
+
+        /// <summary>
+        /// Delete Biz member
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="bizContactId"></param>
@@ -145,38 +190,38 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Create controlling member crc invitation for this biz contact
+        /// Create stakeholder (controlling member, biz manager) crc invitation for this biz contact
         /// Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update
         /// </summary>
         /// <param name="bizContactId"></param>
         /// <param name="inviteType"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
+        [Route("api/business-licence-application/stakeholder-invitation/{bizContactId}")]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
-        public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId,
-            [FromQuery] ControllingMemberAppInviteTypeCode inviteType = ControllingMemberAppInviteTypeCode.New)
+        public async Task<StakeholderInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId,
+            [FromQuery] StakeholderAppInviteTypeCode inviteType = StakeholderAppInviteTypeCode.New)
         {
             var userIdStr = _currentUser.GetUserId();
             if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
-            var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl, inviteType);
+            var inviteCreateCmd = new BizStakeholderNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl, inviteType);
             return await _mediator.Send(inviteCreateCmd);
         }
 
         /// <summary>
-        /// Verify if the current controlling member crc application invite is correct, and return needed info
+        /// Verify if the current stakeholder (controlling member, biz manager) crc application invite is correct, and return needed info
         /// </summary>
         /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
         /// <returns></returns>
-        [Route("api/controlling-members/invites")]
+        [Route("api/stakeholders/invites")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ControllingMemberAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] ControllingMemberAppInviteVerifyRequest inviteVerifyRequest)
+        public async Task<StakeholderAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] StakeholderAppInviteVerifyRequest inviteVerifyRequest)
         {
-            ControllingMemberAppInviteVerifyResponse response = await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+            StakeholderAppInviteVerifyResponse response = await _mediator.Send(new VerifyBizStakeholderInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
             if (response.ContactId != null)
             {
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.ContactId.Value.ToString());
