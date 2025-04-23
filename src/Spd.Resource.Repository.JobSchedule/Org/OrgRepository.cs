@@ -43,12 +43,14 @@ internal class OrgRepository : IOrgRepository
             try
             {
                 var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                _logger.LogInformation($"{response.IsSuccess} {response.Result} {a.accountid.Value}");
                 ResultResp rr = _mapper.Map<ResultResp>(response);
                 rr.PrimaryEntityId = a.accountid.Value;
                 return rr;
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{a.accountid.Value}-{ex.Message}");
                 return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
             }
             finally

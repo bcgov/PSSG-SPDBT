@@ -419,7 +419,7 @@ internal class Mappings : Profile
 
         CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
 
-        CreateMap<ControllingMemberInviteVerifyResp, ControllingMemberAppInviteVerifyResponse>();
+        CreateMap<ControllingMemberInviteVerifyResp, StakeholderAppInviteVerifyResponse>();
 
         CreateMap<BizContactResp, ControllingMemberInvite>();
 
@@ -434,7 +434,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(_ => (ApplicationOriginTypeEnum?)null))
             .ForMember(d => d.AgreeToCompleteAndAccurate, opt => opt.MapFrom(s => false));
 
-        CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
+        CreateMap<BizContactResp, StakeholderAppInviteVerifyResponse>()
             .ForMember(d => d.InviteId, opt => opt.Ignore())
             .ForMember(d => d.BizContactId, opt => opt.Ignore())
             .ForMember(d => d.BizLicAppId, opt => opt.Ignore())

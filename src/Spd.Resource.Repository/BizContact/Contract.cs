@@ -1,5 +1,4 @@
-﻿using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.BizLicApplication;
+﻿using Spd.Resource.Repository.BizLicApplication;
 
 namespace Spd.Resource.Repository.BizContact
 {
@@ -47,6 +46,7 @@ namespace Spd.Resource.Repository.BizContact
     public enum BizContactRoleEnum
     {
         ControllingMember,
-        Employee
+        Employee,
+        BusinessManager
     }
 }
