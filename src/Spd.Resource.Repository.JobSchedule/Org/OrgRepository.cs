@@ -49,6 +49,7 @@ internal class OrgRepository : IOrgRepository
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{a.accountid.Value}-{ex.Message}");
                 return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
             }
             finally
