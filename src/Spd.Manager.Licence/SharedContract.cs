@@ -74,7 +74,8 @@ public enum LicenceDocumentTypeCode
     MedicalFormConfirmingNeedDog,
     VeterinarianConfirmationForSpayedNeuteredDog,
     DogTrainingCurriculumCertificateSupportingDocument,
-    GDSDPracticeHoursLog
+    GDSDPracticeHoursLog,
+    GDSDCertificate
 }
 
 public enum PoliceOfficerRoleCode

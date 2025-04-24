@@ -30,6 +30,7 @@ using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.Report;
+using Spd.Resource.Repository.RetiredDogApp;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.Tasks;
 using Spd.Resource.Repository.User;
@@ -78,5 +79,6 @@ public class Configurer : IConfigureComponents
         configurationServices.Services.AddTransient<IGDSDAppRepository, GDSDAppRepository>();
         configurationServices.Services.AddTransient<IDogTeamRepository, DogTeamRepository>();
         configurationServices.Services.AddTransient<IDogTrainerAppRepository, DogTrainerAppRepository>();
+        configurationServices.Services.AddTransient<IRetiredDogAppRepository, RetiredDogAppRepository>();
     }
 }
