@@ -19,6 +19,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.RetiredDogApp;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -501,6 +502,10 @@ internal class Mappings : Profile
         CreateMap<BizLicAppSubmitRequest, BizLicenceAppCompareEntity>();
         CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
         CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
+        CreateMap<RetiredDogLicenceAppAnonymousSubmitRequest, CreateRetiredDogAppCmd>();
+        CreateMap<RetiredDogLicenceAppUpsertRequest, SaveRetiredDogAppCmd>();
+        CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
+        CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -785,7 +790,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -852,7 +858,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)
