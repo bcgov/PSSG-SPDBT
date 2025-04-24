@@ -162,13 +162,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					let isBusinessStakeholdersWithoutSwlExist = false;
 					if (!isBusinessLicenceSoleProprietor) {
-						const controllingMembersWithoutSwl =
+						const cmWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
-						const businessMembersWithoutSwl =
-							this.businessModelFormGroup.get('businessMembersData.membersWithoutSwl')?.value ?? [];
+						const bmWithoutSwl = this.businessModelFormGroup.get('businessMembersData.membersWithoutSwl')?.value ?? [];
 
-						isBusinessStakeholdersWithoutSwlExist =
-							controllingMembersWithoutSwl?.length > 0 || businessMembersWithoutSwl?.length > 0;
+						isBusinessStakeholdersWithoutSwlExist = cmWithoutSwl?.length > 0 || bmWithoutSwl?.length > 0;
 					}
 
 					this.businessModelFormGroup.patchValue(
