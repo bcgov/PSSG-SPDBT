@@ -75,7 +75,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
+				<ng-template matStepLabel
+					>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+				>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 					[showCitizenshipStep]="showCitizenshipStep"
@@ -91,15 +93,24 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 
 			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Information</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review<br />Business<br />Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
+							*ngTemplateOutlet="StepNameSpace"
+						></ng-container
+						>Licence</ng-template
+					>
 				</mat-step>
 			</ng-container>
 
@@ -109,6 +120,10 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				</mat-step>
 			</ng-template>
 		</mat-stepper>
+
+		<ng-template #StepNameSpace>
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,

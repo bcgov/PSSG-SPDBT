@@ -7,6 +7,8 @@ import { SwlContactInfo } from '../models/swl-contact-info';
 export interface MembersRequest {
   controllingMemberDocumentKeyCodes?: Array<string> | null;
   employees?: Array<SwlContactInfo> | null;
+  nonSwlBusinessManagers?: Array<NonSwlContactInfo> | null;
   nonSwlControllingMembers?: Array<NonSwlContactInfo> | null;
+  swlBusinessManagers?: Array<SwlContactInfo> | null;
   swlControllingMembers?: Array<SwlContactInfo> | null;
 }

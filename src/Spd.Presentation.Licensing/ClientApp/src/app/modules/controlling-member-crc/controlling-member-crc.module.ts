@@ -22,13 +22,13 @@ import { StepsControllingMemberCitizenshipResidencyComponent } from './component
 import { StepsControllingMemberPersonalInformationComponent } from './components/steps-controlling-member-personal-information.component';
 import { StepsControllingMemberReviewComponent } from './components/steps-controlling-member-review.component';
 import { ControllingMemberCrcRoutingModule } from './controlling-member-crc-routing.module';
-import { ControllingMemberInvitationComponent } from './controlling-member-invitation.component';
+import { StakeholderInvitationComponent } from './controlling-member-invitation.component';
 import { ControllingMemberLoginComponent } from './controlling-member-login.component';
 
 @NgModule({
 	declarations: [
 		ControllingMemberLoginComponent,
-		ControllingMemberInvitationComponent,
+		StakeholderInvitationComponent,
 		StepControllingMemberChecklistNewComponent,
 		StepControllingMemberChecklistUpdateComponent,
 		StepControllingMemberResidentialAddressComponent,
