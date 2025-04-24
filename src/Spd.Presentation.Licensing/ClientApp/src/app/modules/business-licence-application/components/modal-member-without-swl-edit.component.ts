@@ -15,6 +15,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { take, tap } from 'rxjs';
 
 export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
+	isControllingMember: boolean;
 	memberLabel: string;
 	allowNewInvitationsToBeSent: boolean;
 	bizId: string;
@@ -120,6 +121,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 
 	title = '';
 	isEdit = false;
+	isControllingMember = true;
 
 	form = this.businessApplicationService.memberWithoutSwlFormGroup;
 
@@ -135,6 +137,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 	ngOnInit(): void {
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
+		this.isControllingMember = this.dialogData.isControllingMember;
 		this.isEdit = !!this.dialogData.bizContactId;
 		this.title = this.isEdit
 			? `Edit ${this.dialogData.memberLabel} without Security Worker Licence`
@@ -152,66 +155,96 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 
 		if (!this.isEdit) {
 			// CREATE
-			this.bizMembersService
-				.apiBusinessBizIdNonSwlControllingMembersPost({
-					bizId: this.dialogData.bizId,
-					body: formValue,
-				})
-				.subscribe((resp: BizMemberResponse) => {
-					formValue.bizContactId = resp.bizContactId;
-
-					if (this.dialogData.allowNewInvitationsToBeSent) {
-						if (formValue.emailAddress) {
-							this.businessApplicationService
-								.sendControllingMembersWithoutSwlInvitation(resp.bizContactId!, StakeholderAppInviteTypeCode.New)
-								.pipe(
-									tap((_resp: StakeholderInvitesCreateResponse) => {
-										this.dialogRef.close({
-											data: formValue,
-										});
-									}),
-									take(1)
-								)
-								.subscribe();
-						} else {
-							this.businessApplicationService
-								.sendControllingMembersWithoutSwlInvitation(
-									resp.bizContactId!,
-									StakeholderAppInviteTypeCode.CreateShellApp
-								)
-								.pipe(
-									tap((_resp: StakeholderInvitesCreateResponse) => {
-										this.dialogRef.close({
-											data: formValue,
-										});
-									}),
-									take(1)
-								)
-								.subscribe();
-						}
-					} else {
-						this.dialogRef.close({
-							data: formValue,
-						});
-					}
-				});
+			if (this.isControllingMember) {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlControllingMembersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
+			} else {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlBusinessManagersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
+			}
 		} else {
 			// EDIT
-			this.bizMembersService
-				.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
-					bizId: this.dialogData.bizId,
-					bizContactId: this.dialogData.bizContactId!,
-					body: formValue,
-				})
-				.pipe(
-					tap((_resp: BizMemberResponse) => {
-						this.dialogRef.close({
-							data: formValue,
-						});
-					}),
-					take(1)
-				)
-				.subscribe();
+			if (this.isControllingMember) {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
+						bizId: this.dialogData.bizId,
+						bizContactId: this.dialogData.bizContactId!,
+						body: formValue,
+					})
+					.pipe(
+						tap((_resp: BizMemberResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			} else {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut({
+						bizId: this.dialogData.bizId,
+						bizContactId: this.dialogData.bizContactId!,
+						body: formValue,
+					})
+					.pipe(
+						tap((_resp: BizMemberResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		}
+	}
+
+	private addNewMember(member: BizMemberResponse, formValue: any) {
+		formValue.bizContactId = member.bizContactId;
+
+		if (this.dialogData.allowNewInvitationsToBeSent) {
+			if (formValue.emailAddress) {
+				this.businessApplicationService
+					.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, StakeholderAppInviteTypeCode.New)
+					.pipe(
+						tap((_resp: StakeholderInvitesCreateResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			} else {
+				this.businessApplicationService
+					.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, StakeholderAppInviteTypeCode.CreateShellApp)
+					.pipe(
+						tap((_resp: StakeholderInvitesCreateResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		} else {
+			this.dialogRef.close({
+				data: formValue,
+			});
 		}
 	}
 

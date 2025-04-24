@@ -71,6 +71,8 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements OnI
 	}
 
 	get membersWithoutSwlArray(): Array<any> {
-		return this.controllingMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		const cm = this.controllingMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		const bm = this.businessMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		return cm.concat(bm);
 	}
 }

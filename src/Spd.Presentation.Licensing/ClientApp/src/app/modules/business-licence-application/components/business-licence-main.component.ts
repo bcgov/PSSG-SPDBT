@@ -146,7 +146,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 	showManageBusinessStakeholders = false;
 	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
-	applicationIsDraftOrWaitingForPayment = false;
+	applicationIsInDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
 
 	activeLicenceExist = false;
@@ -180,23 +180,23 @@ export class BusinessLicenceMainComponent implements OnInit {
 	}
 
 	onManageBusinessStakeholders(): void {
-		const isApplExists = this.applicationIsInProgress || this.applicationIsDraftOrWaitingForPayment;
-		const isApplDraftOrWaitingForPayment = this.applicationIsDraftOrWaitingForPayment;
+		const isApplExists = this.applicationIsInProgress || this.applicationIsInDraftOrWaitingForPayment;
+		const isApplDraftOrWaitingForPayment = this.applicationIsInDraftOrWaitingForPayment;
 		const isLicenceExists = this.activeLicencesList.length > 0;
 
 		this.businessApplicationService
-			.getBusinessStakeholders(isApplDraftOrWaitingForPayment)
+			.getBusinessStakeholders()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES
+							BusinessLicenceApplicationRoutes.BUSINESS_STAKEHOLDERS
 						),
 						{
 							state: {
-								isApplExists: isApplExists,
-								isApplDraftOrWaitingForPayment: isApplDraftOrWaitingForPayment,
-								isLicenceExists: isLicenceExists,
+								isApplExists,
+								isApplDraftOrWaitingForPayment,
+								isLicenceExists,
 							},
 						}
 					);
@@ -413,8 +413,8 @@ export class BusinessLicenceMainComponent implements OnInit {
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
 						this.applicationIsInProgress =
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
-						this.applicationIsDraftOrWaitingForPayment =
-							this.commonApplicationService.getApplicationIsDraftOrWaitingForPayment(businessApplicationsList);
+						this.applicationIsInDraftOrWaitingForPayment =
+							this.commonApplicationService.getApplicationIsInDraftOrWaitingForPayment(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created
 						let activeLicenceExist = activeBusinessLicencesList.length > 0;

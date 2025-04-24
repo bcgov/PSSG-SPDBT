@@ -15,7 +15,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							<app-alert type="warning" icon="warning">
 								<p>
 									After you submit your application, it will not proceed until we receive criminal record check consent
-									forms from all controlling members.
+									forms from all controlling members and business managers.
 								</p>
 								<p>
 									You will receive an email with further instructions once all forms are received. You will be able to
