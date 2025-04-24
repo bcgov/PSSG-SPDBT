@@ -153,28 +153,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 			formValue.emailAddress = null;
 		}
 
-		if (!this.isEdit) {
-			// CREATE
-			if (this.isControllingMember) {
-				this.bizMembersService
-					.apiBusinessBizIdNonSwlControllingMembersPost({
-						bizId: this.dialogData.bizId,
-						body: formValue,
-					})
-					.subscribe((resp: BizMemberResponse) => {
-						this.addNewMember(resp, formValue);
-					});
-			} else {
-				this.bizMembersService
-					.apiBusinessBizIdNonSwlBusinessManagersPost({
-						bizId: this.dialogData.bizId,
-						body: formValue,
-					})
-					.subscribe((resp: BizMemberResponse) => {
-						this.addNewMember(resp, formValue);
-					});
-			}
-		} else {
+		if (this.isEdit) {
 			// EDIT
 			if (this.isControllingMember) {
 				this.bizMembersService
@@ -208,6 +187,27 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 						take(1)
 					)
 					.subscribe();
+			}
+		} else {
+			// CREATE
+			if (this.isControllingMember) {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlControllingMembersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
+			} else {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlBusinessManagersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
 			}
 		}
 	}

@@ -2276,13 +2276,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		});
 
-		const sortedMembersWithSwlData = membersWithSwlData.sort((a, b) =>
+		membersWithSwlData.sort((a, b) =>
 			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
 		);
 
 		const membersWithSwlArray = this.businessModelFormGroup.get(membersWithoutSwlArrayName) as FormArray;
 
-		sortedMembersWithSwlData.forEach((item: BusinessStakeholderContactInfo) => {
+		membersWithSwlData.forEach((item: BusinessStakeholderContactInfo) => {
 			membersWithSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
@@ -2319,12 +2319,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedMembersWithoutSwlData = membersWithoutSwlData.sort((a, b) =>
+		membersWithoutSwlData.sort((a, b) =>
 			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
 		);
 
 		const membersWithoutSwlArray = this.businessModelFormGroup.get(membersWithoutSwlArrayName) as FormArray;
-		sortedMembersWithoutSwlData.forEach((item: BusinessStakeholderContactInfo) => {
+		membersWithoutSwlData.forEach((item: BusinessStakeholderContactInfo) => {
 			membersWithoutSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),

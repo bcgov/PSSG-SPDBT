@@ -368,6 +368,7 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 			// In the wizard, the user cannot manually send invitations - remove 'action3'
 			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
 		} else {
+			// NOT in the wizard
 			if (this.isApplExists) {
 				// User should not be in here for Draft
 				if (this.isApplDraftOrWaitingForPayment) {
@@ -628,7 +629,7 @@ export class CommonControllingOrBusinessMembersComponent implements OnInit, Lice
 
 				if (memberData) {
 					if (isCreate) {
-						this.membersWithoutSwlList.push(this.newMemberRow(memberData.bizContactId!, memberData));
+						this.membersWithoutSwlList.push(this.newMemberRow(memberData.bizContactId, memberData));
 						this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
 						if (this.allowNewInvitationsToBeSent && memberData.emailAddress) {
