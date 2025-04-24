@@ -397,7 +397,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Controlling Members & Employees</div>
+												<div class="panel-header">Controlling Members, Business Managers & Employees</div>
 												<button
 													*ngIf="showEditButton"
 													mat-mini-fab
@@ -459,6 +459,21 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</ng-container>
 											</ng-container>
 											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
+										</div>
+
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading-small">Corporate Registry Documents</div>
+										<div class="row">
+											<div class="col-12">
+												<div class="text-label d-block text-muted">Documents</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of corporateRegistryDocumentsAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
+												</div>
+											</div>
 										</div>
 									</div>
 								</mat-expansion-panel>
@@ -740,6 +755,10 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 
 	get employeesList(): Array<any> {
 		return this.businessApplicationService.getSummaryemployeesList(this.businessModelData);
+	}
+
+	get corporateRegistryDocumentsAttachments(): File[] {
+		return this.businessApplicationService.getSummarycorporateRegistryDocumentsAttachments(this.businessModelData);
 	}
 
 	get isUpdate(): boolean {

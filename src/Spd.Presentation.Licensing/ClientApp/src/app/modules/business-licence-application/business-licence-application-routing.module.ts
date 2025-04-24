@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
-import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
 import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
@@ -9,6 +8,7 @@ import { BusinessLicencePaymentCancelComponent } from './components/business-lic
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
+import { BusinessLicenceStakeholdersComponent } from './components/business-licence-stakeholders.component';
 import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalSwlSoleProprietorComponent } from './components/business-licence-wizard-renewal-swl-sole-proprietor.component';
@@ -67,8 +67,8 @@ const routes: Routes = [
 				component: PortalAdministratorsComponent,
 			},
 			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES,
-				component: BusinessControllingMembersAndEmployeesComponent,
+				path: BusinessLicenceApplicationRoutes.BUSINESS_STAKEHOLDERS,
+				component: BusinessLicenceStakeholdersComponent,
 			},
 			{
 				path: '',

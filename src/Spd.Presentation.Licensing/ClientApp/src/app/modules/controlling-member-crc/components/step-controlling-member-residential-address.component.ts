@@ -38,7 +38,7 @@ export class StepControllingMemberResidentialAddressComponent implements OnInit,
 
 	form: FormGroup = this.controllingMembersService.residentialAddressFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isLoggedIn!: boolean;
 
 	constructor(private controllingMembersService: ControllingMemberCrcService) {}

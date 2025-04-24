@@ -31,11 +31,11 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 			<mat-step>
 				<app-step-business-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
-					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
 				></app-step-business-licence-consent-and-declaration>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<ng-container *ngIf="isControllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
+					<ng-container *ngIf="isBusinessStakeholdersWithoutSwlExist; else noBusinessStakeholdersWithoutSwlExist">
 						<app-wizard-footer
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
@@ -46,7 +46,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 							(nextStepperStep)="onInviteAndSubmitStep()"
 						></app-wizard-footer>
 					</ng-container>
-					<ng-template #noControllingMembersWithoutSwlExist>
+					<ng-template #noBusinessStakeholdersWithoutSwlExist>
 						<app-wizard-footer
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
@@ -71,14 +71,14 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<ng-container *ngIf="isControllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
+					<ng-container *ngIf="isBusinessStakeholdersWithoutSwlExist; else noBusinessStakeholdersWithoutSwlExist">
 						<app-wizard-footer
 							nextButtonLabel="Submit"
 							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onInviteAndSubmitStep()"
 						></app-wizard-footer>
 					</ng-container>
-					<ng-template #noControllingMembersWithoutSwlExist>
+					<ng-template #noBusinessStakeholdersWithoutSwlExist>
 						<app-wizard-footer
 							nextButtonLabel="Pay Now"
 							(previousStepperStep)="onGoToPreviousStep()"
@@ -89,9 +89,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
@@ -101,7 +101,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() licenceCost = 0;
 	@Input() isBusinessLicenceSoleProprietor = false;
 	@Input() isSoleProprietorSimultaneousFlow = false;
-	@Input() isControllingMembersWithoutSwlExist = false;
+	@Input() isBusinessStakeholdersWithoutSwlExist = false;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 

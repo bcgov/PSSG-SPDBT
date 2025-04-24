@@ -97,7 +97,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[showSaveAndExit]="true"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-						[isControllingMembersWithoutSwlExist]="false"
+						[isBusinessStakeholdersWithoutSwlExist]="false"
 						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
@@ -132,8 +132,6 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 
 	step1Complete = false;
 	step2Complete = false;
-	step3Complete = false;
-	step4Complete = false;
 
 	isSoleProprietorSimultaneousSWLAnonymous!: boolean;
 	isSoleProprietorSimultaneousFlow!: boolean;
@@ -357,9 +355,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.businessApplicationService.isStepBackgroundInformationComplete();
 		this.step2Complete = this.businessApplicationService.isStepLicenceSelectionComplete();
-		this.step3Complete = this.businessApplicationService.isStepContactInformationComplete();
-		this.step4Complete = this.businessApplicationService.isStepControllingMembersAndEmployeesComplete();
 
-		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete);
 	}
 }
