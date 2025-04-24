@@ -77,12 +77,12 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			</mat-step>
 
 			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
-				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
+				<ng-template matStepLabel>Controlling Members, Business Managers & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
-					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -99,7 +99,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[showSaveAndExit]="showSaveAndExit"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isSoleProprietorSimultaneousFlow]="false"
-					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextSubmit()"
@@ -138,7 +138,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isSoleProprietorSimultaneousFlow!: boolean;
-	isControllingMembersWithoutSwlExist!: boolean;
+	isBusinessStakeholdersWithoutSwlExist!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -192,8 +192,8 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value ??
 					false;
 
-				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
-					'isControllingMembersWithoutSwlExist'
+				this.isBusinessStakeholdersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
+					'isBusinessStakeholdersWithoutSwlExist'
 				)?.value;
 
 				this.isFormValid = _resp;
@@ -383,7 +383,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		this.step1Complete = this.businessApplicationService.isStepBackgroundInformationComplete();
 		this.step2Complete = this.businessApplicationService.isStepLicenceSelectionComplete();
 		this.step3Complete = this.businessApplicationService.isStepContactInformationComplete();
-		this.step4Complete = this.businessApplicationService.isStepControllingMembersAndEmployeesComplete();
+		this.step4Complete = this.businessApplicationService.isStepBusinessStakeholdersComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
