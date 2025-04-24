@@ -16,8 +16,6 @@ import {
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberInvitesCreateResponse,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -25,6 +23,8 @@ import {
 	Members,
 	NonSwlContactInfo,
 	ServiceTypeCode,
+	StakeholderAppInviteTypeCode,
+	StakeholderInvitesCreateResponse,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
@@ -61,7 +61,7 @@ import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
-export interface ControllingMemberContactInfo extends NonSwlContactInfo {
+export interface BusinessStakeholderContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
 	contactId?: string | null;
 	licenceHolderName: string;
@@ -82,7 +82,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		isControllingMembersWithoutSwlExist: new FormControl(), // placeholder
+		isBusinessStakeholdersWithoutSwlExist: new FormControl(), // placeholder
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppPortalStatus: new FormControl(), // placeholder for sole proprietor flow
@@ -117,7 +117,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		branchesInBcData: this.branchesInBcFormGroup,
 		controllingMembersData: this.controllingMembersFormGroup,
+		businessMembersData: this.businessMembersFormGroup,
 		employeesData: this.employeesFormGroup,
+		corporateRegistryDocumentData: this.corporateRegistryDocumentFormGroup,
 	});
 
 	businessModelChangedSubscription!: Subscription;
@@ -158,19 +160,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 
-					let isControllingMembersWithoutSwlExist = false;
+					let isBusinessStakeholdersWithoutSwlExist = false;
 					if (!isBusinessLicenceSoleProprietor) {
-						const membersWithoutSwl =
+						const cmWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
+						const bmWithoutSwl = this.businessModelFormGroup.get('businessMembersData.membersWithoutSwl')?.value ?? [];
 
-						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
+						isBusinessStakeholdersWithoutSwlExist = cmWithoutSwl?.length > 0 || bmWithoutSwl?.length > 0;
 					}
 
 					this.businessModelFormGroup.patchValue(
 						{
 							isBcBusinessAddress,
 							isBusinessLicenceSoleProprietor,
-							isControllingMembersWithoutSwlExist,
+							isBusinessStakeholdersWithoutSwlExist,
 						},
 						{ emitEvent: false }
 					);
@@ -178,9 +181,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const step1Complete = this.isStepBackgroundInformationComplete();
 					const step2Complete = this.isStepLicenceSelectionComplete();
 					const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
-					const step4Complete = isBusinessLicenceSoleProprietor
-						? true
-						: this.isStepControllingMembersAndEmployeesComplete();
+					const step4Complete = isBusinessLicenceSoleProprietor ? true : this.isStepBusinessStakeholdersComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
@@ -284,8 +285,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			ApplicationTypeCode.New
 		);
 
-		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
-			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+		if (businessModelFormValue.isBusinessStakeholdersWithoutSwlExist) {
+			const cmWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+			const bmWithoutSwl = businessModelFormValue.businessMembersData.membersWithoutSwl;
+			const membersWithoutSwl = cmWithoutSwl.concat(bmWithoutSwl);
 
 			// Send the controlling member invitations
 			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
@@ -339,8 +342,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			ApplicationTypeCode.Renewal
 		);
 
-		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
-			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+		if (businessModelFormValue.isBusinessStakeholdersWithoutSwlExist) {
+			const cmWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+			const bmWithoutSwl = businessModelFormValue.businessMembersData.membersWithoutSwl;
+			const membersWithoutSwl = cmWithoutSwl.concat(bmWithoutSwl);
 
 			// Send the controlling member invitations
 			const apis: Observable<any>[] = this.membersWithoutSwlApis(membersWithoutSwl);
@@ -579,11 +584,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepControllingMembersAndEmployeesComplete(): boolean {
+	isStepBusinessStakeholdersComplete(): boolean {
 		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
 
 		// console.debug(
-		// 	'isStepControllingMembersAndEmployeesComplete',
+		// 	'isStepBusinessStakeholdersComplete',
 		// 	isBusinessLicenceSoleProprietor,
 		// 	this.controllingMembersFormGroup.valid,
 		// 	this.employeesFormGroup.valid
@@ -591,14 +596,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
-		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
+		const isValid =
+			this.controllingMembersFormGroup.valid &&
+			this.businessMembersFormGroup.valid &&
+			this.employeesFormGroup.valid &&
+			this.corporateRegistryDocumentFormGroup.valid;
+
+		if (!isValid) return false;
+
+		const { minCountValid, maxCountValid } = this.isBusinessStakeholdersCountValid();
+		return minCountValid && maxCountValid;
 	}
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		inviteTypeCode: ControllingMemberAppInviteTypeCode
-	): Observable<ControllingMemberInvitesCreateResponse> {
-		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+		inviteTypeCode: StakeholderAppInviteTypeCode
+	): Observable<StakeholderInvitesCreateResponse> {
+		return this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 			bizContactId,
 			inviteType: inviteTypeCode,
 		});
@@ -828,10 +842,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						bizId,
 					})
 					.pipe(
-						switchMap((controllingMembersAndEmployees: Members) => {
+						switchMap((businessStakeholders: Members) => {
 							return this.createEmptyLicence({
 								businessProfile,
-								controllingMembersAndEmployees,
+								businessStakeholders,
 								previousExpiredLicence,
 							}).pipe(
 								tap((_resp: any) => {
@@ -940,14 +954,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(applicationIsInDraftOrWaitingForPayment: boolean): Observable<any> {
+	getBusinessStakeholders(): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
 			switchMap((members: Members) => {
-				return this.applyMembersIntoModel(members, applicationIsInDraftOrWaitingForPayment).pipe(
+				return this.applyMembersIntoModel(members).pipe(
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
@@ -975,17 +989,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		while (bcBranchesArray.length) {
 			bcBranchesArray.removeAt(0);
 		}
-		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithSwl'
-		) as FormArray;
-		while (controllingMembersWithSwlArray.length) {
-			controllingMembersWithSwlArray.removeAt(0);
+		const cmWithSwlArray = this.businessModelFormGroup.get('controllingMembersData.membersWithSwl') as FormArray;
+		while (cmWithSwlArray.length) {
+			cmWithSwlArray.removeAt(0);
 		}
-		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithoutSwl'
-		) as FormArray;
-		while (controllingMembersWithoutSwlArray.length) {
-			controllingMembersWithoutSwlArray.removeAt(0);
+		const cmWithoutSwlArray = this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl') as FormArray;
+		while (cmWithoutSwlArray.length) {
+			cmWithoutSwlArray.removeAt(0);
+		}
+		const bmWithSwlArray = this.businessModelFormGroup.get('businessMembersData.membersWithSwl') as FormArray;
+		while (bmWithSwlArray.length) {
+			bmWithSwlArray.removeAt(0);
+		}
+		const bmWithoutSwlArray = this.businessModelFormGroup.get('businessMembersData.membersWithoutSwl') as FormArray;
+		while (bmWithoutSwlArray.length) {
+			bmWithoutSwlArray.removeAt(0);
 		}
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
 		while (employeesArray.length) {
@@ -1166,18 +1184,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private createEmptyLicence({
 		businessProfile,
 		soleProprietorSwlLicence,
-		controllingMembersAndEmployees,
+		businessStakeholders,
 		previousExpiredLicence,
 	}: {
 		businessProfile: BizProfileResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
-		controllingMembersAndEmployees?: Members;
+		businessStakeholders?: Members;
 		previousExpiredLicence?: MainLicenceResponse;
 	}): Observable<any> {
 		this.reset();
 
-		if (controllingMembersAndEmployees) {
-			return this.applyMembersIntoModel(controllingMembersAndEmployees, false).pipe(
+		if (businessStakeholders) {
+			return this.applyMembersIntoModel(businessStakeholders).pipe(
 				switchMap((_resp: any) => {
 					return this.applyProfileIntoModel({
 						businessProfile,
@@ -1197,41 +1215,77 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyMembersIntoModel(members: Members, applicationIsInDraftOrWaitingForPayment: boolean) {
+	private applyMembersIntoModel(members: Members): Observable<any> {
 		const apis: Observable<any>[] = [];
-		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-			apis.push(
-				this.licenceService.apiLicencesLicenceIdGet({
-					licenceId: item.licenceId!,
-				})
-			);
-		});
-		members.employees?.forEach((item: SwlContactInfo) => {
-			apis.push(
-				this.licenceService.apiLicencesLicenceIdGet({
-					licenceId: item.licenceId!,
-				})
-			);
-		});
+
+		members.swlControllingMembers
+			?.filter((item: SwlContactInfo) => !!item.licenceId)
+			.forEach((item: SwlContactInfo) => {
+				apis.push(
+					this.licenceService.apiLicencesLicenceIdGet({
+						licenceId: item.licenceId!,
+					})
+				);
+			});
+		members.swlBusinessManagers
+			?.filter((item: SwlContactInfo) => !!item.licenceId)
+			.forEach((item: SwlContactInfo) => {
+				apis.push(
+					this.licenceService.apiLicencesLicenceIdGet({
+						licenceId: item.licenceId!,
+					})
+				);
+			});
+		members.employees
+			?.filter((item: SwlContactInfo) => !!item.licenceId)
+			.forEach((item: SwlContactInfo) => {
+				apis.push(
+					this.licenceService.apiLicencesLicenceIdGet({
+						licenceId: item.licenceId!,
+					})
+				);
+			});
 
 		const modelFormValue = this.businessModelFormGroup.value;
 		const controllingMembersData = modelFormValue.controllingMembersData;
-		controllingMembersData.applicationIsInDraftOrWaitingForPayment = applicationIsInDraftOrWaitingForPayment;
 
 		this.businessModelFormGroup.patchValue({ controllingMembersData }, { emitEvent: false });
 
 		if (apis.length > 0) {
 			return forkJoin(apis).pipe(
 				switchMap((licenceResponses: Array<LicenceResponse>) => {
-					this.applyControllingMembersWithSwl(members.swlControllingMembers ?? [], licenceResponses);
-					this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
-					this.applyEmployees(members.employees ?? [], licenceResponses);
+					this.applyBusinessStakeholderWithSwl(
+						members.swlControllingMembers ?? [],
+						licenceResponses,
+						'controllingMembersData.membersWithSwl'
+					);
+					this.applyBusinessStakeholdersWithoutSwl(
+						members.nonSwlControllingMembers ?? [],
+						'controllingMembersData.membersWithoutSwl'
+					);
+					this.applyBusinessStakeholderWithSwl(
+						members.swlBusinessManagers ?? [],
+						licenceResponses,
+						'businessMembersData.membersWithSwl'
+					);
+					this.applyBusinessStakeholdersWithoutSwl(
+						members.nonSwlBusinessManagers ?? [],
+						'businessMembersData.membersWithoutSwl'
+					);
+					this.applyBusinessStakeholderWithSwl(members.employees ?? [], licenceResponses, 'employeesData.employees');
 
 					return of(this.businessModelFormGroup.value);
 				})
 			);
 		} else {
-			this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
+			this.applyBusinessStakeholdersWithoutSwl(
+				members.nonSwlControllingMembers ?? [],
+				'controllingMembersData.membersWithoutSwl'
+			);
+			this.applyBusinessStakeholdersWithoutSwl(
+				members.nonSwlBusinessManagers ?? [],
+				'businessMembersData.membersWithoutSwl'
+			);
 
 			return of(this.businessModelFormGroup.value);
 		}
@@ -1313,13 +1367,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			switchMap((resps: any[]) => {
 				const businessLicenceAppl = resps[0];
 				const businessProfile = resps[1];
-				const businessMembers = isSoleProprietor ? undefined : resps[2];
+				const businessStakeholders = isSoleProprietor ? undefined : resps[2];
 
 				return this.loadBusinessApplAndProfile({
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
-					businessMembers,
+					businessStakeholders,
 				});
 			})
 		);
@@ -1355,7 +1409,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			switchMap((resps: any[]) => {
 				const businessLicenceAppl = resps[0];
 				const businessProfile = resps[1];
-				const businessMembers = isSoleProprietor ? undefined : resps[2];
+				const businessStakeholders = isSoleProprietor ? undefined : resps[2];
 
 				// remove reference to expired licence - data is only used in the Resume flow.
 				businessLicenceAppl.expiredLicenceId = null;
@@ -1366,7 +1420,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
-					businessMembers,
+					businessStakeholders,
 					associatedLicence,
 				});
 			})
@@ -1381,13 +1435,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode,
 		businessLicenceAppl,
 		businessProfile,
-		businessMembers,
+		businessStakeholders,
 		associatedLicence,
 	}: {
 		applicationTypeCode: ApplicationTypeCode;
 		businessLicenceAppl: BizLicAppResponse;
 		businessProfile: BizProfileResponse;
-		businessMembers?: Members;
+		businessStakeholders?: Members;
 		associatedLicence?: LicenceResponse | MainLicenceResponse;
 	}) {
 		const apis: Observable<any>[] = [];
@@ -1413,21 +1467,34 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 		}
 
-		if (businessMembers) {
-			businessMembers.employees?.forEach((item: SwlContactInfo) => {
-				apis.push(
-					this.licenceService.apiLicencesLicenceIdGet({
-						licenceId: item.licenceId!,
-					})
-				);
-			});
-			businessMembers.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-				apis.push(
-					this.licenceService.apiLicencesLicenceIdGet({
-						licenceId: item.licenceId!,
-					})
-				);
-			});
+		if (businessStakeholders) {
+			businessStakeholders.employees
+				?.filter((item: SwlContactInfo) => !!item.licenceId)
+				.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
+			businessStakeholders.swlControllingMembers
+				?.filter((item: SwlContactInfo) => !!item.licenceId)
+				.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
+			businessStakeholders.swlBusinessManagers
+				?.filter((item: SwlContactInfo) => !!item.licenceId)
+				.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
 		}
 
 		const brandingDocumentInfos =
@@ -1437,16 +1504,36 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 				: [];
 
-		if (businessMembers) {
-			this.applyControllingMembersWithoutSwl(businessMembers.nonSwlControllingMembers ?? []);
+		if (businessStakeholders) {
+			this.applyBusinessStakeholdersWithoutSwl(
+				businessStakeholders.nonSwlControllingMembers ?? [],
+				'controllingMembersData.membersWithoutSwl'
+			);
+			this.applyBusinessStakeholdersWithoutSwl(
+				businessStakeholders.nonSwlBusinessManagers ?? [],
+				'businessMembersData.membersWithoutSwl'
+			);
 		}
 
 		if (apis.length > 0) {
 			return forkJoin(apis).pipe(
 				switchMap((licenceResponses: Array<LicenceResponse>) => {
-					if (businessMembers) {
-						this.applyControllingMembersWithSwl(businessMembers.swlControllingMembers ?? [], licenceResponses);
-						this.applyEmployees(businessMembers.employees ?? [], licenceResponses);
+					if (businessStakeholders) {
+						this.applyBusinessStakeholderWithSwl(
+							businessStakeholders.swlControllingMembers ?? [],
+							licenceResponses,
+							'controllingMembersData.membersWithSwl'
+						);
+						this.applyBusinessStakeholderWithSwl(
+							businessStakeholders.swlBusinessManagers ?? [],
+							licenceResponses,
+							'businessMembersData.membersWithSwl'
+						);
+						this.applyBusinessStakeholderWithSwl(
+							businessStakeholders.employees ?? [],
+							licenceResponses,
+							'employeesData.employees'
+						);
 					}
 
 					let associatedExpiredLicence: LicenceResponse | undefined = undefined;
@@ -1635,6 +1722,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const liabilityAttachments: Array<File> = [];
 		const categoryArmouredCarGuardAttachments: Array<File> = [];
 		const dogAuthorizationAttachments: Array<File> = [];
+		const corporateRegistryAttachments: Array<File> = [];
 
 		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
 		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
@@ -1667,6 +1755,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					companyBrandingAttachments.push(aFile);
 					break;
 				}
+				case LicenceDocumentTypeCode.CorporateRegistryDocument: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					corporateRegistryAttachments.push(aFile);
+					break;
+				}
 			}
 		});
 
@@ -1684,6 +1777,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const licenceTermData = {
 			licenceTermCode: businessLicenceAppl.licenceTermCode,
+		};
+
+		const corporateRegistryDocumentData = {
+			attachments: corporateRegistryAttachments,
 		};
 
 		const applicantData = {
@@ -1829,6 +1926,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				expiredLicenceData,
 				licenceTermData,
 				companyBrandingData,
+				corporateRegistryDocumentData,
 				liabilityData,
 				applicantData,
 
@@ -2155,33 +2253,37 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
-		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
+	private applyBusinessStakeholderWithSwl(
+		members: Array<SwlContactInfo>,
+		licences: Array<LicenceResponse>,
+		membersWithoutSwlArrayName: string
+	): void {
+		const membersWithSwlData: Array<BusinessStakeholderContactInfo> = [];
 
 		members.forEach((item: SwlContactInfo) => {
 			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
 
-			controllingMembersWithSwlData.push({
-				bizContactId: item.bizContactId,
-				contactId: matchingLicence?.licenceHolderId,
-				licenceId: matchingLicence?.licenceId,
-				licenceHolderName: matchingLicence?.licenceHolderName!,
-				licenceNumber: matchingLicence?.licenceNumber!,
-				licenceStatusCode: matchingLicence?.licenceStatusCode,
-				expiryDate: matchingLicence?.expiryDate,
-			});
+			if (matchingLicence) {
+				membersWithSwlData.push({
+					bizContactId: item.bizContactId,
+					contactId: matchingLicence?.licenceHolderId,
+					licenceId: matchingLicence?.licenceId,
+					licenceHolderName: matchingLicence?.licenceHolderName!,
+					licenceNumber: matchingLicence?.licenceNumber!,
+					licenceStatusCode: matchingLicence?.licenceStatusCode,
+					expiryDate: matchingLicence?.expiryDate,
+				});
+			}
 		});
 
-		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) =>
+		membersWithSwlData.sort((a, b) =>
 			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
 		);
 
-		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithSwl'
-		) as FormArray;
+		const membersWithSwlArray = this.businessModelFormGroup.get(membersWithoutSwlArrayName) as FormArray;
 
-		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersWithSwlArray.push(
+		membersWithSwlData.forEach((item: BusinessStakeholderContactInfo) => {
+			membersWithSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
 					contactId: new FormControl(item.contactId),
@@ -2195,11 +2297,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>): void {
-		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
+	private applyBusinessStakeholdersWithoutSwl(
+		members: Array<NonSwlContactInfo>,
+		membersWithoutSwlArrayName: string
+	): void {
+		const membersWithoutSwlData: Array<BusinessStakeholderContactInfo> = [];
 
 		members.forEach((item: NonSwlContactInfo) => {
-			controllingMembersWithoutSwlData.push({
+			membersWithoutSwlData.push({
 				bizContactId: item.bizContactId,
 				emailAddress: item.emailAddress,
 				noEmailAddress: !item.emailAddress,
@@ -2208,26 +2313,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				middleName2: item.middleName2,
 				phoneNumber: item.phoneNumber,
 				surname: item.surname,
-				licenceHolderName: this.utilService.getFullNameWithMiddle(
-					item.givenName,
-					item.middleName1,
-					item.middleName2,
-					item.surname
-				),
+				licenceHolderName: this.utilService.getFullName(item.givenName, item.surname)!,
 				controllingMemberAppStatusCode: item.controllingMemberAppStatusCode,
 				inviteStatusCode: item.inviteStatusCode,
 			});
 		});
 
-		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) =>
+		membersWithoutSwlData.sort((a, b) =>
 			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
 		);
 
-		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithoutSwl'
-		) as FormArray;
-		sortedControllingMembersWithoutSwlData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersWithoutSwlArray.push(
+		const membersWithoutSwlArray = this.businessModelFormGroup.get(membersWithoutSwlArrayName) as FormArray;
+		membersWithoutSwlData.forEach((item: BusinessStakeholderContactInfo) => {
+			membersWithoutSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
 					contactId: new FormControl(item.contactId),
@@ -2241,43 +2339,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					noEmailAddress: new FormControl(item.noEmailAddress),
 					controllingMemberAppStatusCode: new FormControl(item.controllingMemberAppStatusCode),
 					inviteStatusCode: new FormControl(item.inviteStatusCode),
-				})
-			);
-		});
-	}
-
-	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
-		const employeesData: Array<ControllingMemberContactInfo> = [];
-
-		employees.forEach((item: SwlContactInfo) => {
-			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
-
-			employeesData.push({
-				bizContactId: item.bizContactId,
-				contactId: item.contactId!,
-				licenceId: item.licenceId!,
-				licenceHolderName: matchingLicence?.licenceHolderName!,
-				licenceNumber: matchingLicence?.licenceNumber!,
-				licenceStatusCode: matchingLicence?.licenceStatusCode,
-				expiryDate: matchingLicence?.expiryDate,
-			});
-		});
-
-		const sortedEmployeesData = employeesData.sort((a, b) =>
-			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
-		);
-
-		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
-		sortedEmployeesData.forEach((item: ControllingMemberContactInfo) => {
-			employeesArray.push(
-				new FormGroup({
-					bizContactId: new FormControl(item.bizContactId),
-					contactId: new FormControl(item.contactId),
-					licenceId: new FormControl(item.licenceId),
-					licenceHolderName: new FormControl(item.licenceHolderName),
-					licenceNumber: new FormControl(item.licenceNumber),
-					licenceStatusCode: new FormControl(item.licenceStatusCode),
-					expiryDate: new FormControl(item.expiryDate),
 				})
 			);
 		});
@@ -2351,16 +2412,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
 			if (item.emailAddress) {
 				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+					this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.New,
+						inviteType: StakeholderAppInviteTypeCode.New,
 					})
 				);
 			} else {
 				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+					this.bizMembersService.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet({
 						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.CreateShellApp,
+						inviteType: StakeholderAppInviteTypeCode.CreateShellApp,
 					})
 				);
 			}

@@ -57,7 +57,7 @@ export const SPD_CONSTANTS = {
 	},
 	maxCount: {
 		aliases: 10,
-		controllingMembers: 20,
+		controllingMembersAndBusinessManagers: 20,
 		employees: 20,
 	},
 	messages: {

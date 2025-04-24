@@ -4,7 +4,6 @@ import {
 	Alias,
 	ApplicantProfileResponse,
 	ApplicationTypeCode,
-	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
 	ControllingMemberCrcAppUpsertRequest,
@@ -14,6 +13,7 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	ServiceTypeCode,
+	StakeholderAppInviteVerifyResponse,
 } from '@app/api/models';
 import { ApplicantProfileService, ControllingMemberCrcAppService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -244,7 +244,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createOrResumeCrc(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		return this.applicantProfileService
@@ -283,7 +283,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createNewOrUpdateCrcAnonymous(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		if (applicationTypeCode === ApplicationTypeCode.New) {
@@ -530,7 +530,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private loadDraftCrcIntoModel(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -547,7 +547,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -754,7 +754,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private getCrcEmptyAuthenticated(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -813,7 +813,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private getCrcEmptyAnonymous(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile?: ApplicantProfileResponse
 	): Observable<any> {

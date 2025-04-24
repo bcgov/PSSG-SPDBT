@@ -494,12 +494,20 @@ export class CommonApplicationService {
 						}
 					} else {
 						return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
-							switchMap((controllingMembersAndEmployees: Members) => {
-								const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
-								const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
+							switchMap((businessStakeholders: Members) => {
+								const cmNonSwlControllingMembers = businessStakeholders.nonSwlControllingMembers ?? [];
+								const cmIncompleteMemberIndex = cmNonSwlControllingMembers.findIndex(
 									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
 								);
-								const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+
+								const bmNonSwlControllingMembers = businessStakeholders.nonSwlBusinessManagers ?? [];
+								const bmIncompleteMemberIndex = bmNonSwlControllingMembers.findIndex(
+									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
+								);
+
+								const isControllingMemberWarning =
+									(cmNonSwlControllingMembers.length > 0 && cmIncompleteMemberIndex >= 0) ||
+									(bmNonSwlControllingMembers.length > 0 && bmIncompleteMemberIndex >= 0);
 
 								const response = applicationResps as Array<MainApplicationResponse>;
 								response.forEach((item: MainApplicationResponse) => {
@@ -887,7 +895,7 @@ export class CommonApplicationService {
 		);
 	}
 
-	getApplicationIsDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
+	getApplicationIsInDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
@@ -1010,28 +1018,36 @@ export class CommonApplicationService {
 			}
 		});
 
-		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
-		renewals.forEach((item: MainLicenceResponse) => {
-			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
+		const renewalApplicationExists =
+			applicationsList.findIndex(
+				(item: MainApplicationResponse) => item.applicationTypeCode === ApplicationTypeCode.Renewal
+			) >= 0;
 
-			if (item.licenceExpiryNumberOfDays != null) {
-				if (item.licenceExpiryNumberOfDays < 0) {
-					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
-				} else if (item.licenceExpiryNumberOfDays > 7) {
-					warningMessages.push(
-						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
-					);
-				} else if (item.licenceExpiryNumberOfDays === 0) {
-					errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
-				} else {
-					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
-					errorMessages.push(
-						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
-					);
+		if (!renewalApplicationExists) {
+			// show any renewal related warning/error messages
+			const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
+			renewals.forEach((item: MainLicenceResponse) => {
+				const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
+				const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
+
+				if (item.licenceExpiryNumberOfDays != null) {
+					if (item.licenceExpiryNumberOfDays < 0) {
+						errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
+					} else if (item.licenceExpiryNumberOfDays > 7) {
+						warningMessages.push(
+							`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+						);
+					} else if (item.licenceExpiryNumberOfDays === 0) {
+						errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
+					} else {
+						const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
+						errorMessages.push(
+							`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+						);
+					}
 				}
-			}
-		});
+			});
+		}
 
 		return [warningMessages, errorMessages, isControllingMemberWarning];
 	}

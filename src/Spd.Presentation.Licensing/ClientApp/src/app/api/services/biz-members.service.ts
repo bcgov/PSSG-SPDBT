@@ -20,23 +20,29 @@ import { apiBusinessBizIdMembersGet } from '../fn/biz-members/api-business-biz-i
 import { ApiBusinessBizIdMembersGet$Params } from '../fn/biz-members/api-business-biz-id-members-get';
 import { apiBusinessBizIdMembersPost } from '../fn/biz-members/api-business-biz-id-members-post';
 import { ApiBusinessBizIdMembersPost$Params } from '../fn/biz-members/api-business-biz-id-members-post';
+import { apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut } from '../fn/biz-members/api-business-biz-id-non-swl-business-managers-biz-contact-id-put';
+import { ApiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Params } from '../fn/biz-members/api-business-biz-id-non-swl-business-managers-biz-contact-id-put';
+import { apiBusinessBizIdNonSwlBusinessManagersPost } from '../fn/biz-members/api-business-biz-id-non-swl-business-managers-post';
+import { ApiBusinessBizIdNonSwlBusinessManagersPost$Params } from '../fn/biz-members/api-business-biz-id-non-swl-business-managers-post';
 import { apiBusinessBizIdNonSwlControllingMembersBizContactIdGet } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-get';
 import { ApiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Params } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-get';
 import { apiBusinessBizIdNonSwlControllingMembersBizContactIdPut } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-put';
 import { ApiBusinessBizIdNonSwlControllingMembersBizContactIdPut$Params } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-put';
 import { apiBusinessBizIdNonSwlControllingMembersPost } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-post';
 import { ApiBusinessBizIdNonSwlControllingMembersPost$Params } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-post';
+import { apiBusinessBizIdSwlBusinessManagersPost } from '../fn/biz-members/api-business-biz-id-swl-business-managers-post';
+import { ApiBusinessBizIdSwlBusinessManagersPost$Params } from '../fn/biz-members/api-business-biz-id-swl-business-managers-post';
 import { apiBusinessBizIdSwlControllingMembersPost } from '../fn/biz-members/api-business-biz-id-swl-controlling-members-post';
 import { ApiBusinessBizIdSwlControllingMembersPost$Params } from '../fn/biz-members/api-business-biz-id-swl-controlling-members-post';
-import { apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet } from '../fn/biz-members/api-business-licence-application-controlling-member-invitation-biz-contact-id-get';
-import { ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params } from '../fn/biz-members/api-business-licence-application-controlling-member-invitation-biz-contact-id-get';
-import { apiControllingMembersInvitesPost } from '../fn/biz-members/api-controlling-members-invites-post';
-import { ApiControllingMembersInvitesPost$Params } from '../fn/biz-members/api-controlling-members-invites-post';
+import { apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet } from '../fn/biz-members/api-business-licence-application-stakeholder-invitation-biz-contact-id-get';
+import { ApiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Params } from '../fn/biz-members/api-business-licence-application-stakeholder-invitation-biz-contact-id-get';
+import { apiStakeholdersInvitesPost } from '../fn/biz-members/api-stakeholders-invites-post';
+import { ApiStakeholdersInvitesPost$Params } from '../fn/biz-members/api-stakeholders-invites-post';
 import { BizMemberResponse } from '../models/biz-member-response';
-import { ControllingMemberAppInviteVerifyResponse } from '../models/controlling-member-app-invite-verify-response';
-import { ControllingMemberInvitesCreateResponse } from '../models/controlling-member-invites-create-response';
 import { Members } from '../models/members';
 import { NonSwlContactInfo } from '../models/non-swl-contact-info';
+import { StakeholderAppInviteVerifyResponse } from '../models/stakeholder-app-invite-verify-response';
+import { StakeholderInvitesCreateResponse } from '../models/stakeholder-invites-create-response';
 
 @Injectable({ providedIn: 'root' })
 export class BizMembersService extends BaseService {
@@ -277,11 +283,110 @@ export class BizMembersService extends BaseService {
     );
   }
 
+  /** Path part for operation `apiBusinessBizIdSwlBusinessManagersPost()` */
+  static readonly ApiBusinessBizIdSwlBusinessManagersPostPath = '/api/business/{bizId}/swl-business-managers';
+
+  /**
+   * Create Biz swl business manager.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdSwlBusinessManagersPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdSwlBusinessManagersPost$Response(params: ApiBusinessBizIdSwlBusinessManagersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<BizMemberResponse>> {
+    return apiBusinessBizIdSwlBusinessManagersPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Create Biz swl business manager.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdSwlBusinessManagersPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdSwlBusinessManagersPost(params: ApiBusinessBizIdSwlBusinessManagersPost$Params, context?: HttpContext): Observable<BizMemberResponse> {
+    return this.apiBusinessBizIdSwlBusinessManagersPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizMemberResponse>): BizMemberResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBusinessBizIdNonSwlBusinessManagersPost()` */
+  static readonly ApiBusinessBizIdNonSwlBusinessManagersPostPath = '/api/business/{bizId}/non-swl-business-managers';
+
+  /**
+   * Create Biz non-swl business manager.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdNonSwlBusinessManagersPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdNonSwlBusinessManagersPost$Response(params: ApiBusinessBizIdNonSwlBusinessManagersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<BizMemberResponse>> {
+    return apiBusinessBizIdNonSwlBusinessManagersPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Create Biz non-swl business manager.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdNonSwlBusinessManagersPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdNonSwlBusinessManagersPost(params: ApiBusinessBizIdNonSwlBusinessManagersPost$Params, context?: HttpContext): Observable<BizMemberResponse> {
+    return this.apiBusinessBizIdNonSwlBusinessManagersPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizMemberResponse>): BizMemberResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut()` */
+  static readonly ApiBusinessBizIdNonSwlBusinessManagersBizContactIdPutPath = '/api/business/{bizId}/non-swl-business-managers/{bizContactId}';
+
+  /**
+   * Update Non swl biz business manager.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Response(params: ApiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<BizMemberResponse>> {
+    return apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Update Non swl biz business manager.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut(params: ApiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Params, context?: HttpContext): Observable<BizMemberResponse> {
+    return this.apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizMemberResponse>): BizMemberResponse => r.body)
+    );
+  }
+
   /** Path part for operation `apiBusinessBizIdMembersBizContactIdDelete()` */
   static readonly ApiBusinessBizIdMembersBizContactIdDeletePath = '/api/business/{bizId}/members/{bizContactId}';
 
   /**
-   * Delete Biz swl controlling member.
+   * Delete Biz member.
    *
    *
    *
@@ -295,7 +400,7 @@ export class BizMembersService extends BaseService {
   }
 
   /**
-   * Delete Biz swl controlling member.
+   * Delete Biz member.
    *
    *
    *
@@ -310,71 +415,71 @@ export class BizMembersService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet()` */
-  static readonly ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGetPath = '/api/business-licence-application/controlling-member-invitation/{bizContactId}';
+  /** Path part for operation `apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet()` */
+  static readonly ApiBusinessLicenceApplicationStakeholderInvitationBizContactIdGetPath = '/api/business-licence-application/stakeholder-invitation/{bizContactId}';
 
   /**
-   * Create controlling member crc invitation for this biz contact
+   * Create stakeholder (controlling member, biz manager) crc invitation for this biz contact
    * Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet()` instead.
+   * To access only the response body, use `apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Response(params: ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberInvitesCreateResponse>> {
-    return apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet(this.http, this.rootUrl, params, context);
+  apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Response(params: ApiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<StakeholderInvitesCreateResponse>> {
+    return apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Create controlling member crc invitation for this biz contact
+   * Create stakeholder (controlling member, biz manager) crc invitation for this biz contact
    * Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet(params: ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params, context?: HttpContext): Observable<ControllingMemberInvitesCreateResponse> {
-    return this.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<ControllingMemberInvitesCreateResponse>): ControllingMemberInvitesCreateResponse => r.body)
+  apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet(params: ApiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Params, context?: HttpContext): Observable<StakeholderInvitesCreateResponse> {
+    return this.apiBusinessLicenceApplicationStakeholderInvitationBizContactIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<StakeholderInvitesCreateResponse>): StakeholderInvitesCreateResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiControllingMembersInvitesPost()` */
-  static readonly ApiControllingMembersInvitesPostPath = '/api/controlling-members/invites';
+  /** Path part for operation `apiStakeholdersInvitesPost()` */
+  static readonly ApiStakeholdersInvitesPostPath = '/api/stakeholders/invites';
 
   /**
-   * Verify if the current controlling member crc application invite is correct, and return needed info.
+   * Verify if the current stakeholder (controlling member, biz manager) crc application invite is correct, and return needed info.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiControllingMembersInvitesPost()` instead.
+   * To access only the response body, use `apiStakeholdersInvitesPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiControllingMembersInvitesPost$Response(params: ApiControllingMembersInvitesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberAppInviteVerifyResponse>> {
-    return apiControllingMembersInvitesPost(this.http, this.rootUrl, params, context);
+  apiStakeholdersInvitesPost$Response(params: ApiStakeholdersInvitesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<StakeholderAppInviteVerifyResponse>> {
+    return apiStakeholdersInvitesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Verify if the current controlling member crc application invite is correct, and return needed info.
+   * Verify if the current stakeholder (controlling member, biz manager) crc application invite is correct, and return needed info.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiControllingMembersInvitesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiStakeholdersInvitesPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiControllingMembersInvitesPost(params: ApiControllingMembersInvitesPost$Params, context?: HttpContext): Observable<ControllingMemberAppInviteVerifyResponse> {
-    return this.apiControllingMembersInvitesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<ControllingMemberAppInviteVerifyResponse>): ControllingMemberAppInviteVerifyResponse => r.body)
+  apiStakeholdersInvitesPost(params: ApiStakeholdersInvitesPost$Params, context?: HttpContext): Observable<StakeholderAppInviteVerifyResponse> {
+    return this.apiStakeholdersInvitesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<StakeholderAppInviteVerifyResponse>): StakeholderAppInviteVerifyResponse => r.body)
     );
   }
 

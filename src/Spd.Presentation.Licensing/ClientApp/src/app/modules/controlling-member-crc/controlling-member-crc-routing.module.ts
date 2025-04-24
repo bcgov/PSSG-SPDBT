@@ -4,17 +4,17 @@ import { ControllingMemberSubmissionReceivedComponent } from './components/contr
 import { ControllingMemberWizardNewComponent } from './components/controlling-member-wizard-new.component';
 import { ControllingMemberWizardUpdateComponent } from './components/controlling-member-wizard-update.component';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
-import { ControllingMemberInvitationComponent } from './controlling-member-invitation.component';
+import { StakeholderInvitationComponent } from './controlling-member-invitation.component';
 import { ControllingMemberLoginComponent } from './controlling-member-login.component';
 
 const routes: Routes = [
 	{
 		path: `${ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION}/:id`,
-		component: ControllingMemberInvitationComponent,
+		component: StakeholderInvitationComponent,
 	},
 	{
 		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION,
-		component: ControllingMemberInvitationComponent,
+		component: StakeholderInvitationComponent,
 	},
 	{
 		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN,
