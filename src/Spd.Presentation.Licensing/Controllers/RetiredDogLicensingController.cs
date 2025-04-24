@@ -49,7 +49,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceUpsertRequest"></param>
         /// <returns></returns>
         [Route("api/retired-dog-app")]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<RetiredDogAppCommandResponse> SaveRetiredDogCertApplication([FromBody][Required] RetiredDogLicenceAppUpsertRequest licenceUpsertRequest)
         {
@@ -65,7 +65,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/retired-dog-app/{licenceAppId}")]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<RetiredDogLicenceAppResponse> GetRetiredDogApplication([FromRoute][Required] Guid licenceAppId)
         {
@@ -78,7 +78,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="gdsdSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/retired-dog-app/submit")]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<RetiredDogAppCommandResponse> SubmitRetiredDogApplication([FromBody][Required] RetiredDogLicenceAppUpsertRequest gdsdSubmitRequest, CancellationToken ct)
         {
@@ -140,7 +140,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<RetiredDogAppCommandResponse> SubmitRetiredDogAppAnonymous(RetiredDogLicenceAppAnonymousSubmitRequest anonymousSubmitRequest, CancellationToken ct)
         {
-            await VerifyKeyCode();
+            //await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(anonymousSubmitRequest.DocumentKeyCodes, ct);
             var validateResult = await _retiredDogAppAnonymousSubmitRequestValidator.ValidateAsync(anonymousSubmitRequest, ct);

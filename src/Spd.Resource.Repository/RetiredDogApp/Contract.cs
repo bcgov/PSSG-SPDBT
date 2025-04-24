@@ -58,6 +58,7 @@ public record RetiredDogAppResp() : RetiredDogApp
 {
     public Guid? LicenceAppId { get; set; }
     public string? CaseNumber { get; set; }
+    public Guid ApplicantId { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
 }
 

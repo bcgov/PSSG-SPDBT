@@ -21,7 +21,11 @@ internal class RetiredDogAppRepository : DogAppBaseRepository, IRetiredDogAppRep
         {
             contact = _mapper.Map<contact>(cmd);
             contact = await _context.CreateContact(contact, null, null, ct);
-            app = PrepareNewAppDataInDbContext(cmd, contact);
+            app = _mapper.Map<spd_application>(cmd);
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            _context.AddTospd_applications(app);
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
+            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
             _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
         }
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
@@ -50,7 +54,18 @@ internal class RetiredDogAppRepository : DogAppBaseRepository, IRetiredDogAppRep
         if (cmd.LicenceAppId != null)
         {
             contact applicant = UpdateContact(cmd, cmd.ApplicantId);
-            app = PrepareUpdateAppDataInDbContext(cmd, cmd.LicenceAppId.Value, applicant);
+            await _context.SaveChangesAsync(ct);
+
+            app = _context.spd_applications
+                .Where(a => a.spd_applicationid == cmd.LicenceAppId)
+                .FirstOrDefault();
+            if (app == null)
+                throw new ArgumentException("invalid app id");
+            _mapper.Map<SaveRetiredDogAppCmd, spd_application>(cmd, app);
+            _context.UpdateObject(app);
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
+            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+            await _context.SaveChangesAsync(ct);
         }
         else
         {
@@ -62,10 +77,12 @@ internal class RetiredDogAppRepository : DogAppBaseRepository, IRetiredDogAppRep
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
+            await _context.SaveChangesAsync(ct);
         }
+
         if (app == null)
             throw new ApiException(HttpStatusCode.InternalServerError);
-        await _context.SaveChangesAsync();
+
         return new RetiredDogAppCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
 
@@ -95,9 +112,10 @@ internal class RetiredDogAppRepository : DogAppBaseRepository, IRetiredDogAppRep
         return response;
     }
 
-    private spd_application PrepareNewAppDataInDbContext(RetiredDogApp appData, contact applicant)
+    private spd_application PrepareNewAppDataInDbContext(SaveRetiredDogAppCmd appData, contact applicant)
     {
         var app = _mapper.Map<spd_application>(appData);
+        app.spd_applicationid = Guid.NewGuid();
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
@@ -117,18 +135,16 @@ internal class RetiredDogAppRepository : DogAppBaseRepository, IRetiredDogAppRep
         return applicant;
     }
 
-    private spd_application PrepareUpdateAppDataInDbContext(RetiredDogApp appData, Guid appId, contact applicant)
+    private spd_application PrepareUpdateAppDataInDbContext(SaveRetiredDogAppCmd appData, Guid appId, contact applicant)
     {
         spd_application? app = _context.spd_applications
-            .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
             .Where(a => a.spd_applicationid == appId)
             .FirstOrDefault();
         if (app == null)
             throw new ArgumentException("invalid app id");
-        _mapper.Map<RetiredDogApp, spd_application>(appData, app);
+        _mapper.Map<SaveRetiredDogAppCmd, spd_application>(appData, app);
         _context.UpdateObject(app);
-        SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
-        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+
         return app;
     }
 

@@ -50,7 +50,7 @@ internal class RetiredDogAppManager :
     public async Task<RetiredDogAppCommandResponse> Handle(RetiredDogLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
     {
         RetiredDogLicenceAppAnonymousSubmitRequest request = cmd.SubmitRequest;
-        ValidateFilesForNewApp(cmd);
+        //ValidateFilesForNewApp(cmd);
 
         //save the application
         CreateRetiredDogAppCmd createApp = _mapper.Map<CreateRetiredDogAppCmd>(request);

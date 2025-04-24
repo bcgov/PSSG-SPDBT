@@ -82,11 +82,9 @@ internal class Mappings : Profile
         .ForMember(d => d.DogGender, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<GenderOptionSet, GenderEnum>(s.spd_dogsgender)))
         ;
 
-
-
         CreateMap<SaveRetiredDogAppCmd, spd_application>()
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
-         .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
+         .ForMember(d => d.spd_applicationid, opt => opt.Ignore())
          .IncludeBase<RetiredDogApp, spd_application>();
 
         CreateMap<CreateRetiredDogAppCmd, spd_application>()
@@ -99,6 +97,7 @@ internal class Mappings : Profile
           .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
+          .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s._spd_applicantid_value))
           ;
     }
 

@@ -75,6 +75,7 @@ public record RetiredDogLicenceAppResponse : RetiredDogLicenceAppNew
     public Guid? LicenceAppId { get; set; }
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public Guid ApplicantId { get; set; }
 }
 
 public record RetiredDogAppCommandResponse

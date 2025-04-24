@@ -503,6 +503,9 @@ internal class Mappings : Profile
         CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
         CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
         CreateMap<RetiredDogLicenceAppAnonymousSubmitRequest, CreateRetiredDogAppCmd>();
+        CreateMap<RetiredDogLicenceAppUpsertRequest, SaveRetiredDogAppCmd>();
+        CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
+        CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
