@@ -94,8 +94,8 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         }
         else
         {
-            //todo: wait for retired dog data structure
-            preview.SPD_CARD = new SPD_CARD();
+            DogTeamResp team = await dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, ct);
+            preview.SPD_CARD = mapper.Map<SPD_CARD>(team);
             preview.SPD_CARD.CardType = "GUIDE-DOG-RETIRED";
         }
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
