@@ -50,7 +50,6 @@ public record CreateRetiredDogAppCmd() : RetiredDogApp
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
     public Guid? ApplicantId { get; set; }
-    public bool IsAssistanceStillRequired { get; set; }
     public Guid? DogId { get; set; }
 };
 
