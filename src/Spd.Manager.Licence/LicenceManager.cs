@@ -287,7 +287,7 @@ internal class LicenceManager :
 
     private async Task GetGDSDDogInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
     {
-        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification)
+        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification || lic.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
         {
             if (lic.GDSDTeamId != null)
             {
