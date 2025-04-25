@@ -504,6 +504,7 @@ internal class Mappings : Profile
         CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
         CreateMap<RetiredDogLicenceAppAnonymousSubmitRequest, CreateRetiredDogAppCmd>();
         CreateMap<RetiredDogLicenceAppUpsertRequest, SaveRetiredDogAppCmd>();
+        CreateMap<RetiredDogLicenceAppChangeRequest, CreateRetiredDogAppCmd>();
         CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
     }
