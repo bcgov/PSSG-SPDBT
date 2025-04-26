@@ -101,6 +101,8 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
         var app = _mapper.Map<spd_application>(appData);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             if (appData.AccreditedSchoolQuestions != null)
@@ -117,6 +119,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                 _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
                 var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                 _context.SetLink(graduation, nameof(graduation.spd_OrganizationId), school);
+                SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, graduation);
             }
         }
         else
@@ -138,6 +141,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                         _context.AddTospd_dogtrainingschools(school);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
                         _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
+                        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, school);
                     }
                 }
             }
@@ -151,6 +155,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                         _context.AddTospd_dogtrainingschools(otherTraining);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
                         _context.SetLink(otherTraining, nameof(otherTraining.spd_ApplicantId), applicant);
+                        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, otherTraining);
                     }
             }
         }
@@ -183,6 +188,9 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
         _mapper.Map<GDSDApp, spd_application>(appData, app);
         _context.UpdateObject(app);
 
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             //accredited school
@@ -213,6 +221,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                     _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
                     var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                     _context.SetLink(graduation, nameof(graduation.spd_OrganizationId), school);
+                    SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, graduation);
                 }
             }
             else
@@ -223,6 +232,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                     _context.UpdateObject(existingGraduation);
                     var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                     _context.SetLink(existingGraduation, nameof(existingGraduation.spd_OrganizationId), school);
+                    SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, existingGraduation);
                 }
             }
         }
@@ -283,6 +293,7 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
                             _context.AddTospd_dogtrainingschools(school);
                             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
                             _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
+                            SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, school);
                         }
                         else
                         {

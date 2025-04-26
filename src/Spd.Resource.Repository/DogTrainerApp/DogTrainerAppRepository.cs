@@ -89,6 +89,8 @@ internal class DogTrainerAppRepository : DogAppBaseRepository, IDogTrainerAppRep
         _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
         var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolId).FirstOrDefault();
         _context.SetLink(trainEvent, nameof(trainEvent.spd_OrganizationId), school);
+        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, trainEvent);
+
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         return app;
