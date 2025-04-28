@@ -34,7 +34,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			>
 				<mat-step [editable]="false" [completed]="true">
 					<ng-template matStepLabel
-						>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>election</ng-template
+						>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 					>
 				</mat-step>
 
