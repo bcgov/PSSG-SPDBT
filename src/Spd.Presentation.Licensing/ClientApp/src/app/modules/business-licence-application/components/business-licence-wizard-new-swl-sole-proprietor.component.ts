@@ -114,6 +114,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 		</ng-container>
 
 		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
 			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
 		</ng-template>
 	`,
