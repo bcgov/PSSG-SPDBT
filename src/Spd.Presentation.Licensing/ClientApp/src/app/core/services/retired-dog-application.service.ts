@@ -47,10 +47,11 @@ import { FileUtilService, SpdFile } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
-// export interface RetiredDogRequestExt extends GdsdTeamLicenceAppUpsertRequest RetiredDogRequest { // TODO RetiredDogRequestExt, RetiredDogChangeRequestExt
+// export interface RetiredDogRequestExt extends RetiredDogLicenceAppAnonymousSubmitRequest {
+// 	// TODO RetiredDogRequestExt, RetiredDogChangeRequestExt
 // 	documentInfos?: Array<Document> | null;
 // }
-// export interface RetiredDogChangeRequestExt extends RetiredDogChangeRequest {
+// export interface RetiredDogChangeRequestExt extends RetiredDogLicenceAppChangeRequest {
 // 	documentInfos?: Array<Document> | null;
 // }
 
@@ -74,6 +75,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		personalInformationData: this.personalInformationFormGroup,
 		dogGdsdCertificateData: this.dogGdsdCertificateFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
 		dogRetiredData: this.dogRetiredForm,
@@ -131,6 +133,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			this.personalInformationFormGroup.valid &&
 			dogGdsdCertificateDataValid &&
 			this.photographOfYourselfFormGroup.valid &&
+			this.governmentPhotoIdFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
 		);
 	}
@@ -641,7 +644,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -670,7 +673,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -745,7 +748,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const body = this.getSaveBodyBaseNew(rdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -810,7 +813,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		delete body.documentInfos;
 
-		const originalLicenceData = rdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		const originalLicenceData = rdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };

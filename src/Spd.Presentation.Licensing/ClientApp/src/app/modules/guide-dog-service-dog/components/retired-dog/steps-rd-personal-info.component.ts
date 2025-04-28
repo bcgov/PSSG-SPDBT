@@ -3,6 +3,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepRdGdsdCertficateComponent } from './step-rd-gdsd-certificate.component';
+import { StepRdGovermentPhotoIdComponent } from './step-rd-goverment-photo-id.component';
 import { StepRdMailingAddressComponent } from './step-rd-mailing-address.component';
 import { StepRdPersonalInfoAnonymousComponent } from './step-rd-personal-info-anonymous.component';
 import { StepRdPersonalInfoComponent } from './step-rd-personal-info.component';
@@ -70,7 +71,7 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_PHOTO_OF_YOURSELF)"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
 					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
 				></app-wizard-footer>
 			</mat-step>
@@ -83,8 +84,21 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_PHOTO_OF_YOURSELF_RENEW)"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
 					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-rd-government-id></app-step-rd-government-id>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_GOV_ID)"
+					(nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -99,6 +113,7 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_GDSD_CERTIFICATE = 2;
 	readonly STEP_PHOTO_OF_YOURSELF = 3;
 	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 4;
+	readonly STEP_GOV_ID = 5;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -111,6 +126,7 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 	@ViewChild(StepRdPhotographOfYourselfComponent) photoNew!: StepRdPhotographOfYourselfComponent;
 	@ViewChild(StepRdPhotographOfYourselfRenewComponent) photoRenew!: StepRdPhotographOfYourselfRenewComponent;
 	@ViewChild(StepRdMailingAddressComponent) mailingAddress!: StepRdMailingAddressComponent;
+	@ViewChild(StepRdGovermentPhotoIdComponent) govPhotoIdComponent!: StepRdGovermentPhotoIdComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -129,6 +145,8 @@ export class StepsRdPersonalInfoComponent extends BaseWizardStepComponent {
 				return this.photoNew.isFormValid();
 			case this.STEP_PHOTO_OF_YOURSELF_RENEW:
 				return this.photoRenew.isFormValid();
+			case this.STEP_GOV_ID:
+				return this.govPhotoIdComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

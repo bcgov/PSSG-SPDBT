@@ -144,7 +144,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		this.resetModelFlags();
 		this.resetCommon();
 
-		this.consentAndDeclarationFormGroup.reset();
+		this.consentAndDeclarationDtFormGroup.reset();
 		this.dogTrainerModelFormGroup.reset();
 
 		console.debug('RESET', this.initialized, this.dogTrainerModelFormGroup.value);
@@ -486,7 +486,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationDtFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 
 		if (body.applicationTypeCode == ApplicationTypeCode.Renewal) {

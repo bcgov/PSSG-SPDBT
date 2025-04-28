@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-rd-consent',
@@ -29,6 +30,21 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									>This is required
 								</mat-error>
 							</div>
+						</div>
+
+						<div class="col-xl-6 col-lg-6 col-md-12 mt-4">
+							<mat-form-field>
+								<mat-label>Name of Applicant or Legal Guardian</mat-label>
+								<input
+									matInput
+									formControlName="applicantOrLegalGuardianName"
+									maxlength="80"
+									[errorStateMatcher]="matcher"
+								/>
+								<mat-error *ngIf="form.get('applicantOrLegalGuardianName')?.hasError('required')">
+									This is required
+								</mat-error>
+							</mat-form-field>
 						</div>
 
 						<div class="row">
@@ -124,6 +140,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 })
 export class StepRdConsentComponent implements LicenceChildStepperStepComponent {
 	check1Name = '';
+	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.retiredDogApplicationService.consentAndDeclarationFormGroup;
 

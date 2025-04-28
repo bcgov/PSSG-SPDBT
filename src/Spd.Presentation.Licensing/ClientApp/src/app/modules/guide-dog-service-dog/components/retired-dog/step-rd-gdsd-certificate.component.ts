@@ -18,8 +18,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Certificate #</mat-label>
-								<input matInput formControlName="gdsdCertificateNumber" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('gdsdCertificateNumber')?.hasError('required')">This is required</mat-error>
+								<input
+									matInput
+									formControlName="currentGDSDCertificateNumber"
+									[errorStateMatcher]="matcher"
+									maxlength="40"
+								/>
+								<mat-error *ngIf="form.get('currentGDSDCertificateNumber')?.hasError('required')"
+									>This is required</mat-error
+								>
 							</mat-form-field>
 						</div>
 

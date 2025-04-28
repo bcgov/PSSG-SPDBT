@@ -150,6 +150,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
+		delete personalInformationData.hasBcscNameChanged;
+
 		if (personalInformationData.dateOfBirth) {
 			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 		}

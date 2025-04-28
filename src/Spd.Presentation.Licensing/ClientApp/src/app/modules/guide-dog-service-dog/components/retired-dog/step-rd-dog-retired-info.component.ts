@@ -18,7 +18,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<input
 								matInput
 								[matDatepicker]="picker"
-								formControlName="dateOfRetirement"
+								formControlName="dogRetiredDate"
 								[max]="maxToday"
 								[min]="minDate"
 								[errorStateMatcher]="matcher"
@@ -26,20 +26,20 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 							<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 							<!-- We always want the date format hint to display -->
-							<mat-hint *ngIf="!dateOfRetirement.invalid">Date format YYYY-MM-DD</mat-hint>
+							<mat-hint *ngIf="!dogRetiredDate.invalid">Date format YYYY-MM-DD</mat-hint>
 							<mat-error
 								*ngIf="
-									(form.get('dateOfRetirement')?.dirty || form.get('dateOfRetirement')?.touched) &&
-									form.get('dateOfRetirement')?.invalid
+									(form.get('dogRetiredDate')?.dirty || form.get('dogRetiredDate')?.touched) &&
+									form.get('dogRetiredDate')?.invalid
 								"
 							>
 								<span class="hint-inline">Date format YYYY-MM-DD</span>
 							</mat-error>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('matDatepickerMin')">
+							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('matDatepickerMin')">
 								Invalid date of retirement
 							</mat-error>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('matDatepickerMax')">
+							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('matDatepickerMax')">
 								This must be on or before {{ maxToday | formatDate }}
 							</mat-error>
 						</mat-form-field>
@@ -83,7 +83,7 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
-	public get dateOfRetirement(): FormControl {
-		return this.form.get('dateOfRetirement') as FormControl;
+	public get dogRetiredDate(): FormControl {
+		return this.form.get('dogRetiredDate') as FormControl;
 	}
 }
