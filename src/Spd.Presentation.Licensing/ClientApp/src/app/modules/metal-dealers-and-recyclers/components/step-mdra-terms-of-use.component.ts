@@ -65,6 +65,10 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	`,
 	styles: [
 		`
+			li {
+				margin-bottom: 0.5rem !important;
+			}
+
 			.conditions {
 				max-height: 400px;
 				overflow-y: auto;

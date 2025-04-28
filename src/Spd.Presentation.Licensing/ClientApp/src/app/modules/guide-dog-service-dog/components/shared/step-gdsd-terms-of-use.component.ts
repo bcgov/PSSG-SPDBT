@@ -34,7 +34,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 
 							<ol>
 								<div class="fs-5 terms-subtitle">Disclaimer:</div>
-								<li>
+								<li class="mb-2">
 									Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 									Site in general. However, you are encouraged to refer to the <i>Guide Dog and Service Dog Act</i> and
 									other official information materials before submitting an online application for a Guide Dog or
@@ -255,6 +255,10 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	`,
 	styles: [
 		`
+			li {
+				margin-bottom: 0.5rem !important;
+			}
+
 			.conditions {
 				max-height: 400px;
 				overflow-y: auto;
