@@ -1867,37 +1867,44 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		};
 
 		// If an associatedLicence exists, use the dog data from here
-		if (associatedLicence?.useDogs) {
-			associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
-				const aFile = this.fileUtilService.dummyFile(doc);
-				attachmentsDogs.push(aFile);
-			});
+		if (associatedLicence) {
+			const useDogs = associatedLicence.useDogs;
+			const useDogsYesNo = this.utilService.booleanToBooleanType(useDogs);
+
+			if (useDogs) {
+				associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					attachmentsDogs.push(aFile);
+				});
+			}
 
 			dogsAuthorizationData = {
-				useDogs: BooleanTypeCode.Yes,
+				useDogs: useDogsYesNo,
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
-					isDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
-					isDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+					isDogsPurposeDetectionDrugs: useDogs ? associatedLicence?.isDogsPurposeDetectionDrugs : null,
+					isDogsPurposeDetectionExplosives: useDogs ? associatedLicence?.isDogsPurposeDetectionExplosives : null,
+					isDogsPurposeProtection: useDogs ? associatedLicence?.isDogsPurposeProtection : null,
 				},
-				attachments: attachmentsDogs,
+				attachments: useDogs ? attachmentsDogs : [],
 			};
-		}
 
-		// If an associatedLicence exists, use the restraint data from here
-		if (associatedLicence?.carryAndUseRestraints) {
+			const carryAndUseRestraints = associatedLicence.carryAndUseRestraints;
+			const carryAndUseRestraintsYesNo = this.utilService.booleanToBooleanType(carryAndUseRestraints);
+
 			let carryAndUseRestraintsDocument: LicenceDocumentTypeCode | null = null;
-			associatedLicence.restraintsDocumentInfos?.forEach((doc: Document) => {
-				carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? null;
+			if (carryAndUseRestraints) {
+				associatedLicence.restraintsDocumentInfos?.forEach((doc: Document) => {
+					carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? null;
 
-				const aFile = this.fileUtilService.dummyFile(doc);
-				attachmentsRestraints.push(aFile);
-			});
+					const aFile = this.fileUtilService.dummyFile(doc);
+					attachmentsRestraints.push(aFile);
+				});
+			}
 
 			restraintsAuthorizationData = {
-				carryAndUseRestraints: BooleanTypeCode.Yes,
+				carryAndUseRestraints: carryAndUseRestraintsYesNo,
 				carryAndUseRestraintsDocument,
-				attachments: attachmentsRestraints,
+				attachments: carryAndUseRestraints ? attachmentsRestraints : [],
 			};
 		}
 
