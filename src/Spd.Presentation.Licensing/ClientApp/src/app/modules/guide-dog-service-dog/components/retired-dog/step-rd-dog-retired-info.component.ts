@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -25,6 +25,16 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							/>
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 							<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+							<!-- We always want the date format hint to display -->
+							<mat-hint *ngIf="!dateOfRetirement.invalid">Date format YYYY-MM-DD</mat-hint>
+							<mat-error
+								*ngIf="
+									(form.get('dateOfRetirement')?.dirty || form.get('dateOfRetirement')?.touched) &&
+									form.get('dateOfRetirement')?.invalid
+								"
+							>
+								<span class="hint-inline">Date format YYYY-MM-DD</span>
+							</mat-error>
 							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('matDatepickerMin')">
 								Invalid date of retirement
@@ -38,7 +48,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.hint-inline {
+				font-size: 12px;
+				color: rgba(0, 0, 0, 0.6);
+			}
+		`,
+	],
 	standalone: false,
 })
 export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepComponent {
@@ -65,5 +82,8 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	public get dateOfRetirement(): FormControl {
+		return this.form.get('dateOfRetirement') as FormControl;
 	}
 }

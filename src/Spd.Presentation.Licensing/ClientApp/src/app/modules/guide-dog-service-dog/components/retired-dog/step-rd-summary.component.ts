@@ -70,7 +70,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 									<div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
 									<div class="row mt-0">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Certificate #</div>
+											<div class="summary-text-data">
+												{{ gdsdCertificateNumber | default }}
+											</div>
+										</div>
 										<div class="col-lg-8 col-md-12">
+											<div class="text-label d-block text-muted">Guide or Service Dog Certificate</div>
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let doc of gdsdCertificateAttachments; let i = index">
@@ -255,6 +262,9 @@ export class StepRdSummaryComponent implements OnInit, LicenceChildStepperStepCo
 		return this.retiredDogApplicationService.getSummaryphoneNumber(this.retiredDogModelData);
 	}
 
+	get gdsdCertificateNumber(): string {
+		return this.retiredDogApplicationService.getSummarygdsdCertificateNumber(this.retiredDogModelData);
+	}
 	get gdsdCertificateAttachments(): File[] | null {
 		return this.retiredDogApplicationService.getSummarygdsdCertificateAttachments(this.retiredDogModelData);
 	}

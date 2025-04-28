@@ -4,7 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, RetiredDogAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -155,38 +156,38 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		// if (this.isLoggedIn) {
-		// 	if (this.isNew) {
-		// 		this.retiredDogApplicationService.submitLicenceNewAuthenticated().subscribe({
-		// 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-		// 			},
-		// 			error: (error: any) => {
-		// 				console.log('An error occurred during save', error);
-		// 			},
-		// 		});
-		// 		return;
-		// 	}
-		// 	this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
-		// 		next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during save', error);
-		// 		},
-		// 	});
-		// 	return;
-		// }
-		// this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		if (this.isLoggedIn) {
+			if (this.isNew) {
+				this.retiredDogApplicationService.submitLicenceNewAuthenticated().subscribe({
+					next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+					},
+				});
+				return;
+			}
+			this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+				next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+			return;
+		}
+		this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

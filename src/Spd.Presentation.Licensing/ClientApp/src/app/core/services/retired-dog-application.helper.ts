@@ -87,7 +87,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
 		const mailingAddressData = retiredDogModelFormGroup.mailingAddressData;
 		const dogInfoData = retiredDogModelFormGroup.dogInfoData;
-		const dogRetiredData = retiredDogModelFormGroup.retiredDogData;
+		const dogRetiredData = retiredDogModelFormGroup.dogRetiredData;
 		const dogLivingData = retiredDogModelFormGroup.dogLivingData;
 		const originalLicenceData = retiredDogModelFormGroup.originalLicenceData;
 		const documentInfos: Array<Document> = [];
@@ -252,6 +252,9 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return retiredDogModelData.dogLivingData.isContinueToLiveWithDog ?? '';
 	}
 
+	getSummarygdsdCertificateNumber(retiredDogModelData: any): string {
+		return retiredDogModelData.dogGdsdCertificateData.gdsdCertificateNumber ?? '';
+	}
 	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
 		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
 	}
