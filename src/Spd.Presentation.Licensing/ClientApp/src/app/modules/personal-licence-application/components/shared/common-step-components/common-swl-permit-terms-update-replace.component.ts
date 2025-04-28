@@ -269,7 +269,7 @@ import { UtilService } from '@app/core/services/util.service';
 						color="primary"
 						class="large w-100"
 						aria-label="Download Terms of Use document"
-						download="Security Services Applicant Terms"
+						download="Security Services Applicant Terms of Use"
 						[href]="downloadFilePath"
 					>
 						<mat-icon>file_download</mat-icon>Terms of Use
