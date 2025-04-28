@@ -1873,7 +1873,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						isDogsPurposeDetectionExplosives: useDogs ? associatedLicence?.isDogsPurposeDetectionExplosives : null,
 						isDogsPurposeProtection: useDogs ? associatedLicence?.isDogsPurposeProtection : null,
 					},
-					attachments: useDogs ? dogAuthorizationAttachments : null,
+					attachments: useDogs ? dogAuthorizationAttachments : [],
 				};
 			} else {
 				// otherwise, use the dog data from the application
@@ -1888,7 +1888,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						isDogsPurposeDetectionExplosives: useDogs ? businessLicenceAppl?.isDogsPurposeDetectionExplosives : null,
 						isDogsPurposeProtection: useDogs ? businessLicenceAppl?.isDogsPurposeProtection : null,
 					},
-					attachments: useDogs ? dogAuthorizationAttachments : null,
+					attachments: useDogs ? dogAuthorizationAttachments : [],
 				};
 			}
 		}
