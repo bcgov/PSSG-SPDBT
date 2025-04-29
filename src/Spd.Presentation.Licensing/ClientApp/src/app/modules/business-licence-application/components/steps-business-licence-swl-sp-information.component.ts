@@ -6,6 +6,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { StepBusinessLicenceBusinessAddressComponent } from './step-business-licence-business-address.component';
 import { StepBusinessLicenceBusinessInformationComponent } from './step-business-licence-business-information.component';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
+import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 
@@ -118,7 +119,24 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 					(cancelAndExit)="onCancelAndExit()"
 					cancelAndExitLabel="Cancel"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_LIABILITY)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-business-licence-employees
+					[isBusinessLicenceSoleProprietor]="true"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-employees>
+
+				<app-wizard-footer
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_EMPLOYEES)"
+					(cancelAndExit)="onCancelAndExit()"
+					cancelAndExitLabel="Cancel"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_LICENCE_EMPLOYEES)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -134,6 +152,7 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 	readonly STEP_LICENCE_ADDRESS = 3;
 	readonly STEP_LICENCE_BRANDING = 4;
 	readonly STEP_LICENCE_LIABILITY = 5;
+	readonly STEP_LICENCE_EMPLOYEES = 6;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isSoleProprietorSimultaneousFlow!: boolean;
@@ -147,6 +166,7 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
+	@ViewChild(StepBusinessLicenceEmployeesComponent) stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
 
 	constructor(
 		utilService: UtilService,
@@ -173,6 +193,8 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 				return this.stepCompanyBrandingComponent.isFormValid();
 			case this.STEP_LICENCE_LIABILITY:
 				return this.stepLiabilityComponent.isFormValid();
+			case this.STEP_LICENCE_EMPLOYEES:
+				return this.stepEmployeesComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

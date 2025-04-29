@@ -33,7 +33,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 									decision-making authority that allows them to direct the operations of the business.
 								</li>
 								<li class="mb-2">
-									Your business must have a manager who is at least 19, and who is responsible for the day-today
+									Your business must have a manager who is at least 19, and who is responsible for the day-to-day
 									supervision of your licensed security workers.
 								</li>
 								<li class="mb-2">

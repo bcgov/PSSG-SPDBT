@@ -437,7 +437,10 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			+businessMembersFormGroup.get('membersWithSwl')?.value.length +
 			+businessMembersFormGroup.get('membersWithoutSwl')?.value.length;
 
-		return { minCountValid: total != 0, maxCountValid: total > 0 && total <= maxCount };
+		const minCountValid = total > 0;
+		const maxCountValid = total <= 0 || (total > 0 && total <= maxCount);
+
+		return { minCountValid, maxCountValid };
 	}
 
 	/**
