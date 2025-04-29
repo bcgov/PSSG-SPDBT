@@ -44,7 +44,9 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
 
         public async Task CreateControllingMemberInviteAsync(ControllingMemberInviteCreateCmd createInviteCmd, CancellationToken ct)
         {
-            spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
+            spd_portaluser? user = null;
+            if (createInviteCmd.CreatedByUserId != null)
+                user = await _dynaContext.GetUserById((Guid)createInviteCmd.CreatedByUserId, ct);
             account? biz = await _dynaContext.GetOrgById(createInviteCmd.BizId, ct);
             spd_businesscontact? bizContact = await _dynaContext.GetBizContactById(createInviteCmd.BizContactId, ct);
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createInviteCmd);
@@ -52,7 +54,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.BizPortalControllingMemberInviteLink}{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), biz);
-            _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
+            if (user != null) _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_BusinessContact), bizContact);
             spd_servicetype? servicetype = _dynaContext.LookupServiceType(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             if (servicetype != null)
