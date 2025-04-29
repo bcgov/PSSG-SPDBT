@@ -60,7 +60,7 @@ internal abstract class LicenceAppManagerBase
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
 
         //applications with portal origin type are considered authenticated, otherwise not.
-        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
+        bool isAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
         bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
         ApplicationStatusEnum status;
 
@@ -68,7 +68,7 @@ internal abstract class LicenceAppManagerBase
         {
             if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
             {
-                if (isNewOrRenewal && !IsAuthenticated)
+                if (isNewOrRenewal && !isAuthenticated)
                     status = ApplicationStatusEnum.ApplicantVerification;
                 else
                 {
@@ -88,7 +88,7 @@ internal abstract class LicenceAppManagerBase
 
             }
             else
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+                status = isNewOrRenewal && !isAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         }
         else
             status = ApplicationStatusEnum.PaymentPending;
