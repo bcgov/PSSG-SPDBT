@@ -1,5 +1,3 @@
-using Spd.Resource.Repository.Application;
-
 namespace Spd.Resource.Repository.LicApp;
 public partial interface ILicAppRepository
 {
@@ -8,7 +6,7 @@ public partial interface ILicAppRepository
     public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct, LicenceTermEnum? term = null);
 }
 
-public record LicenceAppQuery(Guid? ApplicantId, Guid? BizId, List<ServiceTypeEnum>? ValidServiceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
+public record LicenceAppQuery(Guid? ApplicantId, Guid? BizId, List<ServiceTypeEnum>? ValidServiceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus, Guid? ApplicationId = null);
 
 public record LicenceAppListResp
 {

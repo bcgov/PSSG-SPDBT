@@ -2,7 +2,6 @@
 using MediatR;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -11,8 +10,6 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.PersonLicApplication;
-using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -32,11 +29,7 @@ internal class BizMemberManager :
         IRequestHandler<DeleteBizMemberCommand, Unit>,
         IBizMemberManager
 {
-    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
-    private readonly ITaskRepository _taskRepository;
-    private readonly IBizRepository _bizRepository;
-    private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
     private readonly IControllingMemberCrcRepository _cmCrcRepository;
 
@@ -81,7 +74,8 @@ internal class BizMemberManager :
                     ApplicationPortalStatusEnum.Draft,
                     ApplicationPortalStatusEnum.Incomplete,
                     ApplicationPortalStatusEnum.VerifyIdentity,
-                    ApplicationPortalStatusEnum.AwaitingPayment
+                    ApplicationPortalStatusEnum.AwaitingPayment,
+                    ApplicationPortalStatusEnum.InProgress,
                 }),
             cancellationToken);
         LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
