@@ -193,6 +193,13 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</div>
 									</ng-container>
+
+									<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<app-common-business-employees-summary
+											[businessModelData]="businessModelData"
+										></app-common-business-employees-summary>
+									</ng-container>
 								</div>
 							</mat-expansion-panel>
 
@@ -447,19 +454,9 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small mb-2">Employees</div>
-										<div class="row summary-text-data mt-0">
-											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
-												<ng-container *ngFor="let employee of employeesList; let i = index">
-													<div class="col-xl-6 col-lg-12">
-														<ul class="m-0">
-															<li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
-														</ul>
-													</div>
-												</ng-container>
-											</ng-container>
-											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
-										</div>
+										<app-common-business-employees-summary
+											[businessModelData]="businessModelData"
+										></app-common-business-employees-summary>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading-small">Corporate Registry Documents</div>
@@ -490,18 +487,38 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									</mat-expansion-panel-header>
 
 									<div class="panel-body">
-										<div class="row summary-text-data mt-3">
-											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
-												<ng-container *ngFor="let employee of employeesList; let i = index">
-													<div class="col-xl-6 col-lg-12">
-														<ul class="m-0">
-															<li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
-														</ul>
-													</div>
-												</ng-container>
-											</ng-container>
-											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
-										</div>
+										<app-common-business-employees-summary
+											[businessModelData]="businessModelData"
+										></app-common-business-employees-summary>
+									</div>
+								</mat-expansion-panel>
+							</ng-container>
+
+							<ng-container *ngIf="!isSoleProprietorSimultaneousFlow && isBusinessLicenceSoleProprietor">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Employees</div>
+												<button
+													*ngIf="showEditButton"
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 3"
+													aria-label="Go to Step 3"
+													(click)="$event.stopPropagation(); onEditStep(2)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+
+									<div class="panel-body">
+										<app-common-business-employees-summary
+											[businessModelData]="businessModelData"
+										></app-common-business-employees-summary>
 									</div>
 								</mat-expansion-panel>
 							</ng-container>
