@@ -45,7 +45,8 @@ internal abstract class LicenceAppManagerBase
         CancellationToken ct,
         bool HasSwl90DayLicence = false,
         Guid? companionAppId = null,
-        ApplicationOriginTypeCode? companionAppOrigin = null)
+        ApplicationOriginTypeCode? companionAppOrigin = null,
+        Guid? cmParentAppId = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -66,7 +67,26 @@ internal abstract class LicenceAppManagerBase
         if (licenceFee == null || licenceFee.Amount == 0)
         {
             if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
+            {
+                if (isNewOrRenewal && !IsAuthenticated)
+                    status = ApplicationStatusEnum.ApplicantVerification;
+                else
+                {
+                    if (cmParentAppId != null)//parent application status is inProgress, then set status to be Submitted.
+                    {
+                        var parentApp = (await _licAppRepository.QueryAsync(new LicenceAppQuery(null, null, null, null, cmParentAppId), ct)).First();
+                        if (parentApp.ApplicationPortalStatusCode == ApplicationPortalStatusEnum.InProgress)
+                            status = ApplicationStatusEnum.Submitted;
+                        else
+                            status = ApplicationStatusEnum.PaymentPending;
+                    }
+                    else
+                    {
+                        status = ApplicationStatusEnum.PaymentPending;
+                    }
+                }
+
+            }
             else
                 status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         }
