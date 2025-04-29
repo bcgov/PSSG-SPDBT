@@ -126,6 +126,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 		</div>
 
 		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
 			<ng-container *ngIf="isSoleProprietor">
 				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
 			</ng-container>
