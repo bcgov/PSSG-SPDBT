@@ -110,6 +110,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 		</ng-container>
 
 		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
 			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
 		</ng-template>
 	`,
@@ -195,17 +196,8 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAndConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -213,17 +205,8 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAndConfirm?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextPayStep(): void {
@@ -268,6 +251,18 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 					}
 				}
 			});
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_BUSINESS_INFORMATION:
+				return this.stepsBusinessInformationComponent;
+			case this.STEP_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewAndConfirm;
+		}
+		return null;
 	}
 
 	private saveStep(stepper?: MatStepper): void {

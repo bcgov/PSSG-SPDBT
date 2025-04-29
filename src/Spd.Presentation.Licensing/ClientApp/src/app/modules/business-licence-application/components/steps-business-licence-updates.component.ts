@@ -17,7 +17,7 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onCategoryNextStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -32,18 +32,19 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 						(nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
 					></app-wizard-footer>
 				</mat-step>
-
-				<mat-step>
-					<app-step-business-licence-employees
-						[applicationTypeCode]="applicationTypeCodes.Update"
-					></app-step-business-licence-employees>
-
-					<app-wizard-footer
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_MANAGER)"
-					></app-wizard-footer>
-				</mat-step>
 			</ng-container>
+
+			<mat-step>
+				<app-step-business-licence-employees
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[applicationTypeCode]="applicationTypeCodes.Update"
+				></app-step-business-licence-employees>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -53,6 +54,7 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;
 	readonly STEP_MANAGER = 1;
+	readonly STEP_EMPLOYEES = 2;
 
 	applicationTypeCodes = ApplicationTypeCode;
 
@@ -72,17 +74,11 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 				return this.stepLicenceCategoryComponent.isFormValid();
 			case this.STEP_MANAGER:
 				return this.stepManagerComponent.isFormValid();
+			case this.STEP_EMPLOYEES:
+				return true;
 			default:
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	onCategoryNextStep(): void {
-		if (this.isBusinessLicenceSoleProprietor) {
-			this.onStepNext(this.STEP_LICENCE_CATEGORY);
-		} else {
-			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
-		}
 	}
 }
