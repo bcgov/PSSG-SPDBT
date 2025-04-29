@@ -72,7 +72,7 @@ internal abstract class LicenceAppManagerBase
                     status = ApplicationStatusEnum.ApplicantVerification;
                 else
                 {
-                    if (cmParentAppId != null)//parent application status is inProgress, then set status to be Submitted.
+                    if (cmParentAppId != null)//parent application status is inProgress, then set status to be Submitted. spdbt-4009
                     {
                         var parentApp = (await _licAppRepository.QueryAsync(new LicenceAppQuery(null, null, null, null, cmParentAppId), ct)).First();
                         if (parentApp.ApplicationPortalStatusCode == ApplicationPortalStatusEnum.InProgress)
