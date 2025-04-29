@@ -489,8 +489,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
-		console.log('***************** isBusinessLicenceSoleProprietor', this.isBusinessLicenceSoleProprietor);
-
 		if (this.isBusinessLicenceSoleProprietor) {
 			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
 			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
@@ -503,15 +501,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			(item: SelectOptions) => item.code as WorkerCategoryTypeCode
 		);
 
-		console.log('***************** originalCategoryCodes', this.originalCategoryCodes);
-		console.log('***************** availableCategoryCodes', this.availableCategoryCodes);
-
 		this.validCategoryList = this.businessApplicationService.getValidBlCategoryList(
 			this.categoryList,
 			this.availableCategoryCodes
 		);
-
-		console.log('***************** validCategoryList', this.validCategoryList);
 
 		this.setupCategoryMessages();
 
