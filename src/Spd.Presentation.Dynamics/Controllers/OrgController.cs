@@ -1,8 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Licence;
 using Spd.Manager.Screening;
 using Spd.Utilities.Shared;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
 namespace Spd.Presentation.Dynamics.Controllers;
@@ -45,5 +47,24 @@ public class OrgController : SpdControllerBase
         }
 
         return await _mediator.Send(new OrgInvitationLinkCreateCommand(orgId, $"{screeningHostUrl}{screeningOrgPath}"), ct);
+    }
+
+    /// <summary>
+    /// Create stakeholder (controlling member, biz manager) crc invitation for this biz contact
+    /// Example: http://localhost:5114/api/business-stakeholder-invitation/{bizContactId}
+    /// </summary>
+    /// <param name="bizContactId"></param>
+    /// <param name="inviteType"></param>
+    /// <returns></returns>
+    [Route("api/business-stakeholder-invitation/{bizContactId}")]
+    [HttpGet]
+    public async Task<StakeholderInvitesCreateResponse> CreateBizStakeHolderCrcAppInvitation([FromRoute][Required] Guid bizContactId,
+        [FromQuery] StakeholderAppInviteTypeCode inviteType = StakeholderAppInviteTypeCode.New)
+    {
+        string? hostUrl = _configuration.GetValue<string>("LicensingHostUrl");
+        if (hostUrl == null)
+            throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+        var inviteCreateCmd = new BizStakeholderNewInviteCommand(bizContactId, null, hostUrl, inviteType);
+        return await _mediator.Send(inviteCreateCmd);
     }
 }

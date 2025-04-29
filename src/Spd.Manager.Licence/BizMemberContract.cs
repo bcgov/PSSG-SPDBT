@@ -16,7 +16,7 @@ public interface IBizMemberManager
     public Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizStakeholderInviteCommand command, CancellationToken ct);
 }
 
-public record BizStakeholderNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl, StakeholderAppInviteTypeCode InviteTypeCode = StakeholderAppInviteTypeCode.New) : IRequest<StakeholderInvitesCreateResponse>;
+public record BizStakeholderNewInviteCommand(Guid BizContactId, Guid? UserId, string HostUrl, StakeholderAppInviteTypeCode InviteTypeCode = StakeholderAppInviteTypeCode.New) : IRequest<StakeholderInvitesCreateResponse>;
 public record VerifyBizStakeholderInviteCommand(string InviteEncryptedCode) : IRequest<StakeholderAppInviteVerifyResponse>;
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
 public record GetNonSwlBizMemberCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
