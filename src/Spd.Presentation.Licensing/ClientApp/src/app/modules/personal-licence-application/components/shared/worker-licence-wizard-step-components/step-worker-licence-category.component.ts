@@ -3,8 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -28,12 +26,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<app-alert type="info" icon="info">
 									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
 									categories.
-								</app-alert>
-							</div>
-
-							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories && isSoleProprietorSimultaneousFlow">
-								<app-alert type="danger" icon="dangerous">
-									{{ invalidSoleProprietorCategoriesMsg }}
 								</app-alert>
 							</div>
 
@@ -645,9 +637,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
-	showInvalidSoleProprietorCategories = false;
-	readonly invalidSoleProprietorCategoriesMsg = SPD_CONSTANTS.messages.invalidSoleProprietorCategories;
-
 	categoryArmouredCarGuardFormGroup: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.workerApplicationService.categoryBodyArmourSalesFormGroup;
 	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
@@ -726,7 +715,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	constructor(
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
-		private commonApplicationService: CommonApplicationService,
 		private workerApplicationService: WorkerApplicationService
 	) {}
 
@@ -834,7 +822,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 
 			this.form.reset();
 			this.isCategoryListEmpty = false;
-			this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 		}
 	}
 
@@ -972,7 +959,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 
 					this.validCategoryList = this.workerApplicationService.getValidSwlCategoryList(this.categoryList);
 					this.isCategoryListEmpty = false;
-					this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
 				}
 			});
 	}
@@ -1038,9 +1024,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
 
-		this.showInvalidSoleProprietorCategories = this.isInvalidSoleProprietorCategories();
-
-		return isValid && !this.showInvalidSoleProprietorCategories;
+		return isValid;
 	}
 
 	private setupInitialExpansionPanel(): void {
@@ -1097,13 +1081,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				this.blockSecurityGuardUnderSupervision = true;
 			}
 		}
-	}
-
-	isInvalidSoleProprietorCategories(): boolean {
-		const isEmpty = this.categoryList.length === 0;
-		const currentCategoryCodes = this.categoryList as Array<WorkerCategoryTypeCode>;
-		const isValidSpCategories = this.commonApplicationService.isValidSoleProprietorSwlCategories(currentCategoryCodes);
-		return this.isSoleProprietorSimultaneousFlow && !isEmpty && !isValidSpCategories;
 	}
 
 	get categoryList(): Array<string> {
