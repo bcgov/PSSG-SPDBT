@@ -62,7 +62,6 @@ public class OrgController : SpdControllerBase
         [FromQuery] StakeholderAppInviteTypeCode inviteType = StakeholderAppInviteTypeCode.New)
     {
         string? hostUrl = _configuration.GetValue<string>("LicensingHostUrl");
-        string? licensingStakeHolderInvitePath = _configuration.GetValue<string>("LicensingBizStakeHolderInvitationPath");
         if (hostUrl == null)
             throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
         var inviteCreateCmd = new BizStakeholderNewInviteCommand(bizContactId, null, hostUrl, inviteType);
