@@ -61,7 +61,8 @@ public class OrgController : SpdControllerBase
     public async Task<StakeholderInvitesCreateResponse> CreateBizStakeHolderCrcAppInvitation([FromRoute][Required] Guid bizContactId,
         [FromQuery] StakeholderAppInviteTypeCode inviteType = StakeholderAppInviteTypeCode.New)
     {
-        string? hostUrl = _configuration.GetValue<string>("HostUrl");
+        string? hostUrl = _configuration.GetValue<string>("LicensingHostUrl");
+        string? licensingStakeHolderInvitePath = _configuration.GetValue<string>("LicensingBizStakeHolderInvitationPath");
         if (hostUrl == null)
             throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
         var inviteCreateCmd = new BizStakeholderNewInviteCommand(bizContactId, null, hostUrl, inviteType);
