@@ -148,14 +148,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_UPDATES:
-				this.stepsLicenceUpdatesComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAndConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -163,14 +157,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_UPDATES:
-				this.stepsLicenceUpdatesComponent?.onGoToLastStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAndConfirm?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -192,5 +180,15 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		this.businessApplicationService.payBusinessLicenceUpdateOrReplace({
 			applicationTypeCode: ApplicationTypeCode.Update,
 		});
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_LICENCE_UPDATES:
+				return this.stepsLicenceUpdatesComponent;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewAndConfirm;
+		}
+		return null;
 	}
 }
