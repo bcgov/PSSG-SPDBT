@@ -46,7 +46,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public string? MiddleName2 { get; set; }
         public string? EmailAddress { get; set; }
         public Guid BizId { get; set; }
-        public Guid CreatedByUserId { get; set; }
+        public Guid? CreatedByUserId { get; set; }
         public Guid BizContactId { get; set; }
         public ControllingMemberAppInviteTypeEnum InviteTypeCode { get; set; } = ControllingMemberAppInviteTypeEnum.New;
     }
