@@ -19,7 +19,6 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 @Component({
 	selector: 'app-retired-dog-wizard-new-renewal',
 	template: `
-		isLoggedIn {{ isLoggedIn }}
 		<mat-stepper
 			linear
 			labelPosition="bottom"

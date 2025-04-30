@@ -68,7 +68,7 @@ export class StepRdGdsdCertficateComponent implements LicenceChildStepperStepCom
 
 	onFileUploaded(file: File): void {
 		this.retiredDogApplicationService.fileUploaded(
-			LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, // TODO doc type
+			LicenceDocumentTypeCode.GdsdCertificate,
 			file,
 			this.attachments,
 			this.fileUploadComponent

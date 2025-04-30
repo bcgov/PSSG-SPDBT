@@ -272,6 +272,69 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithSelectionAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<RetiredDogLicenceAppResponse> {
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, associatedLicence).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setGdsdApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<any> {
+		// handle renewal
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return forkJoin([
+				this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
+				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
+			]).pipe(
+				catchError((error) => of(error)),
+				switchMap((resps: any[]) => {
+					const applicantProfile = resps[0];
+					const photoOfYourself = resps[1];
+
+					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+						switchMap((gdsdModelData: any) => {
+							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
+						})
+					);
+				})
+			);
+		}
+
+		// handle replacement
+		return this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }).pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
+					})
+				);
+			})
+		);
+	}
+
+	/**
 	 * Partial Save - Save the data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
@@ -338,7 +401,10 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			return false;
 		}
 
-		return this.hasValueChanged;
+		// file upload will fail in later steps if the 'licenceAppId' isn't populated.
+		const licenceAppId = this.retiredDogModelFormGroup.get('licenceAppId')?.value;
+
+		return this.hasValueChanged || !licenceAppId;
 	}
 
 	/**

@@ -2040,7 +2040,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			};
 		} else {
 			soleProprietorData = {
-				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for // TODO is this ok?
+				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for
 				bizTypeCode: null,
 			};
 		}
