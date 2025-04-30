@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -139,7 +139,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	standalone: false,
 })
-export class StepRdConsentComponent implements LicenceChildStepperStepComponent {
+export class StepRdConsentComponent implements OnInit, LicenceChildStepperStepComponent {
 	check1Name = '';
 	matcher = new FormErrorStateMatcher();
 
