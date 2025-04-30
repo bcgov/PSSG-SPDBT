@@ -45,7 +45,8 @@ internal abstract class LicenceAppManagerBase
         CancellationToken ct,
         bool HasSwl90DayLicence = false,
         Guid? companionAppId = null,
-        ApplicationOriginTypeCode? companionAppOrigin = null)
+        ApplicationOriginTypeCode? companionAppOrigin = null,
+        Guid? cmParentAppId = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -59,16 +60,35 @@ internal abstract class LicenceAppManagerBase
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
 
         //applications with portal origin type are considered authenticated, otherwise not.
-        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
+        bool isAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
         bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
         ApplicationStatusEnum status;
 
         if (licenceFee == null || licenceFee.Amount == 0)
         {
             if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
+            {
+                if (isNewOrRenewal && !isAuthenticated)
+                    status = ApplicationStatusEnum.ApplicantVerification;
+                else
+                {
+                    if (cmParentAppId != null)//parent application status is inProgress, then set status to be Submitted. spdbt-4009
+                    {
+                        var parentApp = (await _licAppRepository.QueryAsync(new LicenceAppQuery(null, null, null, null, cmParentAppId), ct)).First();
+                        if (parentApp.ApplicationPortalStatusCode == ApplicationPortalStatusEnum.InProgress)
+                            status = ApplicationStatusEnum.Submitted;
+                        else
+                            status = ApplicationStatusEnum.PaymentPending;
+                    }
+                    else
+                    {
+                        status = ApplicationStatusEnum.PaymentPending;
+                    }
+                }
+
+            }
             else
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+                status = isNewOrRenewal && !isAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         }
         else
             status = ApplicationStatusEnum.PaymentPending;
