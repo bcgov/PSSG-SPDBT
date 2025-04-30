@@ -36,6 +36,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode.Value)))
         .ForMember(d => d.spd_dogsretirementdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DogRetiredDate)))
         .ForMember(d => d.spd_gdsdcertificatenumber, opt => opt.MapFrom(s => s.CurrentGDSDCertificateNumber))
+        .ForMember(d => d.spd_dogtype, opt => opt.MapFrom(s => (int)DogTypeOptionSet.ServiceDog))
         .ForMember(d => d.spd_willdoglivewithhandlerinretirement, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.ConfirmDogLiveWithYouAfterRetire)))
         .AfterMap((s, d, context) =>
         {
