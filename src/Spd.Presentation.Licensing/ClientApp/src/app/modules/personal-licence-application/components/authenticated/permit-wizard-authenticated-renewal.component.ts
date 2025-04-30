@@ -32,6 +32,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-renewal
 							[isLoggedIn]="true"
+							[isFormValid]="isFormValid"
 							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
@@ -108,16 +109,13 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	step3Complete = false;
 
 	@ViewChild(StepsPermitDetailsNewComponent)
-	stepPermitDetailsComponent!: StepsPermitDetailsNewComponent;
-
+	stepsPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 	@ViewChild(StepsPermitPurposeAuthenticatedComponent)
-	stepPurposeComponent!: StepsPermitPurposeAuthenticatedComponent;
-
+	stepsPurposeComponent!: StepsPermitPurposeAuthenticatedComponent;
 	@ViewChild(StepsPermitIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepsPermitIdentificationAuthenticatedComponent;
-
+	stepsIdentificationComponent!: StepsPermitIdentificationAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
-	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
+	stepsReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -171,20 +169,8 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -192,17 +178,8 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToLastStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -232,9 +209,9 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onGoToStep(step: number) {
-		this.stepPermitDetailsComponent?.onGoToFirstStep();
-		this.stepPurposeComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsPermitDetailsComponent?.onGoToFirstStep();
+		this.stepsPurposeComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -246,6 +223,20 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		this.goToChildNextStep();
 	}
 
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_PERMIT_DETAILS:
+				return this.stepsPermitDetailsComponent;
+			case this.STEP_PURPOSE_AND_RATIONALE:
+				return this.stepsPurposeComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_REVIEW:
+				return this.stepsReviewComponent;
+		}
+		return null;
+	}
+
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
 		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
@@ -255,16 +246,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToNextStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 }

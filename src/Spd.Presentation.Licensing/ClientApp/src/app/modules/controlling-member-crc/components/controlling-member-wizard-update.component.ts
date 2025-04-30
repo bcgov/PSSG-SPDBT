@@ -259,37 +259,13 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERSONAL_INFORMATION:
-				this.stepsPersonalInformationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CITIZENSHIP_RESIDENCY:
-				this.stepsCitizenshipResidencyComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_PERSONAL_INFORMATION:
-				this.stepsPersonalInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CITIZENSHIP_RESIDENCY:
-				this.stepsCitizenshipResidencyComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -297,20 +273,8 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_PERSONAL_INFORMATION:
-				this.stepsPersonalInformationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CITIZENSHIP_RESIDENCY:
-				this.stepsCitizenshipResidencyComponent?.onGoToLastStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onGoToReview() {
@@ -318,6 +282,20 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}, 250);
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_PERSONAL_INFORMATION:
+				return this.stepsPersonalInformationComponent;
+			case this.STEP_CITIZENSHIP_RESIDENCY:
+				return this.stepsCitizenshipResidencyComponent;
+			case this.STEP_BACKGROUND:
+				return this.stepBackgroundComponent;
+			case this.STEP_REVIEW:
+				return this.stepReviewComponent;
+		}
+		return null;
 	}
 
 	private updateCompleteStatus(): void {
