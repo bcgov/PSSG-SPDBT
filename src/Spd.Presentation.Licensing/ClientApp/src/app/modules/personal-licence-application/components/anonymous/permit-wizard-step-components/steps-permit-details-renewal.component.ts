@@ -20,14 +20,18 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGotoUserProfile()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
@@ -36,21 +40,25 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 				<app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_PERMIT_CONFIRMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CONFIRMATION)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
-	readonly STEP_PERMIT_CONFIRMATION = 1;
+	readonly STEP_PERMIT_CHECKLIST = 1;
+	readonly STEP_PERMIT_CONFIRMATION = 2;
 
 	@Input() isLoggedIn = false;
+	@Input() isFormValid = false;
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
@@ -71,6 +79,8 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 		switch (step) {
 			case this.STEP_TERMS:
 				return this.termsOfUseComponent.isFormValid();
+			case this.STEP_PERMIT_CHECKLIST:
+				return true;
 			case this.STEP_PERMIT_CONFIRMATION:
 				return true;
 			default:

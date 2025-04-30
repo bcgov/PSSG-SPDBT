@@ -143,15 +143,12 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
+	stepsReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	isSoleProprietorSimultaneousFlow = false;
 	showWorkerLicenceSoleProprietorStep = false;
@@ -228,20 +225,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -249,17 +234,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -268,9 +244,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onGoToStep(step: number) {
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsBackgroundComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -282,17 +258,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	onNextPayStep(): void {
@@ -301,6 +268,20 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 	onNextSoleProprietor(): void {
 		this.submitStep(true);
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_REVIEW:
+				return this.stepsReviewLicenceComponent;
+		}
+		return null;
 	}
 
 	private submitStep(isSoleProprietorSimultaneousFlow: boolean = false): void {

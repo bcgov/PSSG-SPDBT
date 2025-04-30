@@ -147,15 +147,12 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	step3Complete = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+	stepsReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
@@ -233,20 +230,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_REVIEW:
-				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -254,17 +239,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -273,8 +249,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onGoToStep(step: number) {
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -309,6 +285,20 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	onNextSoleProprietor(): void {
 		this.submitSoleProprietorSimultaneousFlowStep();
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_WORKER_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_WORKER_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_WORKER_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_WORKER_LICENCE_REVIEW:
+				return this.stepsReviewAuthenticatedComponent;
+		}
+		return null;
 	}
 
 	private submitStep(): void {
@@ -369,16 +359,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 }
