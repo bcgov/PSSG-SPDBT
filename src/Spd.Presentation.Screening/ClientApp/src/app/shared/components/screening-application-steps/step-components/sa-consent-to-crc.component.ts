@@ -8,9 +8,9 @@ import { CaptchaResponse } from '../../captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-    selector: 'app-sa-consent-to-crc',
-    template: `
-		<section class="step-section p-3" *ngIf="orgData">
+	selector: 'app-sa-consent-to-crc',
+	template: `
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Consent to share a Criminal Record Check" [subtitle]="certifyLabel"></app-step-title>
@@ -113,8 +113,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 			</form>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			p {
 				margin-bottom: 0.5rem !important;
 			}

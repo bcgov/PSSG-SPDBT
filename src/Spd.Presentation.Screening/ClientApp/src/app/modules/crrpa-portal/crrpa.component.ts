@@ -32,9 +32,9 @@ import { AppInviteOrgData } from 'src/app/shared/components/screening-applicatio
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 
 @Component({
-    selector: 'app-crrpa',
-    template: `
-		<div class="container mt-4">
+	selector: 'app-crrpa',
+	template: `
+		<div class="container mt-4" *ngIf="orgData">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
