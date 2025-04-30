@@ -1867,7 +1867,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		};
 
 		// If an associatedLicence exists, use the dog data from here
-		if (associatedLicence) {
+		if (associatedLicence?.categoryCodes?.includes(WorkerCategoryTypeCode.SecurityGuard)) {
 			const useDogs = associatedLicence.useDogs;
 			const useDogsYesNo = this.utilService.booleanToBooleanType(useDogs);
 
