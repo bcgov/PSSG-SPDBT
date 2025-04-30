@@ -8,6 +8,6 @@ namespace Spd.Manager.ScheduleJob
     }
 
     #region run schedule job session
-    public record RunScheduleJobSessionCommand(Guid JobSessionId) : IRequest<Unit>;
+    public record RunScheduleJobSessionCommand(Guid JobSessionId, int ConcurrentRequests) : IRequest<Unit>;
     #endregion
 }

@@ -42,15 +42,16 @@ public class ScheduleJobManager :
         //used for Org MonthlyInvoice
         if (resp.PrimaryEntity == "account" && resp.EndPoint.Equals("spd_MonthlyInvoice"))
         {
+            using var cts = new CancellationTokenSource(); // no timeout
             try
             {
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                var result = await _orgRepository.RunMonthlyInvoiceAsync(ct);
+                var result = await _orgRepository.RunMonthlyInvoiceAsync(cmd.ConcurrentRequests, cts.Token);
                 stopwatch.Stop();
 
                 //update result in JobSession
                 UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
-                await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
+                await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, cts.Token);
             }
             catch (Exception ex)
             {
