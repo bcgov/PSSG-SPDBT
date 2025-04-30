@@ -127,7 +127,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
+        /// Get List of draft or InProgress GDSD Team, trainer and retired dog Applications
         /// </summary>
         /// <returns></returns>
         [Route("api/applicants-anonymous/dog-certification-applications")]
