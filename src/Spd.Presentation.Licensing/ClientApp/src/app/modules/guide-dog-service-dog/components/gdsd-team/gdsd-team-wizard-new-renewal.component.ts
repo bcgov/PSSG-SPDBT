@@ -242,23 +242,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		const index = this.getSelectedIndex(event.selectedIndex);
-		switch (index) {
-			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToFirstStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -267,20 +252,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		stepper.previous();
 
 		const index = this.getSelectedIndex(stepper.selectedIndex);
-		switch (index) {
-			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToLastStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToLastStep();
-				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -290,20 +263,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_SELECTION:
-							this.stepsSelection?.onGoToFirstStep();
-							break;
-						case this.STEP_PERSONAL_INFO:
-							this.stepsPersonalInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_DOG_INFO:
-							this.stepsDogInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_TRAINING_INFO:
-							this.stepsTrainingInfo?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					console.log('An error occurred during save', error);
@@ -373,23 +334,26 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 	}
 
-	private goToChildNextStep() {
-		const index = this.getSelectedIndex(this.stepper.selectedIndex);
-		console.log('goToChildNextStep', this.stepper.selectedIndex, index);
+	private getSelectedIndexComponent(index: number): any {
 		switch (index) {
 			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToNextStep();
-				break;
+				return this.stepsSelection;
 			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToNextStep();
-				break;
+				return this.stepsPersonalInfo;
 			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToNextStep();
-				break;
+				return this.stepsDogInfo;
 			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToNextStep();
-				break;
+				return this.stepsTrainingInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
 		}
+		return null;
+	}
+
+	private goToChildNextStep() {
+		const index = this.getSelectedIndex(this.stepper.selectedIndex);
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToNextStep();
 	}
 
 	get isNew(): boolean {

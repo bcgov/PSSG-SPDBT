@@ -23,8 +23,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
 											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -134,8 +134,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
 											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>

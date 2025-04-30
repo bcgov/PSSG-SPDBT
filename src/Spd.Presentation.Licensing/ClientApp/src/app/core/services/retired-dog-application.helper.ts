@@ -35,7 +35,6 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseNew(retiredDogModelFormGroup: any): any {
-		// TODO fix } RetiredDogRequestExt {
 		return this.getSaveBodyBase(retiredDogModelFormGroup);
 	}
 
@@ -44,7 +43,6 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseChange(retiredDogModelFormGroup: any): any {
-		// TODO fix  RetiredDogChangeRequestExt {
 		const bodyBase = this.getSaveBodyBase(retiredDogModelFormGroup);
 
 		const body = {
@@ -79,21 +77,19 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(retiredDogModelFormGroup: any): any {
-		const serviceTypeData = retiredDogModelFormGroup.serviceTypeData;
-		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
-		const personalInformationData = retiredDogModelFormGroup.personalInformationData;
-		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
-		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
-		const governmentPhotoIdData = retiredDogModelFormGroup.governmentPhotoIdData;
-		const mailingAddressData = retiredDogModelFormGroup.mailingAddressData;
-		const dogInfoData = retiredDogModelFormGroup.dogInfoData;
-		const dogRetiredData = retiredDogModelFormGroup.dogRetiredData;
-		const dogLivingData = retiredDogModelFormGroup.dogLivingData;
-		const originalLicenceData = retiredDogModelFormGroup.originalLicenceData;
+	private getSaveBodyBase(retiredDogModelFormValue: any): any {
+		const serviceTypeData = retiredDogModelFormValue.serviceTypeData;
+		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
+		const personalInformationData = retiredDogModelFormValue.personalInformationData;
+		const dogGdsdCertificateData = retiredDogModelFormValue.dogGdsdCertificateData;
+		const photographOfYourselfData = retiredDogModelFormValue.photographOfYourselfData;
+		const governmentPhotoIdData = retiredDogModelFormValue.governmentPhotoIdData;
+		const mailingAddressData = retiredDogModelFormValue.mailingAddressData;
+		const dogInfoData = retiredDogModelFormValue.dogInfoData;
+		const dogRetiredData = retiredDogModelFormValue.dogRetiredData;
+		const dogLivingData = retiredDogModelFormValue.dogLivingData;
+		const originalLicenceData = retiredDogModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
-
-		delete personalInformationData.hasBcscNameChanged;
 
 		if (dogInfoData.dogDateOfBirth) {
 			dogInfoData.dogDateOfBirth = this.utilService.dateToDbDate(dogInfoData.dogDateOfBirth);
@@ -146,16 +142,20 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 					} as DocumentRelatedInfo;
 				}) ?? [];
 
+		delete personalInformationData.hasBcscNameChanged;
+		delete mailingAddressData.captchaFormGroup;
+
 		const body = {
-			licenceAppId: retiredDogModelFormGroup.licenceAppId,
+			licenceAppId: retiredDogModelFormValue.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
-			applicationOriginTypeCode: retiredDogModelFormGroup.applicationOriginTypeCode,
+			dogId: retiredDogModelFormValue.dogId,
+			applicationOriginTypeCode: retiredDogModelFormValue.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
-			licenceTermCode: retiredDogModelFormGroup.licenceTermCode,
+			licenceTermCode: retiredDogModelFormValue.licenceTermCode,
 
 			...personalInformationData,
-			mailingAddressData,
+			mailingAddress: mailingAddressData,
 			dogInfo: dogInfoData,
 			dogRetiredDate: dogRetiredData.dogRetiredDate,
 			confirmDogLiveWithYouAfterRetire: this.utilService.booleanTypeToBoolean(
@@ -171,13 +171,13 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return body;
 	}
 
-	getDocsToSaveBlobs(retiredDogModelFormGroup: any): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(retiredDogModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
-		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
-		const governmentPhotoIdData = retiredDogModelFormGroup.governmentPhotoIdData;
-		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
+		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
+		const photographOfYourselfData = retiredDogModelFormValue.photographOfYourselfData;
+		const governmentPhotoIdData = retiredDogModelFormValue.governmentPhotoIdData;
+		const dogGdsdCertificateData = retiredDogModelFormValue.dogGdsdCertificateData;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {

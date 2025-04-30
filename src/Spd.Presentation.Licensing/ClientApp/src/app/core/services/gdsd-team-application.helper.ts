@@ -150,8 +150,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
-		delete personalInformationData.hasBcscNameChanged;
-
 		if (personalInformationData.dateOfBirth) {
 			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 		}
@@ -309,6 +307,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					} as DocumentRelatedInfo;
 				}) ?? [];
 
+		delete personalInformationData.hasBcscNameChanged;
 		delete mailingAddressData.captchaFormGroup;
 
 		const body = {

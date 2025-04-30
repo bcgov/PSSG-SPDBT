@@ -47,14 +47,6 @@ import { FileUtilService, SpdFile } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
-// export interface RetiredDogRequestExt extends RetiredDogLicenceAppAnonymousSubmitRequest {
-// 	// TODO RetiredDogRequestExt, RetiredDogChangeRequestExt
-// 	documentInfos?: Array<Document> | null;
-// }
-// export interface RetiredDogChangeRequestExt extends RetiredDogLicenceAppChangeRequest {
-// 	documentInfos?: Array<Document> | null;
-// }
-
 @Injectable({
 	providedIn: 'root',
 })
@@ -67,6 +59,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		bizTypeCode: new FormControl(), // placeholder to save
 		licenceTermCode: new FormControl(), // placeholder to save
 		originalLicenceData: this.originalLicenceFormGroup, // placeholder to store data
+		dogId: new FormControl(), // placeholder to save
 
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,

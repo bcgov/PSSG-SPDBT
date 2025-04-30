@@ -191,20 +191,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToFirstStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -212,17 +200,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToLastStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -232,17 +211,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_DETAILS:
-							this.stepsDetails?.onGoToFirstStep();
-							break;
-						case this.STEP_PERSONAL_INFO:
-							this.stepsPersonalInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_DOG_INFO:
-							this.stepsDogInfo?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					console.log('An error occurred during save', error);
@@ -310,22 +280,27 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		this.stepper.selectedIndex = step;
 	}
 
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_DETAILS:
+				return this.stepsDetails;
+			case this.STEP_PERSONAL_INFO:
+				return this.stepsPersonalInfo;
+			case this.STEP_DOG_INFO:
+				return this.stepsDogInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
+		}
+		return null;
+	}
+
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToNextStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToNextStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	private updateCompleteStatus(): void {

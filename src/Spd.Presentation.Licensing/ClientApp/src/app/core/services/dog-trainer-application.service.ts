@@ -44,13 +44,6 @@ import { DogTrainerApplicationHelper } from './dog-trainer-application.helper';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
-// export interface DogTrainerRequestExt extends DogTrainerRequest {  // TODO DogTrainerRequest
-// 	documentInfos?: Array<Document> | null;
-// }
-// export interface DogTrainerChangeRequestExt extends DogTrainerChangeRequest {// TODO DogTrainerChangeRequest
-// 	documentInfos?: Array<Document> | null;
-// }
-
 @Injectable({
 	providedIn: 'root',
 })
