@@ -20,7 +20,11 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-terms-of-use>
 
-				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+					(nextReviewStepperStep)="onNextReview(STEP_TERMS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -38,8 +42,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
@@ -56,8 +62,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CONFIRMATION)"
 				></app-wizard-footer>
 			</mat-step>
 
