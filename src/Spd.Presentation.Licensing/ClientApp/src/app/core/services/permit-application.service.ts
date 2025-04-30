@@ -252,6 +252,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			// );
 
 			return (
+				this.criminalHistoryFormGroup.valid &&
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
@@ -1202,6 +1203,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			bcDriversLicenceNumber: permitLicenceAppl.bcDriversLicenceNumber,
 		};
 
+		const criminalHistoryData = {
+			hasCriminalHistory: this.utilService.booleanToBooleanType(permitLicenceAppl.hasCriminalHistory),
+			criminalChargeDescription: '',
+		};
+
 		// if this is a permit update, use the data supplied in 'updateLicenceData' (where applicable),
 		// other use the data in the 'resp'
 		const permitLicenceData = associatedLicence ?? permitLicenceAppl;
@@ -1396,6 +1402,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				bcDriversLicenceData,
 				citizenshipData,
 				photographOfYourselfData,
+				criminalHistoryData,
 			},
 			{
 				emitEvent: false,
