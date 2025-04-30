@@ -6,11 +6,11 @@ import { SaAgreementOfTermsComponent } from './step-components/sa-agreement-of-t
 import { SaSecurityInformationComponent } from './step-components/sa-security-information.component';
 
 @Component({
-    selector: 'app-sa-step-organization-info',
-    template: `
+	selector: 'app-sa-step-organization-info',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-sa-security-information *ngIf="orgData" [orgData]="orgData"></app-sa-security-information>
+				<app-sa-security-information [orgData]="orgData"></app-sa-security-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -30,7 +30,7 @@ import { SaSecurityInformationComponent } from './step-components/sa-security-in
 			</mat-step>
 
 			<mat-step>
-				<app-sa-agreement-of-terms *ngIf="orgData" [orgData]="orgData"></app-sa-agreement-of-terms>
+				<app-sa-agreement-of-terms [orgData]="orgData"></app-sa-agreement-of-terms>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
