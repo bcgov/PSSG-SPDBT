@@ -34,6 +34,7 @@ import { BusinessLicenceWizardReplacementComponent } from './components/business
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
 import { CommonBusinessInformationComponent } from './components/common-business-information.component';
+import { CommonBusinessEmployeesSummaryComponent } from './components/common-business-employees-summary.component';
 import { CommonBusinessMembersComponent } from './components/common-business-members.component';
 import { CommonControllingOrBusinessMembersComponent } from './components/common-controlling-or-business-members.component';
 import { ModalBcBranchEditComponent } from './components/modal-bc-branch-edit.component';
@@ -63,6 +64,7 @@ import { StepBusinessLicenceSummaryComponent } from './components/step-business-
 import { StepBusinessLicenceTermComponent } from './components/step-business-licence-term.component';
 import { StepBusinessLicenceUpdateTermsComponent } from './components/step-business-licence-update-terms.component';
 import { StepsBusinessLicenceReviewComponent } from './components/steps-business-licence-review.component';
+import { StepsBusinessLicenceSpEmployeesComponent } from './components/steps-business-licence-sp-employees.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './components/steps-business-licence-swl-sp-information.component';
 
 @NgModule({
@@ -85,6 +87,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		CommonBusinessProfileComponent,
 		CommonBusinessInformationComponent,
 		CommonBusinessMembersComponent,
+		CommonBusinessEmployeesSummaryComponent,
 		CommonControllingOrBusinessMembersComponent,
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
@@ -120,6 +123,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepBusinessLicenceSwlSoleProprietorComponent,
 		StepsBusinessLicenceInformationComponent,
 		StepsBusinessLicenceSelectionComponent,
+		StepsBusinessLicenceSpEmployeesComponent,
 		StepsBusinessLicenceContactInformationComponent,
 		StepsBusinessLicenceControllingMembersComponent,
 		BusinessLicenceMainComponent,

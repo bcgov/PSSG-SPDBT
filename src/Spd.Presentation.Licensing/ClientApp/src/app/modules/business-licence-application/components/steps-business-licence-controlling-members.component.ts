@@ -72,6 +72,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 			<mat-step>
 				<app-step-business-licence-employees
+					[isBusinessLicenceSoleProprietor]="false"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-employees>
 
