@@ -12,7 +12,6 @@ import {
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
-	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
@@ -42,7 +41,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -955,39 +953,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	/*************************************************************/
 	// ANONYMOUS
 	/*************************************************************/
-
-	/**
-	 * Search for an existing licence using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getLicenceWithAccessCodeAnonymous(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					if (!resp) {
-						// lookup does not match a licence
-						return of({} as LicenceResponseExt);
-					}
-
-					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
-						map((appls: Array<LicenceAppListResponse>) => {
-							return {
-								inProgressApplications: appls.length > 0,
-								...resp,
-							} as LicenceResponseExt;
-						})
-					);
-				})
-			);
-	}
 
 	/**
 	 * Load an existing licence application with an access code

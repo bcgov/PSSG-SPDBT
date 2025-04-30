@@ -205,19 +205,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			if (this.isNew) {
-				this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
-					next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
-						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-					},
-				});
-				return;
-			}
-
-			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceAuthenticated(this.applicationTypeCode).subscribe({
 				next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},

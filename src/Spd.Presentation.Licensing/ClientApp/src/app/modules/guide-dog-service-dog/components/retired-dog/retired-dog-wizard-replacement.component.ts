@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { RetiredDogAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, RetiredDogAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -85,7 +85,7 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 		}
 
 		if (this.isLoggedIn) {
-			this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+			this.retiredDogApplicationService.submitLicenceAuthenticated(ApplicationTypeCode.Replacement).subscribe({
 				next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},

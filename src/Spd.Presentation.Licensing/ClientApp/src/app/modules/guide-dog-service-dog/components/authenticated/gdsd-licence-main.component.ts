@@ -164,17 +164,35 @@ export class GdsdLicenceMainComponent implements OnInit {
 	}
 
 	onResume(appl: MainApplicationResponse): void {
-		this.gdsdTeamApplicationService
-			.getGdsdToResume(appl.licenceAppId!)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		switch (appl.serviceTypeCode) {
+			case ServiceTypeCode.GdsdTeamCertification: {
+				this.gdsdTeamApplicationService
+					.getGdsdToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				this.retiredDogApplicationService
+					.getRdToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.RETIRED_DOG_NEW_AUTHENTICATED)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		}
 	}
 
 	onRenew(licence: MainLicenceResponse): void {
@@ -194,7 +212,18 @@ export class GdsdLicenceMainComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO RetiredServiceDogCertification renewal
+				// this.retiredDogApplicationService
+				// 	.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
+				// 	.pipe(
+				// 		tap((_resp: any) => {
+				// 			this.router.navigateByUrl(
+				// 				GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_RENEWAL_AUTHENTICATED)
+				// 			);
+				// 		}),
+				// 		take(1)
+				// 	)
+				// 	.subscribe();
+				break;
 			}
 		}
 	}

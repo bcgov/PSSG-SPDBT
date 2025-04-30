@@ -473,10 +473,24 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	}
 
 	/**
+	 * Submit the authenticated licence data - new/renew
+	 * @returns
+	 */
+	submitLicenceAuthenticated(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		if (applicationTypeCode == ApplicationTypeCode.New) {
+			return this.submitLicenceNewAuthenticated();
+		}
+
+		return this.submitLicenceChangeAuthenticated();
+	}
+
+	/**
 	 * Submit the licence data - new
 	 * @returns
 	 */
-	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
@@ -500,7 +514,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Submit the application data for authenticated renewal
 	 * @returns
 	 */
-	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+	private submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		delete bodyUpsert.documentInfos;

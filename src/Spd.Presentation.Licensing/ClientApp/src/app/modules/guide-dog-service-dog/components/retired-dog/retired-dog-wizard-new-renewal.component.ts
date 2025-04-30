@@ -19,6 +19,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 @Component({
 	selector: 'app-retired-dog-wizard-new-renewal',
 	template: `
+		isLoggedIn {{ isLoggedIn }}
 		<mat-stepper
 			linear
 			labelPosition="bottom"
@@ -46,6 +47,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -61,6 +63,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -71,9 +74,11 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-rd-review-and-confirm
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onSubmit()"
@@ -157,18 +162,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			if (this.isNew) {
-				this.retiredDogApplicationService.submitLicenceNewAuthenticated().subscribe({
-					next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
-						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-					},
-				});
-				return;
-			}
-			this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
+			this.retiredDogApplicationService.submitLicenceAuthenticated(this.applicationTypeCode).subscribe({
 				next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
@@ -178,6 +172,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 			});
 			return;
 		}
+
 		this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 				this.router.navigateByUrl(

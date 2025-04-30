@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -76,7 +77,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 
-						<div class="row mb-4">
+						<div class="row mb-4" *ngIf="displayCaptcha.value">
 							<div class="col-12">
 								<div formGroupName="captchaFormGroup">
 									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -146,8 +147,15 @@ export class StepRdConsentComponent implements LicenceChildStepperStepComponent 
 
 	constructor(
 		private utilService: UtilService,
+		private authProcessService: AuthProcessService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
+
+	ngOnInit(): void {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
+		});
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -165,5 +173,8 @@ export class StepRdConsentComponent implements LicenceChildStepperStepComponent 
 
 	get captchaFormGroup(): FormGroup {
 		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }
