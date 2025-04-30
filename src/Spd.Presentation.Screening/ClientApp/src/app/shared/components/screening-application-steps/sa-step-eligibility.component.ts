@@ -3,11 +3,11 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { AppInviteOrgData } from './screening-application.model';
 
 @Component({
-    selector: 'app-sa-step-eligibility',
-    template: `
+	selector: 'app-sa-step-eligibility',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-sa-checklist *ngIf="orgData" [payeeType]="orgData.payeeType"></app-sa-checklist>
+				<app-sa-checklist [payeeType]="orgData?.payeeType"></app-sa-checklist>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
