@@ -168,7 +168,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</div>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Gender</div>
-										<div class="summary-text-data">{{ genderCode | options: 'GenderTypes' | default }}</div>
+										<div class="summary-text-data">{{ genderCode | options: 'DogGenderTypes' | default }}</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Microchip Number</div>

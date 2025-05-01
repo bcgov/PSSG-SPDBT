@@ -26,20 +26,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 							<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 							<!-- We always want the date format hint to display -->
-							<mat-hint *ngIf="!dogRetiredDate.invalid">Date format YYYY-MM-DD</mat-hint>
-							<mat-error
-								*ngIf="
-									(form.get('dogRetiredDate')?.dirty || form.get('dogRetiredDate')?.touched) &&
-									form.get('dogRetiredDate')?.invalid
-								"
-							>
+							<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
+							<mat-error *ngIf="showHintError">
 								<span class="hint-inline">Date format YYYY-MM-DD</span>
 							</mat-error>
-							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('matDatepickerMin')">
-								Invalid date of retirement
-							</mat-error>
-							<mat-error *ngIf="form.get('dogRetiredDate')?.hasError('matDatepickerMax')">
+							<mat-error *ngIf="dogRetiredDate?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMin')"> Invalid date of retirement </mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMax')">
 								This must be on or before {{ maxToday | formatDate }}
 							</mat-error>
 						</mat-form-field>
@@ -82,6 +75,9 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get showHintError(): boolean {
+		return (this.dogRetiredDate?.dirty || this.dogRetiredDate?.touched) && this.dogRetiredDate?.invalid;
 	}
 	public get dogRetiredDate(): FormControl {
 		return this.form.get('dogRetiredDate') as FormControl;
