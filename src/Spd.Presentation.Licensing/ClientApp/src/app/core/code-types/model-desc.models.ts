@@ -208,6 +208,11 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
+export const DogGenderTypes: SelectOptions[] = [
+	{ desc: 'Female', code: GenderCode.F },
+	{ desc: 'Male', code: GenderCode.M },
+];
+
 export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },

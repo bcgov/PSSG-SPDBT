@@ -143,7 +143,7 @@ export class StepTeamConsentComponent implements OnInit, LicenceChildStepperStep
 	check1Name = '';
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationTeamFormGroup;
+	form: FormGroup = this.gdsdTeamApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
 		private utilService: UtilService,

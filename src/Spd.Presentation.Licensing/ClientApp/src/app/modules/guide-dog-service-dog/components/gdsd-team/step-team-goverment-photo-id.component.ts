@@ -4,7 +4,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-goverment-photo-id.component';
 
 @Component({
-	selector: 'app-step-gdsd-government-id',
+	selector: 'app-step-team-government-id',
 	template: `
 		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<app-form-gdsd-government-id
