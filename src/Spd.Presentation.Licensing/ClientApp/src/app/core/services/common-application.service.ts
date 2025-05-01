@@ -26,6 +26,7 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import {
+	ApplicantProfileService,
 	BizLicensingService,
 	BizMembersService,
 	LicenceAppService,
@@ -49,6 +50,7 @@ import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { UtilService } from './util.service';
+import { LicenceResponseExt } from './worker-application.service';
 
 export class LicenceLookupResult {
 	'isFound': boolean;
@@ -103,6 +105,7 @@ export class CommonApplicationService {
 		private utilService: UtilService,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
+		private applicantProfileService: ApplicantProfileService,
 		private paymentService: PaymentService,
 		private bizMembersService: BizMembersService,
 		private authProcessService: AuthProcessService,
@@ -966,6 +969,72 @@ export class CommonApplicationService {
 		checkControllingMemberWarning: boolean
 	): [Array<string>, Array<string>, boolean] {
 		return this.getMainWarningsAndError(applicationsList, activeLicencesList, checkControllingMemberWarning);
+	}
+
+	/**
+	 * Search for an existing swl/permit licence using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getLicenceWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponseExt> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					if (!resp) {
+						// lookup does not match a licence
+						return of({} as LicenceResponseExt);
+					}
+
+					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
+	}
+
+	/**
+	 * Search for an existing gdsd certificate using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getGDSDLicenceWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponseExt> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					if (!resp) {
+						// lookup does not match a licence
+						return of({} as LicenceResponseExt);
+					}
+
+					return this.applicantProfileService.apiApplicantsAnonymousDogCertificationApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
 	}
 
 	private getMainWarningsAndError(

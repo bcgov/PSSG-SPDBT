@@ -10,6 +10,18 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
+							<div class="checklist-label">Government-issued photo ID</div>
+							<p class="checklist-info">
+								The identification needs to be issued by a federal, provincial, territorial or state government
+								authority.
+							</p>
+						</li>
+					</ul>
+
+					<mat-divider class="my-4"></mat-divider>
+					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
+					<ul>
+						<li>
 							<div class="checklist-label">Photograph of yourself for the licence</div>
 							<p class="checklist-info">
 								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
@@ -23,19 +35,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								>.
 							</p>
 						</li>
-
-						<li>
-							<div class="checklist-label">Government-issued photo ID</div>
-							<p class="checklist-info">
-								The identification needs to be issued by a federal, provincial, territorial or state government
-								authority.
-							</p>
-						</li>
-					</ul>
-
-					<mat-divider class="my-4"></mat-divider>
-					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
-					<ul>
 						<li>
 							<div class="checklist-label">Microchip Number</div>
 							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>

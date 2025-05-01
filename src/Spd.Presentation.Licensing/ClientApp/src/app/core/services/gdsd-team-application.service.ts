@@ -293,7 +293,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.resetModelFlags();
 		this.resetCommon();
 
-		this.consentAndDeclarationTeamFormGroup.reset();
+		this.consentAndDeclarationFormGroup.reset();
 		this.gdsdTeamModelFormGroup.reset();
 
 		// clear the array data - this does not seem to get reset during a formgroup reset
@@ -473,14 +473,28 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	}
 
 	/**
+	 * Submit the authenticated licence data - new/renew
+	 * @returns
+	 */
+	submitLicenceAuthenticated(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		if (applicationTypeCode == ApplicationTypeCode.New) {
+			return this.submitLicenceNewAuthenticated();
+		}
+
+		return this.submitLicenceChangeAuthenticated();
+	}
+
+	/**
 	 * Submit the licence data - new
 	 * @returns
 	 */
-	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -500,7 +514,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Submit the application data for authenticated renewal
 	 * @returns
 	 */
-	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+	private submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -509,7 +523,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -1300,7 +1314,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -1365,7 +1379,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		delete body.documentInfos;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
