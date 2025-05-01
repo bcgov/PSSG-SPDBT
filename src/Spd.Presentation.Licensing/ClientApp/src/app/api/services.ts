@@ -20,4 +20,5 @@ export { LicenceFeeService } from './services/licence-fee.service';
 export { LoginService } from './services/login.service';
 export { PaymentService } from './services/payment.service';
 export { PermitService } from './services/permit.service';
+export { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
 export { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';

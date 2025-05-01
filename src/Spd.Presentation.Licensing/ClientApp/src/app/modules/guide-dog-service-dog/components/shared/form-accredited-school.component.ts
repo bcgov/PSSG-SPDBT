@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ApplicationTypeCode } from '@app/api/models';
@@ -51,7 +51,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	standalone: false,
 })
-export class FormAccreditedSchoolComponent {
+export class FormAccreditedSchoolComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	matcher = new FormErrorStateMatcher();
 

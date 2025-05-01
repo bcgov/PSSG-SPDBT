@@ -24,6 +24,7 @@ import { LicenceFeeService } from './services/licence-fee.service';
 import { LoginService } from './services/login.service';
 import { PaymentService } from './services/payment.service';
 import { PermitService } from './services/permit.service';
+import { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
 import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
 
 /**
@@ -52,6 +53,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     LoginService,
     PaymentService,
     PermitService,
+    RetiredDogLicensingService,
     SecurityWorkerLicensingService,
     ApiConfiguration
   ],

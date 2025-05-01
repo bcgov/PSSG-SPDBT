@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-goverment-photo-id.component';
 
 @Component({
-	selector: 'app-step-team-government-id',
+	selector: 'app-step-rd-government-id',
 	template: `
 		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<app-form-gdsd-government-id
@@ -17,15 +17,15 @@ import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-servic
 	styles: [],
 	standalone: false,
 })
-export class StepTeamGovermentPhotoIdComponent {
-	form: FormGroup = this.gdsdTeamApplicationService.governmentPhotoIdFormGroup;
+export class StepRdGovermentPhotoIdComponent {
+	form: FormGroup = this.retiredDogApplicationService.governmentPhotoIdFormGroup;
 
 	@ViewChild(FormGdsdGovermentPhotoIdComponent) govPhotoIdComponent!: FormGdsdGovermentPhotoIdComponent;
 
-	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
+	constructor(private retiredDogApplicationService: RetiredDogApplicationService) {}
 
 	onFileUploaded(file: File): void {
-		this.gdsdTeamApplicationService.fileUploaded(
+		this.retiredDogApplicationService.fileUploaded(
 			this.photoTypeCode.value,
 			file,
 			this.attachments,
@@ -34,7 +34,7 @@ export class StepTeamGovermentPhotoIdComponent {
 	}
 
 	onFileRemoved(): void {
-		this.gdsdTeamApplicationService.fileRemoved();
+		this.retiredDogApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

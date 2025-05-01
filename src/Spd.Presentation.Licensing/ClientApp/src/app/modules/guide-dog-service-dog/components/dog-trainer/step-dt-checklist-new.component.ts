@@ -23,7 +23,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								>.
 							</p>
 						</li>
-
 						<li>
 							<div class="checklist-label">Government-issued photo ID</div>
 							<p class="checklist-info">
