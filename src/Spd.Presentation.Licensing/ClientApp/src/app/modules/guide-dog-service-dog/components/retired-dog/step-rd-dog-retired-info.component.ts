@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -18,18 +18,21 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<input
 								matInput
 								[matDatepicker]="picker"
-								formControlName="dateOfRetirement"
+								formControlName="dogRetiredDate"
 								[max]="maxToday"
 								[min]="minDate"
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 							<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('matDatepickerMin')">
-								Invalid date of retirement
+							<!-- We always want the date format hint to display -->
+							<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
+							<mat-error *ngIf="showHintError">
+								<span class="hint-inline">Date format YYYY-MM-DD</span>
 							</mat-error>
-							<mat-error *ngIf="form.get('dateOfRetirement')?.hasError('matDatepickerMax')">
+							<mat-error *ngIf="dogRetiredDate?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMin')"> Invalid date of retirement </mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMax')">
 								This must be on or before {{ maxToday | formatDate }}
 							</mat-error>
 						</mat-form-field>
@@ -38,7 +41,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</form>
 		</app-step-section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.hint-inline {
+				font-size: 12px;
+				color: rgba(0, 0, 0, 0.6);
+			}
+		`,
+	],
 	standalone: false,
 })
 export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepComponent {
@@ -65,5 +75,11 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get showHintError(): boolean {
+		return (this.dogRetiredDate?.dirty || this.dogRetiredDate?.touched) && this.dogRetiredDate?.invalid;
+	}
+	public get dogRetiredDate(): FormControl {
+		return this.form.get('dogRetiredDate') as FormControl;
 	}
 }

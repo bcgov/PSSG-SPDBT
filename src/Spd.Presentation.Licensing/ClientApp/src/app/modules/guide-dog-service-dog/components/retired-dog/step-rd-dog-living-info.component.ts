@@ -13,7 +13,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group aria-label="Select an option" formControlName="isContinueToLiveWithDog">
+						<mat-radio-group aria-label="Select an option" formControlName="confirmDogLiveWithYouAfterRetire">
 							<div class="d-flex justify-content-start">
 								<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -22,9 +22,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
-								(form.get('isContinueToLiveWithDog')?.dirty || form.get('isContinueToLiveWithDog')?.touched) &&
-								form.get('isContinueToLiveWithDog')?.invalid &&
-								form.get('isContinueToLiveWithDog')?.hasError('required')
+								(form.get('confirmDogLiveWithYouAfterRetire')?.dirty ||
+									form.get('confirmDogLiveWithYouAfterRetire')?.touched) &&
+								form.get('confirmDogLiveWithYouAfterRetire')?.invalid &&
+								form.get('confirmDogLiveWithYouAfterRetire')?.hasError('required')
 							"
 							>This is required</mat-error
 						>

@@ -9,8 +9,9 @@ import {
 	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceResponseExt, WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { LicenceResponseExt } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -113,8 +114,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private workerApplicationService: WorkerApplicationService
-		// private permitApplicationService: PermitApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -147,12 +147,23 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		}
 
 		switch (this.serviceTypeCode) {
-			case ServiceTypeCode.SecurityWorkerLicence:
+			case ServiceTypeCode.SecurityWorkerLicence: {
+				this.commonApplicationService
+					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+					.pipe(
+						tap((resp: LicenceResponseExt) => {
+							this.handleLookupResponse(resp);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
 			case ServiceTypeCode.GdsdTeamCertification:
 			case ServiceTypeCode.DogTrainerCertification:
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				this.workerApplicationService
-					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+				this.commonApplicationService
+					.getGDSDLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceResponseExt) => {
 							this.handleLookupResponse(resp);
@@ -165,8 +176,8 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			// SPDBT-3425 - Remove anonymous permit flows
 			// case ServiceTypeCode.ArmouredVehiclePermit:
 			// case ServiceTypeCode.BodyArmourPermit: {
-			// 	this.permitApplicationService
-			// 		.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+			// 	this.commonApplicationService
+			// 		.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 			// 		.pipe(
 			// 			tap((resp: LicenceResponse) => {
 			// 				this.handleLookupResponse(resp);
