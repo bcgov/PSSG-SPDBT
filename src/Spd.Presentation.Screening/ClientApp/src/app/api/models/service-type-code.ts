@@ -15,5 +15,8 @@ export enum ServiceTypeCode {
   ArmouredVehiclePermit = 'ArmouredVehiclePermit',
   BodyArmourPermit = 'BodyArmourPermit',
   Mdra = 'MDRA',
-  SecurityBusinessLicenceControllingMemberCrc = 'SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC'
+  SecurityBusinessLicenceControllingMemberCrc = 'SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC',
+  GdsdTeamCertification = 'GDSDTeamCertification',
+  DogTrainerCertification = 'DogTrainerCertification',
+  RetiredServiceDogCertification = 'RetiredServiceDogCertification'
 }
