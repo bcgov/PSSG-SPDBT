@@ -753,23 +753,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 
 	/**
-	 * Search for an existing permit using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getPermitWithAccessCodeAnonymous(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponse> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(take(1));
-	}
-
-	/**
 	 * Load an existing permit application
 	 * @param licenceAppId
 	 * @returns

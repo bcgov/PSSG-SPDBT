@@ -47,29 +47,19 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 							<mat-divider class="mt-3 mb-2"></mat-divider>
 							<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
 							<ul>
-								<li class="metal-dealers-checklist-label">No registration fee</li>
-								<li class="metal-dealers-checklist-label">3-year registration term</li>
-								<li class="metal-dealers-checklist-label">
-									Must provide business name, address, telephone number, and email address (if any)
-								</li>
-								<li class="metal-dealers-checklist-label">Must provide the address of all business locations</li>
-								<li class="metal-dealers-checklist-label">
-									Must provide the identity of the person(s) responsible for the daily management of the business
-								</li>
-								<li class="metal-dealers-checklist-label">
-									Must provide copies of the business licence registration documents
-								</li>
-								<li class="metal-dealers-checklist-label">
-									Must display the registration certificate in a visible place at each business location
-								</li>
-								<li class="metal-dealers-checklist-label">
-									Registration cannot be transferred without the Registrar’s written consent
-								</li>
-								<li class="metal-dealers-checklist-label">
+								<li>No registration fee</li>
+								<li>3-year registration term</li>
+								<li>Must provide business name, address, telephone number, and email address (if any)</li>
+								<li>Must provide the address of all business locations</li>
+								<li>Must provide the identity of the person(s) responsible for the daily management of the business</li>
+								<li>Must provide copies of the business licence registration documents</li>
+								<li>Must display the registration certificate in a visible place at each business location</li>
+								<li>Registration cannot be transferred without the Registrar’s written consent</li>
+								<li>
 									The registrant must immediately return the registration and all duplicates to the Registrar upon the
 									expiry, cancellation, suspension, or refusal of a registration renewal
 								</li>
-								<li class="metal-dealers-checklist-label">
+								<li>
 									The registrant must not carry on a business using a name other than the name specified in the
 									registration
 								</li>
@@ -97,7 +87,7 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 	`,
 	styles: [
 		`
-			.metal-dealers-checklist-label {
+			li {
 				color: var(--color-primary);
 				line-height: 1.75em;
 			}

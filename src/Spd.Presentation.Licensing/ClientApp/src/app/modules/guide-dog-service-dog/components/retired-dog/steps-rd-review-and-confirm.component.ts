@@ -17,6 +17,8 @@ import { StepRdSummaryComponent } from './step-rd-summary.component';
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_SUMMARY)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -27,6 +29,8 @@ import { StepRdSummaryComponent } from './step-rd-summary.component';
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_SUMMARY)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_CONSENT)"
 					nextButtonLabel="Submit"
@@ -42,6 +46,7 @@ export class StepsRdReviewAndConfirmComponent extends BaseWizardStepComponent {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_CONSENT = 1;
 
+	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 

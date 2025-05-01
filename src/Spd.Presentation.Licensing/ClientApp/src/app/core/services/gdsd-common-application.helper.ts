@@ -29,7 +29,7 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 		microchipNumber: new FormControl(''),
 	});
 
-	consentAndDeclarationTeamFormGroup: FormGroup = this.formBuilder.group({
+	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		applicantOrLegalGuardianName: new FormControl('', [FormControlValidators.required]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
@@ -50,7 +50,7 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 		),
 	});
 
-	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+	consentAndDeclarationDtFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
