@@ -147,9 +147,9 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>

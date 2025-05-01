@@ -33,6 +33,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-new
 							[isLoggedIn]="true"
+							[isFormValid]="isFormValid"
 							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
@@ -113,16 +114,13 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	step3Complete = false;
 
 	@ViewChild(StepsPermitDetailsNewComponent)
-	stepPermitDetailsComponent!: StepsPermitDetailsNewComponent;
-
+	stepsPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 	@ViewChild(StepsPermitPurposeAuthenticatedComponent)
-	stepPurposeComponent!: StepsPermitPurposeAuthenticatedComponent;
-
+	stepsPurposeComponent!: StepsPermitPurposeAuthenticatedComponent;
 	@ViewChild(StepsPermitIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepsPermitIdentificationAuthenticatedComponent;
-
+	stepsIdentificationComponent!: StepsPermitIdentificationAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
-	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
+	stepsReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -176,20 +174,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -197,17 +183,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToLastStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -217,17 +194,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_PERMIT_DETAILS:
-							this.stepPermitDetailsComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_PURPOSE_AND_RATIONALE:
-							this.stepPurposeComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_IDENTIFICATION:
-							this.stepIdentificationComponent?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					this.handlePartialSaveError(error);
@@ -257,9 +225,9 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onGoToStep(step: number) {
-		this.stepPermitDetailsComponent?.onGoToFirstStep();
-		this.stepPurposeComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsPermitDetailsComponent?.onGoToFirstStep();
+		this.stepsPurposeComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -311,6 +279,20 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		}
 	}
 
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_PERMIT_DETAILS:
+				return this.stepsPermitDetailsComponent;
+			case this.STEP_PURPOSE_AND_RATIONALE:
+				return this.stepsPurposeComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_REVIEW:
+				return this.stepsReviewComponent;
+		}
+		return null;
+	}
+
 	private payNow(licenceAppId: string): void {
 		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
@@ -331,16 +313,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepPermitDetailsComponent?.onGoToNextStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepPurposeComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 }

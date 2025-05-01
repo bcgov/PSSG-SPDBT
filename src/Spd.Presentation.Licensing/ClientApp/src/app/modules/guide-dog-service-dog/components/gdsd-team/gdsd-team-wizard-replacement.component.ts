@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { GdsdTeamAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, GdsdTeamAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -85,7 +85,7 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 		}
 
 		if (this.isLoggedIn) {
-			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
+			this.gdsdTeamApplicationService.submitLicenceAuthenticated(ApplicationTypeCode.Replacement).subscribe({
 				next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},

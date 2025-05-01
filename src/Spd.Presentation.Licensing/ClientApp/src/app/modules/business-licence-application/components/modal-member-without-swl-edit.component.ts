@@ -73,7 +73,7 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 							Download the
 							<a
 								aria-label="Download Consent to Criminal Record Check document"
-								download="business-memberauthconsent"
+								download="Business Member Authorization Consent"
 								matTooltip="Download Consent to Criminal Record Check document"
 								[href]="downloadFilePath"
 							>
