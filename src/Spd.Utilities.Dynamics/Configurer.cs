@@ -18,7 +18,7 @@ public class Configurer : IConfigureComponents, IProvideInstrumentationSources
 
         services
             .AddHttpClient("oauth")
-            .SetHandlerLifetime(TimeSpan.FromMinutes(2));
+            .SetHandlerLifetime(TimeSpan.FromMinutes(50));
 
         services.AddSingleton<ISecurityTokenProvider, OauthSecurityTokenProvider>();
 
@@ -27,7 +27,7 @@ public class Configurer : IConfigureComponents, IProvideInstrumentationSources
             .AddODataClientHandler<ODataClientHandler>()
             .AddHttpClient()
             .ConfigureHttpClient(c => c.Timeout = options.HttpClientTimeout)
-            .SetHandlerLifetime(TimeSpan.FromMinutes(2))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(50))
         ;
 
         services.AddSingleton<IDynamicsContextFactory, DynamicsContextFactory>();
