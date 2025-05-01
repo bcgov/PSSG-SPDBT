@@ -9,13 +9,11 @@ internal class OrgRepository : IOrgRepository
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<IOrgRepository> _logger;
-    private readonly IDynamicsContextFactory _dynamicsContextFactory;
 
     public OrgRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         ILogger<IOrgRepository> logger)
     {
-        _dynamicsContextFactory = ctx;
         _context = ctx.Create();
         _mapper = mapper;
         this._logger = logger;
