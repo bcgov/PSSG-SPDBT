@@ -4,13 +4,15 @@ on:
   push:
     branches:
       - main
-      - 'release/**'
+      - "release/**"
       - develop
     paths:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
       - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Manager.ScheduleJob/**"
       - "!src/Spd.Manager.Licence/**"
+      - "!src/Spd.Resource.Repository.JobSchedule/**"
       - .github/workflows/screening-portal-build.yml
       - .github/workflows/docker-build-template.yml
 
@@ -22,6 +24,8 @@ on:
       - "!src/Spd.Manager.Licence/**"
       - .github/workflows/screening-portal-build.yml
       - .github/workflows/docker-build-template.yml
+      - "!src/Spd.Manager.ScheduleJob/**"
+      - "!src/Spd.Resource.Repository.JobSchedule/**"
 
 jobs:
   build:
