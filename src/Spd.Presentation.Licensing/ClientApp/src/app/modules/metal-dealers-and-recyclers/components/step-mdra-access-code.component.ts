@@ -69,7 +69,7 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 		this.accessCodeComponent.searchByAccessCode();
 	}
 
-	onLinkSuccess(linkLicence: LicenceResponse): void {
+	onLinkSuccess(_linkLicence: LicenceResponse): void {
 		// this.mdraDealersApplicationService
 		// 	.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
 		// 	.subscribe((_resp: any) => {

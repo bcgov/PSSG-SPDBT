@@ -159,15 +159,12 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	showCitizenshipStep = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+	stepsReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -233,20 +230,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_REVIEW:
-				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -254,17 +239,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -274,17 +250,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_WORKER_LICENCE_SELECTION:
-							this.stepLicenceSelectionComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_WORKER_BACKGROUND:
-							this.stepBackgroundComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_WORKER_IDENTIFICATION:
-							this.stepIdentificationComponent?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					this.handlePartialSaveError(error);
@@ -305,8 +272,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onGoToStep(step: number) {
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -344,7 +311,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onLicenceSelectionChildNextStep(): void {
-		const isStepToSave = this.stepLicenceSelectionComponent?.isStepToSave();
+		const isStepToSave = this.stepsLicenceSelectionComponent?.isStepToSave();
 		if (isStepToSave) {
 			this.onChildNextStep();
 			return;
@@ -366,6 +333,20 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_WORKER_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_WORKER_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_WORKER_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_WORKER_LICENCE_REVIEW:
+				return this.stepsReviewAuthenticatedComponent;
+		}
+		return null;
 	}
 
 	private submitStep(): void {
@@ -435,17 +416,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	private payNow(licenceAppId: string): void {
