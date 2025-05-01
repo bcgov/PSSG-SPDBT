@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
@@ -46,11 +46,16 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									/>
 									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-									<mat-error *ngIf="form.get('trainerDateOfBirth')?.hasError('required')">This is required</mat-error>
-									<mat-error *ngIf="form.get('trainerDateOfBirth')?.hasError('matDatepickerMin')">
+									<!-- We always want the date format hint to display -->
+									<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
+									<mat-error *ngIf="showHintError">
+										<span class="hint-inline">Date format YYYY-MM-DD</span>
+									</mat-error>
+									<mat-error *ngIf="trainerDateOfBirth?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="trainerDateOfBirth?.hasError('matDatepickerMin')">
 										Invalid date of birth
 									</mat-error>
-									<mat-error *ngIf="form.get('trainerDateOfBirth')?.hasError('matDatepickerMax')">
+									<mat-error *ngIf="trainerDateOfBirth?.hasError('matDatepickerMax')">
 										This must be on or before {{ maxBirthDate | formatDate }}
 									</mat-error>
 								</mat-form-field>
@@ -124,5 +129,11 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
+	}
+	get showHintError(): boolean {
+		return (this.trainerDateOfBirth?.dirty || this.trainerDateOfBirth?.touched) && this.trainerDateOfBirth?.invalid;
+	}
+	public get trainerDateOfBirth(): FormControl {
+		return this.form.get('trainerDateOfBirth') as FormControl;
 	}
 }

@@ -2,11 +2,11 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepTeamPersonalInfoComponent } from './step-team-personal-info.component';
 import { StepTeamGovermentPhotoIdComponent } from './step-team-goverment-photo-id.component';
 import { StepTeamMailingAddressComponent } from './step-team-mailing-address.component';
 import { StepTeamMedicalInfoComponent } from './step-team-medical-info.component';
 import { StepTeamPersonalInfoAnonymousComponent } from './step-team-personal-info-anonymous.component';
+import { StepTeamPersonalInfoComponent } from './step-team-personal-info.component';
 import { StepTeamPhotographOfYourselfRenewComponent } from './step-team-photograph-of-yourself-renew.component';
 import { StepTeamPhotographOfYourselfComponent } from './step-team-photograph-of-yourself.component';
 
@@ -90,7 +90,7 @@ import { StepTeamPhotographOfYourselfComponent } from './step-team-photograph-of
 			</mat-step>
 
 			<mat-step>
-				<app-step-gdsd-government-id></app-step-gdsd-government-id>
+				<app-step-team-government-id></app-step-team-government-id>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

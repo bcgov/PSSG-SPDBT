@@ -23,7 +23,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								>.
 							</p>
 						</li>
-
 						<li>
 							<div class="checklist-label">Government-issued photo ID</div>
 							<p class="checklist-info">
@@ -40,19 +39,16 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="checklist-label">Proof of training and experience from an accredited school</div>
 							<p class="checklist-info">We require proof of training and/or experience from an accredited school.</p>
 						</li>
-
 						<li>
 							<div class="checklist-label">Medical Information</div>
 							<p class="checklist-info">
 								Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6 months.
 							</p>
 						</li>
-
 						<li>
 							<div class="checklist-label">Microchip Number</div>
 							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
 						</li>
-
 						<li>
 							<div class="checklist-label">Dog Medical Information</div>
 							<p class="checklist-info">

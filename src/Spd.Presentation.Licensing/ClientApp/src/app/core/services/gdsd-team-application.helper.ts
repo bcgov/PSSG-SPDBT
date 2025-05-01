@@ -307,6 +307,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					} as DocumentRelatedInfo;
 				}) ?? [];
 
+		delete personalInformationData.hasBcscNameChanged;
 		delete mailingAddressData.captchaFormGroup;
 
 		const body = {

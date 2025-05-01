@@ -143,21 +143,8 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		const index = event.selectedIndex;
-		switch (index) {
-			case this.STEP_CHECKLIST:
-				this.stepChecklist?.onGoToFirstStep();
-				break;
-			case this.STEP_BUSINESS_INFO:
-				this.stepsBusinessInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_BRANCH_OFFICES:
-				this.stepBranches?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepReview?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -165,18 +152,8 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		const index = stepper.selectedIndex;
-		switch (index) {
-			case this.STEP_CHECKLIST:
-				this.stepChecklist?.onGoToLastStep();
-				break;
-			case this.STEP_BUSINESS_INFO:
-				this.stepsBusinessInfo?.onGoToLastStep();
-				break;
-			case this.STEP_BRANCH_OFFICES:
-				this.stepBranches?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -198,22 +175,26 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	onChildNextStep() {
-		const index = this.stepper.selectedIndex;
-		switch (index) {
-			case this.STEP_CHECKLIST:
-				this.stepChecklist?.onGoToNextStep();
-				break;
-			case this.STEP_BUSINESS_INFO:
-				this.stepsBusinessInfo?.onGoToNextStep();
-				break;
-			case this.STEP_BRANCH_OFFICES:
-				this.stepBranches?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_CHECKLIST:
+				return this.stepChecklist;
+			case this.STEP_BUSINESS_INFO:
+				return this.stepsBusinessInfo;
+			case this.STEP_BRANCH_OFFICES:
+				return this.stepBranches;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepReview;
+		}
+		return null;
 	}
 
 	private updateCompleteStatus(): void {

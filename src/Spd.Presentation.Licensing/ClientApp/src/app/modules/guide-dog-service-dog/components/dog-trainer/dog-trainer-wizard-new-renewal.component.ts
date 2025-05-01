@@ -157,21 +157,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		const index = event.selectedIndex;
-		switch (index) {
-			case this.STEP_CHECKLIST:
-				this.stepsDetails?.onGoToFirstStep();
-				break;
-			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -179,18 +166,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		const index = stepper.selectedIndex;
-		switch (index) {
-			case this.STEP_CHECKLIST:
-				this.stepsDetails?.onGoToLastStep();
-				break;
-			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -212,19 +189,22 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onChildNextStep() {
-		const index = this.stepper.selectedIndex;
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
+	}
+
+	private getSelectedIndexComponent(index: number): any {
 		switch (index) {
 			case this.STEP_CHECKLIST:
-				this.stepsDetails?.onGoToNextStep();
-				break;
+				return this.stepsDetails;
 			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToNextStep();
-				break;
-
+				return this.stepsSchoolInfo;
 			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToNextStep();
-				break;
+				return this.stepsPersonallInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
 		}
+		return null;
 	}
 
 	get isNew(): boolean {
