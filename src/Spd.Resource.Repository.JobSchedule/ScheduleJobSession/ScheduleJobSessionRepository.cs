@@ -51,7 +51,7 @@ internal class ScheduleJobSessionRepository : IScheduleJobSessionRepository
         _mapper.Map<UpdateScheduleJobSessionCmd, bcgov_schedulejobsession>(updateCmd, jobSession);
         _context.UpdateObject(jobSession);
         await _context.SaveChangesAsync(ct);
-        _logger.LogInformation($"job session - {jobSession.bcgov_schedulejobsessionid} is updated.");
+        _logger.LogInformation("job session - {JobSessionId} is updated.", jobSession.bcgov_schedulejobsessionid);
         return _mapper.Map<ScheduleJobSessionResp>(jobSession);
     }
 
