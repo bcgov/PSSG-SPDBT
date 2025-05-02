@@ -30,7 +30,7 @@ internal class OrgRepository : IOrgRepository
         {
             if (current % 100 == 0 || current == accounts.Count())
             {
-                _logger.LogInformation("Processed {Current} of {AccountsCount()} accounts", current, accounts.Count());
+                _logger.LogInformation("Processed {Current} of {AccountsCount} accounts", current, accounts.Count());
             }
         }
 
@@ -50,13 +50,10 @@ internal class OrgRepository : IOrgRepository
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{a.accountid.Value}-{ex.Message}");
                 Exception current = ex;
                 while (current != null)
                 {
-                    _logger.LogError("Exception Type: {ExceptionName}", current.GetType().Name);
-                    _logger.LogError("Message: {Message}", current.Message);
-                    _logger.LogError("Stack Trace: {StackTrace}", current.StackTrace);
+                    _logger.LogError("Exception Type: {ExceptionName} \r\n Message: {Message} \r\n Stack Trace: {StackTrace}", current.GetType().Name, current.Message, current.StackTrace);
                     current = current.InnerException;
                 }
                 return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
