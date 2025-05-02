@@ -1,5 +1,7 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.OData.Client;
 using Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob;
 using Spd.Utilities.Dynamics;
 
@@ -24,9 +26,7 @@ internal class OrgRepository : IOrgRepository
     //{
     //    int completed = 0;
     //    List<ResultResp> results = new List<ResultResp>();
-    //    var accounts = _context.accounts.Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-    //        .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
-    //        .ToList();
+    //    var accounts = await GetAllAccountsAsync(ct);
 
     //    //delegate, for reporting progress
     //    void ReportProgress(int current)
@@ -43,7 +43,7 @@ internal class OrgRepository : IOrgRepository
     //        try
     //        {
     //            var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
-    //            _logger.LogInformation($"Monthly Invoice executed result : success = {response.IsSuccess} {response.Result} accountid={a.accountid.Value}");
+    //            _logger.LogDebug($"Monthly Invoice executed result : success = {response.IsSuccess} {response.Result} accountid={a.accountid.Value}");
     //            ResultResp rr = _mapper.Map<ResultResp>(response);
     //            rr.PrimaryEntityId = a.accountid.Value;
     //            results.Add(rr);
@@ -73,9 +73,7 @@ internal class OrgRepository : IOrgRepository
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
     {
         int completed = 0;
-        var accounts = _context.accounts.Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-            .Where(a => a.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes)
-            .ToList();
+        var accounts = await GetAllAccountsAsync(ct);
 
         //delegate, for reporting progress
         void ReportProgress(int current)
@@ -86,7 +84,7 @@ internal class OrgRepository : IOrgRepository
             }
         }
 
-        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to 1 concurrent requests
+        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
         _logger.LogDebug($"{concurrentRequests} concurrent requests");
 
         var tasks = accounts.Select(async a =>
@@ -95,7 +93,7 @@ internal class OrgRepository : IOrgRepository
             try
             {
                 var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
-                _logger.LogInformation($"MonthlyInvoice executed result : success = {response.IsSuccess} {response.Result} accountid={a.accountid.Value}");
+                _logger.LogDebug($"MonthlyInvoice executed result : success = {response.IsSuccess} {response.Result} accountid={a.accountid.Value}");
                 ResultResp rr = _mapper.Map<ResultResp>(response);
                 rr.PrimaryEntityId = a.accountid.Value;
                 return rr;
@@ -106,9 +104,9 @@ internal class OrgRepository : IOrgRepository
                 Exception current = ex;
                 while (current != null)
                 {
-                    Console.WriteLine($"Exception Type: {current.GetType().Name}");
-                    Console.WriteLine($"Message: {current.Message}");
-                    Console.WriteLine($"Stack Trace: {current.StackTrace}");
+                    _logger.LogError($"Exception Type: {current.GetType().Name}");
+                    _logger.LogError($"Message: {current.Message}");
+                    _logger.LogError($"Stack Trace: {current.StackTrace}");
                     current = current.InnerException;
                 }
                 return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
@@ -123,6 +121,37 @@ internal class OrgRepository : IOrgRepository
 
         var results = await Task.WhenAll(tasks);
         return results;
+    }
+
+    public async Task<IEnumerable<account>> GetAllAccountsAsync(CancellationToken ct)
+    {
+        int completed = 0;
+        string filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
+
+        var accountsQuery = _context.accounts
+            .AddQueryOption("$filter", filterStr)
+            .IncludeCount();
+
+        var allAccounts = new List<account>();
+
+        QueryOperationResponse<account> response;
+        DataServiceQueryContinuation<account> continuation = null;
+
+        do
+        {
+            if (continuation == null)
+            {
+                response = (QueryOperationResponse<account>)await accountsQuery.ExecuteAsync(ct);
+            }
+            else
+            {
+                response = (QueryOperationResponse<account>)await _context.ExecuteAsync(continuation, ct);
+            }
+            allAccounts.AddRange(response);
+            continuation = response.GetContinuation();
+        } while (continuation != null);
+
+        return allAccounts;
     }
 }
 
