@@ -36,7 +36,10 @@ public class ScheduleJobController : SpdControllerBase
         [FromRoute] Guid sessionId,
         CancellationToken ct)
     {
-        _mediator.Send(new RunScheduleJobSessionCommand(sessionId), ct);
+        int concurrentRequests = _configuration.GetValue<int>("ScheduleJobConcurrentRequests");
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        _mediator.Send(new RunScheduleJobSessionCommand(sessionId, concurrentRequests), ct);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         return Ok();
     }
 }
