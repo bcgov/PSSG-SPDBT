@@ -48,7 +48,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			isTradeNameTheSameAsLegal: new FormControl(''),
 			soleProprietorLicenceId: new FormControl(''),
 			soleProprietorLicenceAppId: new FormControl(''),
-			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
 			soleProprietorLicenceHolderId: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
