@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
@@ -8,11 +9,15 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<IGeneralizeScheduleJobRepository> _logger;
+
     public GeneralizeScheduleJobRepository(IDynamicsContextFactory ctx,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<IGeneralizeScheduleJobRepository> logger)
     {
         _context = ctx.Create();
         _mapper = mapper;
+        this._logger = logger;
     }
 
     //public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, CancellationToken ct)
@@ -88,6 +93,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         var data = await CallGetAllPrimaryEntityDynamicAsync(entityType, primaryEntityName, filterStr, ct);
 
         using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to 10 concurrent requests
+        _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
 
         var tasks = data.Select(async a =>
         {
