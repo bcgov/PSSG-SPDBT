@@ -9,7 +9,7 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
     {
         //category
         RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7)
-            .WithMessage("A maximum of 6 licence categories is allowed");
+            .WithMessage("The limit of 6 categories has been exceeded.");
         var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
         if (invalidCategoryMatrix == null)
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
@@ -101,7 +101,7 @@ public class BizLicAppSubmitRequestValidator : BizLicAppBaseValidator<BizLicAppS
 
         //category
         RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7)
-             .WithMessage("A maximum of 6 licence categories is allowed"); ;
+             .WithMessage("The limit of 6 categories has been exceeded."); ;
         var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
         if (invalidCategoryMatrix == null)
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
