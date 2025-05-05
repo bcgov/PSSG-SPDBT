@@ -120,10 +120,17 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
                 var value = resultProperty?.GetValue(task);
                 ResultResp rr = _mapper.Map<ResultResp>(value);
                 rr.PrimaryEntityId = Guid.Parse(idStr);
+                _logger.LogInformation("{actionStr} executed result : success = {Success} {Result} primaryEntityId={entityId}", actionStr, rr.IsSuccess, rr.ResultStr, idStr);
                 return rr;
             }
             catch (Exception ex)
             {
+                Exception current = ex;
+                while (current != null)
+                {
+                    _logger.LogError("Exception Type: {ExceptionName} \r\n Message: {Message} \r\n Stack Trace: {StackTrace}", current.GetType().Name, current.Message, current.StackTrace);
+                    current = current.InnerException;
+                }
                 var idProperty = a.GetType().GetProperty(primaryEntityIdName);
                 object obj = idProperty.GetValue(a);
                 return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = Guid.Parse(obj.ToString()) };
@@ -187,7 +194,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         {
             list.Add(item);
         }
-
+        _logger.LogInformation("{Count} {Name} found", list.Count, primaryEntityName);
         return list;
     }
 
