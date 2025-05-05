@@ -75,7 +75,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
     //    return results;
     //}
 
-    public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, CancellationToken ct)
+    public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
     {
         string primaryEntityName = request.PrimaryEntityName;
         string filterStr = request.PrimaryEntityFilterStr;
@@ -87,7 +87,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         Type entityType = GetEntityTypeByName(primaryTypeName);
         var data = await CallGetAllPrimaryEntityDynamicAsync(entityType, primaryEntityName, filterStr, ct);
 
-        using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
+        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to 10 concurrent requests
 
         var tasks = data.Select(async a =>
         {
@@ -192,8 +192,8 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         var property = _context.GetType().GetProperty(primaryEntityName);
         if (property == null) throw new Exception("Property not found.");
 
-        dynamic query = property.GetValue(_context) as DataServiceQuery;
-        query.AddQueryOption("$filter", filterStr)
+        var query = property.GetValue(_context) as DataServiceQuery<T>;
+        query = query.AddQueryOption("$filter", filterStr)
             .IncludeCount();
 
         var allEntities = new List<T>();
