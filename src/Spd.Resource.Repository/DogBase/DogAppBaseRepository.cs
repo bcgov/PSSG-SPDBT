@@ -26,8 +26,8 @@ internal abstract class DogAppBaseRepository : IDogAppBaseRepository
         {
             app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.Submitted.ToString());
             app.statecode = DynamicsConstants.StateCode_Inactive;
-            app.spd_submittedon = DateTimeOffset.Now;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
+            app.spd_submittedon = DateTimeOffset.UtcNow;
+            app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
             app.spd_licencefee = 0;
             _context.UpdateObject(app);
         }
@@ -35,7 +35,7 @@ internal abstract class DogAppBaseRepository : IDogAppBaseRepository
         {
             app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.ApplicantVerification.ToString());
             app.statecode = DynamicsConstants.StateCode_Active;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
+            app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
             app.spd_licencefee = 0;
             _context.UpdateObject(app);
         }

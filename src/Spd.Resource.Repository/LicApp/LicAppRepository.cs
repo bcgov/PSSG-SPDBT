@@ -32,8 +32,8 @@ internal class LicAppRepository : ILicAppRepository
         if (status == ApplicationStatusEnum.Submitted)
             app.statecode = DynamicsConstants.StateCode_Inactive;
 
-        app.spd_submittedon = DateTimeOffset.Now;
-        app.spd_portalmodifiedon = DateTimeOffset.Now;
+        app.spd_submittedon = DateTimeOffset.UtcNow;
+        app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
 
         if (price != null && price >= 0)
             app.spd_licencefee = price;
