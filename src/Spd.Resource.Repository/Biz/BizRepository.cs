@@ -215,15 +215,6 @@ namespace Spd.Resource.Repository.Biz
                 c => c.spd_role == (int)BizContactRoleOptionSet.ControllingMember && c._spd_swlnumber_value == licenceId
                 );
 
-            foreach (spd_businesscontact bc in bizExistingContacts)
-            {
-                if (validSpContact == null || bc.spd_businesscontactid != validSpContact.spd_businesscontactid)
-                {
-                    bc.statecode = DynamicsConstants.StateCode_Inactive;
-                    bc.statuscode = DynamicsConstants.StatusCode_Inactive;
-                    _context.UpdateObject(bc);
-                }
-            }
             if (validSpContact == null)
             {
                 //add a bizcontact
