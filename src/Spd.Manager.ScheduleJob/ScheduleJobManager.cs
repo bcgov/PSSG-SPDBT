@@ -77,7 +77,7 @@ public class ScheduleJobManager :
         }
 
         Stopwatch stopwatch = Stopwatch.StartNew();
-        using var cts = new CancellationTokenSource(); // no timeout
+        using var cts = new CancellationTokenSource(); // no timeout, this is the resolve for mysteriously cancelled requests
         //request will from bcgov_schedulejob
         RunJobRequest request = new RunJobRequest
         {
@@ -86,7 +86,7 @@ public class ScheduleJobManager :
             PrimaryEntityFilterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001",
             PrimaryEntityIdName = "accountid"
         };
-        var result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cts.Token);
+        var result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token);
         stopwatch.Stop();
 
         //update result in JobSession
