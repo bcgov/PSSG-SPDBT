@@ -185,8 +185,6 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         return list;
     }
 
-
-
     private async Task<IEnumerable<T>> GetAllPrimaryEntityAsync<T>(string primaryEntityName, string filterStr, CancellationToken ct)
     {
         filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
@@ -195,7 +193,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         if (property == null) throw new Exception("Property not found.");
 
         dynamic query = property.GetValue(_context) as DataServiceQuery;
-        query.AddQueryOption("$filter", $"{filterStr}")
+        query.AddQueryOption("$filter", filterStr)
             .IncludeCount();
 
         var allEntities = new List<T>();
