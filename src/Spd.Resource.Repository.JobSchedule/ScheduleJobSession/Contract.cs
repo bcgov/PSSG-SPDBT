@@ -29,7 +29,7 @@ namespace Spd.Resource.Repository.JobSchedule.ScheduleJobSession
         public Guid ScheduleJobId { get; set; }
         public string EndPoint { get; set; }
         public string PrimaryEntity { get; set; }
-
+        public string FilterStr { get; set; }
     }
 
     public enum JobSessionStatusCode

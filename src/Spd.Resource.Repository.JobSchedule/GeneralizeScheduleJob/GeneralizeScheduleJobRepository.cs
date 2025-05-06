@@ -82,12 +82,12 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
 
     public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
     {
+        string primaryTypeName = request.PrimaryTypeName;
         string primaryEntityName = request.PrimaryEntityName;
-        string filterStr = request.PrimaryEntityFilterStr;
+        string filterStr = request.PrimaryEntityFilterStr ?? string.Empty;
         string actionStr = request.PrimaryEntityActionStr;
         string primaryEntityIdName = request.PrimaryEntityIdName;
 
-        string primaryTypeName = "account";
         // Resolve type dynamically
         Type entityType = GetEntityTypeByName(primaryTypeName);
         var data = await CallGetAllPrimaryEntityDynamicAsync(entityType, primaryEntityName, filterStr, ct);
@@ -200,8 +200,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
 
     private async Task<IEnumerable<T>> GetAllPrimaryEntityAsync<T>(string primaryEntityName, string filterStr, CancellationToken ct)
     {
-        filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
-
+        //filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
         var property = _context.GetType().GetProperty(primaryEntityName);
         if (property == null) throw new Exception("Property not found.");
 

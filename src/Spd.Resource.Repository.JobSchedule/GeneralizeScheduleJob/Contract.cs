@@ -7,8 +7,9 @@ namespace Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob
 
     public record RunJobRequest
     {
-        public String PrimaryEntityName { get; set; }
-        public string PrimaryEntityIdName { get; set; }
+        public string PrimaryTypeName { get; set; } //exp: account
+        public String PrimaryEntityName { get; set; } //exp: accounts
+        public string PrimaryEntityIdName { get; set; } //exp: accountid
         public string? PrimaryEntityFilterStr { get; set; }
         public string PrimaryEntityActionStr { get; set; }
     }
