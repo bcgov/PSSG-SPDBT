@@ -280,7 +280,6 @@ export class CommonBusinessInformationComponent implements OnInit {
 				if (lookupData) {
 					this.form.patchValue({
 						soleProprietorLicenceId: lookupData.licenceId,
-						soleProprietorLicenceAppId: lookupData.licenceAppId,
 						soleProprietorLicenceHolderName: lookupData.licenceHolderName,
 						soleProprietorLicenceNumber: lookupData.licenceNumber,
 						soleProprietorLicenceExpiryDate: lookupData.expiryDate,
