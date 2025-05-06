@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
@@ -108,10 +108,13 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
                 //invoke method
                 var method = a.GetType().GetMethod(actionStr);
                 var result = method?.Invoke(a, null);
+                if (result == null) throw new Exception($"the {actionStr} invoked returns null");
+
                 var getValueAsyncMethod = result.GetType().GetMethod(
                     "GetValueAsync",
                     new[] { typeof(CancellationToken) });
                 if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
+
                 var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
                 await task.ConfigureAwait(false);
 
