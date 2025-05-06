@@ -1068,9 +1068,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			this.businessInformationFormGroup.patchValue(
 				{
 					soleProprietorLicenceId: null,
-					soleProprietorLicenceAppId: null,
 					soleProprietorLicenceHolderName: null,
-					soleProprietorLicenceHolderId: null,
 					soleProprietorLicenceNumber: null,
 					soleProprietorLicenceExpiryDate: null,
 					soleProprietorLicenceStatusCode: null,
@@ -1970,9 +1968,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizTradeName: businessProfile.bizTradeName,
 			isBizTradeNameReadonly: !!bceidBizTradeName, // user cannot overwrite value from bceid
 			soleProprietorLicenceId: null,
-			soleProprietorLicenceAppId: null,
 			soleProprietorLicenceHolderName: null,
-			soleProprietorLicenceHolderId: null,
 			soleProprietorLicenceNumber: null,
 			soleProprietorLicenceExpiryDate: null,
 			soleProprietorLicenceStatusCode: null,
@@ -1983,9 +1979,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (soleProprietorSwlLicence) {
 			// if in the business profile, the user chose a swl licence (for sole proprietor)
 			businessInformationData.soleProprietorLicenceId = soleProprietorSwlLicence.licenceId;
-			businessInformationData.soleProprietorLicenceAppId = soleProprietorSwlLicence.licenceAppId;
 			businessInformationData.soleProprietorLicenceHolderName = soleProprietorSwlLicence.licenceHolderName;
-			businessInformationData.soleProprietorLicenceHolderId = soleProprietorSwlLicence.licenceHolderId;
 			businessInformationData.soleProprietorLicenceNumber = soleProprietorSwlLicence.licenceNumber;
 			businessInformationData.soleProprietorLicenceExpiryDate = soleProprietorSwlLicence.expiryDate;
 			businessInformationData.soleProprietorLicenceStatusCode = soleProprietorSwlLicence.licenceStatusCode;
