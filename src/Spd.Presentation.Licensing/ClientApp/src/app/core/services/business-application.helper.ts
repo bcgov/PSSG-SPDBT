@@ -559,8 +559,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		let applicantContactInfo: ContactInfo = {};
 		let applicantIsBizManager: boolean | null = null;
 
-		applicantIsBizManager = applicantData.applicantIsBizManager ?? true;
-		if (applicantData.applicantIsBizManager != true) {
+		applicantIsBizManager = applicantData.applicantIsBizManager === true;
+		if (!applicantIsBizManager) {
 			applicantContactInfo = {
 				emailAddress: applicantData.emailAddress,
 				givenName: applicantData.givenName,
