@@ -13,6 +13,7 @@ namespace Spd.Resource.Repository.JobSchedule.ScheduleJobSession
              .ForMember(d => d.ScheduleJobId, opt => opt.MapFrom(s => s._bcgov_schedulejobid_value))
              .ForMember(d => d.PrimaryEntity, opt => opt.MapFrom(s => s.bcgov_ScheduleJobId.bcgov_primaryentity))
              .ForMember(d => d.EndPoint, opt => opt.MapFrom(s => s.bcgov_ScheduleJobId.bcgov_endpoint))
+             .ForMember(d => d.FilterStr, opt => opt.MapFrom(s => s.bcgov_ScheduleJobId.bcgov_fetchxml))
              ;
 
             _ = CreateMap<UpdateScheduleJobSessionCmd, bcgov_schedulejobsession>()
