@@ -47,10 +47,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
 			soleProprietorLicenceId: new FormControl(''),
-			soleProprietorLicenceAppId: new FormControl(''),
-			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
-			soleProprietorLicenceHolderId: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
 			soleProprietorLicenceExpiryDate: new FormControl(''),
 			soleProprietorLicenceStatusCode: new FormControl(''),
@@ -594,20 +591,11 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 
 		if (categoryData.PrivateInvestigator) {
-			const isSoleProprietorSimultaneousFlow = businessModelFormValue.isSoleProprietorSimultaneousFlow;
-			if (!isSoleProprietorSimultaneousFlow && this.isSoleProprietor(bizTypeCode)) {
-				// if sole proprietor, populate the PI info from the associated swl in the profile
-				privateInvestigatorSwlInfo = {
-					contactId: businessInformationData.soleProprietorLicenceHolderId,
-					licenceId: businessInformationData.soleProprietorLicenceId,
-				};
-			} else {
-				const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
-				privateInvestigatorSwlInfo = {
-					contactId: privateInvestigatorData.managerContactId,
-					licenceId: privateInvestigatorData.managerLicenceId,
-				};
-			}
+			const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
+			privateInvestigatorSwlInfo = {
+				contactId: privateInvestigatorData.managerContactId,
+				licenceId: privateInvestigatorData.managerLicenceId,
+			};
 		} else {
 			this.clearPrivateInvestigatorModelData();
 		}

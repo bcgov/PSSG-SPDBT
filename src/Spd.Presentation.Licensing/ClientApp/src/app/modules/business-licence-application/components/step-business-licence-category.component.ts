@@ -197,71 +197,60 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 							</ng-container>
 
 							<ng-container *ngIf="showPrivateInvestigator">
-								<ng-container *ngIf="isBusinessLicenceSoleProprietor; else notBusinessLicenceSoleProprietor">
-									<app-form-licence-category-panel-simple
-										[categoryTypeCode]="privateInvestigatorCode"
-										[blockCategory]="blockPrivateInvestigator"
-										[expandCategory]="expandPrivateInvestigator"
-										(removeCategory)="onRemove($event)"
-										(deselectCategory)="onDeselect($event)"
-									></app-form-licence-category-panel-simple>
-								</ng-container>
-								<ng-template #notBusinessLicenceSoleProprietor>
-									<div class="row">
-										<div
-											class="col-md-12 col-sm-12"
-											[ngClass]="blockPrivateInvestigator ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+								<div class="row">
+									<div
+										class="col-md-12 col-sm-12"
+										[ngClass]="blockPrivateInvestigator ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+									>
+										<mat-expansion-panel
+											[hideToggle]="blockPrivateInvestigator"
+											class="my-3 w-100"
+											[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+											[disabled]="blockPrivateInvestigator"
+											[expanded]="expandPrivateInvestigator"
 										>
-											<mat-expansion-panel
-												[hideToggle]="blockPrivateInvestigator"
-												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
-												[disabled]="blockPrivateInvestigator"
-												[expanded]="expandPrivateInvestigator"
-											>
-												<mat-expansion-panel-header>
-													<mat-panel-title>
-														<mat-icon
-															class="error-icon"
-															color="warn"
-															matTooltip="One or more errors exist in this category"
-															*ngIf="
-																categoryPrivateInvestigatorFormGroup?.touched &&
-																categoryPrivateInvestigatorFormGroup?.invalid
-															"
-															>error</mat-icon
-														>{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
-													</mat-panel-title>
-												</mat-expansion-panel-header>
-												<div class="row my-3">
-													<div class="col-12 mx-auto">
-														<button
-															mat-stroked-button
-															class="xlarge w-auto float-end"
-															aria-label="Remove category"
-															(click)="onRemove(privateInvestigatorCode)"
-														>
-															<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-														</button>
-													</div>
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													<mat-icon
+														class="error-icon"
+														color="warn"
+														matTooltip="One or more errors exist in this category"
+														*ngIf="
+															categoryPrivateInvestigatorFormGroup?.touched &&
+															categoryPrivateInvestigatorFormGroup?.invalid
+														"
+														>error</mat-icon
+													>{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(privateInvestigatorCode)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
 												</div>
+											</div>
 
-												<app-business-category-private-investigator></app-business-category-private-investigator>
-											</mat-expansion-panel>
-										</div>
-
-										<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockPrivateInvestigator">
-											<button
-												mat-stroked-button
-												class="large delete-button my-lg-3"
-												aria-label="Remove category"
-												(click)="onDeselect(privateInvestigatorCode)"
-											>
-												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
-											</button>
-										</div>
+											<app-business-category-private-investigator></app-business-category-private-investigator>
+										</mat-expansion-panel>
 									</div>
-								</ng-template>
+
+									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockPrivateInvestigator">
+										<button
+											mat-stroked-button
+											class="large delete-button my-lg-3"
+											aria-label="Remove category"
+											(click)="onDeselect(privateInvestigatorCode)"
+										>
+											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+										</button>
+									</div>
+								</div>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmInstaller">
@@ -489,13 +478,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
-		if (this.isBusinessLicenceSoleProprietor) {
-			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
-			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
-		} else {
-			const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
-			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
-		}
+		const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
+		this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
 
 		this.availableCategoryCodes = BusinessLicenceCategoryTypes.map(
 			(item: SelectOptions) => item.code as WorkerCategoryTypeCode
