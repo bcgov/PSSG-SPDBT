@@ -13,6 +13,7 @@ namespace Spd.Manager.ScheduleJob;
 
 public class ScheduleJobManager :
     IRequestHandler<RunScheduleJobSessionCommand, Unit>,
+    IRequestHandler<RunMonthlyInvoiceJobCommand, Unit>,
     IScheduleJobManager
 {
     private readonly IScheduleJobSessionRepository _scheduleJobSessionRepository;
@@ -31,7 +32,7 @@ public class ScheduleJobManager :
         _logger = logger;
     }
 
-    public async Task<Unit> Handle(RunScheduleJobSessionCommand cmd, CancellationToken ct)
+    public async Task<Unit> Handle(RunMonthlyInvoiceJobCommand cmd, CancellationToken ct)
     {
         ScheduleJobSessionResp? resp = await _scheduleJobSessionRepository.GetAsync(cmd.JobSessionId, ct);
         if (resp == null)
@@ -67,33 +68,35 @@ public class ScheduleJobManager :
         return default;
     }
 
-    //generalized,waiting for mano testing
-    //public async Task<Unit> Handle(RunScheduleJobSessionCommand cmd, CancellationToken ct)
-    //{
-    //    ScheduleJobSessionResp? resp = await _scheduleJobSessionRepository.GetAsync(cmd.JobSessionId, ct);
-    //    if (resp == null)
-    //    {
-    //        throw new ApiException(HttpStatusCode.BadRequest, "The schedule job session does not exist.");
-    //    }
+    public async Task<Unit> Handle(RunScheduleJobSessionCommand cmd, CancellationToken ct)
+    {
+        ScheduleJobSessionResp? resp = await _scheduleJobSessionRepository.GetAsync(cmd.JobSessionId, ct);
+        if (resp == null)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "The schedule job session does not exist.");
+        }
 
-    //    Stopwatch stopwatch = Stopwatch.StartNew();
-    //    //request will from bcgov_schedulejob
-    //    RunJobRequest request = new RunJobRequest
-    //    {
-    //        PrimaryEntityActionStr = "spd_MonthlyInvoice",
-    //        PrimaryEntityName = "accounts",
-    //        PrimaryEntityFilterStr = "statecode eq 0 && spd_eligibleforcreditpayment eq 100000001",
-    //        PrimaryEntityIdName = "accountid"
-    //    };
-    //    var result = await _generalizeScheduleJobRepository.RunJobsAsync(request, ct);
-    //    stopwatch.Stop();
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        using var cts = new CancellationTokenSource(); // no timeout, this is the resolve for mysteriously cancelled requests
+        //request will from bcgov_schedulejob
+        //filterStr should be like "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001"
+        RunJobRequest request = new RunJobRequest
+        {
+            PrimaryTypeName = resp.PrimaryEntity,
+            PrimaryEntityActionStr = resp.EndPoint,
+            PrimaryEntityName = resp.PrimaryEntity + "s",
+            PrimaryEntityFilterStr = resp.FilterStr.Trim(),
+            PrimaryEntityIdName = resp.PrimaryEntity + "id",
+        };
+        var result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token);
+        stopwatch.Stop();
 
-    //    //update result in JobSession
-    //    UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
-    //    await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, ct);
+        //update result in JobSession
+        UpdateScheduleJobSessionCmd updateResultCmd = CreateUpdateScheduleJobSessionCmd(cmd.JobSessionId, result, Decimal.Round((decimal)(stopwatch.ElapsedMilliseconds / 1000), 2));
+        await _scheduleJobSessionRepository.ManageAsync(updateResultCmd, cts.Token);
 
-    //    return default;
-    //}
+        return default;
+    }
 
     private UpdateScheduleJobSessionCmd CreateUpdateScheduleJobSessionCmd(Guid jobSessionId, IEnumerable<ResultResp> results, decimal durationInSec)
     {
