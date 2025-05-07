@@ -766,7 +766,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			valid2 = this.categoryArmouredCarGuardFormGroup.valid;
 		}
 		let valid3 = true;
-		if (!this.isBusinessLicenceSoleProprietor && this.PrivateInvestigator.value) {
+		if (this.PrivateInvestigator.value) {
 			this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
 			valid3 = this.categoryPrivateInvestigatorFormGroup.valid;
 		}
