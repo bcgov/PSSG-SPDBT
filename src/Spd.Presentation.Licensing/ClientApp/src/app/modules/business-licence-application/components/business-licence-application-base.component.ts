@@ -96,8 +96,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 					.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 					.pipe(
 						tap((resp: any) => {
-							// first check: (!bizLicAppId && resp.licenceAppId)
-							// - biz appl already exists, go to main page so user can 'Resume'
+							// first check: biz appl already exists, go to main page so user can 'Resume'
 							// - example url: http://localhost:4200/business-licence/business-licence-new-sp?swlLicAppId=81a0e9e5-dd93-4fe0-a56d-072fed9ccc96
 							// second check, portal status is not Draft, go to main page.
 							if (
