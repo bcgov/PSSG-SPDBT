@@ -289,16 +289,14 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
 
-		// const isSecurityGuard = this.categorySecurityGuardFormGroup.value.isInclude;
-		// (!isSecurityGuard || this.restraintsAuthorizationFormGroup.valid) &&
-		// (!isSecurityGuard || this.dogsAuthorizationFormGroup.valid) &&
+		const isSecurityGuard = this.categorySecurityGuardFormGroup.value.isInclude;
 
 		return (
 			this.soleProprietorFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
-			this.restraintsAuthorizationFormGroup.valid &&
-			this.dogsAuthorizationFormGroup.valid &&
+			(!isSecurityGuard || this.restraintsAuthorizationFormGroup.valid) &&
+			(!isSecurityGuard || this.dogsAuthorizationFormGroup.valid) &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
