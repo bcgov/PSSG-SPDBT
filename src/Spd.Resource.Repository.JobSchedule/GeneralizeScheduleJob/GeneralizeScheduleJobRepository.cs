@@ -121,8 +121,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
                 // If it's Task<T>, get the result via reflection
                 var resultProperty = task.GetType().GetProperty("Result");
                 var value = resultProperty?.GetValue(task);
-                ResultResp rr = _mapper.Map<ResultResp>(value);
-                rr.PrimaryEntityId = Guid.Parse(idStr);
+                ResultResp rr = GetResultResp(value, Guid.Parse(idStr));
                 _logger.LogInformation("{actionStr} executed result : success = {Success} {Result} primaryEntityId={entityId}", actionStr, rr.IsSuccess, rr.ResultStr, idStr);
                 return rr;
             }
@@ -201,6 +200,19 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         return list;
     }
 
+    private ResultResp GetResultResp(object o, Guid primaryEntityId)
+    {
+        var isSuccessProperty = o.GetType().GetProperty("IsSuccess");
+        bool? isSuccess = (bool?)isSuccessProperty.GetValue(o);
+        var resultProperty = o.GetType().GetProperty("Result");
+        string? result = (string?)resultProperty.GetValue(o);
+        return new ResultResp()
+        {
+            IsSuccess = isSuccess ?? false,
+            ResultStr = result,
+            PrimaryEntityId = primaryEntityId
+        };
+    }
     private async Task<IEnumerable<T>> GetAllPrimaryEntityAsync<T>(string primaryEntityName, string filterStr, CancellationToken ct)
     {
         //filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";

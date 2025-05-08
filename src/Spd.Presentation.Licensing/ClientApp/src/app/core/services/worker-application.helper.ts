@@ -806,7 +806,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
 			photographOfYourselfData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,

@@ -1068,9 +1068,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			this.businessInformationFormGroup.patchValue(
 				{
 					soleProprietorLicenceId: null,
-					soleProprietorLicenceAppId: null,
 					soleProprietorLicenceHolderName: null,
-					soleProprietorLicenceHolderId: null,
 					soleProprietorLicenceNumber: null,
 					soleProprietorLicenceExpiryDate: null,
 					soleProprietorLicenceStatusCode: null,
@@ -1802,21 +1800,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 
 		const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
-		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
-			// if sole proprietor business application, use the 'businessInformation.soleProprietorCategoryCodes'
-			// as the list of available category options
-			const businessInformation = this.businessInformationFormGroup.value;
-			if (categoryCodes.length > 0) {
-				// there are already code that are selected
-				businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
-					categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
-				});
-			} else {
-				businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
-					categoryData[item] = true;
-				});
-			}
-		} else if (associatedLicence) {
+		if (associatedLicence) {
 			// if there is an associated licence, use the categories in there as selected
 			// mark the appropriate category types as true
 			associatedLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
@@ -1984,10 +1968,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizTradeName: businessProfile.bizTradeName,
 			isBizTradeNameReadonly: !!bceidBizTradeName, // user cannot overwrite value from bceid
 			soleProprietorLicenceId: null,
-			soleProprietorLicenceAppId: null,
-			soleProprietorCategoryCodes: null,
 			soleProprietorLicenceHolderName: null,
-			soleProprietorLicenceHolderId: null,
 			soleProprietorLicenceNumber: null,
 			soleProprietorLicenceExpiryDate: null,
 			soleProprietorLicenceStatusCode: null,
@@ -1998,10 +1979,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (soleProprietorSwlLicence) {
 			// if in the business profile, the user chose a swl licence (for sole proprietor)
 			businessInformationData.soleProprietorLicenceId = soleProprietorSwlLicence.licenceId;
-			businessInformationData.soleProprietorLicenceAppId = soleProprietorSwlLicence.licenceAppId;
-			businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
 			businessInformationData.soleProprietorLicenceHolderName = soleProprietorSwlLicence.licenceHolderName;
-			businessInformationData.soleProprietorLicenceHolderId = soleProprietorSwlLicence.licenceHolderId;
 			businessInformationData.soleProprietorLicenceNumber = soleProprietorSwlLicence.licenceNumber;
 			businessInformationData.soleProprietorLicenceExpiryDate = soleProprietorSwlLicence.expiryDate;
 			businessInformationData.soleProprietorLicenceStatusCode = soleProprietorSwlLicence.licenceStatusCode;
@@ -2122,16 +2100,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
 
 				businessInformationData.bizTypeCode = resp.bizTypeCode;
-				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
 
 				const categoryData: any = {};
 				const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
 				workerCategoryTypeCodes.forEach((item: string) => {
 					categoryData[item] = false;
-				});
-
-				businessInformationData.soleProprietorCategoryCodes?.forEach((item: string) => {
-					categoryData[item] = true;
 				});
 
 				const isBusinessLicenceSoleProprietor = this.isSoleProprietor(resp.bizTypeCode);
@@ -2192,8 +2165,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence: LicenceResponse): Observable<any> {
 		const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
-		businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
-
 		const categoryData: any = {};
 
 		// default object with all category types
