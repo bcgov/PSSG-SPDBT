@@ -128,7 +128,7 @@ internal class LicenceManager :
             throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence.");
         }
         if (lic.PhotoDocumentUrlId == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "the licence does not have photo");
+            return new FileResponse();
 
         DocumentResp? docUrl = await _documentRepository.GetAsync((Guid)lic.PhotoDocumentUrlId, cancellationToken);
         if (docUrl == null)

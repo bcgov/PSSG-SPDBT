@@ -780,7 +780,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile).pipe(
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile }).pipe(
 					tap((_resp: any) => {
 						// when resuming, populate the model with existing data for police, mhc and criminal history data
 						const policeBackgroundDataAttachments: Array<File> = [];
@@ -854,7 +854,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile, associatedLicence });
 			})
 		);
 	}
@@ -863,11 +863,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
-	private loadLicenceApplAndProfile(
-		workerLicenceAppl: WorkerLicenceAppResponse,
-		applicantProfile: ApplicantProfileResponse,
-		associatedLicence?: MainLicenceResponse
-	) {
+	private loadLicenceApplAndProfile({
+		workerLicenceAppl,
+		applicantProfile,
+		associatedLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse;
+		applicantProfile: ApplicantProfileResponse;
+		associatedLicence?: MainLicenceResponse;
+	}) {
 		if (workerLicenceAppl.expiredLicenceId) {
 			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceAppl.expiredLicenceId }).pipe(
 				switchMap((expiredLicence: LicenceResponse) => {
@@ -2229,11 +2233,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			attachments: [],
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
-
 		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -2242,7 +2241,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				mentalHealthConditionsData,
 				policeBackgroundData,
-				criminalHistoryData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
