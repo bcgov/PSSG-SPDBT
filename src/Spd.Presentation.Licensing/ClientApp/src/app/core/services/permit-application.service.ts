@@ -455,7 +455,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	getPermitToResume(licenceAppId: string): Observable<PermitLicenceAppResponse> {
-		return this.loadExistingPermitToResumeWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -713,7 +713,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load a permit using an ID
 	 * @returns
 	 */
-	private loadExistingPermitToResumeWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -728,22 +728,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				if (permitLicenceAppl.expiredLicenceId) {
-					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
-						switchMap((associatedExpiredLicence: LicenceResponse) => {
-							return this.applyApplAndProfileIntoModel({
-								permitLicenceAppl: permitLicenceAppl,
-								applicantProfile,
-								associatedExpiredLicence,
-							});
-						})
-					);
-				} else {
-					return this.applyApplAndProfileIntoModel({
-						permitLicenceAppl,
-						applicantProfile,
-					});
-				}
+				return this.loadLicenceApplAndProfile(permitLicenceAppl, applicantProfile).pipe(
+					tap((_resp: any) => {
+						const criminalHistoryData = {
+							hasCriminalHistory: this.utilService.booleanToBooleanType(permitLicenceAppl.hasCriminalHistory),
+							criminalChargeDescription: '',
+						};
+
+						this.permitModelFormGroup.patchValue(
+							{
+								criminalHistoryData,
+							},
+							{
+								emitEvent: false,
+							}
+						);
+					})
+				);
 			})
 		);
 	}
@@ -993,6 +994,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
+	/**
+	 * Loads the a worker application and profile into the worker model
+	 * @returns
+	 */
+	private loadLicenceApplAndProfile(
+		permitLicenceAppl: PermitLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse,
+		associatedLicence?: MainLicenceResponse
+	) {
+		if (permitLicenceAppl.expiredLicenceId) {
+			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
+				switchMap((associatedExpiredLicence: LicenceResponse) => {
+					return this.applyApplAndProfileIntoModel({
+						permitLicenceAppl,
+						applicantProfile,
+						associatedLicence,
+						associatedExpiredLicence,
+					});
+				})
+			);
+		}
+
+		return this.applyApplAndProfileIntoModel({ permitLicenceAppl, applicantProfile, associatedLicence });
+	}
+
 	private applyApplAndProfileIntoModel({
 		permitLicenceAppl,
 		applicantProfile,
@@ -1184,11 +1210,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const bcDriversLicenceData = {
 			hasBcDriversLicence: this.utilService.booleanToBooleanType(permitLicenceAppl.hasBcDriversLicence),
 			bcDriversLicenceNumber: permitLicenceAppl.bcDriversLicenceNumber,
-		};
-
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(permitLicenceAppl.hasCriminalHistory),
-			criminalChargeDescription: '',
 		};
 
 		// if this is a permit update, use the data supplied in 'updateLicenceData' (where applicable),
@@ -1385,7 +1406,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				bcDriversLicenceData,
 				citizenshipData,
 				photographOfYourselfData,
-				criminalHistoryData,
 			},
 			{
 				emitEvent: false,
