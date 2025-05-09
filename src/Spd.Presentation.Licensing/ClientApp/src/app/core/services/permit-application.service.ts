@@ -1454,6 +1454,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
 
+		const criminalHistoryData = {
+			hasCriminalHistory: null,
+			criminalChargeDescription: null,
+		};
+
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -1462,6 +1467,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
+				criminalHistoryData,
 			},
 			{
 				emitEvent: false,
