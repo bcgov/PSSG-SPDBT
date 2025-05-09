@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceTermCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -68,6 +66,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 								<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
 
+								<app-worker-summary-document-uploaded
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-document-uploaded>
+
 								<app-worker-summary-dogs-restraints
 									[workerModelData]="licenceModelData"
 								></app-worker-summary-dogs-restraints>
@@ -131,32 +133,6 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	licenceModelData: any = {};
-	booleanTypeCodeYes = BooleanTypeCode.Yes;
-
-	categoryArmouredCarGuardFormGroup: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup = this.workerApplicationService.categoryBodyArmourSalesFormGroup;
-	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
-	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
-	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.workerApplicationService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
-	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup = this.workerApplicationService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithSupFormGroup;
-	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmInstallerSupFormGroup;
-	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmMonitorFormGroup;
-	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup = this.workerApplicationService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(
 		private workerApplicationService: WorkerApplicationService,
@@ -193,9 +169,6 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	get hasBcscNameChanged(): boolean {
 		return this.workerApplicationService.getSummaryhasBcscNameChanged(this.licenceModelData);
 	}
-	get hasGenderChanged(): boolean {
-		return this.workerApplicationService.getSummaryhasGenderChanged(this.licenceModelData);
-	}
 	get originalLicenceNumber(): string {
 		return this.workerApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
@@ -226,20 +199,12 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return fee ? (fee.amount ?? null) : null;
 	}
 
-	get isSoleProprietor(): string {
-		return this.workerApplicationService.getSummaryisSoleProprietor(this.licenceModelData);
-	}
-
 	get serviceTypeCode(): ServiceTypeCode | null {
 		return this.workerApplicationService.getSummaryserviceTypeCode(this.licenceModelData);
 	}
 
 	get applicationTypeCode(): ApplicationTypeCode | null {
 		return this.workerApplicationService.getSummaryapplicationTypeCode(this.licenceModelData);
-	}
-
-	get licenceTermCode(): LicenceTermCode | null {
-		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] {
