@@ -1,14 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
 	LicenceTermCode,
-	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -328,35 +326,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	licenceModelData: any = {};
 
 	booleanTypeCodes = BooleanTypeCode;
-	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-	categoryTypeCodes = WorkerCategoryTypeCode;
-	swlCategoryTypes = WorkerCategoryTypes;
 	applicationTypeCodes = ApplicationTypeCode;
-
-	categoryArmouredCarGuardFormGroup: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup = this.workerApplicationService.categoryBodyArmourSalesFormGroup;
-	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
-	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
-	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.workerApplicationService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
-	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup = this.workerApplicationService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithSupFormGroup;
-	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmInstallerSupFormGroup;
-	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmMonitorFormGroup;
-	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.workerApplicationService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup = this.workerApplicationService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardSupFormGroup;
 
 	@Input() showCitizenshipStep = true;
 
@@ -447,10 +417,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	get proofOfFingerprintAttachments(): File[] {
 		return this.workerApplicationService.getSummaryproofOfFingerprintAttachments(this.licenceModelData);
-	}
-
-	get showAdditionalGovIdData(): boolean {
-		return this.workerApplicationService.getSummaryshowAdditionalGovIdData(this.licenceModelData);
 	}
 
 	get emailAddress(): string {
