@@ -88,7 +88,7 @@ public class ScheduleJobManager :
             {
                 PrimaryTypeName = resp.PrimaryEntity,
                 PrimaryEntityActionStr = resp.EndPoint,
-                PrimaryEntityName = resp.PrimaryEntity + "s",
+                PrimaryEntityName = resp.PrimaryEntity.EndsWith('s') ? resp.PrimaryEntity + "es" : resp.PrimaryEntity + "s",
                 PrimaryEntityFilterStr = resp.FilterStr.Trim(),
                 PrimaryEntityIdName = resp.PrimaryEntity + "id",
             };
