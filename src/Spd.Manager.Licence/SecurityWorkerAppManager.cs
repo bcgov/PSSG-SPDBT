@@ -243,11 +243,12 @@ internal class SecurityWorkerAppManager :
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
-        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles.ToList(),
-            cmd.IsAuthenticated,
-            cancellationToken);
+        //spdbt-4076
+        //await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles.ToList(),
+        //    cmd.IsAuthenticated,
+        //    cancellationToken);
 
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
@@ -327,11 +328,12 @@ internal class SecurityWorkerAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
-        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles,
-            cmd.IsAuthenticated,
-            cancellationToken);
+        //spdbt-4076
+        //await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles,
+        //    cmd.IsAuthenticated,
+        //    cancellationToken);
 
         ContactResp contactResp = await _contactRepository.GetAsync(originalLic.LicenceHolderId.Value, cancellationToken);
         ChangeSpec changes = await MakeChanges(request, cmd.LicAppFileInfos, originalLic, contactResp, cancellationToken);

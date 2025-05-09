@@ -46,39 +46,43 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
             .When(r => r.HasExpiredLicence == true);
 
         // Documents required for branding
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
-            .When(r => r.NoBranding == false)
-            .WithMessage("Missing business branding document.");
+        // spdbt-76
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+        //    .When(r => r.NoBranding == false)
+        //    .WithMessage("Missing business branding document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
             .When(r => r.NoBranding == false && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
             .WithMessage("Maximum of 10 documents allowed for branding was exceeded.");
 
         // Document required for business insurance
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
-            .WithMessage("Missing business insurance document.");
+        //spdbt-4076
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+        //    .WithMessage("Missing business insurance document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) <= 10)
             .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 0)
             .WithMessage("No more than 10 business insurance document is allowed.");
 
         // Document required for "Armoured car guard"
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
-            .WithMessage("Missing armoured car guard registrar document.");
+        ////spdbt-4076
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+        //    .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
+        //    .WithMessage("Missing armoured car guard registrar document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) <= 10)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 0)
             .WithMessage("No more than 10 armoured car guard registrar document is allowed.");
 
         // Document required for "Security guard"
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.UseDogs == true)
-            .WithMessage("Missing security dog certificate document.");
+        ////spdbt-4076
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
+        //    .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.UseDogs == true)
+        //    .WithMessage("Missing security dog certificate document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) <= 10)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard)
