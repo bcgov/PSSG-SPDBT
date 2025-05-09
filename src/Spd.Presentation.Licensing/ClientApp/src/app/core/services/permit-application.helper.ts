@@ -364,6 +364,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const personalInformationData = permitModelFormValue.personalInformationData;
 		const permitRequirementData = permitModelFormValue.permitRequirementData;
 		const permitRationaleData = permitModelFormValue.permitRationaleData;
+		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
 
 		const documentInfos: Array<Document> = [];
 
@@ -496,12 +497,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			};
 		}
 
-		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		const criminalChargeDescription =
-			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory
 				? criminalHistoryData.criminalChargeDescription
-				: '';
+				: null;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
