@@ -452,6 +452,14 @@ export abstract class CommonApplicationHelper {
 		};
 	}
 
+	isPhotographOfYourselfEmpty(image: Blob | null): boolean {
+		if (!image || image.size == 0) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Set the current photo of yourself
 	 * @returns

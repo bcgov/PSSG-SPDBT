@@ -2093,6 +2093,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalPhotoOfYourselfLastUploadDateTime
 		);
 
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be updating their photo
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
@@ -2176,6 +2180,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const originalLicenceData = latestApplication.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
