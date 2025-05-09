@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Document;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
@@ -43,66 +42,67 @@ public class WorkerLicenceAppUpsertRequestValidator : PersonalLicenceAppBaseVali
         .When(c => c.CategoryCodes != null)
         .WithMessage("Some category cannot be in the same licence request.");
 
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-            .When(r => r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
-            .WithMessage("Missing proven file because you are not canadian.");
+        //spdbt-4076: remove document validation
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+        //    .When(r => r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
+        //    .WithMessage("Missing proven file because you are not canadian.");
 
-        RuleFor(r => r.DocumentInfos)
-           .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-           .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
-           .WithMessage("Missing citizen proof file because you are canadian.");
+        //RuleFor(r => r.DocumentInfos)
+        //   .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+        //   .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
+        //   .WithMessage("Missing citizen proof file because you are canadian.");
 
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-            .WithMessage("Missing ProofOfFingerprint file.");
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+        //    .WithMessage("Missing ProofOfFingerprint file.");
 
-        RuleFor(r => r).Custom((request, context) =>
-        {
-            foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
-            {
-                if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
-                {
-                    if (!request.DocumentInfos.Any(f => Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
-                    {
-                        context.AddFailure($"Missing file for {code}");
-                    }
-                }
-            }
-        });
+        //RuleFor(r => r).Custom((request, context) =>
+        //{
+        //    foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
+        //    {
+        //        if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+        //        {
+        //            if (!request.DocumentInfos.Any(f => Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+        //            {
+        //                context.AddFailure($"Missing file for {code}");
+        //            }
+        //        }
+        //    }
+        //});
 
-        RuleFor(c => c.DocumentInfos).Must(d => d.Count() >= 1
-            && d.Count(doc =>
-                Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityGuard) <= 10)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
+        //RuleFor(c => c.DocumentInfos).Must(d => d.Count() >= 1
+        //    && d.Count(doc =>
+        //        Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityGuard) <= 10)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) >= 1)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) >= 1)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityAlarmInstaller) >= 1)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityAlarmInstaller));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityAlarmInstaller) >= 1)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityAlarmInstaller));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.Locksmith) >= 1)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.Locksmith));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.Locksmith) >= 1)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.Locksmith));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigatorUnderSupervision) >= 1)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigatorUnderSupervision) >= 1)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigator) >= 2)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigator) >= 2)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.FireInvestigator) >= 2)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.FireInvestigator));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.FireInvestigator) >= 2)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.FireInvestigator));
 
-        RuleFor(c => c.DocumentInfos)
-            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityConsultant) >= 2)
-            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityConsultant));
+        //RuleFor(c => c.DocumentInfos)
+        //    .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityConsultant) >= 2)
+        //    .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityConsultant));
     }
 }
 

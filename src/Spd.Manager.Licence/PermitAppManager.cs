@@ -183,10 +183,10 @@ internal class PermitAppManager :
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceAnonymousRequest.PreviousDocumentIds,
             cancellationToken);
-        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles,
-            cancellationToken);
+        //await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles,
+        //    cancellationToken);
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
