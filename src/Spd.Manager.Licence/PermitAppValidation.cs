@@ -71,18 +71,19 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
             .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-            .When(r => r.IsCanadianResident != null && !r.IsCanadianResident.Value && r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
-            .WithMessage("Missing proven file because you are not a resident.");
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-            .When(r => r.IsCanadianResident != null && r.IsCanadianResident.Value)
-            .WithMessage("Missing proven file because you are not canadian.");
-        RuleFor(r => r.DocumentInfos)
-           .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-           .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
-           .WithMessage("Missing citizen proof file because you are canadian.");
+        //spdbt-4076
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+        //    .When(r => r.IsCanadianResident != null && !r.IsCanadianResident.Value && r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
+        //    .WithMessage("Missing proven file because you are not a resident.");
+        //RuleFor(r => r.DocumentInfos)
+        //    .Must(r => r.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+        //    .When(r => r.IsCanadianResident != null && r.IsCanadianResident.Value)
+        //    .WithMessage("Missing proven file because you are not canadian.");
+        //RuleFor(r => r.DocumentInfos)
+        //   .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+        //   .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
+        //   .WithMessage("Missing citizen proof file because you are canadian.");
     }
 }
 
