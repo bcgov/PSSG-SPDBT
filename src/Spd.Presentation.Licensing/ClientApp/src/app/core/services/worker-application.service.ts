@@ -361,16 +361,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
-			const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
-			const hasGenderChanged = !!this.personalInformationFormGroup.get('hasGenderChanged')?.value;
-
-			let photographOfYourselfFormGroupValid = this.photographOfYourselfFormGroup.valid;
-
-			// If anonymous update flown and gender has not changed, then it is valid
-			if (applicationTypeCode === ApplicationTypeCode.Update && !hasGenderChanged) {
-				photographOfYourselfFormGroupValid = true;
-			}
-
 			// console.debug(
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
@@ -390,7 +380,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
-				photographOfYourselfFormGroupValid &&
+				this.photographOfYourselfFormGroup.valid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
 				this.contactInformationFormGroup.valid
@@ -2093,6 +2083,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalPhotoOfYourselfLastUploadDateTime
 		);
 
+		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
 		}
@@ -2177,12 +2168,19 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-
 		const originalLicenceData = latestApplication.originalLicenceData;
+		const photographOfYourselfData = latestApplication.photographOfYourselfData;
+
 		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
 
+		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		// Check if in a simultaneous flow
@@ -2249,6 +2247,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				mentalHealthConditionsData,
 				policeBackgroundData,
+				photographOfYourselfData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
