@@ -1415,7 +1415,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyRenewalSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalSpecificDataToModel(resp: any, photoOfYourself: Blob | null): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
@@ -1433,6 +1433,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be updating their photo
@@ -1463,12 +1468,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	private applyUpdateSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyUpdateSpecificDataToModel(resp: any, photoOfYourself: Blob | null): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
-
 		const originalLicenceData = resp.originalLicenceData;
+		const photographOfYourselfData = resp.photographOfYourselfData;
+
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
 
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
@@ -1482,6 +1498,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
