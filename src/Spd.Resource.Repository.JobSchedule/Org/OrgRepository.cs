@@ -44,11 +44,23 @@ internal class OrgRepository : IOrgRepository
                 await semaphore.WaitAsync();
                 try
                 {
-                    var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
-                    _logger.LogDebug("MonthlyInvoice executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
-                    ResultResp rr = _mapper.Map<ResultResp>(response);
-                    rr.PrimaryEntityId = a.accountid.Value;
-                    return rr;
+                    if (request.PrimaryEntityActionStr == "spd_OrgMonthlyReport")
+                    {
+                        var response = await a.spd_OrgMonthlyReport().GetValueAsync(ct);
+                        _logger.LogDebug("MonthlyReport executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
+                        ResultResp rr = _mapper.Map<ResultResp>(response);
+                        rr.PrimaryEntityId = a.accountid.Value;
+                        return rr;
+                    }
+                    else if (request.PrimaryEntityActionStr == "spd_MonthlyInvoice")
+                    {
+                        var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                        _logger.LogDebug("MonthlyInvoice executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
+                        ResultResp rr = _mapper.Map<ResultResp>(response);
+                        rr.PrimaryEntityId = a.accountid.Value;
+                        return rr;
+                    }
+                    return null;
                 }
                 catch (Exception ex)
                 {
