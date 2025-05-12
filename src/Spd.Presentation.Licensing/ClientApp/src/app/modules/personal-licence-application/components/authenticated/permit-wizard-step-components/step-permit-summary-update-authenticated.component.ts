@@ -5,7 +5,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-permit-summary-review-update-authenticated',
+	selector: 'app-step-permit-summary-update-authenticated',
 	template: `
 		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -22,37 +22,37 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 
 							<div class="panel-body">
 								<div class="row mt-0 mb-4">
-									<div class="col-lg-6 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">
 											Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
 										</div>
 										<div class="summary-text-data">{{ licenceHolderName }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Licence Number</div>
 										<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Expiry Date</div>
 										<div class="summary-text-data">
 											{{ originalExpiryDate | formatDate: formalDateFormat }}
 										</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Licence Term</div>
 										<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Print Permit</div>
 										<div class="summary-text-data">{{ isReprint }}</div>
 									</div>
-									<div class="col-lg-3 col-md-12">
+									<div class="col-xl-4 col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Reprint Fee</div>
 										<div class="summary-text-data">
 											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChange">
+									<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfStep">
 										<div class="text-label d-block text-muted">Photograph of Yourself</div>
 										<div class="summary-text-data">
 											<ul class="m-0">
@@ -122,7 +122,7 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 	],
 	standalone: false,
 })
-export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnInit {
+export class StepPermitSummaryUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	permitModelData: any = {};
@@ -147,8 +147,8 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	get licenceHolderName(): string {
 		return this.permitApplicationService.getSummarylicenceHolderName(this.permitModelData);
 	}
-	get showPhotographOfYourselfGenderChange(): boolean {
-		return this.permitApplicationService.getSummaryshowPhotographOfYourselfGenderChange(this.permitModelData);
+	get showPhotographOfYourselfStep(): boolean {
+		return this.permitApplicationService.showPhotographOfYourselfStep(this.permitModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {
