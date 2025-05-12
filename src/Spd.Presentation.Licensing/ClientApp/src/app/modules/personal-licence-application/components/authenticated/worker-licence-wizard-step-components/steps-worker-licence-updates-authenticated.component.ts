@@ -60,7 +60,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from '../../shared/worker-
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="hasGenderChanged">
+			<mat-step *ngIf="showPhotographOfYourselfStep">
 				<app-step-worker-licence-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeUpdate"
 				></app-step-worker-licence-photograph-of-yourself>
@@ -124,7 +124,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
-	@Input() hasGenderChanged = false;
+	@Input() showPhotographOfYourselfStep = false;
 	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@ViewChild(StepWorkerLicencePoliceBackgroundComponent)

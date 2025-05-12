@@ -6,7 +6,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-summary-review-update-authenticated',
+	selector: 'app-step-worker-licence-summary-update-authenticated',
 	template: `
 		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -33,7 +33,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<div class="text-label d-block text-muted">Licence Number</div>
 										<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 									</div>
-									<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfGenderChanged">
+									<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourselfStep">
 										<div class="text-label d-block text-muted">Photograph of Yourself</div>
 										<div class="summary-text-data">
 											<ul class="m-0">
@@ -129,7 +129,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	],
 	standalone: false,
 })
-export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
+export class StepWorkerLicenceSummaryUpdateAuthenticatedComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	licenceModelData: any = {};
@@ -162,8 +162,8 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 			this.licenceModelData.personalInformationData.surname
 		);
 	}
-	get showPhotographOfYourselfGenderChanged(): boolean {
-		return this.workerApplicationService.getSummaryshowPhotographOfYourselfGenderChanged(this.licenceModelData);
+	get showPhotographOfYourselfStep(): boolean {
+		return this.workerApplicationService.showPhotographOfYourselfStep(this.licenceModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {
