@@ -94,7 +94,7 @@ public class ScheduleJobManager :
             };
 
             IEnumerable<ResultResp> result;
-            if (resp.EndPoint.Equals("spd_MonthlyInvoice"))
+            if (resp.EndPoint.Equals("spd_MonthlyInvoice") || resp.EndPoint.Equals("spd_OrgMonthlyReport"))
                 result = await _orgRepository.RunMonthlyInvoiceInChuncksAsync(request, cmd.ConcurrentRequests, cts.Token);
             else
                 result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token);
