@@ -619,7 +619,10 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			permitModelData.personalInformationData.surname
 		);
 	}
-	getSummaryshowPhotographOfYourselfGenderChange(permitModelData: any): boolean {
+	showPhotographOfYourselfStep(permitModelData: any): boolean {
+		const originalPhotoOfYourselfExpired = !!permitModelData.originalLicenceData.originalPhotoOfYourselfExpired;
+		if (originalPhotoOfYourselfExpired) return true;
+
 		const attachments = this.getSummaryphotoOfYourselfAttachments(permitModelData) ?? [];
 		return this.getSummaryhasGenderChanged(permitModelData) && attachments.length > 0;
 	}

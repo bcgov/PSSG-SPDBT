@@ -70,6 +70,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 
 export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
+	originalPhotoOfYourselfExpired: boolean;
 	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
 	licenceExpiryNumberOfDays?: null | number;
 	licenceReprintFee: null | number;
@@ -1197,6 +1198,8 @@ export class CommonApplicationService {
 		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
 		const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 		const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
+
+		licence.originalPhotoOfYourselfExpired = false; // default
 
 		licence.isRenewalPeriod = false;
 		licence.isUpdatePeriod = false;
