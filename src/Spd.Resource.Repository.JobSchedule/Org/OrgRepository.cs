@@ -23,9 +23,9 @@ internal class OrgRepository : IOrgRepository
 
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
     {
-        int chunkSize = 500;
+        int chunkSize = 200;
         int chunkNumber = 0;
-        int returnedNumber = 500;
+        int returnedNumber = 200;
         List<ResultResp> finalErrResults = new List<ResultResp>();
 
         using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
@@ -82,11 +82,15 @@ internal class OrgRepository : IOrgRepository
             {
                 results.Add(await task); // One-by-one to reduce pressure
             }
-            if (finalErrResults.Count < 500)
+            if (finalErrResults.Count < 100)
             {
                 var addedErr = results.Where(r => !r.IsSuccess).ToList();
+                _logger.LogError("{number} added errors", addedErr.Count);
                 finalErrResults.AddRange(addedErr);
             }
+            accounts = null;
+            tasks = null;
+            results = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect(); // Optional second call
