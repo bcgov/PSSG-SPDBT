@@ -26,7 +26,10 @@ internal class OrgRepository : IOrgRepository
         int chunkSize = 500;
         int chunkNumber = 0;
         int returnedNumber = 500;
-        List<ResultResp> finalResults = new List<ResultResp>();
+        List<ResultResp> finalErrResults = new List<ResultResp>();
+
+        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
+        _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
 
         while (returnedNumber != 0)
         {
@@ -35,10 +38,6 @@ internal class OrgRepository : IOrgRepository
             returnedNumber = accounts.Count();
             chunkNumber++;
             _logger.LogInformation("returned number = {ReturnedNumber}", returnedNumber);
-
-            using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
-            _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
-
             var tasks = accounts.Select(async a =>
             {
                 await semaphore.WaitAsync();
@@ -78,10 +77,21 @@ internal class OrgRepository : IOrgRepository
                 }
             });
 
-            var results = await Task.WhenAll(tasks);
-            finalResults.AddRange(results);
+            var results = new List<ResultResp>();
+            foreach (var task in tasks)
+            {
+                results.Add(await task); // One-by-one to reduce pressure
+            }
+            if (finalErrResults.Count < 500)
+            {
+                var addedErr = results.Where(r => !r.IsSuccess).ToList();
+                finalErrResults.AddRange(addedErr);
+            }
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect(); // Optional second call
         }
-        return finalResults;
+        return finalErrResults;
     }
 
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
