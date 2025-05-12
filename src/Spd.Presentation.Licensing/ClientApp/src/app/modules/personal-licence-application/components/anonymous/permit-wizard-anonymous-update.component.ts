@@ -180,7 +180,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 
-				const photoOfYourselfExpired = this.permitApplicationService.permitModelFormGroup.get(
+				const photoOfYourselfExpired = !!this.permitApplicationService.permitModelFormGroup.get(
 					'originalLicenceData.originalPhotoOfYourselfExpired'
 				)?.value;
 

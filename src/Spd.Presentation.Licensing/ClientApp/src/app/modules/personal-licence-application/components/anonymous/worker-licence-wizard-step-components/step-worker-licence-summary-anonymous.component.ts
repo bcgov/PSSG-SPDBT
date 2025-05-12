@@ -11,7 +11,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-summary-review-anonymous',
+	selector: 'app-step-worker-licence-summary-anonymous',
 	template: `
 		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -177,6 +177,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										</div>
 									</div>
 								</div>
+
 								<ng-container *ngIf="hasLegalNameChanged">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -227,17 +228,17 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										></app-worker-summary-citizenship>
 									</ng-container>
 
-									<ng-container *ngIf="photoOfYourselfAttachments">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<app-worker-summary-photo-of-yourself
-											[workerModelData]="licenceModelData"
-										></app-worker-summary-photo-of-yourself>
-									</ng-container>
-
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 									<app-worker-summary-bc-drivers-licence
 										[workerModelData]="licenceModelData"
 									></app-worker-summary-bc-drivers-licence>
+								</ng-container>
+
+								<ng-container *ngIf="photoOfYourselfAttachments">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-worker-summary-photo-of-yourself
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-photo-of-yourself>
 								</ng-container>
 
 								<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -322,7 +323,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	],
 	standalone: false,
 })
-export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit {
+export class StepWorkerLicenceSummaryAnonymousComponent implements OnInit {
 	licenceModelData: any = {};
 
 	booleanTypeCodes = BooleanTypeCode;

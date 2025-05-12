@@ -911,35 +911,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadLatestApplAuthenticated(applicantId, associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadLatestApplAuthenticated(applicantId, associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				// ApplicationTypeCode.Replacement
-				return this.loadLatestApplAuthenticated(applicantId, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	/*************************************************************/
@@ -1097,34 +1088,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingLicenceApplAnonymous(associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadExistingLicenceApplAnonymous(associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				return this.loadExistingLicenceApplAnonymous(associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
@@ -2282,12 +2265,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	private applyReplacementSpecificDataToModel(
 		latestApplication: any,
-		associatedLicence: MainLicenceResponse | LicenceResponse
+		associatedLicence: MainLicenceResponse | LicenceResponse,
+		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = latestApplication.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		const mailingAddressData = {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.
