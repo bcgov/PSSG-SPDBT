@@ -132,7 +132,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 					'personalInformationData.hasBcscNameChanged'
 				)?.value;
 
-				const hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
+				const hasGenderChanged = !!this.permitApplicationService.permitModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 

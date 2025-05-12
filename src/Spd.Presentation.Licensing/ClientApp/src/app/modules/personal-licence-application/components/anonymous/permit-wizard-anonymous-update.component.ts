@@ -176,7 +176,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 
 				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
-				const hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
+				const hasGenderChanged = !!this.permitApplicationService.permitModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 
