@@ -20,6 +20,58 @@ internal class OrgRepository : IOrgRepository
         _mapper = mapper;
         this._logger = logger;
     }
+
+    public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
+    {
+        int chunkSize = 500;
+        int chunkNumber = 0;
+        int returnedNumber = 500;
+        List<ResultResp> finalResults = new List<ResultResp>();
+
+        while (returnedNumber != 0)
+        {
+            _logger.LogInformation("Processing {ChunckNumber} chuck with {Size}", chunkNumber, chunkSize);
+            var accounts = await GetAccountsInChuckAsync(chunkSize, chunkNumber, request.PrimaryEntityFilterStr, ct);
+            returnedNumber = accounts.Count();
+            chunkNumber++;
+            _logger.LogInformation("returned number = {ReturnedNumber}", returnedNumber);
+
+            using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
+            _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
+
+            var tasks = accounts.Select(async a =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                    _logger.LogDebug("MonthlyInvoice executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
+                    ResultResp rr = _mapper.Map<ResultResp>(response);
+                    rr.PrimaryEntityId = a.accountid.Value;
+                    return rr;
+                }
+                catch (Exception ex)
+                {
+                    Exception current = ex;
+                    while (current != null)
+                    {
+                        _logger.LogError("Exception Type: {ExceptionName} \r\n Message: {Message} \r\n Stack Trace: {StackTrace}", current.GetType().Name, current.Message, current.StackTrace);
+                        current = current.InnerException;
+                    }
+                    return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            var results = await Task.WhenAll(tasks);
+            finalResults.AddRange(results);
+        }
+        return finalResults;
+    }
+
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
     {
         int completed = 0;
@@ -99,5 +151,26 @@ internal class OrgRepository : IOrgRepository
 
         return allAccounts;
     }
+
+    public async Task<IEnumerable<account>> GetAccountsInChuckAsync(int chunkSize, int chunkNumber, string filterStr, CancellationToken ct)
+    {
+        int skip = chunkNumber * chunkSize;
+        var accountsQuery = _context.accounts
+            .AddQueryOption("$filter", filterStr)
+            .AddQueryOption("$orderby", "createdon desc")
+            .IncludeCount()
+            .AddQueryOption("$skip", $"{skip}")
+            .AddQueryOption("$top", $"{chunkSize}");
+
+        var accounts = (QueryOperationResponse<account>)await accountsQuery.ExecuteAsync(ct);
+        return accounts.ToList();
+    }
+}
+
+public class AccountListResp
+{
+    public IEnumerable<account> Accounts { get; set; } = Array.Empty<account>();
+    public int ReturnedNumber { get; set; }
+    public int ChunkSize { get; set; }
 }
 
