@@ -166,11 +166,3 @@ internal class OrgRepository : IOrgRepository
         return accounts.ToList();
     }
 }
-
-public class AccountListResp
-{
-    public IEnumerable<account> Accounts { get; set; } = Array.Empty<account>();
-    public int ReturnedNumber { get; set; }
-    public int ChunkSize { get; set; }
-}
-
