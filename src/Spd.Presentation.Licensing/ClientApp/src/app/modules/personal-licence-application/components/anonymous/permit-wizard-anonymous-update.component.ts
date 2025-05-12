@@ -63,6 +63,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
+					[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -134,6 +135,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 
 	isFormValid = false;
 	showEmployerInformation = false;
+	showPhotographOfYourselfStep = false;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -173,6 +175,17 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 				)?.value;
 
 				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
+
+				const hasGenderChanged = !!this.permitApplicationService.permitModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
+
+				const photoOfYourselfExpired = !!this.permitApplicationService.permitModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
 
 				this.updateCompleteStatus();
 			}
