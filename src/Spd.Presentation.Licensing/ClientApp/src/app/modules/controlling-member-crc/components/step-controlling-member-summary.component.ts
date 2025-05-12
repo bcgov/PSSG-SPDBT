@@ -5,7 +5,7 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-summary-review',
+	selector: 'app-step-controlling-member-summary',
 	template: `
 		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -341,7 +341,7 @@ import { UtilService } from '@app/core/services/util.service';
 	],
 	standalone: false,
 })
-export class StepControllingMemberSummaryReviewComponent implements OnInit {
+export class StepControllingMemberSummaryComponent implements OnInit {
 	controllingMemberModelData: any = {};
 
 	booleanTypeCodes = BooleanTypeCode;

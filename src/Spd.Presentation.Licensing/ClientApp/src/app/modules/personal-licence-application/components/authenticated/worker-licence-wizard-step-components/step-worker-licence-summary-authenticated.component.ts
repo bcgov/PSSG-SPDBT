@@ -10,7 +10,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-summary-review-authenticated',
+	selector: 'app-step-worker-licence-summary-authenticated',
 	template: `
 		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -216,7 +216,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	],
 	standalone: false,
 })
-export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnInit {
+export class StepWorkerLicenceSummaryAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
 
 	@Input() showCitizenshipStep = true;

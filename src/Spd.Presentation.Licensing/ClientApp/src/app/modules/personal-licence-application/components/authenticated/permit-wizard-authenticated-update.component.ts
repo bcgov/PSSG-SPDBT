@@ -18,7 +18,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 	selector: 'app-permit-wizard-authenticated-update',
 	template: `
 		<div class="row">
-			<div class="offset-xl-1 col-xl-10 col-lg-12">
+			<div class="col-12">
 				<mat-stepper
 					linear
 					labelPosition="bottom"
@@ -43,7 +43,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[hasBcscNameChanged]="hasBcscNameChanged"
-							[hasGenderChanged]="hasGenderChanged"
+							[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 							[showEmployerInformation]="showEmployerInformation"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -89,7 +89,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	applicationTypeCode!: ApplicationTypeCode;
 	showEmployerInformation = false;
 	hasBcscNameChanged = false;
-	hasGenderChanged = false;
+	showPhotographOfYourselfStep = false;
 
 	private permitModelChangedSubscription!: Subscription;
 
@@ -132,9 +132,16 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 					'personalInformationData.hasBcscNameChanged'
 				)?.value;
 
-				this.hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
+				const hasGenderChanged = !!this.permitApplicationService.permitModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
+
+				const photoOfYourselfExpired = !!this.permitApplicationService.permitModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
 			}
 		);
 	}

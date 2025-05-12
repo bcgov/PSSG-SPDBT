@@ -61,6 +61,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
+					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
