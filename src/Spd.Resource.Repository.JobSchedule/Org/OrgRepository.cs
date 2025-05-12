@@ -23,80 +23,104 @@ internal class OrgRepository : IOrgRepository
 
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
     {
-        int chunkSize = 200;
+        const int chunkSize = 500;
+        const int maxStoredErrors = 500;
         int chunkNumber = 0;
-        int returnedNumber = 200;
-        List<ResultResp> finalErrResults = new List<ResultResp>();
+        int returnedNumber = chunkSize;
+        var finalErrResults = new List<ResultResp>();
 
-        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to n concurrent requests
+        using var semaphore = new SemaphoreSlim(concurrentRequests);
         _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
 
         while (returnedNumber != 0)
         {
-            _logger.LogInformation("Processing {ChunckNumber} chuck with {Size}", chunkNumber, chunkSize);
+            _logger.LogInformation("Processing chunk {ChunkNumber} with size {Size}", chunkNumber, chunkSize);
+
             var accounts = await GetAccountsInChuckAsync(chunkSize, chunkNumber, request.PrimaryEntityFilterStr, ct);
             returnedNumber = accounts.Count();
             chunkNumber++;
-            _logger.LogInformation("returned number = {ReturnedNumber}", returnedNumber);
-            var tasks = accounts.Select(async a =>
-            {
-                await semaphore.WaitAsync();
-                try
-                {
-                    if (request.PrimaryEntityActionStr == "spd_OrgMonthlyReport")
-                    {
-                        var response = await a.spd_OrgMonthlyReport().GetValueAsync(ct);
-                        _logger.LogDebug("MonthlyReport executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
-                        ResultResp rr = _mapper.Map<ResultResp>(response);
-                        rr.PrimaryEntityId = a.accountid.Value;
-                        return rr;
-                    }
-                    else if (request.PrimaryEntityActionStr == "spd_MonthlyInvoice")
-                    {
-                        var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
-                        _logger.LogDebug("MonthlyInvoice executed result : success = {Success} {Result} accountid={Accountid}", response.IsSuccess, response.Result, a.accountid.Value);
-                        ResultResp rr = _mapper.Map<ResultResp>(response);
-                        rr.PrimaryEntityId = a.accountid.Value;
-                        return rr;
-                    }
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Exception current = ex;
-                    while (current != null)
-                    {
-                        _logger.LogError("Exception Type: {ExceptionName} \r\n Message: {Message} \r\n Stack Trace: {StackTrace}", current.GetType().Name, current.Message, current.StackTrace);
-                        current = current.InnerException;
-                    }
-                    return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = a.accountid.Value };
-                }
-                finally
-                {
-                    semaphore.Release();
-                }
-            });
 
-            var results = new List<ResultResp>();
-            foreach (var task in tasks)
+            _logger.LogInformation("Returned number = {ReturnedNumber}", returnedNumber);
+
+            // Chunk accounts to avoid flooding memory with tasks
+            foreach (var accountBatch in accounts.Chunk(concurrentRequests))
             {
-                results.Add(await task); // One-by-one to reduce pressure
+                var tasks = accountBatch.Select(async a =>
+                {
+                    await semaphore.WaitAsync(ct);
+                    try
+                    {
+                        ResultResp result;
+
+                        if (request.PrimaryEntityActionStr == "spd_OrgMonthlyReport")
+                        {
+                            var response = await a.spd_OrgMonthlyReport().GetValueAsync(ct);
+                            result = new ResultResp
+                            {
+                                PrimaryEntityId = a.accountid.Value,
+                                IsSuccess = response.IsSuccess ?? false,
+                                ResultStr = response.Result
+                            };
+                            _logger.LogDebug("MonthlyReport executed: success={Success}, accountId={AccountId}", response.IsSuccess, a.accountid.Value);
+                        }
+                        else if (request.PrimaryEntityActionStr == "spd_MonthlyInvoice")
+                        {
+                            var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                            result = result = new ResultResp
+                            {
+                                PrimaryEntityId = a.accountid.Value,
+                                IsSuccess = response.IsSuccess ?? false,
+                                ResultStr = response.Result
+                            };
+                            _logger.LogDebug("MonthlyInvoice executed: success={Success}, accountId={AccountId}", response.IsSuccess, a.accountid.Value);
+                        }
+                        else
+                        {
+                            return null; // unknown action
+                        }
+
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error processing account {AccountId}", a.accountid.Value);
+
+                        return new ResultResp
+                        {
+                            IsSuccess = false,
+                            ResultStr = ex.Message.Length > 500 ? ex.Message.Substring(0, 500) + "..." : ex.Message,
+                            PrimaryEntityId = a.accountid.Value
+                        };
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+                var batchResults = await Task.WhenAll(tasks);
+
+                // Collect up to 500 errors for output
+                if (finalErrResults.Count < maxStoredErrors)
+                {
+                    var errors = batchResults.Where(r => r != null && !r.IsSuccess).ToList();
+                    finalErrResults.AddRange(errors.Take(maxStoredErrors - finalErrResults.Count));
+                    _logger.LogError("Added {ErrorCount} error results from batch", errors.Count);
+                }
+
+                // Let GC free up this batch
+                Array.Clear(batchResults, 0, batchResults.Length);
             }
-            if (finalErrResults.Count < 100)
-            {
-                var addedErr = results.Where(r => !r.IsSuccess).ToList();
-                _logger.LogError("{number} added errors", addedErr.Count);
-                finalErrResults.AddRange(addedErr);
-            }
-            accounts = null;
-            tasks = null;
-            results = null;
+
+            // Optionally let GC reclaim after each main chunk loop
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            GC.Collect(); // Optional second call
+            GC.Collect();
         }
+
         return finalErrResults;
     }
+
 
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
     {
