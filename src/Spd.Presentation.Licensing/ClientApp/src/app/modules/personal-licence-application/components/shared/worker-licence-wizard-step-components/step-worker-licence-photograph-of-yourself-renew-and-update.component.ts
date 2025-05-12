@@ -34,7 +34,7 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.originalPhotoOfYourselfExpired = this.workerApplicationService.workerModelFormGroup.get(
+		this.originalPhotoOfYourselfExpired = !!this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 

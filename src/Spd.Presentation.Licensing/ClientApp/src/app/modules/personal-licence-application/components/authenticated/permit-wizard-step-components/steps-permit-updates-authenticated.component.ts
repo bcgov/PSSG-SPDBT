@@ -35,7 +35,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="hasGenderChanged">
+			<mat-step *ngIf="showPhotographOfYourselfStep">
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
@@ -106,7 +106,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	readonly STEP_RATIONALE = 6;
 
 	@Input() hasBcscNameChanged = false;
-	@Input() hasGenderChanged = false;
+	@Input() showPhotographOfYourselfStep = false;
 	@Input() showEmployerInformation = true;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;

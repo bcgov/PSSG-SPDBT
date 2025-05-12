@@ -4,7 +4,7 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { UtilService } from '@app/core/services/util.service';
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-authenticated.component';
-import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/authenticated/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
+import { StepPermitSummaryUpdateAuthenticatedComponent } from './step-permit-summary-update-authenticated.component';
 
 @Component({
 	selector: 'app-steps-permit-review-authenticated',
@@ -12,9 +12,9 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/module
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
-					<app-step-permit-summary-review-update-authenticated
+					<app-step-permit-summary-update-authenticated
 						[showEmployerInformation]="showEmployerInformation"
-					></app-step-permit-summary-review-update-authenticated>
+					></app-step-permit-summary-update-authenticated>
 				</ng-container>
 				<ng-template #notUpdateReview>
 					<app-step-permit-summary-authenticated
@@ -82,8 +82,8 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 
 	@ViewChild(StepPermitSummaryAuthenticatedComponent)
 	summaryReviewComponent!: StepPermitSummaryAuthenticatedComponent;
-	@ViewChild(StepPermitSummaryReviewUpdateAuthenticatedComponent)
-	summaryReviewUpdateComponent!: StepPermitSummaryReviewUpdateAuthenticatedComponent;
+	@ViewChild(StepPermitSummaryUpdateAuthenticatedComponent)
+	summaryReviewUpdateComponent!: StepPermitSummaryUpdateAuthenticatedComponent;
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
