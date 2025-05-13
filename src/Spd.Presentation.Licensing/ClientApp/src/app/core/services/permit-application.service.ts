@@ -550,7 +550,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body });
+		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				this.reset();
+			})
+		);
 	}
 
 	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
@@ -605,9 +609,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsChangePost$Response({
-						body,
-					});
+					return this.permitService
+						.apiPermitApplicationsChangePost$Response({
+							body,
+						})
+						.pipe(
+							tap((_resp: any) => {
+								this.reset();
+							})
+						);
 				})
 			);
 		} else {
@@ -615,9 +625,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.permitService.apiPermitApplicationsChangePost$Response({
-				body,
-			});
+			return this.permitService
+				.apiPermitApplicationsChangePost$Response({
+					body,
+				})
+				.pipe(
+					tap((_resp: any) => {
+						this.reset();
+					})
+				);
 		}
 	}
 
