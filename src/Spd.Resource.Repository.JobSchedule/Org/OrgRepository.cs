@@ -8,7 +8,6 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Repository.JobSchedule.Org;
 internal class OrgRepository : IOrgRepository
 {
-    private DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<IOrgRepository> _logger;
     private readonly IDynamicsContextFactory _factory;
@@ -18,12 +17,11 @@ internal class OrgRepository : IOrgRepository
         ILogger<IOrgRepository> logger)
     {
         _factory = ctx;
-        //_context = ctx.CreateReadOnly();
         _mapper = mapper;
         this._logger = logger;
     }
 
-    public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
+    public async Task<IEnumerable<ResultResp>> RunMonthlyOrgInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
     {
         const int chunkSize = 500;
         const int maxStoredErrors = 500;
@@ -132,7 +130,8 @@ internal class OrgRepository : IOrgRepository
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
     {
         int completed = 0;
-        var accounts = await GetAllAccountsAsync(ct);
+        using var context = _factory.Create();
+        var accounts = await GetAllAccountsAsync(context, ct);
 
         //delegate, for reporting progress
         void ReportProgress(int current)
@@ -179,11 +178,11 @@ internal class OrgRepository : IOrgRepository
         return results;
     }
 
-    public async Task<IEnumerable<account>> GetAllAccountsAsync(CancellationToken ct)
+    public async Task<IEnumerable<account>> GetAllAccountsAsync(DynamicsContext context, CancellationToken ct)
     {
         string filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
 
-        var accountsQuery = _context.accounts
+        var accountsQuery = context.accounts
             .AddQueryOption("$filter", filterStr)
             .IncludeCount();
 
@@ -200,7 +199,7 @@ internal class OrgRepository : IOrgRepository
             }
             else
             {
-                response = (QueryOperationResponse<account>)await _context.ExecuteAsync(continuation, ct);
+                response = (QueryOperationResponse<account>)await context.ExecuteAsync(continuation, ct);
             }
             allAccounts.AddRange(response);
             continuation = response.GetContinuation();
