@@ -301,6 +301,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+							this.reset();
+
 							this.utilService.toasterSuccess(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
@@ -312,6 +314,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			} else {
 				this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 					next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						this.reset();
+
 						this.utilService.toasterSuccess(successMessage);
 						this.commonApplicationService.onGoToHome();
 					},
@@ -325,6 +329,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.reset();
+
 				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
@@ -413,7 +419,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// save the business profile then the licence application
 		return this.saveBusinessProfile().pipe(
 			switchMap((_resp: any) => {
-				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).pipe(
+					tap((_resp: any) => {
+						this.reset();
+					})
+				);
 			})
 		);
 	}

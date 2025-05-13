@@ -665,7 +665,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				this.reset();
+			})
+		);
 	}
 
 	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -719,9 +723,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-						body,
-					});
+					return this.securityWorkerLicensingService
+						.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+							body,
+						})
+						.pipe(
+							tap((_resp: any) => {
+								this.reset();
+							})
+						);
 				})
 			);
 		} else {
@@ -729,9 +739,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-				body,
-			});
+			return this.securityWorkerLicensingService
+				.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+					body,
+				})
+				.pipe(
+					tap((_resp: any) => {
+						this.reset();
+					})
+				);
 		}
 	}
 
