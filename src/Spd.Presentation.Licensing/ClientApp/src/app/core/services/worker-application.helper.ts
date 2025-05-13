@@ -11,6 +11,8 @@ import {
 	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
+	WorkerLicenceAppSubmitRequest,
+	WorkerLicenceAppUpsertRequest,
 } from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
@@ -589,16 +591,27 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 
-	getSaveBodyBaseAuthenticated(workerModelFormValue: any): any {
-		const baseData = this.getSaveBodyBase(workerModelFormValue, true);
-		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
+	getSaveBodyBaseSubmitAuthenticated(permitModelFormValue: any): WorkerLicenceAppSubmitRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
 
-		return baseData;
+		// converted data maybe missing this value.
+		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
+			baseData.hasBcDriversLicence = false;
+		}
+
+		const returnBody: WorkerLicenceAppSubmitRequest = baseData;
+		return returnBody;
+	}
+
+	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): WorkerLicenceAppUpsertRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
+
+		const returnBody: WorkerLicenceAppUpsertRequest = baseData;
+		return returnBody;
 	}
 
 	getSaveBodyBaseAnonymous(workerModelFormValue: any): any {
 		const baseData = this.getSaveBodyBase(workerModelFormValue, false);
-		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return baseData;
 	}
@@ -870,6 +883,9 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			this.clearExpiredLicenceModelData();
 		}
 
+		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
+		const hasPreviousName = this.utilService.booleanTypeToBoolean(workerModelFormValue.aliasesData.previousNameFlag);
+
 		const body = {
 			licenceAppId,
 			latestApplicationId: workerModelFormValue.latestApplicationId,
@@ -881,17 +897,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			bizTypeCode:
 				soleProprietorData.isSoleProprietor === BooleanTypeCode.No ? BizTypeCode.None : soleProprietorData.bizTypeCode,
 			//-----------------------------------
-			hasPreviousName: this.utilService.booleanTypeToBoolean(workerModelFormValue.aliasesData.previousNameFlag),
-			aliases:
-				workerModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? workerModelFormValue.aliasesData.aliases
-					: [],
+			hasPreviousName,
+			aliases: hasPreviousName ? workerModelFormValue.aliasesData.aliases : [],
 			//-----------------------------------
-			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
-			bcDriversLicenceNumber:
-				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
-					? bcDriversLicenceData.bcDriversLicenceNumber
-					: null,
+			hasBcDriversLicence,
+			bcDriversLicenceNumber: hasBcDriversLicence ? bcDriversLicenceData.bcDriversLicenceNumber : null,
 			//-----------------------------------
 			emailAddress: contactInformationData.emailAddress,
 			phoneNumber: contactInformationData.phoneNumber,
