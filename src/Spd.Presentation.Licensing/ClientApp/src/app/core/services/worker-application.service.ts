@@ -19,7 +19,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import {
@@ -445,7 +444,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitNewSoleProprietorSimultaneousFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -463,7 +462,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -659,7 +658,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -675,7 +674,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+		const bodyUpsert = this.getSaveBodyBaseSubmitAuthenticated(licenceModelFormValue) as any;
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;

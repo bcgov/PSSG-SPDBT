@@ -18,7 +18,6 @@ import {
 	LicenceTermCode,
 	PermitAppCommandResponse,
 	PermitAppSubmitRequest,
-	PermitAppUpsertRequest,
 	PermitLicenceAppResponse,
 	ServiceTypeCode,
 	WeightUnitCode,
@@ -344,7 +343,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -544,7 +543,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitNewAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
