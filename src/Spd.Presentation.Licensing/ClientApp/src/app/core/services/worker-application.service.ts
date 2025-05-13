@@ -723,15 +723,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService
-						.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-							body,
-						})
-						.pipe(
-							tap((_resp: any) => {
-								this.reset();
-							})
-						);
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+						body,
+					});
 				})
 			);
 		} else {
@@ -739,15 +733,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.securityWorkerLicensingService
-				.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-					body,
-				})
-				.pipe(
-					tap((_resp: any) => {
-						this.reset();
-					})
-				);
+			return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+				body,
+			});
 		}
 	}
 
