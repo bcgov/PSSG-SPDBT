@@ -322,7 +322,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseSubmitAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
-		console.debug('[getSaveBodyBaseSubmitAuthenticated] baseData', baseData);
+
+		// converted data maybe missing this value.
+		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
+			baseData.hasBcDriversLicence = false;
+		}
 
 		const returnBody: PermitAppSubmitRequest = baseData;
 		return returnBody;
@@ -330,7 +334,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): PermitAppUpsertRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
-		console.debug('[getSaveBodyBaseUpsertAuthenticated] baseData', baseData);
 
 		const returnBody: PermitAppUpsertRequest = baseData;
 		return returnBody;
@@ -338,7 +341,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseSubmitAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
-		console.debug('[getSaveBodyBaseSubmitAnonymous] baseData', baseData);
 
 		const returnBody: PermitAppSubmitRequest = baseData;
 		return returnBody;
@@ -537,6 +539,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			this.clearExpiredLicenceModelData();
 		}
 
+		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
+		const hasPreviousName = this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag);
+
 		const body = {
 			licenceAppId,
 			originalApplicationId: originalLicenceData.originalApplicationId,
@@ -546,17 +551,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			bizTypeCode: BizTypeCode.None,
 			//-----------------------------------
-			hasPreviousName: this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag),
-			aliases:
-				permitModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? permitModelFormValue.aliasesData.aliases
-					: [],
+			hasPreviousName,
+			aliases: hasPreviousName ? permitModelFormValue.aliasesData.aliases : [],
 			//-----------------------------------
-			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
-			bcDriversLicenceNumber:
-				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
-					? bcDriversLicenceData.bcDriversLicenceNumber
-					: null,
+			hasBcDriversLicence,
+			bcDriversLicenceNumber: hasBcDriversLicence ? bcDriversLicenceData.bcDriversLicenceNumber : null,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
