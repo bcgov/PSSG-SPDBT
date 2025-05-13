@@ -30,7 +30,7 @@ public class ScheduleJobProcessor : BackgroundService
                 using var scope = _scopeFactory.CreateScope();
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
                 await mediator.Send(new RunScheduleJobSessionCommand(sessionId, concurrentRequests), cts.Token);
             }
             catch (Exception ex)
