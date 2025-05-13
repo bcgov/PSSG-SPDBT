@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Utilities.Dynamics;
 
@@ -79,7 +78,14 @@ namespace Spd.Resource.Repository.BizContact
 
         private static IEnumerable<PositionEnum> GetPositions(spd_position[] positions)
         {
-            return positions.Select(p => Enum.Parse<PositionEnum>(DynamicsContextLookupHelpers.LookupPositionKey(p.spd_positionid))).AsEnumerable();
+            List<PositionEnum> results = new List<PositionEnum>();
+            foreach (spd_position position in positions)
+            {
+                string? posStr = DynamicsContextLookupHelpers.LookupPositionKey(position.spd_positionid);
+                if (posStr != null)
+                    results.Add(Enum.Parse<PositionEnum>(posStr));
+            }
+            return results;
         }
     }
 }
