@@ -1792,12 +1792,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		};
 
 		let applicantData = {};
+
 		// If this is a sole proprietor flow, applicantData is not applicable and
 		// the 'applicantIsBizManager' is set to true in the 'applyProfileIntoModel' function.
 		// Only overwrite the data if there is a 'businessLicenceAppl'
+
 		if (businessLicenceAppl) {
 			applicantData = {
-				applicantIsBizManager: businessLicenceAppl.applicantIsBizManager,
+				applicantIsBizManager: this.isSoleProprietor(businessLicenceAppl.bizTypeCode)
+					? true
+					: businessLicenceAppl.applicantIsBizManager,
 				givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
 				middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
 				middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
