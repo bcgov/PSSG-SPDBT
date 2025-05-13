@@ -55,7 +55,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from '../../shared/worker-
 				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
 				></app-wizard-footer>
 			</mat-step>
