@@ -8,15 +8,17 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Repository.JobSchedule.Org;
 internal class OrgRepository : IOrgRepository
 {
-    private readonly DynamicsContext _context;
+    private DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<IOrgRepository> _logger;
+    private readonly IDynamicsContextFactory _factory;
 
     public OrgRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         ILogger<IOrgRepository> logger)
     {
-        _context = ctx.Create();
+        _factory = ctx;
+        //_context = ctx.CreateReadOnly();
         _mapper = mapper;
         this._logger = logger;
     }
@@ -33,9 +35,10 @@ internal class OrgRepository : IOrgRepository
 
         while (returnedNumber != 0)
         {
+            using var context = _factory.Create();
             _logger.LogInformation("Processing chunk {ChunkNumber} with size {Size}", chunkNumber, chunkSize);
 
-            var accountList = await GetAccountsInChuckAsync(chunkSize, chunkNumber, request.PrimaryEntityFilterStr, ct);
+            var accountList = await GetAccountsInChuckAsync(context, chunkSize, chunkNumber, request.PrimaryEntityFilterStr, ct);
             returnedNumber = accountList.Count();
             chunkNumber++;
 
@@ -110,10 +113,10 @@ internal class OrgRepository : IOrgRepository
         }
     }
 
-    public async Task<List<account>> GetAccountsInChuckAsync(int chunkSize, int chunkNumber, string filterStr, CancellationToken ct)
+    public async Task<List<account>> GetAccountsInChuckAsync(DynamicsContext context, int chunkSize, int chunkNumber, string filterStr, CancellationToken ct)
     {
         int skip = chunkNumber * chunkSize;
-        var accountsQuery = _context.accounts
+        var accountsQuery = context.accounts
             .AddQueryOption("$select", "accountid")
             .AddQueryOption("$filter", filterStr)
             .AddQueryOption("$orderby", "createdon desc")

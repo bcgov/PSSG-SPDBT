@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
+using Spd.Presentation.Dynamics.Services;
 using Spd.Presentation.Dynamics.Swagger;
 using Spd.Utilities.Hosting;
 using System.Security.Principal;
@@ -17,6 +18,9 @@ logger.Information("Starting up");
 
 try
 {
+    builder.Services.AddSingleton<IScheduleJobQueue, ScheduleJobQueue>();
+    builder.Services.AddHostedService<ScheduleJobProcessor>();
+
     builder.Services.ConfigureCors(builder.Configuration);
     var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
 
