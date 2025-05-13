@@ -92,7 +92,12 @@ public class ScheduleJobManager :
                 PrimaryEntityFilterStr = resp.FilterStr.Trim(),
                 PrimaryEntityIdName = resp.PrimaryEntity + "id",
             };
-            var result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token);
+
+            IEnumerable<ResultResp> result;
+            if (resp.EndPoint.Equals("spd_MonthlyInvoice") || resp.EndPoint.Equals("spd_OrgMonthlyReport"))
+                result = await _orgRepository.RunMonthlyInvoiceInChuncksAsync(request, cmd.ConcurrentRequests, cts.Token);
+            else
+                result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token);
             stopwatch.Stop();
 
             //update result in JobSession
