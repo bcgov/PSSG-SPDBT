@@ -20,6 +20,112 @@ internal class OrgRepository : IOrgRepository
         _mapper = mapper;
         this._logger = logger;
     }
+
+    public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
+    {
+        const int chunkSize = 500;
+        const int maxStoredErrors = 500;
+        int chunkNumber = 0;
+        int returnedNumber = chunkSize;
+        var finalErrResults = new List<ResultResp>();
+
+        _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
+
+        while (returnedNumber != 0)
+        {
+            _logger.LogInformation("Processing chunk {ChunkNumber} with size {Size}", chunkNumber, chunkSize);
+
+            var accountList = await GetAccountsInChuckAsync(chunkSize, chunkNumber, request.PrimaryEntityFilterStr, ct);
+            returnedNumber = accountList.Count();
+            chunkNumber++;
+
+            _logger.LogInformation("Returned number = {ReturnedNumber}", returnedNumber);
+
+            for (int i = 0; i < accountList.Count; i += concurrentRequests)
+            {
+                var currentBatch = accountList.Skip(i).Take(concurrentRequests).ToList();
+                var tasks = new List<Task<ResultResp?>>();
+
+                foreach (var a in currentBatch)
+                {
+                    tasks.Add(ProcessAccountAsync(a, request, ct));
+                }
+
+                var batchResults = await Task.WhenAll(tasks);
+
+                if (finalErrResults.Count < maxStoredErrors)
+                {
+                    var errors = batchResults.Where(r => r != null && !r.IsSuccess).ToList();
+                    finalErrResults.AddRange(errors.Take(maxStoredErrors - finalErrResults.Count));
+                }
+
+                tasks.Clear();
+                currentBatch.Clear();
+            }
+
+            accountList.Clear();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        return finalErrResults;
+    }
+
+    private async Task<ResultResp?> ProcessAccountAsync(account a, RunJobRequest request, CancellationToken ct)
+    {
+        try
+        {
+            if (request.PrimaryEntityActionStr == "spd_OrgMonthlyReport")
+            {
+                var response = await a.spd_OrgMonthlyReport().GetValueAsync(ct);
+                return new ResultResp
+                {
+                    PrimaryEntityId = a.accountid.Value,
+                    IsSuccess = response.IsSuccess ?? false,
+                    ResultStr = response.Result
+                };
+            }
+            else if (request.PrimaryEntityActionStr == "spd_MonthlyInvoice")
+            {
+                var response = await a.spd_MonthlyInvoice().GetValueAsync(ct);
+                return new ResultResp
+                {
+                    PrimaryEntityId = a.accountid.Value,
+                    IsSuccess = response.IsSuccess ?? false,
+                    ResultStr = response.Result
+                };
+            }
+            return null; // Unknown action
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing account {AccountId}", a.accountid.Value);
+
+            return new ResultResp
+            {
+                IsSuccess = false,
+                ResultStr = ex.Message.Length > 500 ? ex.Message.Substring(0, 500) + "..." : ex.Message,
+                PrimaryEntityId = a.accountid.Value
+            };
+        }
+    }
+
+    public async Task<List<account>> GetAccountsInChuckAsync(int chunkSize, int chunkNumber, string filterStr, CancellationToken ct)
+    {
+        int skip = chunkNumber * chunkSize;
+        var accountsQuery = _context.accounts
+            .AddQueryOption("$select", "accountid")
+            .AddQueryOption("$filter", filterStr)
+            .AddQueryOption("$orderby", "createdon desc")
+            .IncludeCount()
+            .AddQueryOption("$skip", $"{skip}")
+            .AddQueryOption("$top", $"{chunkSize}");
+
+        var accounts = (QueryOperationResponse<account>)await accountsQuery.ExecuteAsync(ct);
+        return accounts.ToList();
+    }
+
+
     public async Task<IEnumerable<ResultResp>> RunMonthlyInvoiceAsync(int concurrentRequests, CancellationToken ct)
     {
         int completed = 0;
@@ -99,5 +205,5 @@ internal class OrgRepository : IOrgRepository
 
         return allAccounts;
     }
-}
 
+}
