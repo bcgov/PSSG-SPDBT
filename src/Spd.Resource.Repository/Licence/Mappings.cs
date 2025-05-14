@@ -90,7 +90,7 @@ namespace Spd.Resource.Repository.Licence
         internal static IEnumerable<WorkerCategoryTypeEnum> GetCategoryCodes(List<spd_caselicencecategory> categories)
         {
             return categories
-                .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes)
+                .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes && c.statecode == DynamicsConstants.StateCode_Active)
                 .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
         }
 
