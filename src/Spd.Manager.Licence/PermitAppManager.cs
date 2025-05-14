@@ -399,15 +399,11 @@ internal class PermitAppManager :
             }, ct)).TaskId;
         }
 
-        var newData = _mapper.Map<PermitCompareEntity>(newRequest);
-        var oldData = _mapper.Map<PermitCompareEntity>(originalLic);
-        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
-        changes.ChangeSummary = string.Join("\r\n", summary);
+        changes.ChangeSummary = GetChangeSummary<PermitCompareEntity>(newFileInfos, originalLic, null, newRequest);
         if (newRequest.HasCriminalHistory.HasValue && newRequest.HasCriminalHistory.Value)
         {
             changes.ChangeSummary += "\r\nSelf Disclosure has been updated";
         }
-
         return changes;
     }
 
