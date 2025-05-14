@@ -404,10 +404,15 @@ internal class SecurityWorkerAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
+        string? docChangedSummary = null;
         //if any new doc contains category document, we think categorieschanged.
         if (!changes.CategoriesChanged && newFileInfos != null)
         {
-            changes.CategoriesChanged = newFileInfos.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
+            docChangedSummary = string.Join("\r\n",
+                newFileInfos.Select(d => $"New {d.LicenceDocumentTypeCode} documents uploaded")
+            );
+            //document changes won't be treated as categories change.
+            //changes.CategoriesChanged = !string.IsNullOrWhiteSpace(docChangedSummary);
         }
 
         //DogRestraintsChanged - this check only matters if the new and original requests both contain SecurityGuard, otherwise 'CategoriesChanged' will catch the change.
@@ -484,6 +489,8 @@ internal class SecurityWorkerAppManager :
         _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
         changes.ChangeSummary = string.Join("\r\n", summary);
+        if (!string.IsNullOrWhiteSpace(docChangedSummary))
+            changes.ChangeSummary += "\r\n" + string.Join("\r\n", docChangedSummary);
         if (newRequest.IsPoliceOrPeaceOfficer.HasValue)
         {
             // If any police officer data has changed, just add one change summary message

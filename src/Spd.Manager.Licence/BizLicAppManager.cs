@@ -247,7 +247,7 @@ internal class BizLicAppManager :
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        ChangeSpec changes = await MakeChanges(request, originalLic, cancellationToken);
+        ChangeSpec changes = await MakeChanges(request, cmd.LicAppFileInfos, originalLic, cancellationToken);
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
@@ -434,6 +434,7 @@ internal class BizLicAppManager :
 
     private async Task<ChangeSpec> MakeChanges(
         BizLicAppSubmitRequest newRequest,
+        IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic,
         CancellationToken ct)
     {
@@ -503,10 +504,21 @@ internal class BizLicAppManager :
             }, ct);
         }
 
+        string? docChangedSummary = null;
+        //if any new doc contains category document, we think categorieschanged.
+        if (newFileInfos != null)
+        {
+            docChangedSummary = string.Join("\r\n",
+                newFileInfos.Select(d => $"New {d.LicenceDocumentTypeCode} documents uploaded"));
+            //document changes won't be treated as categories change.
+        }
+
         var newData = _mapper.Map<BizLicenceAppCompareEntity>(newRequest);
         var oldData = _mapper.Map<BizLicenceAppCompareEntity>(originalLic);
         var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
         changes.ChangeSummary = string.Join("\r\n", summary);
+        if (!string.IsNullOrWhiteSpace(docChangedSummary))
+            changes.ChangeSummary += "\r\n" + string.Join("\r\n", docChangedSummary);
         return changes;
     }
 
