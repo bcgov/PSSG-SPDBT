@@ -184,9 +184,10 @@ internal class BizLicAppManager :
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.PreviousDocumentIds,
             cancellationToken);
-        ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles.ToList());
+        //spdbt-4076
+        //ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles.ToList());
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
@@ -367,7 +368,8 @@ internal class BizLicAppManager :
         catch (ArgumentException e)
         {
             throw new ApiException(HttpStatusCode.Forbidden, e.Message);
-        };
+        }
+        ;
         return default;
     }
 

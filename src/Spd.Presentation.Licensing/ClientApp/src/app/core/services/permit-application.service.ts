@@ -18,7 +18,6 @@ import {
 	LicenceTermCode,
 	PermitAppCommandResponse,
 	PermitAppSubmitRequest,
-	PermitAppUpsertRequest,
 	PermitLicenceAppResponse,
 	ServiceTypeCode,
 	WeightUnitCode,
@@ -344,7 +343,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -455,7 +454,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	getPermitToResume(licenceAppId: string): Observable<PermitLicenceAppResponse> {
-		return this.loadExistingPermitToResumeWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -544,14 +543,18 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitNewAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body });
+		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				this.reset();
+			})
+		);
 	}
 
 	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
@@ -606,9 +609,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsChangePost$Response({
-						body,
-					});
+					return this.permitService
+						.apiPermitApplicationsChangePost$Response({
+							body,
+						})
+						.pipe(
+							tap((_resp: any) => {
+								this.reset();
+							})
+						);
 				})
 			);
 		} else {
@@ -616,9 +625,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.permitService.apiPermitApplicationsChangePost$Response({
-				body,
-			});
+			return this.permitService
+				.apiPermitApplicationsChangePost$Response({
+					body,
+				})
+				.pipe(
+					tap((_resp: any) => {
+						this.reset();
+					})
+				);
 		}
 	}
 
@@ -713,7 +728,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load a permit using an ID
 	 * @returns
 	 */
-	private loadExistingPermitToResumeWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
 		const apis: Observable<any>[] = [
@@ -728,22 +743,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				if (permitLicenceAppl.expiredLicenceId) {
-					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
-						switchMap((associatedExpiredLicence: LicenceResponse) => {
-							return this.applyApplAndProfileIntoModel({
-								permitLicenceAppl: permitLicenceAppl,
-								applicantProfile,
-								associatedExpiredLicence,
-							});
-						})
-					);
-				} else {
-					return this.applyApplAndProfileIntoModel({
-						permitLicenceAppl,
-						applicantProfile,
-					});
-				}
+				return this.loadLicenceApplAndProfile(permitLicenceAppl, applicantProfile).pipe(
+					tap((_resp: any) => {
+						const criminalHistoryData = {
+							hasCriminalHistory: this.utilService.booleanToBooleanType(permitLicenceAppl.hasCriminalHistory),
+							criminalChargeDescription: '',
+						};
+
+						this.permitModelFormGroup.patchValue(
+							{
+								criminalHistoryData,
+							},
+							{
+								emitEvent: false,
+							}
+						);
+					})
+				);
 			})
 		);
 	}
@@ -993,6 +1009,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
+	/**
+	 * Loads the a worker application and profile into the worker model
+	 * @returns
+	 */
+	private loadLicenceApplAndProfile(
+		permitLicenceAppl: PermitLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse,
+		associatedLicence?: MainLicenceResponse
+	) {
+		if (permitLicenceAppl.expiredLicenceId) {
+			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
+				switchMap((associatedExpiredLicence: LicenceResponse) => {
+					return this.applyApplAndProfileIntoModel({
+						permitLicenceAppl,
+						applicantProfile,
+						associatedLicence,
+						associatedExpiredLicence,
+					});
+				})
+			);
+		}
+
+		return this.applyApplAndProfileIntoModel({ permitLicenceAppl, applicantProfile, associatedLicence });
+	}
+
 	private applyApplAndProfileIntoModel({
 		permitLicenceAppl,
 		applicantProfile,
@@ -1184,11 +1225,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const bcDriversLicenceData = {
 			hasBcDriversLicence: this.utilService.booleanToBooleanType(permitLicenceAppl.hasBcDriversLicence),
 			bcDriversLicenceNumber: permitLicenceAppl.bcDriversLicenceNumber,
-		};
-
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(permitLicenceAppl.hasCriminalHistory),
-			criminalChargeDescription: '',
 		};
 
 		// if this is a permit update, use the data supplied in 'updateLicenceData' (where applicable),
@@ -1385,7 +1421,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				bcDriversLicenceData,
 				citizenshipData,
 				photographOfYourselfData,
-				criminalHistoryData,
 			},
 			{
 				emitEvent: false,
@@ -1395,7 +1430,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyRenewalSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalSpecificDataToModel(resp: any, photoOfYourself: Blob | null): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
@@ -1413,6 +1448,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be updating their photo
@@ -1443,12 +1483,23 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	private applyUpdateSpecificDataToModel(resp: any, photoOfYourself: Blob): Observable<any> {
+	private applyUpdateSpecificDataToModel(resp: any, photoOfYourself: Blob | null): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
-
 		const originalLicenceData = resp.originalLicenceData;
+		const photographOfYourselfData = resp.photographOfYourselfData;
+
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
 
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
@@ -1462,6 +1513,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,

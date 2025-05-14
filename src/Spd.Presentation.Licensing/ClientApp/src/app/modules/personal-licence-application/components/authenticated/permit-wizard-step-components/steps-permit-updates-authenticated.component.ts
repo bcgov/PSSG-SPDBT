@@ -20,7 +20,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-step-permit-criminal-history>
 
 				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
 				></app-wizard-footer>
@@ -30,12 +30,12 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				<app-step-permit-review-name-change></app-step-permit-review-name-change>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="hasGenderChanged">
+			<mat-step *ngIf="showPhotographOfYourselfStep">
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
@@ -106,7 +106,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	readonly STEP_RATIONALE = 6;
 
 	@Input() hasBcscNameChanged = false;
-	@Input() hasGenderChanged = false;
+	@Input() showPhotographOfYourselfStep = false;
 	@Input() showEmployerInformation = true;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
