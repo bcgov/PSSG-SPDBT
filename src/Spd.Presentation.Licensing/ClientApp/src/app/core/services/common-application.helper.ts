@@ -240,11 +240,15 @@ export abstract class CommonApplicationHelper {
 		{
 			updatePhoto: new FormControl(''), // used by update/renewal
 			uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
-			attachments: new FormControl([], [Validators.required]),
+			attachments: new FormControl([]),
 			updateAttachments: new FormControl([]), // used by update/renewal
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'attachments',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'updateAttachments',
 					(form) =>
@@ -450,6 +454,14 @@ export abstract class CommonApplicationHelper {
 			expiredLicenceExpiryDate: hasExpiredLicence ? expiredLicenceInfo?.expiryDate : null,
 			expiredLicenceStatusCode: hasExpiredLicence ? expiredLicenceInfo?.licenceStatusCode : null,
 		};
+	}
+
+	isPhotographOfYourselfEmpty(image: Blob | null): boolean {
+		if (!image || image.size == 0) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

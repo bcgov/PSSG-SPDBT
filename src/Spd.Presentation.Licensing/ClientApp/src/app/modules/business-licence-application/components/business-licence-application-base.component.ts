@@ -8,8 +8,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { lastValueFrom, take, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-business-licence-application-base',
-    template: `
+	selector: 'app-business-licence-application-base',
+	template: `
 		<ng-container *ngIf="isAuthenticated$ | async">
 			<div class="container px-0 my-0 px-md-2 my-md-3">
 				<!-- hide padding/margin on smaller screens -->
@@ -21,8 +21,8 @@ import { lastValueFrom, take, tap } from 'rxjs';
 			</div>
 		</ng-container>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
@@ -96,7 +96,16 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 					.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 					.pipe(
 						tap((resp: any) => {
-							if (resp.soleProprietorSWLAppPortalStatus != ApplicationPortalStatusCode.Draft) {
+							// first check: biz appl already exists, go to main page so user can 'Resume'
+							// - example url: http://localhost:4200/business-licence/business-licence-new-sp?swlLicAppId=81a0e9e5-dd93-4fe0-a56d-072fed9ccc96
+							// second check, portal status is not Draft, go to main page.
+							if (
+								(swlLicAppId &&
+									!bizLicAppId &&
+									resp.licenceAppId &&
+									resp.soleProprietorSWLAppPortalStatus == ApplicationPortalStatusCode.Draft) ||
+								resp.soleProprietorSWLAppPortalStatus != ApplicationPortalStatusCode.Draft
+							) {
 								this.businessApplicationService.reset(); // prevent back button into wizard
 								this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
 							} else {

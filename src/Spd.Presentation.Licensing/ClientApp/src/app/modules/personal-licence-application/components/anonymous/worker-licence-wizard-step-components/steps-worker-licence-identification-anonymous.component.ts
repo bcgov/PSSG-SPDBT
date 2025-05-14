@@ -79,7 +79,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showPhotographOfYourself">
+			<mat-step *ngIf="showPhotographOfYourselfStep">
 				<app-step-worker-licence-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-photograph-of-yourself-anonymous>
@@ -132,9 +132,9 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 0;
@@ -150,7 +150,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
 	@Input() showCitizenshipStep!: boolean;
-	@Input() showPhotographOfYourself = true;
+	@Input() showPhotographOfYourselfStep = true;
 
 	applicationTypeCodes = ApplicationTypeCode;
 

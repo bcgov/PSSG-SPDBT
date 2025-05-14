@@ -6,7 +6,6 @@ import {
 	ApplicationTypeCode,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
-	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
 	IActionResult,
@@ -321,9 +320,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(controllingMembersModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -354,9 +351,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(controllingMembersModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 		body.agreeToCompleteAndAccurate = true;
@@ -413,7 +408,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
 	> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(controllingMembersModelFormValue);
+		const body = this.getSaveBodyBaseSubmitAuthenticated(controllingMembersModelFormValue) as any;
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 		body.agreeToCompleteAndAccurate = true;
