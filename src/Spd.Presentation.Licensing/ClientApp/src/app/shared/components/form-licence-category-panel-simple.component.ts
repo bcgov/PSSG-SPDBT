@@ -4,17 +4,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
-    selector: 'app-form-licence-category-panel-simple',
-    template: `
+	selector: 'app-form-licence-category-panel-simple',
+	template: `
 		<div class="row">
-			<div class="col-md-12 col-sm-12" [ngClass]="blockCategory ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'">
-				<mat-expansion-panel
-					class="my-3 w-100"
-					[hideToggle]="blockCategory"
-					[ngClass]="{ 'disabled-pointer': blockCategory }"
-					[disabled]="blockCategory"
-					[expanded]="expandCategory"
-				>
+			<div class="col-12">
+				<mat-expansion-panel class="my-3 w-100" [expanded]="expandCategory">
 					<mat-expansion-panel-header>
 						<mat-panel-title>
 							{{ title }}
@@ -40,32 +34,19 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					</div>
 				</mat-expansion-panel>
 			</div>
-
-			<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockCategory">
-				<button
-					mat-stroked-button
-					class="large delete-button my-lg-3"
-					aria-label="Remove category"
-					(click)="onDeselect()"
-				>
-					<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
-				</button>
-			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class FormLicenceCategoryPanelSimpleComponent implements OnInit {
 	form = this.workerApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	title = '';
 
 	@Input() categoryTypeCode!: WorkerCategoryTypeCode;
-	@Input() blockCategory!: boolean;
 	@Input() expandCategory!: boolean;
 
 	@Output() removeCategory: EventEmitter<WorkerCategoryTypeCode> = new EventEmitter();
-	@Output() deselectCategory: EventEmitter<WorkerCategoryTypeCode> = new EventEmitter();
 
 	constructor(
 		private optionsPipe: OptionsPipe,
@@ -78,9 +59,5 @@ export class FormLicenceCategoryPanelSimpleComponent implements OnInit {
 
 	onRemove(): void {
 		this.removeCategory.emit(this.categoryTypeCode);
-	}
-
-	onDeselect(): void {
-		this.deselectCategory.emit(this.categoryTypeCode);
 	}
 }

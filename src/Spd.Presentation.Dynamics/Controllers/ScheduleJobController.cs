@@ -1,7 +1,6 @@
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.ScheduleJob;
+using Spd.Presentation.Dynamics.Services;
 using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Dynamics.Controllers;
@@ -12,13 +11,13 @@ namespace Spd.Presentation.Dynamics.Controllers;
 [Authorize]
 public class ScheduleJobController : SpdControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly IScheduleJobQueue _jobQueue;
     private readonly IConfiguration _configuration;
 
-    public ScheduleJobController(IMediator mediator, IConfiguration configuration) : base()
+    public ScheduleJobController(IScheduleJobQueue jobQueue, IConfiguration configuration) : base()
     {
-        _mediator = mediator;
         _configuration = configuration;
+        _jobQueue = jobQueue;
     }
 
     /// <summary>
@@ -37,9 +36,7 @@ public class ScheduleJobController : SpdControllerBase
         CancellationToken ct)
     {
         int concurrentRequests = _configuration.GetValue<int>("ScheduleJobConcurrentRequests");
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        _mediator.Send(new RunScheduleJobSessionCommand(sessionId, concurrentRequests), ct);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        return Ok();
+        _jobQueue.Enqueue(sessionId, concurrentRequests);
+        return Ok("Job scheduled.");
     }
 }

@@ -3,6 +3,7 @@ import {
 	ApplicantProfileResponse,
 	ApplicationTypeCode,
 	ControllingMemberCrcAppSubmitRequest,
+	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	DocumentRelatedInfo,
 	LicenceDocumentTypeCode,
@@ -77,11 +78,23 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		super(formBuilder);
 	}
 
-	getSaveBodyBaseAuthenticated(controllingMemberCrcFormValue: any): any {
+	getSaveBodyBaseSubmitAuthenticated(controllingMemberCrcFormValue: any): ControllingMemberCrcAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue);
-		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
-		return baseData;
+		// converted data maybe missing this value.
+		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
+			baseData.hasBcDriversLicence = false;
+		}
+
+		const returnBody: ControllingMemberCrcAppSubmitRequest = baseData;
+		return returnBody;
+	}
+
+	getSaveBodyBaseUpsertAuthenticated(controllingMemberCrcFormValue: any): ControllingMemberCrcAppUpsertRequest {
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue);
+
+		const returnBody: ControllingMemberCrcAppUpsertRequest = baseData;
+		return returnBody;
 	}
 
 	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): any {
@@ -178,6 +191,7 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
+		const hasPreviousName = controllingMemberCrcFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes;
 
 		const documentRelatedInfos: Array<DocumentRelatedInfo> =
 			documentInfos
@@ -208,13 +222,8 @@ export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper
 			emailAddress: contactInformationData.emailAddress,
 			phoneNumber: contactInformationData.phoneNumber,
 			//-----------------------------------
-			hasPreviousName: this.utilService.booleanTypeToBoolean(
-				controllingMemberCrcFormValue.aliasesData.previousNameFlag
-			),
-			aliases:
-				controllingMemberCrcFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? controllingMemberCrcFormValue.aliasesData.aliases
-					: [],
+			hasPreviousName,
+			aliases: hasPreviousName ? controllingMemberCrcFormValue.aliasesData.aliases : [],
 			//-----------------------------------
 			hasBcDriversLicence,
 			bcDriversLicenceNumber: hasBcDriversLicence ? bcDriversLicenceData.bcDriversLicenceNumber : null,

@@ -43,7 +43,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 						<app-steps-worker-licence-updates-authenticated
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 							[hasBcscNameChanged]="hasBcscNameChanged"
-							[hasGenderChanged]="hasGenderChanged"
+							[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -92,7 +92,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	applicationTypeCode!: ApplicationTypeCode;
 	showStepDogsAndRestraints = false;
 	hasBcscNameChanged = false;
-	hasGenderChanged = false;
+	showPhotographOfYourselfStep = false;
 	isSoleProprietorSimultaneousFlow = false;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -132,9 +132,16 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 					'personalInformationData.hasBcscNameChanged'
 				)?.value;
 
-				this.hasGenderChanged = this.workerApplicationService.workerModelFormGroup.get(
+				const hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
+
+				const photoOfYourselfExpired = !!this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
 
 				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
