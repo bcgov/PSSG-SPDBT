@@ -592,7 +592,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	 */
 
 	getSaveBodyBaseSubmitAuthenticated(permitModelFormValue: any): WorkerLicenceAppSubmitRequest {
-		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
+		const baseData = this.getSaveBodyBase(permitModelFormValue);
 
 		// converted data maybe missing this value.
 		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
@@ -604,14 +604,14 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	}
 
 	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): WorkerLicenceAppUpsertRequest {
-		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
+		const baseData = this.getSaveBodyBase(permitModelFormValue);
 
 		const returnBody: WorkerLicenceAppUpsertRequest = baseData;
 		return returnBody;
 	}
 
 	getSaveBodyBaseAnonymous(workerModelFormValue: any): any {
-		const baseData = this.getSaveBodyBase(workerModelFormValue, false);
+		const baseData = this.getSaveBodyBase(workerModelFormValue);
 
 		// converted data maybe missing this value.
 		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
@@ -621,7 +621,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		return baseData;
 	}
 
-	private getSaveBodyBase(workerModelFormValue: any, isAuthenticated: boolean): any {
+	private getSaveBodyBase(workerModelFormValue: any): any {
 		const licenceAppId = workerModelFormValue.licenceAppId;
 		const originalLicenceData = workerModelFormValue.originalLicenceData;
 		const serviceTypeData = workerModelFormValue.serviceTypeData;
