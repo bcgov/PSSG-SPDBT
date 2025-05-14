@@ -19,7 +19,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import {
@@ -361,16 +360,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
-			const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
-			const hasGenderChanged = !!this.personalInformationFormGroup.get('hasGenderChanged')?.value;
-
-			let photographOfYourselfFormGroupValid = this.photographOfYourselfFormGroup.valid;
-
-			// If anonymous update flown and gender has not changed, then it is valid
-			if (applicationTypeCode === ApplicationTypeCode.Update && !hasGenderChanged) {
-				photographOfYourselfFormGroupValid = true;
-			}
-
 			// console.debug(
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
@@ -390,7 +379,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
-				photographOfYourselfFormGroupValid &&
+				this.photographOfYourselfFormGroup.valid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
 				this.contactInformationFormGroup.valid
@@ -455,7 +444,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitNewSoleProprietorSimultaneousFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -473,7 +462,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -669,19 +658,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				this.reset();
+			})
+		);
 	}
 
 	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+		const bodyUpsert = this.getSaveBodyBaseSubmitAuthenticated(licenceModelFormValue) as any;
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
@@ -780,7 +773,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile).pipe(
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile }).pipe(
 					tap((_resp: any) => {
 						// when resuming, populate the model with existing data for police, mhc and criminal history data
 						const policeBackgroundDataAttachments: Array<File> = [];
@@ -854,7 +847,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile, associatedLicence });
 			})
 		);
 	}
@@ -863,11 +856,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
-	private loadLicenceApplAndProfile(
-		workerLicenceAppl: WorkerLicenceAppResponse,
-		applicantProfile: ApplicantProfileResponse,
-		associatedLicence?: MainLicenceResponse
-	) {
+	private loadLicenceApplAndProfile({
+		workerLicenceAppl,
+		applicantProfile,
+		associatedLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse;
+		applicantProfile: ApplicantProfileResponse;
+		associatedLicence?: MainLicenceResponse;
+	}) {
 		if (workerLicenceAppl.expiredLicenceId) {
 			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceAppl.expiredLicenceId }).pipe(
 				switchMap((expiredLicence: LicenceResponse) => {
@@ -917,35 +914,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadLatestApplAuthenticated(applicantId, associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadLatestApplAuthenticated(applicantId, associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				// ApplicationTypeCode.Replacement
-				return this.loadLatestApplAuthenticated(applicantId, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	/*************************************************************/
@@ -1103,34 +1091,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingLicenceApplAnonymous(associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadExistingLicenceApplAnonymous(associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				return this.loadExistingLicenceApplAnonymous(associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
@@ -2089,6 +2069,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalPhotoOfYourselfLastUploadDateTime
 		);
 
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be updating their photo
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
@@ -2169,9 +2154,20 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-
 		const originalLicenceData = latestApplication.originalLicenceData;
+		const photographOfYourselfData = latestApplication.photographOfYourselfData;
+
 		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
@@ -2229,11 +2225,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			attachments: [],
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
-
 		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -2242,7 +2233,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				mentalHealthConditionsData,
 				policeBackgroundData,
-				criminalHistoryData,
+				photographOfYourselfData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2277,12 +2268,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	private applyReplacementSpecificDataToModel(
 		latestApplication: any,
-		associatedLicence: MainLicenceResponse | LicenceResponse
+		associatedLicence: MainLicenceResponse | LicenceResponse,
+		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = latestApplication.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		const mailingAddressData = {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.

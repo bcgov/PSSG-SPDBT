@@ -53,7 +53,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showPhotographOfYourself">
+			<mat-step>
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
@@ -121,18 +121,5 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 				return this.stepPhotographComponent.isFormValid();
 		}
 		return false;
-	}
-
-	get showPhotographOfYourself(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return true;
-		return this.hasGenderChanged;
-	}
-
-	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-	get hasGenderChanged(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
-
-		const form = this.permitApplicationService.personalInformationFormGroup;
-		return !!form.value.hasGenderChanged;
 	}
 }

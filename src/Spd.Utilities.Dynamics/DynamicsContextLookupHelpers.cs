@@ -278,7 +278,15 @@ namespace Spd.Utilities.Dynamics
         #region position
         public static readonly ImmutableDictionary<string, Guid> PositionDictionary = new Dictionary<string, Guid>()
         {
-            {"PrivateInvestigatorManager", Guid.Parse("70bc0f0c-dc34-ef11-b850-00505683fbf4")}
+            {"PrivateInvestigatorManager", Guid.Parse("70bc0f0c-dc34-ef11-b850-00505683fbf4")},
+            {"Manager", Guid.Parse("ecc2d56e-64ff-ef11-b857-00505683fbf4")},
+            {"Director", Guid.Parse("73de2375-64ff-ef11-b857-00505683fbf4")},
+            {"Officer", Guid.Parse("51356d7b-64ff-ef11-b857-00505683fbf4")},
+            {"OwnerOperator", Guid.Parse("b7356d7b-64ff-ef11-b857-00505683fbf4")},
+            {"VotingShareholder", Guid.Parse("2b547d81-64ff-ef11-b857-00505683fbf4")},
+            {"NonVotingShareholder", Guid.Parse("07e9008f-64ff-ef11-b857-00505683fbf4")},
+            {"Trustee", Guid.Parse("09e9008f-64ff-ef11-b857-00505683fbf4")},
+            {"Partner", Guid.Parse("735f0b96-64ff-ef11-b857-00505683fbf4")},
         }.ToImmutableDictionary();
 
         public static spd_position? LookupPosition(this DynamicsContext context, string? key)

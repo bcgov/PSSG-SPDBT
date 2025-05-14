@@ -3,17 +3,17 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
-import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
+import { StepWorkerLicenceSummaryAnonymousComponent } from './step-worker-licence-summary-anonymous.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-review-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-worker-licence-summary-review-anonymous
+				<app-step-worker-licence-summary-anonymous
 					(editStep)="onGoToStep($event)"
 					[showCitizenshipStep]="showCitizenshipStep"
-				></app-step-worker-licence-summary-review-anonymous>
+				></app-step-worker-licence-summary-anonymous>
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
@@ -71,8 +71,8 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepWorkerLicenceSummaryReviewAnonymousComponent)
-	summaryReviewComponent!: StepWorkerLicenceSummaryReviewAnonymousComponent;
+	@ViewChild(StepWorkerLicenceSummaryAnonymousComponent)
+	summaryReviewComponent!: StepWorkerLicenceSummaryAnonymousComponent;
 	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 

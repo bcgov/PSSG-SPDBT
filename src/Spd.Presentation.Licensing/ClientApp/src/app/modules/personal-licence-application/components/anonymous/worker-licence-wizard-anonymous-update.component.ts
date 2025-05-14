@@ -66,7 +66,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showCitizenshipStep]="showCitizenshipStep"
-					[showPhotographOfYourself]="showPhotographOfYourself"
+					[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -123,8 +123,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
-	showPhotographOfYourself = true;
-	hasGenderChanged = false;
+	showPhotographOfYourselfStep = false;
 	isSoleProprietorSimultaneousFlow = false;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -169,13 +168,16 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
-				// for Update flow: only show unauthenticated user option to upload a new photo
-				// if they changed their sex selection earlier in the application
-				this.hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
+				const hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 
-				this.showPhotographOfYourself = this.hasGenderChanged;
+				const photoOfYourselfExpired = !!this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
 
 				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===

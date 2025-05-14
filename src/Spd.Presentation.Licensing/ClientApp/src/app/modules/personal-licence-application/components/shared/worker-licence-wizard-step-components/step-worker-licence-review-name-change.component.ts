@@ -14,11 +14,11 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 					<div [formGroup]="form">
 						<div class="row mt-0 mb-3">
-							<div class="offset-lg-1 col-lg-10 col-md-12">
+							<div class="offset-lg-3 col-lg-9 col-md-12">
 								<div class="text-label d-block text-muted">New Name</div>
 								<div class="summary-text-data">{{ fullname }}</div>
 							</div>
-							<div class="offset-lg-1 col-lg-10 col-md-12">
+							<div class="offset-lg-3 col-lg-9 col-md-12">
 								<div class="text-label d-block text-muted">Previous Name</div>
 								<div class="summary-text-data">{{ cardHolderName.value }}</div>
 							</div>

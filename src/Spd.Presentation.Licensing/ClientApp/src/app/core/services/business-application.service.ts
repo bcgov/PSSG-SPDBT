@@ -301,6 +301,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+							this.reset();
+
 							this.utilService.toasterSuccess(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
@@ -312,6 +314,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			} else {
 				this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 					next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						this.reset();
+
 						this.utilService.toasterSuccess(successMessage);
 						this.commonApplicationService.onGoToHome();
 					},
@@ -325,6 +329,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.reset();
+
 				this.utilService.toasterSuccess(successMessage);
 				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
@@ -413,7 +419,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// save the business profile then the licence application
 		return this.saveBusinessProfile().pipe(
 			switchMap((_resp: any) => {
-				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).pipe(
+					tap((_resp: any) => {
+						this.reset();
+					})
+				);
 			})
 		);
 	}
@@ -1781,15 +1791,25 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			attachments: corporateRegistryAttachments,
 		};
 
-		const applicantData = {
-			applicantIsBizManager: businessLicenceAppl.applicantIsBizManager,
-			givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
-			middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
-			middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
-			surname: businessLicenceAppl.applicantContactInfo?.surname ?? null,
-			emailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress ?? null,
-			phoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber ?? null,
-		};
+		let applicantData = {};
+
+		// If this is a sole proprietor flow, applicantData is not applicable and
+		// the 'applicantIsBizManager' is set to true in the 'applyProfileIntoModel' function.
+		// Only overwrite the data if there is a 'businessLicenceAppl'
+
+		if (businessLicenceAppl) {
+			applicantData = {
+				applicantIsBizManager: this.isSoleProprietor(businessLicenceAppl.bizTypeCode)
+					? true
+					: businessLicenceAppl.applicantIsBizManager,
+				givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
+				middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
+				middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
+				surname: businessLicenceAppl.applicantContactInfo?.surname ?? null,
+				emailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress ?? null,
+				phoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber ?? null,
+			};
+		}
 
 		const categoryData: any = {};
 
@@ -2033,6 +2053,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
 		const isBusinessLicenceSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
+		// If this is a sole proprietor flow, applicantData is not applicable and
+		// set 'applicantIsBizManager' to true.
+
+		const applicantData = {
+			applicantIsBizManager: isBusinessLicenceSoleProprietor ? true : false,
+			givenName: null,
+			middleName1: null,
+			middleName2: null,
+			surname: null,
+			emailAddress: null,
+			phoneNumber: null,
+		};
+
 		this.businessModelFormGroup.patchValue(
 			{
 				bizId: businessProfile.bizId,
@@ -2042,6 +2075,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessInformationData,
 				businessManagerData,
 				expiredLicenceData,
+				applicantData,
 
 				isBcBusinessAddress,
 				isBusinessLicenceSoleProprietor,

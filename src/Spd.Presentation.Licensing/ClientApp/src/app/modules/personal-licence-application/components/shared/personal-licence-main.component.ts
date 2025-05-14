@@ -326,6 +326,18 @@ export class PersonalLicenceMainComponent implements OnInit {
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
+							const originalPhotoOfYourselfExpired = !!this.workerApplicationService.workerModelFormGroup.get(
+								'originalLicenceData.originalPhotoOfYourselfExpired'
+							)?.value;
+
+							licence.originalPhotoOfYourselfExpired = originalPhotoOfYourselfExpired;
+
+							// User cannot continue with this flow if the photograph of yourself is missing
+							if (originalPhotoOfYourselfExpired) {
+								this.workerApplicationService.reset();
+								return;
+							}
+
 							this.router.navigateByUrl(
 								PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 									PersonalLicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED

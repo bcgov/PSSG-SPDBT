@@ -3,8 +3,8 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
-import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-worker-licence-summary-review-authenticated.component';
-import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './step-worker-licence-summary-review-update-authenticated.component';
+import { StepWorkerLicenceSummaryAuthenticatedComponent } from './step-worker-licence-summary-authenticated.component';
+import { StepWorkerLicenceSummaryUpdateAuthenticatedComponent } from './step-worker-licence-summary-update-authenticated.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-review-authenticated',
@@ -12,13 +12,13 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
-					<app-step-worker-licence-summary-review-update-authenticated></app-step-worker-licence-summary-review-update-authenticated>
+					<app-step-worker-licence-summary-update-authenticated></app-step-worker-licence-summary-update-authenticated>
 				</ng-container>
 				<ng-template #notUpdateReview>
-					<app-step-worker-licence-summary-review-authenticated
+					<app-step-worker-licence-summary-authenticated
 						[showCitizenshipStep]="showCitizenshipStep"
 						(editStep)="onGoToStep($event)"
-					></app-step-worker-licence-summary-review-authenticated>
+					></app-step-worker-licence-summary-authenticated>
 				</ng-template>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else notNewWizardFooter">
@@ -121,10 +121,10 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepWorkerLicenceSummaryReviewAuthenticatedComponent)
-	summaryReviewComponent!: StepWorkerLicenceSummaryReviewAuthenticatedComponent;
-	@ViewChild(StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent)
-	summaryReviewUpdateComponent!: StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent;
+	@ViewChild(StepWorkerLicenceSummaryAuthenticatedComponent)
+	summaryReviewComponent!: StepWorkerLicenceSummaryAuthenticatedComponent;
+	@ViewChild(StepWorkerLicenceSummaryUpdateAuthenticatedComponent)
+	summaryReviewUpdateComponent!: StepWorkerLicenceSummaryUpdateAuthenticatedComponent;
 	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
