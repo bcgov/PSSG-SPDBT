@@ -404,17 +404,6 @@ internal class SecurityWorkerAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
-        string? docChangedSummary = null;
-        //if any new doc contains category document, we think categorieschanged.
-        if (!changes.CategoriesChanged && newFileInfos != null)
-        {
-            docChangedSummary = string.Join("\r\n",
-                newFileInfos.Select(d => $"New {d.LicenceDocumentTypeCode} documents uploaded")
-            );
-            //document changes won't be treated as categories change.
-            //changes.CategoriesChanged = !string.IsNullOrWhiteSpace(docChangedSummary);
-        }
-
         //DogRestraintsChanged - this check only matters if the new and original requests both contain SecurityGuard, otherwise 'CategoriesChanged' will catch the change.
         if (newRequest.CategoryCodes.Any(d => d == WorkerCategoryTypeCode.SecurityGuard) && originalLic.CategoryCodes.Any(d => d == WorkerCategoryTypeEnum.SecurityGuard))
         {
@@ -484,13 +473,7 @@ internal class SecurityWorkerAppManager :
             }, ct)).TaskId;
         }
 
-        var newData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(newRequest);
-        var oldData = _mapper.Map<SecureWorkerLicenceAppCompareEntity>(originalLic);
-        _mapper.Map<ContactResp, SecureWorkerLicenceAppCompareEntity>(contactResp, oldData);
-        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
-        changes.ChangeSummary = string.Join("\r\n", summary);
-        if (!string.IsNullOrWhiteSpace(docChangedSummary))
-            changes.ChangeSummary += "\r\n" + string.Join("\r\n", docChangedSummary);
+        changes.ChangeSummary = GetChangeSummary<SecureWorkerLicenceAppCompareEntity>(newFileInfos, originalLic, contactResp, newRequest);
         if (newRequest.IsPoliceOrPeaceOfficer.HasValue)
         {
             // If any police officer data has changed, just add one change summary message
@@ -655,7 +638,7 @@ internal class SecurityWorkerAppManager :
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
-        public string ChangeSummary { get; set; }
+        public string? ChangeSummary { get; set; }
     }
 }
 
