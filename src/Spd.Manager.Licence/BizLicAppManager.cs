@@ -504,21 +504,7 @@ internal class BizLicAppManager :
             }, ct);
         }
 
-        string? docChangedSummary = null;
-        //if any new doc contains category document, we think categorieschanged.
-        if (newFileInfos != null)
-        {
-            docChangedSummary = string.Join("\r\n",
-                newFileInfos.Select(d => $"New {d.LicenceDocumentTypeCode} documents uploaded"));
-            //document changes won't be treated as categories change.
-        }
-
-        var newData = _mapper.Map<BizLicenceAppCompareEntity>(newRequest);
-        var oldData = _mapper.Map<BizLicenceAppCompareEntity>(originalLic);
-        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
-        changes.ChangeSummary = string.Join("\r\n", summary);
-        if (!string.IsNullOrWhiteSpace(docChangedSummary))
-            changes.ChangeSummary += "\r\n" + string.Join("\r\n", docChangedSummary);
+        changes.ChangeSummary = GetChangeSummary<BizLicenceAppCompareEntity>(newFileInfos, originalLic, null, newRequest);
         return changes;
     }
 
