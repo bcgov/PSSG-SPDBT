@@ -613,6 +613,11 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	getSaveBodyBaseAnonymous(workerModelFormValue: any): any {
 		const baseData = this.getSaveBodyBase(workerModelFormValue, false);
 
+		// converted data maybe missing this value.
+		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
+			baseData.hasBcDriversLicence = false;
+		}
+
 		return baseData;
 	}
 
