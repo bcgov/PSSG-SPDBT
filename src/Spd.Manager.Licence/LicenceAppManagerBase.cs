@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
@@ -12,6 +12,7 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 
@@ -363,8 +364,12 @@ internal abstract class LicenceAppManagerBase
         if (newFileInfos != null)
         {
             docChangedSummary = string.Join("\r\n",
-                newFileInfos.Select(d => $"New {d.LicenceDocumentTypeCode} documents uploaded")
-            );
+                newFileInfos.Select(d => {
+                    string inputName = Regex.Replace(d.LicenceDocumentTypeCode.ToString()!, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
+                    string updatedInputName = inputName.Replace('_', '-');
+                    return $"{updatedInputName} document has been added";
+                    })
+                ); 
         }
 
         var newData = _mapper.Map<T>(newRequest);
