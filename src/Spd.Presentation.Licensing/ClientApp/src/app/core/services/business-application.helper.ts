@@ -514,6 +514,17 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			}
 		}
 
+		if (categoryData.attachments) {
+			const docs: Array<Blob> = [];
+			categoryData.attachments.forEach((doc: any) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+				documents: docs,
+			});
+		}
+
 		if (corporateRegistryDocumentData.attachments) {
 			const docs: Array<Blob> = [];
 			corporateRegistryDocumentData.attachments.forEach((doc: any) => {
