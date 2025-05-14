@@ -144,7 +144,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-applicationTypeCode {
-					max-width: 100px;
+					max-width: 120px;
 				}
 				.mat-column-serviceTypeCode {
 					max-width: 120px;
