@@ -65,7 +65,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showFullCitizenshipQuestion]="false"
+					[showNonCanadianCitizenshipQuestion]="false"
 					[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -79,7 +80,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="false"
 					[licenceCost]="updateLicenceCost"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmitStep()"
@@ -122,7 +123,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
 	showPhotographOfYourselfStep = false;
 	isSoleProprietorSimultaneousFlow = false;
 
@@ -159,14 +159,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
 				const hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
