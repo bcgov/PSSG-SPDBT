@@ -12,6 +12,7 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCodeNew"
 				[form]="form"
+				[showFullCitizenshipQuestion]="true"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 				(filesCleared)="onFilesCleared()"

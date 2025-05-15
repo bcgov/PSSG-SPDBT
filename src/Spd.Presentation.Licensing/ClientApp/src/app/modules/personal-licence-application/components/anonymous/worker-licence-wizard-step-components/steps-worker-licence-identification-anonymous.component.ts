@@ -40,9 +40,11 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showCitizenshipStep">
+			<mat-step *ngIf="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion">
 				<app-step-worker-licence-citizenship
 					[applicationTypeCode]="applicationTypeCode"
+					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
 				></app-step-worker-licence-citizenship>
 
 				<app-wizard-footer
@@ -149,8 +151,9 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
-	@Input() showCitizenshipStep!: boolean;
 	@Input() showPhotographOfYourselfStep = true;
+	@Input() showFullCitizenshipQuestion = true;
+	@Input() showNonCanadianCitizenshipQuestion = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
 

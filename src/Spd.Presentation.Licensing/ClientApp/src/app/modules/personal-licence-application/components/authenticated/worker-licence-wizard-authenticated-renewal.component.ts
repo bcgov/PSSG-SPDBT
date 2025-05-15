@@ -6,7 +6,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -70,7 +69,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+							[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
 							[showSaveAndExit]="false"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
@@ -86,7 +86,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showCitizenshipStep]="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion"
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onNextSoleProprietor()"
@@ -157,7 +157,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
+	showFullCitizenshipQuestion = false;
+	showNonCanadianCitizenshipQuestion = false;
 	showWorkerLicenceSoleProprietorStep = false;
 	isSoleProprietor = false;
 	isSoleProprietorSimultaneousFlow = false;
@@ -186,6 +187,13 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		const citizenshipData = this.workerApplicationService.workerModelFormGroup.get('citizenshipData')?.value;
+		this.showFullCitizenshipQuestion = citizenshipData.showFullCitizenshipQuestion;
+		this.showNonCanadianCitizenshipQuestion = citizenshipData.showNonCanadianCitizenshipQuestion;
+
 		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -196,12 +204,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep = isCanadianCitizen === BooleanTypeCode.No;
 
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
