@@ -345,16 +345,30 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
+		const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
+		let isCitizenshipStepValid = false;
+
+		if (applicationTypeCode == ApplicationTypeCode.Renewal) {
+			const citizenshipFormValue = this.citizenshipFormGroup.value;
+			const showCitizenshipStep =
+				!!citizenshipFormValue.showFullCitizenshipQuestion || !!citizenshipFormValue.showNonCanadianCitizenshipQuestion;
+			isCitizenshipStepValid = showCitizenshipStep ? this.citizenshipFormGroup.valid : true;
+		} else if (applicationTypeCode == ApplicationTypeCode.Update) {
+			isCitizenshipStepValid = true;
+		} else {
+			isCitizenshipStepValid = this.citizenshipFormGroup.valid;
+		}
+
 		if (this.authenticationService.isLoggedIn()) {
 			// console.debug(
 			// 	'isStepIdentificationComplete',
-			// 	this.citizenshipFormGroup.valid,
+			// 	isCitizenshipStepValid,
 			// 	this.fingerprintProofFormGroup.valid && this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
 			// 	this.photographOfYourselfFormGroup.valid
 			// );
 			return (
-				this.citizenshipFormGroup.valid &&
+				isCitizenshipStepValid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -364,7 +378,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
 			// 	this.aliasesFormGroup.valid,
-			// 	this.citizenshipFormGroup.valid,
+			// 	isCitizenshipStepValid,
 			// 	this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
 			// 	photographOfYourselfFormGroupValid,
@@ -376,7 +390,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			return (
 				this.personalInformationFormGroup.valid &&
 				this.aliasesFormGroup.valid &&
-				this.citizenshipFormGroup.valid &&
+				isCitizenshipStepValid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid &&
@@ -1525,6 +1539,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedExpiryDate: string | null;
 			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
+			showFullCitizenshipQuestion: boolean | null;
+			showNonCanadianCitizenshipQuestion: boolean | null;
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
@@ -1536,12 +1552,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
 			governmentIssuedDocumentIdNumber: null,
+			showFullCitizenshipQuestion: null,
+			showNonCanadianCitizenshipQuestion: null,
 		};
 
 		citizenshipData.isCanadianCitizen =
 			workerLicenceAppl.isCanadianCitizen === null
 				? null
 				: this.utilService.booleanToBooleanType(workerLicenceAppl.isCanadianCitizen);
+
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		const isCanadianCitizenHasValue = !!citizenshipData.isCanadianCitizen;
+		citizenshipData.showFullCitizenshipQuestion = !isCanadianCitizenHasValue;
+
+		const isCanadianCitizen = citizenshipData.isCanadianCitizen;
+		citizenshipData.showNonCanadianCitizenshipQuestion = isCanadianCitizenHasValue && !isCanadianCitizen;
 
 		const photographOfYourselfAttachments: Array<File> = [];
 		let photographOfYourselfLastUploadedDateTime = '';
@@ -2045,8 +2072,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
-		const isCanadianCitizen = latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
-		if (!isCanadianCitizen) {
+
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		if (latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.No) {
 			citizenshipData = {
 				isCanadianCitizen: BooleanTypeCode.No,
 				canadianCitizenProofTypeCode: null,
@@ -2056,6 +2086,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				governmentIssuedPhotoTypeCode: null,
 				governmentIssuedExpiryDate: null,
 				governmentIssuedAttachments: [],
+				showFullCitizenshipQuestion: false,
+				showNonCanadianCitizenshipQuestion: true,
 			};
 		}
 
