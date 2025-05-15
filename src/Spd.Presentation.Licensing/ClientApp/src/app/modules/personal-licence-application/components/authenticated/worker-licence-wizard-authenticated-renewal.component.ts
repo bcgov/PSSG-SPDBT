@@ -190,12 +190,9 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
 		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
 		// otherwise if not Canadian, ask for proof of ability to work.
-		const workerFormValue = this.workerApplicationService.workerModelFormGroup.value;
-		const isCanadianCitizenHasValue = !!workerFormValue.citizenshipData.isCanadianCitizen;
-		this.showFullCitizenshipQuestion = !isCanadianCitizenHasValue;
-
-		const isCanadianCitizen = workerFormValue.citizenshipData.isCanadianCitizen;
-		this.showNonCanadianCitizenshipQuestion = isCanadianCitizenHasValue && isCanadianCitizen;
+		const citizenshipData = this.workerApplicationService.workerModelFormGroup.get('citizenshipData')?.value;
+		this.showFullCitizenshipQuestion = citizenshipData.showFullCitizenshipQuestion;
+		this.showNonCanadianCitizenshipQuestion = citizenshipData.showNonCanadianCitizenshipQuestion;
 
 		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
