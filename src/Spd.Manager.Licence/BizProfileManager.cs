@@ -170,7 +170,7 @@ public class BizProfileManager :
         var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
-        if (portalUsers == null || !portalUsers.Items.Any())
+        if (portalUsers == null || !portalUsers.Items.Any(i => i.IsActive != null && i.IsActive.Value))
         {
             return true; //no user registered as licensing means it is first time login
         }
