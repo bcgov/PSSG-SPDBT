@@ -209,10 +209,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 				this.showSaveAndExit = this.workerApplicationService.isSaveAndExit();
 
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
 				this.soleProprietorBizAppId =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
 
