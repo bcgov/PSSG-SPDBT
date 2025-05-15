@@ -2045,8 +2045,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
-		const isCanadianCitizen = latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
-		if (!isCanadianCitizen) {
+
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		if (latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.No) {
 			citizenshipData = {
 				isCanadianCitizen: BooleanTypeCode.No,
 				canadianCitizenProofTypeCode: null,

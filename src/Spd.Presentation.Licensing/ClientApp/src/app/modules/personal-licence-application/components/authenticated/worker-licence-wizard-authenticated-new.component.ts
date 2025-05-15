@@ -73,7 +73,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showFullCitizenshipQuestion]="true"
+							[showNonCanadianCitizenshipQuestion]="false"
 							[showSaveAndExit]="showSaveAndExit"
 							(childNextStep)="onChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
@@ -90,7 +91,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showCitizenshipStep]="true"
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -156,7 +157,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	showSaveAndExit = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
@@ -212,10 +212,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
-
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
 				this.soleProprietorBizAppId =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
