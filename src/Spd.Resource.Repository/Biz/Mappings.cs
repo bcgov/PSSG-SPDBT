@@ -91,9 +91,23 @@ namespace Spd.Resource.Repository.Biz
 
         }
 
-        private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
+        private static IEnumerable<ServiceTypeEnum> GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
         {
-            return serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
+            return serviceTypes
+                .Select(s =>
+                {
+                    try
+                    {
+                        var name = DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid);
+                        return Enum.TryParse<ServiceTypeEnum>(name, out var parsedEnum) ? (ServiceTypeEnum?)parsedEnum : null;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                })
+                .Where(e => e.HasValue)
+                .Select(e => e.Value);
         }
 
         private static IEnumerable<BranchAddr>? GetBranchAddrs(account account, ResolutionContext context)
