@@ -105,7 +105,7 @@ public class ControllingMemberCrcAppBaseValidator<T> : AbstractValidator<T> wher
             .When(r => r.Aliases != null && r.HasPreviousName == true);
 
         RuleFor(r => r.IsTreatedForMHC).NotNull();
-        //RuleFor(r => r.IsCanadianCitizen).NotNull();//spdbt-4110
+        RuleFor(r => r.IsCanadianCitizen).NotNull().When(r => r.ApplicationTypeCode == ApplicationTypeCode.New);//spdbt-4110
         RuleFor(r => r.BcDriversLicenceNumber)
             .MaximumLength(8)
             .When(r => r.BcDriversLicenceNumber != null);
