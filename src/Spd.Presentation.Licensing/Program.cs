@@ -64,7 +64,35 @@ try
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
-    app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
+    //app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
+    // Middleware to inject correct base href
+    string basePath = builder.Configuration.GetValue("BASE_PATH", string.Empty);
+    var contentRootPath = app.Environment.ContentRootPath;
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/" || context.Request.Path == basePath)
+        {
+
+            var indexFilePath = Path.Combine(contentRootPath, "ClientApp", "dist", "index.html");
+
+            if (!System.IO.File.Exists(indexFilePath))
+            {
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync("index.html not found");
+                return;
+            }
+
+            var html = await System.IO.File.ReadAllTextAsync(indexFilePath);
+            html = html.Replace("%BASE_HREF%", basePath);
+
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync(html);
+            return;
+        }
+
+        await next();
+    });
+
     if (!app.Environment.IsProduction())
     {
         app.UseSwagger();
