@@ -80,10 +80,11 @@ internal class LicenceManager :
             _logger.LogDebug("No licence found.");
             return null;
         }
-        LicenceResp response = qryResponse.Items
+        LicenceResp? response = qryResponse.Items
             .Where(i => i.LicenceStatusCode == LicenceStatusEnum.Active || i.LicenceStatusCode == LicenceStatusEnum.Expired)
             .OrderByDescending(i => i.CreatedOn)
-            .First();
+            .FirstOrDefault();
+        if (response == null) { return null; }
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
         await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
