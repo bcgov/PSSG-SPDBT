@@ -152,11 +152,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
 										If you cannot set up a BC Services Card account, please
-										<a
-											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
-											target="_blank"
-											>contact us</a
-										>
+										<a [href]="aboutSpdUrl" target="_blank">contact us</a>
 									</div>
 								</div>
 							</div>
@@ -185,11 +181,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
 										If you cannot set up a BC Services Card account, please
-										<a
-											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division"
-											target="_blank"
-											>contact us</a
-										>
+										<a [href]="aboutSpdUrl" target="_blank">contact us</a>
 									</div>
 								</div>
 							</div>
@@ -219,6 +211,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 	standalone: false,
 })
 export class LandingComponent implements OnInit {
+	aboutSpdUrl = SPD_CONSTANTS.urls.aboutSpdUrl;
 	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypeCodes = ServiceTypeCode;
