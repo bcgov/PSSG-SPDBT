@@ -55,7 +55,7 @@
 								}
 							],
 							"outputHashing": "all",
-							"baseHref": "/licensing/"
+							"baseHref": "/security/"
 						},
 						"development": {
 							"optimization": false,
