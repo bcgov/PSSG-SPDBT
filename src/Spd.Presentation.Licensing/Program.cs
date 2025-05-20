@@ -65,7 +65,7 @@ try
 
     // Configure the HTTP request pipeline.
     //app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
-    // Middleware to inject correct base href
+    // Middleware to inject correct base href for index.html
     string basePath = builder.Configuration.GetValue("BASE_PATH", string.Empty);
     var contentRootPath = app.Environment.ContentRootPath;
     app.Use(async (context, next) =>
