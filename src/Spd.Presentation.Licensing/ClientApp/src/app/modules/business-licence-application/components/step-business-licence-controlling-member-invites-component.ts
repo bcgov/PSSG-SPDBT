@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -6,13 +7,13 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-business-licence-controlling-member-invites',
 	template: `
-		<app-step-section title="Controlling members request summary">
+		<app-step-section title="Controlling members and business managers request summary">
 			<div class="row">
 				<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 					<app-alert type="warning" icon="warning">
-						Invitations to consent to a criminal record check will be sent to these controlling members when you submit
-						your business licence application. Your application will not proceed until we receive consent forms from all
-						controlling members.
+						Invitations to consent to a criminal record check will be sent to these controlling members and business
+						managers when you submit your business licence application. Your application will not proceed until we
+						receive consent forms from all controlling members and business managers.
 					</app-alert>
 				</div>
 			</div>
@@ -29,7 +30,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<ng-template #noEmailAddress>
 									<a
 										aria-label="Download Consent to Criminal Record Check document"
-										download="business-memberauthconsent"
+										download="Business Member Authorization Consent"
 										matTooltip="Download Consent to Criminal Record Check document"
 										[href]="downloadFilePath"
 									>
@@ -47,18 +48,31 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class StepBusinessLicenceControllingMemberInvitesComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceControllingMemberInvitesComponent implements OnInit, LicenceChildStepperStepComponent {
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
+	requireDocumentUpload = false;
+
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
+	businessMembersFormGroup = this.businessApplicationService.businessMembersFormGroup;
+
+	form = this.businessApplicationService.corporateRegistryDocumentFormGroup;
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
+
+	ngOnInit(): void {
+		this.requireDocumentUpload = this.applicationTypeCode === ApplicationTypeCode.Renewal;
+	}
 
 	isFormValid(): boolean {
 		return true;
 	}
 
 	get membersWithoutSwlArray(): Array<any> {
-		return this.controllingMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		const cm = this.controllingMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		const bm = this.businessMembersFormGroup.get('membersWithoutSwl')?.value ?? [];
+		return cm.concat(bm);
 	}
 }

@@ -184,9 +184,10 @@ internal class BizLicAppManager :
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.PreviousDocumentIds,
             cancellationToken);
-        ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
-            cmd.LicAppFileInfos.ToList(),
-            existingFiles.ToList());
+        //spdbt-4076
+        //ValidateFilesForRenewUpdateApp(cmd.LicenceRequest,
+        //    cmd.LicAppFileInfos.ToList(),
+        //    existingFiles.ToList());
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
@@ -246,7 +247,7 @@ internal class BizLicAppManager :
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        ChangeSpec changes = await MakeChanges(request, originalLic, cancellationToken);
+        ChangeSpec changes = await MakeChanges(request, cmd.LicAppFileInfos, originalLic, cancellationToken);
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
@@ -367,7 +368,8 @@ internal class BizLicAppManager :
         catch (ArgumentException e)
         {
             throw new ApiException(HttpStatusCode.Forbidden, e.Message);
-        };
+        }
+        ;
         return default;
     }
 
@@ -432,6 +434,7 @@ internal class BizLicAppManager :
 
     private async Task<ChangeSpec> MakeChanges(
         BizLicAppSubmitRequest newRequest,
+        IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic,
         CancellationToken ct)
     {
@@ -501,10 +504,7 @@ internal class BizLicAppManager :
             }, ct);
         }
 
-        var newData = _mapper.Map<BizLicenceAppCompareEntity>(newRequest);
-        var oldData = _mapper.Map<BizLicenceAppCompareEntity>(originalLic);
-        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
-        changes.ChangeSummary = string.Join("\r\n", summary);
+        changes.ChangeSummary = GetChangeSummary<BizLicenceAppCompareEntity>(newFileInfos, originalLic, null, newRequest);
         return changes;
     }
 

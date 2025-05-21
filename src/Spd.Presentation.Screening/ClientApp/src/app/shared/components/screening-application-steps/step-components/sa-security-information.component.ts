@@ -9,9 +9,9 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-    selector: 'app-sa-security-information',
-    template: `
-		<section class="step-section p-3" *ngIf="orgData">
+	selector: 'app-sa-security-information',
+	template: `
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -23,19 +23,19 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 									<mat-form-field>
 										<mat-label>
-											<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
-											<span *ngIf="!orgData.isCrrpa">Ministry</span>
+											<span *ngIf="orgData?.isCrrpa">Requesting Organization</span>
+											<span *ngIf="!orgData?.isCrrpa">Ministry</span>
 										</mat-label>
 										<input matInput formControlName="orgName" />
 									</mat-form-field>
 								</div>
-								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12" *ngIf="orgData.isCrrpa">
+								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12" *ngIf="orgData?.isCrrpa">
 									<mat-form-field>
 										<mat-label>Organization Email</mat-label>
 										<input matInput formControlName="orgEmail" />
 									</mat-form-field>
 								</div>
-								<ng-container *ngIf="orgData.isCrrpa">
+								<ng-container *ngIf="orgData?.isCrrpa">
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Organization Phone Number</mat-label>
@@ -56,7 +56,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<ng-container *ngIf="orgData.notPssoOrPecrc">
+								<ng-container *ngIf="orgData?.notPssoOrPecrc">
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Vulnerable Sector Category</mat-label>

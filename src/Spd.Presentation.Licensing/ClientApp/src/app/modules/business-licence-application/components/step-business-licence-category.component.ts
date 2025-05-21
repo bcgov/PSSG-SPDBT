@@ -8,9 +8,7 @@ import {
 	SelectOptions,
 	WorkerCategoryTypes,
 } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -28,12 +26,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<app-alert type="info" icon="info">
 									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
 									categories.
-								</app-alert>
-							</div>
-
-							<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
-								<app-alert type="danger" icon="dangerous">
-									{{ invalidSoleProprietorCategoriesMsg }}
 								</app-alert>
 							</div>
 
@@ -110,17 +102,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						<mat-accordion multi="false">
 							<ng-container *ngIf="this.ArmouredCarGuard.value">
 								<div class="row">
-									<div
-										class="col-md-12 col-sm-12"
-										[ngClass]="blockArmouredCarGuard ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
-									>
-										<mat-expansion-panel
-											[hideToggle]="blockArmouredCarGuard"
-											class="my-3 w-100"
-											[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
-											[disabled]="blockArmouredCarGuard"
-											[expanded]="expandArmouredCarGuard"
-										>
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
 													<mat-icon
@@ -150,175 +133,115 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											<app-business-category-armoured-car-guard></app-business-category-armoured-car-guard>
 										</mat-expansion-panel>
 									</div>
-
-									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockArmouredCarGuard">
-										<button
-											mat-stroked-button
-											class="large delete-button my-lg-3"
-											aria-label="Remove category"
-											(click)="onDeselect(armouredCarGuardCode)"
-										>
-											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
-										</button>
-									</div>
 								</div>
 							</ng-container>
 
 							<ng-container *ngIf="showBodyArmourSales">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
-									[blockCategory]="blockBodyArmourSales"
 									[expandCategory]="expandBodyArmourSales"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
-									[blockCategory]="blockClosedCircuitTelevisionInstaller"
 									[expandCategory]="expandClosedCircuitTelevisionInstaller"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
-									[blockCategory]="blockElectronicLockingDeviceInstaller"
 									[expandCategory]="expandElectronicLockingDeviceInstaller"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showLocksmith">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.Locksmith"
-									[blockCategory]="blockLocksmith"
 									[expandCategory]="expandLocksmith"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showPrivateInvestigator">
-								<ng-container *ngIf="isBusinessLicenceSoleProprietor; else notBusinessLicenceSoleProprietor">
-									<app-form-licence-category-panel-simple
-										[categoryTypeCode]="privateInvestigatorCode"
-										[blockCategory]="blockPrivateInvestigator"
-										[expandCategory]="expandPrivateInvestigator"
-										(removeCategory)="onRemove($event)"
-										(deselectCategory)="onDeselect($event)"
-									></app-form-licence-category-panel-simple>
-								</ng-container>
-								<ng-template #notBusinessLicenceSoleProprietor>
-									<div class="row">
-										<div
-											class="col-md-12 col-sm-12"
-											[ngClass]="blockPrivateInvestigator ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
-										>
-											<mat-expansion-panel
-												[hideToggle]="blockPrivateInvestigator"
-												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
-												[disabled]="blockPrivateInvestigator"
-												[expanded]="expandPrivateInvestigator"
-											>
-												<mat-expansion-panel-header>
-													<mat-panel-title>
-														<mat-icon
-															class="error-icon"
-															color="warn"
-															matTooltip="One or more errors exist in this category"
-															*ngIf="
-																categoryPrivateInvestigatorFormGroup?.touched &&
-																categoryPrivateInvestigatorFormGroup?.invalid
-															"
-															>error</mat-icon
-														>{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
-													</mat-panel-title>
-												</mat-expansion-panel-header>
-												<div class="row my-3">
-													<div class="col-12 mx-auto">
-														<button
-															mat-stroked-button
-															class="xlarge w-auto float-end"
-															aria-label="Remove category"
-															(click)="onRemove(privateInvestigatorCode)"
-														>
-															<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-														</button>
-													</div>
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													<mat-icon
+														class="error-icon"
+														color="warn"
+														matTooltip="One or more errors exist in this category"
+														*ngIf="
+															categoryPrivateInvestigatorFormGroup?.touched &&
+															categoryPrivateInvestigatorFormGroup?.invalid
+														"
+														>error</mat-icon
+													>{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(privateInvestigatorCode)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
 												</div>
+											</div>
 
-												<app-business-category-private-investigator></app-business-category-private-investigator>
-											</mat-expansion-panel>
-										</div>
-
-										<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockPrivateInvestigator">
-											<button
-												mat-stroked-button
-												class="large delete-button my-lg-3"
-												aria-label="Remove category"
-												(click)="onDeselect(privateInvestigatorCode)"
-											>
-												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
-											</button>
-										</div>
+											<app-business-category-private-investigator></app-business-category-private-investigator>
+										</mat-expansion-panel>
 									</div>
-								</ng-template>
+								</div>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmInstaller">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstaller"
-									[blockCategory]="blockSecurityAlarmInstaller"
 									[expandCategory]="expandSecurityAlarmInstaller"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmMonitor">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
-									[blockCategory]="blockSecurityAlarmMonitor"
 									[expandCategory]="expandSecurityAlarmMonitor"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmResponse">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
-									[blockCategory]="blockSecurityAlarmResponse"
 									[expandCategory]="expandSecurityAlarmResponse"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityAlarmSales">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
-									[blockCategory]="blockSecurityAlarmSales"
 									[expandCategory]="expandSecurityAlarmSales"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
 							<ng-container *ngIf="showSecurityConsultant">
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityConsultant"
-									[blockCategory]="blockSecurityConsultant"
 									[expandCategory]="expandSecurityConsultant"
 									(removeCategory)="onRemove($event)"
-									(deselectCategory)="onDeselect($event)"
 								></app-form-licence-category-panel-simple>
 							</ng-container>
 
@@ -415,7 +338,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	securityGuardCode = WorkerCategoryTypeCode.SecurityGuard;
 	privateInvestigatorCode = WorkerCategoryTypeCode.PrivateInvestigator;
 
-	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup = this.businessApplicationService.categoryArmouredCarGuardFormGroup;
@@ -429,9 +351,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	showSecurityAlarmResponseMessage = false;
 	showSecurityGuardMessage = false;
 
-	showInvalidSoleProprietorCategories = false;
-	readonly invalidSoleProprietorCategoriesMsg = SPD_CONSTANTS.messages.invalidSoleProprietorCategories;
-
 	expandArmouredCarGuard = false;
 	expandBodyArmourSales = false;
 	expandClosedCircuitTelevisionInstaller = false;
@@ -444,18 +363,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	expandSecurityAlarmResponse = false;
 	expandSecurityAlarmSales = false;
 	expandSecurityConsultant = false;
-
-	blockArmouredCarGuard = false;
-	blockBodyArmourSales = false;
-	blockClosedCircuitTelevisionInstaller = false;
-	blockElectronicLockingDeviceInstaller = false;
-	blockLocksmith = false;
-	blockPrivateInvestigator = false;
-	blockSecurityAlarmInstaller = false;
-	blockSecurityAlarmMonitor = false;
-	blockSecurityAlarmResponse = false;
-	blockSecurityAlarmSales = false;
-	blockSecurityConsultant = false;
 
 	originalCategoryCodes: Array<WorkerCategoryTypeCode> | null = [];
 	availableCategoryCodes: Array<WorkerCategoryTypeCode> = [];
@@ -479,7 +386,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	constructor(
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
-		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -502,22 +408,12 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
-		if (this.isBusinessLicenceSoleProprietor) {
-			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
-			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
-			this.availableCategoryCodes = businessInformationData.soleProprietorCategoryCodes ?? [];
+		const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
+		this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
 
-			this.showInvalidSoleProprietorCategories = !this.commonApplicationService.isValidSoleProprietorSwlCategories(
-				this.availableCategoryCodes
-			);
-		} else {
-			const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
-			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
-			this.businessCategoryTypes = BusinessLicenceCategoryTypes;
-			this.availableCategoryCodes = BusinessLicenceCategoryTypes.map(
-				(item: SelectOptions) => item.code as WorkerCategoryTypeCode
-			);
-		}
+		this.availableCategoryCodes = BusinessLicenceCategoryTypes.map(
+			(item: SelectOptions) => item.code as WorkerCategoryTypeCode
+		);
 
 		this.validCategoryList = this.businessApplicationService.getValidBlCategoryList(
 			this.categoryList,
@@ -525,8 +421,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		);
 
 		this.setupCategoryMessages();
-
-		this.setupInitialExpansionPanel();
 	}
 
 	onAddCategory(): void {
@@ -535,12 +429,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		if (categoryCode) {
 			switch (categoryCode) {
 				case WorkerCategoryTypeCode.ArmouredCarGuard:
-					this.blockArmouredCarGuard = false;
 					this.expandArmouredCarGuard = true;
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigator:
-					this.blockPrivateInvestigator = false;
 					this.expandPrivateInvestigator = true;
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
 					break;
@@ -549,39 +441,30 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.BodyArmourSales:
-					this.blockBodyArmourSales = false;
 					this.expandBodyArmourSales = true;
 					break;
 				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-					this.blockClosedCircuitTelevisionInstaller = false;
 					this.expandClosedCircuitTelevisionInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-					this.blockElectronicLockingDeviceInstaller = false;
 					this.expandElectronicLockingDeviceInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.Locksmith:
-					this.blockLocksmith = false;
 					this.expandLocksmith = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-					this.blockSecurityAlarmInstaller = false;
 					this.expandSecurityAlarmInstaller = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-					this.blockSecurityAlarmMonitor = false;
 					this.expandSecurityAlarmMonitor = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmResponse:
-					this.blockSecurityAlarmResponse = false;
 					this.expandSecurityAlarmResponse = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmSales:
-					this.blockSecurityAlarmSales = false;
 					this.expandSecurityAlarmSales = true;
 					break;
 				case WorkerCategoryTypeCode.SecurityConsultant:
-					this.blockSecurityConsultant = false;
 					this.expandSecurityConsultant = true;
 					break;
 			}
@@ -604,11 +487,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		}
 	}
 
-	onDeselect(code: WorkerCategoryTypeCode) {
-		this.onRemove(code, true);
-	}
-
-	onRemove(code: WorkerCategoryTypeCode, justDeselect = false) {
+	onRemove(code: WorkerCategoryTypeCode) {
 		const codeDesc = this.optionsPipe.transform(code, 'WorkerCategoryTypes');
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -625,66 +504,15 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				if (response) {
 					switch (code) {
 						case WorkerCategoryTypeCode.ArmouredCarGuard:
-							if (!justDeselect) {
-								this.categoryArmouredCarGuardFormGroup.reset();
-								this.blockArmouredCarGuard = false;
-							}
+							this.categoryArmouredCarGuardFormGroup.reset();
 							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
 							break;
-						case WorkerCategoryTypeCode.BodyArmourSales:
-							if (!justDeselect) {
-								this.blockBodyArmourSales = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-							if (!justDeselect) {
-								this.blockClosedCircuitTelevisionInstaller = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-							if (!justDeselect) {
-								this.blockElectronicLockingDeviceInstaller = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.Locksmith:
-							if (!justDeselect) {
-								this.blockLocksmith = false;
-							}
-							break;
 						case WorkerCategoryTypeCode.PrivateInvestigator:
-							if (!justDeselect) {
-								this.categoryPrivateInvestigatorFormGroup.reset();
-								this.blockPrivateInvestigator = false;
-							}
+							this.categoryPrivateInvestigatorFormGroup.reset();
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityGuard:
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-							if (!justDeselect) {
-								this.blockSecurityAlarmInstaller = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-							if (!justDeselect) {
-								this.blockSecurityAlarmMonitor = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmResponse:
-							if (!justDeselect) {
-								this.blockSecurityAlarmResponse = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmSales:
-							if (!justDeselect) {
-								this.blockSecurityAlarmSales = false;
-							}
-							break;
-						case WorkerCategoryTypeCode.SecurityConsultant:
-							if (!justDeselect) {
-								this.blockSecurityConsultant = false;
-							}
 							break;
 					}
 
@@ -696,6 +524,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					);
 					this.setupCategoryMessage(code);
 					this.isDirtyAndInvalid = false;
+
+					if (!this.isBusinessLicenceSoleProprietor) {
+						this.checkInsuranceRequirements();
+					}
 				}
 			});
 	}
@@ -712,44 +544,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				return !!catItem;
 			})
 			.map((option: SelectOptions) => option.code);
-	}
-
-	private setupInitialExpansionPanel(): void {
-		if (this.isUpdate) {
-			if (this.showArmouredCarGuard) {
-				this.blockArmouredCarGuard = true;
-			}
-			if (this.showBodyArmourSales) {
-				this.blockBodyArmourSales = true;
-			}
-			if (this.showClosedCircuitTelevisionInstaller) {
-				this.blockClosedCircuitTelevisionInstaller = true;
-			}
-			if (this.showElectronicLockingDeviceInstaller) {
-				this.blockElectronicLockingDeviceInstaller = true;
-			}
-			if (this.showLocksmith) {
-				this.blockLocksmith = true;
-			}
-			if (this.showPrivateInvestigator) {
-				this.blockPrivateInvestigator = true;
-			}
-			if (this.showSecurityAlarmInstaller) {
-				this.blockSecurityAlarmInstaller = true;
-			}
-			if (this.showSecurityConsultant) {
-				this.blockSecurityConsultant = true;
-			}
-			if (this.showSecurityAlarmMonitor) {
-				this.blockSecurityAlarmMonitor = true;
-			}
-			if (this.showSecurityAlarmResponse) {
-				this.blockSecurityAlarmResponse = true;
-			}
-			if (this.showSecurityAlarmSales) {
-				this.blockSecurityAlarmSales = true;
-			}
-		}
 	}
 
 	get showArmouredCarGuard(): boolean {
@@ -800,7 +594,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			valid2 = this.categoryArmouredCarGuardFormGroup.valid;
 		}
 		let valid3 = true;
-		if (!this.isBusinessLicenceSoleProprietor && this.PrivateInvestigator.value) {
+		if (this.PrivateInvestigator.value) {
 			this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
 			valid3 = this.categoryPrivateInvestigatorFormGroup.valid;
 		}
@@ -907,6 +701,14 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		});
 
 		this.showInsurance = hasAdditions.length > 0;
+
+		if (!this.showInsurance) {
+			const attachments = this.attachments.value ?? [];
+			if (attachments.length > 0) {
+				// remove any attachments that may already exist
+				this.form.patchValue({ attachments: [] });
+			}
+		}
 	}
 
 	get ArmouredCarGuard(): FormControl {
@@ -947,8 +749,5 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-	get isUpdate(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

@@ -9,6 +9,7 @@ export {
 	ContactAuthorizationTypes,
 	CountryTypes,
 	DogDocumentTypes,
+	DogGenderTypes,
 	EyeColourTypes,
 	GenderTypes,
 	GovernmentIssuedPhotoIdTypes,

@@ -52,9 +52,9 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 1;

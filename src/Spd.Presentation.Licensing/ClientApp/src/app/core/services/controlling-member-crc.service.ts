@@ -4,16 +4,15 @@ import {
 	Alias,
 	ApplicantProfileResponse,
 	ApplicationTypeCode,
-	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
-	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	ServiceTypeCode,
+	StakeholderAppInviteVerifyResponse,
 } from '@app/api/models';
 import { ApplicantProfileService, ControllingMemberCrcAppService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -244,7 +243,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createOrResumeCrc(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		return this.applicantProfileService
@@ -283,7 +282,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createNewOrUpdateCrcAnonymous(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		if (applicationTypeCode === ApplicationTypeCode.New) {
@@ -321,9 +320,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(controllingMembersModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -354,9 +351,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(controllingMembersModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 		body.agreeToCompleteAndAccurate = true;
@@ -413,13 +408,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
 	> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(controllingMembersModelFormValue);
+		const body = this.getSaveBodyBaseSubmitAuthenticated(controllingMembersModelFormValue) as any;
 
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 		body.agreeToCompleteAndAccurate = true;
-
-		// Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
@@ -454,8 +446,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		delete body.hasBankruptcyHistory;
 		delete body.bankruptcyHistoryDetail;
 		delete body.documentInfos;
-
-		//*********************** */
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -535,7 +525,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private loadDraftCrcIntoModel(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -552,7 +542,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -755,15 +745,11 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			);
 		});
 
-		console.debug(
-			'[applyCrcAppIntoModel] controllingMembersModelFormGroup',
-			this.controllingMembersModelFormGroup.value
-		);
 		return of(this.controllingMembersModelFormGroup.value);
 	}
 
 	private getCrcEmptyAuthenticated(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
@@ -822,7 +808,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private getCrcEmptyAnonymous(
-		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		crcInviteData: StakeholderAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode,
 		applicantProfile?: ApplicantProfileResponse
 	): Observable<any> {

@@ -1,20 +1,16 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
+using Spd.Resource.Repository.DogBase;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Repository.DogTrainerApp;
-internal class DogTrainerAppRepository : IDogTrainerAppRepository
+internal class DogTrainerAppRepository : DogAppBaseRepository, IDogTrainerAppRepository
 {
-    private readonly DynamicsContext _context;
-    private readonly IMapper _mapper;
-
-    public DogTrainerAppRepository(IDynamicsContextFactory ctx, IMapper mapper)
-    {
-        _context = ctx.CreateChangeOverwrite();
-        _mapper = mapper;
-    }
+    public DogTrainerAppRepository(IDynamicsContextFactory ctx, IMapper mapper) : base(ctx, mapper)
+    { }
 
     public async Task<DogTrainerAppCmdResp> CreateDogTrainerAppAsync(CreateDogTrainerAppCmd cmd, CancellationToken ct)
     {
@@ -29,42 +25,45 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         }
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
         {
-            app = _mapper.Map<spd_application>(cmd);
-            _context.AddTospd_applications(app);
-            contact = UpdateContact(cmd, (Guid)cmd.ApplicantId);
+            app = PrepareNewAppDataInDbContext(cmd, contact);
+            contact = UpdateContact(cmd, (Guid)cmd.ContactId);
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
             SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
-            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         }
         await _context.SaveChangesAsync(ct);
         if (app == null || contact == null)
             throw new ApiException(HttpStatusCode.InternalServerError);
         return new DogTrainerAppCmdResp((Guid)app.spd_applicationid, contact.contactid.Value);
     }
-
-    public async Task CommitDogTrainerAppAsync(CommitDogTrainerAppCmd cmd, CancellationToken ct)
+    public async Task<DogTrainerAppResp> GetDogTrainerAppAsync(Guid appId, CancellationToken ct)
     {
-        spd_application? app = await _context.GetApplicationById(cmd.LicenceAppId, ct);
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
-
-        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(cmd.ApplicationStatusCode.ToString());
-
-        if (cmd.ApplicationStatusCode == ApplicationStatusEnum.Submitted)
+        spd_application? app;
+        try
         {
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-
-            app.spd_submittedon = DateTimeOffset.Now;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
-            app.spd_licencefee = 0;
-
-            _context.UpdateObject(app);
-            await _context.SaveChangesAsync(ct);
+            app = await _context.spd_applications
+                .Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_application_spd_dogtrainingschool_ApplicationId)
+                .Where(a => a.spd_applicationid == appId)
+                .FirstOrDefaultAsync(ct);
         }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                app = null;
+            else
+                throw;
+        }
+
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {appId} ");
+
+        var response = _mapper.Map<DogTrainerAppResp>(app);
+        _mapper.Map<spd_dogtrainingschool, DogTrainerAppResp>(app.spd_application_spd_dogtrainingschool_ApplicationId.FirstOrDefault(), response);
+        return response;
     }
 
     private contact UpdateContact(DogTrainerApp appData, Guid applicantId)
@@ -90,6 +89,8 @@ internal class DogTrainerAppRepository : IDogTrainerAppRepository
         _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
         var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolId).FirstOrDefault();
         _context.SetLink(trainEvent, nameof(trainEvent.spd_OrganizationId), school);
+        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, trainEvent);
+
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         return app;

@@ -12,7 +12,6 @@ import {
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
-	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	ServiceTypeCode,
@@ -20,7 +19,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import {
@@ -42,7 +40,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -291,16 +288,14 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
 
-		// const isSecurityGuard = this.categorySecurityGuardFormGroup.value.isInclude;
-		// (!isSecurityGuard || this.restraintsAuthorizationFormGroup.valid) &&
-		// (!isSecurityGuard || this.dogsAuthorizationFormGroup.valid) &&
+		const isSecurityGuard = this.categorySecurityGuardFormGroup.value.isInclude;
 
 		return (
 			this.soleProprietorFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
-			this.restraintsAuthorizationFormGroup.valid &&
-			this.dogsAuthorizationFormGroup.valid &&
+			(!isSecurityGuard || this.restraintsAuthorizationFormGroup.valid) &&
+			(!isSecurityGuard || this.dogsAuthorizationFormGroup.valid) &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
@@ -350,36 +345,40 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
+		const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
+		let isCitizenshipStepValid = false;
+
+		if (applicationTypeCode == ApplicationTypeCode.Renewal) {
+			const citizenshipFormValue = this.citizenshipFormGroup.value;
+			const showCitizenshipStep =
+				!!citizenshipFormValue.showFullCitizenshipQuestion || !!citizenshipFormValue.showNonCanadianCitizenshipQuestion;
+			isCitizenshipStepValid = showCitizenshipStep ? this.citizenshipFormGroup.valid : true;
+		} else if (applicationTypeCode == ApplicationTypeCode.Update) {
+			isCitizenshipStepValid = true;
+		} else {
+			isCitizenshipStepValid = this.citizenshipFormGroup.valid;
+		}
+
 		if (this.authenticationService.isLoggedIn()) {
 			// console.debug(
 			// 	'isStepIdentificationComplete',
-			// 	this.citizenshipFormGroup.valid,
+			// 	isCitizenshipStepValid,
 			// 	this.fingerprintProofFormGroup.valid && this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
 			// 	this.photographOfYourselfFormGroup.valid
 			// );
 			return (
-				this.citizenshipFormGroup.valid &&
+				isCitizenshipStepValid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
-			const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
-			const hasGenderChanged = !!this.personalInformationFormGroup.get('hasGenderChanged')?.value;
-
-			let photographOfYourselfFormGroupValid = this.photographOfYourselfFormGroup.valid;
-
-			// If anonymous update flown and gender has not changed, then it is valid
-			if (applicationTypeCode === ApplicationTypeCode.Update && !hasGenderChanged) {
-				photographOfYourselfFormGroupValid = true;
-			}
-
 			// console.debug(
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
 			// 	this.aliasesFormGroup.valid,
-			// 	this.citizenshipFormGroup.valid,
+			// 	isCitizenshipStepValid,
 			// 	this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
 			// 	photographOfYourselfFormGroupValid,
@@ -391,10 +390,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			return (
 				this.personalInformationFormGroup.valid &&
 				this.aliasesFormGroup.valid &&
-				this.citizenshipFormGroup.valid &&
+				isCitizenshipStepValid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
-				photographOfYourselfFormGroupValid &&
+				this.photographOfYourselfFormGroup.valid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
 				this.contactInformationFormGroup.valid
@@ -459,7 +458,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitNewSoleProprietorSimultaneousFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -477,7 +476,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -673,19 +672,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				this.reset();
+			})
+		);
 	}
 
 	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+		const bodyUpsert = this.getSaveBodyBaseSubmitAuthenticated(licenceModelFormValue) as any;
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
@@ -784,7 +787,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile).pipe(
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile }).pipe(
 					tap((_resp: any) => {
 						// when resuming, populate the model with existing data for police, mhc and criminal history data
 						const policeBackgroundDataAttachments: Array<File> = [];
@@ -832,8 +835,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 								emitEvent: false,
 							}
 						);
-
-						console.debug('[loadPartialLicenceWithIdAuthenticated] licenceFormGroup', this.workerModelFormGroup.value);
 					})
 				);
 			})
@@ -860,7 +861,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				workerLicenceAppl.expiredLicenceNumber = null;
 				workerLicenceAppl.hasExpiredLicence = false;
 
-				return this.loadLicenceApplAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
+				return this.loadLicenceApplAndProfile({ workerLicenceAppl, applicantProfile, associatedLicence });
 			})
 		);
 	}
@@ -869,11 +870,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Loads the a worker application and profile into the worker model
 	 * @returns
 	 */
-	private loadLicenceApplAndProfile(
-		workerLicenceAppl: WorkerLicenceAppResponse,
-		applicantProfile: ApplicantProfileResponse,
-		associatedLicence?: MainLicenceResponse
-	) {
+	private loadLicenceApplAndProfile({
+		workerLicenceAppl,
+		applicantProfile,
+		associatedLicence,
+	}: {
+		workerLicenceAppl: WorkerLicenceAppResponse;
+		applicantProfile: ApplicantProfileResponse;
+		associatedLicence?: MainLicenceResponse;
+	}) {
 		if (workerLicenceAppl.expiredLicenceId) {
 			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceAppl.expiredLicenceId }).pipe(
 				switchMap((expiredLicence: LicenceResponse) => {
@@ -923,68 +928,31 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	): Observable<any> {
 		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadLatestApplAuthenticated(applicantId, associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadLatestApplAuthenticated(applicantId, associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				// ApplicationTypeCode.Replacement
-				return this.loadLatestApplAuthenticated(applicantId, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	/*************************************************************/
 	// ANONYMOUS
 	/*************************************************************/
-
-	/**
-	 * Search for an existing licence using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getLicenceWithAccessCodeAnonymous(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
-						map((appls: Array<LicenceAppListResponse>) => {
-							return {
-								inProgressApplications: appls.length > 0,
-								...resp,
-							} as LicenceResponseExt;
-						})
-					);
-				})
-			);
-	}
 
 	/**
 	 * Load an existing licence application with an access code
@@ -1137,34 +1105,26 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingLicenceApplAnonymous(associatedLicence),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					switchMap((resps: any[]) => {
-						const latestApplication = resps[0];
-						const photoOfYourself = resps[1];
+		return forkJoin([
+			this.loadExistingLicenceApplAnonymous(associatedLicence),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const latestApplication = resps[0];
+				const photoOfYourself = resps[1];
 
-						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
-						}
+				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+					return this.applyReplacementSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+				}
 
-						return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
-					})
-				);
-			}
-			default: {
-				return this.loadExistingLicenceApplAnonymous(associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementSpecificDataToModel(_resp, associatedLicence);
-					})
-				);
-			}
-		}
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
+				}
+
+				return this.applyUpdateSpecificDataToModel(latestApplication, associatedLicence, photoOfYourself);
+			})
+		);
 	}
 
 	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
@@ -1476,7 +1436,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			);
 		});
 
-		console.debug('[applyLicenceProfileIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 
@@ -1514,12 +1473,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const originalLicenceData = this.originalLicenceFormGroup.value;
 		originalLicenceData.originalBizTypeCode = bizTypeCode;
-
-		console.debug('[applyLicenceIntoModel] applyLicenceIntoModel');
-		console.debug('[applyLicenceIntoModel] workerLicenceAppl', workerLicenceAppl);
-		console.debug('[applyLicenceIntoModel] associatedLicence', associatedLicence);
-		console.debug('[applyLicenceIntoModel] associatedExpiredLicence', associatedExpiredLicence);
-		console.debug('[applyLicenceIntoModel] soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
@@ -1586,6 +1539,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedExpiryDate: string | null;
 			governmentIssuedDocumentIdNumber: string | null;
 			governmentIssuedAttachments: File[];
+			showFullCitizenshipQuestion: boolean | null;
+			showNonCanadianCitizenshipQuestion: boolean | null;
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
@@ -1597,12 +1552,23 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			governmentIssuedExpiryDate: null,
 			governmentIssuedAttachments: [],
 			governmentIssuedDocumentIdNumber: null,
+			showFullCitizenshipQuestion: null,
+			showNonCanadianCitizenshipQuestion: null,
 		};
 
 		citizenshipData.isCanadianCitizen =
 			workerLicenceAppl.isCanadianCitizen === null
 				? null
 				: this.utilService.booleanToBooleanType(workerLicenceAppl.isCanadianCitizen);
+
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		const isCanadianCitizenHasValue = !!citizenshipData.isCanadianCitizen;
+		citizenshipData.showFullCitizenshipQuestion = !isCanadianCitizenHasValue;
+
+		const isCanadianCitizen = citizenshipData.isCanadianCitizen;
+		citizenshipData.showNonCanadianCitizenshipQuestion = isCanadianCitizenHasValue && !isCanadianCitizen;
 
 		const photographOfYourselfAttachments: Array<File> = [];
 		let photographOfYourselfLastUploadedDateTime = '';
@@ -1871,37 +1837,44 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		};
 
 		// If an associatedLicence exists, use the dog data from here
-		if (associatedLicence?.useDogs) {
-			associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
-				const aFile = this.fileUtilService.dummyFile(doc);
-				attachmentsDogs.push(aFile);
-			});
+		if (associatedLicence?.categoryCodes?.includes(WorkerCategoryTypeCode.SecurityGuard)) {
+			const useDogs = associatedLicence.useDogs;
+			const useDogsYesNo = this.utilService.booleanToBooleanType(useDogs);
+
+			if (useDogs) {
+				associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					attachmentsDogs.push(aFile);
+				});
+			}
 
 			dogsAuthorizationData = {
-				useDogs: BooleanTypeCode.Yes,
+				useDogs: useDogsYesNo,
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
-					isDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
-					isDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+					isDogsPurposeDetectionDrugs: useDogs ? associatedLicence?.isDogsPurposeDetectionDrugs : null,
+					isDogsPurposeDetectionExplosives: useDogs ? associatedLicence?.isDogsPurposeDetectionExplosives : null,
+					isDogsPurposeProtection: useDogs ? associatedLicence?.isDogsPurposeProtection : null,
 				},
-				attachments: attachmentsDogs,
+				attachments: useDogs ? attachmentsDogs : [],
 			};
-		}
 
-		// If an associatedLicence exists, use the restraint data from here
-		if (associatedLicence?.carryAndUseRestraints) {
+			const carryAndUseRestraints = associatedLicence.carryAndUseRestraints;
+			const carryAndUseRestraintsYesNo = this.utilService.booleanToBooleanType(carryAndUseRestraints);
+
 			let carryAndUseRestraintsDocument: LicenceDocumentTypeCode | null = null;
-			associatedLicence.restraintsDocumentInfos?.forEach((doc: Document) => {
-				carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? null;
+			if (carryAndUseRestraints) {
+				associatedLicence.restraintsDocumentInfos?.forEach((doc: Document) => {
+					carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? null;
 
-				const aFile = this.fileUtilService.dummyFile(doc);
-				attachmentsRestraints.push(aFile);
-			});
+					const aFile = this.fileUtilService.dummyFile(doc);
+					attachmentsRestraints.push(aFile);
+				});
+			}
 
 			restraintsAuthorizationData = {
-				carryAndUseRestraints: BooleanTypeCode.Yes,
+				carryAndUseRestraints: carryAndUseRestraintsYesNo,
 				carryAndUseRestraintsDocument,
-				attachments: attachmentsRestraints,
+				attachments: carryAndUseRestraints ? attachmentsRestraints : [],
 			};
 		}
 
@@ -1947,7 +1920,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 
@@ -2048,7 +2020,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	}
 
 	private applyRenewalSpecificDataToModel(
-		resp: any,
+		latestApplication: any,
 		isAuthenticated: boolean,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
@@ -2061,7 +2033,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
-			resp.soleProprietorData.bizTypeCode,
+			latestApplication.soleProprietorData.bizTypeCode,
 			associatedLicence
 		);
 
@@ -2069,11 +2041,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (isSoleProprietorSimultaneousFlow) {
 			soleProprietorData = {
 				isSoleProprietor: null, // Remove data that should be re-prompted for
-				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+				bizTypeCode: latestApplication.soleProprietorData.bizTypeCode,
 			};
 		} else {
 			soleProprietorData = {
-				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for // TODO is this ok?
+				isSoleProprietor: BooleanTypeCode.No, // Remove data that should be re-prompted for
 				bizTypeCode: null,
 			};
 		}
@@ -2100,8 +2072,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
-		const isCanadianCitizen = resp.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
-		if (!isCanadianCitizen) {
+
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		if (latestApplication.citizenshipData.isCanadianCitizen === BooleanTypeCode.No) {
 			citizenshipData = {
 				isCanadianCitizen: BooleanTypeCode.No,
 				canadianCitizenProofTypeCode: null,
@@ -2111,35 +2086,25 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				governmentIssuedPhotoTypeCode: null,
 				governmentIssuedExpiryDate: null,
 				governmentIssuedAttachments: [],
+				showFullCitizenshipQuestion: false,
+				showNonCanadianCitizenshipQuestion: true,
 			};
 		}
 
-		// const mentalHealthConditionsData = {
-		// 	isTreatedForMHC: null,
-		// 	attachments: [],
-		// };
+		const originalLicenceData = latestApplication.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
 
-		// const policeBackgroundData = {
-		// 	isPoliceOrPeaceOfficer: null,
-		// 	policeOfficerRoleCode: null,
-		// 	otherOfficerRole: null,
-		// 	attachments: [],
-		// };
+		const photographOfYourselfData = latestApplication.photographOfYourselfData;
 
-		// const criminalHistoryData = {
-		// 	hasCriminalHistory: null,
-		// 	criminalChargeDescription: null,
-		// };
-
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
-
-		const photographOfYourselfData = resp.photographOfYourselfData;
-
-		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		const originalPhotoOfYourselfLastUploadDateTime = latestApplication.photographOfYourselfData.uploadedDateTime;
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be updating their photo
@@ -2148,12 +2113,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,
 		// clear attachments to force user to upload a new proof of qualification.
-		originalLicenceData.originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
-		const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
+		originalLicenceData.originalDogAuthorizationExists =
+			latestApplication.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		const dogsPurposeFormGroup = latestApplication.dogsAuthorizationData.dogsPurposeFormGroup;
 		let dogsAuthorizationData = {};
 		if (originalLicenceData.originalDogAuthorizationExists) {
 			dogsAuthorizationData = {
-				useDogs: resp.dogsAuthorizationData.useDogs,
+				useDogs: latestApplication.dogsAuthorizationData.useDogs,
 				dogsPurposeFormGroup: {
 					isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
 					isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
@@ -2183,9 +2149,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
-				// mentalHealthConditionsData,
-				// policeBackgroundData,
-				// criminalHistoryData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2212,25 +2175,35 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 				return of(this.workerModelFormGroup.value);
 			})
 		);
 	}
 
 	private applyUpdateSpecificDataToModel(
-		resp: any,
+		latestApplication: any,
 		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+		const originalLicenceData = latestApplication.originalLicenceData;
+		const photographOfYourselfData = latestApplication.photographOfYourselfData;
 
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
 
 		// Check if in a simultaneous flow
 		const isSoleProprietorSimultaneousFlow = this.isSimultaneousFlow(
-			resp.soleProprietorData.bizTypeCode,
+			latestApplication.soleProprietorData.bizTypeCode,
 			associatedLicence
 		);
 
@@ -2238,7 +2211,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		if (isSoleProprietorSimultaneousFlow) {
 			soleProprietorData = {
 				isSoleProprietor: BooleanTypeCode.Yes,
-				bizTypeCode: resp.soleProprietorData.bizTypeCode,
+				bizTypeCode: latestApplication.soleProprietorData.bizTypeCode,
 			};
 		} else {
 			// If not a simultaneous flow, clear out any bad data
@@ -2284,11 +2257,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			attachments: [],
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: null,
-			criminalChargeDescription: null,
-		};
-
 		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -2297,7 +2265,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				mentalHealthConditionsData,
 				policeBackgroundData,
-				criminalHistoryData,
+				photographOfYourselfData,
 
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
@@ -2325,20 +2293,25 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 				return of(this.workerModelFormGroup.value);
 			})
 		);
 	}
 
 	private applyReplacementSpecificDataToModel(
-		resp: any,
-		associatedLicence: MainLicenceResponse | LicenceResponse
+		latestApplication: any,
+		associatedLicence: MainLicenceResponse | LicenceResponse,
+		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
-		const originalLicenceData = resp.originalLicenceData;
-		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+		const originalLicenceData = latestApplication.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = latestApplication.licenceTermData.licenceTermCode;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		const mailingAddressData = {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.
@@ -2395,7 +2368,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
 		return of(this.workerModelFormGroup.value);
 	}
 

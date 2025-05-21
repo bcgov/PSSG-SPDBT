@@ -179,7 +179,7 @@ export class AuthProcessService {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = BusinessLicenceApplicationRoutes.path(
-			`${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/${invitationId}`
+			`${BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATOR_INVITATION}/${invitationId}`
 		);
 
 		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID returningRoute', returningRoute);
@@ -253,7 +253,6 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			// TODO handle logout from various applications
 			const currentPath = location.pathname;
 			if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
 				this.router.navigateByUrl(GuideDogServiceDogRoutes.path());

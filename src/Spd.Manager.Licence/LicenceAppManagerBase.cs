@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -9,7 +10,9 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 
@@ -45,7 +48,8 @@ internal abstract class LicenceAppManagerBase
         CancellationToken ct,
         bool HasSwl90DayLicence = false,
         Guid? companionAppId = null,
-        ApplicationOriginTypeCode? companionAppOrigin = null)
+        ApplicationOriginTypeCode? companionAppOrigin = null,
+        Guid? cmParentAppId = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -59,16 +63,35 @@ internal abstract class LicenceAppManagerBase
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
 
         //applications with portal origin type are considered authenticated, otherwise not.
-        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
+        bool isAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
         bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
         ApplicationStatusEnum status;
 
         if (licenceFee == null || licenceFee.Amount == 0)
         {
             if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
+            {
+                if (isNewOrRenewal && !isAuthenticated)
+                    status = ApplicationStatusEnum.ApplicantVerification;
+                else
+                {
+                    if (cmParentAppId != null)//parent application status is inProgress, then set status to be Submitted. spdbt-4009
+                    {
+                        var parentApp = (await _licAppRepository.QueryAsync(new LicenceAppQuery(null, null, null, null, cmParentAppId), ct)).First();
+                        if (parentApp.ApplicationPortalStatusCode == ApplicationPortalStatusEnum.InProgress)
+                            status = ApplicationStatusEnum.Submitted;
+                        else
+                            status = ApplicationStatusEnum.PaymentPending;
+                    }
+                    else
+                    {
+                        status = ApplicationStatusEnum.PaymentPending;
+                    }
+                }
+
+            }
             else
-                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+                status = isNewOrRenewal && !isAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         }
         else
             status = ApplicationStatusEnum.PaymentPending;
@@ -330,5 +353,35 @@ internal abstract class LicenceAppManagerBase
             }
         }
         return existingFileInfos;
+    }
+
+    protected string? GetChangeSummary<T>(IEnumerable<LicAppFileInfo> newFileInfos, LicenceResp originalLic, ContactResp contactResp, LicenceAppBase newRequest)
+        where T : class
+    {
+        string? result = null;
+        //spdbt-4077
+        string? docChangedSummary = null;
+        if (newFileInfos != null)
+        {
+            docChangedSummary = string.Join("\r\n",
+                newFileInfos.Select(d => {
+                    string inputName = Regex.Replace(d.LicenceDocumentTypeCode.ToString()!, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
+                    string updatedInputName = inputName.Replace('_', '-');
+                    return $"{updatedInputName} document has been added";
+                    })
+                ); 
+        }
+
+        var newData = _mapper.Map<T>(newRequest);
+        var oldData = _mapper.Map<T>(originalLic);
+        if (contactResp != null)
+        {
+            _mapper.Map<ContactResp, T>(contactResp, oldData);
+        }
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        result = string.Join("\r\n", summary);
+        if (!string.IsNullOrWhiteSpace(docChangedSummary))
+            result += "\r\n" + string.Join("\r\n", docChangedSummary);
+        return result;
     }
 }

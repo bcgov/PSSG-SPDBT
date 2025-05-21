@@ -61,6 +61,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
+					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -121,18 +122,14 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 
 	@ViewChild(StepsPermitDetailsRenewalComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsRenewalComponent;
-
 	@ViewChild(StepsPermitPurposeAnonymousComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeAnonymousComponent;
-
 	@ViewChild(StepsPermitIdentificationAnonymousComponent)
 	stepsPermitIdentificationComponent!: StepsPermitIdentificationAnonymousComponent;
-
 	@ViewChild(StepsPermitContactComponent)
 	stepsPermitContactComponent!: StepsPermitContactComponent;
-
 	@ViewChild(StepsPermitReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsPermitReviewAnonymousComponent;
+	stepsPermitReviewComponent!: StepsPermitReviewAnonymousComponent;
 
 	isFormValid = false;
 	showEmployerInformation = false;
@@ -186,23 +183,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -210,20 +192,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToLastStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -247,20 +217,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToNextStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	onNextPayStep(): void {
@@ -287,6 +245,22 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 				},
 			});
 		}
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_PERMIT_DETAILS:
+				return this.stepsPermitDetailsComponent;
+			case this.STEP_PURPOSE_AND_RATIONALE:
+				return this.stepsPermitPurposeComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsPermitIdentificationComponent;
+			case this.STEP_CONTACT_INFORMATION:
+				return this.stepsPermitContactComponent;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsPermitReviewComponent;
+		}
+		return null;
 	}
 
 	private payNow(licenceAppId: string): void {

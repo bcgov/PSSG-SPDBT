@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
 	selector: 'app-licence-category-fire-investigator',
 	template: `
@@ -75,22 +74,16 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 	standalone: false,
 })
-export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategoryFireInvestigatorComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;
-	title = '';
 
 	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadCertificateComponent!: FileUploadComponent;
 	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadVerificationComponent!: FileUploadComponent;
 
 	constructor(
-		private optionsPipe: OptionsPipe,
 		private authenticationService: AuthenticationService,
 		private workerApplicationService: WorkerApplicationService
 	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'WorkerCategoryTypes');
-	}
 
 	onFileCertificateAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {

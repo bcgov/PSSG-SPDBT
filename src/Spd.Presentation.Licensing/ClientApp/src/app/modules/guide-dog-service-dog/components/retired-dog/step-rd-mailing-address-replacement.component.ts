@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -19,10 +20,15 @@ export class StepRdMailingAddressReplacementComponent implements OnInit, Licence
 	title = 'Review your mailing address';
 	subtitle = 'Ensure your mailing address is correct before submitting your application';
 
-	constructor(private retiredDogApplicationService: RetiredDogApplicationService) {}
+	constructor(
+		private retiredDogApplicationService: RetiredDogApplicationService,
+		private authProcessService: AuthProcessService
+	) {}
 
 	ngOnInit(): void {
-		this.captchaFormGroup.patchValue({ displayCaptcha: true });
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
+		});
 	}
 
 	isFormValid(): boolean {

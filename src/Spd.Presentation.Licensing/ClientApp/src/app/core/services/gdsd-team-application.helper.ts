@@ -16,13 +16,14 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHelper {
 	medicalInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			doctorIsProvidingNeedDogMedicalForm: new FormControl('', [Validators.required]),
+			doctorIsProvidingNeedDogMedicalForm: new FormControl('', [FormControlValidators.required]),
 			attachments: new FormControl([]), // LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog
 		},
 		{
@@ -36,23 +37,23 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	);
 
 	dogCertificationSelectionFormGroup: FormGroup = this.formBuilder.group({
-		isDogTrainedByAccreditedSchool: new FormControl('', [Validators.required]),
+		isDogTrainedByAccreditedSchool: new FormControl('', [FormControlValidators.required]),
 	});
 
 	dogGdsdFormGroup: FormGroup = this.formBuilder.group({
-		isGuideDog: new FormControl('', [Validators.required]),
+		isGuideDog: new FormControl('', [FormControlValidators.required]),
 	});
 
 	dogTasksFormGroup: FormGroup = this.formBuilder.group({
-		tasks: new FormControl('', [Validators.required]),
+		tasks: new FormControl('', [FormControlValidators.required]),
 	});
 
 	dogRenewFormGroup: FormGroup = this.formBuilder.group({
-		isAssistanceStillRequired: new FormControl('', [Validators.required]),
+		isAssistanceStillRequired: new FormControl('', [FormControlValidators.required]),
 	});
 
 	dogInoculationsFormGroup: FormGroup = this.formBuilder.group({
-		areInoculationsUpToDate: new FormControl('', [Validators.required]),
+		areInoculationsUpToDate: new FormControl('', [FormControlValidators.required]),
 	});
 
 	dogMedicalFormGroup: FormGroup = this.formBuilder.group({
@@ -60,13 +61,13 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	});
 
 	graduationInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [FormControlValidators.required]),
 		accreditedSchoolName: new FormControl(''),
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
 	});
 
 	trainingHistoryFormGroup: FormGroup = this.formBuilder.group({
-		hasAttendedTrainingSchool: new FormControl('', [Validators.required]),
+		hasAttendedTrainingSchool: new FormControl('', [FormControlValidators.required]),
 	});
 
 	schoolTrainingHistoryFormGroup: FormGroup = this.formBuilder.group({
@@ -306,6 +307,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 					} as DocumentRelatedInfo;
 				}) ?? [];
 
+		delete personalInformationData.hasBcscNameChanged;
 		delete mailingAddressData.captchaFormGroup;
 
 		const body = {

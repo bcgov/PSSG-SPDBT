@@ -63,6 +63,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
+					[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -123,21 +124,18 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 
 	@ViewChild(StepsPermitDetailsUpdateComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
-
 	@ViewChild(StepsPermitPurposeAnonymousComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeAnonymousComponent;
-
 	@ViewChild(StepsPermitIdentificationAnonymousComponent)
 	stepsPermitIdentificationComponent!: StepsPermitIdentificationAnonymousComponent;
-
 	@ViewChild(StepsPermitContactComponent)
 	stepsPermitContactComponent!: StepsPermitContactComponent;
-
 	@ViewChild(StepsPermitReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsPermitReviewAnonymousComponent;
+	stepsPermitReviewComponent!: StepsPermitReviewAnonymousComponent;
 
 	isFormValid = false;
 	showEmployerInformation = false;
+	showPhotographOfYourselfStep = false;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -178,6 +176,17 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 
 				this.showEmployerInformation = this.permitApplicationService.getShowEmployerInformation(this.serviceTypeCode);
 
+				const hasGenderChanged = !!this.permitApplicationService.permitModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
+
+				const photoOfYourselfExpired = !!this.permitApplicationService.permitModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
+
 				this.updateCompleteStatus();
 			}
 		);
@@ -188,23 +197,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -212,20 +206,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToLastStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -249,26 +231,14 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERMIT_DETAILS:
-				this.stepsPermitDetailsComponent?.onGoToNextStep();
-				break;
-			case this.STEP_PURPOSE_AND_RATIONALE:
-				this.stepsPermitPurposeComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepsPermitIdentificationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsPermitContactComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	onSubmitStep(): void {
 		if (this.newLicenceAppId) {
 			if (this.newLicenceCost > 0) {
-				this.stepReviewLicenceComponent?.onGoToLastStep();
+				this.stepsPermitReviewComponent?.onGoToLastStep();
 			} else {
 				this.router.navigateByUrl(
 					PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS)
@@ -292,7 +262,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					this.utilService.toasterSuccess(successMessage);
 
 					if (this.newLicenceCost > 0) {
-						this.stepReviewLicenceComponent?.onGoToLastStep();
+						this.stepsPermitReviewComponent?.onGoToLastStep();
 					} else {
 						this.router.navigateByUrl(
 							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS)
@@ -308,6 +278,22 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 
 	onNextPayStep(): void {
 		this.payNow(this.newLicenceAppId!);
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_PERMIT_DETAILS:
+				return this.stepsPermitDetailsComponent;
+			case this.STEP_PURPOSE_AND_RATIONALE:
+				return this.stepsPermitPurposeComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsPermitIdentificationComponent;
+			case this.STEP_CONTACT_INFORMATION:
+				return this.stepsPermitContactComponent;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsPermitReviewComponent;
+		}
+		return null;
 	}
 
 	private updateCompleteStatus(): void {

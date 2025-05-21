@@ -2,12 +2,9 @@
 using AutoMapper;
 using MediatR;
 using Moq;
-using Spd.Manager.Screening;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
-using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest;
@@ -37,7 +34,7 @@ public class BizPortalUserManagerTest
 
     [Fact]
     public async void Handle_BizPortalUserCreateCommand_Return_BizPortalUserResponse()
-    {   
+    {
     }
 
     [Fact]
@@ -58,10 +55,10 @@ public class BizPortalUserManagerTest
             PhoneNumber = "9001234567"
         };
         BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
-        PortalUserResp portalUserResp1 = new() 
-        {   
+        PortalUserResp portalUserResp1 = new()
+        {
             Id = userId,
-            OrganizationId = bizId, 
+            OrganizationId = bizId,
             ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
             UserEmail = "test1@test.com"
         };
@@ -87,7 +84,7 @@ public class BizPortalUserManagerTest
 
         mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
             .ReturnsAsync(portalUserListResp);
-        mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(g => g == bizId), CancellationToken.None))
+        mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(g => g == bizId), CancellationToken.None, false))
             .ReturnsAsync(new BizResult());
         mockPortalUserRepo.Setup(m => m.ManageAsync(It.Is<UpdatePortalUserCmd>(q => q.Id == userId && q.OrgId == bizId), CancellationToken.None))
             .ReturnsAsync(updatedPortalUserResp);
@@ -196,7 +193,7 @@ public class BizPortalUserManagerTest
 
         mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
             .ReturnsAsync(portalUserListResp);
-        mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(q => q == bizId), CancellationToken.None))
+        mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(q => q == bizId), CancellationToken.None, false))
             .ReturnsAsync(new BizResult());
 
         // Act
@@ -213,7 +210,7 @@ public class BizPortalUserManagerTest
         Guid userId = Guid.NewGuid();
         BizPortalUserGetQuery qry = new(userId);
         PortalUserResp portalUserResp = new() { Id = userId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager };
-       
+
         mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserByIdQry>(q => q.UserId == userId), CancellationToken.None))
             .ReturnsAsync(portalUserResp);
         // Act
@@ -236,11 +233,11 @@ public class BizPortalUserManagerTest
             .With(u => u.Id, userId)
             .Create();
         List<PortalUserResp> userResults = new() { userToDelete, existingUser };
-        BizResult bizResult = new() { Id = bizId};
+        BizResult bizResult = new() { Id = bizId };
 
         mockPortalUserRepo.Setup(u => u.QueryAsync(It.Is<PortalUserQry>(s => s.OrgId == bizId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new PortalUserListResp() { Items = userResults });
-        mockBizRepo.Setup(o => o.GetBizAsync(It.Is<Guid>(q => q == bizId), It.IsAny<CancellationToken>()))
+        mockBizRepo.Setup(o => o.GetBizAsync(It.Is<Guid>(q => q == bizId), It.IsAny<CancellationToken>(), false))
             .ReturnsAsync(bizResult);
 
         BizPortalUserDeleteCommand cmd = new(userId, bizId);

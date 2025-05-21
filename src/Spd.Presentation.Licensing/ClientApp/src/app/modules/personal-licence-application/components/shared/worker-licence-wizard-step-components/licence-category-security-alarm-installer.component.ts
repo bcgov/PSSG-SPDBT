@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
-import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityAlarmInstallerRequirementCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-installer',
@@ -99,22 +97,14 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategorySecurityAlarmInstallerComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categorySecurityAlarmInstallerFormGroup;
-	title = '';
 
 	securityAlarmInstallerRequirementCodes = SecurityAlarmInstallerRequirementCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private workerApplicationService: WorkerApplicationService
-	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmInstaller, 'WorkerCategoryTypes');
-	}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;

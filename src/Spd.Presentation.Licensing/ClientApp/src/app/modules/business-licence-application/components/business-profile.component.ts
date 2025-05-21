@@ -113,9 +113,11 @@ export class BusinessProfileComponent implements OnInit {
 	}
 
 	onSave(): void {
-		const isValid = this.businessProfileComponent.isFormValid();
+		const { isValid, areBranchesValid } = this.businessProfileComponent.isFormValid();
 
-		if (!isValid) {
+		if (!areBranchesValid) {
+			return;
+		} else if (!isValid) {
 			this.utilService.scrollToErrorSection();
 			return;
 		}

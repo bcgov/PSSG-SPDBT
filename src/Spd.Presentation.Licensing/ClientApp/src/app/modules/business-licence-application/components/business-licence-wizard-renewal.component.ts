@@ -13,6 +13,7 @@ import { StepsBusinessLicenceControllingMembersComponent } from './steps-busines
 import { StepsBusinessLicenceInformationComponent } from './steps-business-licence-information.component';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
+import { StepsBusinessLicenceSpEmployeesComponent } from './steps-business-licence-sp-employees.component';
 
 @Component({
 	selector: 'app-business-licence-wizard-renewal',
@@ -70,13 +71,27 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-contact-information>
 			</mat-step>
 
+			<mat-step [completed]="step4Complete" *ngIf="isBusinessLicenceSoleProprietor">
+				<ng-template matStepLabel>Employees</ng-template>
+				<app-steps-business-licence-sp-employees
+					[applicationTypeCode]="applicationTypeCode"
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="false"
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-business-licence-sp-employees>
+			</mat-step>
+
 			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
-				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
+				<ng-template matStepLabel>Controlling Members, Business Managers & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
-					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -91,7 +106,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[applicationTypeCode]="applicationTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isSoleProprietorSimultaneousFlow]="false"
-					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextSubmit()"
@@ -115,7 +130,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 2;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -129,7 +144,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isSoleProprietorSimultaneousFlow!: boolean;
-	isControllingMembersWithoutSwlExist!: boolean;
+	isBusinessStakeholdersWithoutSwlExist!: boolean;
 	showPayStep!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
@@ -142,6 +157,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	stepsContactInformationComponent!: StepsBusinessLicenceContactInformationComponent;
 	@ViewChild(StepsBusinessLicenceControllingMembersComponent)
 	stepsControllingMembersComponent!: StepsBusinessLicenceControllingMembersComponent;
+	@ViewChild(StepsBusinessLicenceSpEmployeesComponent)
+	stepsSpEmployeesComponent!: StepsBusinessLicenceSpEmployeesComponent;
 	@ViewChild(StepsBusinessLicenceReviewComponent)
 	stepsReviewAndConfirm!: StepsBusinessLicenceReviewComponent;
 
@@ -183,13 +200,13 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value ??
 					false;
 
-				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
-					'isControllingMembersWithoutSwlExist'
+				this.isBusinessStakeholdersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
+					'isBusinessStakeholdersWithoutSwlExist'
 				)?.value;
 
 				this.showPayStep =
 					this.isBusinessLicenceSoleProprietor ||
-					(!this.isBusinessLicenceSoleProprietor && !this.isControllingMembersWithoutSwlExist);
+					(!this.isBusinessLicenceSoleProprietor && !this.isBusinessStakeholdersWithoutSwlExist);
 
 				this.isFormValid = _resp;
 
@@ -203,37 +220,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		if (this.isBusinessLicenceSoleProprietor) {
-			switch (event.selectedIndex) {
-				case this.STEP_BUSINESS_INFORMATION:
-					this.stepsBusinessInformationComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_LICENCE_SELECTION:
-					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-					this.stepsReviewAndConfirm?.onGoToFirstStep();
-					break;
-			}
-		} else {
-			switch (event.selectedIndex) {
-				case this.STEP_BUSINESS_INFORMATION:
-					this.stepsBusinessInformationComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_LICENCE_SELECTION:
-					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_CONTACT_INFORMATION:
-					this.stepsContactInformationComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_CONTROLLING_MEMBERS:
-					this.stepsControllingMembersComponent?.onGoToFirstStep();
-					break;
-				case this.STEP_REVIEW_AND_CONFIRM:
-					this.stepsReviewAndConfirm?.onGoToFirstStep();
-					break;
-			}
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -241,24 +229,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTROLLING_MEMBERS:
-				this.stepsControllingMembersComponent?.onGoToLastStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-				this.stepsReviewAndConfirm?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextSubmit(): void {
@@ -288,23 +260,37 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CONTROLLING_MEMBERS:
-				this.stepsControllingMembersComponent?.onGoToNextStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAndConfirm?.onGoToNextStep();
-				break;
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		if (this.isBusinessLicenceSoleProprietor) {
+			switch (index) {
+				case this.STEP_BUSINESS_INFORMATION:
+					return this.stepsBusinessInformationComponent;
+				case this.STEP_LICENCE_SELECTION:
+					return this.stepsLicenceSelectionComponent;
+				case this.STEP_CONTROLLING_MEMBERS:
+					return this.stepsSpEmployeesComponent;
+				case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
+					return this.stepsReviewAndConfirm;
+			}
+		} else {
+			switch (index) {
+				case this.STEP_BUSINESS_INFORMATION:
+					return this.stepsBusinessInformationComponent;
+				case this.STEP_LICENCE_SELECTION:
+					return this.stepsLicenceSelectionComponent;
+				case this.STEP_CONTACT_INFORMATION:
+					return this.stepsContactInformationComponent;
+				case this.STEP_CONTROLLING_MEMBERS:
+					return this.stepsControllingMembersComponent;
+				case this.STEP_REVIEW_AND_CONFIRM:
+					return this.stepsReviewAndConfirm;
+			}
 		}
+		return null;
 	}
 
 	private goToReviewStep(): void {
@@ -319,7 +305,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 		this.step1Complete = this.businessApplicationService.isStepBackgroundInformationComplete();
 		this.step2Complete = this.businessApplicationService.isStepLicenceSelectionComplete();
 		this.step3Complete = this.businessApplicationService.isStepContactInformationComplete();
-		this.step4Complete = this.businessApplicationService.isStepControllingMembersAndEmployeesComplete();
+		this.step4Complete = this.businessApplicationService.isStepBusinessStakeholdersComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}

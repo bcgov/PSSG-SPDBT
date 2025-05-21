@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routes';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -65,7 +64,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
+					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -75,10 +76,12 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
+				<ng-template matStepLabel
+					>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+				>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -91,15 +94,24 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 
 			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Information</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review<br />Business<br />Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
+							*ngTemplateOutlet="StepNameSpace"
+						></ng-container
+						>Licence</ng-template
+					>
 				</mat-step>
 			</ng-container>
 
@@ -109,6 +121,11 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				</mat-step>
 			</ng-template>
 		</mat-stepper>
+
+		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,
@@ -127,22 +144,20 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	licenceAppId: string | null = null;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
+	stepsReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	isSoleProprietorSimultaneousFlow = false;
 	showWorkerLicenceSoleProprietorStep = false;
 	isSoleProprietor = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
+	showFullCitizenshipQuestion = false;
+	showNonCanadianCitizenshipQuestion = false;
 	linkedSoleProprietorBizLicId: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -168,6 +183,13 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		const citizenshipData = this.workerApplicationService.workerModelFormGroup.get('citizenshipData')?.value;
+		this.showFullCitizenshipQuestion = citizenshipData.showFullCitizenshipQuestion;
+		this.showNonCanadianCitizenshipQuestion = citizenshipData.showNonCanadianCitizenshipQuestion;
+
 		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -178,12 +200,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep = isCanadianCitizen === BooleanTypeCode.No;
 
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
@@ -212,20 +228,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -233,17 +237,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -252,9 +247,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onGoToStep(step: number) {
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsBackgroundComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -266,17 +261,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	onNextPayStep(): void {
@@ -285,6 +271,20 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 	onNextSoleProprietor(): void {
 		this.submitStep(true);
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_REVIEW:
+				return this.stepsReviewLicenceComponent;
+		}
+		return null;
 	}
 
 	private submitStep(isSoleProprietorSimultaneousFlow: boolean = false): void {

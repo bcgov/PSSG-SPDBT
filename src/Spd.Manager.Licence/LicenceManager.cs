@@ -80,7 +80,11 @@ internal class LicenceManager :
             _logger.LogDebug("No licence found.");
             return null;
         }
-        LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
+        LicenceResp? response = qryResponse.Items
+            .Where(i => i.LicenceStatusCode == LicenceStatusEnum.Active || i.LicenceStatusCode == LicenceStatusEnum.Expired)
+            .OrderByDescending(i => i.CreatedOn)
+            .FirstOrDefault();
+        if (response == null) { return null; }
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
         await GetPhotoDocumentsInfoAsync(lic, response, cancellationToken);
         await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
@@ -125,7 +129,7 @@ internal class LicenceManager :
             throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence.");
         }
         if (lic.PhotoDocumentUrlId == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "the licence does not have photo");
+            return new FileResponse();
 
         DocumentResp? docUrl = await _documentRepository.GetAsync((Guid)lic.PhotoDocumentUrlId, cancellationToken);
         if (docUrl == null)
@@ -287,7 +291,7 @@ internal class LicenceManager :
 
     private async Task GetGDSDDogInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
     {
-        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification)
+        if (lic.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification || lic.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
         {
             if (lic.GDSDTeamId != null)
             {

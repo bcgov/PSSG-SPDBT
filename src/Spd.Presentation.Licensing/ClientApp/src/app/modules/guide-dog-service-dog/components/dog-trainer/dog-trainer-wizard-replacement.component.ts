@@ -1,6 +1,8 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { DogTrainerAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
@@ -72,18 +74,18 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 	}
 
 	onSubmit(): void {
-		// if (!this.stepAddressComponent.isFormValid()) {
-		// 	return;
-		// }
-		// this.dogTrainerApplicationService.submitLicenceReplacementAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		if (!this.stepAddressComponent.isFormValid()) {
+			return;
+		}
+		this.dogTrainerApplicationService.submitLicenceReplacementAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 }

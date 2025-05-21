@@ -1,10 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
 	selector: 'app-step-worker-licence-user-profile',
@@ -67,7 +68,7 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 	styles: [],
 	standalone: false,
 })
-export class StepWorkerLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
 	saveAndContinueLabel = 'Save & Continue to Application';
 
@@ -119,6 +120,13 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
 				break;
 			}
+		}
+	}
+
+	ngOnInit(): void {
+		if (!this.workerApplicationService.initialized) {
+			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
 		}
 	}
 

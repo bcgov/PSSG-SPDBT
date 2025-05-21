@@ -1,10 +1,11 @@
-﻿namespace Spd.Resource.Repository.GDSDApp;
-public interface IGDSDAppRepository
+﻿using Spd.Resource.Repository.DogBase;
+
+namespace Spd.Resource.Repository.GDSDApp;
+public interface IGDSDAppRepository : IDogAppBaseRepository
 {
     public Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct);
     public Task<GDSDAppCmdResp> SaveGDSDAppAsync(SaveGDSDAppCmd cmd, CancellationToken ct);
     public Task<GDSDAppResp> GetGDSDAppAsync(Guid licenceAppId, CancellationToken ct);
-    public Task CommitGDSDAppAsync(CommitGDSDAppCmd cmd, CancellationToken ct);
 }
 
 public record GDSDAppCmdResp(Guid LicenceAppId, Guid ContactId);
@@ -122,12 +123,6 @@ public record CreateGDSDAppCmd() : GDSDApp
     public bool IsAssistanceStillRequired { get; set; }
     public Guid? DogId { get; set; }
 };
-
-public record CommitGDSDAppCmd()
-{
-    public Guid LicenceAppId { get; set; }
-    public ApplicationStatusEnum ApplicationStatusCode { get; set; } = ApplicationStatusEnum.Submitted;
-}
 
 public record GDSDAppResp() : GDSDApp
 {

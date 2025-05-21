@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.DogTeam;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -39,12 +41,12 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.AddressCountry));
 
             CreateMap<LicenceResp, LicencePreviewJson>()
-                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => $"{s.NameOnCard}"))
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => s.NameOnCard))
                 .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
                 .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
                 .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => s.IssuedDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
-                .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.CategoryCodes));
+                .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence ? s.CategoryCodes : null));
 
             CreateMap<LicenceApplicationResp, LicencePreviewJson>()
                 .ForMember(d => d.ApplicantName, opt => opt.Ignore())
@@ -68,6 +70,14 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                  .ForMember(d => d.Height, opt => opt.MapFrom(s => GetHeightStr(s)))
                  .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightStr(s)))
                  .ForMember(d => d.CardType, opt => opt.MapFrom(s => "SECURITY-WORKER-AND-ARMOUR"));
+
+            CreateMap<DogTeamResp, SPD_CARD>()
+                 .ForMember(d => d.Handler, opt => opt.MapFrom(s => GetHandlerName(s)))
+                 .ForMember(d => d.DogName, opt => opt.MapFrom(s => s.DogName))
+                 .ForMember(d => d.DogDescription, opt => opt.MapFrom(s => GetDogDescription(s)))
+                 .ForMember(d => d.DogDOB, opt => opt.MapFrom(s => s.DogDateOfBirth.Value.ToString("yyyy-MM-dd")))
+                 .ForMember(d => d.MicrochipNumber, opt => opt.MapFrom(s => s.MicrochipNumber))
+                 .ForMember(d => d.CardType, opt => opt.MapFrom(s => "GUIDE-DOG"));
 
             CreateMap<LicenceResp, BizLicencePrintingJson>()
                 .ForMember(d => d.ApplicantName, opt => opt.Ignore())
@@ -104,7 +114,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.PostalCode));
         }
 
-        private string GetHeightStr(LicenceApplicationResp resp)
+        private static string GetHeightStr(LicenceApplicationResp resp)
         {
             return resp.HeightUnitCode switch
             {
@@ -113,7 +123,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             };
         }
 
-        private string GetWeightStr(LicenceApplicationResp resp)
+        private static string GetWeightStr(LicenceApplicationResp resp)
         {
             return resp.WeightUnitCode switch
             {
@@ -122,13 +132,40 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             };
         }
 
-        private string GetProvinceStateAbbr(string province)
+        private static string GetProvinceStateAbbr(string province)
         {
             bool existed = NorthAmericaProvinceStateDict.TryGetValue(province, out var abbr);
             if (existed) { return abbr; }
             else return province;
         }
 
+        private static string GetHandlerName(DogTeamResp resp)
+        {
+            string[] parts = { resp.HandlerFirstName, resp.HandlerMiddleName1, resp.HandlerLastName };
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private static string GetApplicantName(LicenceResp resp)
+        {
+            string[] parts = { resp.LicenceHolderFirstName, resp.LicenceHolderMiddleName1, resp.LicenceHolderLastName };
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private static string GetDogDescription(DogTeamResp resp)
+        {
+            string[] parts = { GetDogGenderName(resp.DogGender), resp.DogColorAndMarkings, resp.DogBreed };
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private static string? GetDogGenderName(GenderEnum? gender)
+        {
+            return gender switch
+            {
+                GenderEnum.F => "Female",
+                GenderEnum.M => "Male",
+                _ => null,
+            };
+        }
         private static readonly Dictionary<string, string> NorthAmericaProvinceStateDict = new(StringComparer.InvariantCultureIgnoreCase)
         {
             //canada

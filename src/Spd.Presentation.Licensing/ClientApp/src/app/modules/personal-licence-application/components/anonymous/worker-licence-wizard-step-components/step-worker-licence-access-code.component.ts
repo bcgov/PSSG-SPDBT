@@ -30,6 +30,17 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 				[serviceTypeCode]="serviceTypeCode"
 				[applicationTypeCode]="applicationTypeCode"
 			></app-form-access-code-anonymous>
+
+			<div class="row">
+				<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
+					<div class="mt-4" *ngIf="originalPhotoOfYourselfExpired">
+						<app-alert type="danger" icon="dangerous">
+							A replacement for this record is not available at this time. Use update to provide missing information and
+							receive a replacement.
+						</app-alert>
+					</div>
+				</div>
+			</div>
 		</app-step-section>
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
@@ -39,6 +50,7 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 })
 export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	originalPhotoOfYourselfExpired = false;
 
 	form: FormGroup = this.workerApplicationService.accessCodeFormGroup;
 
@@ -85,7 +97,7 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.workerApplicationService
 			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
-			.subscribe((_resp: any) => {
+			.subscribe((resp: any) => {
 				switch (this.serviceTypeCode) {
 					case ServiceTypeCode.SecurityWorkerLicence: {
 						switch (this.applicationTypeCode) {
@@ -98,6 +110,10 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 								break;
 							}
 							case ApplicationTypeCode.Replacement: {
+								this.originalPhotoOfYourselfExpired = !!resp.originalLicenceData.originalPhotoOfYourselfExpired;
+
+								if (this.originalPhotoOfYourselfExpired) return;
+
 								this.router.navigateByUrl(
 									PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
 										PersonalLicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS

@@ -101,27 +101,10 @@ export class FormGroupValidators {
 				checkControl?.value == BizTypeCode.NonRegisteredSoleProprietor ||
 				checkControl?.value == BizTypeCode.RegisteredSoleProprietor
 			) {
-				if (control?.value != LicenceStatusCode.Active && control?.value != LicenceStatusCode.Preview) {
+				if (control?.value != LicenceStatusCode.Active) {
 					return { licencemustbeactive: true };
 				}
 			}
-
-			return null;
-		};
-	}
-
-	public static controllingmembersValidator(controlArrayName1: string, controlArrayName2: string): ValidatorFn {
-		return (controls: AbstractControl) => {
-			const control1 = controls.get(controlArrayName1);
-			const control2 = controls.get(controlArrayName2);
-
-			const value1 = control1?.value;
-			const value2 = control2?.value;
-
-			const count = value1.length + value2.length;
-
-			if (count === 0) return { controllingmembersmin: true };
-			if (count > SPD_CONSTANTS.maxCount.controllingMembers) return { controllingmembersmax: true };
 
 			return null;
 		};

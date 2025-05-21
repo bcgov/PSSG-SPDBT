@@ -3,7 +3,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, DogTrainerAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
@@ -24,7 +25,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 			#stepper
 		>
 			<mat-step [completed]="true">
-				<ng-template matStepLabel>Certificate Details</ng-template>
+				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-dt-details
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -35,7 +36,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 				></app-steps-dt-details>
 			</mat-step>
 
-			<mat-step [completed]="step2Complete" *ngIf="isNew">
+			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Training School Information</ng-template>
 				<app-steps-dt-training-school-info
 					[isFormValid]="isFormValid"
@@ -84,7 +85,7 @@ import { StepsDtTrainingSchoolInfoComponent } from './steps-dt-training-school-i
 	standalone: false,
 })
 export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	readonly STEP_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_CHECKLIST = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_TRAINING_SCHOOL_INFO = 1;
 	readonly STEP_DOG_TRAINER_PERSONAL_INFO = 2;
 	readonly STEP_REVIEW_AND_CONFIRM = 3;
@@ -143,34 +144,21 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		// this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		this.dogTrainerApplicationService.submitLicenceNewOrRenewalAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		const index = this.getSelectedIndex(event.selectedIndex);
-		switch (index) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToFirstStep();
-				break;
-			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -178,18 +166,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		const index = this.getSelectedIndex(stepper.selectedIndex);
-		switch (index) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToLastStep();
-				break;
-			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -198,7 +176,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
+		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
 	}
 
 	onGoToStep(stepIndex: number) {
@@ -207,47 +185,30 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 		this.stepsPersonallInfo?.onGoToFirstStep();
 		this.stepsReviewConfirm?.onGoToFirstStep();
 
-		this.stepper.selectedIndex = this.getMatchingIndex(stepIndex);
+		this.stepper.selectedIndex = stepIndex;
 	}
 
 	onChildNextStep() {
-		const index = this.getSelectedIndex(this.stepper.selectedIndex);
-		switch (index) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToNextStep();
-				break;
-			case this.STEP_TRAINING_SCHOOL_INFO:
-				this.stepsSchoolInfo?.onGoToNextStep();
-				break;
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
+	}
 
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_CHECKLIST:
+				return this.stepsDetails;
+			case this.STEP_TRAINING_SCHOOL_INFO:
+				return this.stepsSchoolInfo;
 			case this.STEP_DOG_TRAINER_PERSONAL_INFO:
-				this.stepsPersonallInfo?.onGoToNextStep();
-				break;
+				return this.stepsPersonallInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
 		}
+		return null;
 	}
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
-	}
-
-	private getSelectedIndex(currSelectedIndex: number): number {
-		if (this.isNew) {
-			return currSelectedIndex;
-		}
-
-		// step index is different for renewals.
-		// there is a hidden step that changes the step index
-		return currSelectedIndex === this.STEP_DETAILS ? this.STEP_DETAILS : currSelectedIndex + 1;
-	}
-
-	private getMatchingIndex(stepIndex: number): number {
-		if (this.isNew) {
-			return stepIndex;
-		}
-
-		// step index is different for renewals.
-		// there is a hidden step that changes the step index
-		return stepIndex === this.STEP_DETAILS ? stepIndex : stepIndex - 1;
 	}
 
 	private updateCompleteStatus(): void {
