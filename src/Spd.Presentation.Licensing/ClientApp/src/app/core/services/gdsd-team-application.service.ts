@@ -501,6 +501,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -584,6 +586,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -957,7 +961,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			province: bcscMailingAddress?.province,
 		};
 
-		let medicalInformationData: any = null;
+		let medicalInformationData: any = { doctorIsProvidingNeedDogMedicalForm: null, attachments: [] };
 		let photographOfYourselfData: any = null;
 		let dogTasksData: any = null;
 		let dogInfoData: any = null;
@@ -1055,7 +1059,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		});
 
 		if (medicalInformationAttachments.length > 0) {
-			medicalInformationData = { attachments: medicalInformationAttachments };
+			medicalInformationData.attachments = medicalInformationAttachments;
 		}
 
 		const dogInoculationsData = {
@@ -1118,6 +1122,10 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			!gdsdAppl.isDogTrainedByAccreditedSchool &&
 			gdsdAppl.nonAccreditedSchoolQuestions
 		) {
+			medicalInformationData.doctorIsProvidingNeedDogMedicalForm = this.utilService.booleanToBooleanType(
+				gdsdAppl.nonAccreditedSchoolQuestions.doctorIsProvidingNeedDogMedicalForm
+			);
+
 			if (gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo) {
 				dogTasksData = {
 					tasks: gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.specializedTasksWhenPerformed,
@@ -1440,6 +1448,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
+					this.reset();
+
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -1451,6 +1461,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
