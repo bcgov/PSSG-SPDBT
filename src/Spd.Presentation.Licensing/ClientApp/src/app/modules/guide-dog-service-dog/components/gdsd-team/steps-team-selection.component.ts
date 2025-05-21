@@ -2,15 +2,15 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdTermsOfUseComponent } from '../shared/step-gdsd-terms-of-use.component';
 import { StepTeamDogCertificationSelectionComponent } from './step-team-dog-certification-selection.component';
+import { StepTeamTermsOfUseComponent } from './step-team-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-team-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="showTermsOfUse">
-				<app-step-gdsd-terms-of-use></app-step-gdsd-terms-of-use>
+				<app-step-team-terms-of-use></app-step-team-terms-of-use>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -71,7 +71,7 @@ export class StepsTeamSelectionComponent extends BaseWizardStepComponent {
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
+	@ViewChild(StepTeamTermsOfUseComponent) termsOfUseComponent!: StepTeamTermsOfUseComponent;
 	@ViewChild(StepTeamDogCertificationSelectionComponent) certComponent!: StepTeamDogCertificationSelectionComponent;
 
 	constructor(utilService: UtilService) {

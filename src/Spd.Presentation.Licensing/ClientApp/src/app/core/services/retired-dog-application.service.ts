@@ -909,6 +909,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.retiredDogLicensingService.apiRetiredDogAppSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -992,6 +994,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		return this.retiredDogLicensingService.apiRetiredDogAppChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -1132,6 +1136,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
+					this.reset();
+
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -1143,6 +1149,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
