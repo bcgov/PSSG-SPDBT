@@ -107,7 +107,7 @@ internal class BizPortalUserManager :
             new PortalUserQry()
             {
                 OrgId = query.BizId,
-                IncludeInactive = !query.OnlyReturnActiveUsers,
+                IncludeInactive = false,
                 ContactRoleCode = new List<ContactRoleCode>() { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
                 PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
             },

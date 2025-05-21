@@ -41,7 +41,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.AddressCountry));
 
             CreateMap<LicenceResp, LicencePreviewJson>()
-                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => GetApplicantName(s)))
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => s.NameOnCard))
                 .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
                 .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
                 .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => s.IssuedDate.ToString("yyyy-MM-dd")))
