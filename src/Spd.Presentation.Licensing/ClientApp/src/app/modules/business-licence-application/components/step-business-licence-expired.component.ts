@@ -33,6 +33,12 @@ export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperS
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
+		const licenceAppId = this.businessApplicationService.businessModelFormGroup.get('licenceAppId')?.value;
+		if (!licenceAppId) {
+			// SPDBT-4130 - force auto-save to create a licenceAppId. This is needed for document uplaods.
+			this.businessApplicationService.hasValueChanged = true;
+		}
+
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
