@@ -76,6 +76,8 @@ export const SPD_CONSTANTS = {
 		canadianPassportPhotoUrl:
 			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
 		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
+		aboutSpdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division',
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		controllingMemberChecklistUrl:

@@ -240,7 +240,10 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 									</ng-container>
 
-									<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
+									<app-form-licence-category-summary
+										[categoryList]="categoryList"
+										[showDivider]="!isUpdate"
+									></app-form-licence-category-summary>
 
 									<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
 										<mat-divider class="mt-3 mb-2"></mat-divider>

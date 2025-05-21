@@ -524,6 +524,10 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					);
 					this.setupCategoryMessage(code);
 					this.isDirtyAndInvalid = false;
+
+					if (!this.isBusinessLicenceSoleProprietor) {
+						this.checkInsuranceRequirements();
+					}
 				}
 			});
 	}
@@ -697,6 +701,14 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		});
 
 		this.showInsurance = hasAdditions.length > 0;
+
+		if (!this.showInsurance) {
+			const attachments = this.attachments.value ?? [];
+			if (attachments.length > 0) {
+				// remove any attachments that may already exist
+				this.form.patchValue({ attachments: [] });
+			}
+		}
 	}
 
 	get ArmouredCarGuard(): FormControl {

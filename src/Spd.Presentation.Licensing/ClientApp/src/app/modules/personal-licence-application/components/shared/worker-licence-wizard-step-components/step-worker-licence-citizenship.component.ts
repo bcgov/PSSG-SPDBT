@@ -12,6 +12,7 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCode"
 				[form]="form"
+				[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 				(filesCleared)="onFilesCleared()"
@@ -30,13 +31,15 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	form: FormGroup = this.workerApplicationService.citizenshipFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() showFullCitizenshipQuestion = true;
+	@Input() showNonCanadianCitizenshipQuestion = false;
 
 	@ViewChild(FormSwlCitizenshipComponent) formSwlCitizenshipComponent!: FormSwlCitizenshipComponent;
 
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+		if (this.showNonCanadianCitizenshipQuestion && this.applicationTypeCode === ApplicationTypeCode.Renewal) {
 			this.title = 'Provide proof of ability to work in Canada';
 		}
 	}

@@ -1295,8 +1295,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			documentIdNumber: string | null;
 			attachments: File[];
 		} = {
-			isCanadianCitizen: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen),
-			isCanadianResident: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianResident),
+			isCanadianCitizen: null,
+			isCanadianResident: null,
 			canadianCitizenProofTypeCode: null,
 			proofOfResidentStatusCode: null,
 			proofOfCitizenshipCode: null,
@@ -1304,6 +1304,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			documentIdNumber: null,
 			attachments: [],
 		};
+
+		// In converted data, 'isCanadianCitizen' may be null
+		citizenshipData.isCanadianCitizen =
+			permitLicenceAppl.isCanadianCitizen === null
+				? null
+				: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianCitizen);
+
+		citizenshipData.isCanadianResident =
+			permitLicenceAppl.isCanadianResident === null
+				? null
+				: this.utilService.booleanToBooleanType(permitLicenceAppl.isCanadianResident);
 
 		const rationaleAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
