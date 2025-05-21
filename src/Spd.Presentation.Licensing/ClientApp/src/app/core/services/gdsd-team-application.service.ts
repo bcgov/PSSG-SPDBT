@@ -961,7 +961,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			province: bcscMailingAddress?.province,
 		};
 
-		let medicalInformationData: any = { doctorIsProvidingNeedDogMedicalForm: null, attachments: [] };
+		const medicalInformationData: any = { doctorIsProvidingNeedDogMedicalForm: null, attachments: [] };
 		let photographOfYourselfData: any = null;
 		let dogTasksData: any = null;
 		let dogInfoData: any = null;
