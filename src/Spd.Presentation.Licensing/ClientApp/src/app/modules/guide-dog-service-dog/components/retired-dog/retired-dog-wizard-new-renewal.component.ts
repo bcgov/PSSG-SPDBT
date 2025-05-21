@@ -4,7 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, RetiredDogAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -26,7 +27,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			#stepper
 		>
 			<mat-step [completed]="true">
-				<ng-template matStepLabel>Certificate Details</ng-template>
+				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-rd-details
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -45,6 +46,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -60,6 +62,7 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -70,9 +73,11 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-rd-review-and-confirm
+					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onSubmit()"
@@ -130,6 +135,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		}
 
 		this.isLoggedIn = this.authenticationService.isLoggedIn();
+		this.showSaveAndExit = this.retiredDogApplicationService.isSaveAndExit();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -144,8 +150,6 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
-
 				this.updateCompleteStatus();
 			}
 		);
@@ -156,55 +160,33 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		// if (this.isLoggedIn) {
-		// 	if (this.isNew) {
-		// 		this.retiredDogApplicationService.submitLicenceNewAuthenticated().subscribe({
-		// 			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 				this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-		// 			},
-		// 			error: (error: any) => {
-		// 				console.log('An error occurred during save', error);
-		// 			},
-		// 		});
-		// 		return;
-		// 	}
-		// 	this.retiredDogApplicationService.submitLicenceChangeAuthenticated().subscribe({
-		// 		next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during save', error);
-		// 		},
-		// 	});
-		// 	return;
-		// }
-		// this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		if (this.isLoggedIn) {
+			this.retiredDogApplicationService.submitLicenceAuthenticated(this.applicationTypeCode).subscribe({
+				next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+			return;
+		}
+
+		this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+				this.router.navigateByUrl(
+					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToFirstStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -212,17 +194,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToLastStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -232,17 +205,8 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_DETAILS:
-							this.stepsDetails?.onGoToFirstStep();
-							break;
-						case this.STEP_PERSONAL_INFO:
-							this.stepsPersonalInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_DOG_INFO:
-							this.stepsDogInfo?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					console.log('An error occurred during save', error);
@@ -310,22 +274,27 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		this.stepper.selectedIndex = step;
 	}
 
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_DETAILS:
+				return this.stepsDetails;
+			case this.STEP_PERSONAL_INFO:
+				return this.stepsPersonalInfo;
+			case this.STEP_DOG_INFO:
+				return this.stepsDogInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
+		}
+		return null;
+	}
+
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_DETAILS:
-				this.stepsDetails?.onGoToNextStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToNextStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	private updateCompleteStatus(): void {

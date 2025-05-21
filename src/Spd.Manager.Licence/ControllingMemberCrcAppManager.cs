@@ -149,7 +149,9 @@ internal class ControllingMemberCrcAppManager :
                 ApplicationOriginTypeCode = request.ApplicationOriginTypeCode,
                 ServiceTypeCode = request.ServiceTypeCode,
             },
-            response.ControllingMemberAppId, ct);
+            response.ControllingMemberAppId,
+            ct,
+            cmParentAppId: request.ParentBizLicApplicationId);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
 
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
@@ -190,7 +192,8 @@ internal class ControllingMemberCrcAppManager :
                 ServiceTypeCode = request.ServiceTypeCode,
             },
             response.ControllingMemberAppId,
-            ct);
+            ct,
+            cmParentAppId: request.ParentBizLicApplicationId);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }

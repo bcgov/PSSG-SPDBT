@@ -22,6 +22,7 @@ export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChi
 	subtitle = '';
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	@ViewChild(CommonEmployeesComponent) employeesComponent!: CommonEmployeesComponent;
 
@@ -29,8 +30,13 @@ export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChi
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = 'Add all employees to your application';
-				this.subtitle =
-					'Your business must have valid licence holders in B.C. for the licence categories you need. If your current controlling members do not meet these requirements, add employees who do.';
+				if (this.isBusinessLicenceSoleProprietor) {
+					this.subtitle =
+						'Your business must have valid licence holders in B.C. for the licence categories you need. If your current security worker licence do not meet these requirements, add employees who do.';
+				} else {
+					this.subtitle =
+						'Your business must have valid licence holders in B.C. for the licence categories you need. If your current controlling members do not meet these requirements, add employees who do.';
+				}
 				break;
 			}
 			default: {

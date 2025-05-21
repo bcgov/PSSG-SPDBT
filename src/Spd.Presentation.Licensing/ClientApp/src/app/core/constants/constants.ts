@@ -57,12 +57,8 @@ export const SPD_CONSTANTS = {
 	},
 	maxCount: {
 		aliases: 10,
-		controllingMembers: 20,
+		controllingMembersAndBusinessManagers: 20,
 		employees: 20,
-	},
-	messages: {
-		invalidSoleProprietorCategories:
-			'Sole proprietors must hold a valid Security Worker Licence in the same category as the business licence they are applying for.',
 	},
 	urls: {
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
@@ -80,6 +76,8 @@ export const SPD_CONSTANTS = {
 		canadianPassportPhotoUrl:
 			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
 		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
+		aboutSpdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division',
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		controllingMemberChecklistUrl:
@@ -108,6 +106,7 @@ export const SPD_CONSTANTS = {
 	},
 	files: {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
+		guideDogServiceDogTerms: './assets/files/Guide Dog Service Dog Applicant Terms of Use.pdf',
 		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
 		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
 		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use.pdf',

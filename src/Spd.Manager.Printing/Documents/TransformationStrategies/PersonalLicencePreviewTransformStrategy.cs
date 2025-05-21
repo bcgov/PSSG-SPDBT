@@ -2,7 +2,7 @@
 using SkiaSharp;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Document;
-using Spd.Resource.Repository.Incident;
+using Spd.Resource.Repository.DogTeam;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
@@ -22,39 +22,86 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
     IDocumentRepository documentRepository,
     IMainFileStorageService fileStorageService,
     IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
-    IIncidentRepository incidentRepository,
+    IDogTeamRepository dogTeamRepository,
     IMapper mapper)
-    : BcMailPlusTransformStrategyBase<PersonalLicencePreviewTransformRequest, LicencePreviewJson>(Jobs.SecurityWorkerLicense)
+    : BcMailPlusTransformStrategyBase<PersonalLicencePreviewTransformRequest, LicencePreviewJson>(Jobs.PersonalLicense)
 {
     protected override async Task<LicencePreviewJson> CreateDocument(PersonalLicencePreviewTransformRequest request, CancellationToken cancellationToken)
     {
-        LicenceListResp lics = await licRepository.QueryAsync(new LicenceQry() { LicenceId = request.LicenceId }, cancellationToken);
-        if (lics == null || !lics.Items.Any())
+        LicenceResp lic = await licRepository.GetAsync(request.LicenceId, cancellationToken);
+        if (lic == null)
             throw new ApiException(HttpStatusCode.BadRequest, "no licence found for the licenceId");
 
-        LicenceResp lic = lics.Items.First();
-        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
-        var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
-                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
-        preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
-        if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
-            preview.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence
+            || lic.ServiceTypeCode == ServiceTypeEnum.ArmouredVehiclePermit
+            || lic.ServiceTypeCode == ServiceTypeEnum.BodyArmourPermit)
+        {
+            return await GeneratePreviewJsonForSecurityLicence(lic, cancellationToken);
+        }
 
-        LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
+        if (lic.ServiceTypeCode == ServiceTypeEnum.GDSDTeamCertification
+            || lic.ServiceTypeCode == ServiceTypeEnum.DogTrainerCertification
+            || lic.ServiceTypeCode == ServiceTypeEnum.RetiredServiceDogCertification)
+        {
+            return await GeneratePreviewJsonForGDSDLicence(lic, cancellationToken);
+        }
+
+        throw new ApiException(HttpStatusCode.BadRequest, "the requested licence does not support preview.");
+    }
+
+    private async Task<LicencePreviewJson> GeneratePreviewJsonForSecurityLicence(LicenceResp lic, CancellationToken ct)
+    {
+        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
+
+        var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
+                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), ct);
+        preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
+
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
+            preview.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, ct);
+
+        LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, ct);
         mapper.Map(app, preview);
 
         if (lic.PhotoDocumentUrlId == null)
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
-        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, cancellationToken);
-
+        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, ct);
         preview.SPD_CARD = mapper.Map<SPD_CARD>(app);
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
-
         //conditions
         preview.Conditions = lic.Conditions.Select(c => c.Name);
-
         return preview;
     }
+
+    private async Task<LicencePreviewJson> GeneratePreviewJsonForGDSDLicence(LicenceResp lic, CancellationToken ct)
+    {
+        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
+        preview.LicenceType = "GDSD";
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
+        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, ct);
+
+        if (lic.ServiceTypeCode == ServiceTypeEnum.GDSDTeamCertification)
+        {
+            DogTeamResp team = await dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, ct);
+            preview.SPD_CARD = mapper.Map<SPD_CARD>(team);
+        }
+        else if (lic.ServiceTypeCode == ServiceTypeEnum.DogTrainerCertification)
+        {
+            preview.SPD_CARD = new SPD_CARD();
+            preview.SPD_CARD.Handler = preview.ApplicantName;
+            preview.SPD_CARD.CardType = "GUIDE-DOG-TRAINER";
+        }
+        else
+        {
+            DogTeamResp team = await dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, ct);
+            preview.SPD_CARD = mapper.Map<SPD_CARD>(team);
+            preview.SPD_CARD.CardType = "GUIDE-DOG-RETIRED";
+        }
+        preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
+        return preview;
+    }
+
     private async Task<IEnumerable<string>> GetCategoryNamesAsync(IEnumerable<WorkerCategoryTypeEnum> categoryTypeEnums, CancellationToken ct)
     {
         List<string> names = new();
@@ -208,7 +255,22 @@ public record SPD_CARD
     public bool TemporaryLicence { get; set; }
 
     [JsonPropertyName("cardType")]
-    public string? CardType { get; set; } //SECURITY-WORKER-AND-ARMOUR
+    public string? CardType { get; set; } //SECURITY-WORKER-AND-ARMOUR, GUIDE-DOG, GUIDE-DOG-TRAINER, GUIDE-DOG-RETIRED
+
+    [JsonPropertyName("handler")]
+    public string? Handler { get; set; }
+
+    [JsonPropertyName("dogName")]
+    public string? DogName { get; set; }
+
+    [JsonPropertyName("dogDescription")]
+    public string? DogDescription { get; set; } //175cm
+
+    [JsonPropertyName("dogDOB")]
+    public string? DogDOB { get; set; } //67kg
+
+    [JsonPropertyName("microchipNumber")]
+    public string MicrochipNumber { get; set; }
 }
 
 public record BranchAddress

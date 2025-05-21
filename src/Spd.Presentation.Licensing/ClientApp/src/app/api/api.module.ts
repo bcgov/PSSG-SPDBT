@@ -16,7 +16,7 @@ import { ConfigurationService } from './services/configuration.service';
 import { ControllingMemberCrcAppService } from './services/controlling-member-crc-app.service';
 import { DogSchoolService } from './services/dog-school.service';
 import { DogTrainerLicensingService } from './services/dog-trainer-licensing.service';
-import { GdsdLicensingService } from './services/gdsd-licensing.service';
+import { GdsdTeamLicensingService } from './services/gdsd-team-licensing.service';
 import { LicenceService } from './services/licence.service';
 import { LicenceAppService } from './services/licence-app.service';
 import { LicenceAppDocumentService } from './services/licence-app-document.service';
@@ -24,6 +24,7 @@ import { LicenceFeeService } from './services/licence-fee.service';
 import { LoginService } from './services/login.service';
 import { PaymentService } from './services/payment.service';
 import { PermitService } from './services/permit.service';
+import { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
 import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
 
 /**
@@ -44,7 +45,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     ControllingMemberCrcAppService,
     DogSchoolService,
     DogTrainerLicensingService,
-    GdsdLicensingService,
+    GdsdTeamLicensingService,
     LicenceService,
     LicenceAppService,
     LicenceAppDocumentService,
@@ -52,6 +53,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     LoginService,
     PaymentService,
     PermitService,
+    RetiredDogLicensingService,
     SecurityWorkerLicensingService,
     ApiConfiguration
   ],

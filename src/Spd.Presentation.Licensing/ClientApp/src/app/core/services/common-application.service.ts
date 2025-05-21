@@ -26,6 +26,7 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import {
+	ApplicantProfileService,
 	BizLicensingService,
 	BizMembersService,
 	LicenceAppService,
@@ -43,13 +44,13 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
-import { BusinessLicenceCategoryTypes, SelectOptions } from '../code-types/model-desc.models';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { UtilService } from './util.service';
+import { LicenceResponseExt } from './worker-application.service';
 
 export class LicenceLookupResult {
 	'isFound': boolean;
@@ -69,6 +70,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 
 export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
+	originalPhotoOfYourselfExpired: boolean;
 	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
 	licenceExpiryNumberOfDays?: null | number;
 	licenceReprintFee: null | number;
@@ -104,6 +106,7 @@ export class CommonApplicationService {
 		private utilService: UtilService,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
+		private applicantProfileService: ApplicantProfileService,
 		private paymentService: PaymentService,
 		private bizMembersService: BizMembersService,
 		private authProcessService: AuthProcessService,
@@ -212,8 +215,6 @@ export class CommonApplicationService {
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined,
 		categorySecurityGuardSupIsSelected = false
 	): Array<LicenceFeeResponse> {
-		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode);
-
 		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
@@ -496,12 +497,20 @@ export class CommonApplicationService {
 						}
 					} else {
 						return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
-							switchMap((controllingMembersAndEmployees: Members) => {
-								const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
-								const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
+							switchMap((businessStakeholders: Members) => {
+								const cmNonSwlControllingMembers = businessStakeholders.nonSwlControllingMembers ?? [];
+								const cmIncompleteMemberIndex = cmNonSwlControllingMembers.findIndex(
 									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
 								);
-								const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+
+								const bmNonSwlControllingMembers = businessStakeholders.nonSwlBusinessManagers ?? [];
+								const bmIncompleteMemberIndex = bmNonSwlControllingMembers.findIndex(
+									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
+								);
+
+								const isControllingMemberWarning =
+									(cmNonSwlControllingMembers.length > 0 && cmIncompleteMemberIndex >= 0) ||
+									(bmNonSwlControllingMembers.length > 0 && bmIncompleteMemberIndex >= 0);
 
 								const response = applicationResps as Array<MainApplicationResponse>;
 								response.forEach((item: MainApplicationResponse) => {
@@ -581,59 +590,11 @@ export class CommonApplicationService {
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
 	) {
-		let title = '';
-		let mobileTitle = '';
-
-		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-			switch (serviceTypeCode) {
-				case ServiceTypeCode.SecurityBusinessLicence: {
-					mobileTitle = 'SBL';
-					break;
-				}
-				case ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
-					mobileTitle = 'CM CRC';
-					break;
-				}
-				case ServiceTypeCode.SecurityWorkerLicence: {
-					mobileTitle = 'SWL';
-					break;
-				}
-				case ServiceTypeCode.ArmouredVehiclePermit: {
-					mobileTitle = 'AVP';
-					break;
-				}
-				case ServiceTypeCode.BodyArmourPermit: {
-					mobileTitle = 'BAP';
-					break;
-				}
-				case ServiceTypeCode.GdsdTeamCertification: {
-					mobileTitle = 'GDSDTC';
-					break;
-				}
-				case ServiceTypeCode.DogTrainerCertification: {
-					mobileTitle = 'DTC';
-					break;
-				}
-				case ServiceTypeCode.RetiredServiceDogCertification: {
-					mobileTitle = 'RSDC';
-					break;
-				}
-			}
-
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
-			}
-
-			if (originalLicenceNumber) {
-				title += ` - ${originalLicenceNumber}`;
-				mobileTitle += ` ${originalLicenceNumber}`;
-			}
-		} else {
-			mobileTitle = title = 'Security Services Application';
-		}
+		const { title, mobileTitle } = this.getApplicationTitle(
+			serviceTypeCode,
+			applicationTypeCode,
+			originalLicenceNumber
+		);
 
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
@@ -647,41 +608,91 @@ export class CommonApplicationService {
 		let mobileTitle = 'GDSD';
 
 		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
-			}
-
-			if (originalLicenceNumber) {
-				title += ` - ${originalLicenceNumber}`;
-				mobileTitle += ` ${originalLicenceNumber}`;
-			}
+			({ title, mobileTitle } = this.getApplicationTitle(serviceTypeCode, applicationTypeCode, originalLicenceNumber));
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
-	setMetalDealersApplicationTitle(
-		serviceTypeCode: ServiceTypeCode | undefined = undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined = undefined
+	setMdraApplicationTitle(
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
 	) {
-		let title = 'Metal Dealers & Recyclers';
-		let mobileTitle = 'MD&R';
+		const { title, mobileTitle } = this.getApplicationTitle(
+			ServiceTypeCode.Mdra,
+			applicationTypeCode,
+			originalLicenceNumber
+		);
 
-		if (serviceTypeCode) {
-			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
 
-			if (applicationTypeCode) {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				title += ` - ${applicationTypeDesc}`;
-				mobileTitle += ` ${applicationTypeDesc}`;
+	private getApplicationTitle(
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
+	): {
+		title: string;
+		mobileTitle: string;
+	} {
+		if (!serviceTypeCode) {
+			return { title: 'Security Services Application', mobileTitle: 'SSA' };
+		}
+
+		let title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		let mobileTitle: string = serviceTypeCode;
+
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.SecurityBusinessLicence: {
+				mobileTitle = 'SBL';
+				break;
+			}
+			case ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
+				mobileTitle = 'CM CRC';
+				break;
+			}
+			case ServiceTypeCode.SecurityWorkerLicence: {
+				mobileTitle = 'SWL';
+				break;
+			}
+			case ServiceTypeCode.ArmouredVehiclePermit: {
+				mobileTitle = 'AVP';
+				break;
+			}
+			case ServiceTypeCode.BodyArmourPermit: {
+				mobileTitle = 'BAP';
+				break;
+			}
+			case ServiceTypeCode.GdsdTeamCertification: {
+				mobileTitle = 'GDSD Team';
+				break;
+			}
+			case ServiceTypeCode.DogTrainerCertification: {
+				mobileTitle = 'Dog Trainer';
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				mobileTitle = 'Retired Dog';
+				break;
+			}
+			case ServiceTypeCode.Mdra: {
+				mobileTitle = 'MD&R';
+				break;
 			}
 		}
 
-		this.applicationTitle$.next([title, mobileTitle]);
+		if (applicationTypeCode) {
+			const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+			title += ` - ${applicationTypeDesc}`;
+			mobileTitle += ` ${applicationTypeDesc}`;
+		}
+
+		if (originalLicenceNumber) {
+			title += ` - ${originalLicenceNumber}`;
+			mobileTitle += ` ${originalLicenceNumber}`;
+		}
+
+		return { title, mobileTitle };
 	}
 
 	getSubmitSuccessMessage(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): string {
@@ -700,7 +711,6 @@ export class CommonApplicationService {
 			}
 		}
 
-		console.debug('[getSubmitSuccessMessage]', message);
 		return message;
 	}
 
@@ -860,14 +870,6 @@ export class CommonApplicationService {
 		return messageError;
 	}
 
-	isValidSoleProprietorSwlCategories(availableCategoryCodes: WorkerCategoryTypeCode[]): boolean {
-		return (
-			BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
-				return availableCategoryCodes.includes(item.code as WorkerCategoryTypeCode);
-			}).length > 0
-		);
-	}
-
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
@@ -888,7 +890,7 @@ export class CommonApplicationService {
 		);
 	}
 
-	getApplicationIsDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
+	getApplicationIsInDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
@@ -970,6 +972,72 @@ export class CommonApplicationService {
 		return this.getMainWarningsAndError(applicationsList, activeLicencesList, checkControllingMemberWarning);
 	}
 
+	/**
+	 * Search for an existing swl/permit licence using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getLicenceWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponseExt> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					if (!resp) {
+						// lookup does not match a licence
+						return of({} as LicenceResponseExt);
+					}
+
+					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
+	}
+
+	/**
+	 * Search for an existing gdsd certificate using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getGDSDLicenceWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponseExt> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					if (!resp) {
+						// lookup does not match a licence
+						return of({} as LicenceResponseExt);
+					}
+
+					return this.applicantProfileService.apiApplicantsAnonymousDogCertificationApplicationsGet().pipe(
+						map((appls: Array<LicenceAppListResponse>) => {
+							return {
+								inProgressApplications: appls.length > 0,
+								...resp,
+							} as LicenceResponseExt;
+						})
+					);
+				})
+			);
+	}
+
 	private getMainWarningsAndError(
 		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>,
@@ -1011,28 +1079,36 @@ export class CommonApplicationService {
 			}
 		});
 
-		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
-		renewals.forEach((item: MainLicenceResponse) => {
-			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
+		const renewalApplicationExists =
+			applicationsList.findIndex(
+				(item: MainApplicationResponse) => item.applicationTypeCode === ApplicationTypeCode.Renewal
+			) >= 0;
 
-			if (item.licenceExpiryNumberOfDays != null) {
-				if (item.licenceExpiryNumberOfDays < 0) {
-					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
-				} else if (item.licenceExpiryNumberOfDays > 7) {
-					warningMessages.push(
-						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
-					);
-				} else if (item.licenceExpiryNumberOfDays === 0) {
-					errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
-				} else {
-					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
-					errorMessages.push(
-						`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
-					);
+		if (!renewalApplicationExists) {
+			// show any renewal related warning/error messages
+			const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
+			renewals.forEach((item: MainLicenceResponse) => {
+				const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
+				const itemExpiry = this.utilService.dateToDateFormat(item.expiryDate);
+
+				if (item.licenceExpiryNumberOfDays != null) {
+					if (item.licenceExpiryNumberOfDays < 0) {
+						errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
+					} else if (item.licenceExpiryNumberOfDays > 7) {
+						warningMessages.push(
+							`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+						);
+					} else if (item.licenceExpiryNumberOfDays === 0) {
+						errorMessages.push(`Your ${itemLabel} expires <strong>today</strong>. Please renew now.`);
+					} else {
+						const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
+						errorMessages.push(
+							`Your ${itemLabel} expires in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+						);
+					}
 				}
-			}
-		});
+			});
+		}
 
 		return [warningMessages, errorMessages, isControllingMemberWarning];
 	}
@@ -1108,8 +1184,6 @@ export class CommonApplicationService {
 			searchResult: licence,
 		};
 
-		console.debug('getLicenceSearchFlags lookupResp', lookupResp);
-
 		return lookupResp;
 	}
 
@@ -1124,6 +1198,8 @@ export class CommonApplicationService {
 		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
 		const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 		const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
+
+		licence.originalPhotoOfYourselfExpired = false; // default
 
 		licence.isRenewalPeriod = false;
 		licence.isUpdatePeriod = false;

@@ -51,8 +51,8 @@ export interface ManualSubmissionBody {
 }
 
 @Component({
-    selector: 'app-manual-submission-common',
-    template: `
+	selector: 'app-manual-submission-common',
+	template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -533,14 +533,14 @@ export interface ManualSubmissionBody {
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.text-minor-heading {
 				color: var(--color-primary-light);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;
@@ -717,48 +717,47 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		if (!this.form.valid) {
 			this.utilService.scrollToErrorSection();
+			return;
 		}
 
-		if (this.form.valid) {
-			const createRequest: any = { ...this.form.value } as Parameters<
-				ApplicationService['apiOrgsOrgIdApplicationPost']
-			>[0]['body']['ApplicationCreateRequestJson'];
+		const createRequest: any = { ...this.form.value } as Parameters<
+			ApplicationService['apiOrgsOrgIdApplicationPost']
+		>[0]['body']['ApplicationCreateRequestJson'];
 
-			createRequest.originTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
-			createRequest.phoneNumber = createRequest.phoneNumber
-				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
-				: '';
-			createRequest.dateOfBirth = this.formatDatePipe.transform(
-				createRequest.dateOfBirth,
-				SPD_CONSTANTS.date.backendDateFormat,
-			);
-			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true;
-			createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
-				createRequest.screeningType,
-			)
-				? createRequest.contractedCompanyName
-				: '';
+		createRequest.originTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
+		createRequest.phoneNumber = createRequest.phoneNumber
+			? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
+			: '';
+		createRequest.dateOfBirth = this.formatDatePipe.transform(
+			createRequest.dateOfBirth,
+			SPD_CONSTANTS.date.backendDateFormat,
+		);
+		createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true;
+		createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
+			createRequest.screeningType,
+		)
+			? createRequest.contractedCompanyName
+			: '';
 
-			if (!this.showScreeningType) {
-				createRequest.screeningType = ScreeningTypeCode.Staff;
-			}
+		if (!this.showScreeningType) {
+			createRequest.screeningType = ScreeningTypeCode.Staff;
+		}
 
-			createRequest.requireDuplicateCheck = true;
+		createRequest.requireDuplicateCheck = true;
 
-			const body: ManualSubmissionBody = {
-				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.attachments.value : null,
-				ApplicationCreateRequestJson: JSON.stringify(createRequest),
-			};
+		const body: ManualSubmissionBody = {
+			ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.attachments.value : null,
+			ApplicationCreateRequestJson: JSON.stringify(createRequest),
+		};
 
-			if (
-				this.portal == PortalTypeCode.Psso &&
-				createRequest.serviceType != ServiceTypeCode.PssoVs &&
-				createRequest.serviceType != ServiceTypeCode.PeCrcVs
-			) {
-				this.saveAndCheckDuplicates(body);
-			} else {
-				this.promptVulnerableSector(body);
-			}
+		if (
+			this.portal == PortalTypeCode.Psso &&
+			createRequest.serviceType != ServiceTypeCode.PssoVs &&
+			createRequest.serviceType != ServiceTypeCode.PeCrcVs
+		) {
+			this.saveAndCheckDuplicates(body);
+		} else {
+			this.promptVulnerableSector(body);
 		}
 	}
 
@@ -887,15 +886,15 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		this.serviceTypes = serviceTypes;
 
 		// if there is only one value, use it and do not show the dropdown
-		let defaultServiceTypeCode: string | null = null;
 		if (serviceTypes.length === 1) {
-			defaultServiceTypeCode = (serviceTypes[0].code as string) ?? null;
+			this.serviceTypeDefault = (serviceTypes[0].code as ServiceTypeCode) ?? null;
 			this.showServiceType = false;
 		} else {
+			this.serviceTypeDefault = null;
 			this.showServiceType = true;
 		}
 
-		this.form.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
+		this.form.patchValue({ serviceType: this.serviceTypeDefault }, { emitEvent: false });
 	}
 
 	private resetForm(): void {

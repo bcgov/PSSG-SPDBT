@@ -31,9 +31,9 @@ import { AppInviteOrgData } from 'src/app/shared/components/screening-applicatio
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 
 @Component({
-    selector: 'app-pssoa',
-    template: `
-		<div class="container mt-4">
+	selector: 'app-pssoa',
+	template: `
+		<div class="container mt-4" *ngIf="orgData">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
@@ -105,8 +105,8 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 			</mat-stepper>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PssoaComponent implements OnInit {
 	readonly STEP_ELIGIBILITY = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -153,7 +153,7 @@ export class PssoaComponent implements OnInit {
 		private authUserService: AuthUserBcscService,
 		private applicantService: ApplicantService,
 		private paymentService: PaymentService,
-		private location: Location
+		private location: Location,
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -161,7 +161,7 @@ export class PssoaComponent implements OnInit {
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
 				// tap((value) => console.log(value)),
-				distinctUntilChanged()
+				distinctUntilChanged(),
 			)
 			.subscribe(() => this.breakpointChanged());
 
@@ -316,6 +316,12 @@ export class PssoaComponent implements OnInit {
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
 
+		setTimeout(() => {
+			this.postLoginNavigateWizard();
+		}, 250);
+	}
+
+	private postLoginNavigateWizard(): void {
 		for (let i = 0; i <= 2; i++) {
 			const step = this.stepper.steps.get(i);
 			if (step) {

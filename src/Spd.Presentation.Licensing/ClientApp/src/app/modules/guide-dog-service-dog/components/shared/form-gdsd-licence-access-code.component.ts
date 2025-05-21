@@ -25,8 +25,6 @@ export class FormGdsdLicenceAccessCodeComponent {
 
 	@ViewChild(FormAccessCodeAnonymousComponent) formAccessCodeComponent!: FormAccessCodeAnonymousComponent;
 
-	// TODO GDSD inProgressApplications
-
 	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.linkSuccess.emit(linkLicence);
 	}

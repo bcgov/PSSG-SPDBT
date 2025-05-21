@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
-import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
+import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
 import { BusinessLicencePaymentCancelComponent } from './components/business-licence-payment-cancel.component';
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
+import { BusinessLicenceStakeholdersComponent } from './components/business-licence-stakeholders.component';
 import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalSwlSoleProprietorComponent } from './components/business-licence-wizard-renewal-swl-sole-proprietor.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
-import { BusinessManagerInvitationComponent } from './components/business-manager-invitation.component';
-import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
-import { BusinessLicenceMainComponent } from './components/business-licence-main.component';
+import { PortalAdministratorInvitationComponent } from './components/portal-administrator-invitation.component';
+import { PortalAdministratorsComponent } from './components/portal-administrators.component';
 import { StepBusinessLicenceProfileComponent } from './components/step-business-licence-profile.component';
 import { StepBusinessLicenceUpdateTermsComponent } from './components/step-business-licence-update-terms.component';
 
@@ -63,12 +63,12 @@ const routes: Routes = [
 				component: BusinessProfileComponent,
 			},
 			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_MANAGERS,
-				component: BusinessManagersComponent,
+				path: BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATORS,
+				component: PortalAdministratorsComponent,
 			},
 			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES,
-				component: BusinessControllingMembersAndEmployeesComponent,
+				path: BusinessLicenceApplicationRoutes.BUSINESS_STAKEHOLDERS,
+				component: BusinessLicenceStakeholdersComponent,
 			},
 			{
 				path: '',
@@ -90,8 +90,8 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: `${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/:id`,
-		component: BusinessManagerInvitationComponent,
+		path: `${BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATOR_INVITATION}/:id`,
+		component: PortalAdministratorInvitationComponent,
 	},
 	{
 		path: BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,

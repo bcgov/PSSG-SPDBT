@@ -35,6 +35,17 @@ internal static class SharedRepositoryFuncs
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 
+    public static void LinkTrainingEventTeam(DynamicsContext _context, string teamGuidStr, spd_dogtrainingschool trainingEvent)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        _context.SetLink(trainingEvent, nameof(spd_dogtrainingschool.ownerid), serviceTeam);
+    }
+
+    public static void LinkTrainingEventTeam(DynamicsContext _context, team team, spd_dogtrainingschool trainingEvent)
+    {
+        _context.SetLink(trainingEvent, nameof(spd_dogtrainingschool.ownerid), team);
+    }
     public static void LinkDog(DynamicsContext _context, Guid? dogId, spd_application app)
     {
         if (dogId == null) return;

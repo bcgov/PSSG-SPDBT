@@ -88,5 +88,13 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
 
 public enum PositionEnum
 {
-    PrivateInvestigatorManager
+    PrivateInvestigatorManager,
+    Manager,
+    Director,
+    Officer,
+    OwnerOperator,
+    VotingShareholder,
+    NonVotingShareholder,
+    Trustee,
+    Partner
 }

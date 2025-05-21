@@ -15,16 +15,17 @@ export interface DogTrainerChangeRequest {
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
+  contactId?: string;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   licenceTermCode?: LicenceTermCode;
   originalLicenceId?: string;
+  previousDocumentIds?: Array<string> | null;
   schoolContactEmailAddress?: string | null;
   schoolContactPhoneNumber?: string | null;
   schoolDirectorGivenName?: string | null;
   schoolDirectorMiddleName?: string | null;
   schoolDirectorSurname?: string | null;
-  schoolMailingAddress?: MailingAddress;
   serviceTypeCode?: ServiceTypeCode;
   trainerDateOfBirth?: string | null;
   trainerEmailAddress?: string | null;

@@ -15,11 +15,11 @@ export class BusinessLicenceApplicationRoutes {
 	public static readonly BUSINESS_UPDATE = 'update';
 	public static readonly BUSINESS_REPLACEMENT = 'replacement';
 	public static readonly BUSINESS_PROFILE = 'business-profile';
-	public static readonly BUSINESS_MANAGERS = 'business-managers';
-	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'controlling-members-and-employees';
+	public static readonly PORTAL_ADMINISTRATORS = 'portal-administrators';
+	public static readonly BUSINESS_STAKEHOLDERS = 'business-stakeholders';
 	public static readonly BUSINESS_UPDATE_SUCCESS = 'business-update-success';
 
-	public static readonly BUSINESS_MANAGER_INVITATION = 'invitation';
+	public static readonly PORTAL_ADMINISTRATOR_INVITATION = 'invitation';
 
 	// PAYMENT
 	public static readonly PAYMENT_SUCCESS = 'payment-success';

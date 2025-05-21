@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: prod-licensing-release-pipeline
+  labels:
+    DataClass: Low
+spec:
+  tasks:
+    ## Promote staging to prod ##
+    - name: prod-licensing-portal
+      params:
+        - name: imageName
+          value: licensing-portal
+        - name: fromTag
+          value: staging
+        - name: toTag
+          value: prod
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task

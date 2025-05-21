@@ -6,7 +6,7 @@ import {
 	ApplicationTypeCode,
 	Document,
 	DogSchoolResponse,
-	GdsdAppCommandResponse,
+	GdsdTeamAppCommandResponse,
 	GdsdTeamLicenceAppChangeRequest,
 	GdsdTeamLicenceAppResponse,
 	GdsdTeamLicenceAppUpsertRequest,
@@ -22,7 +22,7 @@ import {
 } from '@app/api/models';
 import {
 	ApplicantProfileService,
-	GdsdLicensingService,
+	GdsdTeamLicensingService,
 	LicenceAppDocumentService,
 	LicenceService,
 } from '@app/api/services';
@@ -99,7 +99,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private gdsdLicensingService: GdsdLicensingService,
+		private gdsdTeamLicensingService: GdsdTeamLicensingService,
 		private configService: ConfigService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
@@ -136,11 +136,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		const isLoggedIn = this.authenticationService.isLoggedIn();
-		if (!isLoggedIn) {
-			return false;
-		}
-
 		if (!this.isSaveAndExit()) {
 			return false;
 		}
@@ -153,6 +148,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
+
 		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
 			return false;
 		}
@@ -196,10 +196,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const isTrainedByAccreditedSchools =
 			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
-
-		// console.debug('isStepPersonalInformationComplete', isTrainedByAccreditedSchools, this.gdsdPersonalInformationFormGroup.valid,
-		// this.medicalInformationFormGroup.valid, this.photographOfYourselfFormGroup.valid, this.governmentPhotoIdFormGroup.valid,
-		// this.mailingAddressFormGroup.valid );
 
 		if (isTrainedByAccreditedSchools) {
 			return (
@@ -297,7 +293,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.resetModelFlags();
 		this.resetCommon();
 
-		this.consentAndDeclarationTeamFormGroup.reset();
+		this.consentAndDeclarationFormGroup.reset();
 		this.gdsdTeamModelFormGroup.reset();
 
 		// clear the array data - this does not seem to get reset during a formgroup reset
@@ -321,19 +317,20 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 	/**
 	 * Partial Save - Save the data as is.
-	 * @returns StrictHttpResponse<GdsdAppCommandResponse>
+	 * @returns StrictHttpResponse<GdsdTeamAppCommandResponse>
 	 */
-	partialSaveLicenceStepAuthenticated(isSaveAndExit?: boolean): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	partialSaveLicenceStepAuthenticated(
+		isSaveAndExit?: boolean
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		console.debug('[partialSaveLicenceStepAuthenticated] gdsdModelFormValue', gdsdModelFormValue);
 
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			tap((res: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.hasValueChanged = false;
 
 				let msg = 'Your application has been saved';
@@ -415,7 +412,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					tap((_resp: any) => {
 						this.initialized = true;
 
-						this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+						this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 					})
 				);
 			})
@@ -472,24 +469,37 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.schoolTrainingRowAdd();
 		this.otherTrainingRowAdd();
 
-		console.debug('[createEmptyGdsdAuthenticated] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
+	}
+
+	/**
+	 * Submit the authenticated licence data - new/renew
+	 * @returns
+	 */
+	submitLicenceAuthenticated(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		if (applicationTypeCode == ApplicationTypeCode.New) {
+			return this.submitLicenceNewAuthenticated();
+		}
+
+		return this.submitLicenceChangeAuthenticated();
 	}
 
 	/**
 	 * Submit the licence data - new
 	 * @returns
 	 */
-	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		return this.gdsdLicensingService.apiGdsdTeamAppSubmitPost$Response({ body }).pipe(
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
@@ -504,7 +514,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * Submit the application data for authenticated renewal
 	 * @returns
 	 */
-	submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	private submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -513,7 +523,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -571,8 +581,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 	private postChangeAuthenticated(
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		return this.gdsdLicensingService.apiGdsdTeamAppChangePost$Response({ body }).pipe(
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
@@ -593,7 +603,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
@@ -605,7 +615,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		this.reset();
 
 		const apis: Observable<any>[] = [
-			this.gdsdLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId }),
+			this.gdsdTeamLicensingService.apiGdsdTeamAppLicenceAppIdGet({ licenceAppId }),
 			this.applicantProfileService.apiApplicantIdGet({
 				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			}),
@@ -635,7 +645,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
@@ -743,7 +753,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 				return of(this.gdsdTeamModelFormGroup.value);
 			})
 		);
@@ -767,7 +776,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -835,7 +843,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -915,7 +922,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -1187,7 +1193,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			this.otherTrainingRowAdd();
 		}
 
-		console.debug('[applyApplicationIntoModel] gdsdTeamModelFormGroup', this.gdsdTeamModelFormGroup.value);
 		return of(this.gdsdTeamModelFormGroup.value);
 	}
 
@@ -1256,7 +1261,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
@@ -1304,12 +1309,12 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		);
 	}
 
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
 
-		const consentData = this.consentAndDeclarationTeamFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -1359,7 +1364,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	/**
 	 * Submit the application data for anonymous replacement
 	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
@@ -1374,7 +1379,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		delete body.documentInfos;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
@@ -1390,7 +1395,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -1431,9 +1436,9 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 */
 	private postSubmitAnonymous(
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
-			return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
@@ -1444,7 +1449,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			);
 		}
 
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
@@ -1480,7 +1485,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				{
 					trainingId: new FormControl(train?.trainingId ?? null), // placeholder for ID
 					trainingDetail: new FormControl(train?.trainingDetail ?? null, [FormControlValidators.required]),
-					usePersonalDogTrainer: new FormControl(usePersonalDogTrainer, [Validators.required]),
+					usePersonalDogTrainer: new FormControl(usePersonalDogTrainer, [FormControlValidators.required]),
 					dogTrainerCredential: new FormControl(train?.dogTrainerCredential ?? null),
 					trainingTime: new FormControl(train?.trainingTime ?? null),
 					trainerGivenName: new FormControl(train?.trainerGivenName ?? null),
@@ -1537,13 +1542,13 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					trainingBizName: new FormControl(train?.trainingBizName ?? null, [FormControlValidators.required]),
 					contactGivenName: new FormControl(train?.contactGivenName ?? null),
 					contactSurname: new FormControl(train?.contactSurname ?? null, [FormControlValidators.required]),
-					contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [Validators.required]),
+					contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [FormControlValidators.required]),
 					contactEmailAddress: new FormControl(train?.contactEmailAddress ?? null, [FormControlValidators.email]),
 					trainingStartDate: new FormControl(train?.trainingStartDate ?? null, [Validators.required]),
 					trainingEndDate: new FormControl(train?.trainingEndDate ?? null, [Validators.required]),
-					trainingName: new FormControl(train?.trainingName ?? null, [Validators.required]),
+					trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
 					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
-					whatLearned: new FormControl(train?.whatLearned ?? null, [Validators.required]),
+					whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
 					addressSelected: new FormControl(!!train?.trainingBizMailingAddress?.addressLine1, [Validators.requiredTrue]),
 					addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
 						FormControlValidators.required,

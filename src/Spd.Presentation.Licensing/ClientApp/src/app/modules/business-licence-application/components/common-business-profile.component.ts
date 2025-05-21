@@ -1,10 +1,11 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BizTypeCode } from '@app/api/models';
-import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode, BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { BusinessBcBranchesComponent } from './business-bc-branches.component';
+import { BranchResponse, BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
 	selector: 'app-common-business-profile',
@@ -129,7 +130,15 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								<app-business-bc-branches
 									[form]="branchesInBcFormGroup"
 									[isReadonly]="isReadonly"
+									(branchChange)="onBranchChange()"
 								></app-business-bc-branches>
+
+								<div class="mt-3" *ngIf="!isBusinessBcBranchesValid">
+									<app-alert type="danger" icon="dangerous">
+										Some branch details for your organization are incomplete. Edit the marked branches and provide the
+										missing information before proceeding.
+									</app-alert>
+								</div>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -144,6 +153,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
 
 	businessTypes = BusinessLicenceTypes;
+	isBusinessBcBranchesValid = true;
 
 	@Input() businessInformationFormGroup!: FormGroup;
 	@Input() businessManagerFormGroup!: FormGroup;
@@ -156,13 +166,15 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 
 	@ViewChild(BusinessBcBranchesComponent) businessBcBranchesComponent!: BusinessBcBranchesComponent;
 
-	isFormValid(): boolean {
+	constructor(private businessApplicationService: BusinessApplicationService) {}
+
+	isFormValid(): { isValid: boolean; areBranchesValid: boolean } {
 		const isValid1 = this.isFormGroupValid(this.businessInformationFormGroup);
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
-		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.businessBcBranchesComponent.isFormValid();
-		const isValid6 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
+		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
+		const areBranchesValid = this.isBcBranchesFormValid();
 
 		console.debug(
 			'[CommonBusinessProfileComponent] isFormValid',
@@ -171,15 +183,49 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 			isValid3,
 			isValid4,
 			isValid5,
-			isValid6
+			areBranchesValid
 		);
 
-		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && isValid6;
+		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && areBranchesValid;
+
+		return { isValid, areBranchesValid };
+	}
+
+	private isBcBranchesFormValid(): boolean {
+		let isValid = true;
+		if (!this.isBusinessLicenceSoleProprietor) {
+			isValid = this.isBusinessBcBranchesFormGroupValid(this.branchesInBcFormGroup);
+			this.isBusinessBcBranchesValid = isValid;
+		}
+
+		return isValid;
+	}
+
+	onBranchChange(): void {
+		// A branch change has been made. If the error message is displaying,
+		// check if data is valid yet.
+		if (!this.isBusinessBcBranchesValid) {
+			this.isBcBranchesFormValid();
+		}
 	}
 
 	private isFormGroupValid(form: FormGroup): boolean {
 		form.markAllAsTouched();
 		return form.valid;
+	}
+
+	private isBusinessBcBranchesFormGroupValid(branchesInBcFormGroup: FormGroup): boolean {
+		const hasBranchesInBc = branchesInBcFormGroup.get('hasBranchesInBc') as FormControl;
+		if (hasBranchesInBc.value === BooleanTypeCode.Yes) {
+			const branchesArray = <FormArray>branchesInBcFormGroup.get('branches');
+			const allValid = branchesArray.value.every((branch: BranchResponse) => {
+				return this.businessApplicationService.isBcBranchValid(branch);
+			});
+
+			return allValid;
+		}
+
+		return true;
 	}
 
 	get showBcBusinessAddress(): boolean {

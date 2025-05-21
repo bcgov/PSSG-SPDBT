@@ -4,8 +4,8 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-controlling-member-personal-info',
-    template: `
+	selector: 'app-step-controlling-member-personal-info',
+	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<ng-container *ngIf="isLoggedIn; else notLoggedIn">
 				<app-form-personal-information
@@ -38,15 +38,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</ng-template>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepControllingMemberPersonalInfoComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
 	@Input() isLoggedIn!: boolean;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	personalInformationFormGroup = this.controllingMembersService.personalInformationFormGroup;
 	contactInformationFormGroup = this.controllingMembersService.contactInformationFormGroup;

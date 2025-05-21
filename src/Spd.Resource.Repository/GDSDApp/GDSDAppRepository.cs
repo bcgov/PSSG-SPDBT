@@ -1,20 +1,16 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
+using Spd.Resource.Repository.DogBase;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Repository.GDSDApp;
-internal class GDSDAppRepository : IGDSDAppRepository
+internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
 {
-    private readonly DynamicsContext _context;
-    private readonly IMapper _mapper;
-
-    public GDSDAppRepository(IDynamicsContextFactory ctx, IMapper mapper)
+    public GDSDAppRepository(IDynamicsContextFactory ctx, IMapper mapper) : base(ctx, mapper)
     {
-        _context = ctx.CreateChangeOverwrite();
-        _mapper = mapper;
     }
 
     public async Task<GDSDAppCmdResp> CreateGDSDAppAsync(CreateGDSDAppCmd cmd, CancellationToken ct)
@@ -100,32 +96,13 @@ internal class GDSDAppRepository : IGDSDAppRepository
         return response;
     }
 
-    public async Task CommitGDSDAppAsync(CommitGDSDAppCmd cmd, CancellationToken ct)
-    {
-        spd_application? app = await _context.GetApplicationById(cmd.LicenceAppId, ct);
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
-
-        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(cmd.ApplicationStatusCode.ToString());
-
-        if (cmd.ApplicationStatusCode == ApplicationStatusEnum.Submitted)
-        {
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-
-            app.spd_submittedon = DateTimeOffset.Now;
-            app.spd_portalmodifiedon = DateTimeOffset.Now;
-            app.spd_licencefee = 0;
-
-            _context.UpdateObject(app);
-            await _context.SaveChangesAsync(ct);
-        }
-    }
-
     private spd_application PrepareNewAppDataInDbContext(GDSDApp appData, contact applicant)
     {
         var app = _mapper.Map<spd_application>(appData);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             if (appData.AccreditedSchoolQuestions != null)
@@ -142,6 +119,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                 _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
                 var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                 _context.SetLink(graduation, nameof(graduation.spd_OrganizationId), school);
+                SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, graduation);
             }
         }
         else
@@ -163,6 +141,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                         _context.AddTospd_dogtrainingschools(school);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
                         _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
+                        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, school);
                     }
                 }
             }
@@ -176,6 +155,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                         _context.AddTospd_dogtrainingschools(otherTraining);
                         _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), otherTraining);
                         _context.SetLink(otherTraining, nameof(otherTraining.spd_ApplicantId), applicant);
+                        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, otherTraining);
                     }
             }
         }
@@ -208,6 +188,9 @@ internal class GDSDAppRepository : IGDSDAppRepository
         _mapper.Map<GDSDApp, spd_application>(appData, app);
         _context.UpdateObject(app);
 
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
             //accredited school
@@ -238,6 +221,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                     _context.SetLink(graduation, nameof(graduation.spd_ApplicantId), applicant);
                     var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                     _context.SetLink(graduation, nameof(graduation.spd_OrganizationId), school);
+                    SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, graduation);
                 }
             }
             else
@@ -248,6 +232,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                     _context.UpdateObject(existingGraduation);
                     var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolQuestions.GraduationInfo.AccreditedSchoolId).FirstOrDefault();
                     _context.SetLink(existingGraduation, nameof(existingGraduation.spd_OrganizationId), school);
+                    SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, existingGraduation);
                 }
             }
         }
@@ -308,6 +293,7 @@ internal class GDSDAppRepository : IGDSDAppRepository
                             _context.AddTospd_dogtrainingschools(school);
                             _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), school);
                             _context.SetLink(school, nameof(school.spd_ApplicantId), applicant);
+                            SharedRepositoryFuncs.LinkTrainingEventTeam(_context, serviceTeam, school);
                         }
                         else
                         {

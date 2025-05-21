@@ -155,10 +155,10 @@ namespace Spd.Resource.Repository.BizContact
         {
             spd_businesscontact? bizContact = await _context.GetBizContactById(cmd.BizContactId, ct);
             if (bizContact == null) throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the member.");
-            if (bizContact.spd_role != (int)BizContactRoleOptionSet.ControllingMember)
-                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update non-controlling member.");
+            if (bizContact.spd_role != (int)BizContactRoleOptionSet.ControllingMember && bizContact.spd_role != (int)BizContactRoleOptionSet.BusinessManager)
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update non-stakeholder.");
             if (bizContact._spd_swlnumber_value != null)
-                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update controlling member with secure worker licence.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update stakeholder with secure worker licence.");
             _mapper.Map<BizContact, spd_businesscontact>(cmd.BizContact, bizContact);
             _context.UpdateObject(bizContact);
             await _context.SaveChangesAsync(ct);

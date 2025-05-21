@@ -32,8 +32,8 @@ internal class LicAppRepository : ILicAppRepository
         if (status == ApplicationStatusEnum.Submitted)
             app.statecode = DynamicsConstants.StateCode_Inactive;
 
-        app.spd_submittedon = DateTimeOffset.Now;
-        app.spd_portalmodifiedon = DateTimeOffset.Now;
+        app.spd_submittedon = DateTimeOffset.UtcNow;
+        app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
 
         if (price != null && price >= 0)
             app.spd_licencefee = price;
@@ -65,6 +65,11 @@ internal class LicAppRepository : ILicAppRepository
         {
             apps = apps.Where(a => a._spd_applicantid_value == qry.BizId);
         }
+        if (qry.ApplicationId != null)
+        {
+            apps = apps.Where(a => a.spd_applicationid == qry.ApplicationId);
+        }
+
         var applist = apps.ToList();
 
         if (qry.ValidServiceTypeCodes != null && qry.ValidServiceTypeCodes.Any())

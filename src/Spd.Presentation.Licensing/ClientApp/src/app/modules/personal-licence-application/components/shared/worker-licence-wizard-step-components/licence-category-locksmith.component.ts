@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
-import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LocksmithRequirementCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -116,9 +115,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
-export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceCategoryLocksmithComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
-	title = '';
 
 	locksmithRequirementCodes = LocksmithRequirementCode;
 
@@ -128,10 +126,6 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 		private optionsPipe: OptionsPipe,
 		private workerApplicationService: WorkerApplicationService
 	) {}
-
-	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'WorkerCategoryTypes');
-	}
 
 	onFileUploaded(file: File): void {
 		this.workerApplicationService.hasValueChanged = true;

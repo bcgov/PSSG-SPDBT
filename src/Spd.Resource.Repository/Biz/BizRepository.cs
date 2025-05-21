@@ -49,7 +49,7 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<IEnumerable<BizResult>>(accounts.ToList());
         }
 
-        public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
+        public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct, bool includeMainOffice = false)
         {
             IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_Organization_Addresses)
@@ -67,7 +67,12 @@ namespace Spd.Resource.Repository.Biz
               .OrderByDescending(a => a.createdon)
               .FirstOrDefault();
 
-            var response = _mapper.Map<BizResult>(biz);
+            //spdbt-3952: portal do not want main office, bcmp printing want mainOffice
+            var response = _mapper.Map<BizResult>(biz, opt =>
+            {
+                opt.Items["includeMainOffice"] = includeMainOffice;
+            });
+
             response.SoleProprietorSwlContactInfo.LicenceId = swl?.spd_licenceid;
             response.SoleProprietorSwlExpiryDate = SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(swl?.spd_expirydate);
             return response;
@@ -210,15 +215,6 @@ namespace Spd.Resource.Repository.Biz
                 c => c.spd_role == (int)BizContactRoleOptionSet.ControllingMember && c._spd_swlnumber_value == licenceId
                 );
 
-            foreach (spd_businesscontact bc in bizExistingContacts)
-            {
-                if (validSpContact == null || bc.spd_businesscontactid != validSpContact.spd_businesscontactid)
-                {
-                    bc.statecode = DynamicsConstants.StateCode_Inactive;
-                    bc.statuscode = DynamicsConstants.StatusCode_Inactive;
-                    _context.UpdateObject(bc);
-                }
-            }
             if (validSpContact == null)
             {
                 //add a bizcontact

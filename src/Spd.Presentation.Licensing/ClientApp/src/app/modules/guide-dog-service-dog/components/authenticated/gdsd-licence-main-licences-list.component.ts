@@ -66,7 +66,9 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Gender</div>
-								<div class="text-data fw-bold">{{ licence.dogInfo?.dogGender | options: 'GenderTypes' | default }}</div>
+								<div class="text-data fw-bold">
+									{{ licence.dogInfo?.dogGender | options: 'DogGenderTypes' | default }}
+								</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Microchip Number</div>

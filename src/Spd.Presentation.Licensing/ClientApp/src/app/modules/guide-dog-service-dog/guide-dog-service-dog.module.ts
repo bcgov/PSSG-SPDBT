@@ -73,6 +73,7 @@ import { StepRdDogInfoComponent } from './components/retired-dog/step-rd-dog-inf
 import { StepRdDogLivingInfoComponent } from './components/retired-dog/step-rd-dog-living-info.component';
 import { StepRdDogRetiredInfoComponent } from './components/retired-dog/step-rd-dog-retired-info.component';
 import { StepRdGdsdCertficateComponent } from './components/retired-dog/step-rd-gdsd-certificate.component';
+import { StepRdGovermentPhotoIdComponent } from './components/retired-dog/step-rd-goverment-photo-id.component';
 import { StepRdLicenceAccessCodeComponent } from './components/retired-dog/step-rd-licence-access-code.component';
 import { StepRdLicenceConfirmationComponent } from './components/retired-dog/step-rd-licence-confirmation.component';
 import { StepRdMailingAddressReplacementComponent } from './components/retired-dog/step-rd-mailing-address-replacement.component';
@@ -182,6 +183,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepRdLicenceAccessCodeComponent,
 		StepRdLicenceConfirmationComponent,
 		StepRdMailingAddressReplacementComponent,
+		StepRdGovermentPhotoIdComponent,
 		StepsRdDetailsComponent,
 		StepsRdPersonalInfoComponent,
 		StepsRdDogInfoComponent,

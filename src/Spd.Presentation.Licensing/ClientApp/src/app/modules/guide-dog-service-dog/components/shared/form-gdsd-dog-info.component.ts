@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, GenderCode } from '@app/api/models';
-import { GenderTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
+import { DogGenderTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -32,11 +32,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-								<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('matDatepickerMin')">
-									Invalid date of birth
+								<!-- We always want the date format hint to display -->
+								<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
+								<mat-error *ngIf="showHintError">
+									<span class="hint-inline">Date format YYYY-MM-DD</span>
 								</mat-error>
-								<mat-error *ngIf="form.get('dogDateOfBirth')?.hasError('matDatepickerMax')">
+								<mat-error *ngIf="dogDateOfBirth?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="dogDateOfBirth?.hasError('matDatepickerMin')"> Invalid date of birth </mat-error>
+								<mat-error *ngIf="dogDateOfBirth?.hasError('matDatepickerMax')">
 									This must be on or before {{ maxBirthDate | formatDate }}
 								</mat-error>
 							</mat-form-field>
@@ -81,7 +84,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class FormGdsdDogInfoComponent implements OnInit {
-	genderMfTypes: SelectOptions[] = [];
+	genderMfTypes: SelectOptions[] = DogGenderTypes;
 	matcher = new FormErrorStateMatcher();
 
 	maxBirthDate = this.utilService.getDogBirthDateMax();
@@ -93,10 +96,6 @@ export class FormGdsdDogInfoComponent implements OnInit {
 	constructor(private utilService: UtilService) {}
 
 	ngOnInit(): void {
-		this.genderMfTypes = GenderTypes.filter(
-			(item: SelectOptions) => item.code === GenderCode.F || item.code === GenderCode.M
-		);
-
 		if (this.isNew) {
 			this.utilService.enableInputs(this.form);
 		} else {
@@ -106,5 +105,11 @@ export class FormGdsdDogInfoComponent implements OnInit {
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get showHintError(): boolean {
+		return (this.dogDateOfBirth?.dirty || this.dogDateOfBirth?.touched) && this.dogDateOfBirth?.invalid;
+	}
+	public get dogDateOfBirth(): FormControl {
+		return this.form.get('dogDateOfBirth') as FormControl;
 	}
 }

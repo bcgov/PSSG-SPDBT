@@ -8,9 +8,9 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-    selector: 'app-sa-contact-information',
-    template: `
-		<section class="step-section p-3" *ngIf="orgData">
+	selector: 'app-sa-contact-information',
+	template: `
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title

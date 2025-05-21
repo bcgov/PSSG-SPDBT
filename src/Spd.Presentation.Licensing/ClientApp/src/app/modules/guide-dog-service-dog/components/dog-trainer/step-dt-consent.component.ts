@@ -125,7 +125,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 export class StepDtConsentComponent implements LicenceChildStepperStepComponent {
 	check1Name = '';
 
-	form: FormGroup = this.dogTrainerApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.consentAndDeclarationDtFormGroup;
 
 	constructor(
 		private utilService: UtilService,

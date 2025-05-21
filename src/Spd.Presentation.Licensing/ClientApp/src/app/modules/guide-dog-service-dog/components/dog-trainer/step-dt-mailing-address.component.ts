@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -20,11 +19,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepDtMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
-	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.dogTrainerApplicationService.dogTrainerAddressFormGroup;
+	form: FormGroup = this.dogTrainerApplicationService.trainerMailingAddressFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 

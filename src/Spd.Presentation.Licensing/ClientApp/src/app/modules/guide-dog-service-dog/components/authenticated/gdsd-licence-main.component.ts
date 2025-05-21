@@ -52,7 +52,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 						(renewLicence)="onRenew($event)"
 					></app-gdsd-licence-main-licences-list>
 
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeGdsdTeamExist">
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableGdsdTeamExist">
 						<div class="row">
 							<div class="col-xl-6 col-lg-6">
 								<div class="text-data">You don't have an active guide dog and service dog team certification.</div>
@@ -70,7 +70,7 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 						</div>
 					</div>
 
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeRetiredDogExist">
+					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableRetiredDogExist">
 						<div class="row">
 							<div class="col-xl-6 col-lg-6">
 								<div class="text-data">You don't have an active retired dog certification.</div>
@@ -112,8 +112,8 @@ export class GdsdLicenceMainComponent implements OnInit {
 	activeLicencesList: Array<MainLicenceResponse> = [];
 	expiredLicencesList: Array<MainLicenceResponse> = [];
 
-	activeRetiredDogExist = false;
-	activeGdsdTeamExist = false;
+	activeOrRenewableRetiredDogExist = false;
+	activeOrRenewableGdsdTeamExist = false;
 
 	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(
 		[]
@@ -130,7 +130,7 @@ export class GdsdLicenceMainComponent implements OnInit {
 	ngOnInit(): void {
 		this.gdsdTeamApplicationService.reset(); // prevent back button into wizard
 
-		this.commonApplicationService.setApplicationTitle();
+		this.commonApplicationService.setGdsdApplicationTitle();
 
 		this.loadData();
 	}
@@ -164,17 +164,35 @@ export class GdsdLicenceMainComponent implements OnInit {
 	}
 
 	onResume(appl: MainApplicationResponse): void {
-		this.gdsdTeamApplicationService
-			.getGdsdToResume(appl.licenceAppId!)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		switch (appl.serviceTypeCode) {
+			case ServiceTypeCode.GdsdTeamCertification: {
+				this.gdsdTeamApplicationService
+					.getGdsdToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.GDSD_TEAM_NEW_AUTHENTICATED)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case ServiceTypeCode.RetiredServiceDogCertification: {
+				this.retiredDogApplicationService
+					.getRdToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(GuideDogServiceDogRoutes.RETIRED_DOG_NEW_AUTHENTICATED)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		}
 	}
 
 	onRenew(licence: MainLicenceResponse): void {
@@ -194,7 +212,20 @@ export class GdsdLicenceMainComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO RetiredServiceDogCertification renewal
+				this.retiredDogApplicationService
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.RETIRED_DOG_RENEWAL_AUTHENTICATED
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
 			}
 		}
 	}
@@ -218,7 +249,20 @@ export class GdsdLicenceMainComponent implements OnInit {
 				break;
 			}
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				// TODO RetiredServiceDogCertification replace
+				this.retiredDogApplicationService
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
+									GuideDogServiceDogRoutes.RETIRED_DOG_REPLACEMENT_AUTHENTICATED
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
 			}
 		}
 	}
@@ -264,8 +308,9 @@ export class GdsdLicenceMainComponent implements OnInit {
 							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.RetiredServiceDogCertification
 						) >= 0;
 				}
-				this.activeRetiredDogExist = activeRetiredDogExist;
-				this.activeGdsdTeamExist = activeGdsdTeamExist;
+
+				this.activeOrRenewableGdsdTeamExist = activeGdsdTeamExist;
+				this.activeOrRenewableRetiredDogExist = activeRetiredDogExist;
 
 				if (activeGdsdTeamExist) {
 					// Since there is an active licence or application, make sure expired licence renewal is false
@@ -274,6 +319,13 @@ export class GdsdLicenceMainComponent implements OnInit {
 						.forEach((item: MainLicenceResponse) => {
 							item.isExpiredLicenceRenewable = false;
 						});
+				} else {
+					// check if renewable expired licence exists
+					this.activeOrRenewableGdsdTeamExist =
+						expiredLicencesList.findIndex(
+							(item: MainLicenceResponse) =>
+								item.serviceTypeCode === ServiceTypeCode.GdsdTeamCertification && item.isExpiredLicenceRenewable
+						) >= 0;
 				}
 
 				if (activeRetiredDogExist) {
@@ -285,6 +337,14 @@ export class GdsdLicenceMainComponent implements OnInit {
 						.forEach((item: MainLicenceResponse) => {
 							item.isExpiredLicenceRenewable = false;
 						});
+				} else {
+					// check if renewable expired licence exists
+					this.activeOrRenewableRetiredDogExist =
+						expiredLicencesList.findIndex(
+							(item: MainLicenceResponse) =>
+								item.serviceTypeCode === ServiceTypeCode.RetiredServiceDogCertification &&
+								item.isExpiredLicenceRenewable
+						) >= 0;
 				}
 
 				[this.warningMessages, this.errorMessages] =
