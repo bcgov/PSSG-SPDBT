@@ -96,6 +96,8 @@ export abstract class CommonApplicationHelper {
 			governmentIssuedExpiryDate: new FormControl(''),
 			governmentIssuedDocumentIdNumber: new FormControl(''),
 			governmentIssuedAttachments: new FormControl([]),
+			showFullCitizenshipQuestion: new FormControl(true), // placeholder
+			showNonCanadianCitizenshipQuestion: new FormControl(false), // placeholder
 		},
 		{
 			validators: [

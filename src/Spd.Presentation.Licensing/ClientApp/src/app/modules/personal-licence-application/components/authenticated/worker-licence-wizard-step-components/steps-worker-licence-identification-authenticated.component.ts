@@ -10,9 +10,11 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 	selector: 'app-steps-worker-licence-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showCitizenshipStep">
+			<mat-step *ngIf="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion">
 				<app-step-worker-licence-citizenship
 					[applicationTypeCode]="applicationTypeCode"
+					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
 				></app-step-worker-licence-citizenship>
 
 				<app-wizard-footer
@@ -66,7 +68,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	readonly STEP_PHOTO = 3;
 
 	@Input() isFormValid = false;
-	@Input() showCitizenshipStep = true;
+	@Input() showFullCitizenshipQuestion = false;
+	@Input() showNonCanadianCitizenshipQuestion = false;
 	@Input() showSaveAndExit = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
@@ -81,7 +84,7 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	}
 
 	onDriversLicenceStepPrevious(): void {
-		if (this.showCitizenshipStep) {
+		if (this.showFullCitizenshipQuestion || this.showNonCanadianCitizenshipQuestion) {
 			this.childstepper.previous();
 			return;
 		}

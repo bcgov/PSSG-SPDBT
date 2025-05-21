@@ -64,7 +64,8 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showFullCitizenshipQuestion]="true"
+					[showNonCanadianCitizenshipQuestion]="false"
 					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -80,7 +81,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="true"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -138,8 +139,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
-
-	readonly showCitizenshipStep = true;
 
 	licenceAppId: string | null = null;
 

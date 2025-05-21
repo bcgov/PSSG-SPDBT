@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -9,7 +10,9 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 
@@ -350,5 +353,35 @@ internal abstract class LicenceAppManagerBase
             }
         }
         return existingFileInfos;
+    }
+
+    protected string? GetChangeSummary<T>(IEnumerable<LicAppFileInfo> newFileInfos, LicenceResp originalLic, ContactResp contactResp, LicenceAppBase newRequest)
+        where T : class
+    {
+        string? result = null;
+        //spdbt-4077
+        string? docChangedSummary = null;
+        if (newFileInfos != null)
+        {
+            docChangedSummary = string.Join("\r\n",
+                newFileInfos.Select(d => {
+                    string inputName = Regex.Replace(d.LicenceDocumentTypeCode.ToString()!, "([A-Z])", " $1", RegexOptions.None, TimeSpan.FromSeconds(3)).Trim();
+                    string updatedInputName = inputName.Replace('_', '-');
+                    return $"{updatedInputName} document has been added";
+                    })
+                ); 
+        }
+
+        var newData = _mapper.Map<T>(newRequest);
+        var oldData = _mapper.Map<T>(originalLic);
+        if (contactResp != null)
+        {
+            _mapper.Map<ContactResp, T>(contactResp, oldData);
+        }
+        var summary = PropertyComparer.GetPropertyDifferences(oldData, newData);
+        result = string.Join("\r\n", summary);
+        if (!string.IsNullOrWhiteSpace(docChangedSummary))
+            result += "\r\n" + string.Join("\r\n", docChangedSummary);
+        return result;
     }
 }
