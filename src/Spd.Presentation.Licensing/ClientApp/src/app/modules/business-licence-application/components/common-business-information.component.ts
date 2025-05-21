@@ -138,7 +138,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								form.get('soleProprietorLicenceId')?.hasError('required')
 							"
 						>
-							A valid security worker licence must be selected
+							You must have a valid security worker licence to apply for a sole proprietor business licence.
 						</mat-error>
 
 						<div
