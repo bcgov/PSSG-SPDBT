@@ -559,6 +559,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
+					this.reset();
+
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -570,6 +572,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!

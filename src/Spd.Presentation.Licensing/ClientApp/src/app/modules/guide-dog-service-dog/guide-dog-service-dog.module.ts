@@ -19,6 +19,7 @@ import { StepDtMailingAddressComponent } from './components/dog-trainer/step-dt-
 import { StepDtPhotographOfYourselfRenewComponent } from './components/dog-trainer/step-dt-photograph-of-yourself-renew.component';
 import { StepDtPhotographOfYourselfComponent } from './components/dog-trainer/step-dt-photograph-of-yourself.component';
 import { StepDtSummaryComponent } from './components/dog-trainer/step-dt-summary.component';
+import { StepDtTermsOfUseComponent } from './components/dog-trainer/step-dt-terms-of-use.component';
 import { StepDtTrainingSchoolInfoComponent } from './components/dog-trainer/step-dt-training-school-info.component';
 import { StepsDtDetailsComponent } from './components/dog-trainer/steps-dt-details.component';
 import { StepsDtPersonalInfoComponent } from './components/dog-trainer/steps-dt-personal-info.component';
@@ -57,6 +58,7 @@ import { StepTeamPhotographOfYourselfRenewComponent } from './components/gdsd-te
 import { StepTeamPhotographOfYourselfComponent } from './components/gdsd-team/step-team-photograph-of-yourself.component';
 import { StepTeamSchoolTrainingsComponent } from './components/gdsd-team/step-team-school-trainings.component';
 import { StepTeamSummaryComponent } from './components/gdsd-team/step-team-summary.component';
+import { StepTeamTermsOfUseComponent } from './components/gdsd-team/step-team-terms-of-use.component';
 import { StepTeamTrainingHistoryComponent } from './components/gdsd-team/step-team-training-history.component';
 import { StepsTeamDogInfoComponent } from './components/gdsd-team/steps-team-dog-info.component';
 import { StepsTeamPersonalInfoComponent } from './components/gdsd-team/steps-team-personal-info.component';
@@ -83,6 +85,7 @@ import { StepRdPersonalInfoComponent } from './components/retired-dog/step-rd-pe
 import { StepRdPhotographOfYourselfRenewComponent } from './components/retired-dog/step-rd-photograph-of-yourself-renew.component';
 import { StepRdPhotographOfYourselfComponent } from './components/retired-dog/step-rd-photograph-of-yourself.component';
 import { StepRdSummaryComponent } from './components/retired-dog/step-rd-summary.component';
+import { StepRdTermsOfUseComponent } from './components/retired-dog/step-rd-terms-of-use.component';
 import { StepsRdDetailsComponent } from './components/retired-dog/steps-rd-details.component';
 import { StepsRdDogInfoComponent } from './components/retired-dog/steps-rd-dog-info.component';
 import { StepsRdPersonalInfoComponent } from './components/retired-dog/steps-rd-personal-info.component';
@@ -156,6 +159,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepTeamLicenceAccessCodeComponent,
 		StepTeamMailingAddressReplacementComponent,
 		StepTeamLicenceConfirmationComponent,
+		StepTeamTermsOfUseComponent,
 
 		DogTrainerWizardNewRenewalComponent,
 		DogTrainerWizardReplacementComponent,
@@ -177,6 +181,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepDtLicenceAccessCodeComponent,
 		StepDtLicenceConfirmationComponent,
 		StepDtMailingAddressReplacementComponent,
+		StepDtTermsOfUseComponent,
 
 		RetiredDogWizardNewRenewalComponent,
 		RetiredDogWizardReplacementComponent,
@@ -202,6 +207,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		StepRdSummaryComponent,
 		StepRdChecklistRenewalComponent,
 		StepRdChecklistNewComponent,
+		StepRdTermsOfUseComponent,
 	],
 	imports: [SharedModule, GuideDogServiceDogRoutingModule],
 })
