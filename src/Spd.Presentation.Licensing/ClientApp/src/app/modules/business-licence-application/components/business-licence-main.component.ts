@@ -44,11 +44,11 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 									mat-flat-button
 									color="primary"
 									class="large w-auto ms-2 mb-3"
-									aria-label="Manage the business managers"
-									(click)="onBusinessManagers()"
+									aria-label="Manage the portal administrators"
+									(click)="onPortalAdministrators()"
 								>
 									<mat-icon class="d-none d-md-block">people</mat-icon>
-									Business Managers
+									Portal Administrators
 								</button>
 							</div>
 						</div>
@@ -56,15 +56,15 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="row" *ngIf="showManageMembersAndEmployees">
+					<div class="row" *ngIf="showManageBusinessStakeholders">
 						<div class="col-12 text-end">
 							<a
 								class="large"
 								tabindex="0"
-								(click)="onManageMembersAndEmployees()"
-								(keydown)="onKeydownManageMembersAndEmployees($event)"
+								(click)="onManageBusinessStakeholders()"
+								(keydown)="onKeydownManageBusinessStakeholders($event)"
 							>
-								Controlling Members & Employees
+								Controlling Members, Business Managers & Employees
 							</a>
 						</div>
 					</div>
@@ -80,7 +80,8 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 							<app-alert type="warning" icon="warning">
 								<div>Your business licence application is pending controlling member criminal record checks.</div>
 								<div class="mt-2">
-									View <strong>'Controlling Members & Employees'</strong> to see the status of each of member.
+									View <strong>'Controlling Members, Business Managers & Employees'</strong> to see the status of each
+									of member.
 								</div>
 							</app-alert>
 						</ng-container>
@@ -99,7 +100,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onDelete($event)"
-						(manageMembersAndEmployees)="onManageMembersAndEmployees()"
+						(manageBusinessStakeholders)="onManageBusinessStakeholders()"
 					></app-business-licence-main-applications-list>
 
 					<app-business-licence-main-licence-list
@@ -142,10 +143,10 @@ export class BusinessLicenceMainComponent implements OnInit {
 	errorMessages: Array<string> = [];
 
 	// these are calculated when the data is loaded
-	showManageMembersAndEmployees = false;
+	showManageBusinessStakeholders = false;
 	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
-	applicationIsDraftOrWaitingForPayment = false;
+	applicationIsInDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
 
 	activeLicenceExist = false;
@@ -178,24 +179,24 @@ export class BusinessLicenceMainComponent implements OnInit {
 		this.loadData();
 	}
 
-	onManageMembersAndEmployees(): void {
-		const isApplExists = this.applicationIsInProgress || this.applicationIsDraftOrWaitingForPayment;
-		const isApplDraftOrWaitingForPayment = this.applicationIsDraftOrWaitingForPayment;
+	onManageBusinessStakeholders(): void {
+		const isApplExists = this.applicationIsInProgress || this.applicationIsInDraftOrWaitingForPayment;
+		const isApplDraftOrWaitingForPayment = this.applicationIsInDraftOrWaitingForPayment;
 		const isLicenceExists = this.activeLicencesList.length > 0;
 
 		this.businessApplicationService
-			.getMembersAndEmployees(isApplDraftOrWaitingForPayment)
+			.getBusinessStakeholders()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES
+							BusinessLicenceApplicationRoutes.BUSINESS_STAKEHOLDERS
 						),
 						{
 							state: {
-								isApplExists: isApplExists,
-								isApplDraftOrWaitingForPayment: isApplDraftOrWaitingForPayment,
-								isLicenceExists: isLicenceExists,
+								isApplExists,
+								isApplDraftOrWaitingForPayment,
+								isLicenceExists,
 							},
 						}
 					);
@@ -205,10 +206,10 @@ export class BusinessLicenceMainComponent implements OnInit {
 			.subscribe();
 	}
 
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+	onKeydownManageBusinessStakeholders(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onManageMembersAndEmployees();
+		this.onManageBusinessStakeholders();
 	}
 
 	onDelete(appl: MainApplicationResponse): void {
@@ -372,9 +373,9 @@ export class BusinessLicenceMainComponent implements OnInit {
 			.subscribe();
 	}
 
-	onBusinessManagers(): void {
+	onPortalAdministrators(): void {
 		this.router.navigateByUrl(
-			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.BUSINESS_MANAGERS)
+			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATORS)
 		);
 	}
 
@@ -404,7 +405,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 						);
 
 						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
-						this.showManageMembersAndEmployees = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
+						this.showManageBusinessStakeholders = this.isSoleProprietor ? false : businessApplicationsList.length === 0;
 
 						this.expiredLicencesList = this.commonApplicationService.userExpiredLicences(businessLicencesList);
 
@@ -412,8 +413,8 @@ export class BusinessLicenceMainComponent implements OnInit {
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
 						this.applicationIsInProgress =
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
-						this.applicationIsDraftOrWaitingForPayment =
-							this.commonApplicationService.getApplicationIsDraftOrWaitingForPayment(businessApplicationsList);
+						this.applicationIsInDraftOrWaitingForPayment =
+							this.commonApplicationService.getApplicationIsInDraftOrWaitingForPayment(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created
 						let activeLicenceExist = activeBusinessLicencesList.length > 0;

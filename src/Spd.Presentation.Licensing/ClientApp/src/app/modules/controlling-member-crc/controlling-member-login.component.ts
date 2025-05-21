@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberAppInviteVerifyResponse,
 	ServiceTypeCode,
+	StakeholderAppInviteTypeCode,
+	StakeholderAppInviteVerifyResponse,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
@@ -121,7 +121,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 	private subscribeAlive = true;
 	private defaultRoute!: string;
 
-	crcInviteData: ControllingMemberAppInviteVerifyResponse | null = null;
+	crcInviteData: StakeholderAppInviteVerifyResponse | null = null;
 
 	private applicationTypeCode!: ApplicationTypeCode;
 
@@ -233,8 +233,8 @@ export class ControllingMemberLoginComponent implements OnInit {
 		this.onContinueAnonymous();
 	}
 
-	private getCrcApplicationTypeCode(crcInviteData: ControllingMemberAppInviteVerifyResponse): ApplicationTypeCode {
-		return crcInviteData.inviteTypeCode === ControllingMemberAppInviteTypeCode.Update
+	private getCrcApplicationTypeCode(crcInviteData: StakeholderAppInviteVerifyResponse): ApplicationTypeCode {
+		return crcInviteData.inviteTypeCode === StakeholderAppInviteTypeCode.Update
 			? ApplicationTypeCode.Update
 			: ApplicationTypeCode.New;
 	}

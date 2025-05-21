@@ -4,6 +4,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.DogBase;
 using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -16,11 +17,11 @@ namespace Spd.Manager.Licence;
 internal class GDSDAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GDSDTeamLicenceApplicationQuery, GDSDTeamLicenceAppResponse>,
-        IRequestHandler<GDSDTeamLicenceAppUpsertCommand, GDSDAppCommandResponse>,
-        IRequestHandler<GDSDTeamLicenceAppSubmitCommand, GDSDAppCommandResponse>,
-        IRequestHandler<GDSDTeamLicenceAppAnonymousSubmitCommand, GDSDAppCommandResponse>,
-        IRequestHandler<GDSDTeamLicenceAppRenewCommand, GDSDAppCommandResponse>,
-        IRequestHandler<GDSDTeamLicenceAppReplaceCommand, GDSDAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppUpsertCommand, GDSDTeamAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppSubmitCommand, GDSDTeamAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppAnonymousSubmitCommand, GDSDTeamAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppRenewCommand, GDSDTeamAppCommandResponse>,
+        IRequestHandler<GDSDTeamLicenceAppReplaceCommand, GDSDTeamAppCommandResponse>,
         IGDSDAppManager
 {
     private readonly IContactRepository _contactRepository;
@@ -48,7 +49,7 @@ internal class GDSDAppManager :
     }
 
     #region anonymous
-    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
+    public async Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand cmd, CancellationToken ct)
     {
         GDSDTeamLicenceAppAnonymousSubmitRequest request = cmd.SubmitRequest;
         ValidateFilesForNewApp(cmd);
@@ -57,12 +58,11 @@ internal class GDSDAppManager :
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(request);
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(request.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
-        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new GDSDTeamAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 
@@ -76,7 +76,7 @@ internal class GDSDAppManager :
         return result;
 
     }
-    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
+    public async Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand cmd, CancellationToken ct)
     {
         SaveGDSDAppCmd saveCmd = _mapper.Map<SaveGDSDAppCmd>(cmd.UpsertRequest);
         var response = await _gdsdRepository.SaveGDSDAppAsync(saveCmd, ct);
@@ -86,23 +86,22 @@ internal class GDSDAppManager :
             (Guid)cmd.UpsertRequest.LicenceAppId,
             (List<Document>?)cmd.UpsertRequest.DocumentInfos,
             ct);
-        return _mapper.Map<GDSDAppCommandResponse>(response);
+        return _mapper.Map<GDSDTeamAppCommandResponse>(response);
     }
 
-    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand cmd, CancellationToken ct)
+    public async Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand cmd, CancellationToken ct)
     {
         var response = await this.Handle((GDSDTeamLicenceAppUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.UpsertRequest.LicenceAppId, ct);
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
-            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = (Guid)cmd.UpsertRequest.LicenceAppId
         }, ct);
-        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new GDSDTeamAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand cmd, CancellationToken ct)
+    public async Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand cmd, CancellationToken ct)
     {
         LicenceResp? originalLic = await _licenceRepository.GetAsync(cmd.ChangeRequest.OriginalLicenceId, ct);
         if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
@@ -127,15 +126,14 @@ internal class GDSDAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
-        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new GDSDTeamAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand cmd, CancellationToken ct)
+    public async Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand cmd, CancellationToken ct)
     {
         LicenceResp? originalLic = await _licenceRepository.GetAsync(cmd.ChangeRequest.OriginalLicenceId, ct);
         if (originalLic == null || originalLic.ServiceTypeCode != ServiceTypeEnum.GDSDTeamCertification)
@@ -155,12 +153,11 @@ internal class GDSDAppManager :
                     ct);
             }
         }
-        await _gdsdRepository.CommitGDSDAppAsync(new CommitGDSDAppCmd()
+        await _gdsdRepository.CommitAppAsync(new CommitAppCmd()
         {
-            LicenceAppId = response.LicenceAppId,
-            ApplicationStatusCode = Resource.Repository.ApplicationStatusEnum.Submitted
+            LicenceAppId = response.LicenceAppId
         }, ct);
-        return new GDSDAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new GDSDTeamAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 

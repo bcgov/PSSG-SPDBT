@@ -8,11 +8,11 @@ import { SaConsentToReleaseOfInfoComponent } from './step-components/sa-consent-
 import { SaDeclarationComponent } from './step-components/sa-declaration.component';
 
 @Component({
-    selector: 'app-sa-step-terms-and-cond',
-    template: `
+	selector: 'app-sa-step-terms-and-cond',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-sa-declaration *ngIf="orgData" [orgData]="orgData"></app-sa-declaration>
+				<app-sa-declaration [orgData]="orgData"></app-sa-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -32,7 +32,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 			</mat-step>
 
 			<mat-step *ngIf="agreeToShareCrc">
-				<app-sa-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-crc>
+				<app-sa-consent-to-crc [orgData]="orgData"></app-sa-consent-to-crc>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -52,7 +52,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 			</mat-step>
 
 			<mat-step *ngIf="!agreeToShareCrc">
-				<app-sa-consent-to-release-of-info *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-release-of-info>
+				<app-sa-consent-to-release-of-info [orgData]="orgData"></app-sa-consent-to-release-of-info>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">

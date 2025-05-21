@@ -3,17 +3,17 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
-import { StepControllingMemberSummaryReviewComponent } from './step-controlling-member-summary-review.component';
+import { StepControllingMemberSummaryComponent } from './step-controlling-member-summary.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-controlling-member-summary-review
+				<app-step-controlling-member-summary
 					[applicationTypeCode]="applicationTypeCode"
 					(editStep)="onEditStep($event)"
-				></app-step-controlling-member-summary-review>
+				></app-step-controlling-member-summary>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -53,8 +53,8 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepControllingMemberSummaryReviewComponent)
-	stepReview!: StepControllingMemberSummaryReviewComponent;
+	@ViewChild(StepControllingMemberSummaryComponent)
+	stepReview!: StepControllingMemberSummaryComponent;
 	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
 	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 

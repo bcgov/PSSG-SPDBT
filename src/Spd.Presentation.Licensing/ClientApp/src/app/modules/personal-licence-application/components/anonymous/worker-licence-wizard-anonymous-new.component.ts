@@ -64,7 +64,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showFullCitizenshipQuestion]="true"
+					[showNonCanadianCitizenshipQuestion]="false"
+					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -74,10 +76,12 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
+				<ng-template matStepLabel
+					>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+				>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="true"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -90,15 +94,24 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 
 			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Information</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business<br />Selection</ng-template>
+					<ng-template matStepLabel
+						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+					>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review<br />Business<br />Licence</ng-template>
+					<ng-template matStepLabel
+						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
+							*ngTemplateOutlet="StepNameSpace"
+						></ng-container
+						>Licence</ng-template
+					>
 				</mat-step>
 			</ng-container>
 
@@ -108,6 +121,11 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				</mat-step>
 			</ng-template>
 		</mat-stepper>
+
+		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
+			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		</ng-template>
 	`,
 	styles: [],
 	standalone: false,
@@ -122,8 +140,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	step2Complete = false;
 	step3Complete = false;
 
-	readonly showCitizenshipStep = true;
-
 	licenceAppId: string | null = null;
 
 	isSoleProprietorSimultaneousFlow = false;
@@ -132,16 +148,13 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	showStepDogsAndRestraints = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
 	@ViewChild(StepsWorkerLicenceBackgroundComponent)
-	stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
+	stepsReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
 	policeOfficerRoleCode: string | null = null;
@@ -198,20 +211,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_REVIEW:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -219,17 +220,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_LICENCE_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_LICENCE_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextPayStep(): void {
@@ -287,13 +279,13 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	onGoToStep(step: number) {
 		if (step == 99) {
 			this.stepper.selectedIndex = this.STEP_WORKER_LICENCE_IDENTIFICATION;
-			this.stepIdentificationComponent.onGoToContactStep();
+			this.stepsIdentificationComponent.onGoToContactStep();
 			return;
 		}
 
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsBackgroundComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -305,17 +297,22 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
 			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
+				return this.stepsLicenceSelectionComponent;
 			case this.STEP_WORKER_LICENCE_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
+				return this.stepsBackgroundComponent;
 			case this.STEP_WORKER_LICENCE_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
+				return this.stepsIdentificationComponent;
+			case this.STEP_WORKER_LICENCE_REVIEW:
+				return this.stepsReviewLicenceComponent;
 		}
+		return null;
 	}
 
 	private updateCompleteStatus(): void {

@@ -21,7 +21,7 @@ public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fi
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad TIFF).json")]
     public async Task RunSecurityWorkerLicenseJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
@@ -32,7 +32,7 @@ public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fi
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 1 good TIFF).json")]
     public async Task RunArmouredVehiclePermitJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
@@ -43,7 +43,7 @@ public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fi
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 3 bad TIFF).json")]
     public async Task RunBodyArmourPermitJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
@@ -72,21 +72,21 @@ public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fi
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Guide Dog Service Dog Team.json")]
     public async Task RunGDSDPrintingJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Guide Dog Trainer.json")]
     public async Task RunGuidDogTrainerPrintingJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Retired Service Dog.json")]
     public async Task RunRetiredServiceDogPrintingJob(string fileName)
     {
-        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.PersonalLicense, fileName)).ShouldBeTrue();
     }
 
     private async Task<bool> Run(string jobName, string payloadFileName)

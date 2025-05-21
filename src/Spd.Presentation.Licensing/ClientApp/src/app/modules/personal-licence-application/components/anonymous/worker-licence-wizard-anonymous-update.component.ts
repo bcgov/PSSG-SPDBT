@@ -65,8 +65,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
-					[showPhotographOfYourself]="showPhotographOfYourself"
+					[showFullCitizenshipQuestion]="false"
+					[showNonCanadianCitizenshipQuestion]="false"
+					[showPhotographOfYourselfStep]="showPhotographOfYourselfStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -79,7 +80,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="false"
 					[licenceCost]="updateLicenceCost"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmitStep()"
@@ -111,23 +112,18 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	updateLicenceCost = 0;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
+	stepsReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
-	showPhotographOfYourself = true;
-	hasGenderChanged = false;
+	showPhotographOfYourselfStep = false;
 	isSoleProprietorSimultaneousFlow = false;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -164,21 +160,16 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
-
-				// for Update flow: only show unauthenticated user option to upload a new photo
-				// if they changed their sex selection earlier in the application
-				this.hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
+				const hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 
-				this.showPhotographOfYourself = this.hasGenderChanged;
+				const photoOfYourselfExpired = !!this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.originalPhotoOfYourselfExpired'
+				)?.value;
+
+				// Show this step if gender has changed, photo has expired or is missing
+				this.showPhotographOfYourselfStep = hasGenderChanged || photoOfYourselfExpired;
 
 				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
@@ -194,20 +185,8 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewLicenceComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -215,17 +194,8 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -236,13 +206,13 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	onGoToStep(step: number) {
 		if (step == 99) {
 			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-			this.stepIdentificationComponent.onGoToContactStep();
+			this.stepsIdentificationComponent.onGoToContactStep();
 			return;
 		}
 
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsBackgroundComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -254,23 +224,14 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 
 	onSubmitStep(): void {
 		if (this.newLicenceAppId) {
 			if (this.updateLicenceCost > 0) {
-				this.stepReviewLicenceComponent?.onGoToLastStep();
+				this.stepsReviewLicenceComponent?.onGoToLastStep();
 			} else {
 				this.router.navigateByUrl(
 					PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
@@ -286,7 +247,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					this.updateLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
 					if (this.updateLicenceCost > 0) {
-						this.stepReviewLicenceComponent?.onGoToLastStep();
+						this.stepsReviewLicenceComponent?.onGoToLastStep();
 					} else {
 						const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 							ServiceTypeCode.SecurityWorkerLicence,
@@ -308,6 +269,20 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 	onNextPayStep(): void {
 		this.payNow(this.newLicenceAppId!);
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_REVIEW:
+				return this.stepsReviewLicenceComponent;
+		}
+		return null;
 	}
 
 	private updateCompleteStatus(): void {

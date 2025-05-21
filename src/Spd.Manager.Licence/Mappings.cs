@@ -19,6 +19,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.RetiredDogApp;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -419,7 +420,7 @@ internal class Mappings : Profile
 
         CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
 
-        CreateMap<ControllingMemberInviteVerifyResp, ControllingMemberAppInviteVerifyResponse>();
+        CreateMap<ControllingMemberInviteVerifyResp, StakeholderAppInviteVerifyResponse>();
 
         CreateMap<BizContactResp, ControllingMemberInvite>();
 
@@ -434,7 +435,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(_ => (ApplicationOriginTypeEnum?)null))
             .ForMember(d => d.AgreeToCompleteAndAccurate, opt => opt.MapFrom(s => false));
 
-        CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
+        CreateMap<BizContactResp, StakeholderAppInviteVerifyResponse>()
             .ForMember(d => d.InviteId, opt => opt.Ignore())
             .ForMember(d => d.BizContactId, opt => opt.Ignore())
             .ForMember(d => d.BizLicAppId, opt => opt.Ignore())
@@ -457,7 +458,7 @@ internal class Mappings : Profile
         CreateMap<GDSDTeamLicenceAppAnonymousSubmitRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppChangeRequest, CreateGDSDAppCmd>();
         CreateMap<GDSDTeamLicenceAppUpsertRequest, SaveGDSDAppCmd>();
-        CreateMap<GDSDAppCmdResp, GDSDAppCommandResponse>();
+        CreateMap<GDSDAppCmdResp, GDSDTeamAppCommandResponse>();
         CreateMap<GDSDAppResp, GDSDTeamLicenceAppResponse>();
         CreateMap<AccreditedSchoolQuestions, Spd.Resource.Repository.GDSDApp.AccreditedSchoolQuestions>()
          .ReverseMap();
@@ -476,6 +477,7 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<DogTeamResp, DogInfo>();
         CreateMap<DogTrainerRequest, CreateDogTrainerAppCmd>();
+        CreateMap<DogTrainerChangeRequest, CreateDogTrainerAppCmd>();
         CreateMap<WorkerLicenceAppSubmitRequest, SecureWorkerLicenceAppCompareEntity>()
            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
@@ -499,6 +501,12 @@ internal class Mappings : Profile
         CreateMap<LicenceResp, PermitCompareEntity>();
         CreateMap<BizLicAppSubmitRequest, BizLicenceAppCompareEntity>();
         CreateMap<LicenceResp, BizLicenceAppCompareEntity>();
+        CreateMap<DogTrainerAppResp, DogTrainerAppResponse>();
+        CreateMap<RetiredDogLicenceAppAnonymousSubmitRequest, CreateRetiredDogAppCmd>();
+        CreateMap<RetiredDogLicenceAppUpsertRequest, SaveRetiredDogAppCmd>();
+        CreateMap<RetiredDogLicenceAppChangeRequest, CreateRetiredDogAppCmd>();
+        CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
+        CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -783,7 +791,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -850,7 +859,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.MedicalFormConfirmingNeedDog, DocumentTypeEnum.MedicalFormConfirmingNeedDog },
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
-        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog }
+        {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

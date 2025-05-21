@@ -10,28 +10,28 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 		middleName: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
 		dateOfBirth: new FormControl('', [Validators.required]),
-		phoneNumber: new FormControl('', [Validators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
 		emailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	governmentPhotoIdFormGroup: FormGroup = this.formBuilder.group({
-		photoTypeCode: new FormControl('', [Validators.required]),
+		photoTypeCode: new FormControl('', [FormControlValidators.required]),
 		expiryDate: new FormControl(''),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
 	dogInfoFormGroup: FormGroup = this.formBuilder.group({
-		dogName: new FormControl('', [Validators.required]),
+		dogName: new FormControl('', [FormControlValidators.required]),
 		dogDateOfBirth: new FormControl('', [Validators.required]),
-		dogBreed: new FormControl('', [Validators.required]),
-		dogColorAndMarkings: new FormControl('', [Validators.required]),
-		dogGender: new FormControl('', [Validators.required]),
+		dogBreed: new FormControl('', [FormControlValidators.required]),
+		dogColorAndMarkings: new FormControl('', [FormControlValidators.required]),
+		dogGender: new FormControl('', [FormControlValidators.required]),
 		microchipNumber: new FormControl(''),
 	});
 
-	consentAndDeclarationTeamFormGroup: FormGroup = this.formBuilder.group({
+	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
-		applicantOrLegalGuardianName: new FormControl('', [Validators.required]),
+		applicantOrLegalGuardianName: new FormControl('', [FormControlValidators.required]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
@@ -50,7 +50,7 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 		),
 	});
 
-	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+	consentAndDeclarationDtFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),

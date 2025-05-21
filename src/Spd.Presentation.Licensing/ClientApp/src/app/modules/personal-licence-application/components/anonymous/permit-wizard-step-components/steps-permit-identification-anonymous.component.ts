@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
@@ -91,7 +90,7 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 				</mat-step>
 			</ng-container>
 
-			<mat-step *ngIf="showPhotographOfYourself">
+			<mat-step *ngIf="showPhotographOfYourselfStep">
 				<app-step-permit-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 					[serviceTypeCode]="serviceTypeCode"
@@ -123,6 +122,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() serviceTypeCode!: ServiceTypeCode;
+	@Input() showPhotographOfYourselfStep!: boolean;
 
 	@Input() isFormValid = false;
 
@@ -138,15 +138,12 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
-	constructor(
-		utilService: UtilService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(utilService: UtilService) {
 		super(utilService);
 	}
 
 	onCriminalHistoryNextStep(): void {
-		if (this.applicationTypeCode === ApplicationTypeCode.Update && !this.showPhotographOfYourself) {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update && !this.showPhotographOfYourselfStep) {
 			this.onStepNext(this.STEP_CRIMINAL_HISTORY);
 		} else {
 			this.onFormValidNextStep(this.STEP_CRIMINAL_HISTORY);
@@ -154,7 +151,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	}
 
 	onPhysicalCharacteristicsNextStep(): void {
-		if (!this.showPhotographOfYourself) {
+		if (!this.showPhotographOfYourselfStep) {
 			this.onStepNext(this.STEP_PHYSICAL_CHARACTERISTICS);
 		} else {
 			this.onFormValidNextStep(this.STEP_PHYSICAL_CHARACTERISTICS);
@@ -187,18 +184,5 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 				return this.stepPhotographComponent.isFormValid();
 		}
 		return false;
-	}
-
-	get showPhotographOfYourself(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return true;
-		return this.hasGenderChanged;
-	}
-
-	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-	get hasGenderChanged(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
-
-		const form = this.permitApplicationService.personalInformationFormGroup;
-		return !!form.value.hasGenderChanged;
 	}
 }

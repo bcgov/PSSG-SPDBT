@@ -2,7 +2,6 @@
 using MediatR;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -11,8 +10,6 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.PersonLicApplication;
-using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -23,20 +20,16 @@ internal class BizMemberManager :
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<GetNonSwlBizMemberCommand, NonSwlContactInfo>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
-        IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
-        IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
+        IRequestHandler<BizStakeholderNewInviteCommand, StakeholderInvitesCreateResponse>,
+        IRequestHandler<VerifyBizStakeholderInviteCommand, StakeholderAppInviteVerifyResponse>,
         IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
-        IRequestHandler<CreateBizSwlControllingMemberCommand, BizMemberResponse>,
-        IRequestHandler<CreateBizNonSwlControllingMemberCommand, BizMemberResponse>,
-        IRequestHandler<UpdateBizNonSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizSwlStakeholderCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizNonSwlStakeholderCommand, BizMemberResponse>,
+        IRequestHandler<UpdateBizNonSwlStakeholderCommand, BizMemberResponse>,
         IRequestHandler<DeleteBizMemberCommand, Unit>,
         IBizMemberManager
 {
-    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
-    private readonly ITaskRepository _taskRepository;
-    private readonly IBizRepository _bizRepository;
-    private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
     private readonly IControllingMemberCrcRepository _cmCrcRepository;
 
@@ -64,11 +57,11 @@ internal class BizMemberManager :
         _cmCrcRepository = cmCrcRepository;
     }
 
-    public async Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
+    public async Task<StakeholderAppInviteVerifyResponse> Handle(VerifyBizStakeholderInviteCommand cmd, CancellationToken cancellationToken)
     {
         ControllingMemberInviteVerifyResp resp = await _cmInviteRepository.VerifyControllingMemberInviteAsync(new ControllingMemberInviteVerifyCmd(cmd.InviteEncryptedCode), cancellationToken);
 
-        var response = _mapper.Map<ControllingMemberAppInviteVerifyResponse>(resp);
+        var response = _mapper.Map<StakeholderAppInviteVerifyResponse>(resp);
 
         //get biz app id
         IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
@@ -81,7 +74,8 @@ internal class BizMemberManager :
                     ApplicationPortalStatusEnum.Draft,
                     ApplicationPortalStatusEnum.Incomplete,
                     ApplicationPortalStatusEnum.VerifyIdentity,
-                    ApplicationPortalStatusEnum.AwaitingPayment
+                    ApplicationPortalStatusEnum.AwaitingPayment,
+                    ApplicationPortalStatusEnum.InProgress,
                 }),
             cancellationToken);
         LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
@@ -89,16 +83,16 @@ internal class BizMemberManager :
             .FirstOrDefault();
         response.BizLicAppId = app?.LicenceAppId;
 
-        //get existing controlling member crc app
+        //get existing stakeholder crc app
         BizContactResp? contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
-        if (contactResp == null || contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
+        if (contactResp == null || (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember && contactResp.BizContactRoleCode != BizContactRoleEnum.BusinessManager))
             throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
-        _mapper.Map<BizContactResp, ControllingMemberAppInviteVerifyResponse>(contactResp, response);
+        _mapper.Map<BizContactResp, StakeholderAppInviteVerifyResponse>(contactResp, response);
 
         return response;
     }
 
-    public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
+    public async Task<StakeholderInvitesCreateResponse> Handle(BizStakeholderNewInviteCommand cmd, CancellationToken cancellationToken)
     {
         //check if bizContact already has invitation
         //todo: probably we do not need to check this. it should allow user to send out invite multiple times.
@@ -109,13 +103,13 @@ internal class BizMemberManager :
         //get info from bizContactId
         BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
         if (contactResp == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the non-swl controlling member.");
-        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl controlling member.");
-        if (cmd.InviteTypeCode != ControllingMemberAppInviteTypeCode.CreateShellApp && string.IsNullOrWhiteSpace(contactResp.EmailAddress))
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the non-swl stakeholder.");
+        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember && contactResp.BizContactRoleCode != BizContactRoleEnum.BusinessManager)
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl stakeholder.");
+        if (cmd.InviteTypeCode != StakeholderAppInviteTypeCode.CreateShellApp && string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
 
-        if (cmd.InviteTypeCode == ControllingMemberAppInviteTypeCode.CreateShellApp)
+        if (cmd.InviteTypeCode == StakeholderAppInviteTypeCode.CreateShellApp)
         {
             var createShellApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(contactResp);
             //get biz app id
@@ -146,7 +140,7 @@ internal class BizMemberManager :
             createCmd.InviteTypeCode = Enum.Parse<ControllingMemberAppInviteTypeEnum>(cmd.InviteTypeCode.ToString());
             await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
         }
-        return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
+        return new StakeholderInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
@@ -164,9 +158,20 @@ internal class BizMemberManager :
         members.NonSwlControllingMembers = bizMembers.Where(c => c.LicenceId == null)
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => _mapper.Map<NonSwlContactInfo>(c));
-        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+        members.Employees = bizMembers
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee && !c.PositionCodes.Any(c => c == PositionEnum.PrivateInvestigatorManager))
             .Select(c => _mapper.Map<SwlContactInfo>(c));
+        members.SwlBusinessManagers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.BusinessManager)
+            .Select(c => new SwlContactInfo()
+            {
+                BizContactId = c.BizContactId,
+                LicenceId = c.LicenceId,
+                ContactId = c.ContactId,
+            });
+        members.NonSwlBusinessManagers = bizMembers.Where(c => c.LicenceId == null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.BusinessManager)
+            .Select(c => _mapper.Map<NonSwlContactInfo>(c));
         return members;
     }
 
@@ -178,18 +183,24 @@ internal class BizMemberManager :
         Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
         return new BizMemberResponse(bizContactId);
     }
-    public async Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct)
+    public async Task<BizMemberResponse> Handle(CreateBizSwlStakeholderCommand cmd, CancellationToken ct)
     {
+        if (cmd.StakeholderRole != BizContactRoleCode.ControllingMember && cmd.StakeholderRole != BizContactRoleCode.BusinessManager)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid request to create stakeholder with wrong role.");
+
         BizContact bizContact = _mapper.Map<BizContact>(cmd.SwlControllingMember);
-        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizContactRoleCode = Enum.Parse<BizContactRoleEnum>(cmd.StakeholderRole.ToString());
         bizContact.BizId = cmd.BizId;
         Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
         return new BizMemberResponse(bizContactId);
     }
-    public async Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    public async Task<BizMemberResponse> Handle(CreateBizNonSwlStakeholderCommand cmd, CancellationToken ct)
     {
+        if (cmd.StakeholderRole != BizContactRoleCode.ControllingMember && cmd.StakeholderRole != BizContactRoleCode.BusinessManager)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid request to create stakeholder with wrong role.");
+
         BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
-        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizContactRoleCode = Enum.Parse<BizContactRoleEnum>(cmd.StakeholderRole.ToString());
         bizContact.BizId = cmd.BizId;
         Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
         return new BizMemberResponse(bizContactId);
@@ -199,10 +210,10 @@ internal class BizMemberManager :
         await _bizContactRepository.ManageBizContactsAsync(new BizContactDeleteCmd(cmd.BizContactId), ct);
         return default;
     }
-    public async Task<BizMemberResponse> Handle(UpdateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    public async Task<BizMemberResponse> Handle(UpdateBizNonSwlStakeholderCommand cmd, CancellationToken ct)
     {
         BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
-        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizContactRoleCode = Enum.Parse<BizContactRoleEnum>(cmd.StakeholderRole.ToString());
         bizContact.BizId = cmd.BizId;
         Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactUpdateCmd(cmd.BizContactId, bizContact), ct);
         return new BizMemberResponse(bizContactId);

@@ -163,6 +163,7 @@ namespace Spd.Resource.Repository.Document
         MedicalFormConfirmingNeedDog,
         VeterinarianConfirmationForSpayedNeuteredDog,
         DogTrainingCurriculumCertificateSupportingDocument,
-        GDSDPracticeHoursLog
+        GDSDPracticeHoursLog,
+        GDSDCertificate
     }
 }

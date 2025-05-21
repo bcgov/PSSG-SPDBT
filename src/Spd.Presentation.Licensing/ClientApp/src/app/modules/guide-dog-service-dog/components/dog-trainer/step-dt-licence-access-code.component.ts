@@ -56,7 +56,7 @@ export class StepDtLicenceAccessCodeComponent implements OnInit {
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		this.commonApplicationService.setApplicationTitle(this.serviceTypeDogTrainer, this.applicationTypeCode);
+		this.commonApplicationService.setGdsdApplicationTitle(this.serviceTypeDogTrainer, this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {

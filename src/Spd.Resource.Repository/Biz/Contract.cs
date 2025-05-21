@@ -3,7 +3,7 @@
     public interface IBizRepository
     {
         Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct);
-        Task<BizResult?> GetBizAsync(Guid bizId, CancellationToken ct);
+        Task<BizResult?> GetBizAsync(Guid bizId, CancellationToken ct, bool includeMainOffice = false);
         Task<BizResult> ManageBizAsync(BizCmd cmd, CancellationToken ct);
     }
     //command

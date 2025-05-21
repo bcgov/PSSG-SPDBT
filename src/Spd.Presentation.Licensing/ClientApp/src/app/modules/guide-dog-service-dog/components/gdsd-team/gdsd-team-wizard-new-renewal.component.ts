@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, GdsdAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, GdsdTeamAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -81,7 +81,6 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
 					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
 					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
 					[isServiceDog]="isServiceDog"
@@ -167,6 +166,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 
 		this.isLoggedIn = this.authenticationService.isLoggedIn();
+		this.showSaveAndExit = this.gdsdTeamApplicationService.isSaveAndExit();
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -180,8 +180,6 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 				this.applicationTypeCode = this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-
-				this.showSaveAndExit = this.isLoggedIn && this.applicationTypeCode == ApplicationTypeCode.New;
 
 				this.isServiceDog =
 					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('dogGdsdData.isGuideDog')?.value ===
@@ -207,20 +205,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	onSubmit(): void {
 		if (this.isLoggedIn) {
-			if (this.isNew) {
-				this.gdsdTeamApplicationService.submitLicenceNewAuthenticated().subscribe({
-					next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
-						this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
-					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-					},
-				});
-				return;
-			}
-
-			this.gdsdTeamApplicationService.submitLicenceChangeAuthenticated().subscribe({
-				next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			this.gdsdTeamApplicationService.submitLicenceAuthenticated(this.applicationTypeCode).subscribe({
+				next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 				},
 				error: (error: any) => {
@@ -231,7 +217,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 
 		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
-			next: (_resp: StrictHttpResponse<GdsdAppCommandResponse>) => {
+			next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.router.navigateByUrl(
 					GuideDogServiceDogRoutes.pathGdsdAnonymous(GuideDogServiceDogRoutes.GDSD_APPLICATION_RECEIVED)
 				);
@@ -244,23 +230,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		const index = this.getSelectedIndex(event.selectedIndex);
-		switch (index) {
-			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToFirstStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToFirstStep();
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewConfirm?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -269,20 +240,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		stepper.previous();
 
 		const index = this.getSelectedIndex(stepper.selectedIndex);
-		switch (index) {
-			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToLastStep();
-				break;
-			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToLastStep();
-				break;
-			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToLastStep();
-				break;
-			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -292,20 +251,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
-					switch (stepper.selectedIndex) {
-						case this.STEP_SELECTION:
-							this.stepsSelection?.onGoToFirstStep();
-							break;
-						case this.STEP_PERSONAL_INFO:
-							this.stepsPersonalInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_DOG_INFO:
-							this.stepsDogInfo?.onGoToFirstStep();
-							break;
-						case this.STEP_TRAINING_INFO:
-							this.stepsTrainingInfo?.onGoToFirstStep();
-							break;
-					}
+					const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+					component?.onGoToFirstStep();
 				},
 				error: (error: HttpErrorResponse) => {
 					console.log('An error occurred during save', error);
@@ -375,23 +322,26 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		}
 	}
 
-	private goToChildNextStep() {
-		const index = this.getSelectedIndex(this.stepper.selectedIndex);
-		console.log('goToChildNextStep', this.stepper.selectedIndex, index);
+	private getSelectedIndexComponent(index: number): any {
 		switch (index) {
 			case this.STEP_SELECTION:
-				this.stepsSelection?.onGoToNextStep();
-				break;
+				return this.stepsSelection;
 			case this.STEP_PERSONAL_INFO:
-				this.stepsPersonalInfo?.onGoToNextStep();
-				break;
+				return this.stepsPersonalInfo;
 			case this.STEP_DOG_INFO:
-				this.stepsDogInfo?.onGoToNextStep();
-				break;
+				return this.stepsDogInfo;
 			case this.STEP_TRAINING_INFO:
-				this.stepsTrainingInfo?.onGoToNextStep();
-				break;
+				return this.stepsTrainingInfo;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				return this.stepsReviewConfirm;
 		}
+		return null;
+	}
+
+	private goToChildNextStep() {
+		const index = this.getSelectedIndex(this.stepper.selectedIndex);
+		const component = this.getSelectedIndexComponent(index);
+		component?.onGoToNextStep();
 	}
 
 	get isNew(): boolean {

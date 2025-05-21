@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
 	BizMemberResponse,
-	ControllingMemberAppInviteTypeCode,
-	ControllingMemberInvitesCreateResponse,
 	NonSwlContactInfo,
+	StakeholderAppInviteTypeCode,
+	StakeholderInvitesCreateResponse,
 } from '@app/api/models';
 import { BizMembersService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -15,8 +15,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { take, tap } from 'rxjs';
 
 export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
-	allowNewInvitationsToBeSent?: boolean;
-	bizId?: string;
+	isControllingMember: boolean;
+	memberLabel: string;
+	allowNewInvitationsToBeSent: boolean;
+	bizId: string;
 }
 
 @Component({
@@ -71,7 +73,7 @@ export interface MemberWithoutSWLDialogData extends NonSwlContactInfo {
 							Download the
 							<a
 								aria-label="Download Consent to Criminal Record Check document"
-								download="business-memberauthconsent"
+								download="Business Member Authorization Consent"
 								matTooltip="Download Consent to Criminal Record Check document"
 								[href]="downloadFilePath"
 							>
@@ -119,6 +121,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 
 	title = '';
 	isEdit = false;
+	isControllingMember = true;
 
 	form = this.businessApplicationService.memberWithoutSwlFormGroup;
 
@@ -128,16 +131,17 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 		private bizMembersService: BizMembersService,
 		private dialogRef: MatDialogRef<ModalMemberWithoutSwlEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: any
+		@Inject(MAT_DIALOG_DATA) public dialogData: MemberWithoutSWLDialogData
 	) {}
 
 	ngOnInit(): void {
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
+		this.isControllingMember = this.dialogData.isControllingMember;
 		this.isEdit = !!this.dialogData.bizContactId;
 		this.title = this.isEdit
-			? 'Edit Controlling Member without Security Worker Licence'
-			: 'Add Controlling Member without Security Worker Licence';
+			? `Edit ${this.dialogData.memberLabel} without Security Worker Licence`
+			: `Add ${this.dialogData.memberLabel} without Security Worker Licence`;
 	}
 
 	onSave(): void {
@@ -149,68 +153,98 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 			formValue.emailAddress = null;
 		}
 
-		if (!this.isEdit) {
-			// CREATE
-			this.bizMembersService
-				.apiBusinessBizIdNonSwlControllingMembersPost({
-					bizId: this.dialogData.bizId,
-					body: formValue,
-				})
-				.subscribe((resp: BizMemberResponse) => {
-					formValue.bizContactId = resp.bizContactId;
-
-					if (this.dialogData.allowNewInvitationsToBeSent) {
-						if (formValue.emailAddress) {
-							this.businessApplicationService
-								.sendControllingMembersWithoutSwlInvitation(resp.bizContactId!, ControllingMemberAppInviteTypeCode.New)
-								.pipe(
-									tap((_resp: ControllingMemberInvitesCreateResponse) => {
-										this.dialogRef.close({
-											data: formValue,
-										});
-									}),
-									take(1)
-								)
-								.subscribe();
-						} else {
-							this.businessApplicationService
-								.sendControllingMembersWithoutSwlInvitation(
-									resp.bizContactId!,
-									ControllingMemberAppInviteTypeCode.CreateShellApp
-								)
-								.pipe(
-									tap((_resp: ControllingMemberInvitesCreateResponse) => {
-										this.dialogRef.close({
-											data: formValue,
-										});
-									}),
-									take(1)
-								)
-								.subscribe();
-						}
-					} else {
-						this.dialogRef.close({
-							data: formValue,
-						});
-					}
-				});
-		} else {
+		if (this.isEdit) {
 			// EDIT
-			this.bizMembersService
-				.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
-					bizId: this.dialogData.bizId,
-					bizContactId: this.dialogData.bizContactId!,
-					body: formValue,
-				})
-				.pipe(
-					tap((_resp: BizMemberResponse) => {
-						this.dialogRef.close({
-							data: formValue,
-						});
-					}),
-					take(1)
-				)
-				.subscribe();
+			if (this.isControllingMember) {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
+						bizId: this.dialogData.bizId,
+						bizContactId: this.dialogData.bizContactId!,
+						body: formValue,
+					})
+					.pipe(
+						tap((_resp: BizMemberResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			} else {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlBusinessManagersBizContactIdPut({
+						bizId: this.dialogData.bizId,
+						bizContactId: this.dialogData.bizContactId!,
+						body: formValue,
+					})
+					.pipe(
+						tap((_resp: BizMemberResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		} else {
+			// CREATE
+			if (this.isControllingMember) {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlControllingMembersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
+			} else {
+				this.bizMembersService
+					.apiBusinessBizIdNonSwlBusinessManagersPost({
+						bizId: this.dialogData.bizId,
+						body: formValue,
+					})
+					.subscribe((resp: BizMemberResponse) => {
+						this.addNewMember(resp, formValue);
+					});
+			}
+		}
+	}
+
+	private addNewMember(member: BizMemberResponse, formValue: any) {
+		formValue.bizContactId = member.bizContactId;
+
+		if (this.dialogData.allowNewInvitationsToBeSent) {
+			if (formValue.emailAddress) {
+				this.businessApplicationService
+					.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, StakeholderAppInviteTypeCode.New)
+					.pipe(
+						tap((_resp: StakeholderInvitesCreateResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			} else {
+				this.businessApplicationService
+					.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, StakeholderAppInviteTypeCode.CreateShellApp)
+					.pipe(
+						tap((_resp: StakeholderInvitesCreateResponse) => {
+							this.dialogRef.close({
+								data: formValue,
+							});
+						}),
+						take(1)
+					)
+					.subscribe();
+			}
+		} else {
+			this.dialogRef.close({
+				data: formValue,
+			});
 		}
 	}
 

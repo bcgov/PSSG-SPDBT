@@ -8,11 +8,11 @@ import { SaPersonalInformationComponent } from './step-components/sa-personal-in
 import { SaPreviousNameComponent } from './step-components/sa-previous-name.component';
 
 @Component({
-    selector: 'app-sa-step-personal-info',
-    template: `
+	selector: 'app-sa-step-personal-info',
+	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-sa-contact-information *ngIf="orgData" [orgData]="orgData"></app-sa-contact-information>
+				<app-sa-contact-information [orgData]="orgData"></app-sa-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -27,7 +27,7 @@ import { SaPreviousNameComponent } from './step-components/sa-previous-name.comp
 			</mat-step>
 
 			<mat-step>
-				<app-sa-personal-information *ngIf="orgData" [orgData]="orgData"></app-sa-personal-information>
+				<app-sa-personal-information [orgData]="orgData"></app-sa-personal-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -88,7 +88,6 @@ import { SaPreviousNameComponent } from './step-components/sa-previous-name.comp
 
 			<mat-step>
 				<app-sa-summary
-					*ngIf="orgData"
 					[orgData]="orgData"
 					(reEditPersonalInformation)="onReEditPersonalInformation()"
 					(reEditCrcInformation)="onReEditCrcInformation()"

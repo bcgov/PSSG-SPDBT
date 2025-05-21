@@ -18,6 +18,7 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { BranchResponse } from '@app/modules/business-licence-application/components/business-bc-branches.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 
 export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
@@ -38,7 +39,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			bizTypeCode: new FormControl('', [Validators.required]),
+			bizTypeCode: new FormControl('', [FormControlValidators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
 			bizTradeName: new FormControl(''),
 			isBizTradeNameReadonly: new FormControl(''),
@@ -46,10 +47,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
 			soleProprietorLicenceId: new FormControl(''),
-			soleProprietorLicenceAppId: new FormControl(''),
-			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
-			soleProprietorLicenceHolderId: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
 			soleProprietorLicenceExpiryDate: new FormControl(''),
 			soleProprietorLicenceStatusCode: new FormControl(''),
@@ -178,7 +176,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
 	});
 
 	applicantFormGroup: FormGroup = this.formBuilder.group(
@@ -267,14 +265,14 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		city: new FormControl('', [FormControlValidators.required]),
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
-			FormControlValidators.required,
+			Validators.required,
 			FormControlValidators.requiredValue(
 				SPD_CONSTANTS.address.provinceBC,
 				SPD_CONSTANTS.address.provinceBritishColumbia
 			),
 		]),
 		country: new FormControl('', [
-			FormControlValidators.required,
+			Validators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 	});
@@ -284,24 +282,19 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		branches: this.formBuilder.array([]),
 	});
 
-	controllingMembersFormGroup: FormGroup = this.formBuilder.group(
-		{
-			membersWithSwl: this.formBuilder.array([]),
-			membersWithoutSwl: this.formBuilder.array([]),
-			attachmentIsRequired: new FormControl(false),
-			attachments: new FormControl([]),
-			applicationIsInDraftOrWaitingForPayment: new FormControl(null),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('attachmentIsRequired')?.value
-				),
-				FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl'),
-			],
-		}
-	);
+	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
+	});
+
+	businessMembersFormGroup: FormGroup = this.formBuilder.group({
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
+	});
+
+	corporateRegistryDocumentFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]),
+	});
 
 	employeesFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -334,6 +327,35 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
+	createBranchInBcFormGroup(): FormGroup {
+		return this.formBuilder.group({
+			addressLine1: ['', FormControlValidators.required],
+			addressLine2: [''],
+			city: ['', FormControlValidators.required],
+			postalCode: ['', FormControlValidators.required],
+			province: [
+				'',
+				[
+					FormControlValidators.required,
+					FormControlValidators.requiredValue(
+						SPD_CONSTANTS.address.provinceBC,
+						SPD_CONSTANTS.address.provinceBritishColumbia
+					),
+				],
+			],
+			country: [
+				'',
+				[
+					FormControlValidators.required,
+					FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
+				],
+			],
+			branchManager: ['', FormControlValidators.required],
+			branchPhoneNumber: ['', FormControlValidators.required],
+			branchEmailAddr: ['', FormControlValidators.email],
+		});
+	}
+
 	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
@@ -351,7 +373,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
+				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'emailAddress',
 					(_form) => _form.get('noEmailAddress')?.value != true
 				),
@@ -359,13 +381,13 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
-	managerFormGroup: FormGroup = this.formBuilder.group({
+	portalAdministratorFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
 		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl(''),
 		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 		jobTitle: new FormControl(''),
 	});
 
@@ -390,6 +412,34 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		super(formBuilder);
 	}
 
+	isBcBranchValid(branch: BranchResponse): boolean {
+		const branchFormGroup = this.createBranchInBcFormGroup();
+		branchFormGroup.patchValue(branch);
+		return branchFormGroup.valid;
+	}
+
+	/**
+	 * Is the count of stakeholders valid?
+	 * @param
+	 * @returns minCountValid, maxCountValid
+	 */
+	isBusinessStakeholdersCountValid(): { minCountValid: boolean; maxCountValid: boolean } {
+		const maxCount = SPD_CONSTANTS.maxCount.controllingMembersAndBusinessManagers;
+		const controllingMembersFormGroup = this.controllingMembersFormGroup;
+		const businessMembersFormGroup = this.businessMembersFormGroup;
+
+		const total =
+			+controllingMembersFormGroup.get('membersWithSwl')?.value.length +
+			+controllingMembersFormGroup.get('membersWithoutSwl')?.value.length +
+			+businessMembersFormGroup.get('membersWithSwl')?.value.length +
+			+businessMembersFormGroup.get('membersWithoutSwl')?.value.length;
+
+		const minCountValid = total > 0;
+		const maxCountValid = total <= 0 || (total > 0 && total <= maxCount);
+
+		return { minCountValid, maxCountValid };
+	}
+
 	/**
 	 * Get the valid list of categories based upon the current selections
 	 * @param categoryList
@@ -407,7 +457,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getDocsToSaveBlobs(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const companyBrandingData = businessModelFormValue.companyBrandingData;
 		const liabilityData = businessModelFormValue.liabilityData;
-		const controllingMembersData = businessModelFormValue.controllingMembersData;
+		const corporateRegistryDocumentData = businessModelFormValue.corporateRegistryDocumentData;
 
 		const documents: Array<LicenceDocumentsToSave> = [];
 
@@ -464,9 +514,20 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			}
 		}
 
-		if (controllingMembersData.attachments) {
+		if (categoryData.attachments) {
 			const docs: Array<Blob> = [];
-			controllingMembersData.attachments.forEach((doc: any) => {
+			categoryData.attachments.forEach((doc: any) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+				documents: docs,
+			});
+		}
+
+		if (corporateRegistryDocumentData.attachments) {
+			const docs: Array<Blob> = [];
+			corporateRegistryDocumentData.attachments.forEach((doc: any) => {
 				docs.push(doc);
 			});
 			documents.push({
@@ -509,8 +570,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		let applicantContactInfo: ContactInfo = {};
 		let applicantIsBizManager: boolean | null = null;
 
-		applicantIsBizManager = applicantData.applicantIsBizManager ?? true;
-		if (applicantData.applicantIsBizManager != true) {
+		applicantIsBizManager = applicantData.applicantIsBizManager === true;
+		if (!applicantIsBizManager) {
 			applicantContactInfo = {
 				emailAddress: applicantData.emailAddress,
 				givenName: applicantData.givenName,
@@ -541,20 +602,11 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 
 		if (categoryData.PrivateInvestigator) {
-			const isSoleProprietorSimultaneousFlow = businessModelFormValue.isSoleProprietorSimultaneousFlow;
-			if (!isSoleProprietorSimultaneousFlow && this.isSoleProprietor(bizTypeCode)) {
-				// if sole proprietor, populate the PI info from the associated swl in the profile
-				privateInvestigatorSwlInfo = {
-					contactId: businessInformationData.soleProprietorLicenceHolderId,
-					licenceId: businessInformationData.soleProprietorLicenceId,
-				};
-			} else {
-				const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
-				privateInvestigatorSwlInfo = {
-					contactId: privateInvestigatorData.managerContactId,
-					licenceId: privateInvestigatorData.managerLicenceId,
-				};
-			}
+			const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
+			privateInvestigatorSwlInfo = {
+				contactId: privateInvestigatorData.managerContactId,
+				licenceId: privateInvestigatorData.managerLicenceId,
+			};
 		} else {
 			this.clearPrivateInvestigatorModelData();
 		}
@@ -654,7 +706,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
 		const companyBrandingData = businessModelFormValue.companyBrandingData;
 		const liabilityData = businessModelFormValue.liabilityData;
-		const controllingMembersData = businessModelFormValue.controllingMembersData;
+		const corporateRegistryDocumentData = businessModelFormValue.corporateRegistryDocumentData;
 
 		const documents: Array<Document> = [];
 
@@ -703,8 +755,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			}
 		}
 
-		if (controllingMembersData.attachments) {
-			controllingMembersData.attachments?.forEach((doc: any) => {
+		if (corporateRegistryDocumentData.attachments) {
+			corporateRegistryDocumentData.attachments?.forEach((doc: any) => {
 				documents.push({
 					documentUrlId: doc.documentUrlId,
 					licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
@@ -901,14 +953,22 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	}
 
 	getSummarymembersWithSwlList(businessLicenceModelData: any): Array<any> {
-		return businessLicenceModelData.controllingMembersData.membersWithSwl;
+		const cm = businessLicenceModelData.controllingMembersData.membersWithSwl;
+		const bm = businessLicenceModelData.businessMembersData.membersWithSwl;
+		return cm.concat(bm);
 	}
 	getSummarymembersWithoutSwlList(businessLicenceModelData: any): Array<any> {
-		return businessLicenceModelData.controllingMembersData.membersWithoutSwl;
+		const cm = businessLicenceModelData.controllingMembersData.membersWithoutSwl;
+		const bm = businessLicenceModelData.businessMembersData.membersWithoutSwl;
+		return cm.concat(bm);
 	}
 
 	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
 		return businessLicenceModelData.employeesData.employees ?? [];
+	}
+
+	getSummarycorporateRegistryDocumentsAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.corporateRegistryDocumentData.attachments ?? [];
 	}
 
 	getSummaryisAddressTheSame(businessLicenceModelData: any): boolean {

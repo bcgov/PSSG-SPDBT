@@ -6,7 +6,6 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import {
 	LookupByLicenceNumberDialogData,
@@ -97,12 +96,6 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 					</div>
 				</div>
 
-				<div class="col-12 mb-3" *ngIf="showInvalidSoleProprietorCategories">
-					<app-alert type="danger" icon="dangerous">
-						{{ invalidSoleProprietorCategoriesMsg }}
-					</app-alert>
-				</div>
-
 				<div class="my-2">
 					<ng-container *ngIf="!isSoleProprietorCombinedFlow">
 						<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
@@ -145,7 +138,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								form.get('soleProprietorLicenceId')?.hasError('required')
 							"
 						>
-							A valid security worker licence must be selected
+							You must have a valid security worker licence to apply for a sole proprietor business licence.
 						</mat-error>
 
 						<div
@@ -219,9 +212,6 @@ export class CommonBusinessInformationComponent implements OnInit {
 	bcRegistriesAccountUrl = SPD_CONSTANTS.urls.bcRegistriesAccountUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
-	showInvalidSoleProprietorCategories = false;
-	readonly invalidSoleProprietorCategoriesMsg = SPD_CONSTANTS.messages.invalidSoleProprietorCategories;
-
 	matcher = new FormErrorStateMatcher();
 
 	businessTypes = BusinessLicenceTypes;
@@ -235,8 +225,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private dialog: MatDialog,
-		private utilService: UtilService,
-		private commonApplicationService: CommonApplicationService
+		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
@@ -289,37 +278,19 @@ export class CommonBusinessInformationComponent implements OnInit {
 			.subscribe((resp: any) => {
 				const lookupData: LicenceResponse | null = resp?.data;
 				if (lookupData) {
-					this.showInvalidSoleProprietorCategories = !this.commonApplicationService.isValidSoleProprietorSwlCategories(
-						lookupData.categoryCodes ?? []
-					);
+					this.form.patchValue({
+						soleProprietorLicenceId: lookupData.licenceId,
+						soleProprietorLicenceHolderName: lookupData.licenceHolderName,
+						soleProprietorLicenceNumber: lookupData.licenceNumber,
+						soleProprietorLicenceExpiryDate: lookupData.expiryDate,
+						soleProprietorLicenceStatusCode: lookupData.licenceStatusCode,
+					});
 
-					if (this.showInvalidSoleProprietorCategories) {
-						this.form.patchValue({
-							soleProprietorLicenceId: null,
-							soleProprietorLicenceAppId: null,
-							soleProprietorCategoryCodes: null,
-							soleProprietorLicenceHolderName: null,
-							soleProprietorLicenceNumber: null,
-							soleProprietorLicenceExpiryDate: null,
-							soleProprietorLicenceStatusCode: null,
+					this.businessApplicationService
+						.applyBusinessLicenceSoleProprietorSelection(lookupData)
+						.subscribe((_resp: any) => {
+							this.utilService.toasterSuccess('A sole proprietor was successfully selected');
 						});
-					} else {
-						this.form.patchValue({
-							soleProprietorLicenceId: lookupData.licenceId,
-							soleProprietorLicenceAppId: lookupData.licenceAppId,
-							soleProprietorCategoryCodes: lookupData.categoryCodes,
-							soleProprietorLicenceHolderName: lookupData.licenceHolderName,
-							soleProprietorLicenceNumber: lookupData.licenceNumber,
-							soleProprietorLicenceExpiryDate: lookupData.expiryDate,
-							soleProprietorLicenceStatusCode: lookupData.licenceStatusCode,
-						});
-
-						this.businessApplicationService
-							.applyBusinessLicenceSoleProprietorSelection(lookupData)
-							.subscribe((_resp: any) => {
-								this.utilService.toasterSuccess('A sole proprietor was successfully selected');
-							});
-					}
 				}
 			});
 	}

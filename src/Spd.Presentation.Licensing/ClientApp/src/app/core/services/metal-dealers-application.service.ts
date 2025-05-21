@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription } from 'rxjs';
+import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
 import { MetalDealersApplicationHelper } from './metal-dealers-application.helper';
@@ -13,7 +15,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	metalDealersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	metalDealersModelFormGroup: FormGroup = this.formBuilder.group({
-		registrationData: this.registrationFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
 		businessOwnerData: this.businessOwnerFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
@@ -28,7 +30,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		utilService: UtilService,
-		fileUtilService: FileUtilService
+		fileUtilService: FileUtilService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, utilService, fileUtilService);
 
@@ -36,12 +39,9 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					const step1Complete = this.isStepRegistrationInformationComplete();
-					const step2Complete = this.isStepBusinessOwnerComplete();
-					const step3Complete = this.isStepBusinessManagerComplete();
-					const step4Complete = this.isStepBusinessAddressesComplete();
-					const step5Complete = this.isStepBranchOfficesComplete();
-					const isValid = step1Complete && step2Complete && step3Complete && step4Complete && step5Complete;
+					const step2Complete = this.isStepBusinessInfoComplete();
+					const step3Complete = this.isStepBranchOfficesComplete();
+					const isValid = step2Complete && step3Complete;
 
 					console.debug('metalDealersModelFormGroup CHANGED', this.metalDealersModelFormGroup.getRawValue());
 
@@ -56,32 +56,10 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStepRegistrationInformationComplete(): boolean {
-		return this.registrationFormGroup.valid;
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStepBusinessOwnerComplete(): boolean {
-		return this.businessOwnerFormGroup.valid;
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStepBusinessManagerComplete(): boolean {
-		return this.businessManagerFormGroup.valid;
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStepBusinessAddressesComplete(): boolean {
-		return this.businessAddressFormGroup.valid;
+	isStepBusinessInfoComplete(): boolean {
+		return (
+			this.businessOwnerFormGroup.valid && this.businessManagerFormGroup.valid && this.businessAddressFormGroup.valid
+		);
 	}
 
 	/**
@@ -98,6 +76,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 */
 	createNewRegistration(): Observable<any> {
 		this.reset();
+
+		this.commonApplicationService.setMdraApplicationTitle(ApplicationTypeCode.New);
 
 		this.initialized = true;
 		return of(this.metalDealersModelFormGroup.value);

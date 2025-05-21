@@ -88,7 +88,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>(), false))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -124,7 +124,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>(), false))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -163,7 +163,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>(), false))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -222,7 +222,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>(), false))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -302,7 +302,7 @@ namespace Spd.Manager.Licence.UnitTest
             // Arrange
             Guid bizId = Guid.NewGuid();
             GetBizProfileQuery qry = new(bizId);
-            mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>(), false))
                 .ReturnsAsync(new BizResult() { Id = bizId, BizName = "test" });
 
             // Action

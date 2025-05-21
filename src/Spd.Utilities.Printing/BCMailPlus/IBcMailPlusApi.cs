@@ -110,7 +110,7 @@ public static class Jobs
     /// <summary>
     /// Security worker licence job: it will generate image file
     /// </summary>
-    public const string SecurityWorkerLicense = "PSSG-SPD-CARD";
+    public const string PersonalLicense = "PSSG-SPD-CARD";
 
     /// <summary>
     /// Business licence job
@@ -130,7 +130,7 @@ public static class Jobs
     /// <summary>
     /// Release Security worker licence job: the job will be routed to the physical printing queue
     /// </summary>
-    public const string SecurityWorkerLicenseRelease = "PSSG-SPD-CARD-RELEASE";
+    public const string PersonalLicenseRelease = "PSSG-SPD-CARD-RELEASE";
 }
 
 internal static class JobStatusValues

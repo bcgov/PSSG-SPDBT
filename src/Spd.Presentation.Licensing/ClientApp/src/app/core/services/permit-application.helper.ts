@@ -86,7 +86,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	employerInformationFormGroup: FormGroup = this.formBuilder.group({
 		employerName: new FormControl('', [FormControlValidators.required]),
 		supervisorName: new FormControl('', [FormControlValidators.required]),
-		supervisorEmailAddress: new FormControl('', [FormControlValidators.required]),
+		supervisorEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		supervisorPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -322,7 +322,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseSubmitAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
-		console.debug('[getSaveBodyBaseSubmitAuthenticated] baseData', baseData);
+
+		// converted data maybe missing this value.
+		if (typeof baseData.hasBcDriversLicence !== 'boolean') {
+			baseData.hasBcDriversLicence = false;
+		}
 
 		const returnBody: PermitAppSubmitRequest = baseData;
 		return returnBody;
@@ -330,7 +334,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): PermitAppUpsertRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
-		console.debug('[getSaveBodyBaseUpsertAuthenticated] baseData', baseData);
 
 		const returnBody: PermitAppUpsertRequest = baseData;
 		return returnBody;
@@ -338,7 +341,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseSubmitAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
-		console.debug('[getSaveBodyBaseSubmitAnonymous] baseData', baseData);
 
 		const returnBody: PermitAppSubmitRequest = baseData;
 		return returnBody;
@@ -364,6 +366,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const personalInformationData = permitModelFormValue.personalInformationData;
 		const permitRequirementData = permitModelFormValue.permitRequirementData;
 		const permitRationaleData = permitModelFormValue.permitRationaleData;
+		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
 
 		const documentInfos: Array<Document> = [];
 
@@ -496,12 +499,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			};
 		}
 
-		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		const criminalChargeDescription =
-			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory
 				? criminalHistoryData.criminalChargeDescription
-				: '';
+				: null;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
@@ -537,6 +539,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			this.clearExpiredLicenceModelData();
 		}
 
+		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
+		const hasPreviousName = this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag);
+
 		const body = {
 			licenceAppId,
 			originalApplicationId: originalLicenceData.originalApplicationId,
@@ -546,17 +551,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			bizTypeCode: BizTypeCode.None,
 			//-----------------------------------
-			hasPreviousName: this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag),
-			aliases:
-				permitModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? permitModelFormValue.aliasesData.aliases
-					: [],
+			hasPreviousName,
+			aliases: hasPreviousName ? permitModelFormValue.aliasesData.aliases : [],
 			//-----------------------------------
-			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
-			bcDriversLicenceNumber:
-				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
-					? bcDriversLicenceData.bcDriversLicenceNumber
-					: null,
+			hasBcDriversLicence,
+			bcDriversLicenceNumber: hasBcDriversLicence ? bcDriversLicenceData.bcDriversLicenceNumber : null,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
@@ -619,7 +618,10 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			permitModelData.personalInformationData.surname
 		);
 	}
-	getSummaryshowPhotographOfYourselfGenderChange(permitModelData: any): boolean {
+	showPhotographOfYourselfStep(permitModelData: any): boolean {
+		const originalPhotoOfYourselfExpired = !!permitModelData.originalLicenceData.originalPhotoOfYourselfExpired;
+		if (originalPhotoOfYourselfExpired) return true;
+
 		const attachments = this.getSummaryphotoOfYourselfAttachments(permitModelData) ?? [];
 		return this.getSummaryhasGenderChanged(permitModelData) && attachments.length > 0;
 	}

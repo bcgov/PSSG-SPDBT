@@ -200,6 +200,13 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									(keydown)="onKeydownRequestReplacement($event, licence)"
 									>Request a replacement</a
 								>
+
+								<div class="mt-4" *ngIf="licence.originalPhotoOfYourselfExpired">
+									<app-alert type="danger" icon="dangerous">
+										A replacement for this record is not available at this time. Use update to provide missing
+										information and receive a replacement.
+									</app-alert>
+								</div>
 							</div>
 						</ng-container>
 
