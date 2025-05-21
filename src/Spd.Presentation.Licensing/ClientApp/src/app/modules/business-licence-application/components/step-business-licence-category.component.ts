@@ -49,6 +49,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									class="large my-2"
 									aria-label="Add a category"
 									(click)="onAddCategory()"
+									*ngIf="categoryList.length < 6"
 								>
 									Add Category
 								</button>
