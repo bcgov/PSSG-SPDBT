@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -276,12 +276,9 @@ export class StepGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.guideDogServiceDogTerms;
 
-	form = this.gdsdTeamApplicationService.termsAndConditionsFormGroup;
+	@Input() form!: FormGroup;
 
-	constructor(
-		private utilService: UtilService,
-		private gdsdTeamApplicationService: GdsdTeamApplicationService
-	) {}
+	constructor(private utilService: UtilService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
