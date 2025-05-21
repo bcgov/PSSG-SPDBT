@@ -208,6 +208,11 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
+export const DogGenderTypes: SelectOptions[] = [
+	{ desc: 'Female', code: GenderCode.F },
+	{ desc: 'Male', code: GenderCode.M },
+];
+
 export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
@@ -304,7 +309,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Dog Trainer Certification', code: ServiceTypeCode.DogTrainerCertification },
 	{ desc: 'GDSD Team Certification', code: ServiceTypeCode.GdsdTeamCertification },
 	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
-	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
+	{ desc: 'Metal Dealers & Recyclers', code: ServiceTypeCode.Mdra },
 	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },
@@ -319,10 +324,10 @@ export const ServiceTypes: SelectOptions[] = [
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [
-	{ desc: 'Business Manager', code: ContactAuthorizationTypeCode.BusinessManager },
 	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
+	{ desc: 'Portal Administrator', code: ContactAuthorizationTypeCode.BusinessManager },
 	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
-	{ desc: 'Primary Business Manager', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
+	{ desc: 'Primary Portal Administrator', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const HairColourTypes: SelectOptions[] = [

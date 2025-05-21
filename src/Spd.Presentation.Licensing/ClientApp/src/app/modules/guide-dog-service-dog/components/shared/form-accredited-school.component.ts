@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -50,17 +51,26 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	standalone: false,
 })
-export class FormAccreditedSchoolComponent {
+export class FormAccreditedSchoolComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	matcher = new FormErrorStateMatcher();
 
 	@Input() schoolLabel = 'Your Assistance Dogs International or International Guide Dog Federation Accredited School';
 	@Input() accreditedSchoolIdControl!: FormControl;
 	@Input() accreditedSchoolNameControl!: FormControl;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	accreditedDogSchools = this.configService.accreditedDogSchools;
 
 	constructor(private configService: ConfigService) {}
+
+	ngOnInit(): void {
+		if (this.isRenewal) {
+			this.accreditedSchoolIdControl.disable({ emitEvent: false });
+		} else {
+			this.accreditedSchoolIdControl.enable({ emitEvent: false });
+		}
+	}
 
 	get selectedSchool(): DogSchoolResponseExt | null | undefined {
 		return this.accreditedSchoolIdControl.value
@@ -70,5 +80,9 @@ export class FormAccreditedSchoolComponent {
 
 	onSchoolChange(_event: MatSelectChange): void {
 		this.accreditedSchoolNameControl.setValue(this.selectedSchool?.schoolName);
+	}
+
+	get isRenewal(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
 	}
 }

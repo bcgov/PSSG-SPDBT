@@ -295,7 +295,7 @@ public class BizLicenceAppManagerTest
             .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
-        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None, false))
             .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()
@@ -486,7 +486,7 @@ public class BizLicenceAppManagerTest
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
-        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None, false))
             .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()
@@ -653,7 +653,7 @@ public class BizLicenceAppManagerTest
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
-        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None, false))
             .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()

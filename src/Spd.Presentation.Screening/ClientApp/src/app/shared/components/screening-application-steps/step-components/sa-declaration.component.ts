@@ -10,9 +10,9 @@ export class DeclarationModel {
 }
 
 @Component({
-    selector: 'app-sa-declaration',
-    template: `
-		<section class="step-section p-3" *ngIf="orgData">
+	selector: 'app-sa-declaration',
+	template: `
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step mb-4">
 					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
@@ -34,14 +34,14 @@ export class DeclarationModel {
 							>
 						</div>
 					</div>
-					<div class="row" *ngIf="orgData.shareableCrcExists">
+					<div class="row" *ngIf="orgData?.shareableCrcExists">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<mat-divider class="my-3"></mat-divider>
 							<p class="fs-5">Share your existing criminal record check</p>
 							<div>
 								You have an existing criminal record check for working with
-								{{ shareCrcWorksWith | options : 'EmployeeInteractionTypes' }}, issued on
-								{{ shareCrcGrantedDate | formatDate : appConstants.date.formalDateFormat }}. Do you want to share the
+								{{ shareCrcWorksWith | options: 'EmployeeInteractionTypes' }}, issued on
+								{{ shareCrcGrantedDate | formatDate: appConstants.date.formalDateFormat }}. Do you want to share the
 								results of this criminal record check at no cost?
 							</div>
 							<mat-radio-group aria-label="Select an option" formControlName="agreeToShareCrc">

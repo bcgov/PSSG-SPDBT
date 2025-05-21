@@ -1,5 +1,4 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
 import { StepTeamAccreditedGraduationComponent } from './step-team-accredited-graduation.component';
@@ -113,7 +112,6 @@ export class StepsTeamTrainingInfoComponent extends BaseWizardStepComponent {
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
 	@Input() isFormValid = false;
-	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isTrainedByAccreditedSchools!: boolean;
 	@Input() hasAttendedTrainingSchool!: boolean;
 	@Input() isServiceDog!: boolean;

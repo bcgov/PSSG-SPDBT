@@ -15,14 +15,14 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Permit Selection</div>
+										<div class="panel-header">Permit Details</div>
 										<button
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											matTooltip="Go to Step 1"
+											aria-label="Go to Step 1"
+											(click)="$event.stopPropagation(); onEditStep(0)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>

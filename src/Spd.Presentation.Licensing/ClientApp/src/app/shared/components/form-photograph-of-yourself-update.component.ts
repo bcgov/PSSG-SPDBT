@@ -58,7 +58,7 @@ import { OptionsPipe } from '../pipes/options.pipe';
 							</app-alert>
 						</div>
 
-						<app-alert type="danger" icon="dangerous" *ngIf="originalPhotoOfYourselfExpired">
+						<app-alert type="danger" icon="dangerous" *ngIf="showPhotoOfYourselfExpired">
 							We require a new photo every 5 years. Please provide a new photo for your {{ serviceTypeLabel }}.
 						</app-alert>
 
@@ -92,6 +92,7 @@ export class FormPhotographOfYourselfUpdateComponent implements OnInit, LicenceC
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 	serviceTypeDesc = 'licence';
+	showPhotoOfYourselfExpired = false;
 
 	@Input() form!: FormGroup;
 	@Input() serviceTypeLabel = 'licence'; // licence or permit
@@ -108,6 +109,7 @@ export class FormPhotographOfYourselfUpdateComponent implements OnInit, LicenceC
 
 	ngOnInit(): void {
 		this.serviceTypeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes').toLowerCase();
+		this.showPhotoOfYourselfExpired = this.originalPhotoOfYourselfExpired && !!this.photographOfYourself;
 	}
 
 	onFileUploaded(file: File): void {

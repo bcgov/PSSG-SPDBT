@@ -5,26 +5,26 @@ namespace Spd.Manager.Licence;
 public interface IGDSDAppManager
 {
     //anonymous
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
+    public Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppAnonymousSubmitCommand command, CancellationToken ct);
 
     //auth
     public Task<GDSDTeamLicenceAppResponse> Handle(GDSDTeamLicenceApplicationQuery query, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand command, CancellationToken ct);
-    public Task<GDSDAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand command, CancellationToken ct);
+    public Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppUpsertCommand command, CancellationToken ct);
+    public Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<GDSDTeamAppCommandResponse> Handle(GDSDTeamLicenceAppRenewCommand command, CancellationToken ct);
 }
 
 #region authenticated
-public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDAppCommandResponse>;
-public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : GDSDTeamLicenceAppUpsertCommand(UpsertRequest), IRequest<GDSDAppCommandResponse>;
-public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
-public record GDSDTeamLicenceAppRenewCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppUpsertCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : IRequest<GDSDTeamAppCommandResponse>;
+public record GDSDTeamLicenceAppSubmitCommand(GDSDTeamLicenceAppUpsertRequest UpsertRequest) : GDSDTeamLicenceAppUpsertCommand(UpsertRequest), IRequest<GDSDTeamAppCommandResponse>;
+public record GDSDTeamLicenceAppReplaceCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDTeamAppCommandResponse>;
+public record GDSDTeamLicenceAppRenewCommand(GDSDTeamLicenceAppChangeRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDTeamAppCommandResponse>;
 public record GDSDTeamLicenceApplicationQuery(Guid LicenceApplicationId) : IRequest<GDSDTeamLicenceAppResponse>;
 #endregion
 
 #region anonymous
-public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDAppCommandResponse>;
+public record GDSDTeamLicenceAppAnonymousSubmitCommand(GDSDTeamLicenceAppAnonymousSubmitRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<GDSDTeamAppCommandResponse>;
 #endregion
 
 public abstract record GDSDTeamLicenceAppBase : LicenceAppBase
@@ -84,7 +84,7 @@ public record GDSDTeamLicenceAppResponse : GDSDTeamLicenceAppNew
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
-public record GDSDAppCommandResponse
+public record GDSDTeamAppCommandResponse
 {
     public Guid? LicenceAppId { get; set; }
 }

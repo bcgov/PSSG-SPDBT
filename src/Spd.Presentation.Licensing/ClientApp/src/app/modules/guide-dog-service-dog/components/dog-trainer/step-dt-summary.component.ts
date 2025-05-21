@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
-						<mat-expansion-panel class="mb-4" [expanded]="true" *ngIf="isNew">
+						<mat-expansion-panel class="mb-4" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
@@ -23,8 +23,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
 											(click)="$event.stopPropagation(); onEditStep(1)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -69,8 +69,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
 											(click)="$event.stopPropagation(); onEditStep(2)"
 										>
 											<mat-icon>edit</mat-icon>
@@ -106,7 +106,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
 								<app-form-address-summary
-									[formData]="dogTrainerModelData.dogTrainerAddressData"
+									[formData]="dogTrainerModelData.trainerMailingAddressData"
 									headingLabel="Mailing Address"
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
@@ -257,9 +257,5 @@ export class StepDtSummaryComponent implements OnInit, LicenceChildStepperStepCo
 	}
 	get governmentIssuedPhotoAttachments(): File[] | null {
 		return this.dogTrainerApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.dogTrainerModelData);
-	}
-
-	get isNew(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

@@ -63,7 +63,8 @@ internal class PrintingManager
                 ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
                 await UpdateResultInEvent(result, request.EventId, cancellationToken);
                 return result;
-            };
+            }
+            ;
         }
         catch (Exception ex)
         {
@@ -152,6 +153,15 @@ internal class PrintingManager
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBodyArmourPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBodyArmourPermitPrinting");
 
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPGuideDogServiceDogTeamPrinting");
+
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPDogTrainerPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPDogTrainerPrinting");
+
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPRetiredServiceDogPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPRetiredServiceDogPrinting");
+
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBusinessLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBusinessLicencePrinting");
 
@@ -161,6 +171,9 @@ internal class PrintingManager
             EventTypeEnum.BCMPSecurityWorkerLicencePrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPBodyArmourPermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPArmouredVehiclePermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPDogTrainerPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPRetiredServiceDogPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             _ => throw new NotImplementedException()
         };

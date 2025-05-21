@@ -5,20 +5,21 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
 	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
-		gdsdCertificateNumber: new FormControl('', [Validators.required]),
-		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool
+		currentGDSDCertificateNumber: new FormControl('', [FormControlValidators.required]),
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.GdsdCertificate
 	});
 
 	dogRetiredForm: FormGroup = this.formBuilder.group({
-		dateOfRetirement: new FormControl('', [Validators.required]),
+		dogRetiredDate: new FormControl('', [Validators.required]),
 	});
 
 	dogLivingForm: FormGroup = this.formBuilder.group({
-		isContinueToLiveWithDog: new FormControl('', [Validators.required]),
+		confirmDogLiveWithYouAfterRetire: new FormControl('', [FormControlValidators.required]),
 	});
 
 	constructor(
@@ -34,7 +35,6 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseNew(retiredDogModelFormGroup: any): any {
-		// TODO fix } RetiredDogRequestExt {
 		return this.getSaveBodyBase(retiredDogModelFormGroup);
 	}
 
@@ -43,7 +43,6 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * @returns
 	 */
 	getSaveBodyBaseChange(retiredDogModelFormGroup: any): any {
-		// TODO fix  RetiredDogChangeRequestExt {
 		const bodyBase = this.getSaveBodyBase(retiredDogModelFormGroup);
 
 		const body = {
@@ -78,17 +77,18 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(retiredDogModelFormGroup: any): any {
-		const serviceTypeData = retiredDogModelFormGroup.serviceTypeData;
-		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
-		const personalInformationData = retiredDogModelFormGroup.personalInformationData;
-		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
-		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
-		const mailingAddressData = retiredDogModelFormGroup.mailingAddressData;
-		const dogInfoData = retiredDogModelFormGroup.dogInfoData;
-		const dogRetiredData = retiredDogModelFormGroup.retiredDogData;
-		const dogLivingData = retiredDogModelFormGroup.dogLivingData;
-		const originalLicenceData = retiredDogModelFormGroup.originalLicenceData;
+	private getSaveBodyBase(retiredDogModelFormValue: any): any {
+		const serviceTypeData = retiredDogModelFormValue.serviceTypeData;
+		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
+		const personalInformationData = retiredDogModelFormValue.personalInformationData;
+		const dogGdsdCertificateData = retiredDogModelFormValue.dogGdsdCertificateData;
+		const photographOfYourselfData = retiredDogModelFormValue.photographOfYourselfData;
+		const governmentPhotoIdData = retiredDogModelFormValue.governmentPhotoIdData;
+		const mailingAddressData = retiredDogModelFormValue.mailingAddressData;
+		const dogInfoData = retiredDogModelFormValue.dogInfoData;
+		const dogRetiredData = retiredDogModelFormValue.dogRetiredData;
+		const dogLivingData = retiredDogModelFormValue.dogLivingData;
+		const originalLicenceData = retiredDogModelFormValue.originalLicenceData;
 		const documentInfos: Array<Document> = [];
 
 		if (dogInfoData.dogDateOfBirth) {
@@ -99,8 +99,8 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			personalInformationData.dateOfBirth = this.utilService.dateToDbDate(personalInformationData.dateOfBirth);
 		}
 
-		if (dogRetiredData.dateOfRetirement) {
-			dogRetiredData.dateOfRetirement = this.utilService.dateToDbDate(dogRetiredData.dateOfRetirement);
+		if (dogRetiredData.dogRetiredDate) {
+			dogRetiredData.dogRetiredDate = this.utilService.dateToDbDate(dogRetiredData.dogRetiredDate);
 		}
 
 		if (personalInformationData.phoneNumber) {
@@ -113,7 +113,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		dogGdsdCertificateData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdCertificate,
 			});
 		});
 
@@ -121,6 +121,14 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+			});
+		});
+
+		governmentPhotoIdData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				expiryDate: this.utilService.dateToDbDate(governmentPhotoIdData.expiryDate),
+				licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode,
 			});
 		});
 
@@ -134,20 +142,26 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 					} as DocumentRelatedInfo;
 				}) ?? [];
 
+		delete personalInformationData.hasBcscNameChanged;
+		delete mailingAddressData.captchaFormGroup;
+
 		const body = {
-			licenceAppId: retiredDogModelFormGroup.licenceAppId,
+			licenceAppId: retiredDogModelFormValue.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
-			applicationOriginTypeCode: retiredDogModelFormGroup.applicationOriginTypeCode,
+			dogId: retiredDogModelFormValue.dogId,
+			applicationOriginTypeCode: retiredDogModelFormValue.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,
-			licenceTermCode: retiredDogModelFormGroup.licenceTermCode,
+			licenceTermCode: retiredDogModelFormValue.licenceTermCode,
 
 			...personalInformationData,
-			mailingAddressData,
-			...dogInfoData,
-			dateOfRetirement: dogRetiredData.dateOfRetirement,
-			isContinueToLiveWithDog: this.utilService.booleanTypeToBoolean(dogLivingData.isContinueToLiveWithDog),
-
+			mailingAddress: mailingAddressData,
+			dogInfo: dogInfoData,
+			dogRetiredDate: dogRetiredData.dogRetiredDate,
+			confirmDogLiveWithYouAfterRetire: this.utilService.booleanTypeToBoolean(
+				dogLivingData.confirmDogLiveWithYouAfterRetire
+			),
+			currentGDSDCertificateNumber: dogGdsdCertificateData.currentGDSDCertificateNumber,
 			documentKeyCodes: [],
 			documentInfos,
 			documentRelatedInfos,
@@ -157,12 +171,13 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return body;
 	}
 
-	getDocsToSaveBlobs(retiredDogModelFormGroup: any): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(retiredDogModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const applicationTypeData = retiredDogModelFormGroup.applicationTypeData;
-		const photographOfYourselfData = retiredDogModelFormGroup.photographOfYourselfData;
-		const dogGdsdCertificateData = retiredDogModelFormGroup.dogGdsdCertificateData;
+		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
+		const photographOfYourselfData = retiredDogModelFormValue.photographOfYourselfData;
+		const governmentPhotoIdData = retiredDogModelFormValue.governmentPhotoIdData;
+		const dogGdsdCertificateData = retiredDogModelFormValue.dogGdsdCertificateData;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
@@ -179,13 +194,21 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
+		if (governmentPhotoIdData.attachments) {
+			const docs: Array<Blob> = [];
+			governmentPhotoIdData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: governmentPhotoIdData.photoTypeCode, documents: docs });
+		}
+
 		if (dogGdsdCertificateData.attachments) {
 			const docs: Array<Blob> = [];
 			dogGdsdCertificateData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
 			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.IdCardIssuedByAccreditedDogTrainingSchool,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.GdsdCertificate,
 				documents: docs,
 			});
 		}
@@ -244,13 +267,16 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		return retiredDogModelData.dogInfoData.microchipNumber ?? '';
 	}
 
-	getSummarydateOfRetirement(retiredDogModelData: any): string {
-		return retiredDogModelData.dogRetiredData.dateOfRetirement ?? '';
+	getSummarydogRetiredDate(retiredDogModelData: any): string {
+		return retiredDogModelData.dogRetiredData.dogRetiredDate ?? '';
 	}
 	getSummaryliveWithDog(retiredDogModelData: any): string {
-		return retiredDogModelData.dogLivingData.isContinueToLiveWithDog ?? '';
+		return retiredDogModelData.dogLivingData.confirmDogLiveWithYouAfterRetire ?? '';
 	}
 
+	getSummarycurrentGDSDCertificateNumber(retiredDogModelData: any): string {
+		return retiredDogModelData.dogGdsdCertificateData.currentGDSDCertificateNumber ?? '';
+	}
 	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
 		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];
 	}
@@ -267,5 +293,15 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			const updateAttachments = retiredDogModelData.photographOfYourselfData.updateAttachments ?? null;
 			return updatePhoto ? updateAttachments : null;
 		}
+	}
+
+	getSummarygovernmentIssuedPhotoTypeCode(retiredDogModelData: any): LicenceDocumentTypeCode | null {
+		return retiredDogModelData.governmentPhotoIdData.photoTypeCode ?? null;
+	}
+	getSummarygovernmentIssuedPhotoExpiryDate(retiredDogModelData: any): string {
+		return retiredDogModelData.governmentPhotoIdData.expiryDate ?? '';
+	}
+	getSummarygovernmentIssuedPhotoAttachments(retiredDogModelData: any): File[] {
+		return retiredDogModelData.governmentPhotoIdData.attachments ?? [];
 	}
 }

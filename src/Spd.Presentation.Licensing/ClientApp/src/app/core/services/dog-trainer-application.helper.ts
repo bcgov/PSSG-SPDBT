@@ -10,25 +10,25 @@ import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationHelper {
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
-		accreditedSchoolId: new FormControl('', [Validators.required]),
+		accreditedSchoolId: new FormControl('', [FormControlValidators.required]),
 		accreditedSchoolName: new FormControl(''),
 		schoolDirectorGivenName: new FormControl(''),
 		schoolDirectorMiddleName: new FormControl(''),
-		schoolDirectorSurname: new FormControl('', [Validators.required]),
-		schoolContactPhoneNumber: new FormControl('', [Validators.required]),
+		schoolDirectorSurname: new FormControl('', [FormControlValidators.required]),
+		schoolContactPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
 		trainerGivenName: new FormControl(''),
 		trainerMiddleName: new FormControl(''),
-		trainerSurname: new FormControl('', [Validators.required]),
+		trainerSurname: new FormControl('', [FormControlValidators.required]),
 		trainerDateOfBirth: new FormControl('', [Validators.required]),
-		trainerPhoneNumber: new FormControl('', [Validators.required]),
+		trainerPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		trainerEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
-	dogTrainerAddressFormGroup: FormGroup = this.formBuilder.group({
+	trainerMailingAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),
@@ -50,8 +50,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseNew(dogTrainerModelFormGroup: any): any {
-		//}DogTrainerRequestExt {
+	getSaveBodyBaseNewOrRenewal(dogTrainerModelFormGroup: any): any {
 		return this.getSaveBodyBase(dogTrainerModelFormGroup);
 	}
 
@@ -59,35 +58,12 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseChange(dogTrainerModelFormGroup: any): any {
-		//} DogTrainerChangeRequestExt {
-		const bodyBase = this.getSaveBodyBase(dogTrainerModelFormGroup);
+	getSaveBodyBaseReplacement(dogTrainerModelFormGroup: any): any {
+		const body = this.getSaveBodyBase(dogTrainerModelFormGroup);
 
-		const body = {
-			licenceAppId: bodyBase.licenceAppId,
-			applicantOrLegalGuardianName: null,
-			applicationOriginTypeCode: bodyBase.applicationOriginTypeCode,
-			applicationTypeCode: bodyBase.applicationTypeCode,
-			serviceTypeCode: bodyBase.serviceTypeCode,
-			licenceTermCode: bodyBase.licenceTermCode,
-			givenName: bodyBase.givenName,
-			middleName: bodyBase.middleName,
-			surname: bodyBase.surname,
-			dateOfBirth: bodyBase.dateOfBirth,
-			phoneNumber: bodyBase.phoneNumber,
-			emailAddress: bodyBase.emailAddress,
-			originalLicenceId: bodyBase.originalLicenceId,
-			dogId: bodyBase.dogId,
-			dogInfo: bodyBase.dogInfo,
-			isAssistanceStillRequired: bodyBase.isAssistanceStillRequired,
-			documentKeyCodes: [],
-			dogInfoRenew: bodyBase.dogInfoRenew,
-			mailingAddress: bodyBase.mailingAddress,
-			documentInfos: bodyBase.documentInfos,
-			documentRelatedInfos: bodyBase.documentRelatedInfos,
-		};
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+		body.trainerMailingAddress = mailingAddressData;
 
-		console.debug('[getSaveBodyBaseChange]', body);
 		return body;
 	}
 
@@ -99,7 +75,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
-		const dogTrainerAddressData = dogTrainerModelFormGroup.dogTrainerAddressData;
+		const trainerMailingAddressData = dogTrainerModelFormGroup.trainerMailingAddressData;
 		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
 		const photographOfYourselfData = dogTrainerModelFormGroup.photographOfYourselfData;
 		const originalLicenceData = dogTrainerModelFormGroup.originalLicenceData;
@@ -116,15 +92,12 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			);
 		}
 
-		let trainingSchoolInfoData: any = {};
-		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New) {
-			trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
-			if (trainingSchoolInfoData.schoolContactPhoneNumber) {
-				trainingSchoolInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
-					trainingSchoolInfoData.schoolContactPhoneNumber,
-					SPD_CONSTANTS.phone.backendMask
-				);
-			}
+		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
+		if (trainingSchoolInfoData.schoolContactPhoneNumber) {
+			trainingSchoolInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
+				trainingSchoolInfoData.schoolContactPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
 		}
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
@@ -162,7 +135,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 
 			...trainingSchoolInfoData,
 			...dogTrainerData,
-			trainerMailingAddress: dogTrainerAddressData,
+			trainerMailingAddress: trainerMailingAddressData,
 
 			documentKeyCodes: [],
 			documentInfos,

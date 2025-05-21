@@ -6,7 +6,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -70,7 +69,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+							[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
 							[showSaveAndExit]="false"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
@@ -86,7 +86,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
-							[showCitizenshipStep]="showCitizenshipStep"
+							[showCitizenshipStep]="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion"
 							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onNextSoleProprietor()"
@@ -126,6 +126,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 		</div>
 
 		<ng-template #StepNameSpace>
+			<!-- wrap label in large view -->
 			<ng-container *ngIf="isSoleProprietor">
 				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
 			</ng-container>
@@ -146,20 +147,18 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	step3Complete = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
-
+	stepsLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundComponent) stepsBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
-
+	stepsIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+	stepsReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
+	showFullCitizenshipQuestion = false;
+	showNonCanadianCitizenshipQuestion = false;
 	showWorkerLicenceSoleProprietorStep = false;
 	isSoleProprietor = false;
 	isSoleProprietorSimultaneousFlow = false;
@@ -188,6 +187,13 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
+		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
+		// otherwise if not Canadian, ask for proof of ability to work.
+		const citizenshipData = this.workerApplicationService.workerModelFormGroup.get('citizenshipData')?.value;
+		this.showFullCitizenshipQuestion = citizenshipData.showFullCitizenshipQuestion;
+		this.showNonCanadianCitizenshipQuestion = citizenshipData.showNonCanadianCitizenshipQuestion;
+
 		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -198,12 +204,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep = isCanadianCitizen === BooleanTypeCode.No;
 
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
@@ -232,20 +232,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_WORKER_LICENCE_REVIEW:
-				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(event.selectedIndex);
+		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
 	}
@@ -253,17 +241,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToLastStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(stepper.selectedIndex);
+		component?.onGoToLastStep();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -272,8 +251,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onGoToStep(step: number) {
-		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepIdentificationComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepsIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -308,6 +287,20 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	onNextSoleProprietor(): void {
 		this.submitSoleProprietorSimultaneousFlowStep();
+	}
+
+	private getSelectedIndexComponent(index: number): any {
+		switch (index) {
+			case this.STEP_WORKER_LICENCE_SELECTION:
+				return this.stepsLicenceSelectionComponent;
+			case this.STEP_WORKER_BACKGROUND:
+				return this.stepsBackgroundComponent;
+			case this.STEP_WORKER_IDENTIFICATION:
+				return this.stepsIdentificationComponent;
+			case this.STEP_WORKER_LICENCE_REVIEW:
+				return this.stepsReviewAuthenticatedComponent;
+		}
+		return null;
 	}
 
 	private submitStep(): void {
@@ -368,16 +361,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private goToChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_WORKER_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_WORKER_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToNextStep();
-				break;
-		}
+		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
+		component?.onGoToNextStep();
 	}
 }

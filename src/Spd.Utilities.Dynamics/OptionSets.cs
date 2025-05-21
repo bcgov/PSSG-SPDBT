@@ -344,7 +344,8 @@ namespace Spd.Utilities.Dynamics
     {
         Physical = 100000000,
         Mailing = 100000001,
-        Branch = 100000002
+        Branch = 100000002,
+        MainOffice = 100000003
     }
 
     public enum TaskPriorityOptionSet
@@ -388,7 +389,8 @@ namespace Spd.Utilities.Dynamics
     public enum BizContactRoleOptionSet
     {
         ControllingMember = 100000000,
-        Employee = 100000001
+        Employee = 100000001,
+        BusinessManager = 100000002
     }
 
     public enum EventTypeOptionSet
@@ -398,7 +400,10 @@ namespace Spd.Utilities.Dynamics
         BCMPArmouredVehiclePermitPrinting = 100000010,
         BCMPBodyArmourPermitPrinting = 100000011,
         BCMPBusinessLicencePrinting = 100000012,
-        BCMPMetalDealersPermitPrinting = 100000013
+        BCMPMetalDealersPermitPrinting = 100000013,
+        BCMPGuideDogServiceDogTeamPrinting = 100000016,
+        BCMPDogTrainerPrinting = 100000018,
+        BCMPRetiredServiceDogPrinting = 100000017,
     }
 
     public enum EventStatusReasonOptionSet

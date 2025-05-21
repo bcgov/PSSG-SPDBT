@@ -1,10 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	LicenceResponse,
+	LicenceStatusCode,
+	LicenceTermCode,
+	ServiceTypeCode,
+} from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceResponseExt, WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { LicenceResponseExt } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -88,7 +95,6 @@ import { Subject, take, tap } from 'rxjs';
 })
 export class FormAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	licenceApplicationRoutes = PersonalLicenceApplicationRoutes;
 
 	resetRecaptcha: Subject<void> = new Subject<void>();
@@ -108,8 +114,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
-		private workerApplicationService: WorkerApplicationService
-		// private permitApplicationService: PermitApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -142,12 +147,23 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		}
 
 		switch (this.serviceTypeCode) {
-			case ServiceTypeCode.SecurityWorkerLicence:
+			case ServiceTypeCode.SecurityWorkerLicence: {
+				this.commonApplicationService
+					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+					.pipe(
+						tap((resp: LicenceResponseExt) => {
+							this.handleLookupResponse(resp);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
 			case ServiceTypeCode.GdsdTeamCertification:
 			case ServiceTypeCode.DogTrainerCertification:
 			case ServiceTypeCode.RetiredServiceDogCertification: {
-				this.workerApplicationService
-					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+				this.commonApplicationService
+					.getGDSDLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceResponseExt) => {
 							this.handleLookupResponse(resp);
@@ -160,8 +176,8 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			// SPDBT-3425 - Remove anonymous permit flows
 			// case ServiceTypeCode.ArmouredVehiclePermit:
 			// case ServiceTypeCode.BodyArmourPermit: {
-			// 	this.permitApplicationService
-			// 		.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+			// 	this.commonApplicationService
+			// 		.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 			// 		.pipe(
 			// 			tap((resp: LicenceResponse) => {
 			// 				this.handleLookupResponse(resp);
@@ -189,8 +205,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	private handleLookupResponse(resp: LicenceResponseExt): void {
 		if (!resp) {
 			// access code / licence are not found
-			this.errorMessage = `This ${this.label} number and access code are not a valid combination.`;
-			this.resetRecaptcha.next(); // reset the recaptcha
+			this.invalidCombination();
 			return;
 		}
 
@@ -213,14 +228,19 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
 			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
 		} else if (!this.utilService.isLicenceActive(resp.licenceStatusCode)) {
-			// access code matches licence, but the licence is expired
-			this.isExpired = true;
-			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-				this.errorMessage = `This ${this.label} has expired so you can no longer renew it. Please apply for a new ${this.label}.`;
-			} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-				this.errorMessage = `This ${this.label} has expired so you cannot update it. Please apply for a new ${this.label}.`;
+			if (resp.licenceStatusCode === LicenceStatusCode.Expired) {
+				// access code matches licence, but the licence is expired
+				this.isExpired = true;
+				if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+					this.errorMessage = `This ${this.label} has expired so you can no longer renew it. Please apply for a new ${this.label}.`;
+				} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+					this.errorMessage = `This ${this.label} has expired so you cannot update it. Please apply for a new ${this.label}.`;
+				} else {
+					this.errorMessage = `This ${this.label} has expired so you cannot replace it. Please apply for a new ${this.label}.`;
+				}
 			} else {
-				this.errorMessage = `This ${this.label} has expired so you cannot replace it. Please apply for a new ${this.label}.`;
+				this.invalidCombination();
+				return;
 			}
 		} else if (
 			this.applicationTypeCode === ApplicationTypeCode.Replacement &&
@@ -239,7 +259,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			if (resp.inProgressApplications) {
 				const selServiceTypeCodeDesc = this.optionsPipe.transform(resp.serviceTypeCode, 'ServiceTypes');
 				this.errorMessage = `This ${selServiceTypeCodeDesc} cannot be renewed, updated or replaced while an application is in progress.`;
-				this.resetRecaptcha.next(); // reset the recaptcha
+				this.resetCaptcha();
 				return;
 			}
 
@@ -261,8 +281,18 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		}
 
 		if (this.errorMessage) {
-			this.resetRecaptcha.next(); // reset the recaptcha
+			this.resetCaptcha();
 		}
+	}
+
+	private invalidCombination(): void {
+		this.errorMessage = `This ${this.label} number and access code are not a valid combination.`;
+		this.resetCaptcha();
+	}
+
+	private resetCaptcha(): void {
+		this.resetRecaptcha.next(); // reset the recaptcha
+		this.captchaFormGroup.reset();
 	}
 
 	get licenceNumber(): FormControl {

@@ -28,16 +28,14 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_submittedon, opt => opt.Ignore())
         .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
         .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<LicenceTermEnum, LicenceTermOptionSet>(s.LicenceTermCode)))
-        //.ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
         .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => true))
-        //.ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDeclarationDate(s.AgreeToCompleteAndAccurate)))
-        //.ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode.Value)))
         .ReverseMap()
         .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(s.spd_origin)))
         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
         .ForMember(d => d.TrainerDateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
+        .ForMember(d => d.TrainerMailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
         ;
 
         _ = CreateMap<DogTrainerApp, contact>()
@@ -60,12 +58,12 @@ internal class Mappings : Profile
         .ForMember(d => d.TrainerMailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
         ;
 
-        CreateMap<CreateDogTrainerAppCmd, spd_application>()
+        _ = CreateMap<CreateDogTrainerAppCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .IncludeBase<DogTrainerApp, spd_application>();
 
-        CreateMap<CreateDogTrainerAppCmd, spd_dogtrainingschool>()
+        _ = CreateMap<CreateDogTrainerAppCmd, spd_dogtrainingschool>()
          .ForMember(d => d.spd_dogtrainingschoolid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_trainingschoolname, opt => opt.MapFrom(s => s.AccreditedSchoolName))
          .ForMember(d => d.spd_contactemail, opt => opt.MapFrom(s => s.SchoolContactEmailAddress))
@@ -74,5 +72,25 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_chiefexecutivelegalfirstname, opt => opt.MapFrom(s => s.SchoolDirectorGivenName))
          .ForMember(d => d.spd_chiefexecutivelegalmiddlename, opt => opt.MapFrom(s => s.SchoolDirectorMiddleName))
          .ForMember(d => d.spd_chiefexecutivelegalsurname, opt => opt.MapFrom(s => s.SchoolDirectorSurname));
+
+        _ = CreateMap<spd_dogtrainingschool, DogTrainerApp>()
+           .ForMember(d => d.AccreditedSchoolId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+           .ForMember(d => d.AccreditedSchoolName, opt => opt.MapFrom(s => s.spd_trainingschoolname))
+           .ForMember(d => d.SchoolContactEmailAddress, opt => opt.MapFrom(s => s.spd_contactemail))
+           .ForMember(d => d.SchoolContactPhoneNumber, opt => opt.MapFrom(s => s.spd_contactphone))
+           .ForMember(d => d.SchoolDirectorGivenName, opt => opt.MapFrom(s => s.spd_chiefexecutivelegalfirstname))
+           .ForMember(d => d.SchoolDirectorMiddleName, opt => opt.MapFrom(s => s.spd_chiefexecutivelegalmiddlename))
+           .ForMember(d => d.SchoolDirectorSurname, opt => opt.MapFrom(s => s.spd_chiefexecutivelegalsurname));
+
+        _ = CreateMap<spd_application, DogTrainerAppResp>()
+            .IncludeBase<spd_application, DogTrainerApp>()
+            .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
+            .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
+            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
+            .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
+            ;
+
+        _ = CreateMap<spd_dogtrainingschool, DogTrainerAppResp>()
+            .IncludeBase<spd_dogtrainingschool, DogTrainerApp>();
     }
 }

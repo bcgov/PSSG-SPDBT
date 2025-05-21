@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -19,7 +18,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		</app-step-section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepDtGovermentPhotoIdComponent implements LicenceChildStepperStepComponent {

@@ -106,11 +106,11 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 							<mat-cell *matCellDef="let application">
 								<a
 									tabindex="0"
-									class="text-start"
-									(click)="onManageMembersAndEmployees()"
-									(keydown)="onKeydownManageMembersAndEmployees($event)"
-									*ngIf="showManageMembersAndEmployees"
-									>Controlling Members & Employees</a
+									class="text-start my-2"
+									(click)="onManageBusinessStakeholders()"
+									(keydown)="onKeydownManageBusinessStakeholders($event)"
+									*ngIf="showManageBusinessStakeholders"
+									>Controlling Members, Business Managers & Employees</a
 								>
 							</mat-cell>
 						</ng-container>
@@ -144,7 +144,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 			@media (min-width: 1200px) {
 				/* only force max width on large screens */
 				.mat-column-applicationTypeCode {
-					max-width: 100px;
+					max-width: 120px;
 				}
 				.mat-column-serviceTypeCode {
 					max-width: 120px;
@@ -183,7 +183,7 @@ export class BusinessLicenceMainApplicationsListComponent implements OnInit {
 	];
 
 	showStatusButton = false;
-	showManageMembersAndEmployees = false;
+	showManageBusinessStakeholders = false;
 
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
@@ -193,13 +193,13 @@ export class BusinessLicenceMainApplicationsListComponent implements OnInit {
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
-	@Output() manageMembersAndEmployees: EventEmitter<MainApplicationResponse> = new EventEmitter();
+	@Output() manageBusinessStakeholders: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	ngOnInit(): void {
 		if (this.applicationsDataSource.data.length > 0) {
 			const application = this.applicationsDataSource.data[0];
 			this.showStatusButton = this.isNewDraft(application) || this.isPaymentPending(application);
-			this.showManageMembersAndEmployees = !this.isNewDraft(application) && !this.isSoleProprietor;
+			this.showManageBusinessStakeholders = !this.isNewDraft(application) && !this.isSoleProprietor;
 		}
 	}
 
@@ -264,13 +264,13 @@ export class BusinessLicenceMainApplicationsListComponent implements OnInit {
 		);
 	}
 
-	onManageMembersAndEmployees(): void {
-		this.manageMembersAndEmployees.emit();
+	onManageBusinessStakeholders(): void {
+		this.manageBusinessStakeholders.emit();
 	}
 
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+	onKeydownManageBusinessStakeholders(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onManageMembersAndEmployees();
+		this.onManageBusinessStakeholders();
 	}
 }

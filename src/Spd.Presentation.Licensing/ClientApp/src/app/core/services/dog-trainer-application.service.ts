@@ -7,11 +7,8 @@ import {
 	Document,
 	DogSchoolResponse,
 	DogTrainerAppCommandResponse,
-	DogTrainerChangeRequest,
+	DogTrainerAppResponse,
 	DogTrainerRequest,
-	GdsdAppCommandResponse,
-	GdsdTeamLicenceAppAnonymousSubmitRequest,
-	GdsdTeamLicenceAppChangeRequest,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceDocumentTypeCode,
@@ -44,15 +41,8 @@ import {
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { DogTrainerApplicationHelper } from './dog-trainer-application.helper';
-import { FileUtilService } from './file-util.service';
+import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
-
-// export interface DogTrainerRequestExt extends DogTrainerRequest {  // TODO DogTrainerRequest
-// 	documentInfos?: Array<Document> | null;
-// }
-// export interface DogTrainerChangeRequestExt extends DogTrainerChangeRequest {// TODO DogTrainerChangeRequest
-// 	documentInfos?: Array<Document> | null;
-// }
 
 @Injectable({
 	providedIn: 'root',
@@ -73,7 +63,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		trainingSchoolInfoData: this.trainingSchoolInfoFormGroup,
 		dogTrainerData: this.dogTrainerFormGroup,
-		dogTrainerAddressData: this.dogTrainerAddressFormGroup,
+		trainerMailingAddressData: this.trainerMailingAddressFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 	});
@@ -133,7 +123,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	isStepDogTrainerPersonalInfoComplete(): boolean {
 		return (
 			this.dogTrainerFormGroup.valid &&
-			this.dogTrainerAddressFormGroup.valid &&
+			this.trainerMailingAddressFormGroup.valid &&
 			this.photographOfYourselfFormGroup.valid &&
 			this.governmentPhotoIdFormGroup.valid
 		);
@@ -147,7 +137,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		this.resetModelFlags();
 		this.resetCommon();
 
-		this.consentAndDeclarationFormGroup.reset();
+		this.consentAndDeclarationDtFormGroup.reset();
 		this.dogTrainerModelFormGroup.reset();
 
 		console.debug('RESET', this.initialized, this.dogTrainerModelFormGroup.value);
@@ -196,7 +186,11 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the renewal flow
 	 */
-	private applyRenewalDataUpdatesToModel(dogTrainerModelData: any, photoOfYourself: Blob): Observable<any> {
+	private applyApplDataToModel(
+		dogTrainerModelData: any,
+		latestApplication: DogTrainerAppResponse,
+		photoOfYourself: Blob | null
+	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		const photographOfYourselfData = dogTrainerModelData.photographOfYourselfData;
@@ -212,12 +206,23 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
+		const trainingSchoolInfoData = {
+			accreditedSchoolId: latestApplication.accreditedSchoolId,
+			accreditedSchoolName: latestApplication.accreditedSchoolName,
+			schoolDirectorGivenName: latestApplication.schoolDirectorGivenName,
+			schoolDirectorMiddleName: latestApplication.schoolDirectorMiddleName,
+			schoolDirectorSurname: latestApplication.schoolDirectorSurname,
+			schoolContactPhoneNumber: latestApplication.schoolContactPhoneNumber,
+			schoolContactEmailAddress: latestApplication.schoolContactEmailAddress,
+		};
+
 		this.dogTrainerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
 				originalLicenceData,
 				photographOfYourselfData,
+				trainingSchoolInfoData,
 			},
 			{
 				emitEvent: false,
@@ -226,7 +231,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 				return of(this.dogTrainerModelFormGroup.value);
 			})
 		);
@@ -237,17 +241,17 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 */
 	private applyReplacementDataUpdatesToModel(dogTrainerModelData: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-		const dogTrainerAddressData = dogTrainerModelData.dogTrainerAddressData;
+		const trainerMailingAddressData = dogTrainerModelData.trainerMailingAddressData;
 
 		this.mailingAddressFormGroup.patchValue({
-			addressSelected: !!dogTrainerAddressData && !!dogTrainerAddressData.addressLine1,
+			addressSelected: !!trainerMailingAddressData && !!trainerMailingAddressData.addressLine1,
 			isAddressTheSame: false,
-			addressLine1: dogTrainerAddressData?.addressLine1,
-			addressLine2: dogTrainerAddressData?.addressLine2,
-			city: dogTrainerAddressData?.city,
-			country: dogTrainerAddressData?.country,
-			postalCode: dogTrainerAddressData?.postalCode,
-			province: dogTrainerAddressData?.province,
+			addressLine1: trainerMailingAddressData?.addressLine1,
+			addressLine2: trainerMailingAddressData?.addressLine2,
+			city: trainerMailingAddressData?.city,
+			country: trainerMailingAddressData?.country,
+			postalCode: trainerMailingAddressData?.postalCode,
+			province: trainerMailingAddressData?.province,
 		});
 
 		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
@@ -263,7 +267,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -295,7 +298,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		};
 
 		const applicantMailingAddress = applicantProfile?.mailingAddress;
-		const dogTrainerAddressData = {
+		const trainerMailingAddressData = {
 			addressSelected: !!applicantMailingAddress && !!applicantMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: applicantMailingAddress?.addressLine1,
@@ -309,14 +312,13 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		this.dogTrainerModelFormGroup.patchValue(
 			{
 				dogTrainerData,
-				dogTrainerAddressData,
+				trainerMailingAddressData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -396,7 +398,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] dogTrainerModelFormGroup', this.dogTrainerModelFormGroup.value);
 		return of(this.dogTrainerModelFormGroup.value);
 	}
 
@@ -413,7 +414,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
@@ -431,31 +432,36 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return forkJoin([
-				this.applicantProfileService.apiApplicantGet(),
-				this.licenceService.apiLicencesLicencePhotoGet(),
-			]).pipe(
-				catchError((error) => of(error)),
-				switchMap((resps: any[]) => {
-					const applicantProfile = resps[0];
-					const photoOfYourself = resps[1];
+		const apis: any = [
+			this.applicantProfileService.apiApplicantGet(),
+			this.dogTrainerLicensingService.apiDogTrainerAppGet(),
+		];
 
-					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((dogTrainerModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(dogTrainerModelData, photoOfYourself);
-						})
-					);
-				})
-			);
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			apis.push(this.licenceService.apiLicencesLicencePhotoGet());
 		}
 
-		// is Replacement
-		return this.applicantProfileService.apiApplicantGet().pipe(
-			switchMap((applicantProfile: ApplicantProfileResponse) => {
+		return forkJoin(apis).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const applicantProfile = resps[0];
+				const latestApplication = resps[1];
+				let photoOfYourself: any = null;
+
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					photoOfYourself = resps[2];
+				}
+
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
 					switchMap((dogTrainerModelData: any) => {
-						return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
+						return this.applyApplDataToModel(dogTrainerModelData, latestApplication, photoOfYourself).pipe(
+							tap((_resp: any) => {
+								if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+									return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
+								}
+								return;
+							})
+						);
 					})
 				);
 			})
@@ -465,135 +471,47 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		// TODO fix dt submitLicenceAnonymous
+	submitLicenceNewOrRenewalAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(dogTrainerModelFormValue);
+		const body = this.getSaveBodyBaseNewOrRenewal(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
 
-		const documentsToSaveApis: Observable<string>[] = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			// Only pass new documents and get a keyCode for each of those.
-			const newDocumentsOnly: Array<Blob> = [];
-			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
-					newDocumentsOnly.push(doc);
-				}
-			});
-
-			// should always be at least one new document
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
-						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
-		});
-
+		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const consentData = this.consentAndDeclarationDtFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
+		if (body.applicationTypeCode == ApplicationTypeCode.Renewal) {
+			const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
+			body.contactId = originalLicenceData.originalLicenceHolderId;
+		}
+
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
+			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
 	}
-
 	/**
-	 * Submit the application data for anonymous new including documents
-	 * @returns
+	 * Submit the application data for anonymous new
 	 */
-	private submitLicenceAnonymousDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppAnonymousSubmitRequest
-	) {
-		if (documentsToSaveApis) {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						return forkJoin(documentsToSaveApis);
-					}),
-					switchMap((resps: string[]) => {
-						// pass in the list of document key codes
-						body.documentKeyCodes = [...resps];
-
-						return this.postSubmitAnonymous(body);
-					})
-				)
-				.pipe(take(1));
-		} else {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						return this.postSubmitAnonymous(body);
-					})
-				)
-				.pipe(take(1));
-		}
-	}
-
-	private postSubmitAnonymous(body: DogTrainerRequest): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
-		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
-			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
-				this.utilService.toasterSuccess(successMessage);
-			})
-		);
-	}
-
-	/**
-	 * Submit the application data for anonymous renewal or replacement
-	 */
-	submitLicenceChangeAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(dogTrainerModelFormValue);
+		const body = this.getSaveBodyBaseReplacement(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
 
-		const documentsToSaveApis: Observable<string>[] = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			// Only pass new documents and get a keyCode for each of those.
-			const newDocumentsOnly: Array<Blob> = [];
-			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
-					newDocumentsOnly.push(doc);
-				}
-			});
-
-			// should always be at least one new document
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
-						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
-		});
-
-		const existingDocumentIds: Array<string> =
-			body.documentInfos
-				?.filter((item: Document) => !!item.documentUrlId)
-				.map((item: Document) => item.documentUrlId!) ?? [];
-
+		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.submitLicenceChangeAnonymousDocuments(
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+
+		const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
+		body.contactId = originalLicenceData.originalLicenceHolderId;
+
+		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
 			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
@@ -601,53 +519,55 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		);
 	}
 
-	/**
-	 * Submit the application data for anonymous renewal or replacement including documents
-	 * @returns
-	 */
-	private submitLicenceChangeAnonymousDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
-		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		if (documentsToSaveApis) {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						return forkJoin(documentsToSaveApis);
-					}),
-					switchMap((resps: string[]) => {
-						// pass in the list of document key codes
-						body.documentKeyCodes = [...resps];
-						// pass in the list of document ids that were in the original
-						// application and are still being used
-						body.previousDocumentIds = [...existingDocumentIds];
+	private getDocumentData(documentsToSave: Array<LicenceDocumentsToSave>): {
+		existingDocumentIds: Array<string>;
+		documentsToSaveApis: Observable<string>[];
+	} {
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
 
-						return this.postChangeAnonymous(body);
-					})
-				)
-				.pipe(take(1));
-		} else {
-			return this.licenceAppDocumentService
-				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
-				.pipe(
-					switchMap((_resp: IActionResult) => {
-						// pass in the list of document ids that were in the original
-						// application and are still being used
-						body.previousDocumentIds = [...existingDocumentIds];
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				const spdFile: SpdFile = doc as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(doc);
+				}
+			});
 
-						return this.postChangeAnonymous(body);
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
+						body: {
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
 					})
-				)
-				.pipe(take(1));
-		}
+				);
+			}
+		});
+
+		return { existingDocumentIds, documentsToSaveApis };
 	}
 
-	private postChangeAnonymous(
-		body: DogTrainerChangeRequest
-	): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+	private postSubmitAnonymous(body: DogTrainerRequest): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+		if (body.applicationTypeCode == ApplicationTypeCode.New) {
+			return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
+				tap((_resp: any) => {
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						body.serviceTypeCode!,
+						body.applicationTypeCode!
+					);
+					this.utilService.toasterSuccess(successMessage);
+				})
+			);
+		}
+
 		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
@@ -657,5 +577,50 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 				this.utilService.toasterSuccess(successMessage);
 			})
 		);
+	}
+
+	/**
+	 * Submit the application data for anonymous renewal or replacement including documents
+	 * @returns
+	 */
+	private submitLicenceAnonymousDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
+		documentsToSaveApis: Observable<string>[] | null,
+		body: any // DogTrainerRequest | DogTrainerChangeRequest
+	): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+		if (documentsToSaveApis) {
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						return forkJoin(documentsToSaveApis);
+					}),
+					switchMap((resps: string[]) => {
+						// pass in the list of document key codes
+						body.documentKeyCodes = [...resps];
+
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						body.previousDocumentIds = [...existingDocumentIds];
+
+						return this.postSubmitAnonymous(body);
+					})
+				)
+				.pipe(take(1));
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
+
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						return this.postSubmitAnonymous(body);
+					})
+				)
+				.pipe(take(1));
+		}
 	}
 }

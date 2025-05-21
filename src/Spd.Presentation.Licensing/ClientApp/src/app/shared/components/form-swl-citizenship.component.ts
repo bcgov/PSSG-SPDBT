@@ -17,7 +17,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-form-swl-citizenship',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row" *ngIf="isNotRenewal">
+			<div class="row" *ngIf="showFullCitizenshipQuestion">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 					<mat-radio-group aria-label="Is a canadian citizen" formControlName="isCanadianCitizen">
 						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -38,7 +38,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 			<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
 				<div class="offset-md-2 col-md-8 col-sm-12">
-					<mat-divider class="mb-3 mat-divider-primary" *ngIf="isNotRenewal"></mat-divider>
+					<mat-divider class="mb-3 mat-divider-primary" *ngIf="showFullCitizenshipQuestion"></mat-divider>
 
 					<ng-container *ngIf="isCanadianCitizenYes; else notCanadianCitizenHeading">
 						<div class="text-minor-heading mb-2">Proof of Canadian citizenship</div>
@@ -269,6 +269,7 @@ export class FormSwlCitizenshipComponent implements LicenceChildStepperStepCompo
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() showFullCitizenshipQuestion = true;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();
@@ -335,10 +336,6 @@ export class FormSwlCitizenshipComponent implements LicenceChildStepperStepCompo
 			this.canadianCitizenProofTypeCode.value,
 			this.notCanadianCitizenProofTypeCode.value
 		);
-	}
-
-	get isNotRenewal(): boolean {
-		return this.applicationTypeCode != ApplicationTypeCode.Renewal;
 	}
 
 	get isCanadianCitizenYes(): boolean {

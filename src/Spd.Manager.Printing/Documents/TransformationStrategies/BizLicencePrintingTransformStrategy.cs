@@ -38,12 +38,11 @@ internal class BizLicencePrintingTransformStrategy(
         if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
             bizLicJson.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
 
-        BizResult? biz = await bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken);
+        BizResult? biz = await bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken, includeMainOffice: true);
         mapper.Map(biz, bizLicJson);
 
         //conditions
         bizLicJson.Conditions = lic.Conditions.Select(c => c.Name);
-
         return bizLicJson;
     }
 

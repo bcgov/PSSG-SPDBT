@@ -1,11 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-goverment-photo-id.component';
 
 @Component({
-	selector: 'app-step-gdsd-government-id',
+	selector: 'app-step-team-government-id',
 	template: `
 		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
 			<app-form-gdsd-government-id
@@ -16,7 +15,6 @@ import { FormGdsdGovermentPhotoIdComponent } from '@app/modules/guide-dog-servic
 		</app-step-section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class StepTeamGovermentPhotoIdComponent {

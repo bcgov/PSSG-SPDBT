@@ -15,20 +15,20 @@ import { StepControllingMemberMentalHealthConditionsComponent } from './componen
 import { StepControllingMemberPersonalInfoComponent } from './components/step-controlling-member-personal-info.component';
 import { StepControllingMemberPoliceBackgroundComponent } from './components/step-controlling-member-police-background.component';
 import { StepControllingMemberResidentialAddressComponent } from './components/step-controlling-member-residential-address.component';
-import { StepControllingMemberSummaryReviewComponent } from './components/step-controlling-member-summary-review.component';
+import { StepControllingMemberSummaryComponent } from './components/step-controlling-member-summary.component';
 import { StepControllingMemberTermsComponent } from './components/step-controlling-member-terms.component';
 import { StepsControllingMemberBackgroundComponent } from './components/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from './components/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from './components/steps-controlling-member-personal-information.component';
 import { StepsControllingMemberReviewComponent } from './components/steps-controlling-member-review.component';
 import { ControllingMemberCrcRoutingModule } from './controlling-member-crc-routing.module';
-import { ControllingMemberInvitationComponent } from './controlling-member-invitation.component';
+import { StakeholderInvitationComponent } from './controlling-member-invitation.component';
 import { ControllingMemberLoginComponent } from './controlling-member-login.component';
 
 @NgModule({
 	declarations: [
 		ControllingMemberLoginComponent,
-		ControllingMemberInvitationComponent,
+		StakeholderInvitationComponent,
 		StepControllingMemberChecklistNewComponent,
 		StepControllingMemberChecklistUpdateComponent,
 		StepControllingMemberResidentialAddressComponent,
@@ -40,7 +40,7 @@ import { ControllingMemberLoginComponent } from './controlling-member-login.comp
 		StepControllingMemberMentalHealthConditionsComponent,
 		StepControllingMemberCitizenshipComponent,
 		StepControllingMemberBcSecurityLicenceHistoryComponent,
-		StepControllingMemberSummaryReviewComponent,
+		StepControllingMemberSummaryComponent,
 		StepControllingMemberConsentAndDeclarationComponent,
 		StepControllingMemberTermsComponent,
 		ControllingMemberSubmissionReceivedComponent,

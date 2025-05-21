@@ -5,8 +5,6 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
-	GdsdAppCommandResponse,
-	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GdsdTeamLicenceAppChangeRequest,
 	GoogleRecaptcha,
 	IActionResult,
@@ -14,13 +12,17 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	LicenceTermCode,
+	RetiredDogAppCommandResponse,
+	RetiredDogLicenceAppChangeRequest,
+	RetiredDogLicenceAppResponse,
+	RetiredDogLicenceAppUpsertRequest,
 	ServiceTypeCode,
 } from '@app/api/models';
 import {
 	ApplicantProfileService,
-	GdsdLicensingService,
 	LicenceAppDocumentService,
 	LicenceService,
+	RetiredDogLicensingService,
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -42,16 +44,9 @@ import {
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
-import { FileUtilService } from './file-util.service';
+import { FileUtilService, SpdFile } from './file-util.service';
 import { RetiredDogApplicationHelper } from './retired-dog-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
-
-// export interface RetiredDogRequestExt extends GdsdTeamLicenceAppUpsertRequest RetiredDogRequest { // TODO RetiredDogRequestExt, RetiredDogChangeRequestExt
-// 	documentInfos?: Array<Document> | null;
-// }
-// export interface RetiredDogChangeRequestExt extends RetiredDogChangeRequest {
-// 	documentInfos?: Array<Document> | null;
-// }
 
 @Injectable({
 	providedIn: 'root',
@@ -65,6 +60,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		bizTypeCode: new FormControl(), // placeholder to save
 		licenceTermCode: new FormControl(), // placeholder to save
 		originalLicenceData: this.originalLicenceFormGroup, // placeholder to store data
+		dogId: new FormControl(), // placeholder to save
 
 		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -73,6 +69,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		personalInformationData: this.personalInformationFormGroup,
 		dogGdsdCertificateData: this.dogGdsdCertificateFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		dogInfoData: this.dogInfoFormGroup,
 		dogRetiredData: this.dogRetiredForm,
@@ -91,7 +88,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private gdsdLicensingService: GdsdLicensingService,
+		private retiredDogLicensingService: RetiredDogLicensingService,
 		private licenceService: LicenceService
 	) {
 		super(formBuilder, utilService, maskPipe);
@@ -130,6 +127,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			this.personalInformationFormGroup.valid &&
 			dogGdsdCertificateDataValid &&
 			this.photographOfYourselfFormGroup.valid &&
+			this.governmentPhotoIdFormGroup.valid &&
 			this.mailingAddressFormGroup.valid
 		);
 	}
@@ -178,7 +176,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 						tap((_resp: any) => {
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
+							this.commonApplicationService.setGdsdApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 						})
 					);
 				})
@@ -232,40 +230,139 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[createEmptyRdAuthenticated] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getRdToResume(licenceAppId: string): Observable<RetiredDogLicenceAppResponse> {
+		return this.loadPartialApplWithIdAuthenticated(licenceAppId).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setGdsdApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	private loadPartialApplWithIdAuthenticated(licenceAppId: string): Observable<any> {
+		this.reset();
+
+		const apis: Observable<any>[] = [
+			this.retiredDogLicensingService.apiRetiredDogAppLicenceAppIdGet({ licenceAppId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const rdAppl: RetiredDogLicenceAppResponse = resps[0];
+				const applicantProfile: ApplicantProfileResponse = resps[1];
+
+				return this.applyApplicationProfileIntoModel(rdAppl, applicantProfile);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithSelectionAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<RetiredDogLicenceAppResponse> {
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, associatedLicence).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setGdsdApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeAuthenticated(
+		applicationTypeCode: ApplicationTypeCode,
+		associatedLicence: MainLicenceResponse
+	): Observable<any> {
+		// handle renewal
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return forkJoin([
+				this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
+				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
+			]).pipe(
+				catchError((error) => of(error)),
+				switchMap((resps: any[]) => {
+					const applicantProfile = resps[0];
+					const photoOfYourself = resps[1];
+
+					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+						switchMap((gdsdModelData: any) => {
+							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
+						})
+					);
+				})
+			);
+		}
+
+		// handle replacement
+		return this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }).pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel();
+					})
+				);
+			})
+		);
 	}
 
 	/**
 	 * Partial Save - Save the data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	partialSaveLicenceStepAuthenticated(_isSaveAndExit?: boolean): any {
-		//} Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const retiredDogModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		return of(retiredDogModelFormValue);
-		// console.debug('[partialSaveLicenceStepAuthenticated] retiredDogModelFormValue', retiredDogModelFormValue);
+	partialSaveLicenceStepAuthenticated(
+		isSaveAndExit?: boolean
+	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 
-		// const body = this.getSaveBodyBaseNew(retiredDogModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBaseNew(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
 
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		// return this.gdsdLicensingService.apiGdsdTeamAppPost$Response({ body }).pipe(
-		// 	take(1),
-		// 	tap((res: StrictHttpResponse<GdsdAppCommandResponse>) => {
-		// 		this.hasValueChanged = false;
+		return this.retiredDogLicensingService.apiRetiredDogAppPost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
+				this.hasValueChanged = false;
 
-		// 		let msg = 'Your application has been saved';
-		// 		if (isSaveAndExit) {
-		// 			msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-		// 		}
-		// 		this.utilService.toasterSuccess(msg);
+				let msg = 'Your application has been saved';
+				if (isSaveAndExit) {
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.utilService.toasterSuccess(msg);
 
-		// 		if (!retiredDogModelFormValue.licenceAppId) {
-		// 			this.retiredDogModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
-		// 		}
-		// 	})
-		// );
+				if (!rdModelFormValue.licenceAppId) {
+					this.retiredDogModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
 	}
 
 	/**
@@ -300,16 +397,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		const isLoggedIn = this.authenticationService.isLoggedIn();
-		if (!isLoggedIn) {
-			return false;
-		}
-
 		if (!this.isSaveAndExit()) {
 			return false;
 		}
 
-		return this.hasValueChanged;
+		// file upload will fail in later steps if the 'licenceAppId' isn't populated.
+		const licenceAppId = this.retiredDogModelFormGroup.get('licenceAppId')?.value;
+
+		return this.hasValueChanged || !licenceAppId;
 	}
 
 	/**
@@ -317,6 +412,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns boolean
 	 */
 	isSaveAndExit(): boolean {
+		const isLoggedIn = this.authenticationService.isLoggedIn();
+		if (!isLoggedIn) {
+			return false;
+		}
+
 		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
 			return false;
 		}
@@ -415,7 +515,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 				return of(this.retiredDogModelFormGroup.value);
 			})
 		);
@@ -437,8 +536,21 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
+	}
+
+	/**
+	 * Apply the data from the Application and Applicant Profile into the main model
+	 */
+	private applyApplicationProfileIntoModel(
+		rdAppl: RetiredDogLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse
+	): Observable<any> {
+		return this.applyApplicationIntoModel(rdAppl).pipe(
+			switchMap((_resp: any) => {
+				return this.applyProfileIntoModel(applicantProfile);
+			})
+		);
 	}
 
 	/**
@@ -491,7 +603,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyProfileIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -571,7 +682,139 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] retiredDogModelFormGroup', this.retiredDogModelFormGroup.value);
+		return of(this.retiredDogModelFormGroup.value);
+	}
+
+	/**
+	 * Apply the application data into the main model
+	 */
+	private applyApplicationIntoModel(rdAppl: RetiredDogLicenceAppResponse): Observable<any> {
+		const serviceTypeData = { serviceTypeCode: rdAppl.serviceTypeCode };
+		const applicationTypeData = { applicationTypeCode: rdAppl.applicationTypeCode };
+
+		const personalInformationData = {
+			givenName: rdAppl.givenName,
+			middleName: rdAppl.middleName,
+			surname: rdAppl.surname,
+			dateOfBirth: rdAppl.dateOfBirth,
+			phoneNumber: rdAppl.phoneNumber,
+			emailAddress: rdAppl.emailAddress,
+			hasBcscNameChanged: false,
+		};
+
+		const bcscMailingAddress = rdAppl.mailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
+			isAddressTheSame: false,
+			addressLine1: bcscMailingAddress?.addressLine1,
+			addressLine2: bcscMailingAddress?.addressLine2,
+			city: bcscMailingAddress?.city,
+			country: bcscMailingAddress?.country,
+			postalCode: bcscMailingAddress?.postalCode,
+			province: bcscMailingAddress?.province,
+		};
+
+		let photographOfYourselfData: any = null;
+		let dogInfoData: any = null;
+
+		const photographOfYourselfAttachments: Array<File> = [];
+		const governmentIssuedAttachments: Array<File> = [];
+		const dogGdsdCertificateAttachments: Array<File> = [];
+
+		const governmentPhotoIdData: {
+			photoTypeCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+		} = {
+			photoTypeCode: null,
+			expiryDate: null,
+			attachments: [],
+		};
+
+		rdAppl.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.Bcid:
+				case LicenceDocumentTypeCode.BcServicesCard:
+				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
+				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
+				case LicenceDocumentTypeCode.PassportAdditional: {
+					// Additional Government ID: GovernmentIssuedPhotoIdTypes
+					const aFile = this.fileUtilService.dummyFile(doc);
+					governmentIssuedAttachments.push(aFile);
+
+					governmentPhotoIdData.photoTypeCode = doc.licenceDocumentTypeCode;
+					governmentPhotoIdData.expiryDate = doc.expiryDate ?? null;
+					governmentPhotoIdData.attachments = governmentIssuedAttachments;
+					break;
+				}
+				case LicenceDocumentTypeCode.GdsdCertificate: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					dogGdsdCertificateAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PhotoOfYourself: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					photographOfYourselfAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const dogGdsdCertificateData = {
+			currentGDSDCertificateNumber: rdAppl.currentGDSDCertificateNumber,
+			attachments: dogGdsdCertificateAttachments,
+		};
+
+		if (photographOfYourselfAttachments.length > 0) {
+			photographOfYourselfData = {
+				updatePhoto: null,
+				uploadedDateTime: null,
+				attachments: photographOfYourselfAttachments,
+				updateAttachments: [],
+			};
+		}
+
+		if (rdAppl.dogInfo) {
+			dogInfoData = {
+				dogName: rdAppl.dogInfo.dogName,
+				dogDateOfBirth: rdAppl.dogInfo.dogDateOfBirth,
+				dogBreed: rdAppl.dogInfo.dogBreed,
+				dogColorAndMarkings: rdAppl.dogInfo.dogColorAndMarkings,
+				dogGender: rdAppl.dogInfo.dogGender,
+				microchipNumber: rdAppl.dogInfo.microchipNumber,
+			};
+		}
+
+		const dogRetiredData = { dogRetiredDate: rdAppl.dogRetiredDate };
+
+		const dogLivingData = {
+			confirmDogLiveWithYouAfterRetire: this.utilService.booleanToBooleanType(rdAppl.confirmDogLiveWithYouAfterRetire),
+		};
+
+		this.retiredDogModelFormGroup.patchValue(
+			{
+				licenceAppId: rdAppl.licenceAppId,
+				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+				serviceTypeData,
+				licenceTermCode: rdAppl.licenceTermCode,
+				applicationTypeData,
+
+				personalInformationData,
+				dogGdsdCertificateData,
+				photographOfYourselfData,
+				governmentPhotoIdData,
+				mailingAddressData,
+				dogInfoData,
+				dogRetiredData,
+				dogLivingData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
 		return of(this.retiredDogModelFormGroup.value);
 	}
 
@@ -588,7 +831,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
+				this.commonApplicationService.setGdsdApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					associatedLicence.licenceNumber!
@@ -638,26 +881,149 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	}
 
 	/**
-	 * Submit the application data for anonymous new
+	 * Submit the authenticated licence data - new/renew
+	 * @returns
 	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		// TODO fix rt submitLicenceAnonymous
-		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppAnonymousSubmitRequest;
-		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
+	submitLicenceAuthenticated(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		if (applicationTypeCode == ApplicationTypeCode.New) {
+			return this.submitLicenceNewAuthenticated();
+		}
 
-		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+		return this.submitLicenceChangeAuthenticated();
+	}
 
-		// const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		// body.applicantId = originalLicenceData.originalLicenceHolderId;
+	/**
+	 * Submit the licence data - new
+	 * @returns
+	 */
+	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseNew(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.retiredDogLicensingService.apiRetiredDogAppSubmitPost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.utilService.toasterSuccess(successMessage, false);
+			})
+		);
+	}
+
+	/**
+	 * Submit the application data for authenticated renewal
+	 * @returns
+	 */
+	private submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		const bodyUpsert = this.getSaveBodyBaseChange(rdModelFormValue);
+		delete bodyUpsert.documentInfos;
+
+		const body = bodyUpsert as RetiredDogLicenceAppChangeRequest;
+
+		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		// Create list of APIs to call for the newly added documents
+		const documentsToSaveApis: Observable<any>[] = [];
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
+
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
+
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
+						body: {
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
+
+					return this.postChangeAuthenticated(body);
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
+
+			return this.postChangeAuthenticated(body);
+		}
+	}
+
+	private postChangeAuthenticated(
+		body: GdsdTeamLicenceAppChangeRequest
+	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		return this.retiredDogLicensingService.apiRetiredDogAppChangePost$Response({ body }).pipe(
+			tap((_resp: any) => {
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					body.serviceTypeCode!,
+					body.applicationTypeCode!
+				);
+				this.utilService.toasterSuccess(successMessage, false);
+			})
+		);
+	}
+
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseNew(rdModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+		const originalLicenceData = rdModelFormValue.originalLicenceData;
+		body.applicantId = originalLicenceData.originalLicenceHolderId;
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
 
 		const documentsToSaveApis: Observable<string>[] = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			// Only pass new documents and get a keyCode for each of those.
 			const newDocumentsOnly: Array<Blob> = [];
 			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
+				if (doc.documentUrlId) {
+					existingDocumentIds.push(doc.documentUrlId);
+				} else {
 					newDocumentsOnly.push(doc);
 				}
 			});
@@ -675,13 +1041,13 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		});
 
-		// delete body.documentInfos; // TODO uncomment
+		delete body.documentInfos;
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
-			[],
+			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -690,9 +1056,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Submit the application data for anonymous replacement
 	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		const gdsdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseChange(rdModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
 		// Get the keyCode for the existing documents to save.
@@ -705,7 +1071,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		delete body.documentInfos;
 
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData; // TODO not done in other flows?
+		const originalLicenceData = rdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
@@ -721,8 +1087,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
-		// TODO RetiredDogRequest
+	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -763,9 +1128,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 */
 	private postSubmitAnonymous(
 		body: GdsdTeamLicenceAppChangeRequest
-	): Observable<StrictHttpResponse<GdsdAppCommandResponse>> {
+	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
-			return this.gdsdLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
+			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
@@ -776,7 +1141,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			);
 		}
 
-		return this.gdsdLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
+		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,

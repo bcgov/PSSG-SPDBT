@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Spd.Manager.FinanceReconciliation\Spd.Manager.FinanceReconciliation.csproj" />
+		<ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
 		<ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
 		<ProjectReference Include="..\Spd.Manager.Printing\Spd.Manager.Printing.csproj" />
 		<ProjectReference Include="..\Spd.Manager.ScheduleJob\Spd.Manager.ScheduleJob.csproj" />

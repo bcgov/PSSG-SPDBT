@@ -269,7 +269,7 @@ import { UtilService } from '@app/core/services/util.service';
 						color="primary"
 						class="large w-100"
 						aria-label="Download Terms of Use document"
-						download="Security Services Applicant Terms"
+						download="Security Services Applicant Terms of Use"
 						[href]="downloadFilePath"
 					>
 						<mat-icon>file_download</mat-icon>Terms of Use
@@ -290,6 +290,10 @@ import { UtilService } from '@app/core/services/util.service';
 	`,
 	styles: [
 		`
+			li {
+				margin-bottom: 0.5rem !important;
+			}
+
 			.conditions {
 				max-height: 400px;
 				overflow-y: auto;
