@@ -16,6 +16,26 @@ internal class LicenceRepository : ILicenceRepository
         _mapper = mapper;
     }
 
+    public async Task<LicenceBasicResp?> GetBasicAsync(Guid licenceId, CancellationToken ct)
+    {
+        spd_licence? licence;
+        try
+        {
+            licence = await _context.spd_licences
+                .Where(l => l.spd_licenceid == licenceId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                return null;
+            else
+                throw;
+        }
+
+        return _mapper.Map<LicenceBasicResp>(licence);
+    }
+
     public async Task<LicenceResp?> GetAsync(Guid licenceId, CancellationToken ct)
     {
         spd_licence? licence;
