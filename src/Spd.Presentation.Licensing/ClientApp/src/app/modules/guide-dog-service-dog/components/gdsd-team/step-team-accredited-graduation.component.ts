@@ -16,10 +16,10 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-form-accredited-school
+						<app-form-gdsd-accredited-school
 							[accreditedSchoolIdControl]="accreditedSchoolId"
 							[accreditedSchoolNameControl]="accreditedSchoolName"
-						></app-form-accredited-school>
+						></app-form-gdsd-accredited-school>
 
 						<div class="row">
 							<div class="text-minor-heading mt-3 mb-2">
