@@ -92,6 +92,7 @@ import { StepsRdPersonalInfoComponent } from './components/retired-dog/steps-rd-
 import { StepsRdReviewAndConfirmComponent } from './components/retired-dog/steps-rd-review-and-confirm.component';
 import { FormGdsdAccreditedSchoolComponent } from './components/shared/form-gdsd-accredited-school.component';
 import { FormGdsdApplicationTypeComponent } from './components/shared/form-gdsd-application-type.component';
+import { FormGdsdCollectionNoticeComponent } from './components/shared/form-gdsd-collection-notice.component';
 import { FormGdsdDogInfoComponent } from './components/shared/form-gdsd-dog-info.component';
 import { FormGdsdGovermentPhotoIdComponent } from './components/shared/form-gdsd-goverment-photo-id.component';
 import { FormGdsdLicenceAccessCodeComponent } from './components/shared/form-gdsd-licence-access-code.component';
@@ -125,6 +126,7 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		FormGdsdDogInfoComponent,
 		FormGdsdAccreditedSchoolComponent,
 		FormGdsdTermsOfUseComponent,
+		FormGdsdCollectionNoticeComponent,
 
 		GdsdTeamWizardNewRenewalComponent,
 		GdsdTeamWizardReplacementComponent,
