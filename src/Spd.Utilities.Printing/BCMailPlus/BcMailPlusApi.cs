@@ -1,7 +1,7 @@
-﻿using System.Net.Mime;
+using Microsoft.Extensions.Options;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.Printing.BCMailPlus;
 
