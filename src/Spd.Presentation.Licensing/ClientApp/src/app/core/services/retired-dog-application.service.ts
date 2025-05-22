@@ -302,32 +302,22 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: MainLicenceResponse
 	): Observable<any> {
-		// handle renewal
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return forkJoin([
-				this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
-				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
-			]).pipe(
-				catchError((error) => of(error)),
-				switchMap((resps: any[]) => {
-					const applicantProfile = resps[0];
-					const photoOfYourself = resps[1];
+		return forkJoin([
+			this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const applicantProfile = resps[0];
+				const photoOfYourself = resps[1];
 
-					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((gdsdModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
-						})
-					);
-				})
-			);
-		}
-
-		// handle replacement
-		return this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }).pipe(
-			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel();
+					switchMap((retiredDogModelData: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+							return this.applyReplacementSpecificDataToModel(retiredDogModelData, photoOfYourself);
+						}
+
+						return this.applyRenewalSpecificDataToModel(retiredDogModelData, photoOfYourself);
 					})
 				);
 			})
@@ -485,7 +475,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the renewal flow
 	 */
-	private applyRenewalDataUpdatesToModel(retiredDogModelData: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalSpecificDataToModel(retiredDogModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		const photographOfYourselfData = retiredDogModelData.photographOfYourselfData;
@@ -495,6 +485,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be forced to update their photo
@@ -523,13 +518,21 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(): Observable<any> {
+	private applyReplacementSpecificDataToModel(retiredDogModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+
+		const originalLicenceData = retiredDogModelData.originalLicenceData;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		this.retiredDogModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				originalLicenceData,
 			},
 			{
 				emitEvent: false,
@@ -849,31 +852,22 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return forkJoin([
-				this.applicantProfileService.apiApplicantGet(),
-				this.licenceService.apiLicencesLicencePhotoGet(),
-			]).pipe(
-				catchError((error) => of(error)),
-				switchMap((resps: any[]) => {
-					const applicantProfile = resps[0];
-					const photoOfYourself = resps[1];
+		return forkJoin([
+			this.applicantProfileService.apiApplicantGet(),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const applicantProfile = resps[0];
+				const photoOfYourself = resps[1];
 
-					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((retiredDogModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(retiredDogModelData, photoOfYourself);
-						})
-					);
-				})
-			);
-		}
-
-		// is Replacement
-		return this.applicantProfileService.apiApplicantGet().pipe(
-			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel();
+					switchMap((retiredDogModelData: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+							return this.applyReplacementSpecificDataToModel(retiredDogModelData, photoOfYourself);
+						}
+
+						return this.applyRenewalSpecificDataToModel(retiredDogModelData, photoOfYourself);
 					})
 				);
 			})
