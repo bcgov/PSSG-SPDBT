@@ -15,11 +15,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="row">
 							<div class="col-12 py-3 hereby">
 								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-									I certify that the information I have provided above is, to the best of my knowledge, true and
-									complete. I understand that inaccurate, misleading, missing or false information may lead to denial or
-									cancellation of my guide or service dog certificate. I agree to adhere to any terms and conditions of
-									certification. I agree to the release of the information above to the Justice Institute for the
-									purposes of the BC Guide dog and service dog assessment.
+									I certify that the information I have provided is true and correct to the best of my knowledge and
+									belief. I understand that inaccurate, misleading, missing or false information may lead to refusal or
+									cancellation of my retired guide or service dog team certificate. I agree to adhere to any terms and
+									conditions of certification.
 								</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -97,33 +96,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<app-alert type="success" icon="">
 							<div class="mb-2">COLLECTION NOTICE</div>
 							<p>
-								All information regarding this application is collected under s. 26(a) and (c) of the Freedom of
-								Information and Protection of Privacy Act as per the Guide Dog and Service Dog Act and its Regulation
-								and will be used for the purpose of certifying guide and service dog teams in BC. If you have questions
-								regarding the collection or use of this information, please contact a Policy Analyst at 1-855-587-0185
-								or the address below:
+								The Security Programs Division will collect your personal information for the purpose of fulfilling the
+								requirements of the <i>Guide Dog and Service Dog Act</i> and its Regulation in accordance with s. 26(c)
+								and s. 27 (1) (b) of the <i>Freedom of Information and Protection of Privacy Act</i> (FoIPPA). The use
+								and disclosure of this information will comply with FoIPPA. If you have questions regarding the
+								collection, use or disclosure of this information, please contact a Policy Analyst at
+								<a aria-label="Send email to SPD Policy" href="mailto:SPD.Policy@gov.bc.ca" class="email-address-link"
+									>SPD.Policy&#64;gov.bc.ca</a
+								>
 							</p>
-
-							<div>Ministry of Public Safety and Solicitor General</div>
-							<div>Policing and Security Branch, Security Programs Division</div>
-							<div>PO Box 9217 Stn Prov Govt, Victoria BC V8W 9J1</div>
-							<div>Phone: toll-free 1-855-587-0185</div>
-							<div>Fax: 250 387-4454</div>
-							<div>
-								Email:
-								<a
-									aria-label="Send email to guide dog service dogs"
-									href="mailto:guideandservicedogs@gov.bc.ca "
-									class="email-address-link"
-									>guideandservicedogs&#64;gov.bc.ca</a
-								>
-							</div>
-							<div>
-								Website:
-								<a href=" http://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank">
-									Guide Dog Service Dog</a
-								>
-							</div>
 						</app-alert>
 					</div>
 				</div>

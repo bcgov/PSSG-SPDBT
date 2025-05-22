@@ -28,7 +28,7 @@ import { StepTeamSummaryComponent } from './step-team-summary.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-team-consent></app-step-team-consent>
+				<app-step-team-consent [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"></app-step-team-consent>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

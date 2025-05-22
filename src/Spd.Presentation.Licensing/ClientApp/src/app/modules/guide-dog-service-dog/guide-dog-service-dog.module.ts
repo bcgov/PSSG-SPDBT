@@ -90,7 +90,7 @@ import { StepsRdDetailsComponent } from './components/retired-dog/steps-rd-detai
 import { StepsRdDogInfoComponent } from './components/retired-dog/steps-rd-dog-info.component';
 import { StepsRdPersonalInfoComponent } from './components/retired-dog/steps-rd-personal-info.component';
 import { StepsRdReviewAndConfirmComponent } from './components/retired-dog/steps-rd-review-and-confirm.component';
-import { FormAccreditedSchoolComponent } from './components/shared/form-accredited-school.component';
+import { FormGdsdAccreditedSchoolComponent } from './components/shared/form-gdsd-accredited-school.component';
 import { FormGdsdApplicationTypeComponent } from './components/shared/form-gdsd-application-type.component';
 import { FormGdsdDogInfoComponent } from './components/shared/form-gdsd-dog-info.component';
 import { FormGdsdGovermentPhotoIdComponent } from './components/shared/form-gdsd-goverment-photo-id.component';
@@ -99,7 +99,7 @@ import { FormGdsdLicenceConfirmationComponent } from './components/shared/form-g
 import { FormGdsdMailingAddressReplacementComponent } from './components/shared/form-gdsd-mailing-address-replacement.component';
 import { FormGdsdPersonalInfoAnonymousComponent } from './components/shared/form-gdsd-personal-info-anonymous.component';
 import { FormGdsdPersonalInfoComponent } from './components/shared/form-gdsd-personal-info.component';
-import { StepGdsdTermsOfUseComponent } from './components/shared/step-gdsd-terms-of-use.component';
+import { FormGdsdTermsOfUseComponent } from './components/shared/form-gdsd-terms-of-use.component';
 import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing.module';
 
 @NgModule({
@@ -123,8 +123,8 @@ import { GuideDogServiceDogRoutingModule } from './guide-dog-service-dog-routing
 		FormGdsdPersonalInfoComponent,
 		FormGdsdPersonalInfoAnonymousComponent,
 		FormGdsdDogInfoComponent,
-		FormAccreditedSchoolComponent,
-		StepGdsdTermsOfUseComponent,
+		FormGdsdAccreditedSchoolComponent,
+		FormGdsdTermsOfUseComponent,
 
 		GdsdTeamWizardNewRenewalComponent,
 		GdsdTeamWizardReplacementComponent,
