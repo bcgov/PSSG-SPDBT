@@ -13,7 +13,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Apply for a new certification if you've never held this type of certification, or if your exisiting
+							Apply for a new certification if you've never held this type of certification, or if your existing
 							certification has expired.
 						</app-alert>
 					</div>
