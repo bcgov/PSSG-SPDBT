@@ -42,17 +42,19 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									At least one category must be added. Click 'Add Category' after selecting a category.
 								</mat-error>
 							</div>
-							<div class="col-md-4 col-sm-12">
+							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
 								<button
 									mat-stroked-button
 									color="primary"
 									class="large my-2"
 									aria-label="Add a category"
 									(click)="onAddCategory()"
-									*ngIf="categoryList.length < 6"
 								>
 									Add Category
 								</button>
+							</div>
+							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length >= 6">
+								<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
 							</div>
 						</div>
 					</div>

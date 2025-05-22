@@ -47,6 +47,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									Add Category
 								</button>
 							</div>
+							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length >= 6">
+								<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
+							</div>
 						</div>
 					</div>
 				</div>
