@@ -21,7 +21,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Apply for a new licence if you've never held this type of licence, or if your exisiting licence has
+										Apply for a new licence if you've never held this type of licence, or if your existing licence has
 										expired.
 									</app-alert>
 								</div>
