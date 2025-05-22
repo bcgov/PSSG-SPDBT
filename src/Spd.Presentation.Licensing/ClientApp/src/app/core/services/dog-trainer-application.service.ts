@@ -201,6 +201,11 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			originalPhotoOfYourselfLastUploadDateTime
 		);
 
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be forced to update their photo
 			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
@@ -237,11 +242,61 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	}
 
 	/**
+	 * Overwrite or change any data specific to the renewal flow
+	 */
+	private applyRenewalSpecificDataToModel(dogTrainerModelData: any, photoOfYourself: Blob): Observable<any> {
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+
+		const photographOfYourselfData = dogTrainerModelData.photographOfYourselfData;
+		const originalLicenceData = dogTrainerModelData.originalLicenceData;
+
+		const originalPhotoOfYourselfLastUploadDateTime = dogTrainerModelData.photographOfYourselfData.uploadedDateTime;
+		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+			originalPhotoOfYourselfLastUploadDateTime
+		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
+
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be forced to update their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+		}
+
+		this.dogTrainerModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				originalLicenceData,
+				photographOfYourselfData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				return of(this.dogTrainerModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(dogTrainerModelData: any): Observable<any> {
+	private applyReplacementSpecificDataToModel(dogTrainerModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 		const trainerMailingAddressData = dogTrainerModelData.trainerMailingAddressData;
+
+		const originalLicenceData = dogTrainerModelData.originalLicenceData;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		this.mailingAddressFormGroup.patchValue({
 			addressSelected: !!trainerMailingAddressData && !!trainerMailingAddressData.addressLine1,
@@ -435,31 +490,25 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const apis: any = [
 			this.applicantProfileService.apiApplicantGet(),
 			this.dogTrainerLicensingService.apiDogTrainerAppGet(),
+			this.licenceService.apiLicencesLicencePhotoGet(),
 		];
-
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			apis.push(this.licenceService.apiLicencesLicencePhotoGet());
-		}
 
 		return forkJoin(apis).pipe(
 			catchError((error) => of(error)),
 			switchMap((resps: any[]) => {
 				const applicantProfile = resps[0];
 				const latestApplication = resps[1];
-				let photoOfYourself: any = null;
-
-				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					photoOfYourself = resps[2];
-				}
+				const photoOfYourself = resps[2];
 
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
 					switchMap((dogTrainerModelData: any) => {
 						return this.applyApplDataToModel(dogTrainerModelData, latestApplication, photoOfYourself).pipe(
 							tap((_resp: any) => {
 								if (applicationTypeCode === ApplicationTypeCode.Replacement) {
-									return this.applyReplacementDataUpdatesToModel(dogTrainerModelData);
+									return this.applyReplacementSpecificDataToModel(dogTrainerModelData, photoOfYourself);
 								}
-								return;
+
+								return this.applyRenewalSpecificDataToModel(dogTrainerModelData, photoOfYourself);
 							})
 						);
 					})
