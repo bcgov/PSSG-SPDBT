@@ -87,7 +87,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
-											<mat-label>Trainer Given Name <span class="optional-label">(optional)</span></mat-label>
+											<mat-label>Trainer Given Name</mat-label>
 											<input matInput formControlName="trainerGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 										</mat-form-field>
 									</div>
