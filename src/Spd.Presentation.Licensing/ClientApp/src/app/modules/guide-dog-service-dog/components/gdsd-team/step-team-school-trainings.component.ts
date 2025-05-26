@@ -51,7 +51,7 @@ import moment from 'moment';
 
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Contact Given Name <span class="optional-label">(optional)</span></mat-label>
+											<mat-label>Contact Given Name</mat-label>
 											<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 										</mat-form-field>
 									</div>
