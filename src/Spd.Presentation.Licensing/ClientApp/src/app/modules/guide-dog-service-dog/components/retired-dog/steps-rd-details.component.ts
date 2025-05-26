@@ -2,14 +2,14 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
-import { StepGdsdTermsOfUseComponent } from '../shared/step-gdsd-terms-of-use.component';
+import { StepRdTermsOfUseComponent } from './step-rd-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-rd-details',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-gdsd-terms-of-use></app-step-gdsd-terms-of-use>
+			<mat-step *ngIf="showTermsOfUse">
+				<app-step-rd-terms-of-use></app-step-rd-terms-of-use>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -26,12 +26,22 @@ import { StepGdsdTermsOfUseComponent } from '../shared/step-gdsd-terms-of-use.co
 					<app-step-rd-checklist-renewal></app-step-rd-checklist-renewal>
 				</ng-template>
 
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
-					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-				></app-wizard-footer>
+				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #NoTermsOfUse>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="false"
+						(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -44,9 +54,10 @@ export class StepsRdDetailsComponent extends BaseWizardStepComponent {
 	readonly STEP_CHECKLIST = 1;
 
 	@Input() isFormValid = false;
+	@Input() isLoggedIn = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(StepGdsdTermsOfUseComponent) termsOfUseComponent!: StepGdsdTermsOfUseComponent;
+	@ViewChild(StepRdTermsOfUseComponent) termsOfUseComponent!: StepRdTermsOfUseComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -62,6 +73,11 @@ export class StepsRdDetailsComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get showTermsOfUse(): boolean {
+		// anonymous: agree everytime for all
+		return !this.isLoggedIn;
 	}
 
 	get isNew(): boolean {

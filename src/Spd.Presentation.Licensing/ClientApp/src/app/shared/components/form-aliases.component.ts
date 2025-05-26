@@ -43,7 +43,7 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 							<div class="row" [formGroupName]="i">
 								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 									<mat-form-field>
-										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+										<mat-label>Given Name</mat-label>
 										<input matInput type="text" formControlName="givenName" maxlength="40" />
 									</mat-form-field>
 								</div>
