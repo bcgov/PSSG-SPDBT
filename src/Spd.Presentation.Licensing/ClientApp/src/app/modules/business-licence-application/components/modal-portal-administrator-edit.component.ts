@@ -35,7 +35,7 @@ export interface BizPortalUserDialogData {
 
 					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
 						</mat-form-field>
 					</div>
