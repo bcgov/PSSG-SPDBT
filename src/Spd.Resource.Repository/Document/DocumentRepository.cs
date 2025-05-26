@@ -121,7 +121,7 @@ internal class DocumentRepository : IDocumentRepository
             else if (doc?.ApplicationId != null)
                 return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
             else
-                return resp.Where(i => i.CreatedOn == doc.CreatedOn).ToList();
+                return resp.Where(i => i.CreatedOn == doc?.CreatedOn).ToList();
             //else
             //    return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
         }
