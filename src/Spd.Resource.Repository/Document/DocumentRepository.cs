@@ -71,7 +71,8 @@ internal class DocumentRepository : IDocumentRepository
         if (qry.MultiFileTypes != null)
         {
             List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(f.ToString())).ToList();
-            List<bcgov_documenturl> result = results.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
+            List<bcgov_documenturl> result = results
+                .Where(d => d._bcgov_tag1id_value.HasValue && tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
             resp = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon));
         }
         else
