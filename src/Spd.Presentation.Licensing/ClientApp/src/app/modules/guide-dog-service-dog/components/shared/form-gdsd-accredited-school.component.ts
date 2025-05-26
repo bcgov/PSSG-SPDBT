@@ -7,7 +7,7 @@ import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.s
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-form-accredited-school',
+	selector: 'app-form-gdsd-accredited-school',
 	template: `
 		<div class="text-minor-heading lh-base my-2">{{ schoolLabel }}</div>
 		<mat-form-field>
@@ -51,7 +51,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	standalone: false,
 })
-export class FormAccreditedSchoolComponent implements OnInit {
+export class FormGdsdAccreditedSchoolComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	matcher = new FormErrorStateMatcher();
 

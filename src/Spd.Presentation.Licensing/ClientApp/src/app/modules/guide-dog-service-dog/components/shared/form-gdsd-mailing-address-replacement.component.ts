@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-					<app-collection-notice></app-collection-notice>
+					<app-form-gdsd-collection-notice></app-form-gdsd-collection-notice>
 
 					<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
 						<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>

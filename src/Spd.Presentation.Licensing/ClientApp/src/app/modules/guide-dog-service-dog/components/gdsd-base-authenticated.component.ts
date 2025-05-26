@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 
 @Component({
@@ -25,7 +26,8 @@ export class GdsdBaseAuthenticatedComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private gdsdTeamApplicationService: GdsdTeamApplicationService
+		private gdsdTeamApplicationService: GdsdTeamApplicationService,
+		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -33,7 +35,7 @@ export class GdsdBaseAuthenticatedComponent implements OnInit {
 
 		const currentPath = location.pathname;
 
-		// to handle relative urls, look for '/personal-licence/' to get the default route
+		// to handle relative urls, look for '/guide-dog-service-dog/' to get the default route
 		const startOfRoute = currentPath.indexOf('/' + GuideDogServiceDogRoutes.MODULE_PATH + '/');
 		const redirectComponentRoute = currentPath.substring(startOfRoute);
 
@@ -41,7 +43,7 @@ export class GdsdBaseAuthenticatedComponent implements OnInit {
 
 		await this.authProcessService.initializeGuideDogServiceDogBCSC();
 
-		if (!this.gdsdTeamApplicationService.initialized) {
+		if (!this.gdsdTeamApplicationService.initialized && !this.retiredDogApplicationService.initialized) {
 			this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdAuthenticated());
 			return;
 		}
