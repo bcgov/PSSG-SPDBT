@@ -328,7 +328,8 @@ internal static class SharedMappingFuncs
         if (str == null) return null;
         try
         {
-            string temp = str.Replace("cm", string.Empty).Replace("in", string.Empty);
+            string temp = str.Replace("cm", string.Empty, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("in", string.Empty, StringComparison.InvariantCultureIgnoreCase);
             return int.Parse(temp);
         }
         catch (Exception e)
@@ -344,8 +345,8 @@ internal static class SharedMappingFuncs
         try
         {
             string temp = Regex.Replace(str, @"\d", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(3));
-            if (temp == "in") return HeightUnitEnum.Inches;
-            if (temp == "cm") return HeightUnitEnum.Centimeters;
+            if (string.Equals(temp, "in", StringComparison.InvariantCultureIgnoreCase)) return HeightUnitEnum.Inches;
+            if (string.Equals(temp, "cm", StringComparison.InvariantCultureIgnoreCase)) return HeightUnitEnum.Centimeters;
             else
                 return null;
         }
