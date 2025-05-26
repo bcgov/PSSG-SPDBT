@@ -328,7 +328,6 @@ internal static class SharedMappingFuncs
         if (str == null) return null;
         try
         {
-            string temp = str.Replace("cm", string.Empty).Replace("in", string.Empty);
             string temp = str.Replace("cm", string.Empty, StringComparison.InvariantCultureIgnoreCase)
                 .Replace("in", string.Empty, StringComparison.InvariantCultureIgnoreCase);
             return int.Parse(temp);
