@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
-	selector: 'app-gdsd-summary-school-training',
+	selector: 'app-form-team-summary-school-training',
 	template: `
 		<div class="row mt-0">
 			<div *ngFor="let train of schoolTrainings; let i = index">
@@ -70,7 +70,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 	styles: [],
 	standalone: false,
 })
-export class GdsdSummarySchoolTrainingComponent {
+export class FormTeamSummarySchoolTrainingComponent {
 	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@Input() gdsdModelData: any;

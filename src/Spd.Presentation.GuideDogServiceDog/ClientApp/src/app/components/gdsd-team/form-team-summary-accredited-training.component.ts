@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
-	selector: 'app-gdsd-summary-accredited-training',
+	selector: 'app-form-team-summary-accredited-training',
 	template: `
 		<div class="text-minor-heading-small mt-2">Accredited Graduation Information</div>
 		<div class="row mt-0">
@@ -25,7 +25,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 	styles: [],
 	standalone: false,
 })
-export class GdsdSummaryAccreditedTrainingComponent {
+export class FormTeamSummaryAccreditedTrainingComponent {
 	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}
 
 	@Input() gdsdModelData: any;

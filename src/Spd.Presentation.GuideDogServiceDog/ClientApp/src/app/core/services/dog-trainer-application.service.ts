@@ -134,6 +134,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * @returns
 	 */
 	reset(): void {
+		console.debug('reset DOG TRAINER');
 		this.resetModelFlags();
 		this.resetCommon();
 
@@ -308,9 +309,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			postalCode: trainerMailingAddressData?.postalCode,
 			province: trainerMailingAddressData?.province,
 		});
-
-		const captchaFormGroup = this.mailingAddressFormGroup.get('captchaFormGroup') as FormGroup;
-		captchaFormGroup.patchValue({ displayCaptcha: true });
 
 		this.dogTrainerModelFormGroup.patchValue(
 			{
@@ -554,8 +552,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		const consentData = this.consentAndDeclarationDtFormGroup.getRawValue();
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 
 		const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
 		body.contactId = originalLicenceData.originalLicenceHolderId;
@@ -608,8 +606,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					this.reset();
-
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -621,8 +617,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				this.reset();
-
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!

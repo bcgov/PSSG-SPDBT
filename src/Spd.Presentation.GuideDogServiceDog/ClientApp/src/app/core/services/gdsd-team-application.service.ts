@@ -290,6 +290,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	reset(): void {
+		console.debug('reset GDSD TEAM');
 		this.resetModelFlags();
 		this.resetCommon();
 
@@ -1370,7 +1371,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -1385,7 +1385,9 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
-		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
 		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
@@ -1438,13 +1440,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	private postSubmitAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest
+		body: any // GdsdTeamLicenceAppChangeRequest or GdsdTeamLicenceAppAnonymousSubmitRequest
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					this.reset();
-
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -1456,8 +1456,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				this.reset();
-
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!

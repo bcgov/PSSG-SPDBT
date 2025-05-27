@@ -272,20 +272,20 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 							<div class="panel-body">
 								<ng-container *ngIf="isTrainedByAccreditedSchools; else NonAccreditedTraining">
-									<app-gdsd-summary-accredited-training
+									<app-form-team-summary-accredited-training
 										[gdsdModelData]="gdsdModelData"
-									></app-gdsd-summary-accredited-training>
+									></app-form-team-summary-accredited-training>
 								</ng-container>
 
 								<ng-template #NonAccreditedTraining>
 									<ng-container *ngIf="hasAttendedTrainingSchool; else NotAttendedTrainingSchool">
-										<app-gdsd-summary-school-training
+										<app-form-team-summary-school-training
 											[gdsdModelData]="gdsdModelData"
-										></app-gdsd-summary-school-training>
+										></app-form-team-summary-school-training>
 									</ng-container>
 
 									<ng-template #NotAttendedTrainingSchool>
-										<app-gdsd-summary-other-training [gdsdModelData]="gdsdModelData"></app-gdsd-summary-other-training>
+										<app-form-team-summary-other-training [gdsdModelData]="gdsdModelData"></app-form-team-summary-other-training>
 									</ng-template>
 								</ng-template>
 

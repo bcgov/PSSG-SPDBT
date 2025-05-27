@@ -3,7 +3,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 
 @Component({
-	selector: 'app-gdsd-summary-other-training',
+	selector: 'app-form-team-summary-other-training',
 	template: `
 		<div *ngFor="let train of otherTrainings; let i = index">
 			<div class="text-minor-heading-small mt-2">Other Training</div>
@@ -78,7 +78,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 	styles: [],
 	standalone: false,
 })
-export class GdsdSummaryOtherTrainingComponent {
+export class FormTeamSummaryOtherTrainingComponent {
 	booleanTypeYes = BooleanTypeCode.Yes;
 
 	constructor(private gdsdTeamApplicationService: GdsdTeamApplicationService) {}

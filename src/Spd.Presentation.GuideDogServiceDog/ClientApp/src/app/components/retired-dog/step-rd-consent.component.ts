@@ -8,7 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-rd-consent',
 	template: `
-		<app-step-section title="Consent and Declaration">
+		<app-step-section title="Acknowledgement">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">

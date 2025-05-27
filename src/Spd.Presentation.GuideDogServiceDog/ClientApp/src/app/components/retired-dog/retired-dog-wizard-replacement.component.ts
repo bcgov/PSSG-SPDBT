@@ -7,8 +7,10 @@ import { AppRoutes } from '@app/app.routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
-import { distinctUntilChanged } from 'rxjs';
-import { StepRdMailingAddressReplacementComponent } from './step-rd-mailing-address-replacement.component';
+import { UtilService } from '@app/core/services/util.service';
+import { distinctUntilChanged, Subscription } from 'rxjs';
+import { StepRdConsentReplacementComponent } from './step-rd-consent-replacement.component';
+import { StepRdMailingAddressComponent } from './step-rd-mailing-address.component';
 
 @Component({
 	selector: 'app-retired-dog-wizard-replacement',
@@ -19,12 +21,25 @@ import { StepRdMailingAddressReplacementComponent } from './step-rd-mailing-addr
 					<ng-template matStepLabel>Licence Confirmation</ng-template>
 					<app-step-rd-licence-confirmation></app-step-rd-licence-confirmation>
 
-					<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_SUMMARY)"></app-wizard-footer>
 				</mat-step>
 
-				<mat-step>
+				<mat-step [completed]="step2Complete">
 					<ng-template matStepLabel>Mailing Address</ng-template>
-					<app-step-rd-mailing-address-replacement></app-step-rd-mailing-address-replacement>
+					<app-step-rd-mailing-address
+						[isLoggedIn]="isLoggedIn"
+						[applicationTypeCode]="applicationTypeReplacement"
+					></app-step-rd-mailing-address>
+
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step [completed]="step3Complete">
+					<ng-template matStepLabel>Acknowledgement</ng-template>
+					<app-step-rd-consent-replacement></app-step-rd-consent-replacement>
 
 					<app-wizard-footer
 						nextButtonLabel="Submit"
@@ -43,14 +58,24 @@ import { StepRdMailingAddressReplacementComponent } from './step-rd-mailing-addr
 	standalone: false,
 })
 export class RetiredDogWizardReplacementComponent extends BaseWizardComponent implements OnInit {
-	isLoggedIn = false;
+	readonly STEP_SUMMARY = 0;
+	readonly STEP_MAILING_ADDRESS = 1;
 
-	@ViewChild(StepRdMailingAddressReplacementComponent)
-	stepAddressComponent!: StepRdMailingAddressReplacementComponent;
+	step2Complete = false;
+	step3Complete = false;
+
+	isLoggedIn = false;
+	applicationTypeReplacement = ApplicationTypeCode.Replacement;
+
+	@ViewChild(StepRdMailingAddressComponent) stepAddress!: StepRdMailingAddressComponent;
+	@ViewChild(StepRdConsentReplacementComponent) stepConsent!: StepRdConsentReplacementComponent;
+
+	private retiredDogChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
@@ -69,10 +94,38 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		this.retiredDogChangedSubscription = this.retiredDogApplicationService.retiredDogModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				this.updateCompleteStatus();
+			}
+		);
 	}
 
-	onGoToNextStep(): void {
+	ngOnDestroy() {
+		if (this.retiredDogChangedSubscription) this.retiredDogChangedSubscription.unsubscribe();
+	}
+
+	onFormValidNextStep(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
+
 		this.stepper.next();
+	}
+
+	private dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_SUMMARY:
+				return true;
+			case this.STEP_MAILING_ADDRESS:
+				return this.stepAddress.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 
 	onGoToPreviousStep(): void {
@@ -80,9 +133,7 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 	}
 
 	onSubmit(): void {
-		if (!this.stepAddressComponent.isFormValid()) {
-			return;
-		}
+		if (!this.stepConsent.isFormValid()) return;
 
 		if (this.isLoggedIn) {
 			this.retiredDogApplicationService.submitLicenceAuthenticated(ApplicationTypeCode.Replacement).subscribe({
@@ -98,11 +149,18 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 
 		this.retiredDogApplicationService.submitLicenceReplacementAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
-				this.router.navigateByUrl(AppRoutes.pathGdsdAnonymous(AppRoutes.GDSD_APPLICATION_RECEIVED));
+				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
 			},
 		});
+	}
+
+	private updateCompleteStatus(): void {
+		this.step2Complete = this.retiredDogApplicationService.mailingAddressFormGroup.valid;
+		this.step3Complete = this.retiredDogApplicationService.consentAndDeclarationFormGroup.valid;
+
+		console.debug('Complete Status', this.step2Complete, this.step3Complete);
 	}
 }

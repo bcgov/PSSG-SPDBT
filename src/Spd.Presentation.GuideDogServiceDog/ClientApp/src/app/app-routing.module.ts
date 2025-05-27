@@ -9,7 +9,6 @@ import { StepDtLicenceAccessCodeComponent } from './components/dog-trainer/step-
 import { GdsdBaseAnonymousComponent } from './components/gdsd-base-anonymous.component';
 import { GdsdBaseAuthenticatedComponent } from './components/gdsd-base-authenticated.component';
 import { GdsdLandingComponent } from './components/gdsd-landing.component';
-import { GdsdApplicationReceivedSuccessComponent } from './components/gdsd-team/gdsd-application-received-success.component';
 import { GdsdTeamWizardNewRenewalComponent } from './components/gdsd-team/gdsd-team-wizard-new-renewal.component';
 import { GdsdTeamWizardReplacementComponent } from './components/gdsd-team/gdsd-team-wizard-replacement.component';
 import { StepTeamApplicationTypeComponent } from './components/gdsd-team/step-team-application-type.component';
@@ -18,6 +17,7 @@ import { RetiredDogWizardNewRenewalComponent } from './components/retired-dog/re
 import { RetiredDogWizardReplacementComponent } from './components/retired-dog/retired-dog-wizard-replacement.component';
 import { StepRdApplicationTypeComponent } from './components/retired-dog/step-rd-application-type.component';
 import { StepRdLicenceAccessCodeComponent } from './components/retired-dog/step-rd-licence-access-code.component';
+import { GdsdApplicationReceivedComponent } from './components/shared/gdsd-application-received.component';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 const routes: Routes = [
@@ -92,10 +92,6 @@ const routes: Routes = [
 				path: AppRoutes.RETIRED_DOG_REPLACEMENT_ANONYMOUS,
 				component: RetiredDogWizardReplacementComponent,
 			},
-			{
-				path: AppRoutes.GDSD_APPLICATION_RECEIVED,
-				component: GdsdApplicationReceivedSuccessComponent,
-			},
 		],
 	},
 	{
@@ -139,6 +135,10 @@ const routes: Routes = [
 				pathMatch: 'full',
 			},
 		],
+	},
+	{
+		path: AppRoutes.GDSD_APPLICATION_RECEIVED,
+		component: GdsdApplicationReceivedComponent,
 	},
 	{
 		path: AppRoutes.ACCESS_DENIED,

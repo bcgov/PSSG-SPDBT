@@ -6,7 +6,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 
 @Component({
-	selector: 'app-gdsd-application-received-success',
+	selector: 'app-gdsd-application-received',
 	template: `
 		<app-container>
 			<section class="step-section">
@@ -44,7 +44,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 	styles: [],
 	standalone: false,
 })
-export class GdsdApplicationReceivedSuccessComponent implements OnInit {
+export class GdsdApplicationReceivedComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 	confirmationText = '';
 
@@ -58,20 +58,16 @@ export class GdsdApplicationReceivedSuccessComponent implements OnInit {
 	ngOnInit(): void {
 		if (this.gdsdTeamApplicationService.initialized) {
 			this.confirmationText = 'Your application for a Guide Dog or Service Dog Certificate has been received.';
+			this.gdsdTeamApplicationService.reset();
 		} else if (this.dogTrainerApplicationService.initialized) {
 			this.confirmationText = 'Your application for a Dog Trainer Certificate has been received.';
-			return;
+			this.dogTrainerApplicationService.reset();
 		} else if (this.retiredDogApplicationService.initialized) {
 			this.confirmationText = 'Your application for a Retired Dog Certificate has been received.';
-			return;
+			this.retiredDogApplicationService.reset();
 		} else {
 			this.commonApplicationService.onGoToHome();
-			return;
 		}
-
-		this.gdsdTeamApplicationService.reset();
-		this.dogTrainerApplicationService.reset();
-		this.retiredDogApplicationService.reset();
 	}
 
 	onPrint(): void {

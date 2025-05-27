@@ -150,6 +150,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	reset(): void {
+		console.debug('reset RETIRED DOG');
 		this.resetModelFlags();
 		this.resetCommon();
 
@@ -1057,7 +1058,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseChange(rdModelFormValue);
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -1072,7 +1072,9 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const originalLicenceData = rdModelFormValue.originalLicenceData;
 		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
-		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
 		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
@@ -1130,8 +1132,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					this.reset();
-
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -1143,8 +1143,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				this.reset();
-
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
