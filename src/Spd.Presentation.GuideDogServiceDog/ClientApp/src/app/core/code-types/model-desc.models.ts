@@ -1,8 +1,6 @@
 import {
-	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
-	ContactAuthorizationTypeCode,
 	GenderCode,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
@@ -51,15 +49,6 @@ export const ApplicationPortalStatuses: SelectOptions[] = [
 	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
 	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
 	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
-];
-
-export const ApplicationInviteStatuses: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationInviteStatusCode.Draft },
-	{ desc: 'Sent', code: ApplicationInviteStatusCode.Sent },
-	{ desc: 'Failed', code: ApplicationInviteStatusCode.Failed },
-	{ desc: 'Completed', code: ApplicationInviteStatusCode.Completed },
-	{ desc: 'Cancelled', code: ApplicationInviteStatusCode.Cancelled },
-	{ desc: 'Expired', code: ApplicationInviteStatusCode.Expired },
 ];
 
 export const GenderTypes: SelectOptions[] = [
@@ -119,13 +108,6 @@ export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
 	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
 	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
-];
-
-export const ContactAuthorizationTypes: SelectOptions[] = [
-	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
-	{ desc: 'Portal Administrator', code: ContactAuthorizationTypeCode.BusinessManager },
-	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
-	{ desc: 'Primary Portal Administrator', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const CountryTypes: SelectOptions[] = [

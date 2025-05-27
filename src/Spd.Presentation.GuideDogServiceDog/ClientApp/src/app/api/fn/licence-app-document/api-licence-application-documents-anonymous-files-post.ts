@@ -11,13 +11,13 @@ import { RequestBuilder } from '../../request-builder';
 import { LicenceDocumentTypeCode } from '../../models/licence-document-type-code';
 
 export interface ApiLicenceApplicationDocumentsAnonymousFilesPost$Params {
-      body: {
-'documents'?: Array<Blob>;
-'licenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+      body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
 }
 }
 
-export function apiLicenceApplicationDocumentsAnonymousFilesPost(http: HttpClient, rootUrl: string, params: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+export function apiLicenceApplicationDocumentsAnonymousFilesPost(http: HttpClient, rootUrl: string, params?: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
   const rb = new RequestBuilder(rootUrl, apiLicenceApplicationDocumentsAnonymousFilesPost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'multipart/form-data');

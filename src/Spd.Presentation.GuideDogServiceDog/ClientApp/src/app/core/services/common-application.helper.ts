@@ -35,7 +35,6 @@ export abstract class CommonApplicationHelper {
 		linkedCardHolderName: new FormControl(null),
 		linkedLicenceHolderName: new FormControl(null),
 		linkedLicenceHolderId: new FormControl(null),
-		linkedLicenceCategoryCodes: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),

@@ -591,8 +591,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

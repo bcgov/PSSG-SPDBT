@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { IdentityProviderTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app.routes';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
@@ -19,7 +18,6 @@ export class AuthProcessService {
 	hasValidToken$ = this._hasValidToken$.asObservable();
 
 	loggedInUserTokenData: any = null;
-	identityProvider: IdentityProviderTypeCode | null = null;
 
 	constructor(
 		private oauthService: OAuthService,
@@ -38,15 +36,9 @@ export class AuthProcessService {
 	): Promise<string | null> {
 		this.notify(false);
 
-		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-
 		const returningRoute = AppRoutes.pathGdsdMainApplications();
 
-		const loginInfo = await this.authenticationService.login(
-			this.identityProvider,
-			returnComponentRoute ?? returningRoute,
-			stateInfo
-		);
+		const loginInfo = await this.authenticationService.login(returnComponentRoute ?? returningRoute, stateInfo);
 
 		this.notifyValidToken(loginInfo.loggedIn);
 
@@ -69,18 +61,13 @@ export class AuthProcessService {
 	public logout(): void {
 		console.debug('[AuthProcessService] logout');
 
-		const loginType = this.identityProvider;
-
-		this.identityProvider = null;
 		this.oauthService.logOut();
 
 		this.authUserBcscService.clearUserData();
 
 		this.notify(false);
 
-		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
-		}
+		this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 	}
 
 	//----------------------------------------------------------

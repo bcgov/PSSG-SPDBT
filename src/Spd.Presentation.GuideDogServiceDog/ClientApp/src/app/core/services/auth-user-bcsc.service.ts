@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApplicantLoginResponse } from '@app/api/models';
+import { LoginService } from '@app/api/services';
 import { lastValueFrom } from 'rxjs';
-import { LoginService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBcscService {

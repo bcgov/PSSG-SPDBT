@@ -132,7 +132,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * Determine if the step data should be saved - if the data has changed
 	 * @returns
 	 */
 	isAutoSave(): boolean {
@@ -387,8 +387,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.gdsdTeamModelFormGroup.get('licenceAppId')?.value,
 			body: {
-				documents: [documentFile],
-				licenceDocumentTypeCode: documentCode,
+				Documents: [documentFile],
+				LicenceDocumentTypeCode: documentCode,
 			},
 		});
 	}
@@ -553,8 +553,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1345,8 +1345,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							documents: newDocumentsOnly,
-							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

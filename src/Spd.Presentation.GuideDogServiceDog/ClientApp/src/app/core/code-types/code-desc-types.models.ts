@@ -1,9 +1,7 @@
 export {
-	ApplicationInviteStatuses,
 	ApplicationPortalStatuses,
 	ApplicationTypes,
 	BooleanTypes,
-	ContactAuthorizationTypes,
 	CountryTypes,
 	DogGenderTypes,
 	GenderTypes,

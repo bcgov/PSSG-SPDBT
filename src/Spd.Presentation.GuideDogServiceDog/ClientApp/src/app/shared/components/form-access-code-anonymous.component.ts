@@ -209,7 +209,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				linkedCardHolderName: resp.nameOnCard,
 				linkedLicenceHolderId: resp.licenceHolderId,
 				linkedLicenceHolderName: resp.licenceHolderName,
-				linkedLicenceCategoryCodes: resp.categoryCodes,
 			});
 			this.linkSuccess.emit(resp);
 
