@@ -7,6 +7,7 @@ namespace Spd.Resource.Repository.Licence
         public Task<LicenceListResp> QueryAsync(LicenceQry query, CancellationToken cancellationToken);
         public Task<LicenceResp> ManageAsync(UpdateLicenceCmd cmd, CancellationToken cancellationToken);
         public Task<LicenceResp?> GetAsync(Guid licenceId, CancellationToken cancellationToken);
+        public Task<LicenceBasicResp?> GetBasicAsync(Guid licenceId, CancellationToken cancellationToken);
     }
 
     public record LicenceQry
@@ -30,6 +31,12 @@ namespace Spd.Resource.Repository.Licence
 
     //we should only update fields for permit when there is update
     public record UpdateLicenceCmd(PermitLicence PermitLicence, Guid LicenceID);
+
+    public record LicenceBasicResp
+    {
+        public Guid? LicenceId { get; set; }
+        public string? PrintingPreviewJobId { get; set; }
+    }
 
     public record LicenceResp() : PermitLicence
     {
