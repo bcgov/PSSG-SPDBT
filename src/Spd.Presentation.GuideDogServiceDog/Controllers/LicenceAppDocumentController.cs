@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Presentation.GuideDogServiceDog.Controllers;
 using Spd.Utilities.FileScanning;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
@@ -13,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
 
-namespace Spd.Presentation.Licensing.Controllers;
+namespace Spd.Presentation.GuideDogServiceDog.Controllers;
 [ApiController]
 public class LicenceAppDocumentController : SpdLicenceControllerBase
 {
