@@ -15,7 +15,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     ///  a GET request that takes an event id. It should be like
     ///    GET /api/printjobs/{eventid}
     /// where eventid is the GUID for spd_eventqueue record.
-    /// Now, it will exe the event according to the eventype (now, only finger print), and update the event according to the response from bcMail plus.
+    /// Now, it will exe the event according to the eventype (now, only finger print. sbl and msdr), and update the event according to the response from bcMail plus.
     /// </summary>
     /// <param name="eventId"></param>
     /// <param name="ct"></param>
@@ -26,6 +26,18 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
         return await mediator.Send(new StartPrintJobCommand(eventId), ct);
     }
 
+    /// <summary>
+    ///  a GET request that will print all cards (swl, permit) in event queue
+    /// Now, it will find all previous event queues which is for printing swl, permit and gdsd card printing, and create batch job, then update the events according to the response from bcMail plus.
+    /// </summary>
+    /// <param name="eventId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpGet("api/print-cards-in-batch")]
+    public async Task<ResultResponse> PrintCardsInBatch(CancellationToken ct)
+    {
+        return await mediator.Send(new PrintCardsInBatchCommand(), ct);
+    }
     /// <summary>
     /// return the preview picture of licence.
     /// The bcmp job id will be returned in the http header as "bcmp-personal-licence-preview-jobid"
