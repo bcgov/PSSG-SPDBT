@@ -13,6 +13,7 @@ namespace Spd.Manager.Printing;
 
 internal class PrintingManager
   : IRequestHandler<StartPrintJobCommand, ResultResponse>,
+    IRequestHandler<PrintCardsInBatchCommand, ResultResponse>,
     IRequestHandler<PrintJobStatusQuery, ResultResponse>,
     IRequestHandler<PreviewDocumentCommand, PreviewDocumentResp>,
     IRequestHandler<PrintingEventImageQuery, PreviewDocumentResp>,
@@ -81,6 +82,44 @@ internal class PrintingManager
         return null;
     }
 
+    public async Task<ResultResponse> Handle(PrintCardsInBatchCommand request, CancellationToken cancellationToken)
+    {
+        PersonalLicenceBatchPrintingTransformRequest transformRequest = await CreatePersonalLicenceBatchPrintingTransformRequest(cancellationToken);
+
+        if (transformRequest.CardPrintEvents.Any())
+        {
+            try
+            {
+                var transformResponse = await _documentTransformationEngine.Transform(
+                    transformRequest,
+                    cancellationToken);
+                if (transformResponse is BcMailPlusTransformResponse)
+                {
+                    BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
+                    var printResponse = await _printer.Send(
+                        new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
+                        cancellationToken);
+                    ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
+                    await UpdateResultInEvents(result, transformRequest.CardPrintEvents, cancellationToken);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, null);
+                ResultResponse result = new()
+                {
+                    PrintJobId = null,
+                    Status = JobStatusCode.Error,
+                    Error = $"{ex.Message} {ex.InnerException?.Message}"
+                };
+                await UpdateResultInEvents(result, transformRequest.CardPrintEvents, cancellationToken);
+                return result;
+            }
+        }
+        return null;
+    }
+
     public async Task<ResultResponse> Handle(PrintJobStatusQuery request, CancellationToken cancellationToken)
     {
         //get event 
@@ -144,39 +183,88 @@ internal class PrintingManager
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPScreeningFingerprintPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_application"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationId cannot be null if it is BCMPScreeningFingerprintPrinting");
 
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPSecurityWorkerLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPSecurityWorkerLicencePrinting");
-
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPArmouredVehiclePermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPArmouredVehiclePermitPrinting");
-
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBodyArmourPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBodyArmourPermitPrinting");
-
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPGuideDogServiceDogTeamPrinting");
-
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPDogTrainerPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPDogTrainerPrinting");
-
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPRetiredServiceDogPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPRetiredServiceDogPrinting");
-
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBusinessLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBusinessLicencePrinting");
 
         return eventResp.EventTypeEnum switch
         {
             EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest(eventResp.RegardingObjectId.Value),
-            EventTypeEnum.BCMPSecurityWorkerLicencePrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
-            EventTypeEnum.BCMPBodyArmourPermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
-            EventTypeEnum.BCMPArmouredVehiclePermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
-            EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
-            EventTypeEnum.BCMPDogTrainerPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
-            EventTypeEnum.BCMPRetiredServiceDogPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             _ => throw new NotImplementedException()
         };
+    }
+
+    private async Task<PersonalLicenceBatchPrintingTransformRequest> CreatePersonalLicenceBatchPrintingTransformRequest(CancellationToken ct)
+    {
+        IEnumerable<EventResp?> eventResps = await _eventRepo.QueryAsync(
+            new EventQuery()
+            {
+                EventStatusReasonEnum = EventStatusReasonEnum.Ready,
+                EventTypeEnums = new List<EventTypeEnum>()
+                {
+                    EventTypeEnum.BCMPSecurityWorkerLicencePrinting,
+                    EventTypeEnum.BCMPArmouredVehiclePermitPrinting,
+                    EventTypeEnum.BCMPBodyArmourPermitPrinting,
+                    //EventTypeEnum.BCMPRetiredServiceDogPrinting,
+                    //EventTypeEnum.BCMPDogTrainerPrinting,
+                    //EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
+                },
+                CutOffDateTime = DateTimeOffset.UtcNow,
+            }, ct);
+
+        List<CardPrintEvent> cardPrints = new List<CardPrintEvent>();
+        foreach (var eventResp in eventResps)
+        {
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPSecurityWorkerLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPSecurityWorkerLicencePrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPArmouredVehiclePermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPArmouredVehiclePermitPrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBodyArmourPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBodyArmourPermitPrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPGuideDogServiceDogTeamPrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPDogTrainerPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPDogTrainerPrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPRetiredServiceDogPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPRetiredServiceDogPrinting");
+            var licence = await _licenceRepository.GetBasicAsync((Guid)eventResp.RegardingObjectId, ct);
+            var cardPrint = new CardPrintEvent
+            {
+                EventQueueId = eventResp.Id,
+                PrintingPreviewJobId = licence?.PrintingPreviewJobId,
+                IsSuccess = licence?.PrintingPreviewJobId == null ? false : null,
+                ErrMsg = licence?.PrintingPreviewJobId == null ? "Cannot find the preview job id" : null
+            };
+            cardPrints.Add(cardPrint);
+        }
+        return new PersonalLicenceBatchPrintingTransformRequest(cardPrints);
+    }
+
+    private async Task UpdateResultInEvents(ResultResponse resultResponse, List<CardPrintEvent> events, CancellationToken cancellationToken)
+    {
+        //update event queues
+        List<EventUpdateCmd> cmds = new List<EventUpdateCmd>();
+        foreach (var e in events)
+        {
+            var cmd = _mapper.Map<EventUpdateCmd>(resultResponse);
+            if (e.IsSuccess == false) //those events has data issue, even though it is supposed to be in print batch, but as there is error, it does not go to print batch.
+            {
+                cmd.JobId = null;
+                cmd.ErrorDescription = e.ErrMsg;
+                cmd.StateCode = 1;
+                cmd.EventStatusReasonEnum = EventStatusReasonEnum.Fail;
+            }
+            cmd.Id = e.EventQueueId;
+            cmds.Add(cmd);
+        }
+
+        await _eventRepo.ManageInBatchAsync(cmds, cancellationToken);
+        return;
     }
 
     private async Task UpdateResultInEvent(ResultResponse resultResponse, Guid eventId, CancellationToken cancellationToken)
