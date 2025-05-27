@@ -3,7 +3,7 @@ using Spd.Manager.Payment;
 //using Spd.Manager.Screening;
 using System.Globalization;
 
-namespace Spd.Presentation.Screening.Controllers;
+namespace Spd.Presentation.GuideDogServiceDog.Controllers;
 
 internal class Mappings : Profile
 {
