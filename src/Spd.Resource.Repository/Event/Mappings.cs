@@ -17,6 +17,7 @@ namespace Spd.Resource.Repository.Event
              .ForMember(d => d.RegardingObjectName, opt => opt.MapFrom(s => s.spd_regardingobjectlogicalname));
 
             _ = CreateMap<EventUpdateCmd, spd_eventqueue>()
+             .ForMember(d => d.spd_eventqueueid, opt => opt.Ignore())
              .ForMember(d => d.spd_timestamp, opt => opt.MapFrom(s => s.LastExeTime))
              .ForMember(d => d.spd_errordescription, opt => opt.MapFrom(s => s.ErrorDescription))
              .ForMember(d => d.spd_jobid, opt => opt.MapFrom(s => s.JobId))
