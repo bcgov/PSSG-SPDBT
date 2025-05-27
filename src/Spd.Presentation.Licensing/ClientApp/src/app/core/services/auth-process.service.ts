@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routes';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
@@ -202,40 +201,6 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// * Guide Dog Service Dog Portal - BCSC
-	// *
-	async initializeGuideDogServiceDogBCSC(
-		returnComponentRoute: string | undefined = undefined,
-		stateInfo: string | null = null
-	): Promise<string | null> {
-		this.notify(false);
-
-		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-
-		const returningRoute = GuideDogServiceDogRoutes.pathGdsdMainApplications();
-
-		const loginInfo = await this.authenticationService.login(
-			this.identityProvider,
-			returnComponentRoute ?? returningRoute,
-			stateInfo
-		);
-
-		this.notifyValidToken(loginInfo.loggedIn);
-
-		console.debug('[AuthProcessService] initializeGuideDogServiceDogBCSC loginInfo', returnComponentRoute, loginInfo);
-
-		if (loginInfo.returnRoute) {
-			const success = await this.authUserBcscService.applicantLoginAsync();
-			this.notify(success);
-
-			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
-			return Promise.resolve(nextRoute);
-		}
-
-		return Promise.resolve(null);
-	}
-
-	//----------------------------------------------------------
 	// *
 	// *
 	public logout(): void {
@@ -253,12 +218,7 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			const currentPath = location.pathname;
-			if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
-				this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
-			} else {
-				this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
-			}
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
 	}
 
