@@ -37,17 +37,13 @@ namespace Spd.Presentation.GuideDogServiceDog.Swagger
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
 
-                //c.OperationFilter<AddRequiredHeaderParameter>();
                 c.OperationFilter<ProducesResponseTypeFilter>();
-                c.OperationFilter<AddApplicationPostParamTypesFilter>();
+                c.OperationFilter<LicenceAppDocumentPostparamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFileName = $"{assemblyName}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
                 if (File.Exists(xmlPath))
                     c.IncludeXmlComments(xmlPath);
-                // Provide sample for JsonElement
-                //c.SchemaFilter<ExamplesSchemaFilter>();
-                //c.SchemaFilter<EnumSchemaFilter>(xmlPath);
             });
         }
     }
