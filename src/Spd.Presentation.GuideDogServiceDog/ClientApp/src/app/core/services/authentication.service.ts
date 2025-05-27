@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
+import { IdentityProviderTypeCode } from '@app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,21 +19,36 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public async tryLogin(
+	public async login(
 		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string
-	): Promise<{ state: string | null; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
+		returnComponentRoute: string | null = null,
+		stateInfo: string | null = null
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
+		console.debug('[AuthenticationService] login loginType', loginType, 'returnComponentRoute', returnComponentRoute);
+
+		const redirectUri = this.createRedirectUrl(returnComponentRoute ?? '');
+
+		await this.configService.configureOAuthService(loginType, redirectUri);
+
+		const returnRoute = location.pathname.substring(1);
+
+		console.debug('[AuthenticationService] login redirectUrl', redirectUri);
+		console.debug('[AuthenticationService] login returnRoute', returnRoute);
+		console.debug('[AuthenticationService] login stateInfo', stateInfo);
 
 		const isLoggedIn = await this.oauthService
-			.loadDiscoveryDocumentAndTryLogin()
+			.loadDiscoveryDocumentAndLogin({
+				state: stateInfo ?? undefined,
+			})
 			.then((_) => this.oauthService.hasValidAccessToken())
 			.catch((_) => false);
 
-		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
+		const returnState = this.oauthService.state ? this.oauthService.state : stateInfo;
+		console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
 
 		return {
-			state: this.oauthService.state ?? null,
+			returnRoute: isLoggedIn ? returnRoute || null : null,
+			state: returnState,
 			loggedIn: isLoggedIn,
 		};
 	}
@@ -41,29 +56,32 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public async login(
+	public async tryLogin(
 		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string | undefined = undefined
-	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
+		returnComponentRoute: string,
+		stateInfo: string | null = null
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
+		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
 
-		const returnRoute = returnComponentRoute;
-		console.debug('[AuthenticationService] LOGIN', returnRoute);
+		const returnRoute = location.pathname.substring(1);
 
 		const isLoggedIn = await this.oauthService
-			.loadDiscoveryDocumentAndLogin({
-				state: returnRoute,
-			})
+			.loadDiscoveryDocumentAndTryLogin()
 			.then((_) => this.oauthService.hasValidAccessToken())
 			.catch((_) => false);
 
-		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
+		const returnState = this.oauthService.state ? this.oauthService.state : stateInfo;
+		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
-		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute || null);
-		}
+		return {
+			returnRoute: isLoggedIn ? returnRoute || null : null,
+			state: returnState,
+			loggedIn: isLoggedIn,
+		};
+	}
 
-		return Promise.resolve(null);
+	public getBcscIssuer(): string | null {
+		return this.configService.getBcscIssuer();
 	}
 
 	//----------------------------------------------------------
@@ -80,7 +98,14 @@ export class AuthenticationService {
 		return this.oauthService.hasValidAccessToken();
 	}
 
-	private createRedirectUrl(componentUrl: string): string {
+	getBcscIdentityProvider(): string {
+		return this.configService.getBcscIdentityProvider();
+	}
+
+	//----------------------------------------------------------
+	// *
+	// *
+	public createRedirectUrl(componentUrl: string): string {
 		let baseUrl = `${location.origin}${this.href}`;
 		if (baseUrl.endsWith('/')) {
 			baseUrl = baseUrl.substring(0, baseUrl.length - 1);

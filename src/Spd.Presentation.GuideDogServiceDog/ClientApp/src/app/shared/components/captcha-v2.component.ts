@@ -1,36 +1,29 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 @UntilDestroy({ checkProperties: true })
 @Component({
-    selector: 'app-captcha-v2',
-    template: `
-		<div [formGroup]="captchaForm">
-			<div class="row mt-3">
-				<div class="col-sm-12 mb-2">
-					<re-captcha
-						formControlName="token"
-						[siteKey]="siteKey"
-						(resolved)="resolved($event?? '')"
-						(error)="errored($event)"
-						required
-					></re-captcha>
-				</div>
-			</div>
+	selector: 'app-captcha-v2',
+	template: `
+		<div [formGroup]="captchaFormGroup">
+			<re-captcha
+				formControlName="token"
+				[siteKey]="siteKey"
+				(resolved)="resolved($event ?? '')"
+				(error)="errored($event)"
+				required
+			></re-captcha>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class CaptchaV2Component implements OnInit {
+	@Input() captchaFormGroup!: FormGroup;
 	@Input() resetControl: Subject<void> = new Subject<void>();
 	@Output() captchaResponse = new EventEmitter<CaptchaResponse>();
-	captchaForm: FormGroup = new FormGroup({
-		token: new FormControl('', FormControlValidators.required),
-	});
 	siteKey = '';
 
 	constructor(private configService: ConfigService) {
@@ -42,7 +35,7 @@ export class CaptchaV2Component implements OnInit {
 	}
 
 	reset(): void {
-		this.captchaForm.reset();
+		this.captchaFormGroup.reset();
 		grecaptcha.reset();
 	}
 

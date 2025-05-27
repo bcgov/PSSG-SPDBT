@@ -1,9 +1,5 @@
 export const SPD_CONSTANTS = {
-	list: {
-		defaultPageSize: 10,
-	},
 	date: {
-		birthDateStartAtYears: 25,
 		birthDateMinAgeYears: 12,
 		dateFormat: 'YYYY-MM-DD',
 		formalDateFormat: 'MMM DD, YYYY',
@@ -12,7 +8,17 @@ export const SPD_CONSTANTS = {
 		dateTimeFormat: 'YYYY-MM-DD HH:mm',
 		backendDateFormat: 'YYYY-MM-DD',
 	},
+	periods: {
+		applicationNotSubmittedWarningDays: 14, // show warning 14 days before the 30 day mark
+		applicationNotSubmittedErrorDays: 7, // show error 7 days before the 30 day mark
+		applicationNotSubmittedValidDays: 30, // user has 30 days to submit the application, otherwise dynamics deletes it
+		licenceReplacementPeriodPreventionDays: 14, // cannot replace within 14 days of expiry
+		licenceRenewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
+		licenceRenewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
+		gdsdLicenceRenewAfterExpiryPeriodMonths: 6, // gdsd licence can still be renewed until 6 months after expiry
+	},
 	phone: {
+		spdPhoneNumber: '1-855-587-0185',
 		displayMask: '(000) 000-0000',
 		backendMask: '000-000-0000',
 	},
@@ -35,31 +41,33 @@ export const SPD_CONSTANTS = {
 			'.htm',
 		],
 	},
-	sessionStorage: {
-		organizationRegStateKey: 'state',
-		crrpaPortalStateKey: 'crrpa-state',
-		pssoaPortalStateKey: 'pssoa-state',
-		bannerMessageKey: 'banner-message',
+	api: {
+		debounceTime: 500, // milliseconds
 	},
-	payment: {
-		maxNumberOfAttempts: 3,
+	urls: {
+		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
+		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
+		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
+		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',
+		bcGovCopyrightUrl: 'https://www2.gov.bc.ca/gov/content/home/copyright',
+		bcGovContactUrl: 'https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services',
+		bcServicesCardUrl: 'https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card',
+		canadianPassportPhotoUrl:
+			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
+		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
+		contactSpdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
+		setupAccountUrl: 'https://id.gov.bc.ca/account/',
+		securityIndustryLicensingUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing',
 	},
-	maxNumberOfAliases: 3,
 	files: {
-		pssoTerms: './assets/files/Psso-terms-and-conditions.pdf',
-		pssoFirstTimeTerms: './assets/files/Psso-pe-crc-org-terms-and-conditions.pdf',
-		peCrcOrPeCrcVsTerms: './assets/files/Pe-crc-terms-and-conditions.pdf',
-		crrpTerms: './assets/files/Crrp-terms-and-conditions.pdf',
+		guideDogServiceDogTerms: './assets/files/Guide Dog Service Dog Applicant Terms of Use.pdf',
 	},
-	closeRedirects: {
-		crrpApplication:
-			'https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/applicants/process',
-		peCrcApplication: 'https://www2.gov.bc.ca/gov/content/home',
-		mcfdApplication:
-			'https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/children-and-family-development',
-		pssoCheck: 'https://www2.gov.bc.ca/gov/content/careers-myhr',
-	},
-	message: {
-		pssoVsWarning: 'I confirm I am submitting a combined check on behalf of the Centralized Services Hub (CSH) team.',
+	address: {
+		provinceBC: 'BC',
+		provinceBritishColumbia: 'British Columbia',
+		countryCA: 'CA',
+		countryCanada: 'Canada',
 	},
 };

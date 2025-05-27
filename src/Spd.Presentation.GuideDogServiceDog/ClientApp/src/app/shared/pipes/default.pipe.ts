@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
     standalone: false
 })
 export class DefaultPipe implements PipeTransform {
-	public transform(value: any, defaultValue = '--'): any {
+	public transform(value: any, defaultValue = '---'): any {
 		if (typeof value === 'string') {
 			value = value.trim();
 		}

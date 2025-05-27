@@ -1,11 +1,13 @@
 export {
-	ApplicationPortalStatisticsTypes,
-	ApplicationPortalStatusTypes,
-	CaseSubStatuses,
+	ApplicationInviteStatuses,
+	ApplicationPortalStatuses,
+	ApplicationTypes,
+	BooleanTypes,
 	ContactAuthorizationTypes,
 	CountryTypes,
-	EmployeeInteractionTypes,
-	FileTypes,
+	DogGenderTypes,
 	GenderTypes,
+	GovernmentIssuedPhotoIdTypes,
+	LicenceTermTypes,
 	ServiceTypes,
 } from './model-desc.models';

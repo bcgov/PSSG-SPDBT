@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfigService } from 'src/app/core/services/config.service';
+import { ConfigService } from '@app/core/services/config.service';
 
 export interface DialogOopsOptions {
 	message?: string;
@@ -8,9 +8,9 @@ export interface DialogOopsOptions {
 }
 
 @Component({
-    selector: 'app-spd-dialog-oops',
-    template: `
-		<mat-dialog-content>
+	selector: 'app-spd-dialog-oops',
+	template: `
+		<mat-dialog-content class="mat-dialog-content">
 			<ng-container *ngIf="!is400Error">
 				<div class="d-flex justify-content-center">
 					<img
@@ -38,13 +38,21 @@ export interface DialogOopsOptions {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">Close</button>
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large"
+						[mat-dialog-close]="false"
+						aria-label="Close the popup"
+					>
+						Close
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -63,14 +71,17 @@ export interface DialogOopsOptions {
 				color: var(--color-grey-dark);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class DialogOopsComponent implements OnInit {
 	errorMessage: string | null | undefined = null;
 	is400Error!: boolean;
 
-	constructor(private configService: ConfigService, @Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
+	constructor(
+		private configService: ConfigService,
+		@Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions
+	) {}
 
 	ngOnInit(): void {
 		this.is400Error = this.data.is400Error ?? false;

@@ -1,35 +1,33 @@
 import { Injectable } from '@angular/core';
+import { ApplicantLoginResponse } from '@app/api/models';
 import { lastValueFrom } from 'rxjs';
-import { ApplicantService, UserProfileService } from 'src/app/api/services';
-import { ApplicantProfileResponse, ApplicantUserInfo } from '../code-types/code-types.models';
+import { LoginService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBcscService {
-	bcscUserWhoamiProfile: ApplicantProfileResponse | null = null;
-	bcscUserInfoProfile: ApplicantUserInfo | null = null;
+	applicantLoginProfile: ApplicantLoginResponse | null = null;
 
-	constructor(private userProfileService: UserProfileService, private applicantService: ApplicantService) {}
+	constructor(private loginService: LoginService) {}
 
-	async applicantUserInfoAsync(): Promise<boolean> {
-		this.bcscUserInfoProfile = await lastValueFrom(this.applicantService.apiApplicantsUserinfoGet());
-		return Promise.resolve(true);
-	}
-
-	async whoAmIAsync(): Promise<boolean> {
+	//----------------------------------------------------------
+	// *
+	// * get data related to login
+	async applicantLoginAsync(): Promise<boolean> {
 		this.clearUserData();
 
-		const resp: ApplicantProfileResponse = await lastValueFrom(this.userProfileService.apiApplicantsWhoamiGet());
-
+		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
 		if (resp) {
-			this.bcscUserWhoamiProfile = resp;
+			this.applicantLoginProfile = resp;
 			return Promise.resolve(true);
 		}
 
 		return Promise.resolve(false);
 	}
 
+	//----------------------------------------------------------
+	// *
+	// * clear data on logout
 	public clearUserData(): void {
-		this.bcscUserWhoamiProfile = null;
-		this.bcscUserInfoProfile = null;
+		this.applicantLoginProfile = null;
 	}
 }

@@ -13,10 +13,9 @@ export enum ApplicationPortalStatusCode {
   Incomplete = 'Incomplete',
   CompletedCleared = 'CompletedCleared',
   RiskFound = 'RiskFound',
+  ClosedJudicialReview = 'ClosedJudicialReview',
   ClosedNoResponse = 'ClosedNoResponse',
   ClosedNoConsent = 'ClosedNoConsent',
   CancelledByApplicant = 'CancelledByApplicant',
-  CancelledByOrganization = 'CancelledByOrganization',
-  RefundRequested = 'RefundRequested',
-  Completed = 'Completed'
+  CancelledByOrganization = 'CancelledByOrganization'
 }

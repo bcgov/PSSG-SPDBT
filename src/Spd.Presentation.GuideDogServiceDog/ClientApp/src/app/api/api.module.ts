@@ -7,17 +7,25 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
-import { ApplicantService } from './services/applicant.service';
-import { ApplicationService } from './services/application.service';
+import { ApplicantProfileService } from './services/applicant-profile.service';
+import { BizLicensingService } from './services/biz-licensing.service';
+import { BizMembersService } from './services/biz-members.service';
+import { BizPortalUserService } from './services/biz-portal-user.service';
+import { BizProfileService } from './services/biz-profile.service';
 import { ConfigurationService } from './services/configuration.service';
-import { DelegateService } from './services/delegate.service';
-import { MinistryService } from './services/ministry.service';
-import { OrgService } from './services/org.service';
-import { OrgRegistrationService } from './services/org-registration.service';
-import { OrgReportService } from './services/org-report.service';
-import { OrgUserService } from './services/org-user.service';
+import { ControllingMemberCrcAppService } from './services/controlling-member-crc-app.service';
+import { DogSchoolService } from './services/dog-school.service';
+import { DogTrainerLicensingService } from './services/dog-trainer-licensing.service';
+import { GdsdTeamLicensingService } from './services/gdsd-team-licensing.service';
+import { LicenceService } from './services/licence.service';
+import { LicenceAppService } from './services/licence-app.service';
+import { LicenceAppDocumentService } from './services/licence-app-document.service';
+import { LicenceFeeService } from './services/licence-fee.service';
+import { LoginService } from './services/login.service';
 import { PaymentService } from './services/payment.service';
-import { UserProfileService } from './services/user-profile.service';
+import { PermitService } from './services/permit.service';
+import { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
+import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
 
 /**
  * Module that provides all services and configuration.
@@ -28,17 +36,25 @@ import { UserProfileService } from './services/user-profile.service';
   declarations: [],
   providers: [
     AddressAutoCompleteService,
-    ApplicantService,
-    ApplicationService,
+    ApplicantProfileService,
+    BizLicensingService,
+    BizMembersService,
+    BizPortalUserService,
+    BizProfileService,
     ConfigurationService,
-    DelegateService,
-    MinistryService,
-    OrgService,
-    OrgRegistrationService,
-    OrgReportService,
-    OrgUserService,
+    ControllingMemberCrcAppService,
+    DogSchoolService,
+    DogTrainerLicensingService,
+    GdsdTeamLicensingService,
+    LicenceService,
+    LicenceAppService,
+    LicenceAppDocumentService,
+    LicenceFeeService,
+    LoginService,
     PaymentService,
-    UserProfileService,
+    PermitService,
+    RetiredDogLicensingService,
+    SecurityWorkerLicensingService,
     ApiConfiguration
   ],
 })

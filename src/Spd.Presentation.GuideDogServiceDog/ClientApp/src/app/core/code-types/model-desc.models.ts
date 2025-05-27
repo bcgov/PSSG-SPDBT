@@ -1,209 +1,131 @@
 import {
+	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
-	CaseSubStatusCode,
+	ApplicationTypeCode,
 	ContactAuthorizationTypeCode,
-	EmployeeInteractionTypeCode,
-	FileTypeCode,
 	GenderCode,
-	PayerPreferenceTypeCode,
+	LicenceDocumentTypeCode,
+	LicenceTermCode,
 	ServiceTypeCode,
-} from 'src/app/api/models';
-import { ApplicationPortalStatisticsTypeCode, ScreeningTypeCode } from './code-types.models';
+} from '@app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
-export interface SelectOptions<k = string | number | boolean> {
+export interface SelectOptions<k = string> {
 	code: k;
 	desc: string;
-	extra?: string;
+	selected?: boolean;
 }
 
-export const CaseSubStatuses: SelectOptions[] = [
-	{ desc: 'Applicant Information', code: CaseSubStatusCode.ApplicantInformation },
-	{ desc: 'Confirmation Of Fingerprints', code: CaseSubStatusCode.Fingerprints },
-	{ desc: 'Self Disclosure', code: CaseSubStatusCode.SelfDisclosure },
-	{ desc: 'Opportunity To Respond', code: CaseSubStatusCode.OpportunityToRespond },
+// ============================================================
+// ENUMs
+// ============================================================
+export enum BooleanTypeCode {
+	Yes = 'Yes',
+	No = 'No',
+}
+
+// ============================================================
+// SelectOptions Lists
+// ============================================================
+
+export const ApplicationTypes: SelectOptions[] = [
+	{ desc: 'New', code: ApplicationTypeCode.New },
+	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
+	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
+	{ desc: 'Update', code: ApplicationTypeCode.Update },
 ];
 
-export const EmployeeInteractionTypes: SelectOptions[] = [
-	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
-	{ desc: 'Vulnerable Adults', code: EmployeeInteractionTypeCode.Adults },
-	{ desc: 'Children and Vulnerable Adults', code: EmployeeInteractionTypeCode.ChildrenAndAdults },
+export const ApplicationPortalStatuses: SelectOptions[] = [
+	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
+	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
+	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
+	{ desc: 'Closed - Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
+	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
+	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
+	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
 ];
 
-export const FileTypes: SelectOptions[] = [
-	{ desc: 'Applicant Consent Form', code: FileTypeCode.ApplicantConsentForm },
-	{ desc: 'Applicant Information', code: FileTypeCode.ApplicantInformation },
-	{ desc: 'Armoured Car Guard', code: FileTypeCode.ArmouredCarGuard },
-	{ desc: 'Armoured Vehicle Purpose', code: FileTypeCode.ArmouredVehiclePurpose },
-	{ desc: 'Armoured Vehicle Rationale', code: FileTypeCode.ArmouredVehicleRationale },
-	{ desc: 'BC Companies Registration Verification', code: FileTypeCode.BcCompaniesRegistrationVerification },
-	{ desc: 'BC Services Card', code: FileTypeCode.BcServicesCard },
-	{ desc: 'Birth Certificate', code: FileTypeCode.BirthCertificate },
-	{ desc: 'Body Armour Purpose', code: FileTypeCode.BodyArmourPurpose },
-	{ desc: 'Body Armour Rationale', code: FileTypeCode.BodyArmourRationale },
-	{ desc: 'Business Insurance', code: FileTypeCode.BusinessInsurance },
-	{ desc: 'Canadian Citizenship', code: FileTypeCode.CanadianCitizenship },
-	{ desc: 'Canadian Firearms License', code: FileTypeCode.CanadianFirearmsLicense },
-	{ desc: 'Canadian Native Status Card', code: FileTypeCode.CanadianNativeStatusCard },
-	{ desc: 'Certificate Of Advanced Security Training', code: FileTypeCode.CertificateOfAdvancedSecurityTraining },
-	{ desc: 'Clearance Letter', code: FileTypeCode.ClearanceLetter },
-	{ desc: 'Confirmation Letter From Superior Officer', code: FileTypeCode.ConfirmationLetterFromSuperiorOfficer },
-	{ desc: 'Confirmation Of Fingerprints', code: FileTypeCode.ConfirmationOfFingerprints },
-	{ desc: 'Convicted Offence', code: FileTypeCode.ConvictedOffence },
-	{ desc: 'Criminal Charges', code: FileTypeCode.CriminalCharges },
-	{ desc: 'Driver License', code: FileTypeCode.DriverLicense },
-	{ desc: 'Govt Issued Photo Id', code: FileTypeCode.GovtIssuedPhotoId },
-	{ desc: 'Legal Name Change', code: FileTypeCode.LegalNameChange },
-	{ desc: 'Legal Work Status', code: FileTypeCode.LegalWorkStatus },
-	{ desc: 'Letter Of No Conflict', code: FileTypeCode.LetterOfNoConflict },
-	{ desc: 'Locksmith', code: FileTypeCode.Locksmith },
-	{ desc: 'Mental Health Condition Form', code: FileTypeCode.MentalHealthConditionForm },
-	{ desc: 'Opportunity To Respond', code: FileTypeCode.OpportunityToRespond },
-	{ desc: 'Passport', code: FileTypeCode.Passport },
-	{ desc: 'Payment Receipt', code: FileTypeCode.PaymentReceipt },
-	{ desc: 'Permanent Residence Card', code: FileTypeCode.PermanentResidenceCard },
-	{ desc: 'Photograph', code: FileTypeCode.Photograph },
-	{ desc: 'Private Investigator', code: FileTypeCode.PrivateInvestigator },
-	{ desc: 'Private Investigator Under Supervision', code: FileTypeCode.PrivateInvestigatorUnderSupervision },
-	{ desc: 'Security Alarm Installer', code: FileTypeCode.SecurityAlarmInstaller },
-	{ desc: 'Security Consultant', code: FileTypeCode.SecurityConsultant },
-	{ desc: 'Security Guard', code: FileTypeCode.SecurityGuard },
-	{ desc: 'Self Disclosure', code: FileTypeCode.SelfDisclosure },
-	{ desc: 'Validation Certificate', code: FileTypeCode.ValidationCertificate },
+export const ApplicationInviteStatuses: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationInviteStatusCode.Draft },
+	{ desc: 'Sent', code: ApplicationInviteStatusCode.Sent },
+	{ desc: 'Failed', code: ApplicationInviteStatusCode.Failed },
+	{ desc: 'Completed', code: ApplicationInviteStatusCode.Completed },
+	{ desc: 'Cancelled', code: ApplicationInviteStatusCode.Cancelled },
+	{ desc: 'Expired', code: ApplicationInviteStatusCode.Expired },
 ];
 
-export const ScreeningTypes: SelectOptions[] = [
-	{ desc: 'Contractor', code: ScreeningTypeCode.Contractor },
-	{ desc: 'Licensee', code: ScreeningTypeCode.Licensee },
-	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
+export const GenderTypes: SelectOptions[] = [
+	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'M', code: GenderCode.M },
+	{ desc: 'X', code: GenderCode.U },
 ];
 
-export const PayerPreferenceTypes: SelectOptions[] = [
-	{ desc: 'Applicant', code: PayerPreferenceTypeCode.Applicant },
-	{ desc: 'Organization', code: PayerPreferenceTypeCode.Organization },
+export const DogGenderTypes: SelectOptions[] = [
+	{ desc: 'Female', code: GenderCode.F },
+	{ desc: 'Male', code: GenderCode.M },
+];
+
+export const BooleanTypes: SelectOptions[] = [
+	{ desc: 'No', code: BooleanTypeCode.No },
+	{ desc: 'Yes', code: BooleanTypeCode.Yes },
+];
+
+export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
+	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
+	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
+	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
+	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicenceAdditional },
+	{ desc: 'Passport', code: LicenceDocumentTypeCode.PassportAdditional },
+	{
+		desc: 'Secure certificate of Indian Status (with photo)',
+		code: LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional,
+	},
+	{ desc: 'Valid Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
 ];
 
 export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
-	{ desc: 'Combined Criminal Check (CSH ONLY)', code: ServiceTypeCode.PssoVs },
-	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'Foster, OOC, Adoptions and Relief Provider', code: ServiceTypeCode.Mcfd },
-	{ desc: 'MDRA', code: ServiceTypeCode.Mdra },
-	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
-	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
-	{ desc: 'Public Service Employment Check', code: ServiceTypeCode.Psso },
-	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
+	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'Dog Trainer Certification', code: ServiceTypeCode.DogTrainerCertification },
+	{ desc: 'GDSD Team Certification', code: ServiceTypeCode.GdsdTeamCertification },
+	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
+	{ desc: 'Metal Dealers & Recyclers', code: ServiceTypeCode.Mdra },
+	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Psso', code: ServiceTypeCode.Psso },
+	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
+	{ desc: 'Retired Dog Certification', code: ServiceTypeCode.RetiredServiceDogCertification },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
+	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
-		desc: 'Security Business Licence Controlling Member CRC',
+		desc: 'Controlling Member CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
 ];
 
-export const GenderTypes: SelectOptions[] = [
-	{ desc: 'M', code: GenderCode.M },
-	{ desc: 'F', code: GenderCode.F },
-	{ desc: 'X', code: GenderCode.U },
+export const LicenceTermTypes: SelectOptions[] = [
+	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
+	{ desc: '1 Year', code: LicenceTermCode.OneYear },
+	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
+	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
+	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [
-	{ desc: 'Primary Authorized Contact', code: ContactAuthorizationTypeCode.Primary },
-	{ desc: 'Authorized Contact', code: ContactAuthorizationTypeCode.Contact },
-];
-
-export const ApplicationPortalStatusTypes: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
-	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
-	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
-	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
-	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
-	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
-	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
-	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
-	{ desc: 'Completed', code: ApplicationPortalStatusCode.Completed },
-	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
-	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
-	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
-	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
-	{ desc: 'Cancelled by Organization', code: ApplicationPortalStatusCode.CancelledByOrganization },
-	{ desc: 'Cancelled by Applicant', code: ApplicationPortalStatusCode.CancelledByApplicant },
-	{ desc: 'Refund Requested', code: ApplicationPortalStatusCode.RefundRequested },
-];
-
-export const ApplicationPortalStatisticsTypes: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationPortalStatisticsTypeCode.Draft },
-	{
-		desc: 'Verify Identity',
-		code: ApplicationPortalStatisticsTypeCode.VerifyIdentity,
-		extra: `The applicant has submitted their CRC application, and the organization must confirm they have checked the applicant's government-issued photo ID`,
-	},
-	{
-		desc: 'In Progress',
-		code: ApplicationPortalStatisticsTypeCode.InProgress,
-		extra: 'The application is currently undergoing the screening process',
-	},
-	{
-		desc: 'Payment Pending',
-		code: ApplicationPortalStatisticsTypeCode.AwaitingPayment,
-		extra: 'The organization or the applicant must pay the application fee',
-	},
-	{
-		desc: 'Awaiting Third Party',
-		code: ApplicationPortalStatisticsTypeCode.AwaitingThirdParty,
-		extra: 'Waiting for information from an external party',
-	},
-	{
-		desc: 'Awaiting Applicant',
-		code: ApplicationPortalStatisticsTypeCode.AwaitingApplicant,
-		extra: 'Waiting for the applicant to provide additional information',
-	},
-	{
-		desc: 'Under Assessment',
-		code: ApplicationPortalStatisticsTypeCode.UnderAssessment,
-		extra: 'The application is in risk assessment',
-	},
-	{
-		desc: 'Incomplete',
-		code: ApplicationPortalStatisticsTypeCode.Incomplete,
-		extra: 'Incomplete application received',
-	},
-	{
-		desc: 'Completed',
-		code: ApplicationPortalStatisticsTypeCode.Completed,
-		extra: 'Criminal record check completed',
-	},
-	{
-		desc: 'Completed - Cleared',
-		code: ApplicationPortalStatisticsTypeCode.CompletedCleared,
-		extra: 'Criminal record check completed - no risk',
-	},
-	{
-		desc: 'Completed - Risk Found',
-		code: ApplicationPortalStatisticsTypeCode.RiskFound,
-		extra: 'The applicant is not cleared due to risk found',
-	},
-	{
-		desc: 'Closed - No Response',
-		code: ApplicationPortalStatisticsTypeCode.ClosedNoResponse,
-		extra: 'No response from applicant',
-	},
-	{
-		desc: 'Closed - No Consent',
-		code: ApplicationPortalStatisticsTypeCode.ClosedNoConsent,
-		extra: 'The applicant did not consent to the CRC',
-	},
-	{
-		desc: 'Cancelled by Organization',
-		code: ApplicationPortalStatisticsTypeCode.CancelledByOrganization,
-		extra: 'Organization cancelled the application',
-	},
-	{
-		desc: 'Cancelled by Applicant',
-		code: ApplicationPortalStatisticsTypeCode.CancelledByApplicant,
-		extra: 'The applicant cancelled their application',
-	},
+	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
+	{ desc: 'Portal Administrator', code: ContactAuthorizationTypeCode.BusinessManager },
+	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
+	{ desc: 'Primary Portal Administrator', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const CountryTypes: SelectOptions[] = [

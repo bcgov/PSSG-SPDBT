@@ -1,35 +1,50 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
-import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { SortDirection } from '@angular/material/sort';
+import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
-import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import {
-	ApplicationPortalStatisticsTypes,
-	ApplicationPortalStatusTypes,
-	ScreeningTypes,
-	SelectOptions,
-} from '../code-types/model-desc.models';
-import { SPD_CONSTANTS } from '../constants/constants';
+import { SelectOptions } from '../code-types/model-desc.models';
+import { MainLicenceResponse } from './common-application.service';
+
+export interface LicenceStepperStepComponent {
+	onStepNext(formNumber: number): void;
+	onStepPrevious(): void;
+	onFormValidNextStep(formNumber: number): void;
+	onStepSelectionChange(event: StepperSelectionEvent): void;
+	onGoToNextStep(): void;
+	onGoToFirstStep(): void;
+	onGoToLastStep(): void;
+}
+
+export interface LicenceChildStepperStepComponent {
+	isFormValid(): any;
+}
+
+export class LicenceDocumentsToSave {
+	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
+	'documents': Array<Blob>;
+}
+
+export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	private uniqueId = 1;
-
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
-		private hotToastService: HotToastService,
+		private formatDatePipe: FormatDatePipe,
+		private hotToastService: HotToastService
 	) {}
 
 	//------------------------------------
 	// Session storage
-	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
-	readonly CRRPA_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crrpaPortalStateKey;
-	readonly PSSOA_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.pssoaPortalStateKey;
-
 	setSessionData(key: string, data: any): void {
 		sessionStorage.setItem(key, data);
 	}
@@ -42,46 +57,107 @@ export class UtilService {
 		sessionStorage.removeItem(key);
 	}
 
-	clearAllSessionData(): void {
-		this.clearSessionData(this.ORG_REG_STATE_KEY);
-		this.clearSessionData(this.CRRPA_PORTAL_STATE_KEY);
-		this.clearSessionData(this.PSSOA_PORTAL_STATE_KEY);
-	}
-
-	public getUniqueId(): string {
-		this.uniqueId = this.uniqueId + 1;
-		return `ID${this.uniqueId}`;
-	}
-
-	//------------------------------------
-	// Table config
-	getDefaultQueryParams(): any {
-		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
-	}
-
-	getDefaultTablePaginatorConfig(): PaginationResponse {
-		const defaultTableConfig: PaginationResponse = {
-			pageSize: SPD_CONSTANTS.list.defaultPageSize,
-			pageIndex: 0,
-			length: 0,
-		};
-		return defaultTableConfig;
-	}
-
 	//------------------------------------
 	// Generic
-	getFullName(firstName: string | null | undefined, lastName: string | null | undefined): string | null {
-		if (!firstName && !lastName) return null;
+	getFullName(givenName: string | null | undefined, surname: string | null | undefined): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
 
-		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
+	getFullNameWithOneMiddle(
+		givenName: string | null | undefined,
+		middleName: string | null | undefined,
+		surname: string | null | undefined
+	): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName) {
+			userNameArray.push(middleName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
+	getFullNameWithMiddle(
+		givenName: string | null | undefined,
+		middleName1: string | null | undefined,
+		middleName2: string | null | undefined,
+		surname: string | null | undefined
+	): string {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName1) {
+			userNameArray.push(middleName1);
+		}
+		if (middleName2) {
+			userNameArray.push(middleName2);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
+	}
+
+	getToday(): moment.Moment {
+		return moment().startOf('day');
 	}
 
 	getBirthDateMax(): moment.Moment {
-		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
+		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
 	getDateMin(): moment.Moment {
 		return moment('1800-01-01');
+	}
+
+	getDogBirthDateMax(): moment.Moment {
+		return moment().startOf('day').subtract(6, 'months');
+	}
+
+	getDogDateMin(): moment.Moment {
+		return moment().startOf('day').subtract(50, 'years');
+	}
+
+	getIsFutureDate(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
+	}
+
+	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+		return moment(aDate).startOf('day').isSameOrAfter(moment().startOf('day'), 'day');
+	}
+
+	getIsDate5YearsOrOlder(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const yearsDiff = today.diff(dateDay, 'years');
+		return yearsDiff >= 5;
+	}
+
+	getIsDateMonthsOrOlder(aDate: string | null | undefined, periodMonths: number): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const monthsDiff = today.diff(dateDay, 'months', true);
+		return monthsDiff > periodMonths;
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
@@ -92,30 +168,47 @@ export class UtilService {
 		}
 	}
 
+	getStringOrNull(value: any): string | null {
+		if (!value) return null;
+		return value;
+	}
+
 	getDecodedAccessToken(token: string): any {
 		try {
 			return jwtDecode(token);
-		} catch (_error) {
+		} catch (_error: any) {
 			return null;
 		}
 	}
 
 	getAddressString(params: {
-		addressLine1: string;
-		addressLine2?: string;
-		city: string;
-		province: string;
-		country: string;
-		postalCode: string;
+		addressLine1: string | null | undefined;
+		addressLine2?: string | null | undefined;
+		city: string | null | undefined;
+		province: string | null | undefined;
+		country: string | null | undefined;
+		postalCode: string | null | undefined;
 	}): string {
-		let addrString = params.addressLine1;
-		addrString += `${params.addressLine2 ? ', ' + params.addressLine2 : ''}`;
-		addrString += `${params.city ? ', ' + params.city : ''}`;
-		addrString += `${params.province ? ', ' + params.province : ''}`;
-		addrString += `${params.country ? ', ' + params.country : ''}`;
-		addrString += `${params.postalCode ? ', ' + params.postalCode : ''}`;
-
-		return addrString;
+		const addressArray: string[] = [];
+		if (params.addressLine1) {
+			addressArray.push(params.addressLine1);
+		}
+		if (params.addressLine2) {
+			addressArray.push(params.addressLine2);
+		}
+		if (params.city) {
+			addressArray.push(params.city);
+		}
+		if (params.province) {
+			addressArray.push(params.province);
+		}
+		if (params.country) {
+			addressArray.push(params.country);
+		}
+		if (params.postalCode) {
+			addressArray.push(params.postalCode);
+		}
+		return addressArray.join(' ');
 	}
 
 	//------------------------------------
@@ -137,108 +230,90 @@ export class UtilService {
 	}
 
 	//------------------------------------
-	// Download File
-	downloadFile(headers: HttpHeaders, file: Blob, notFoundMessage?: string | undefined): void {
-		let fileName = 'download-file';
-		const contentDisposition = headers.get('Content-Disposition');
-		if (contentDisposition) {
-			const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-			const matches = fileNameRegex.exec(contentDisposition);
-			if (matches != null && matches[1]) {
-				fileName = matches[1].replace(/['"]/g, '');
+	// Sort
+
+	private compareByString(a: any, b: any, ascending = true) {
+		if (ascending) {
+			if (a < b) {
+				return -1;
+			}
+			if (a > b) {
+				return 1;
+			}
+		} else {
+			if (a < b) {
+				return 1;
+			}
+			if (a > b) {
+				return -1;
 			}
 		}
+		return 0;
+	}
 
-		if (file?.size > 0) {
-			const url = window.URL.createObjectURL(file);
-			const anchor = document.createElement('a');
-			anchor.href = url;
-			anchor.download = fileName;
-			document.body.appendChild(anchor);
-			anchor.click();
-			document.body.removeChild(anchor);
+	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending = true) {
+		const aUpper = a ? a.toUpperCase() : '';
+		const bUpper = b ? b.toUpperCase() : '';
+		return this.compareByString(aUpper, bUpper, ascending);
+	}
+
+	/**
+	 * @description
+	 * Generic sorting of a JSON object by direction.
+	 */
+	public sortByDirection<T>(a: T, b: T, direction: SortDirection = 'asc', withTrailingNull = true): SortWeight {
+		let result: SortWeight;
+
+		if (a === null && withTrailingNull) {
+			result = -1;
+		} else if (b === null && withTrailingNull) {
+			result = 1;
 		} else {
-			this.hotToastService.error(
-				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.',
-			);
-			console.error(`fileName ${fileName} is empty`);
+			result = this.sort(a, b);
+		}
+
+		if (direction === 'desc') {
+			result *= -1;
+		}
+
+		return result as SortWeight;
+	}
+
+	/**
+	 * @description
+	 * Generic sorting of a JSON object by key.
+	 */
+	public sort<T>(a: T, b: T): SortWeight {
+		return a > b ? 1 : a < b ? -1 : 0;
+	}
+
+	public sortDate(
+		a: string | null | undefined,
+		b: string | null | undefined,
+		direction: SortDirection = 'asc'
+	): SortWeight {
+		if (!a) {
+			return -1;
+		}
+		if (!b) {
+			return 1;
+		}
+
+		const aDate = moment(a).startOf('day');
+		const bDate = moment(b).startOf('day');
+
+		if (direction === 'asc') {
+			return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+		} else {
+			return aDate.isAfter(bDate) ? -1 : aDate.isBefore(bDate) ? 1 : 0;
 		}
 	}
 
 	//------------------------------------
 	// Misc
-	getApplicationPortalStatusClass(code: string | null | undefined): string {
-		if (!code) {
-			return '';
-		}
-
-		let currClass = 'mat-chip-grey';
-
-		switch (code) {
-			case ApplicationPortalStatusCode.InProgress:
-				currClass = 'mat-chip-green';
-				break;
-			case ApplicationPortalStatusCode.VerifyIdentity:
-			case ApplicationPortalStatusCode.AwaitingPayment:
-			case ApplicationPortalStatusCode.AwaitingThirdParty:
-			case ApplicationPortalStatusCode.AwaitingApplicant:
-				currClass = 'mat-chip-yellow';
-				break;
-			case ApplicationPortalStatusCode.RiskFound:
-				currClass = 'mat-chip-red';
-				break;
-			case ApplicationPortalStatusCode.Draft:
-			case ApplicationPortalStatusCode.Incomplete:
-			case ApplicationPortalStatusCode.UnderAssessment:
-				currClass = 'mat-chip-blue';
-				break;
-		}
-
-		return currClass;
-	}
-
-	getApplicationPortalStatusDesc(code: string): string {
-		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
-	}
-
-	getApplicationPortalStatisticsDesc(code: string): string {
-		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
-	}
-
-	getApplicationPortalStatisticsHint(code: string): string {
-		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
-	}
 
 	getDateString(date: Date): string {
 		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
-	}
-
-	getShowScreeningType(
-		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean,
-	): boolean {
-		if (!licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
-			return false;
-		}
-
-		return true;
-	}
-
-	getScreeningTypes(
-		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean,
-	): SelectOptions[] {
-		if (!licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
-			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Licensee);
-		} else if (licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
-			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Contractor);
-		}
-
-		return ScreeningTypes; // show all values
-	}
-
-	captchaTokenResponse(captchaResponse: CaptchaResponse): boolean {
-		return !!(captchaResponse.type === CaptchaResponseType.success && captchaResponse.resolved);
 	}
 
 	/**
@@ -273,7 +348,8 @@ export class UtilService {
 		const firstElementWithError =
 			document.querySelector('mat-form-field.ng-invalid') ||
 			document.querySelector('mat-radio-group.ng-invalid') ||
-			document.querySelector('mat-checkbox.ng-invalid');
+			document.querySelector('mat-checkbox.ng-invalid') ||
+			document.querySelector('form.ng-invalid');
 
 		if (firstElementWithError) {
 			const element =
@@ -288,44 +364,134 @@ export class UtilService {
 	}
 
 	/**
-	 * @description
-	 * Scroll to a material form checkbox field that is invalid.
+	 * Convert BooleanTypeCode to boolean
+	 * @param value
+	 * @returns
 	 */
-	public scrollToCheckbox(): void {
-		const firstElementWithError = document.querySelector('mat-checkbox.ng-invalid');
+	booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
+		if (!value) return null;
 
-		if (firstElementWithError) {
-			this.scrollTo(firstElementWithError);
-		} else {
-			this.scrollTop();
+		if (value == BooleanTypeCode.Yes) return true;
+		return false;
+	}
+
+	/**
+	 * Has a boolean value (true/false)... is not null or undefined
+	 * @param value
+	 * @returns
+	 */
+	public hasBooleanValue(value: boolean | null | undefined): boolean {
+		const isBooleanType = typeof value === 'boolean';
+		return isBooleanType;
+	}
+
+	/**
+	 * Convert boolean to BooleanTypeCode
+	 * @param value
+	 * @returns
+	 */
+	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+		const isBooleanType = typeof value === 'boolean';
+		if (!isBooleanType) return null;
+
+		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
+	}
+
+	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
+		return (
+			(province === SPD_CONSTANTS.address.provinceBC || province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
+			(country === SPD_CONSTANTS.address.countryCA || country === SPD_CONSTANTS.address.countryCanada)
+		);
+	}
+
+	/**
+	 * Convert date to format for DB
+	 * @param value
+	 * @returns
+	 */
+	public dateToDbDate(value: string | null | undefined): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, SPD_CONSTANTS.date.backendDateFormat);
+	}
+
+	/**
+	 * Convert date to format
+	 * @param value
+	 * @returns
+	 */
+	public dateToDateFormat(
+		value: string | null | undefined,
+		format = SPD_CONSTANTS.date.formalDateFormat
+	): string | null {
+		if (!value) return null;
+
+		return this.formatDatePipe.transform(value, format);
+	}
+
+	isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
+		if (!licenceStatusCode) return false;
+
+		return licenceStatusCode === LicenceStatusCode.Active;
+	}
+
+	isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {
+		if (
+			licence.licenceStatusCode != LicenceStatusCode.Expired ||
+			(licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
+				licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification)
+		) {
+			return false;
 		}
+
+		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
+		return !this.getIsDateMonthsOrOlder(licence.expiryDate, period);
 	}
 
 	//------------------------------------
-	// Sort
+	// Form related
 
-	private compareByString(a: any, b: any, ascending = true) {
-		if (ascending) {
-			if (a < b) {
-				return -1;
-			}
-			if (a > b) {
-				return 1;
-			}
-		} else {
-			if (a < b) {
-				return 1;
-			}
-			if (a > b) {
-				return -1;
-			}
-		}
-		return 0;
+	enableInputs(form: FormGroup) {
+		Object.keys(form.controls).forEach((control: string) => {
+			const typedControl: AbstractControl = form.controls[control];
+			typedControl.enable({ emitEvent: false });
+		});
 	}
 
-	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending = true) {
-		const aUpper = a ? a.toUpperCase() : '';
-		const bUpper = b ? b.toUpperCase() : '';
-		return this.compareByString(aUpper, bUpper, ascending);
+	disableInputs(form: FormGroup, doNotIncludeControlNames: Array<string> | null = null) {
+		Object.keys(form.controls).forEach((control: string) => {
+			if (!doNotIncludeControlNames?.includes(control)) {
+				const typedControl: AbstractControl = form.controls[control];
+				typedControl.disable({ emitEvent: false });
+			}
+		});
+	}
+
+	enableFormArrayInputs(formArray: FormArray) {
+		formArray.controls.forEach((control) => {
+			control.enable({ emitEvent: false });
+		});
+	}
+
+	disableFormArrayInputs(formArray: FormArray) {
+		formArray.controls.forEach((control) => {
+			control.disable({ emitEvent: false });
+		});
+	}
+
+	toasterSuccess(msg: string, autoDismiss = true): void {
+		if (autoDismiss) {
+			this.hotToastService.success(msg);
+			return;
+		}
+
+		this.hotToastService.success(msg, {
+			autoClose: false,
+			dismissible: true,
+		});
+	}
+
+	toasterError(msg: string): void {
+		this.hotToastService.error(msg);
 	}
 }

@@ -12,44 +12,44 @@ import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
 import { ActionResult } from '../models/action-result';
-import { apiApplicantsScreeningsApplicationIdManualPaymentFormGet } from '../fn/payment/api-applicants-screenings-application-id-manual-payment-form-get';
-import { ApiApplicantsScreeningsApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-applicants-screenings-application-id-manual-payment-form-get';
-import { apiApplicantsScreeningsApplicationIdPaymentAttemptsGet } from '../fn/payment/api-applicants-screenings-application-id-payment-attempts-get';
-import { ApiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-applicants-screenings-application-id-payment-attempts-get';
-import { apiApplicantsScreeningsApplicationIdPaymentLinkPost } from '../fn/payment/api-applicants-screenings-application-id-payment-link-post';
-import { ApiApplicantsScreeningsApplicationIdPaymentLinkPost$Params } from '../fn/payment/api-applicants-screenings-application-id-payment-link-post';
-import { apiApplicantsScreeningsApplicationIdPaymentReceiptGet } from '../fn/payment/api-applicants-screenings-application-id-payment-receipt-get';
-import { ApiApplicantsScreeningsApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-applicants-screenings-application-id-payment-receipt-get';
-import { apiApplicantsScreeningsPaymentResultGet } from '../fn/payment/api-applicants-screenings-payment-result-get';
-import { ApiApplicantsScreeningsPaymentResultGet$Params } from '../fn/payment/api-applicants-screenings-payment-result-get';
-import { apiApplicantsScreeningsPaymentsPaymentIdGet } from '../fn/payment/api-applicants-screenings-payments-payment-id-get';
-import { ApiApplicantsScreeningsPaymentsPaymentIdGet$Params } from '../fn/payment/api-applicants-screenings-payments-payment-id-get';
-import { apiCrrpaApplicationIdManualPaymentFormGet } from '../fn/payment/api-crrpa-application-id-manual-payment-form-get';
-import { ApiCrrpaApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-crrpa-application-id-manual-payment-form-get';
-import { apiCrrpaApplicationIdPaymentAttemptsGet } from '../fn/payment/api-crrpa-application-id-payment-attempts-get';
-import { ApiCrrpaApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-crrpa-application-id-payment-attempts-get';
-import { apiCrrpaApplicationIdPaymentReceiptGet } from '../fn/payment/api-crrpa-application-id-payment-receipt-get';
-import { ApiCrrpaApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-crrpa-application-id-payment-receipt-get';
-import { apiCrrpaPaymentLinkPost } from '../fn/payment/api-crrpa-payment-link-post';
-import { ApiCrrpaPaymentLinkPost$Params } from '../fn/payment/api-crrpa-payment-link-post';
-import { apiCrrpaPaymentResultGet } from '../fn/payment/api-crrpa-payment-result-get';
-import { ApiCrrpaPaymentResultGet$Params } from '../fn/payment/api-crrpa-payment-result-get';
-import { apiCrrpaPaymentSecureLinkGet } from '../fn/payment/api-crrpa-payment-secure-link-get';
-import { ApiCrrpaPaymentSecureLinkGet$Params } from '../fn/payment/api-crrpa-payment-secure-link-get';
-import { apiCrrpaPaymentsPaymentIdGet } from '../fn/payment/api-crrpa-payments-payment-id-get';
-import { ApiCrrpaPaymentsPaymentIdGet$Params } from '../fn/payment/api-crrpa-payments-payment-id-get';
-import { apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet } from '../fn/payment/api-orgs-org-id-applications-application-id-manual-payment-form-get';
-import { ApiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-orgs-org-id-applications-application-id-manual-payment-form-get';
-import { apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-attempts-get';
-import { ApiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-attempts-get';
-import { apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-link-post';
-import { ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Params } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-link-post';
-import { apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-receipt-get';
-import { ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-orgs-org-id-applications-application-id-payment-receipt-get';
-import { apiOrgsOrgIdPaymentResultGet } from '../fn/payment/api-orgs-org-id-payment-result-get';
-import { ApiOrgsOrgIdPaymentResultGet$Params } from '../fn/payment/api-orgs-org-id-payment-result-get';
-import { apiOrgsOrgIdPaymentsPaymentIdGet } from '../fn/payment/api-orgs-org-id-payments-payment-id-get';
-import { ApiOrgsOrgIdPaymentsPaymentIdGet$Params } from '../fn/payment/api-orgs-org-id-payments-payment-id-get';
+import { apiAuthLicenceApplicationIdManualPaymentFormGet } from '../fn/payment/api-auth-licence-application-id-manual-payment-form-get';
+import { ApiAuthLicenceApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-auth-licence-application-id-manual-payment-form-get';
+import { apiAuthLicenceApplicationIdPaymentAttemptsGet } from '../fn/payment/api-auth-licence-application-id-payment-attempts-get';
+import { ApiAuthLicenceApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-auth-licence-application-id-payment-attempts-get';
+import { apiAuthLicenceApplicationIdPaymentLinkPost } from '../fn/payment/api-auth-licence-application-id-payment-link-post';
+import { ApiAuthLicenceApplicationIdPaymentLinkPost$Params } from '../fn/payment/api-auth-licence-application-id-payment-link-post';
+import { apiAuthLicenceApplicationIdPaymentReceiptGet } from '../fn/payment/api-auth-licence-application-id-payment-receipt-get';
+import { ApiAuthLicenceApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-auth-licence-application-id-payment-receipt-get';
+import { apiAuthLicencePaymentResultGet } from '../fn/payment/api-auth-licence-payment-result-get';
+import { ApiAuthLicencePaymentResultGet$Params } from '../fn/payment/api-auth-licence-payment-result-get';
+import { apiAuthLicencePaymentsPaymentIdGet } from '../fn/payment/api-auth-licence-payments-payment-id-get';
+import { ApiAuthLicencePaymentsPaymentIdGet$Params } from '../fn/payment/api-auth-licence-payments-payment-id-get';
+import { apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet } from '../fn/payment/api-business-biz-id-applications-application-id-manual-payment-form-get';
+import { ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-business-biz-id-applications-application-id-manual-payment-form-get';
+import { apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet } from '../fn/payment/api-business-biz-id-applications-application-id-payment-attempts-get';
+import { ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-business-biz-id-applications-application-id-payment-attempts-get';
+import { apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost } from '../fn/payment/api-business-biz-id-applications-application-id-payment-link-post';
+import { ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Params } from '../fn/payment/api-business-biz-id-applications-application-id-payment-link-post';
+import { apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet } from '../fn/payment/api-business-biz-id-applications-application-id-payment-receipt-get';
+import { ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-business-biz-id-applications-application-id-payment-receipt-get';
+import { apiBusinessBizIdPaymentResultGet } from '../fn/payment/api-business-biz-id-payment-result-get';
+import { ApiBusinessBizIdPaymentResultGet$Params } from '../fn/payment/api-business-biz-id-payment-result-get';
+import { apiBusinessBizIdPaymentsPaymentIdGet } from '../fn/payment/api-business-biz-id-payments-payment-id-get';
+import { ApiBusinessBizIdPaymentsPaymentIdGet$Params } from '../fn/payment/api-business-biz-id-payments-payment-id-get';
+import { apiLicensingPaymentSecureLinkGet } from '../fn/payment/api-licensing-payment-secure-link-get';
+import { ApiLicensingPaymentSecureLinkGet$Params } from '../fn/payment/api-licensing-payment-secure-link-get';
+import { apiUnauthLicenceApplicationIdManualPaymentFormGet } from '../fn/payment/api-unauth-licence-application-id-manual-payment-form-get';
+import { ApiUnauthLicenceApplicationIdManualPaymentFormGet$Params } from '../fn/payment/api-unauth-licence-application-id-manual-payment-form-get';
+import { apiUnauthLicenceApplicationIdPaymentAttemptsGet } from '../fn/payment/api-unauth-licence-application-id-payment-attempts-get';
+import { ApiUnauthLicenceApplicationIdPaymentAttemptsGet$Params } from '../fn/payment/api-unauth-licence-application-id-payment-attempts-get';
+import { apiUnauthLicenceApplicationIdPaymentLinkPost } from '../fn/payment/api-unauth-licence-application-id-payment-link-post';
+import { ApiUnauthLicenceApplicationIdPaymentLinkPost$Params } from '../fn/payment/api-unauth-licence-application-id-payment-link-post';
+import { apiUnauthLicenceApplicationIdPaymentReceiptGet } from '../fn/payment/api-unauth-licence-application-id-payment-receipt-get';
+import { ApiUnauthLicenceApplicationIdPaymentReceiptGet$Params } from '../fn/payment/api-unauth-licence-application-id-payment-receipt-get';
+import { apiUnauthLicencePaymentResultGet } from '../fn/payment/api-unauth-licence-payment-result-get';
+import { ApiUnauthLicencePaymentResultGet$Params } from '../fn/payment/api-unauth-licence-payment-result-get';
+import { apiUnauthLicencePaymentsPaymentIdGet } from '../fn/payment/api-unauth-licence-payments-payment-id-get';
+import { ApiUnauthLicencePaymentsPaymentIdGet$Params } from '../fn/payment/api-unauth-licence-payments-payment-id-get';
 import { PaymentLinkResponse } from '../models/payment-link-response';
 import { PaymentResponse } from '../models/payment-response';
 
@@ -59,8 +59,8 @@ export class PaymentService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `apiApplicantsScreeningsApplicationIdPaymentLinkPost()` */
-  static readonly ApiApplicantsScreeningsApplicationIdPaymentLinkPostPath = '/api/applicants/screenings/{applicationId}/payment-link';
+  /** Path part for operation `apiUnauthLicenceApplicationIdPaymentLinkPost()` */
+  static readonly ApiUnauthLicenceApplicationIdPaymentLinkPostPath = '/api/unauth-licence/{applicationId}/payment-link';
 
   /**
    * Return the direct pay payment link.
@@ -68,12 +68,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentLinkPost()` instead.
+   * To access only the response body, use `apiUnauthLicenceApplicationIdPaymentLinkPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params: ApiApplicantsScreeningsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
-    return apiApplicantsScreeningsApplicationIdPaymentLinkPost(this.http, this.rootUrl, params, context);
+  apiUnauthLicenceApplicationIdPaymentLinkPost$Response(params: ApiUnauthLicenceApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
+    return apiUnauthLicenceApplicationIdPaymentLinkPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -82,18 +82,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicenceApplicationIdPaymentLinkPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsApplicationIdPaymentLinkPost(params: ApiApplicantsScreeningsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
-    return this.apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params, context).pipe(
+  apiUnauthLicenceApplicationIdPaymentLinkPost(params: ApiUnauthLicenceApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
+    return this.apiUnauthLicenceApplicationIdPaymentLinkPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentLinkResponse>): PaymentLinkResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiApplicantsScreeningsPaymentResultGet()` */
-  static readonly ApiApplicantsScreeningsPaymentResultGetPath = '/api/applicants/screenings/payment-result';
+  /** Path part for operation `apiUnauthLicencePaymentResultGet()` */
+  static readonly ApiUnauthLicencePaymentResultGetPath = '/api/unauth-licence/payment-result';
 
   /**
    * redirect url for paybc to redirect to.
@@ -101,12 +101,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsPaymentResultGet()` instead.
+   * To access only the response body, use `apiUnauthLicencePaymentResultGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentResultGet$Response(params?: ApiApplicantsScreeningsPaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-    return apiApplicantsScreeningsPaymentResultGet(this.http, this.rootUrl, params, context);
+  apiUnauthLicencePaymentResultGet$Response(params?: ApiUnauthLicencePaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiUnauthLicencePaymentResultGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -115,18 +115,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsPaymentResultGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicencePaymentResultGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentResultGet(params?: ApiApplicantsScreeningsPaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
-    return this.apiApplicantsScreeningsPaymentResultGet$Response(params, context).pipe(
+  apiUnauthLicencePaymentResultGet(params?: ApiUnauthLicencePaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiUnauthLicencePaymentResultGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /** Path part for operation `apiApplicantsScreeningsPaymentsPaymentIdGet()` */
-  static readonly ApiApplicantsScreeningsPaymentsPaymentIdGetPath = '/api/applicants/screenings/payments/{paymentId}';
+  /** Path part for operation `apiUnauthLicencePaymentsPaymentIdGet()` */
+  static readonly ApiUnauthLicencePaymentsPaymentIdGetPath = '/api/unauth-licence/payments/{paymentId}';
 
   /**
    * Get the payment result for application and payment.
@@ -134,12 +134,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsPaymentsPaymentIdGet()` instead.
+   * To access only the response body, use `apiUnauthLicencePaymentsPaymentIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentsPaymentIdGet$Response(params: ApiApplicantsScreeningsPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
-    return apiApplicantsScreeningsPaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
+  apiUnauthLicencePaymentsPaymentIdGet$Response(params: ApiUnauthLicencePaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
+    return apiUnauthLicencePaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -148,51 +148,51 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsPaymentsPaymentIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicencePaymentsPaymentIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentsPaymentIdGet(params: ApiApplicantsScreeningsPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
-    return this.apiApplicantsScreeningsPaymentsPaymentIdGet$Response(params, context).pipe(
+  apiUnauthLicencePaymentsPaymentIdGet(params: ApiUnauthLicencePaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
+    return this.apiUnauthLicencePaymentsPaymentIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentResponse>): PaymentResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiApplicantsScreeningsApplicationIdPaymentAttemptsGet()` */
-  static readonly ApiApplicantsScreeningsApplicationIdPaymentAttemptsGetPath = '/api/applicants/screenings/{applicationId}/payment-attempts';
+  /** Path part for operation `apiUnauthLicenceApplicationIdPaymentAttemptsGet()` */
+  static readonly ApiUnauthLicenceApplicationIdPaymentAttemptsGetPath = '/api/unauth-licence/{applicationId}/payment-attempts';
 
   /**
-   * Get the payment result for application and payment.
+   * Get the payment failed times for an application.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentAttemptsGet()` instead.
+   * To access only the response body, use `apiUnauthLicenceApplicationIdPaymentAttemptsGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response(params: ApiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
-    return apiApplicantsScreeningsApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
+  apiUnauthLicenceApplicationIdPaymentAttemptsGet$Response(params: ApiUnauthLicenceApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
+    return apiUnauthLicenceApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Get the payment result for application and payment.
+   * Get the payment failed times for an application.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicenceApplicationIdPaymentAttemptsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdPaymentAttemptsGet(params: ApiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
-    return this.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
+  apiUnauthLicenceApplicationIdPaymentAttemptsGet(params: ApiUnauthLicenceApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
+    return this.apiUnauthLicenceApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `apiApplicantsScreeningsApplicationIdPaymentReceiptGet()` */
-  static readonly ApiApplicantsScreeningsApplicationIdPaymentReceiptGetPath = '/api/applicants/screenings/{applicationId}/payment-receipt';
+  /** Path part for operation `apiUnauthLicenceApplicationIdPaymentReceiptGet()` */
+  static readonly ApiUnauthLicenceApplicationIdPaymentReceiptGetPath = '/api/unauth-licence/{applicationId}/payment-receipt';
 
   /**
    * download the receipt for successful payment.
@@ -200,12 +200,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentReceiptGet()` instead.
+   * To access only the response body, use `apiUnauthLicenceApplicationIdPaymentReceiptGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response(params: ApiApplicantsScreeningsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiApplicantsScreeningsApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
+  apiUnauthLicenceApplicationIdPaymentReceiptGet$Response(params: ApiUnauthLicenceApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiUnauthLicenceApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -214,18 +214,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicenceApplicationIdPaymentReceiptGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdPaymentReceiptGet(params: ApiApplicantsScreeningsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response(params, context).pipe(
+  apiUnauthLicenceApplicationIdPaymentReceiptGet(params: ApiUnauthLicenceApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiUnauthLicenceApplicationIdPaymentReceiptGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiApplicantsScreeningsApplicationIdManualPaymentFormGet()` */
-  static readonly ApiApplicantsScreeningsApplicationIdManualPaymentFormGetPath = '/api/applicants/screenings/{applicationId}/manual-payment-form';
+  /** Path part for operation `apiUnauthLicenceApplicationIdManualPaymentFormGet()` */
+  static readonly ApiUnauthLicenceApplicationIdManualPaymentFormGetPath = '/api/unauth-licence/{applicationId}/manual-payment-form';
 
   /**
    * download the manual payment form.
@@ -233,12 +233,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsApplicationIdManualPaymentFormGet()` instead.
+   * To access only the response body, use `apiUnauthLicenceApplicationIdManualPaymentFormGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdManualPaymentFormGet$Response(params: ApiApplicantsScreeningsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiApplicantsScreeningsApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
+  apiUnauthLicenceApplicationIdManualPaymentFormGet$Response(params: ApiUnauthLicenceApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiUnauthLicenceApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -247,18 +247,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdManualPaymentFormGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUnauthLicenceApplicationIdManualPaymentFormGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdManualPaymentFormGet(params: ApiApplicantsScreeningsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiApplicantsScreeningsApplicationIdManualPaymentFormGet$Response(params, context).pipe(
+  apiUnauthLicenceApplicationIdManualPaymentFormGet(params: ApiUnauthLicenceApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost()` */
-  static readonly ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPostPath = '/api/orgs/{orgId}/applications/{applicationId}/payment-link';
+  /** Path part for operation `apiAuthLicenceApplicationIdPaymentLinkPost()` */
+  static readonly ApiAuthLicenceApplicationIdPaymentLinkPostPath = '/api/auth-licence/{applicationId}/payment-link';
 
   /**
    * Return the direct pay payment link.
@@ -266,12 +266,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost()` instead.
+   * To access only the response body, use `apiAuthLicenceApplicationIdPaymentLinkPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Response(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
-    return apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost(this.http, this.rootUrl, params, context);
+  apiAuthLicenceApplicationIdPaymentLinkPost$Response(params: ApiAuthLicenceApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
+    return apiAuthLicenceApplicationIdPaymentLinkPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -280,18 +280,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicenceApplicationIdPaymentLinkPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
-    return this.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Response(params, context).pipe(
+  apiAuthLicenceApplicationIdPaymentLinkPost(params: ApiAuthLicenceApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
+    return this.apiAuthLicenceApplicationIdPaymentLinkPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentLinkResponse>): PaymentLinkResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdPaymentResultGet()` */
-  static readonly ApiOrgsOrgIdPaymentResultGetPath = '/api/orgs/{orgId}/payment-result';
+  /** Path part for operation `apiAuthLicencePaymentResultGet()` */
+  static readonly ApiAuthLicencePaymentResultGetPath = '/api/auth-licence/payment-result';
 
   /**
    * redirect url for paybc to redirect to.
@@ -299,12 +299,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdPaymentResultGet()` instead.
+   * To access only the response body, use `apiAuthLicencePaymentResultGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdPaymentResultGet$Response(params: ApiOrgsOrgIdPaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-    return apiOrgsOrgIdPaymentResultGet(this.http, this.rootUrl, params, context);
+  apiAuthLicencePaymentResultGet$Response(params?: ApiAuthLicencePaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiAuthLicencePaymentResultGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -313,84 +313,84 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdPaymentResultGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicencePaymentResultGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdPaymentResultGet(params: ApiOrgsOrgIdPaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
-    return this.apiOrgsOrgIdPaymentResultGet$Response(params, context).pipe(
+  apiAuthLicencePaymentResultGet(params?: ApiAuthLicencePaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiAuthLicencePaymentResultGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdPaymentsPaymentIdGet()` */
-  static readonly ApiOrgsOrgIdPaymentsPaymentIdGetPath = '/api/orgs/{orgId}/payments/{paymentId}';
+  /** Path part for operation `apiAuthLicencePaymentsPaymentIdGet()` */
+  static readonly ApiAuthLicencePaymentsPaymentIdGetPath = '/api/auth-licence/payments/{paymentId}';
 
   /**
-   * Get the payment result for org and payment.
+   * Get the payment result for application and payment.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdPaymentsPaymentIdGet()` instead.
+   * To access only the response body, use `apiAuthLicencePaymentsPaymentIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdPaymentsPaymentIdGet$Response(params: ApiOrgsOrgIdPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
-    return apiOrgsOrgIdPaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
+  apiAuthLicencePaymentsPaymentIdGet$Response(params: ApiAuthLicencePaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
+    return apiAuthLicencePaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Get the payment result for org and payment.
+   * Get the payment result for application and payment.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdPaymentsPaymentIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicencePaymentsPaymentIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdPaymentsPaymentIdGet(params: ApiOrgsOrgIdPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
-    return this.apiOrgsOrgIdPaymentsPaymentIdGet$Response(params, context).pipe(
+  apiAuthLicencePaymentsPaymentIdGet(params: ApiAuthLicencePaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
+    return this.apiAuthLicencePaymentsPaymentIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentResponse>): PaymentResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet()` */
-  static readonly ApiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGetPath = '/api/orgs/{orgId}/applications/{applicationId}/payment-attempts';
+  /** Path part for operation `apiAuthLicenceApplicationIdPaymentAttemptsGet()` */
+  static readonly ApiAuthLicenceApplicationIdPaymentAttemptsGetPath = '/api/auth-licence/{applicationId}/payment-attempts';
 
   /**
-   * Get failed attempts for org paid application.
+   * Get the failed payment times for an application.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet()` instead.
+   * To access only the response body, use `apiAuthLicenceApplicationIdPaymentAttemptsGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Response(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
-    return apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
+  apiAuthLicenceApplicationIdPaymentAttemptsGet$Response(params: ApiAuthLicenceApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
+    return apiAuthLicenceApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Get failed attempts for org paid application.
+   * Get the failed payment times for an application.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicenceApplicationIdPaymentAttemptsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
-    return this.apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
+  apiAuthLicenceApplicationIdPaymentAttemptsGet(params: ApiAuthLicenceApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
+    return this.apiAuthLicenceApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet()` */
-  static readonly ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGetPath = '/api/orgs/{orgId}/applications/{applicationId}/payment-receipt';
+  /** Path part for operation `apiAuthLicenceApplicationIdPaymentReceiptGet()` */
+  static readonly ApiAuthLicenceApplicationIdPaymentReceiptGetPath = '/api/auth-licence/{applicationId}/payment-receipt';
 
   /**
    * download the receipt for successful payment.
@@ -398,12 +398,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet()` instead.
+   * To access only the response body, use `apiAuthLicenceApplicationIdPaymentReceiptGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
+  apiAuthLicenceApplicationIdPaymentReceiptGet$Response(params: ApiAuthLicenceApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiAuthLicenceApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -412,18 +412,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicenceApplicationIdPaymentReceiptGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet(params: ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response(params, context).pipe(
+  apiAuthLicenceApplicationIdPaymentReceiptGet(params: ApiAuthLicenceApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiAuthLicenceApplicationIdPaymentReceiptGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet()` */
-  static readonly ApiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGetPath = '/api/orgs/{orgId}/applications/{applicationId}/manual-payment-form';
+  /** Path part for operation `apiAuthLicenceApplicationIdManualPaymentFormGet()` */
+  static readonly ApiAuthLicenceApplicationIdManualPaymentFormGetPath = '/api/auth-licence/{applicationId}/manual-payment-form';
 
   /**
    * download the manual payment form.
@@ -431,12 +431,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet()` instead.
+   * To access only the response body, use `apiAuthLicenceApplicationIdManualPaymentFormGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Response(params: ApiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
+  apiAuthLicenceApplicationIdManualPaymentFormGet$Response(params: ApiAuthLicenceApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiAuthLicenceApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -445,18 +445,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiAuthLicenceApplicationIdManualPaymentFormGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet(params: ApiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Response(params, context).pipe(
+  apiAuthLicenceApplicationIdManualPaymentFormGet(params: ApiAuthLicenceApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiAuthLicenceApplicationIdManualPaymentFormGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaPaymentLinkPost()` */
-  static readonly ApiCrrpaPaymentLinkPostPath = '/api/crrpa/payment-link';
+  /** Path part for operation `apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost()` */
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPostPath = '/api/business/{bizId}/applications/{applicationId}/payment-link';
 
   /**
    * Return the direct pay payment link.
@@ -464,12 +464,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaPaymentLinkPost()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiCrrpaPaymentLinkPost$Response(params: ApiCrrpaPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
-    return apiCrrpaPaymentLinkPost(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response(params: ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentLinkResponse>> {
+    return apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -478,18 +478,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaPaymentLinkPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiCrrpaPaymentLinkPost(params: ApiCrrpaPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
-    return this.apiCrrpaPaymentLinkPost$Response(params, context).pipe(
+  apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost(params: ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Params, context?: HttpContext): Observable<PaymentLinkResponse> {
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentLinkResponse>): PaymentLinkResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaPaymentResultGet()` */
-  static readonly ApiCrrpaPaymentResultGetPath = '/api/crrpa/payment-result';
+  /** Path part for operation `apiBusinessBizIdPaymentResultGet()` */
+  static readonly ApiBusinessBizIdPaymentResultGetPath = '/api/business/{bizId}/payment-result';
 
   /**
    * redirect url for paybc to redirect to.
@@ -497,12 +497,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaPaymentResultGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdPaymentResultGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentResultGet$Response(params?: ApiCrrpaPaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-    return apiCrrpaPaymentResultGet(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdPaymentResultGet$Response(params: ApiBusinessBizIdPaymentResultGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiBusinessBizIdPaymentResultGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -511,18 +511,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaPaymentResultGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPaymentResultGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentResultGet(params?: ApiCrrpaPaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
-    return this.apiCrrpaPaymentResultGet$Response(params, context).pipe(
+  apiBusinessBizIdPaymentResultGet(params: ApiBusinessBizIdPaymentResultGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiBusinessBizIdPaymentResultGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaPaymentsPaymentIdGet()` */
-  static readonly ApiCrrpaPaymentsPaymentIdGetPath = '/api/crrpa/payments/{paymentId}';
+  /** Path part for operation `apiBusinessBizIdPaymentsPaymentIdGet()` */
+  static readonly ApiBusinessBizIdPaymentsPaymentIdGetPath = '/api/business/{bizId}/payments/{paymentId}';
 
   /**
    * Get the payment result for application and payment.
@@ -530,12 +530,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaPaymentsPaymentIdGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdPaymentsPaymentIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentsPaymentIdGet$Response(params: ApiCrrpaPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
-    return apiCrrpaPaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdPaymentsPaymentIdGet$Response(params: ApiBusinessBizIdPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PaymentResponse>> {
+    return apiBusinessBizIdPaymentsPaymentIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -544,51 +544,51 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaPaymentsPaymentIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPaymentsPaymentIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentsPaymentIdGet(params: ApiCrrpaPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
-    return this.apiCrrpaPaymentsPaymentIdGet$Response(params, context).pipe(
+  apiBusinessBizIdPaymentsPaymentIdGet(params: ApiBusinessBizIdPaymentsPaymentIdGet$Params, context?: HttpContext): Observable<PaymentResponse> {
+    return this.apiBusinessBizIdPaymentsPaymentIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<PaymentResponse>): PaymentResponse => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaApplicationIdPaymentAttemptsGet()` */
-  static readonly ApiCrrpaApplicationIdPaymentAttemptsGetPath = '/api/crrpa/{applicationId}/payment-attempts';
+  /** Path part for operation `apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet()` */
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGetPath = '/api/business/{bizId}/applications/{applicationId}/payment-attempts';
 
   /**
-   * Get the payment result for application and payment.
+   * Get the failed payment times for an application.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaApplicationIdPaymentAttemptsGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdPaymentAttemptsGet$Response(params: ApiCrrpaApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
-    return apiCrrpaApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response(params: ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
+    return apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Get the payment result for application and payment.
+   * Get the failed payment times for an application.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaApplicationIdPaymentAttemptsGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdPaymentAttemptsGet(params: ApiCrrpaApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
-    return this.apiCrrpaApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
+  apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet(params: ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Params, context?: HttpContext): Observable<number> {
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaApplicationIdPaymentReceiptGet()` */
-  static readonly ApiCrrpaApplicationIdPaymentReceiptGetPath = '/api/crrpa/{applicationId}/payment-receipt';
+  /** Path part for operation `apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet()` */
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGetPath = '/api/business/{bizId}/applications/{applicationId}/payment-receipt';
 
   /**
    * download the receipt for successful payment.
@@ -596,12 +596,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaApplicationIdPaymentReceiptGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdPaymentReceiptGet$Response(params: ApiCrrpaApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiCrrpaApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response(params: ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -610,18 +610,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaApplicationIdPaymentReceiptGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdPaymentReceiptGet(params: ApiCrrpaApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiCrrpaApplicationIdPaymentReceiptGet$Response(params, context).pipe(
+  apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet(params: ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaApplicationIdManualPaymentFormGet()` */
-  static readonly ApiCrrpaApplicationIdManualPaymentFormGetPath = '/api/crrpa/{applicationId}/manual-payment-form';
+  /** Path part for operation `apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet()` */
+  static readonly ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGetPath = '/api/business/{bizId}/applications/{applicationId}/manual-payment-form';
 
   /**
    * download the manual payment form.
@@ -629,12 +629,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaApplicationIdManualPaymentFormGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdManualPaymentFormGet$Response(params: ApiCrrpaApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
-    return apiCrrpaApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
+  apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response(params: ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -643,18 +643,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaApplicationIdManualPaymentFormGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaApplicationIdManualPaymentFormGet(params: ApiCrrpaApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
-    return this.apiCrrpaApplicationIdManualPaymentFormGet$Response(params, context).pipe(
+  apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet(params: ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /** Path part for operation `apiCrrpaPaymentSecureLinkGet()` */
-  static readonly ApiCrrpaPaymentSecureLinkGetPath = '/api/crrpa/payment-secure-link';
+  /** Path part for operation `apiLicensingPaymentSecureLinkGet()` */
+  static readonly ApiLicensingPaymentSecureLinkGetPath = '/api/licensing/payment-secure-link';
 
   /**
    * Redirect to PayBC the direct pay payment page.
@@ -662,12 +662,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaPaymentSecureLinkGet()` instead.
+   * To access only the response body, use `apiLicensingPaymentSecureLinkGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentSecureLinkGet$Response(params?: ApiCrrpaPaymentSecureLinkGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-    return apiCrrpaPaymentSecureLinkGet(this.http, this.rootUrl, params, context);
+  apiLicensingPaymentSecureLinkGet$Response(params?: ApiLicensingPaymentSecureLinkGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiLicensingPaymentSecureLinkGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -676,12 +676,12 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaPaymentSecureLinkGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiLicensingPaymentSecureLinkGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentSecureLinkGet(params?: ApiCrrpaPaymentSecureLinkGet$Params, context?: HttpContext): Observable<ActionResult> {
-    return this.apiCrrpaPaymentSecureLinkGet$Response(params, context).pipe(
+  apiLicensingPaymentSecureLinkGet(params?: ApiLicensingPaymentSecureLinkGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiLicensingPaymentSecureLinkGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }

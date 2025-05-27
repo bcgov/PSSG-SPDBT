@@ -2,11 +2,76 @@ import { Component, EventEmitter, Input, OnInit, Output, SecurityContext } from 
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { HotToastService } from '@ngxpert/hot-toast';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { UtilService } from 'src/app/core/services/util.service';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from './dialog.component';
-import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-helper';
+
+export enum DocumentTypeCode {
+	Image = 'IMAGE',
+	Pdf = 'PDF',
+	Word = 'WORD',
+}
+
+export interface IconType {
+	icon: string;
+	label: string;
+	color?: string;
+}
+
+export class FileUploadHelper {
+	private static _FILE_ICONS: Record<DocumentTypeCode, IconType> = {
+		PDF: { icon: 'picture_as_pdf', label: 'PDF' },
+		WORD: { icon: 'article', label: 'Microsoft Word' },
+		IMAGE: { icon: 'image', label: 'Image file' },
+	};
+
+	private static _MIME_TYPE_DOCUMENT_TYPE_MAP: Record<string, DocumentTypeCode> = {
+		'application/pdf': DocumentTypeCode.Pdf,
+		pdf: DocumentTypeCode.Pdf,
+		'application/msword': DocumentTypeCode.Word,
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document': DocumentTypeCode.Word,
+		doc: DocumentTypeCode.Word,
+		docx: DocumentTypeCode.Word,
+		'image/bmp': DocumentTypeCode.Image,
+		'image/gif': DocumentTypeCode.Image,
+		'image/jpg': DocumentTypeCode.Image,
+		'image/jpeg': DocumentTypeCode.Image,
+		'image/png': DocumentTypeCode.Image,
+		'image/tiff': DocumentTypeCode.Image,
+		bmp: DocumentTypeCode.Image,
+		gif: DocumentTypeCode.Image,
+		jpg: DocumentTypeCode.Image,
+		jpeg: DocumentTypeCode.Image,
+		png: DocumentTypeCode.Image,
+		tiff: DocumentTypeCode.Image,
+	};
+
+	public static getFileDocumentType(file: File): DocumentTypeCode;
+	public static getFileDocumentType(fileMimeType: string): DocumentTypeCode;
+	public static getFileDocumentType(file: File | string): DocumentTypeCode | null {
+		if (typeof file === 'string') return this._MIME_TYPE_DOCUMENT_TYPE_MAP[file];
+		else if (file?.type) return this._MIME_TYPE_DOCUMENT_TYPE_MAP[file.type];
+		return null;
+	}
+
+	public static getFileIcon(file: File): IconType;
+	public static getFileIcon(fileType: string): IconType;
+	public static getFileIcon(documentType: DocumentTypeCode): IconType;
+	public static getFileIcon(fileInfo: File | string | DocumentTypeCode): IconType {
+		let fileType: DocumentTypeCode;
+		if (typeof fileInfo === 'string' && Object.values(DocumentTypeCode).includes(fileInfo as DocumentTypeCode)) {
+			fileType = fileInfo as DocumentTypeCode;
+		} else {
+			fileType = FileUploadHelper.getFileDocumentType(typeof fileInfo === 'string' ? fileInfo : fileInfo?.type);
+		}
+
+		let fileIcon = { icon: 'insert_drive_file', label: 'File' };
+		if (fileType) fileIcon = this._FILE_ICONS[fileType];
+
+		return fileIcon;
+	}
+}
 
 @Component({
 	selector: 'app-file-upload',
@@ -34,8 +99,8 @@ import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-help
 
 			<label class="dropzone-area" [for]="id">
 				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
-				<div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
-				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
+				<div class="fw-bold m-2">Drag and Drop your file here or click to browse</div>
+				<div class="fine-print m-2" *ngIf="message">{{ message }}</div>
 
 				<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
 				<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
@@ -134,14 +199,14 @@ export class FileUploadComponent implements OnInit {
 	imagePreviews: Array<string | null> = [];
 
 	constructor(
-		private hotToastService: HotToastService,
+		private utilService: UtilService,
 		private dialog: MatDialog,
 		private domSanitizer: DomSanitizer,
-		private utilService: UtilService,
+		private applicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.id = this.utilService.getUniqueId();
+		this.id = this.applicationService.getUniqueId();
 
 		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
 			this.maxNumberOfFiles = SPD_CONSTANTS.document.maxNumberOfFiles;
@@ -160,7 +225,7 @@ export class FileUploadComponent implements OnInit {
 
 	private addFile(newFile: File) {
 		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
-			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
+			this.utilService.toasterError('The maximum number of files has been reached');
 			return;
 		}
 
@@ -170,26 +235,26 @@ export class FileUploadComponent implements OnInit {
 
 		const isFoundIndex = this.files.findIndex((item: File) => item.name === newFile.name);
 		if (isFoundIndex >= 0) {
-			this.hotToastService.error('A file with the same name has already been uploaded');
+			this.utilService.toasterError('A file with the same name has already been uploaded');
 			return;
 		}
 
 		if (!this.isAccepted(newFile, this.accept)) {
-			this.hotToastService.error('A file of this type cannot be uploaded');
+			this.utilService.toasterError('A file of this type cannot be uploaded');
 			return;
 		}
 
 		if (this.maxFileSize && newFile.size > this.maxFileSize) {
-			this.hotToastService.error('A file of this size cannot be uploaded');
+			this.utilService.toasterError('A file of this size cannot be uploaded');
 			return;
 		}
 
-		// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
+		// For some reason the file uploader will not allow deletion of files that contain multiple periods
 		// for example: filename.gov.bc.ca.docx ... Block the uploading of these files.
 		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
 
 		if (numberOfPeriods > 1) {
-			this.hotToastService.error('A file name cannot contain multiple periods. Please rename this file and try again.');
+			this.utilService.toasterError('A file name cannot contain multiple periods. Rename this file and try again.');
 			return;
 		}
 
@@ -206,7 +271,7 @@ export class FileUploadComponent implements OnInit {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this file?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 
@@ -221,10 +286,6 @@ export class FileUploadComponent implements OnInit {
 			});
 	}
 
-	removeAllFiles(): void {
-		this.files = [];
-	}
-
 	getPreviewImage(index: number): string | null {
 		if (!this.previewImage) return null;
 
@@ -236,9 +297,14 @@ export class FileUploadComponent implements OnInit {
 		if (FileUploadHelper.getFileDocumentType(file) != DocumentTypeCode.Image || file.size === 0) return null;
 
 		const objectUrl = URL.createObjectURL(file);
+
+		if (!this.isValidObjectUrl(objectUrl)) {
+			return null;
+		}
+
 		const previewFile = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl),
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 
 		this.imagePreviews[index] = previewFile;
@@ -302,5 +368,18 @@ export class FileUploadComponent implements OnInit {
 	private filesUpdated(): void {
 		const files = this.files && this.files.length > 0 ? this.files : [];
 		this.control.setValue(files);
+	}
+
+	private isValidObjectUrl(objectUrl: string): boolean {
+		const allowedDomains = ['localhost', 'gov.bc.ca'];
+		try {
+			// objectUrl starts with 'blob:' - find the start of the url
+			const index = objectUrl.indexOf('http');
+			const url = objectUrl.substring(index);
+			const parsedUrl = new URL(url);
+			return allowedDomains.some((domain) => parsedUrl.hostname.endsWith(domain));
+		} catch {
+			return false; // Invalid URL format
+		}
 	}
 }
