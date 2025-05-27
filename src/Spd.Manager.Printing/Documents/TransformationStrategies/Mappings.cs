@@ -119,7 +119,8 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             return resp.HeightUnitCode switch
             {
                 HeightUnitEnum.Centimeters => $"{resp.Height}cm",
-                HeightUnitEnum.Inches => $"{Convert.ToInt32(resp.Height * 2.54)}cm"
+                HeightUnitEnum.Inches => $"{Convert.ToInt32(resp.Height * 2.54)}cm",
+                _ => $"{resp.Height}cm"
             };
         }
 
@@ -128,7 +129,8 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             return resp.WeightUnitCode switch
             {
                 WeightUnitEnum.Kilograms => $"{resp.Weight}kg",
-                WeightUnitEnum.Pounds => $"{Convert.ToInt32(resp.Weight * 0.454)}kg"
+                WeightUnitEnum.Pounds => $"{Convert.ToInt32(resp.Weight * 0.454)}kg",
+                _ => $"{resp.Weight}kg"
             };
         }
 
