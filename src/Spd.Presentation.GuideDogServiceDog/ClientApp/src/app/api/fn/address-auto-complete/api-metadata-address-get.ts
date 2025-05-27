@@ -11,10 +11,6 @@ import { RequestBuilder } from '../../request-builder';
 import { AddressFindResponse } from '../../models/address-find-response';
 
 export interface ApiMetadataAddressGet$Params {
-
-/**
- * required
- */
   search: string;
 
 /**

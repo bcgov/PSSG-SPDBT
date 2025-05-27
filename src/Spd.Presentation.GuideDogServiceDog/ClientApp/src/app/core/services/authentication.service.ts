@@ -1,6 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
-import { IdentityProviderTypeCode } from '@app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ConfigService } from './config.service';
 
@@ -20,15 +19,14 @@ export class AuthenticationService {
 	// *
 	// *
 	public async login(
-		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | null = null,
 		stateInfo: string | null = null
 	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
-		console.debug('[AuthenticationService] login loginType', loginType, 'returnComponentRoute', returnComponentRoute);
+		console.debug('[AuthenticationService] returnComponentRoute', returnComponentRoute);
 
 		const redirectUri = this.createRedirectUrl(returnComponentRoute ?? '');
 
-		await this.configService.configureOAuthService(loginType, redirectUri);
+		await this.configService.configureOAuthService(redirectUri);
 
 		const returnRoute = location.pathname.substring(1);
 
@@ -57,11 +55,10 @@ export class AuthenticationService {
 	// *
 	// *
 	public async tryLogin(
-		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string,
 		stateInfo: string | null = null
 	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
+		await this.configService.configureOAuthService(this.createRedirectUrl(returnComponentRoute));
 
 		const returnRoute = location.pathname.substring(1);
 

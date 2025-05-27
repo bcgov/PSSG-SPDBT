@@ -10,7 +10,6 @@ import {
 	LicenceResponse,
 	LicenceTermCode,
 	ServiceTypeCode,
-	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { ApplicantProfileService, LicenceAppService, LicenceService } from '@app/api/services';
 import { AppRoutes } from '@app/app.routes';
@@ -44,7 +43,6 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
 	originalPhotoOfYourselfExpired: boolean;
-	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
 	licenceExpiryNumberOfDays?: null | number;
 	isRenewalPeriod: boolean;
 	isReplacementPeriod: boolean;
@@ -606,7 +604,6 @@ export class CommonApplicationService {
 
 		licence.licenceExpiryNumberOfDays = moment(licence.expiryDate).startOf('day').diff(today, 'days');
 		licence.hasLoginNameChanged = nameOnCard != licenceHolderName;
-		licence.licenceCategoryCodes = basicLicence.categoryCodes?.sort() ?? [];
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (basicLicence.licenceTermCode === LicenceTermCode.NinetyDays) {

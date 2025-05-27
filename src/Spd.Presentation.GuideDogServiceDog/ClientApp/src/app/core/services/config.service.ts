@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfigurationResponse, DogSchoolResponse, IdentityProviderTypeCode } from '@app/api/models';
+import { ConfigurationResponse, DogSchoolResponse } from '@app/api/models';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -67,7 +67,7 @@ export class ConfigService {
 		);
 	}
 
-	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
+	public async configureOAuthService(redirectUri: string): Promise<void> {
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
 			this.oauthService.setupAutomaticSilentRefresh();

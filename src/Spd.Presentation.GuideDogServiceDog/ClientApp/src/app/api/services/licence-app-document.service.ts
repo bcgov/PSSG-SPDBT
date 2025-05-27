@@ -74,7 +74,7 @@ export class LicenceAppDocumentService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiLicenceApplicationDocumentsFilesPost$Response(params: ApiLicenceApplicationDocumentsFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  apiLicenceApplicationDocumentsFilesPost$Response(params?: ApiLicenceApplicationDocumentsFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
     return apiLicenceApplicationDocumentsFilesPost(this.http, this.rootUrl, params, context);
   }
 
@@ -88,7 +88,7 @@ export class LicenceAppDocumentService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiLicenceApplicationDocumentsFilesPost(params: ApiLicenceApplicationDocumentsFilesPost$Params, context?: HttpContext): Observable<string> {
+  apiLicenceApplicationDocumentsFilesPost(params?: ApiLicenceApplicationDocumentsFilesPost$Params, context?: HttpContext): Observable<string> {
     return this.apiLicenceApplicationDocumentsFilesPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );
@@ -143,7 +143,7 @@ export class LicenceAppDocumentService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiLicenceApplicationDocumentsAnonymousFilesPost$Response(params: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+  apiLicenceApplicationDocumentsAnonymousFilesPost$Response(params?: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
     return apiLicenceApplicationDocumentsAnonymousFilesPost(this.http, this.rootUrl, params, context);
   }
 
@@ -158,7 +158,7 @@ export class LicenceAppDocumentService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiLicenceApplicationDocumentsAnonymousFilesPost(params: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<string> {
+  apiLicenceApplicationDocumentsAnonymousFilesPost(params?: ApiLicenceApplicationDocumentsAnonymousFilesPost$Params, context?: HttpContext): Observable<string> {
     return this.apiLicenceApplicationDocumentsAnonymousFilesPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
     );

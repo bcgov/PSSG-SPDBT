@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IdentityProviderTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -135,14 +134,10 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	private getUserInfo(): void {
-		const loginType = this.authProcessService.identityProvider;
-		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			const name = this.utilService.getFullName(
-				this.authUserBcscService.applicantLoginProfile?.firstName,
-				this.authUserBcscService.applicantLoginProfile?.lastName
-			);
-			this.loggedInUserDisplay = name ?? 'BCSC User';
-			return;
-		}
+		const name = this.utilService.getFullName(
+			this.authUserBcscService.applicantLoginProfile?.firstName,
+			this.authUserBcscService.applicantLoginProfile?.lastName
+		);
+		this.loggedInUserDisplay = name ?? 'BCSC User';
 	}
 }
