@@ -387,8 +387,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.gdsdTeamModelFormGroup.get('licenceAppId')?.value,
 			body: {
-				Documents: [documentFile],
-				LicenceDocumentTypeCode: documentCode,
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
 			},
 		});
 	}
@@ -553,8 +553,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1345,8 +1345,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);

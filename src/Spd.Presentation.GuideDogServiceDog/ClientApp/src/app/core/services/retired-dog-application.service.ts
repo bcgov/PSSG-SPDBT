@@ -428,8 +428,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.retiredDogModelFormGroup.get('licenceAppId')?.value,
 			body: {
-				Documents: [documentFile],
-				LicenceDocumentTypeCode: documentCode,
+				documents: [documentFile],
+				licenceDocumentTypeCode: documentCode,
 			},
 		});
 	}
@@ -955,8 +955,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
 						},
 					})
 				);
@@ -1032,8 +1032,8 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				documentsToSaveApis.push(
 					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+							documents: newDocumentsOnly,
+							licenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
 						},
 					})
 				);
