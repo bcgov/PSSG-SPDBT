@@ -94,20 +94,7 @@ export class AuthProcessService {
 			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
 		}
 
-		// TODO fix
-		// const bceidIdentityProvider = this.authenticationService.getBceidIdentityProvider();
-		// const claims = this.oauthService.getIdentityClaims();
-		// const identity_provider = claims ? claims['identity_provider'] : null;
-		// const performLogout = !!(claims && identity_provider != bceidIdentityProvider);
-
-		// console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
-		// console.debug('[AuthProcessService] logoutBcsc bceidIdentityProvider', bceidIdentityProvider);
-		// console.debug('[AuthProcessService] logoutBcsc identity_provider', identity_provider);
-		// console.debug('[AuthProcessService] logoutBcsc performLogout', performLogout);
-
-		// if (performLogout) {
 		this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
-		// }
 	}
 
 	//----------------------------------------------------------

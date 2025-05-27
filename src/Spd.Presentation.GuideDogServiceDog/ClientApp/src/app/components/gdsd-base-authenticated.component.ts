@@ -33,14 +33,6 @@ export class GdsdBaseAuthenticatedComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		console.debug('[GuideDogServiceDogAuthenticatedBaseComponent]', this.gdsdTeamApplicationService.initialized);
 
-		// const currentPath = location.pathname;
-
-		// to handle relative urls, look for '/guide-dog-service-dog/' to get the default route
-		// const startOfRoute = currentPath.indexOf('/' + AppRoutes.MODULE_PATH + '/');
-		// const redirectComponentRoute = currentPath.substring(startOfRoute);
-
-		// this.authProcessService.logoutBceid(redirectComponentRoute); // TODO fix
-
 		await this.authProcessService.initializeGuideDogServiceDogBCSC();
 
 		if (!this.gdsdTeamApplicationService.initialized && !this.retiredDogApplicationService.initialized) {

@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -29,7 +29,7 @@ export interface LicenceChildStepperStepComponent {
 }
 
 export class LicenceDocumentsToSave {
-	'licenceDocumentTypeCode': any; //TODO  LicenceDocumentTypeCode;
+	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
 	'documents': Array<Blob>;
 }
 

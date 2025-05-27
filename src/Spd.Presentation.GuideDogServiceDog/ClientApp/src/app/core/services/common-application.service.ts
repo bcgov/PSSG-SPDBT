@@ -422,46 +422,12 @@ export class CommonApplicationService {
 			});
 	}
 
-	getMainWarningsAndErrorPersonalLicence(
+	getMainWarningsAndErrorLicence(
 		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>
 	): [Array<string>, Array<string>] {
 		const [warningMessages, errorMessages] = this.getMainWarningsAndError(applicationsList, activeLicencesList);
 		return [warningMessages, errorMessages];
-	}
-
-	/**
-	 * Search for an existing swl/permit licence using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getLicenceWithAccessCodeAnonymous(
-		// TODO needed?
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					if (!resp) {
-						// lookup does not match a licence
-						return of({} as LicenceResponseExt);
-					}
-
-					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
-						map((appls: Array<LicenceAppListResponse>) => {
-							return {
-								inProgressApplications: appls.length > 0,
-								...resp,
-							} as LicenceResponseExt;
-						})
-					);
-				})
-			);
 	}
 
 	/**

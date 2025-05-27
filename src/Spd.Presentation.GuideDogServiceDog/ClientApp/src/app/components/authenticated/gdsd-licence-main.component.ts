@@ -359,11 +359,10 @@ export class GdsdLicenceMainComponent implements OnInit {
 						) >= 0;
 				}
 
-				[this.warningMessages, this.errorMessages] =
-					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
-						userGdsdApplicationsList,
-						activeLicencesList
-					);
+				[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndErrorLicence(
+					userGdsdApplicationsList,
+					activeLicencesList
+				);
 				this.activeLicencesList = activeLicencesList;
 				this.expiredLicencesList = expiredLicencesList;
 			})
