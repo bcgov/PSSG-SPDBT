@@ -59,7 +59,7 @@ import { OptionsPipe } from '../pipes/options.pipe';
 						</div>
 
 						<app-alert type="danger" icon="dangerous" *ngIf="showPhotoOfYourselfExpired">
-							We require a new photo every 5 years. Please provide a new photo for your {{ serviceTypeLabel }}.
+							We require a new photo every 5 years. Please provide a new photo for your certificate.
 						</app-alert>
 
 						<app-file-upload
@@ -91,11 +91,10 @@ import { OptionsPipe } from '../pipes/options.pipe';
 export class FormPhotographOfYourselfUpdateComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
-	serviceTypeDesc = 'licence';
+	serviceTypeDesc = 'certificate';
 	showPhotoOfYourselfExpired = false;
 
 	@Input() form!: FormGroup;
-	@Input() serviceTypeLabel = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() photographOfYourself: string | ArrayBuffer | null = null;
 	@Input() serviceTypeCode!: ServiceTypeCode;

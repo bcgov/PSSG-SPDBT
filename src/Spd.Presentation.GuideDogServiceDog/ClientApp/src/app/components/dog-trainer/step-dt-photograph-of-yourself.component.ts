@@ -14,7 +14,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-form-photograph-of-yourself
 				[serviceTypeCode]="serviceTypeDogTrainer"
 				[form]="form"
-				serviceTypeLabel="certificate"
 				(fileUploaded)="onFileChanged()"
 				(fileRemoved)="onFileChanged()"
 			></app-form-photograph-of-yourself>

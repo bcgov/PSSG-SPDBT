@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app.routes';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { BizLicensingService, LoginService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LoginService } from 'src/app/api/services';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 import { AuthProcessService } from '../services/auth-process.service';
 
@@ -25,16 +25,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 				if (errorResponse.status == 0 && errorResponse.url?.toLowerCase().endsWith('/token')) {
 					// the token refresh failed. logout to prevent app from being in invalid state.
 					this.authProcessService.logout();
-					return throwError(() => errorResponse);
-				}
-
-				// Certain 404s will be handled in the component
-				if (
-					errorResponse.status == 403 &&
-					(errorResponse.url?.includes(SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsPostPath) ||
-						errorResponse.url?.includes(PermitService.ApiPermitApplicationsPostPath) ||
-						errorResponse.url?.includes(BizLicensingService.ApiBusinessLicenceApplicationPostPath))
-				) {
 					return throwError(() => errorResponse);
 				}
 

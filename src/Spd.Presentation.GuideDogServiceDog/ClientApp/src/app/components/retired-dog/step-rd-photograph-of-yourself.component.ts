@@ -15,7 +15,6 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 			<app-form-photograph-of-yourself
 				[serviceTypeCode]="serviceTypeGdsdTeam"
 				[form]="form"
-				serviceTypeLabel="certificate"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
 			></app-form-photograph-of-yourself>

@@ -10,7 +10,6 @@ import { CaptchaV2Component } from './components/captcha-v2.component';
 import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
-import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { FormAccessCodeAnonymousComponent } from './components/form-access-code-anonymous.component';
 import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
@@ -38,7 +37,6 @@ const SHARED_COMPONENTS = [
 	SpdFooterComponent,
 	DialogComponent,
 	DialogOopsComponent,
-	DropdownOverlayComponent,
 	StepTitleComponent,
 	StepSectionComponent,
 	DefaultPipe,
