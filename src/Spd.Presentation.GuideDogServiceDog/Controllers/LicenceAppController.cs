@@ -11,19 +11,16 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
     public class LicenceAppController : SpdControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<LicenceAppController> _logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="logger"></param>
-        public LicenceAppController(IMediator mediator,
-            ILogger<LicenceAppController> logger
+        public LicenceAppController(IMediator mediator
             )
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         /// <summary>

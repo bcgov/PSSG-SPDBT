@@ -42,7 +42,7 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
     [Route("api/licence-application-documents/{licenceAppId}/files")]
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
-    [Authorize(Policy = "BcscBCeID")]
+    [Authorize(Policy = "OnlyBcsc")]
     public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
     {
         VerifyFiles(fileUploadRequest.Documents);

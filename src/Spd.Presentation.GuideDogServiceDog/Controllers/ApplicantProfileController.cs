@@ -89,19 +89,6 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
         }
 
         /// <summary>
-        /// Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicant/merge/{oldApplicantId}/{newApplicantId}")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IActionResult> MergeApplicants([FromRoute] Guid oldApplicantId, [FromRoute] Guid newApplicantId)
-        {
-            await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
-            return Ok();
-        }
-
-        /// <summary>
         /// Get applicant profile anonymously, the applicantId is retrieved from cookies.
         /// For controlling member, The cookie is set when the user click the update cm email link, verify the invitation.
         /// </summary>
