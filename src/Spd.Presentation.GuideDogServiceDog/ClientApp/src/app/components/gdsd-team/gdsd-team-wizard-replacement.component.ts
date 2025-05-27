@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, GdsdTeamAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -57,7 +57,7 @@ import { StepTeamMailingAddressComponent } from './step-team-mailing-address.com
 	styles: [],
 	standalone: false,
 })
-export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent implements OnInit {
+export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
 

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
 	LicenceResponse,
@@ -72,18 +71,6 @@ import { Subject, take, tap } from 'rxjs';
 							{{ errorMessage }}
 						</app-alert>
 					</div>
-
-					<div class="mt-3" *ngIf="isExpired">
-						<a
-							class="w-auto"
-							tabindex="0"
-							aria-label="Apply for a new licence"
-							(click)="onCreateNewLicence()"
-							(keydown)="onKeydownCreateNewLicence($event)"
-						>
-							Apply for a New Licence
-						</a>
-					</div>
 				</form>
 			</div>
 		</div>
@@ -93,8 +80,6 @@ import { Subject, take, tap } from 'rxjs';
 })
 export class FormAccessCodeAnonymousComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
-	// TODO fix
-	// licenceApplicationRoutes = PersonalLicenceApplicationRoutes;
 
 	resetRecaptcha: Subject<void> = new Subject<void>();
 	errorMessage: string | null = null;
@@ -110,20 +95,14 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	@Output() linkSuccess = new EventEmitter<LicenceResponse>();
 
 	constructor(
-		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		// TODO fix
-		// this.titleLabel =
-		// 	this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
-		// 	this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-		// 		? 'Permit'
-		// 		: 'Licence';
-		// this.label = this.titleLabel.toLowerCase();
+		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+		this.label = this.titleLabel.toLowerCase();
 	}
 
 	searchByAccessCode(): void {
@@ -162,17 +141,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				break;
 			}
 		}
-	}
-
-	onCreateNewLicence(): void {
-		// this.form.reset(); // TODO fix
-		// this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
-	}
-
-	onKeydownCreateNewLicence(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-		this.onCreateNewLicence();
 	}
 
 	private handleLookupResponse(resp: LicenceResponseExt): void {
