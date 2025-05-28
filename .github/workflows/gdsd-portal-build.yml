@@ -1,4 +1,5 @@
-name: Screening Portal Build
+name: Licensing Portal Build
+
 on:
   workflow_dispatch:
   push:
@@ -9,25 +10,25 @@ on:
     paths:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
+      - "!src/Spd.Presentation.Screening/**"
       - "!src/Spd.Presentation.Licensing/**"
-      - "!src/Spd.Presentation.GuideDogServiceDog/**"
+      - "!src/Spd.Manager.Screening/**"
       - "!src/Spd.Manager.ScheduleJob/**"
-      - "!src/Spd.Manager.Licence/**"
       - "!src/Spd.Resource.Repository.JobSchedule/**"
-      - .github/workflows/screening-portal-build.yml
+      - .github/workflows/gdsd-portal-build.yml
       - .github/workflows/docker-build-template.yml
 
   pull_request:
     paths:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
-      - "!src/Spd.Presentation.GuideDogServiceDog/**"
+      - "!src/Spd.Presentation.Screening/**"
       - "!src/Spd.Presentation.Licensing/**"
-      - "!src/Spd.Manager.Licence/**"
-      - .github/workflows/screening-portal-build.yml
-      - .github/workflows/docker-build-template.yml
+      - "!src/Spd.Manager.Screening/**"
       - "!src/Spd.Manager.ScheduleJob/**"
       - "!src/Spd.Resource.Repository.JobSchedule/**"
+      - .github/workflows/gdsd-portal-build.yml
+      - .github/workflows/docker-build-template.yml
 
 jobs:
   build:
@@ -38,8 +39,8 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     with:
       IMAGE_CONTEXT: src
-      IMAGE_FILE: src/screening-portal.dockerfile
-      IMAGE_NAME: ${{ github.repository }}/screening-portal
+      IMAGE_FILE: src/gdsd-portal.dockerfile
+      IMAGE_NAME: ${{ github.repository }}/gdsd-portal
       REGISTRY: ghcr.io
       # REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
     secrets:
