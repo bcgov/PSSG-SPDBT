@@ -6,6 +6,8 @@ namespace Spd.Resource.Repository.Event
     {
         public Task<EventResp> GetAsync(Guid eventId, CancellationToken cancellationToken);
         public Task<Unit> ManageAsync(EventUpdateCmd cmd, CancellationToken ct);
+        public Task<Unit> ManageInBatchAsync(List<EventUpdateCmd> cmd, CancellationToken ct);
+        public Task<IEnumerable<EventResp>> QueryAsync(EventQuery qry, CancellationToken cancellationToken);
     }
 
     public record EventResp()
@@ -26,6 +28,13 @@ namespace Spd.Resource.Repository.Event
         public string? ErrorDescription { get; set; }
         public int StateCode { get; set; }
         public EventStatusReasonEnum EventStatusReasonEnum { get; set; }
+    }
+
+    public record EventQuery()
+    {
+        public IEnumerable<EventTypeEnum> EventTypeEnums { get; set; }
+        public EventStatusReasonEnum EventStatusReasonEnum { get; set; }
+        public DateTimeOffset? CutOffDateTime { get; set; }
     }
 
     public enum EventTypeEnum

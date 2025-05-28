@@ -501,6 +501,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppSubmitPost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -584,6 +586,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
@@ -663,32 +667,22 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: MainLicenceResponse
 	): Observable<any> {
-		// handle renewal
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return forkJoin([
-				this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
-				this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
-			]).pipe(
-				catchError((error) => of(error)),
-				switchMap((resps: any[]) => {
-					const applicantProfile = resps[0];
-					const photoOfYourself = resps[1];
+		return forkJoin([
+			this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const applicantProfile = resps[0];
+				const photoOfYourself = resps[1];
 
-					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((gdsdModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
-						})
-					);
-				})
-			);
-		}
-
-		// handle replacement
-		return this.applicantProfileService.apiApplicantIdGet({ id: associatedLicence.licenceHolderId! }).pipe(
-			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel();
+					switchMap((gdsdModelData: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+							return this.applyReplacementSpecificDataToModel(gdsdModelData, photoOfYourself);
+						}
+
+						return this.applyRenewalSpecificDataToModel(gdsdModelData, photoOfYourself);
 					})
 				);
 			})
@@ -723,7 +717,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the renewal flow
 	 */
-	private applyRenewalDataUpdatesToModel(gdsdModelData: any, photoOfYourself: Blob): Observable<any> {
+	private applyRenewalSpecificDataToModel(gdsdModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		const photographOfYourselfData = gdsdModelData.photographOfYourselfData;
@@ -733,6 +727,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
 			originalPhotoOfYourselfLastUploadDateTime
 		);
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// set flag - user will be forced to update their photo
@@ -761,15 +760,23 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	/**
 	 * Overwrite or change any data specific to the replacment flow
 	 */
-	private applyReplacementDataUpdatesToModel(): Observable<any> {
+	private applyReplacementSpecificDataToModel(gdsdModelData: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 		const dogRenewData = { isAssistanceStillRequired: true };
+
+		const originalLicenceData = gdsdModelData.originalLicenceData;
+
+		// if the photo is missing, set the flag as expired so that it is required
+		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
+			originalLicenceData.originalPhotoOfYourselfExpired = true;
+		}
 
 		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
 				dogRenewData,
+				originalLicenceData,
 			},
 			{
 				emitEvent: false,
@@ -957,7 +964,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			province: bcscMailingAddress?.province,
 		};
 
-		let medicalInformationData: any = null;
+		const medicalInformationData: any = { doctorIsProvidingNeedDogMedicalForm: null, attachments: [] };
 		let photographOfYourselfData: any = null;
 		let dogTasksData: any = null;
 		let dogInfoData: any = null;
@@ -1055,7 +1062,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		});
 
 		if (medicalInformationAttachments.length > 0) {
-			medicalInformationData = { attachments: medicalInformationAttachments };
+			medicalInformationData.attachments = medicalInformationAttachments;
 		}
 
 		const dogInoculationsData = {
@@ -1118,6 +1125,10 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			!gdsdAppl.isDogTrainedByAccreditedSchool &&
 			gdsdAppl.nonAccreditedSchoolQuestions
 		) {
+			medicalInformationData.doctorIsProvidingNeedDogMedicalForm = this.utilService.booleanToBooleanType(
+				gdsdAppl.nonAccreditedSchoolQuestions.doctorIsProvidingNeedDogMedicalForm
+			);
+
 			if (gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo) {
 				dogTasksData = {
 					tasks: gdsdAppl.nonAccreditedSchoolQuestions.trainingInfo.specializedTasksWhenPerformed,
@@ -1279,30 +1290,22 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
 	): Observable<any> {
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return forkJoin([
-				this.applicantProfileService.apiApplicantGet(),
-				this.licenceService.apiLicencesLicencePhotoGet(),
-			]).pipe(
-				catchError((error) => of(error)),
-				switchMap((resps: any[]) => {
-					const applicantProfile = resps[0];
-					const photoOfYourself = resps[1];
+		return forkJoin([
+			this.applicantProfileService.apiApplicantGet(),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			switchMap((resps: any[]) => {
+				const applicantProfile = resps[0];
+				const photoOfYourself = resps[1];
 
-					return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-						switchMap((gdsdModelData: any) => {
-							return this.applyRenewalDataUpdatesToModel(gdsdModelData, photoOfYourself);
-						})
-					);
-				})
-			);
-		}
-
-		return this.applicantProfileService.apiApplicantGet().pipe(
-			switchMap((applicantProfile: ApplicantProfileResponse) => {
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
-					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel();
+					switchMap((gdsdModelData: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Replacement) {
+							return this.applyReplacementSpecificDataToModel(gdsdModelData, photoOfYourself);
+						}
+
+						return this.applyRenewalSpecificDataToModel(gdsdModelData, photoOfYourself);
 					})
 				);
 			})
@@ -1440,6 +1443,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
+					this.reset();
+
 					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 						body.serviceTypeCode!,
 						body.applicationTypeCode!
@@ -1451,6 +1456,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
+				this.reset();
+
 				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
 					body.serviceTypeCode!,
 					body.applicationTypeCode!
