@@ -31,7 +31,6 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-team-selection
-					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
