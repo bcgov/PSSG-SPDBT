@@ -1,4 +1,4 @@
-name: Licensing Portal Build
+name: GDSD Portal Build
 
 on:
   workflow_dispatch:
