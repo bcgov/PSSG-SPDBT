@@ -29,7 +29,6 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			<mat-step [completed]="true">
 				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-rd-details
-					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
