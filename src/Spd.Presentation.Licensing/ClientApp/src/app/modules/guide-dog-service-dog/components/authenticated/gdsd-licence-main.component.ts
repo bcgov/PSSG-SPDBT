@@ -54,10 +54,10 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableGdsdTeamExist">
 						<div class="row">
-							<div class="col-xl-6 col-lg-6">
+							<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
 								<div class="text-data">You don't have an active guide dog and service dog team certification.</div>
 							</div>
-							<div class="col-xl-6 col-lg-6 text-end">
+							<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
 								<button
 									mat-flat-button
 									color="primary"
@@ -67,25 +67,34 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 									<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
 								</button>
 							</div>
+							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+								<app-alert type="info" icon="info">
+									A guide dog and service dog team certification cannot be created while an application is in progress.
+								</app-alert>
+							</div>
 						</div>
 					</div>
 
 					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableRetiredDogExist">
 						<div class="row">
-							<div class="col-xl-6 col-lg-6">
+							<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
 								<div class="text-data">You don't have an active retired dog certification.</div>
 							</div>
-							<div class="col-xl-6 col-lg-6 text-end">
+							<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
 								<button
 									mat-flat-button
 									color="primary"
 									class="large mt-2 mt-lg-0"
 									(click)="onNewRetiredServiceDog()"
 									aria-label="Apply for a New GDSD Team Certification"
-									*ngIf="!applicationIsInProgress"
 								>
 									<mat-icon>add</mat-icon>Apply for a New Retired Dog Certification
 								</button>
+							</div>
+							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+								<app-alert type="info" icon="info">
+									A retired dog certification cannot be created while an application is in progress.
+								</app-alert>
 							</div>
 						</div>
 					</div>
@@ -237,6 +246,18 @@ export class GdsdLicenceMainComponent implements OnInit {
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
+							const originalPhotoOfYourselfExpired = !!this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
+								'originalLicenceData.originalPhotoOfYourselfExpired'
+							)?.value;
+
+							licence.originalPhotoOfYourselfExpired = originalPhotoOfYourselfExpired;
+
+							// User cannot continue with this flow if the photograph of yourself is missing
+							if (originalPhotoOfYourselfExpired) {
+								this.gdsdTeamApplicationService.reset();
+								return;
+							}
+
 							this.router.navigateByUrl(
 								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
 									GuideDogServiceDogRoutes.GDSD_TEAM_REPLACEMENT_AUTHENTICATED
@@ -253,6 +274,18 @@ export class GdsdLicenceMainComponent implements OnInit {
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
+							const originalPhotoOfYourselfExpired = !!this.retiredDogApplicationService.retiredDogModelFormGroup.get(
+								'originalLicenceData.originalPhotoOfYourselfExpired'
+							)?.value;
+
+							licence.originalPhotoOfYourselfExpired = originalPhotoOfYourselfExpired;
+
+							// User cannot continue with this flow if the photograph of yourself is missing
+							if (originalPhotoOfYourselfExpired) {
+								this.retiredDogApplicationService.reset();
+								return;
+							}
+
 							this.router.navigateByUrl(
 								GuideDogServiceDogRoutes.pathGdsdAuthenticated(
 									GuideDogServiceDogRoutes.RETIRED_DOG_REPLACEMENT_AUTHENTICATED
