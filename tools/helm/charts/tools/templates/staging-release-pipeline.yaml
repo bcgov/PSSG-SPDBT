@@ -6,8 +6,7 @@ metadata:
     DataClass: Low
 spec:
   tasks:
-
-   ## Promote test to staging ##
+    ## Promote test to staging ##
     - name: staging-screening-portal
       params:
         - name: imageName
@@ -54,6 +53,20 @@ spec:
       params:
         - name: imageName
           value: jag-jobscheduler
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: staging
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: staging-gdsd-portal
+      params:
+        - name: imageName
+          value: gdsd-portal
         - name: fromTag
           value: test
         - name: toTag
