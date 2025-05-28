@@ -581,18 +581,6 @@ export class CommonApplicationService {
 				mobileTitle = 'BAP';
 				break;
 			}
-			case ServiceTypeCode.GdsdTeamCertification: {
-				mobileTitle = 'GDSD Team';
-				break;
-			}
-			case ServiceTypeCode.DogTrainerCertification: {
-				mobileTitle = 'Dog Trainer';
-				break;
-			}
-			case ServiceTypeCode.RetiredServiceDogCertification: {
-				mobileTitle = 'Retired Dog';
-				break;
-			}
 			case ServiceTypeCode.Mdra: {
 				mobileTitle = 'MD&R';
 				break;
@@ -912,39 +900,6 @@ export class CommonApplicationService {
 					}
 
 					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
-						map((appls: Array<LicenceAppListResponse>) => {
-							return {
-								inProgressApplications: appls.length > 0,
-								...resp,
-							} as LicenceResponseExt;
-						})
-					);
-				})
-			);
-	}
-
-	/**
-	 * Search for an existing gdsd certificate using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getGDSDLicenceWithAccessCodeAnonymous(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					if (!resp) {
-						// lookup does not match a licence
-						return of({} as LicenceResponseExt);
-					}
-
-					return this.applicantProfileService.apiApplicantsAnonymousDogCertificationApplicationsGet().pipe(
 						map((appls: Array<LicenceAppListResponse>) => {
 							return {
 								inProgressApplications: appls.length > 0,
