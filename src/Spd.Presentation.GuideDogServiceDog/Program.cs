@@ -56,7 +56,7 @@ try
         builder.Services.AddDistributedMemoryCache();
     }
 
-    //builder.Services.AddHealthChecks(builder.Configuration, assemblies);
+    builder.Services.AddHealthChecks();
 
     builder.ConfigureComponents(assemblies, logger);
 
