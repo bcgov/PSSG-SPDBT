@@ -10,6 +10,7 @@ on:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
       - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Presentation.GuideDogServiceDog/**"
       - "!src/Spd.Manager.ScheduleJob/**"
       - "!src/Spd.Manager.Licence/**"
       - "!src/Spd.Resource.Repository.JobSchedule/**"
@@ -20,6 +21,7 @@ on:
     paths:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
+      - "!src/Spd.Presentation.GuideDogServiceDog/**"
       - "!src/Spd.Presentation.Licensing/**"
       - "!src/Spd.Manager.Licence/**"
       - .github/workflows/screening-portal-build.yml
