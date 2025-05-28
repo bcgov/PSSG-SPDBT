@@ -5,11 +5,13 @@ namespace Spd.Manager.Printing;
 public interface IPrintingManager
 {
     public Task<ResultResponse> Handle(StartPrintJobCommand cmd, CancellationToken ct);
+    public Task<ResultResponse> Handle(PrintCardsInBatchCommand cmd, CancellationToken ct);
     public Task<ResultResponse> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
     public Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken ct);
     public Task<PreviewDocumentResp> Handle(PrintingEventImageQuery request, CancellationToken ct);
 }
 public record StartPrintJobCommand(Guid EventId) : IRequest<ResultResponse>;
+public record PrintCardsInBatchCommand() : IRequest<ResultResponse>;
 public record PrintJobStatusQuery(Guid EventId) : IRequest<ResultResponse>;
 public record PreviewDocumentCommand(Guid LicenceId) : IRequest<PreviewDocumentResp>;
 public record PrintingEventImageQuery(Guid EventId) : IRequest<PreviewDocumentResp>;
