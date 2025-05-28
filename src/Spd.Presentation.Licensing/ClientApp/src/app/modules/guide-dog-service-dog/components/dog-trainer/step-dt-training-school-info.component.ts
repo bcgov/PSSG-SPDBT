@@ -13,12 +13,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-form-accredited-school
+						<app-form-gdsd-accredited-school
 							schoolLabel="Name of Assistance Dogs International or International Guide Dog Federation Accredited School"
 							[accreditedSchoolIdControl]="accreditedSchoolId"
 							[accreditedSchoolNameControl]="accreditedSchoolName"
 							[applicationTypeCode]="applicationTypeCode"
-						></app-form-accredited-school>
+						></app-form-gdsd-accredited-school>
 					</div>
 				</div>
 

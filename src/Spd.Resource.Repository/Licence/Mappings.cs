@@ -50,6 +50,10 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.GDSDTeamId, opt => opt.MapFrom(s => s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault().spd_dogteamid))
              ;
 
+            _ = CreateMap<spd_licence, LicenceBasicResp>()
+               .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
+               .ForMember(d => d.PrintingPreviewJobId, opt => opt.MapFrom(s => s.spd_bcmpjobid));
+
             _ = CreateMap<spd_licencecondition, Condition>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_licenceconditionid))
             .ForMember(d => d.Name, opt => opt.MapFrom(s => s.spd_conditionname));
