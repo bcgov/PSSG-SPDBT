@@ -9,7 +9,7 @@ import { StepTeamTermsOfUseComponent } from './step-team-terms-of-use.component'
 	selector: 'app-steps-team-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showTermsOfUse">
+			<mat-step>
 				<app-step-team-terms-of-use></app-step-team-terms-of-use>
 
 				<app-wizard-footer
@@ -27,22 +27,12 @@ import { StepTeamTermsOfUseComponent } from './step-team-terms-of-use.component'
 					<app-step-team-checklist-renewal></app-step-team-checklist-renewal>
 				</ng-template>
 
-				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNextChecklist()"
-						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #NoTermsOfUse>
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="false"
-						(nextStepperStep)="onStepNextChecklist()"
-						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-template>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNextChecklist()"
+					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="isNew">
@@ -67,7 +57,6 @@ export class StepsTeamSelectionComponent extends BaseWizardStepComponent {
 	readonly STEP_CHECKLIST = 1;
 	readonly STEP_CERTIFICATION = 2;
 
-	@Input() isLoggedIn = false;
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
@@ -105,11 +94,6 @@ export class StepsTeamSelectionComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get showTermsOfUse(): boolean {
-		// anonymous: agree everytime for all
-		return !this.isLoggedIn;
 	}
 
 	get isNew(): boolean {
