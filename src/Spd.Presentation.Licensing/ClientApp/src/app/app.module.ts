@@ -15,30 +15,37 @@ import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
 
-@NgModule({ declarations: [AppComponent, LandingComponent],
-    bootstrap: [AppComponent], imports: [OAuthModule.forRoot({
-            resourceServer: {
-                customUrlValidation: (url) => url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
-                sendAccessToken: true,
-            },
-        }),
-        AppRoutingModule,
-        CoreModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        CommonModule,
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxSpinnerModule,
-        ApiModule,
-        SharedModule], providers: [
-        provideHotToastConfig(),
-        {
-            provide: APP_BASE_HREF,
-            useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
-            deps: [PlatformLocation],
-        },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+	declarations: [AppComponent, LandingComponent],
+	bootstrap: [AppComponent],
+	imports: [
+		OAuthModule.forRoot({
+			resourceServer: {
+				customUrlValidation: (url) =>
+					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
+				sendAccessToken: true,
+			},
+		}),
+		AppRoutingModule,
+		CoreModule,
+		BrowserModule,
+		BrowserAnimationsModule,
+		CommonModule,
+		MaterialModule,
+		FormsModule,
+		ReactiveFormsModule,
+		NgxSpinnerModule,
+		ApiModule,
+		SharedModule,
+	],
+	providers: [
+		provideHotToastConfig(),
+		{
+			provide: APP_BASE_HREF,
+			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
+			deps: [PlatformLocation],
+		},
+		provideHttpClient(withInterceptorsFromDi()),
+	],
+})
 export class AppModule {}
