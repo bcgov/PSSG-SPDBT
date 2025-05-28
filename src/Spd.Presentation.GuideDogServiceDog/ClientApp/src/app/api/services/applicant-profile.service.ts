@@ -17,15 +17,12 @@ import { apiApplicantGet } from '../fn/applicant-profile/api-applicant-get';
 import { ApiApplicantGet$Params } from '../fn/applicant-profile/api-applicant-get';
 import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get';
 import { ApiApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-id-get';
-import { apiApplicantMergeOldApplicantIdNewApplicantIdGet } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
-import { ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
 import { apiApplicantsAnonymousDogCertificationApplicationsGet } from '../fn/applicant-profile/api-applicants-anonymous-dog-certification-applications-get';
 import { ApiApplicantsAnonymousDogCertificationApplicationsGet$Params } from '../fn/applicant-profile/api-applicants-anonymous-dog-certification-applications-get';
 import { apiApplicantSearchGet } from '../fn/applicant-profile/api-applicant-search-get';
 import { ApiApplicantSearchGet$Params } from '../fn/applicant-profile/api-applicant-search-get';
 import { ApplicantListResponse } from '../models/applicant-list-response';
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
-import { IActionResult } from '../models/i-action-result';
 import { LicenceAppListResponse } from '../models/licence-app-list-response';
 
 @Injectable({ providedIn: 'root' })
@@ -130,39 +127,6 @@ export class ApplicantProfileService extends BaseService {
   apiApplicantSearchGet(params?: ApiApplicantSearchGet$Params, context?: HttpContext): Observable<Array<ApplicantListResponse>> {
     return this.apiApplicantSearchGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<ApplicantListResponse>>): Array<ApplicantListResponse> => r.body)
-    );
-  }
-
-  /** Path part for operation `apiApplicantMergeOldApplicantIdNewApplicantIdGet()` */
-  static readonly ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath = '/api/applicant/merge/{oldApplicantId}/{newApplicantId}';
-
-  /**
-   * Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantMergeOldApplicantIdNewApplicantIdGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params: ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IActionResult>> {
-    return apiApplicantMergeOldApplicantIdNewApplicantIdGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantMergeOldApplicantIdNewApplicantIdGet(params: ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params, context?: HttpContext): Observable<IActionResult> {
-    return this.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<IActionResult>): IActionResult => r.body)
     );
   }
 

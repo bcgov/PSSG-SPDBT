@@ -57,7 +57,7 @@ export class GdsdApplicationReceivedComponent implements OnInit {
 
 	ngOnInit(): void {
 		if (this.gdsdTeamApplicationService.initialized) {
-			this.confirmationText = 'Your application for a Guide Dog or Service Dog Certificate has been received.';
+			this.confirmationText = 'Your application for a Guide Dog or Service Dog Team Certificate has been received.';
 			this.gdsdTeamApplicationService.reset();
 		} else if (this.dogTrainerApplicationService.initialized) {
 			this.confirmationText = 'Your application for a Dog Trainer Certificate has been received.';
