@@ -58,7 +58,8 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/guide-dog-service-dog/"
             },
             "development": {
               "optimization": false,
