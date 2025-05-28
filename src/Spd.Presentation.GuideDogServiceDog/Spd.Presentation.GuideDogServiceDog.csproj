@@ -1,30 +1,74 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">	
+		<PropertyGroup>
+			<SpaRoot>ClientApp\</SpaRoot>
+			<SpaProxyServerUrl>http://localhost:4200</SpaProxyServerUrl>
+			<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+			<AssemblyName>Spd.Presentation.GuideDogServiceDog</AssemblyName>
+			<RootNamespace>Spd.Presentation.GuideDogServiceDog</RootNamespace>
+			<UserSecretsId>2efb73f2-f90f-404f-beb1-7fac57d413c3</UserSecretsId>
+		</PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+		<ItemGroup>
+				<Folder Include="ClientApp\" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ClientApp\" />
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="AutoMapper" />
+				<PackageReference Include="FluentValidation" />
+				<PackageReference Include="FluentValidation.AspNetCore" />
+				<PackageReference Include="IdentityModel" />
+				<PackageReference Include="MediatR" />
+				<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+				<PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" />
+				<PackageReference Include="Swashbuckle.AspNetCore" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" />
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
+				<ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
+				<ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.FileScanning\Spd.Utilities.FileScanning.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
-    <ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
-    <ProjectReference Include="..\Spd.Utilities.FileScanning\Spd.Utilities.FileScanning.csproj" />
-    <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
-    <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<InternalsVisibleTo Include="Spd.Tests.Presentation.GuideDogServiceDog" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<!-- Don't publish the SPA source files, but do show them in the project files list -->
+				<Content Remove="$(SpaRoot)**" />
+				<None Remove="$(SpaRoot)**" />
+				<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+		</ItemGroup>
+
+		<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+				<!-- Ensure Node.js is installed -->
+				<Exec Command="node --version" ContinueOnError="true">
+						<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+				</Exec>
+				<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+				<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+				<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		</Target>
+
+		<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+				<!-- Include the newly-built files in the publish output -->
+				<ItemGroup>
+						<DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+						<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+								<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+								<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+								<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+						</ResolvedFileToPublish>
+				</ItemGroup>
+		</Target>
+
+		<ItemGroup>
+				<None Include="..\.editorconfig" Link=".editorconfig" />
+		</ItemGroup>
 
 </Project>
