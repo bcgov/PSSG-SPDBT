@@ -11,6 +11,7 @@ on:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
       - "!src/Spd.Presentation.Screening/**"
+      - "!src/Spd.Presentation.GuideDogServiceDog/**"
       - "!src/Spd.Manager.Screening/**"
       - "!src/Spd.Manager.ScheduleJob/**"
       - "!src/Spd.Resource.Repository.JobSchedule/**"
@@ -22,6 +23,7 @@ on:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
       - "!src/Spd.Presentation.Screening/**"
+      - "!src/Spd.Presentation.GuideDogServiceDog/**"
       - "!src/Spd.Manager.Screening/**"
       - "!src/Spd.Manager.ScheduleJob/**"
       - "!src/Spd.Resource.Repository.JobSchedule/**"
