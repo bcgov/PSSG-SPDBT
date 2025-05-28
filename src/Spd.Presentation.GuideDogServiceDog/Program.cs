@@ -56,7 +56,7 @@ try
         builder.Services.AddDistributedMemoryCache();
     }
 
-    builder.Services.AddHealthChecks(builder.Configuration, assemblies);
+    //builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 
     builder.ConfigureComponents(assemblies, logger);
 
@@ -89,7 +89,7 @@ try
     app.MapFallbackToFile("index.html");
     app.UseRouting();
     app.UseObservabilityMiddleware();
-    app.UseHealthChecks();
+    //app.UseHealthChecks();
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllerRoute(
