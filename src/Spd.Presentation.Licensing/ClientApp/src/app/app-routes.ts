@@ -4,7 +4,6 @@ export class AppRoutes {
 	public static readonly CONTROLLING_MEMBERS_CRC = 'controlling-member-crc';
 	public static readonly SECURITY_LICENCE_STATUS_VERIFICATION = 'security-licence-status-verification';
 	public static readonly METAL_DEALERS_AND_RECYCLERS = 'metal-dealers-and-recyclers';
-	public static readonly GUIDE_DOG_SERVICE_DOG = 'guide-dog-service-dog';
 	public static readonly LANDING = '';
 	public static readonly ACCESS_DENIED = 'access-denied';
 	public static readonly INVITATION_DENIED = 'invitation-denied';
