@@ -3,30 +3,16 @@ import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
-import { SPD_CONSTANTS } from '../constants/constants';
-import { FormatDatePipe } from '../pipes/format-date.pipe';
-
-export interface LicenceStepperStepComponent {
-  onStepNext(formNumber: number): void;
-  onStepPrevious(): void;
-  onFormValidNextStep(formNumber: number): void;
-  onStepSelectionChange(event: StepperSelectionEvent): void;
-  onGoToNextStep(): void;
-  onGoToFirstStep(): void;
-  onGoToLastStep(): void;
-}
-
-export interface LicenceChildStepperStepComponent {
-  isFormValid(): any;
-}
+import { SPD_LIBRARY_CONSTANTS } from './spd-library-constants';
+import { SpdLibraryFormatDatePipe } from './spd-library-format-date.pipe';
 
 export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
-export class UtilService {
+export class SpdLibraryUtilService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private formatDatePipe: FormatDatePipe
+    private formatDatePipe: SpdLibraryFormatDatePipe
   ) {}
 
   //------------------------------------
@@ -92,19 +78,11 @@ export class UtilService {
   getBirthDateMax(): moment.Moment {
     return moment()
       .startOf('day')
-      .subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
+      .subtract(SPD_LIBRARY_CONSTANTS.date.birthDateMinAgeYears, 'years');
   }
 
   getDateMin(): moment.Moment {
     return moment('1800-01-01');
-  }
-
-  getDogBirthDateMax(): moment.Moment {
-    return moment().startOf('day').subtract(6, 'months');
-  }
-
-  getDogDateMin(): moment.Moment {
-    return moment().startOf('day').subtract(50, 'years');
   }
 
   getIsFutureDate(aDate: string | null | undefined): boolean {
@@ -227,66 +205,19 @@ export class UtilService {
 
   /**
    * @description
-   * Generic sorting of a JSON object by direction.
-   */
-  public sortByDirection<T>(
-    a: T,
-    b: T,
-    direction: SortDirection = 'asc',
-    withTrailingNull = true
-  ): SortWeight {
-    let result: SortWeight;
-
-    if (a === null && withTrailingNull) {
-      result = -1;
-    } else if (b === null && withTrailingNull) {
-      result = 1;
-    } else {
-      result = this.sort(a, b);
-    }
-
-    if (direction === 'desc') {
-      result *= -1;
-    }
-
-    return result as SortWeight;
-  }
-
-  /**
-   * @description
    * Generic sorting of a JSON object by key.
    */
   public sort<T>(a: T, b: T): SortWeight {
     return a > b ? 1 : a < b ? -1 : 0;
   }
 
-  public sortDate(
-    a: string | null | undefined,
-    b: string | null | undefined,
-    direction: SortDirection = 'asc'
-  ): SortWeight {
-    if (!a) {
-      return -1;
-    }
-    if (!b) {
-      return 1;
-    }
-
-    const aDate = moment(a).startOf('day');
-    const bDate = moment(b).startOf('day');
-
-    if (direction === 'asc') {
-      return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
-    } else {
-      return aDate.isAfter(bDate) ? -1 : aDate.isBefore(bDate) ? 1 : 0;
-    }
-  }
-
   //------------------------------------
   // Misc
 
   getDateString(date: Date): string {
-    return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
+    return date
+      ? moment(date).format(SPD_LIBRARY_CONSTANTS.date.dateFormat)
+      : '';
   }
 
   /**
@@ -352,10 +283,10 @@ export class UtilService {
     country: string | null | undefined
   ): boolean {
     return (
-      (province === SPD_CONSTANTS.address.provinceBC ||
-        province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
-      (country === SPD_CONSTANTS.address.countryCA ||
-        country === SPD_CONSTANTS.address.countryCanada)
+      (province === SPD_LIBRARY_CONSTANTS.address.provinceBC ||
+        province === SPD_LIBRARY_CONSTANTS.address.provinceBritishColumbia) &&
+      (country === SPD_LIBRARY_CONSTANTS.address.countryCA ||
+        country === SPD_LIBRARY_CONSTANTS.address.countryCanada)
     );
   }
 
@@ -369,7 +300,7 @@ export class UtilService {
 
     return this.formatDatePipe.transform(
       value,
-      SPD_CONSTANTS.date.backendDateFormat
+      SPD_LIBRARY_CONSTANTS.date.backendDateFormat
     );
   }
 
@@ -380,7 +311,7 @@ export class UtilService {
    */
   public dateToDateFormat(
     value: string | null | undefined,
-    format = SPD_CONSTANTS.date.formalDateFormat
+    format = SPD_LIBRARY_CONSTANTS.date.formalDateFormat
   ): string | null {
     if (!value) return null;
 
