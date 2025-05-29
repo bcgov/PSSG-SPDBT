@@ -66,7 +66,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && cmd.PrivateInvestigatorSwlInfo != null)
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
+            cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
+            cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
         {
             spd_businesscontact businessContact = await UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app, ct);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_OrganizationId), biz);
@@ -210,7 +212,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private async Task<spd_businesscontact> UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app, CancellationToken ct)
     {
-        contact? contact = await _context.GetContactById(privateInvestigatorInfo.ContactId, ct);
+        contact? contact = await _context.GetContactById(privateInvestigatorInfo.ContactId.Value, ct);
         if (contact == null)
             throw new ArgumentException($"cannot find the contact with contactId : {privateInvestigatorInfo.ContactId}");
 
@@ -271,7 +273,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             AddPrivateInvestigatorLink(bizContact, app);
         }
         _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), contact);
-        spd_licence licence = GetLicence(privateInvestigatorInfo.LicenceId);
+        spd_licence licence = GetLicence(privateInvestigatorInfo.LicenceId.Value);
         _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
         return bizContact;
     }
