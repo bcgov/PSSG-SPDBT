@@ -12,8 +12,6 @@ import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
 import { ActionResult } from '../models/action-result';
-import { apiApplicantsApplicantIdDogCertificationApplicationsGet } from '../fn/licence-app/api-applicants-applicant-id-dog-certification-applications-get';
-import { ApiApplicantsApplicantIdDogCertificationApplicationsGet$Params } from '../fn/licence-app/api-applicants-applicant-id-dog-certification-applications-get';
 import { apiApplicantsApplicantIdLicenceApplicationsGet } from '../fn/licence-app/api-applicants-applicant-id-licence-applications-get';
 import { ApiApplicantsApplicantIdLicenceApplicationsGet$Params } from '../fn/licence-app/api-applicants-applicant-id-licence-applications-get';
 import { apiApplicationsAppIdDelete } from '../fn/licence-app/api-applications-app-id-delete';
@@ -57,39 +55,6 @@ export class LicenceAppService extends BaseService {
    */
   apiApplicantsApplicantIdLicenceApplicationsGet(params: ApiApplicantsApplicantIdLicenceApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
     return this.apiApplicantsApplicantIdLicenceApplicationsGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
-    );
-  }
-
-  /** Path part for operation `apiApplicantsApplicantIdDogCertificationApplicationsGet()` */
-  static readonly ApiApplicantsApplicantIdDogCertificationApplicationsGetPath = '/api/applicants/{applicantId}/dog-certification-applications';
-
-  /**
-   * Get List of draft or InProgress dog certification Application.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsApplicantIdDogCertificationApplicationsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdDogCertificationApplicationsGet$Response(params: ApiApplicantsApplicantIdDogCertificationApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
-    return apiApplicantsApplicantIdDogCertificationApplicationsGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get List of draft or InProgress dog certification Application.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsApplicantIdDogCertificationApplicationsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdDogCertificationApplicationsGet(params: ApiApplicantsApplicantIdDogCertificationApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
-    return this.apiApplicantsApplicantIdDogCertificationApplicationsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
     );
   }
