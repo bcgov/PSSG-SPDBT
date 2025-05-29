@@ -33,7 +33,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				<app-steps-team-selection
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					(childNextStep)="onChildNextStep()"
+					(childNextStep)="onSelectionChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
@@ -317,6 +317,16 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	onSelectionChildNextStep(): void {
+		const isStepToSave = this.stepsSelection?.isStepToSave();
+		if (isStepToSave) {
+			this.onChildNextStep();
+			return;
+		}
+
+		this.goToChildNextStep();
 	}
 
 	private getSelectedIndexComponent(index: number): any {
