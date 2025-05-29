@@ -159,20 +159,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case ServiceTypeCode.GdsdTeamCertification:
-			case ServiceTypeCode.DogTrainerCertification:
-			case ServiceTypeCode.RetiredServiceDogCertification: {
-				this.commonApplicationService
-					.getGDSDLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponseExt) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
 			// SPDBT-3425 - Remove anonymous permit flows
 			// case ServiceTypeCode.ArmouredVehiclePermit:
 			// case ServiceTypeCode.BodyArmourPermit: {
