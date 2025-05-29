@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
-	ActionResult,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
@@ -110,31 +109,6 @@ export class CommonApplicationService {
 		this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 	}
 
-	cancelDraftApplication(licenceAppId: string): Observable<ActionResult> {
-		return this.licenceAppService.apiApplicationsAppIdDelete({ appId: licenceAppId });
-	}
-
-	private processPersonLicenceData(
-		basicLicenceResps: Array<LicenceBasicResponse>,
-		licenceResps: Array<LicenceResponse> | null
-	): Observable<Array<MainLicenceResponse>> {
-		const response: Array<MainLicenceResponse> = [];
-		basicLicenceResps.forEach((basicLicenceResp: LicenceBasicResponse) => {
-			const matchingLicence = licenceResps?.find(
-				(item: LicenceBasicResponse) => item.licenceAppId === basicLicenceResp.licenceAppId
-			);
-
-			const licence = this.getLicence(basicLicenceResp, matchingLicence);
-			response.push(licence);
-		});
-
-		response.sort((a, b) => {
-			return this.utilService.sortDate(a.expiryDate, b.expiryDate);
-		});
-
-		return of(response);
-	}
-
 	userGdsdApplicationsList(): Observable<Array<LicenceAppListResponse>> {
 		return this.licenceAppService
 			.apiApplicantsApplicantIdDogCertificationApplicationsGet({
@@ -184,32 +158,14 @@ export class CommonApplicationService {
 					if (apis.length > 0) {
 						return forkJoin(apis).pipe(
 							switchMap((licenceResps: LicenceResponse[]) => {
-								return this.processPersonLicenceData(basicLicenceResps, licenceResps);
+								return this.processLicenceData(basicLicenceResps, licenceResps);
 							})
 						);
 					} else {
-						return this.processPersonLicenceData(basicLicenceResps, null);
+						return this.processLicenceData(basicLicenceResps, null);
 					}
 				})
 			);
-	}
-
-	setApplicationTitleText(title: string, mobileTitle?: string | null | undefined) {
-		this.applicationTitle$.next([title, mobileTitle ? mobileTitle : title]);
-	}
-
-	setApplicationTitle(
-		serviceTypeCode: ServiceTypeCode | undefined = undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
-		originalLicenceNumber: string | undefined = undefined
-	) {
-		const { title, mobileTitle } = this.getApplicationTitle(
-			serviceTypeCode,
-			applicationTypeCode,
-			originalLicenceNumber
-		);
-
-		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
 	setGdsdApplicationTitle(
@@ -271,71 +227,6 @@ export class CommonApplicationService {
 		return { title, mobileTitle };
 	}
 
-	getLicenceNumberLookupAnonymous(licenceNumber: string, recaptchaCode: string): Observable<LicenceLookupResult> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					const lookupResp = this.getLicenceSearchFlags(resp);
-					return of(lookupResp);
-				})
-			);
-	}
-
-	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
-		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
-			switchMap((resp: LicenceResponse) => {
-				const lookupResp = this.getLicenceSearchFlags(resp);
-				return of(lookupResp);
-			})
-		);
-	}
-
-	setExpiredLicenceLookupMessage(
-		licence: LicenceResponse | null,
-		serviceTypeCode: ServiceTypeCode,
-		isExpired: boolean,
-		isInRenewalPeriod: boolean
-	): [string | null, string | null] {
-		let messageWarn = null;
-		let messageError = null;
-
-		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-		if (licence) {
-			if (licence.serviceTypeCode !== serviceTypeCode) {
-				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
-			} else {
-				if (!isExpired) {
-					const securityIndustryLicensingUrl = SPD_CONSTANTS.urls.securityIndustryLicensingUrl;
-					if (isInRenewalPeriod) {
-						messageWarn = `Your ${selServiceTypeCodeDesc} is still valid, and needs to be renewed. Please exit and <a href="${securityIndustryLicensingUrl}" target="_blank">renew your ${selServiceTypeCodeDesc}</a>.`;
-					} else {
-						messageWarn = `This ${selServiceTypeCodeDesc} is still valid. Please renew it when you get your renewal notice in the mail.`;
-					}
-				}
-			}
-		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
-		}
-
-		return [messageWarn, messageError];
-	}
-
-	setLicenceLookupMessage(licence: LicenceResponse | null, serviceTypeCode: ServiceTypeCode): string | null {
-		let messageError = null;
-
-		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-		if (licence) {
-			if (licence.serviceTypeCode !== serviceTypeCode) {
-				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
-			}
-		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
-		}
-
-		return messageError;
-	}
-
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
@@ -348,57 +239,6 @@ export class CommonApplicationService {
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
 		);
-	}
-
-	getApplicationIsDraft(appls: Array<MainApplicationResponse>): boolean {
-		return !!appls.find(
-			(item: MainApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
-		);
-	}
-
-	getApplicationIsInDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
-		return !!appls.find(
-			(item: MainApplicationResponse) =>
-				item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
-				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
-		);
-	}
-
-	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
-		if (!expiryDate || !licenceTermCode) {
-			return false;
-		}
-
-		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
-
-		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
-		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
-		let renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
-		if (licenceTermCode === LicenceTermCode.NinetyDays) {
-			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-		}
-
-		return daysBetween > renewPeriodDays ? false : true;
-	}
-
-	handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.onGoToHome();
-				}
-			});
 	}
 
 	getMainWarningsAndErrorLicence(
@@ -500,16 +340,25 @@ export class CommonApplicationService {
 		return [warningMessages, errorMessages];
 	}
 
-	private getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc: string): string {
-		return `This licence number is not a ${selServiceTypeCodeDesc}.`;
-	}
+	private processLicenceData(
+		basicLicenceResps: Array<LicenceBasicResponse>,
+		licenceResps: Array<LicenceResponse> | null
+	): Observable<Array<MainLicenceResponse>> {
+		const response: Array<MainLicenceResponse> = [];
+		basicLicenceResps.forEach((basicLicenceResp: LicenceBasicResponse) => {
+			const matchingLicence = licenceResps?.find(
+				(item: LicenceBasicResponse) => item.licenceAppId === basicLicenceResp.licenceAppId
+			);
 
-	private getLicenceLookupNoMatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
-		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-			return 'The licence number you entered does not match any existing records in our system for your business in BC.';
-		} else {
-			return 'The licence number you entered does not match any existing records in our system.';
-		}
+			const licence = this.getLicence(basicLicenceResp, matchingLicence);
+			response.push(licence);
+		});
+
+		response.sort((a, b) => {
+			return this.utilService.sortDate(a.expiryDate, b.expiryDate);
+		});
+
+		return of(response);
 	}
 
 	private setApplicationFlags(item: MainApplicationResponse) {
@@ -536,30 +385,6 @@ export class CommonApplicationService {
 				item.isExpiryWarning = true;
 			}
 		}
-	}
-
-	private getLicenceSearchFlags(licence: LicenceResponse): LicenceLookupResult {
-		const isFound = !!licence;
-		let isFoundValid = false;
-
-		if (isFound) {
-			isFoundValid = this.utilService.isLicenceActive(licence.licenceStatusCode);
-		}
-
-		const isExpired = isFound && !isFoundValid;
-		const isInRenewalPeriod = !isFoundValid
-			? false
-			: this.getIsInRenewalPeriod(licence.expiryDate, licence.licenceTermCode);
-
-		const lookupResp: LicenceLookupResult = {
-			isFound,
-			isFoundValid,
-			isExpired,
-			isInRenewalPeriod,
-			searchResult: licence,
-		};
-
-		return lookupResp;
 	}
 
 	private getLicence(

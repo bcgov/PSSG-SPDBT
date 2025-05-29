@@ -82,6 +82,11 @@ export class StepsTeamSelectionComponent extends BaseWizardStepComponent {
 		this.nextStepperStep.emit(true);
 	}
 
+	isStepToSave(): boolean {
+		const index = this.childstepper.selectedIndex;
+		return index >= 2;
+	}
+
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_TERMS:

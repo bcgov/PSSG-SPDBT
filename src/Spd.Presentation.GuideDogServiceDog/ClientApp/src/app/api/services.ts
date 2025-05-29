@@ -12,5 +12,4 @@ export { LicenceService } from './services/licence.service';
 export { LicenceAppService } from './services/licence-app.service';
 export { LicenceAppDocumentService } from './services/licence-app-document.service';
 export { LoginService } from './services/login.service';
-export { PaymentService } from './services/payment.service';
 export { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
