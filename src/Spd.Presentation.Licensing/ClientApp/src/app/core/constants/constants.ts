@@ -105,7 +105,6 @@ export const SPD_CONSTANTS = {
 	},
 	files: {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
-		guideDogServiceDogTerms: './assets/files/Guide Dog Service Dog Applicant Terms of Use.pdf',
 		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
 		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
 		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use.pdf',

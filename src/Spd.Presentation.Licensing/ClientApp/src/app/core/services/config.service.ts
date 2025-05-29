@@ -5,12 +5,6 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ConfigurationService } from 'src/app/api/services';
 
-export interface DogSchoolResponseExt {
-	schoolId?: string;
-	schoolName?: string | null;
-	schoolAddress?: string | null;
-}
-
 @Injectable({
 	providedIn: 'root',
 })

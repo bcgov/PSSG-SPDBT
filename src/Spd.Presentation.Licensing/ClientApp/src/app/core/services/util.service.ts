@@ -144,14 +144,6 @@ export class UtilService {
 		return moment('1800-01-01');
 	}
 
-	getDogBirthDateMax(): moment.Moment {
-		return moment().startOf('day').subtract(6, 'months');
-	}
-
-	getDogDateMin(): moment.Moment {
-		return moment().startOf('day').subtract(50, 'years');
-	}
-
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
