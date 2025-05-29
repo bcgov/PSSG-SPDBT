@@ -14,14 +14,16 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-6">
-								<h2 class="fs-3 mt-0 mt-md-3">Submission Received</h2>
+								<h2 class="fs-3 mt-0 mt-md-3">Application Received</h2>
 							</div>
 						</div>
 						<mat-divider class="mat-divider-main mb-4"></mat-divider>
 
 						<app-alert type="info" icon="info">
-							<p>{{ confirmationText }} A confirmation email has been sent you.</p>
-							<p>We will contact you if we need more information.</p>
+							<p>
+								Your application has been received. A confirmation email will be sent to you. We will contact you if
+								additional information is needed.
+							</p>
 						</app-alert>
 					</div>
 				</div>
@@ -46,7 +48,6 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 })
 export class GdsdApplicationReceivedComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
-	confirmationText = '';
 
 	constructor(
 		private commonApplicationService: CommonApplicationService,
@@ -57,13 +58,10 @@ export class GdsdApplicationReceivedComponent implements OnInit {
 
 	ngOnInit(): void {
 		if (this.gdsdTeamApplicationService.initialized) {
-			this.confirmationText = 'Your application for a Guide Dog or Service Dog Team Certificate has been received.';
 			this.gdsdTeamApplicationService.reset();
 		} else if (this.dogTrainerApplicationService.initialized) {
-			this.confirmationText = 'Your application for a Dog Trainer Certificate has been received.';
 			this.dogTrainerApplicationService.reset();
 		} else if (this.retiredDogApplicationService.initialized) {
-			this.confirmationText = 'Your application for a Retired Dog Certificate has been received.';
 			this.retiredDogApplicationService.reset();
 		} else {
 			this.commonApplicationService.onGoToHome();
