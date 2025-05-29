@@ -1,7 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { jwtDecode } from 'jwt-decode';
+import moment from 'moment';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { FormatDatePipe } from '../pipes/format-date.pipe';
 
 export interface LicenceStepperStepComponent {
   onStepNext(formNumber: number): void;
@@ -17,19 +20,13 @@ export interface LicenceChildStepperStepComponent {
   isFormValid(): any;
 }
 
-export class LicenceDocumentsToSave {
-  'licenceDocumentTypeCode': LicenceDocumentTypeCode;
-  'documents': Array<Blob>;
-}
-
 export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private formatDatePipe: FormatDatePipe,
-    private hotToastService: HotToastService
+    private formatDatePipe: FormatDatePipe
   ) {}
 
   //------------------------------------
@@ -197,36 +194,6 @@ export class UtilService {
   }
 
   //------------------------------------
-  // Code Table
-
-  private getCodeDescByType<K extends keyof typeof CodeDescTypes>(
-    key: K
-  ): (typeof CodeDescTypes)[K] {
-    return CodeDescTypes[key];
-  }
-
-  getDescByCode(
-    codeTableName: keyof typeof CodeDescTypes,
-    input: string
-  ): string {
-    const codeDescs = this.getCodeDescByType(codeTableName);
-    return codeDescs
-      ? (codeDescs.find((item: SelectOptions) => item.code == input)
-          ?.desc as string) ?? ''
-      : '';
-  }
-
-  getCodeDescSorted(
-    codeTableName: keyof typeof CodeDescTypes
-  ): SelectOptions[] {
-    const codeDescs = this.getCodeDescByType(codeTableName);
-    codeDescs.sort((a: SelectOptions, b: SelectOptions) =>
-      this.compareByStringUpper(a.desc ?? '', b.desc)
-    );
-    return codeDescs;
-  }
-
-  //------------------------------------
   // Sort
 
   private compareByString(a: any, b: any, ascending = true) {
@@ -371,18 +338,6 @@ export class UtilService {
   }
 
   /**
-   * Convert BooleanTypeCode to boolean
-   * @param value
-   * @returns
-   */
-  booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
-    if (!value) return null;
-
-    if (value == BooleanTypeCode.Yes) return true;
-    return false;
-  }
-
-  /**
    * Has a boolean value (true/false)... is not null or undefined
    * @param value
    * @returns
@@ -390,20 +345,6 @@ export class UtilService {
   public hasBooleanValue(value: boolean | null | undefined): boolean {
     const isBooleanType = typeof value === 'boolean';
     return isBooleanType;
-  }
-
-  /**
-   * Convert boolean to BooleanTypeCode
-   * @param value
-   * @returns
-   */
-  public booleanToBooleanType(
-    value: boolean | null | undefined
-  ): BooleanTypeCode | null {
-    const isBooleanType = typeof value === 'boolean';
-    if (!isBooleanType) return null;
-
-    return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
   }
 
   public isBcAddress(
@@ -446,102 +387,6 @@ export class UtilService {
     return this.formatDatePipe.transform(value, format);
   }
 
-  public getPermitShowAdditionalGovIdData(
-    isCanadianCitizen: boolean,
-    isCanadianResident: boolean,
-    canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-    proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
-    proofOfCitizenshipCode: LicenceDocumentTypeCode | null
-  ): boolean {
-    const canadianCitizenProof =
-      canadianCitizenProofTypeCode ?? LicenceDocumentTypeCode.CanadianPassport;
-    const proofOfResidentStatus =
-      proofOfResidentStatusCode ??
-      LicenceDocumentTypeCode.PermanentResidentCard;
-    const proofOfCitizenship =
-      proofOfCitizenshipCode ?? LicenceDocumentTypeCode.NonCanadianPassport;
-
-    return (
-      (isCanadianCitizen &&
-        canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
-      (!isCanadianCitizen &&
-        isCanadianResident &&
-        proofOfResidentStatus !=
-          LicenceDocumentTypeCode.PermanentResidentCard) ||
-      (!isCanadianCitizen &&
-        !isCanadianResident &&
-        proofOfCitizenship != LicenceDocumentTypeCode.NonCanadianPassport)
-    );
-  }
-
-  public getSwlShowAdditionalGovIdData(
-    isCanadianCitizen: boolean,
-    canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-    notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
-  ): boolean {
-    return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
-      isCanadianCitizen,
-      canadianCitizenProofTypeCode,
-      notCanadianCitizenProofTypeCode
-    );
-  }
-
-  public getControllingMemberCrcShowAdditionalGovIdData(
-    isCanadianCitizen: boolean,
-    canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-    notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
-  ): boolean {
-    return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
-      isCanadianCitizen,
-      canadianCitizenProofTypeCode,
-      notCanadianCitizenProofTypeCode
-    );
-  }
-
-  private getSwlOrControllingMemberCrcShowAdditionalGovIdData(
-    isCanadianCitizen: boolean,
-    canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-    notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
-  ): boolean {
-    const canadianCitizenProof = canadianCitizenProofTypeCode
-      ? canadianCitizenProofTypeCode
-      : LicenceDocumentTypeCode.CanadianPassport;
-    const notCanadianCitizenProof = notCanadianCitizenProofTypeCode
-      ? notCanadianCitizenProofTypeCode
-      : LicenceDocumentTypeCode.PermanentResidentCard;
-
-    return (
-      (isCanadianCitizen &&
-        canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
-      (!isCanadianCitizen &&
-        notCanadianCitizenProof !=
-          LicenceDocumentTypeCode.PermanentResidentCard)
-    );
-  }
-
-  isLicenceActive(
-    licenceStatusCode: LicenceStatusCode | null | undefined
-  ): boolean {
-    if (!licenceStatusCode) return false;
-
-    return licenceStatusCode === LicenceStatusCode.Active;
-  }
-
-  isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {
-    if (
-      licence.licenceStatusCode != LicenceStatusCode.Expired ||
-      (licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
-        licence.serviceTypeCode !=
-          ServiceTypeCode.RetiredServiceDogCertification)
-    ) {
-      return false;
-    }
-
-    const period =
-      SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
-    return !this.getIsDateMonthsOrOlder(licence.expiryDate, period);
-  }
-
   //------------------------------------
   // Form related
 
@@ -574,21 +419,5 @@ export class UtilService {
     formArray.controls.forEach((control) => {
       control.disable({ emitEvent: false });
     });
-  }
-
-  toasterSuccess(msg: string, autoDismiss = true): void {
-    if (autoDismiss) {
-      this.hotToastService.success(msg);
-      return;
-    }
-
-    this.hotToastService.success(msg, {
-      autoClose: false,
-      dismissible: true,
-    });
-  }
-
-  toasterError(msg: string): void {
-    this.hotToastService.error(msg);
   }
 }
