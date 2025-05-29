@@ -13,7 +13,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 			subtitle="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
-				[serviceTypeCode]="serviceTypeGdsdTeam"
+				[serviceTypeCode]="serviceTypeRetiredDog"
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
@@ -24,7 +24,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	standalone: false,
 })
 export class StepRdPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	readonly serviceTypeGdsdTeam = ServiceTypeCode.GdsdTeamCertification;
+	readonly serviceTypeRetiredDog = ServiceTypeCode.RetiredServiceDogCertification;
 	form: FormGroup = this.retiredDogApplicationService.photographOfYourselfFormGroup;
 
 	@ViewChild(FormPhotographOfYourselfComponent) formPhotographOfYourselfComponent!: FormPhotographOfYourselfComponent;
