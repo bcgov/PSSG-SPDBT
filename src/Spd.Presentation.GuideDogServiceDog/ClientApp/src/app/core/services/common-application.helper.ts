@@ -167,10 +167,6 @@ export abstract class CommonApplicationHelper {
 		}
 	);
 
-	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
-	});
-
 	termsAndConditionsFormGroup: FormGroup = this.formBuilder.group({
 		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
