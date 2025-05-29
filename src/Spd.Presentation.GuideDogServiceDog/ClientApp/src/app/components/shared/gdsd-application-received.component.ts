@@ -21,8 +21,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 
 						<app-alert type="info" icon="info">
 							<p>
-								Your application has been received. A confirmation email will be sent to you. We will contact you if
-								additional information is needed.
+								{{ message }}
 							</p>
 						</app-alert>
 					</div>
@@ -48,6 +47,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 })
 export class GdsdApplicationReceivedComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
+	message = SPD_CONSTANTS.message.submissionSuccess;
 
 	constructor(
 		private commonApplicationService: CommonApplicationService,

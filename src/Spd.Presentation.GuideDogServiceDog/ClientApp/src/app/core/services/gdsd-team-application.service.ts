@@ -45,6 +45,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
@@ -504,10 +505,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -589,10 +587,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -1442,13 +1437,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	private postSubmitAnonymous(
 		body: any // GdsdTeamLicenceAppChangeRequest or GdsdTeamLicenceAppAnonymousSubmitRequest
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
+
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						body.serviceTypeCode!,
-						body.applicationTypeCode!
-					);
 					this.utilService.toasterSuccess(successMessage);
 				})
 			);
@@ -1456,10 +1449,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
 				this.utilService.toasterSuccess(successMessage);
 			})
 		);

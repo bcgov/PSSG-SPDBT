@@ -271,25 +271,6 @@ export class CommonApplicationService {
 		return { title, mobileTitle };
 	}
 
-	getSubmitSuccessMessage(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): string {
-		let message = '';
-
-		const serviceTypeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.New: {
-				message = `Your ${serviceTypeDesc} application has been successfully submitted`;
-				break;
-			}
-			default: {
-				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				message = `Your ${serviceTypeDesc} ${applicationTypeDesc} application has been successfully submitted`;
-				break;
-			}
-		}
-
-		return message;
-	}
-
 	getLicenceNumberLookupAnonymous(licenceNumber: string, recaptchaCode: string): Observable<LicenceLookupResult> {
 		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
