@@ -1,16 +1,16 @@
 import { Directive, ElementRef, HostListener, OnInit } from '@angular/core';
-import { FormatPhoneNumberPipe } from '../pipes/phone-number.pipe';
+import { SpdLibraryFormatPhoneNumberPipe } from './spd-library-format-phone-number.pipe';
 
 @Directive({
   selector: '[formControlName][appPhoneNumberTransform]',
   standalone: false,
 })
-export class PhoneNumberTransformDirective implements OnInit {
+export class SpdLibraryPhoneNumberTransformDirective implements OnInit {
   private el: any;
 
   constructor(
     private elementRef: ElementRef,
-    private formatPhoneNumberPipe: FormatPhoneNumberPipe
+    private formatPhoneNumberPipe: SpdLibraryFormatPhoneNumberPipe
   ) {
     this.el = this.elementRef.nativeElement;
   }
