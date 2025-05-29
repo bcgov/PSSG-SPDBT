@@ -37,7 +37,6 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { GuideDogServiceDogRoutes } from '@app/modules/guide-dog-service-dog/guide-dog-service-dog-routes';
 import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -83,7 +82,6 @@ export interface MainLicenceResponse extends LicenceResponse {
 	restraintAuthorization: boolean;
 	restraintAuthorizationExpiryDate: string | null;
 	isSimultaneousFlow: boolean;
-	isExpiredLicenceRenewable: boolean;
 }
 
 @Injectable({
@@ -156,11 +154,7 @@ export class CommonApplicationService {
 
 		if (this.isLoggedIn) {
 			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
-				if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
-					this.router.navigateByUrl(GuideDogServiceDogRoutes.pathGdsdMainApplications());
-				} else {
-					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
-				}
+				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 				return;
 			} else if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BusinessBceId) {
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
@@ -170,8 +164,6 @@ export class CommonApplicationService {
 
 		if (currentPath.includes(MetalDealersAndRecyclersRoutes.MODULE_PATH)) {
 			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
-		} else if (currentPath.includes(GuideDogServiceDogRoutes.MODULE_PATH)) {
-			this.router.navigateByUrl(GuideDogServiceDogRoutes.path());
 		} else {
 			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
@@ -389,65 +381,6 @@ export class CommonApplicationService {
 		return of(response);
 	}
 
-	userGdsdApplicationsList(): Observable<Array<LicenceAppListResponse>> {
-		return this.licenceAppService
-			.apiApplicantsApplicantIdDogCertificationApplicationsGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe(
-				map((_resp: Array<LicenceAppListResponse>) => {
-					const response = _resp as Array<MainApplicationResponse>;
-					response.forEach((item: MainApplicationResponse) => {
-						this.setApplicationFlags(item);
-					});
-
-					response.sort((a, b) => {
-						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
-					});
-
-					return response;
-				})
-			);
-	}
-
-	userGdsdLicencesList(): Observable<Array<MainLicenceResponse>> {
-		return this.licenceService
-			.apiApplicantsApplicantIdGdsdCertificationsGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe(
-				switchMap((basicLicenceResps: LicenceBasicResponse[]) => {
-					if (basicLicenceResps.length === 0) {
-						return of([]);
-					}
-
-					const apis: Observable<any>[] = [];
-					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (
-							this.utilService.isLicenceActive(resp.licenceStatusCode) ||
-							this.utilService.isExpiredLicenceRenewable(resp as MainLicenceResponse)
-						) {
-							apis.push(
-								this.licenceService.apiLicencesLicenceIdGet({
-									licenceId: resp.licenceId!,
-								})
-							);
-						}
-					});
-
-					if (apis.length > 0) {
-						return forkJoin(apis).pipe(
-							switchMap((licenceResps: LicenceResponse[]) => {
-								return this.processPersonLicenceData(basicLicenceResps, licenceResps);
-							})
-						);
-					} else {
-						return this.processPersonLicenceData(basicLicenceResps, null);
-					}
-				})
-			);
-	}
-
 	userBusinessApplicationsList(isSoleProprietorship: boolean): Observable<Array<MainApplicationResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
@@ -599,21 +532,6 @@ export class CommonApplicationService {
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
-	setGdsdApplicationTitle(
-		serviceTypeCode: ServiceTypeCode | undefined = undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
-		originalLicenceNumber: string | undefined = undefined
-	) {
-		let title = 'Guide Dog Service Dog';
-		let mobileTitle = 'GDSD';
-
-		if (serviceTypeCode) {
-			({ title, mobileTitle } = this.getApplicationTitle(serviceTypeCode, applicationTypeCode, originalLicenceNumber));
-		}
-
-		this.applicationTitle$.next([title, mobileTitle]);
-	}
-
 	setMdraApplicationTitle(
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
@@ -661,18 +579,6 @@ export class CommonApplicationService {
 			}
 			case ServiceTypeCode.BodyArmourPermit: {
 				mobileTitle = 'BAP';
-				break;
-			}
-			case ServiceTypeCode.GdsdTeamCertification: {
-				mobileTitle = 'GDSD Team';
-				break;
-			}
-			case ServiceTypeCode.DogTrainerCertification: {
-				mobileTitle = 'Dog Trainer';
-				break;
-			}
-			case ServiceTypeCode.RetiredServiceDogCertification: {
-				mobileTitle = 'Retired Dog';
 				break;
 			}
 			case ServiceTypeCode.Mdra: {
@@ -1005,39 +911,6 @@ export class CommonApplicationService {
 			);
 	}
 
-	/**
-	 * Search for an existing gdsd certificate using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getGDSDLicenceWithAccessCodeAnonymous(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(
-				switchMap((resp: LicenceResponse) => {
-					if (!resp) {
-						// lookup does not match a licence
-						return of({} as LicenceResponseExt);
-					}
-
-					return this.applicantProfileService.apiApplicantsAnonymousDogCertificationApplicationsGet().pipe(
-						map((appls: Array<LicenceAppListResponse>) => {
-							return {
-								inProgressApplications: appls.length > 0,
-								...resp,
-							} as LicenceResponseExt;
-						})
-					);
-				})
-			);
-	}
-
 	private getMainWarningsAndError(
 		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>,
@@ -1205,7 +1078,6 @@ export class CommonApplicationService {
 		licence.isUpdatePeriod = false;
 		licence.isReplacementPeriod = false;
 		licence.isSimultaneousFlow = false;
-		licence.isExpiredLicenceRenewable = this.utilService.isExpiredLicenceRenewable(licence);
 
 		const today = moment().startOf('day');
 

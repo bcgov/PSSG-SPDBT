@@ -5,8 +5,8 @@ import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { FormGdsdLicenceAccessCodeComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-licence-access-code.component';
 import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
+import { FormMdraLicenceAccessCodeComponent } from './form-mdra-licence-access-code.component';
 
 @Component({
 	selector: 'app-step-mdra-licence-access-code',
@@ -43,7 +43,7 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 	readonly serviceTypeMdraTeam = ServiceTypeCode.Mdra;
 	applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(FormGdsdLicenceAccessCodeComponent) accessCodeComponent!: FormGdsdLicenceAccessCodeComponent;
+	@ViewChild(FormMdraLicenceAccessCodeComponent) accessCodeComponent!: FormMdraLicenceAccessCodeComponent;
 
 	constructor(
 		private router: Router,
