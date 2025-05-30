@@ -21,7 +21,7 @@ internal class OrgRepository : IOrgRepository
         this._logger = logger;
     }
 
-    public async Task<IEnumerable<ResultResp>> RunMonthlyOrgInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
+    public async Task<IEnumerable<ResultResp>> RunMonthlyOrgInChuncksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct, int delayInMilliSec = 400)
     {
         const int chunkSize = 500;
         const int maxStoredErrors = 500;
@@ -44,9 +44,9 @@ internal class OrgRepository : IOrgRepository
 
             for (int i = 0; i < accountList.Count; i += concurrentRequests)
             {
+                _logger.LogInformation("Process from {Begin} to {End}", i, i + concurrentRequests);
                 var currentBatch = accountList.Skip(i).Take(concurrentRequests).ToList();
                 var tasks = new List<Task<ResultResp?>>();
-
                 foreach (var a in currentBatch)
                 {
                     tasks.Add(ProcessAccountAsync(a, request, ct));
@@ -62,6 +62,8 @@ internal class OrgRepository : IOrgRepository
 
                 tasks.Clear();
                 currentBatch.Clear();
+                // Optional delay after each batch to reduce burstiness
+                await Task.Delay(delayInMilliSec);
             }
 
             accountList.Clear();
