@@ -37,7 +37,7 @@
     "moment": "^2.29.4",
     "ng-openapi-gen": "^0.53.0",
     "ng-recaptcha-2": "^15.0.2",
-    "ngx-mask": "^19.0.6",
+    "ngx-mask": "^19.0.7",
     "ngx-spinner": "^19.0.0",
     "rxjs": "~7.8.0",
     "spd": "file:",
