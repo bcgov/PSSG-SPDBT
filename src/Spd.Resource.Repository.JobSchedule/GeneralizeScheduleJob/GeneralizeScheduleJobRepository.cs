@@ -156,7 +156,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
 
         var genericMethod = method.MakeGenericMethod(entityType);
 
-        var task = (Task)genericMethod.Invoke(this, new object[] { primaryEntityName, filterStr, chunkSize, chunkNumber, ct });
+        var task = (Task)genericMethod.Invoke(this, new object[] { primaryEntityName, chunkSize, chunkNumber, filterStr, ct });
 
         await task.ConfigureAwait(false);
 
