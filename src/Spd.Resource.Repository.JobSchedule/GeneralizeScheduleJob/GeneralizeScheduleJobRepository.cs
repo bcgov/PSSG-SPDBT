@@ -10,6 +10,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<IGeneralizeScheduleJobRepository> _logger;
+    private readonly IDynamicsContextFactory _factory;
 
     public GeneralizeScheduleJobRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
@@ -18,69 +19,10 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         _context = ctx.Create();
         _mapper = mapper;
         this._logger = logger;
+        _factory = ctx;
     }
 
-    //public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, CancellationToken ct)
-    //{
-    //    string primaryEntityName = request.PrimaryEntityName;
-    //    string filterStr = request.PrimaryEntityFilterStr;
-    //    string actionStr = request.PrimaryEntityActionStr;
-    //    string primaryEntityIdName = request.PrimaryEntityIdName;
-
-    //    var property = _context.GetType().GetProperty(primaryEntityName);
-    //    if (property == null) throw new Exception("Property not found.");
-
-    //    dynamic query = property.GetValue(_context) as DataServiceQuery;
-    //    query.AddQueryOption("$filter", $"{filterStr}");
-    //    var result = await query.ExecuteAsync(ct);
-    //    var data = ((IEnumerable<dynamic>)result).ToList();
-
-    //    using var semaphore = new SemaphoreSlim(10); // Limit to 10 concurrent requests
-
-    //    var tasks = data.Select(async a =>
-    //    {
-    //        await semaphore.WaitAsync();
-    //        try
-    //        {
-    //            //get primary id
-    //            var idProperty = a.GetType().GetProperty(primaryEntityIdName);
-    //            object obj = idProperty.GetValue(a);
-    //            string idStr = obj.ToString();
-
-    //            //invoke method
-    //            var method = a.GetType().GetMethod(actionStr);
-    //            var result = method?.Invoke(a, null);
-    //            var getValueAsyncMethod = result.GetType().GetMethod(
-    //                "GetValueAsync",
-    //                new[] { typeof(CancellationToken) });
-    //            if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
-    //            var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
-    //            await task.ConfigureAwait(false);
-
-    //            // If it's Task<T>, get the result via reflection
-    //            var resultProperty = task.GetType().GetProperty("Result");
-    //            var value = resultProperty?.GetValue(task);
-    //            ResultResp rr = _mapper.Map<ResultResp>(value);
-    //            rr.PrimaryEntityId = Guid.Parse(idStr);
-    //            return rr;
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            var idProperty = a.GetType().GetProperty(primaryEntityIdName);
-    //            object obj = idProperty.GetValue(a);
-    //            return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = Guid.Parse(obj.ToString()) };
-    //        }
-    //        finally
-    //        {
-    //            semaphore.Release();
-    //        }
-    //    });
-
-    //    var results = await Task.WhenAll(tasks);
-    //    return results;
-    //}
-
-    public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct, int delayInMilliSec = 100)
+    public async Task<IEnumerable<ResultResp>> RunJobInChunksAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct, int delayInMilliSec = 100)
     {
         string primaryTypeName = request.PrimaryTypeName;
         string primaryEntityName = request.PrimaryEntityName;
@@ -90,61 +32,94 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
 
         // Resolve type dynamically
         Type entityType = GetEntityTypeByName(primaryTypeName);
-        var data = await CallGetAllPrimaryEntityDynamicAsync(entityType, primaryEntityName, filterStr, ct);
 
-        using var semaphore = new SemaphoreSlim(concurrentRequests);
+        const int chunkSize = 500;
+        const int maxStoredErrors = 500;
+        int chunkNumber = 0;
+        int returnedNumber = chunkSize;
+        var finalErrResults = new List<ResultResp>();
+
         _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
 
-        var tasks = data.Select(async a =>
+        while (returnedNumber != 0)
         {
-            await semaphore.WaitAsync(delayInMilliSec);
-            try
+            using var context = _factory.Create();
+            _logger.LogInformation("Processing chunk {ChunkNumber} with size {Size}", chunkNumber, chunkSize);
+
+            var entities = await CallGetEntitiesInChunksAsync(entityType, primaryEntityName, filterStr, chunkSize, chunkNumber, ct);
+            returnedNumber = entities.Count();
+            chunkNumber++;
+            _logger.LogInformation("Returned number = {ReturnedNumber}", returnedNumber);
+
+            for (int i = 0; i < entities.Count; i += concurrentRequests)
             {
-                //get primary id
-                var idProperty = a.GetType().GetProperty(primaryEntityIdName);
-                object obj = idProperty.GetValue(a);
-                string idStr = obj.ToString();
-
-                //invoke method
-                var method = a.GetType().GetMethod(actionStr);
-                var result = method?.Invoke(a, null);
-                if (result == null) throw new Exception($"the {actionStr} invoked returns null");
-
-                var getValueAsyncMethod = result.GetType().GetMethod(
-                    "GetValueAsync",
-                    new[] { typeof(CancellationToken) });
-                if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
-
-                var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
-                await task.ConfigureAwait(false);
-
-                // If it's Task<T>, get the result via reflection
-                var resultProperty = task.GetType().GetProperty("Result");
-                var value = resultProperty?.GetValue(task);
-                ResultResp rr = GetResultResp(value, Guid.Parse(idStr));
-                _logger.LogInformation("{actionStr} executed result : success = {Success} {Result} primaryEntityId={entityId}", actionStr, rr.IsSuccess, rr.ResultStr, idStr);
-                return rr;
-            }
-            catch (Exception ex)
-            {
-                Exception current = ex;
-                while (current != null)
+                _logger.LogInformation("Process from {Begin} to {End}", i, i + concurrentRequests);
+                var currentBatch = entities.Skip(i).Take(concurrentRequests).ToList();
+                var tasks = new List<Task<ResultResp?>>();
+                foreach (var a in currentBatch)
                 {
-                    _logger.LogError("Exception Type: {ExceptionName} \r\n Message: {Message} \r\n Stack Trace: {StackTrace}", current.GetType().Name, current.Message, current.StackTrace);
-                    current = current.InnerException;
+                    var idProperty = a.GetType().GetProperty(primaryEntityIdName);
+                    object obj = idProperty.GetValue(a);
+                    string idStr = obj.ToString();
+                    tasks.Add(ProcessEntityAsync(a, actionStr, idStr, ct));
                 }
-                var idProperty = a.GetType().GetProperty(primaryEntityIdName);
-                object obj = idProperty.GetValue(a);
-                return new ResultResp { IsSuccess = false, ResultStr = ex.Message, PrimaryEntityId = Guid.Parse(obj.ToString()) };
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        });
 
-        var results = await Task.WhenAll(tasks);
-        return results;
+                var batchResults = await Task.WhenAll(tasks);
+
+                if (finalErrResults.Count < maxStoredErrors)
+                {
+                    var errors = batchResults.Where(r => r != null && !r.IsSuccess).ToList();
+                    finalErrResults.AddRange(errors.Take(maxStoredErrors - finalErrResults.Count));
+                }
+
+                tasks.Clear();
+                currentBatch.Clear();
+                // Optional delay after each batch to reduce burstiness
+                await Task.Delay(delayInMilliSec);
+            }
+
+            entities.Clear();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+        return finalErrResults;
+    }
+
+    private async Task<ResultResp?> ProcessEntityAsync(object a, string actionStr, string idStr, CancellationToken ct)
+    {
+        try
+        {
+            //invoke method
+            var method = a.GetType().GetMethod(actionStr);
+            var result = method?.Invoke(a, null);
+            if (result == null) throw new Exception($"the {actionStr} invoked returns null");
+
+            var getValueAsyncMethod = result.GetType().GetMethod(
+                "GetValueAsync",
+                new[] { typeof(CancellationToken) });
+            if (getValueAsyncMethod == null) throw new Exception("GetValueAsync method not found.");
+
+            var task = (Task)getValueAsyncMethod.Invoke(result, new object[] { ct });
+            await task.ConfigureAwait(false);
+
+            // If it's Task<T>, get the result via reflection
+            var resultProperty = task.GetType().GetProperty("Result");
+            var value = resultProperty?.GetValue(task);
+            ResultResp rr = GetResultResp(value, Guid.Parse(idStr));
+            _logger.LogInformation("{actionStr} executed result : success = {Success} {Result} primaryEntityId={entityId}", actionStr, rr.IsSuccess, rr.ResultStr, idStr);
+            return rr;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing account {Id}", idStr);
+
+            return new ResultResp
+            {
+                IsSuccess = false,
+                ResultStr = ex.Message.Length > 500 ? ex.Message.Substring(0, 500) + "..." : ex.Message,
+                PrimaryEntityId = Guid.Parse(idStr)
+            };
+        }
     }
 
     private static Type GetEntityTypeByName(string typeName)
@@ -164,22 +139,24 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         throw new InvalidOperationException($"Type '{typeName}' not found.");
     }
 
-    private async Task<List<object>> CallGetAllPrimaryEntityDynamicAsync(
+    private async Task<List<object>> CallGetEntitiesInChunksAsync(
         Type entityType,
         string primaryEntityName,
         string filterStr,
+        int chunkSize,
+        int chunkNumber,
         CancellationToken ct)
     {
         var method = this.GetType().GetMethod(
-            "GetAllPrimaryEntityAsync",
+            "GetEntitiesInChunksAsync",
             BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (method == null)
-            throw new InvalidOperationException("GetAllPrimaryEntityAsync method not found.");
+            throw new InvalidOperationException("GetEntitiesInChunksAsync method not found.");
 
         var genericMethod = method.MakeGenericMethod(entityType);
 
-        var task = (Task)genericMethod.Invoke(this, new object[] { primaryEntityName, filterStr, ct });
+        var task = (Task)genericMethod.Invoke(this, new object[] { primaryEntityName, chunkSize, chunkNumber, filterStr, ct });
 
         await task.ConfigureAwait(false);
 
@@ -213,35 +190,25 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
             PrimaryEntityId = primaryEntityId
         };
     }
-    private async Task<IEnumerable<T>> GetAllPrimaryEntityAsync<T>(string primaryEntityName, string filterStr, CancellationToken ct)
+    private async Task<IEnumerable<T>> GetEntitiesInChunksAsync<T>(string primaryEntityName,
+        int chunkSize,
+        int chunkNumber,
+        string filterStr,
+        CancellationToken ct)
     {
-        //filterStr = "statecode eq 0 and spd_eligibleforcreditpayment eq 100000001";
         var property = _context.GetType().GetProperty(primaryEntityName);
         if (property == null) throw new Exception("Property not found.");
 
+        int skip = chunkNumber * chunkSize;
         var query = property.GetValue(_context) as DataServiceQuery<T>;
         query = query.AddQueryOption("$filter", filterStr)
-            .IncludeCount();
+            .AddQueryOption("$orderby", "createdon desc")
+            .IncludeCount()
+            .AddQueryOption("$skip", $"{skip}")
+            .AddQueryOption("$top", $"{chunkSize}"); ;
 
-        var allEntities = new List<T>();
-        QueryOperationResponse<T> response;
-        DataServiceQueryContinuation<T> continuation = null;
-
-        do
-        {
-            if (continuation == null)
-            {
-                response = (QueryOperationResponse<T>)await query.ExecuteAsync(ct);
-            }
-            else
-            {
-                response = (QueryOperationResponse<T>)await _context.ExecuteAsync(continuation, ct);
-            }
-            allEntities.AddRange(response);
-            continuation = response.GetContinuation();
-        } while (continuation != null);
-
-        return allEntities;
+        var entities = (QueryOperationResponse<T>)await query.ExecuteAsync(ct);
+        return entities.ToList();
     }
 }
 

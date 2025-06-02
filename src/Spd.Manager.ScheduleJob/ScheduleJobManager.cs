@@ -97,7 +97,7 @@ public class ScheduleJobManager :
             if (resp.EndPoint.Equals("spd_MonthlyInvoice") || resp.EndPoint.Equals("spd_OrgMonthlyReport"))
                 result = await _orgRepository.RunMonthlyOrgInChuncksAsync(request, cmd.ConcurrentRequests, cts.Token, cmd.DelayInMilliSec);
             else
-                result = await _generalizeScheduleJobRepository.RunJobsAsync(request, cmd.ConcurrentRequests, cts.Token, cmd.DelayInMilliSec);
+                result = await _generalizeScheduleJobRepository.RunJobInChunksAsync(request, cmd.ConcurrentRequests, cts.Token, cmd.DelayInMilliSec);
             stopwatch.Stop();
 
             //update result in JobSession
