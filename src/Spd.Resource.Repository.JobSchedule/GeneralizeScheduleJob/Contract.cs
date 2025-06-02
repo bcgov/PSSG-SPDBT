@@ -2,7 +2,7 @@ namespace Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob
 {
     public interface IGeneralizeScheduleJobRepository
     {
-        public Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int ConcurrentRequests, CancellationToken cancellationToken);
+        public Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int ConcurrentRequests, CancellationToken cancellationToken, int delayInMilliSec);
     }
 
     public record RunJobRequest
