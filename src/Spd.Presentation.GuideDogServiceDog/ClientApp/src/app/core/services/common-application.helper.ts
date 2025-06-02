@@ -51,10 +51,10 @@ export abstract class CommonApplicationHelper {
 
 	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
 		{
-			updatePhoto: new FormControl(''), // used by update/renewal
+			updatePhoto: new FormControl(''), // used by replacement/renewal
 			uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
 			attachments: new FormControl([]),
-			updateAttachments: new FormControl([]), // used by update/renewal
+			updateAttachments: new FormControl([]), // used by replacement/renewal
 		},
 		{
 			validators: [
