@@ -16,7 +16,12 @@ namespace Spd.Resource.Repository.Org
 
     //query
     public abstract record OrgQry;
-    public record OrgsQry(Guid? OrgGuid = null, Guid? ParentOrgId = null, bool IncludeInactive = false, string? OrgCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null) : OrgQry;
+    public record OrgsQry(Guid? OrgGuid = null,
+        Guid? ParentOrgId = null,
+        bool IncludeInactive = false,
+        string? OrgCode = null,
+        IEnumerable<ServiceTypeEnum>? ServiceTypes = null,
+        bool? IsCreditSchool = null) : OrgQry;
     public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
