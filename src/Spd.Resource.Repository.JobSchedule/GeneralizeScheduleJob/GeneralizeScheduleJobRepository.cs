@@ -80,7 +80,7 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
     //    return results;
     //}
 
-    public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct)
+    public async Task<IEnumerable<ResultResp>> RunJobsAsync(RunJobRequest request, int concurrentRequests, CancellationToken ct, int delayInMilliSec = 100)
     {
         string primaryTypeName = request.PrimaryTypeName;
         string primaryEntityName = request.PrimaryEntityName;
@@ -92,12 +92,12 @@ internal class GeneralizeScheduleJobRepository : IGeneralizeScheduleJobRepositor
         Type entityType = GetEntityTypeByName(primaryTypeName);
         var data = await CallGetAllPrimaryEntityDynamicAsync(entityType, primaryEntityName, filterStr, ct);
 
-        using var semaphore = new SemaphoreSlim(concurrentRequests); // Limit to 10 concurrent requests
+        using var semaphore = new SemaphoreSlim(concurrentRequests);
         _logger.LogDebug("{ConcurrentRequests} concurrent requests", concurrentRequests);
 
         var tasks = data.Select(async a =>
         {
-            await semaphore.WaitAsync();
+            await semaphore.WaitAsync(delayInMilliSec);
             try
             {
                 //get primary id
