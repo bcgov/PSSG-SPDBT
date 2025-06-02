@@ -523,10 +523,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = retiredDogModelData.originalLicenceData;
+		const photographOfYourselfData = retiredDogModelData.photographOfYourselfData;
 
 		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
+
+			// set flag - user will be forced to update their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		this.retiredDogModelFormGroup.patchValue(
@@ -534,6 +538,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				licenceAppId: null,
 				applicationTypeData,
 				originalLicenceData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
@@ -1044,32 +1049,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
-	}
-
-	/**
-	 * Submit the application data for anonymous replacement
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
-		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(rdModelFormValue);
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		body.documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			}
-		});
-
-		delete body.documentInfos;
-
-		const originalLicenceData = rdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-
-		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
 	/**
