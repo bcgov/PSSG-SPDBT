@@ -24,7 +24,7 @@
     "@angular/material": "^19.2.14",
     "@angular/material-moment-adapter": "^19.2.14",
     "@angular/platform-browser": "^19.2.9",
-    "@angular/platform-browser-dynamic": "^19.2.9",
+    "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^19.2.9",
     "@bcgov/bc-sans": "^2.1.0",
     "@ngneat/overview": "^6.1.1",
