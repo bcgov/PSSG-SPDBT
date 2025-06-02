@@ -36,7 +36,8 @@ public class ScheduleJobController : SpdControllerBase
         CancellationToken ct)
     {
         int concurrentRequests = _configuration.GetValue<int>("ScheduleJobConcurrentRequests");
-        _jobQueue.Enqueue(sessionId, concurrentRequests);
+        int delay = _configuration.GetValue<int>("ScheduleJob_DelayInMilliSec_BetweenEachThreadsSet");
+        _jobQueue.Enqueue(sessionId, concurrentRequests, delay);
         return Ok("Job scheduled.");
     }
 }
