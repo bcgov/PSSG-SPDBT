@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, GdsdTeamAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app.routes';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
@@ -11,6 +12,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 import { StepTeamConsentReplacementComponent } from './step-team-consent-replacement.component';
 import { StepTeamMailingAddressComponent } from './step-team-mailing-address.component';
+import { StepTeamPhotographOfYourselfRenewComponent } from './step-team-photograph-of-yourself-renew.component';
 
 @Component({
 	selector: 'app-gdsd-team-wizard-replacement',
@@ -37,7 +39,17 @@ import { StepTeamMailingAddressComponent } from './step-team-mailing-address.com
 					></app-wizard-footer>
 				</mat-step>
 
-				<mat-step [completed]="step3Complete">
+				<mat-step [completed]="step3Complete" *ngIf="updatePhoto">
+					<ng-template matStepLabel>Photograph of Yourself</ng-template>
+					<app-step-team-photograph-of-yourself-renew></app-step-team-photograph-of-yourself-renew>
+
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step>
 					<ng-template matStepLabel>Acknowledgement</ng-template>
 					<app-step-team-consent-replacement></app-step-team-consent-replacement>
 
@@ -60,14 +72,17 @@ import { StepTeamMailingAddressComponent } from './step-team-mailing-address.com
 export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
+	readonly STEP_PHOTO_OF_YOURSELF = 2;
 
 	step2Complete = false;
 	step3Complete = false;
 
 	isLoggedIn = false;
+	updatePhoto = false;
 	applicationTypeReplacement = ApplicationTypeCode.Replacement;
 
 	@ViewChild(StepTeamMailingAddressComponent) stepAddress!: StepTeamMailingAddressComponent;
+	@ViewChild(StepTeamPhotographOfYourselfRenewComponent) stepPhoto!: StepTeamPhotographOfYourselfRenewComponent;
 	@ViewChild(StepTeamConsentReplacementComponent) stepConsent!: StepTeamConsentReplacementComponent;
 
 	private gdsdTeamChangedSubscription!: Subscription;
@@ -97,6 +112,10 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 
 		this.gdsdTeamChangedSubscription = this.gdsdTeamApplicationService.gdsdTeamModelValueChanges$.subscribe(
 			(_resp: boolean) => {
+				this.updatePhoto =
+					this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get('photographOfYourselfData.updatePhoto')?.value ===
+					BooleanTypeCode.Yes;
+
 				this.updateCompleteStatus();
 			}
 		);
@@ -122,6 +141,8 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 				return true;
 			case this.STEP_MAILING_ADDRESS:
 				return this.stepAddress.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF:
+				return this.stepPhoto.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
@@ -147,7 +168,7 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 			return;
 		}
 
-		this.gdsdTeamApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
 			},
@@ -159,7 +180,7 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 
 	private updateCompleteStatus(): void {
 		this.step2Complete = this.gdsdTeamApplicationService.mailingAddressFormGroup.valid;
-		this.step3Complete = this.gdsdTeamApplicationService.consentAndDeclarationFormGroup.valid;
+		this.step3Complete = this.updatePhoto ? this.gdsdTeamApplicationService.photographOfYourselfFormGroup.valid : true;
 
 		console.debug('Complete Status', this.step2Complete, this.step3Complete);
 	}

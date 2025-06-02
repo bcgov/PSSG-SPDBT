@@ -41,7 +41,6 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 
 export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
-	originalPhotoOfYourselfExpired: boolean;
 	licenceExpiryNumberOfDays?: null | number;
 	isRenewalPeriod: boolean;
 	isReplacementPeriod: boolean;
@@ -396,8 +395,6 @@ export class CommonApplicationService {
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 		const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-
-		licence.originalPhotoOfYourselfExpired = false; // default
 
 		licence.isRenewalPeriod = false;
 		licence.isReplacementPeriod = false;
