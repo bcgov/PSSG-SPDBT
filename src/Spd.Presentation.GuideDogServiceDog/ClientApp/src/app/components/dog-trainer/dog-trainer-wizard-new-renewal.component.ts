@@ -144,7 +144,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	}
 
 	onSubmit(): void {
-		this.dogTrainerApplicationService.submitLicenceNewOrRenewalAnonymous().subscribe({
+		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
 				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
 			},
