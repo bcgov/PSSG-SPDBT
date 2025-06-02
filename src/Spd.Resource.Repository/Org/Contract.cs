@@ -21,7 +21,7 @@ namespace Spd.Resource.Repository.Org
         bool IncludeInactive = false,
         string? OrgCode = null,
         IEnumerable<ServiceTypeEnum>? ServiceTypes = null,
-        bool? IsCreditSchool = null) : OrgQry;
+        bool? IsAccreditSchool = null) : OrgQry;
     public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {

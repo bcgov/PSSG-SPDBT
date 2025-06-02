@@ -76,7 +76,7 @@ internal class AdminManager(
            "accredited_dog_training_school_list",
            async ct => ((OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry
            {
-               IsCreditSchool = true,
+               IsAccreditSchool = true,
            },
            ct)).OrgResults.ToList(),
            TimeSpan.FromMinutes(240),

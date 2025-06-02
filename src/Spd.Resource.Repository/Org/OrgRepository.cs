@@ -143,8 +143,8 @@ namespace Spd.Resource.Repository.Org
                 accounts = accounts.Where(a => a._parentaccountid_value == query.ParentOrgId);
             if (query.OrgCode != null)
                 accounts = accounts.Where(a => a.spd_orgcode == query.OrgCode);
-            if (query.IsCreditSchool != null)
-                accounts = accounts.Where(a => a.spd_accreditedschool == (int)(query.IsCreditSchool.Value ? YesNoOptionSet.Yes : YesNoOptionSet.No));
+            if (query.IsAccreditSchool != null)
+                accounts = accounts.Where(a => a.spd_accreditedschool == (int)(query.IsAccreditSchool.Value ? YesNoOptionSet.Yes : YesNoOptionSet.No));
             if (query.ServiceTypes != null && query.ServiceTypes.Any())
             {
                 IEnumerable<Guid> stIds = query.ServiceTypes.Select(t => DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.GetValueOrDefault(t.ToString()));
