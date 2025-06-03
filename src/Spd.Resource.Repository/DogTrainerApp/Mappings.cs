@@ -46,6 +46,7 @@ internal class Mappings : Profile
         .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.TrainerSurname)))
         .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.TrainerEmailAddress))
         .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.TrainerDateOfBirth)))
+        .ForMember(d => d.middlename, opt => opt.Ignore())
         .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.TrainerPhoneNumber))
         .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.AddressLine1)))
         .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.AddressLine2)))
