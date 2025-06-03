@@ -69,6 +69,7 @@ import { OptionsPipe } from '../pipes/options.pipe';
 							[files]="updateAttachments.value"
 							[accept]="accept"
 							[previewImage]="true"
+							ariaFileUploadLabel="Upload photograph of yourself"
 						></app-file-upload>
 						<mat-error
 							class="mat-option-error"

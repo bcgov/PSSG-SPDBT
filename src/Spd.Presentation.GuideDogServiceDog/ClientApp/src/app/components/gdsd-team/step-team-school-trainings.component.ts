@@ -226,6 +226,7 @@ import moment from 'moment';
 								[maxNumberOfFiles]="10"
 								[control]="attachments"
 								[files]="attachments.value"
+								ariaFileUploadLabel="Upload supporting training documentation"
 							></app-file-upload>
 						</div>
 					</div>
