@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SecurityContext } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SecurityContext, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -90,14 +90,26 @@ export class FileUploadHelper {
 								</div>
 							</div>
 							<div style="position: absolute; top: 5px; right: 5px; cursor: pointer;">
-								<mat-icon (click)="onRemoveFile(file)">cancel</mat-icon>
+								<mat-icon
+									tabindex="0"
+									(click)="onRemoveFile(file)"
+									(keydown)="onRemoveFileKeyDown($event, file)"
+									aria-label="Remove this file"
+									>cancel</mat-icon
+								>
 							</div>
 						</div>
 					</div>
 				</ng-container>
 			</div>
 
-			<label class="dropzone-area" [for]="id">
+			<label
+				class="dropzone-area"
+				[for]="id"
+				tabindex="0"
+				[attr.aria-label]="ariaFileUploadLabel"
+				(keydown)="onAddFileKeyDown($event)"
+			>
 				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
 				<div class="fw-bold m-2">Drag and Drop your file here or click to browse</div>
 				<div class="fine-print m-2" *ngIf="message">{{ message }}</div>
@@ -188,9 +200,12 @@ export class FileUploadComponent implements OnInit {
 	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Default file types to accept
+	@Input() ariaFileUploadLabel = 'Upload a file';
 
 	@Output() fileRemoved = new EventEmitter<any>();
 	@Output() fileUploaded = new EventEmitter<File>();
+
+	@ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
 	id!: string;
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
@@ -284,6 +299,20 @@ export class FileUploadComponent implements OnInit {
 					this.fileRemoved.emit();
 				}
 			});
+	}
+
+	onRemoveFileKeyDown(event: KeyboardEvent, file: File) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault(); // Prevent space from scrolling
+			this.onRemoveFile(file);
+		}
+	}
+
+	onAddFileKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault(); // Prevent space from scrolling
+			this.fileInputRef.nativeElement.click(); // Trigger the file input
+		}
 	}
 
 	getPreviewImage(index: number): string | null {
