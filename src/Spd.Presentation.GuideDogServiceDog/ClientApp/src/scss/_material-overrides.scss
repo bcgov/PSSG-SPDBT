@@ -28,6 +28,25 @@ button.mdc-button {
 	}
 }
 
+// change ACCESSIBILITY FOCUS
+button.mdc-button:focus,
+a.mdc-button:focus {
+	outline: 3px solid black; /* Stronger contrast */
+	outline-offset: 2px;
+}
+
+mat-radio-button:focus-within {
+	outline: 3px solid black; /* Stronger contrast */
+	outline-offset: 4px;
+	border-radius: 4px; /* matches the shape */
+}
+
+mat-checkbox:focus-within {
+	outline: 3px solid black; /* Stronger contrast */
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
 a {
 	&.large {
 		height: 46px !important;
@@ -114,10 +133,12 @@ a {
 	background-color: rgba(245, 245, 245);
 }
 
-.radio-label .mdc-label,
+.radio-label,
+.mdc-label,
 .mat-mdc-checkbox label {
 	font-size: 1em;
 	color: var(--color-primary);
+	margin-right: 0.5rem !important;
 }
 
 .mdc-radio,
