@@ -481,17 +481,18 @@ export class UtilService {
 
 	toasterSuccess(msg: string, autoDismiss = true): void {
 		if (autoDismiss) {
-			this.hotToastService.success(msg);
+			this.hotToastService.success(msg, { ariaLive: 'assertive' });
 			return;
 		}
 
 		this.hotToastService.success(msg, {
 			autoClose: false,
 			dismissible: true,
+			ariaLive: 'assertive',
 		});
 	}
 
 	toasterError(msg: string): void {
-		this.hotToastService.error(msg);
+		this.hotToastService.error(msg, { ariaLive: 'assertive' });
 	}
 }

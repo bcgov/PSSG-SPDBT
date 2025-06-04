@@ -23,9 +23,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 1"
-											aria-label="Go to Step 1"
-											(click)="$event.stopPropagation(); onEditStep(0)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 0)"
+											(keydown.enter)="onEditStep($event, 0)"
+											(keydown.space)="onEditStep($event, 0)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -57,9 +59,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 1)"
+											(keydown.enter)="onEditStep($event, 1)"
+											(keydown.space)="onEditStep($event, 1)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -170,9 +174,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(2)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 2)"
+											(keydown.enter)="onEditStep($event, 2)"
+											(keydown.space)="onEditStep($event, 2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -260,9 +266,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 4"
-											aria-label="Go to Step 4"
-											(click)="$event.stopPropagation(); onEditStep(3)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 3)"
+											(keydown.enter)="onEditStep($event, 3)"
+											(keydown.space)="onEditStep($event, 3)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -285,7 +293,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</ng-container>
 
 									<ng-template #NotAttendedTrainingSchool>
-										<app-form-team-summary-other-training [gdsdModelData]="gdsdModelData"></app-form-team-summary-other-training>
+										<app-form-team-summary-other-training
+											[gdsdModelData]="gdsdModelData"
+										></app-form-team-summary-other-training>
 									</ng-template>
 								</ng-template>
 
@@ -365,7 +375,8 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 		};
 	}
 
-	onEditStep(stepNumber: number) {
+	onEditStep(event: any, stepNumber: number) {
+		event.stopPropagation();
 		this.editStep.emit(stepNumber);
 	}
 
