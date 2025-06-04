@@ -240,7 +240,7 @@ export class FileUploadComponent implements OnInit {
 
 	private addFile(newFile: File) {
 		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
-			this.utilService.dialogError('The maximum number of files has been reached');
+			this.utilService.dialogError('The maximum number of files has been reached.');
 			return;
 		}
 
@@ -250,17 +250,17 @@ export class FileUploadComponent implements OnInit {
 
 		const isFoundIndex = this.files.findIndex((item: File) => item.name === newFile.name);
 		if (isFoundIndex >= 0) {
-			this.utilService.dialogError('A file with the same name has already been uploaded');
+			this.utilService.dialogError('A file with the same name has already been uploaded.');
 			return;
 		}
 
 		if (!this.isAccepted(newFile, this.accept)) {
-			this.utilService.dialogError('A file of this type cannot be uploaded');
+			this.utilService.dialogError('A file of this type cannot be uploaded.');
 			return;
 		}
 
 		if (this.maxFileSize && newFile.size > this.maxFileSize) {
-			this.utilService.dialogError('A file of this size cannot be uploaded');
+			this.utilService.dialogError('A file of this size cannot be uploaded.');
 			return;
 		}
 

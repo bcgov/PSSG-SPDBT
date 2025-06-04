@@ -499,7 +499,7 @@ export class UtilService {
 
 	dialogError(msg: string): void {
 		const data: DialogOptions = {
-			icon: 'danger',
+			icon: 'dangerous',
 			title: 'Error',
 			message: msg,
 			cancelText: 'OK',
