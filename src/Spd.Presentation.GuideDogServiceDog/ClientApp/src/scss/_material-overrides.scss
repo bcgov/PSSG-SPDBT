@@ -31,31 +31,34 @@ button.mdc-button {
 // change ACCESSIBILITY FOCUS start
 button.mdc-button:focus,
 button.mat-mdc-mini-fab:focus,
-a.mdc-button:focus {
-	outline: 3px solid var(--color-focus); /* Stronger contrast */
-	outline-offset: 2px;
+a.mdc-button:focus,
+a:focus {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
 }
 
 mat-radio-button:focus-within {
-	outline: 3px solid var(--color-focus); /* Stronger contrast */
+	outline: 2px solid var(--color-grey);
 	outline-offset: 4px;
-	border-radius: 4px; /* matches the shape */
+	border-radius: 4px;
 }
 
 mat-checkbox:focus-within {
-	outline: 3px solid var(--color-focus); /* Stronger contrast */
+	outline: 2px solid var(--color-grey);
 	outline-offset: 2px;
 	border-radius: 4px;
 }
 
 mat-expansion-panel:focus-within {
-	outline: 3px solid #b3c0dc; /* Stronger contrast */
-	outline-offset: 2px;
-	border-radius: 4px; /* matches Material shape */
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+	border-radius: 4px;
 }
 
 :focus-visible {
-	outline: var(--color-focus) auto 1px;
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+	border-radius: 4px;
 }
 // change ACCESSIBILITY FOCUS end
 
