@@ -2,10 +2,12 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
@@ -39,6 +41,7 @@ export type SortWeight = -1 | 0 | 1;
 export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
+		private dialog: MatDialog,
 		private formatDatePipe: FormatDatePipe,
 		private hotToastService: HotToastService
 	) {}
@@ -479,20 +482,29 @@ export class UtilService {
 		});
 	}
 
-	toasterSuccess(msg: string, autoDismiss = true): void {
-		if (autoDismiss) {
-			this.hotToastService.success(msg, { ariaLive: 'assertive' });
-			return;
-		}
-
-		this.hotToastService.success(msg, {
-			autoClose: false,
-			dismissible: true,
-			ariaLive: 'assertive',
-		});
+	toasterSuccess(msg: string): void {
+		this.hotToastService.success(msg, { ariaLive: 'polite' });
 	}
 
-	toasterError(msg: string): void {
-		this.hotToastService.error(msg, { ariaLive: 'assertive' });
+	dialogSuccess(msg: string): void {
+		const data: DialogOptions = {
+			icon: 'info',
+			title: 'Success',
+			message: msg,
+			cancelText: 'OK',
+		};
+
+		this.dialog.open(DialogComponent, { data });
+	}
+
+	dialogError(msg: string): void {
+		const data: DialogOptions = {
+			icon: 'danger',
+			title: 'Error',
+			message: msg,
+			cancelText: 'OK',
+		};
+
+		this.dialog.open(DialogComponent, { data });
 	}
 }
