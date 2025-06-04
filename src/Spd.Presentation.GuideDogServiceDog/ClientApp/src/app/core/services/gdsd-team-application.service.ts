@@ -506,7 +506,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				this.reset();
 
 				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-				this.utilService.toasterSuccess(successMessage, false);
+				this.utilService.dialogSuccess(successMessage);
 			})
 		);
 	}
@@ -588,7 +588,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				this.reset();
 
 				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-				this.utilService.toasterSuccess(successMessage, false);
+				this.utilService.dialogSuccess(successMessage);
 			})
 		);
 	}
@@ -1416,21 +1416,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	private postSubmitAnonymous(
 		body: any // GdsdTeamLicenceAppChangeRequest or GdsdTeamLicenceAppAnonymousSubmitRequest
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
-			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
-				tap((_resp: any) => {
-					this.utilService.toasterSuccess(successMessage);
-				})
-			);
+			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body });
 		}
 
-		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
-			tap((_resp: any) => {
-				this.utilService.toasterSuccess(successMessage);
-			})
-		);
+		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body });
 	}
 
 	// OTHER TRAINING array

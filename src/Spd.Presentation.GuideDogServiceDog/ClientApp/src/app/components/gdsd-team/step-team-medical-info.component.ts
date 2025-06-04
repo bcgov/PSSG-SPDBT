@@ -68,6 +68,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 								[previewImage]="true"
+								ariaFileUploadLabel="Upload medical form confirming requirement for Guide Dog or Service Dog"
 							></app-file-upload>
 							<mat-error
 								class="mt-3 mat-option-error"
