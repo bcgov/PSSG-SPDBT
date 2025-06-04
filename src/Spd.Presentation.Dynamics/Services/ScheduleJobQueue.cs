@@ -3,14 +3,14 @@
 namespace Spd.Presentation.Dynamics.Services;
 public class ScheduleJobQueue : IScheduleJobQueue
 {
-    private readonly Channel<(Guid, int)> _channel = Channel.CreateUnbounded<(Guid, int)>();
+    private readonly Channel<(Guid, int, int)> _channel = Channel.CreateUnbounded<(Guid, int, int)>();
 
-    public void Enqueue(Guid sessionId, int concurrentRequests)
+    public void Enqueue(Guid sessionId, int concurrentRequests, int delayInMilliSec)
     {
-        _channel.Writer.TryWrite((sessionId, concurrentRequests));
+        _channel.Writer.TryWrite((sessionId, concurrentRequests, delayInMilliSec));
     }
 
-    public bool TryDequeue(out (Guid sessionId, int concurrentRequests) job)
+    public bool TryDequeue(out (Guid sessionId, int concurrentRequests, int delayInMilliSec) job)
     {
         var reader = _channel.Reader;
         if (reader.TryRead(out var result))
@@ -23,5 +23,5 @@ public class ScheduleJobQueue : IScheduleJobQueue
         return false;
     }
 
-    public ChannelReader<(Guid, int)> Reader => _channel.Reader;
+    public ChannelReader<(Guid, int, int)> Reader => _channel.Reader;
 }

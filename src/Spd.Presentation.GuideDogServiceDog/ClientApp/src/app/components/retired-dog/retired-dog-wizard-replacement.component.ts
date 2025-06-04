@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, RetiredDogAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app.routes';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -11,6 +12,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 import { StepRdConsentReplacementComponent } from './step-rd-consent-replacement.component';
 import { StepRdMailingAddressComponent } from './step-rd-mailing-address.component';
+import { StepRdPhotographOfYourselfRenewComponent } from './step-rd-photograph-of-yourself-renew.component';
 
 @Component({
 	selector: 'app-retired-dog-wizard-replacement',
@@ -37,7 +39,17 @@ import { StepRdMailingAddressComponent } from './step-rd-mailing-address.compone
 					></app-wizard-footer>
 				</mat-step>
 
-				<mat-step [completed]="step3Complete">
+				<mat-step [completed]="step3Complete" *ngIf="updatePhoto">
+					<ng-template matStepLabel>Photograph of Yourself</ng-template>
+					<app-step-rd-photograph-of-yourself-renew></app-step-rd-photograph-of-yourself-renew>
+
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step>
 					<ng-template matStepLabel>Acknowledgement</ng-template>
 					<app-step-rd-consent-replacement></app-step-rd-consent-replacement>
 
@@ -60,14 +72,17 @@ import { StepRdMailingAddressComponent } from './step-rd-mailing-address.compone
 export class RetiredDogWizardReplacementComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
+	readonly STEP_PHOTO_OF_YOURSELF = 2;
 
 	step2Complete = false;
 	step3Complete = false;
 
 	isLoggedIn = false;
+	updatePhoto = false;
 	applicationTypeReplacement = ApplicationTypeCode.Replacement;
 
 	@ViewChild(StepRdMailingAddressComponent) stepAddress!: StepRdMailingAddressComponent;
+	@ViewChild(StepRdPhotographOfYourselfRenewComponent) stepPhoto!: StepRdPhotographOfYourselfRenewComponent;
 	@ViewChild(StepRdConsentReplacementComponent) stepConsent!: StepRdConsentReplacementComponent;
 
 	private retiredDogChangedSubscription!: Subscription;
@@ -97,6 +112,10 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 
 		this.retiredDogChangedSubscription = this.retiredDogApplicationService.retiredDogModelValueChanges$.subscribe(
 			(_resp: boolean) => {
+				this.updatePhoto =
+					this.retiredDogApplicationService.retiredDogModelFormGroup.get('photographOfYourselfData.updatePhoto')
+						?.value === BooleanTypeCode.Yes;
+
 				this.updateCompleteStatus();
 			}
 		);
@@ -122,6 +141,8 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 				return true;
 			case this.STEP_MAILING_ADDRESS:
 				return this.stepAddress.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF:
+				return this.stepPhoto.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
@@ -147,7 +168,7 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 			return;
 		}
 
-		this.retiredDogApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		this.retiredDogApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
 			},
@@ -159,7 +180,9 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 
 	private updateCompleteStatus(): void {
 		this.step2Complete = this.retiredDogApplicationService.mailingAddressFormGroup.valid;
-		this.step3Complete = this.retiredDogApplicationService.consentAndDeclarationFormGroup.valid;
+		this.step3Complete = this.updatePhoto
+			? this.retiredDogApplicationService.photographOfYourselfFormGroup.valid
+			: true;
 
 		console.debug('Complete Status', this.step2Complete, this.step3Complete);
 	}

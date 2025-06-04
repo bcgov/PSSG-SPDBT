@@ -9,7 +9,7 @@ namespace Spd.Manager.ScheduleJob
     }
 
     #region run schedule job session
-    public record RunScheduleJobSessionCommand(Guid JobSessionId, int ConcurrentRequests = 3) : IRequest<Unit>;
+    public record RunScheduleJobSessionCommand(Guid JobSessionId, int ConcurrentRequests = 3, int DelayInMilliSec = 400) : IRequest<Unit>;
     public record RunMonthlyInvoiceJobCommand(Guid JobSessionId, int ConcurrentRequests = 3) : IRequest<Unit>;
     #endregion
 }

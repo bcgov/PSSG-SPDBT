@@ -16,7 +16,6 @@ import { LicenceService } from './services/licence.service';
 import { LicenceAppService } from './services/licence-app.service';
 import { LicenceAppDocumentService } from './services/licence-app-document.service';
 import { LoginService } from './services/login.service';
-import { PaymentService } from './services/payment.service';
 import { RetiredDogLicensingService } from './services/retired-dog-licensing.service';
 
 /**
@@ -37,7 +36,6 @@ import { RetiredDogLicensingService } from './services/retired-dog-licensing.ser
     LicenceAppService,
     LicenceAppDocumentService,
     LoginService,
-    PaymentService,
     RetiredDogLicensingService,
     ApiConfiguration
   ],

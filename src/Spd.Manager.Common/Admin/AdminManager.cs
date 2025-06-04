@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
@@ -77,12 +76,9 @@ internal class AdminManager(
            "accredited_dog_training_school_list",
            async ct => ((OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry
            {
-               ServiceTypes = new List<ServiceTypeEnum>{
-                    ServiceTypeEnum.DogTrainerCertification,
-                    ServiceTypeEnum.RetiredServiceDogCertification,
-                    ServiceTypeEnum.GDSDTeamCertification }
+               IsAccreditSchool = true,
            },
-               ct)).OrgResults.ToList(),
+           ct)).OrgResults.ToList(),
            TimeSpan.FromMinutes(240),
            ct);
         return _mapper.Map<IEnumerable<DogSchoolResponse>>(result);

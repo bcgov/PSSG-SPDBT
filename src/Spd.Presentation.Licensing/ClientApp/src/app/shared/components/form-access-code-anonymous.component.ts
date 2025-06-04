@@ -151,21 +151,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				this.commonApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
-						tap((resp: LicenceResponseExt) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
-			case ServiceTypeCode.GdsdTeamCertification:
-			case ServiceTypeCode.DogTrainerCertification:
-			case ServiceTypeCode.RetiredServiceDogCertification: {
-				this.commonApplicationService
-					.getGDSDLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponseExt) => {
+						tap((resp: LicenceResponseExt | null) => {
 							this.handleLookupResponse(resp);
 						}),
 						take(1)
@@ -202,7 +188,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		this.onCreateNewLicence();
 	}
 
-	private handleLookupResponse(resp: LicenceResponseExt): void {
+	private handleLookupResponse(resp: LicenceResponseExt | null): void {
 		if (!resp) {
 			// access code / licence are not found
 			this.invalidCombination();

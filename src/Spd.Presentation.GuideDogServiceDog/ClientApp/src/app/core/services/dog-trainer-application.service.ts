@@ -38,6 +38,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { DogTrainerApplicationHelper } from './dog-trainer-application.helper';
@@ -292,11 +293,15 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 		const trainerMailingAddressData = dogTrainerModelData.trainerMailingAddressData;
 
+		const photographOfYourselfData = dogTrainerModelData.photographOfYourselfData;
 		const originalLicenceData = dogTrainerModelData.originalLicenceData;
 
 		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
+
+			// set flag - user will be forced to update their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		this.mailingAddressFormGroup.patchValue({
@@ -314,6 +319,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				originalLicenceData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
@@ -518,7 +525,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceNewOrRenewalAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseNewOrRenewal(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
@@ -533,30 +540,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
 			body.contactId = originalLicenceData.originalLicenceHolderId;
 		}
-
-		return this.submitLicenceAnonymousDocuments(
-			googleRecaptcha,
-			existingDocumentIds,
-			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
-			body
-		);
-	}
-	/**
-	 * Submit the application data for anonymous new
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
-		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseReplacement(dogTrainerModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
-
-		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
-		delete body.documentInfos;
-
-		const consentData = this.consentAndDeclarationDtFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-
-		const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
-		body.contactId = originalLicenceData.originalLicenceHolderId;
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
@@ -603,13 +586,11 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	}
 
 	private postSubmitAnonymous(body: DogTrainerRequest): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
+
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						body.serviceTypeCode!,
-						body.applicationTypeCode!
-					);
 					this.utilService.toasterSuccess(successMessage);
 				})
 			);
@@ -617,10 +598,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
 				this.utilService.toasterSuccess(successMessage);
 			})
 		);

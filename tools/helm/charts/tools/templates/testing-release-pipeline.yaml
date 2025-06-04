@@ -34,3 +34,17 @@ spec:
       taskRef:
         kind: Task
         name: promote-image-task
+
+    - name: testing-gdsd-portal
+      params:
+        - name: imageName
+          value: gdsd-portal
+        - name: fromTag
+          value: developing
+        - name: toTag
+          value: testing
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task

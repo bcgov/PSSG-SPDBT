@@ -4,6 +4,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Repository.Event;
 internal class EventRepository : IEventRepository
@@ -39,12 +40,13 @@ internal class EventRepository : IEventRepository
         if (qry.CutOffDateTime != null)
             eventQueues = eventQueues.Where(e => e.spd_eventdate < qry.CutOffDateTime);
 
-        var eventQueuesList = eventQueues.ToList();
         if (qry.EventTypeEnums != null && qry.EventTypeEnums.Any())
         {
-            int[] types = qry.EventTypeEnums.Select(e => (int)SharedMappingFuncs.GetOptionset<EventTypeEnum, EventTypeOptionSet>(e)).ToArray();
-            eventQueuesList = eventQueuesList.Where(e => types.Any(t => t == e.spd_eventtype)).ToList();
+            int?[] types = qry.EventTypeEnums.Select(e => (int?)SharedMappingFuncs.GetOptionset<EventTypeEnum, EventTypeOptionSet>(e)).ToArray();
+            var predicate = PredicateBuilder.BuildOrPredicate<spd_eventqueue, int?>("spd_eventtype", types);
+            eventQueues = eventQueues.Where(predicate);
         }
+        var eventQueuesList = eventQueues.ToList();
 
         return _mapper.Map<IEnumerable<EventResp>>(eventQueuesList);
     }

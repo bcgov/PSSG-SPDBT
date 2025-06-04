@@ -31,10 +31,9 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Certificate Selection</ng-template>
 				<app-steps-team-selection
-					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					(childNextStep)="onChildNextStep()"
+					(childNextStep)="onSelectionChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
@@ -318,6 +317,16 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	onSelectionChildNextStep(): void {
+		const isStepToSave = this.stepsSelection?.isStepToSave();
+		if (isStepToSave) {
+			this.onChildNextStep();
+			return;
+		}
+
+		this.goToChildNextStep();
 	}
 
 	private getSelectedIndexComponent(index: number): any {

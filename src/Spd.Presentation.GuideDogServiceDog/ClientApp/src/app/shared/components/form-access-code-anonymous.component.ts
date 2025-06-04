@@ -188,9 +188,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		) {
 			// Replacement-specific error: access code matches licence, but the licence is not within the replacement period
 			this.errorMessage = `This ${this.label} is too close to its expiry date to allow replacement. Please renew it instead.`;
-		} else if (this.applicationTypeCode === ApplicationTypeCode.Replacement && !resp.photoDocumentInfo) {
-			// Replacement-specific error: the photo is missing on the licence
-			this.errorMessage = 'A replacement for this record is not available at this time.';
 		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
 			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
 			this.errorMessage = `This ${this.label} is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;

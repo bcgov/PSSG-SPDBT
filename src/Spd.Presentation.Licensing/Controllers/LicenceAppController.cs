@@ -39,18 +39,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get List of draft or InProgress dog certification Application
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicants/{applicantId}/dog-certification-applications")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpGet]
-        public async Task<IEnumerable<LicenceAppListResponse>> GetGDSDApplications(Guid applicantId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetLicenceAppListQuery(applicantId, AppScopeCode.DogCertificationApp), ct);
-        }
-
-        /// <summary>
         /// Get List of draft or InProgress Security Business Licence Application
         /// </summary>
         /// <returns></returns>

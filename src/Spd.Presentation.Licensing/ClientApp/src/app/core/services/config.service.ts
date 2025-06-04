@@ -1,33 +1,18 @@
 import { Injectable } from '@angular/core';
-import {
-	ConfigurationResponse,
-	DogSchoolResponse,
-	IdentityProviderTypeCode,
-	LicenceFeeResponse,
-} from '@app/api/models';
+import { ConfigurationResponse, IdentityProviderTypeCode, LicenceFeeResponse } from '@app/api/models';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConfigurationService, DogSchoolService } from 'src/app/api/services';
-import { UtilService } from './util.service';
-
-export interface DogSchoolResponseExt {
-	schoolId?: string;
-	schoolName?: string | null;
-	schoolAddress?: string | null;
-}
+import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ConfigService {
 	public configs: ConfigurationResponse | null = null;
-	public accreditedDogSchools: DogSchoolResponseExt[] | null = null;
 
 	constructor(
 		private oauthService: OAuthService,
-		private utilService: UtilService,
-		private dogSchoolService: DogSchoolService,
 		private configurationService: ConfigurationService
 	) {}
 
@@ -38,35 +23,6 @@ export class ConfigService {
 		return this.configurationService.apiConfigurationGet().pipe(
 			tap((resp: ConfigurationResponse) => {
 				this.configs = { ...resp };
-				return resp;
-			})
-		);
-	}
-
-	public getAccreditedDogSchools(): Observable<Array<DogSchoolResponseExt>> {
-		if (this.accreditedDogSchools) {
-			return of(this.accreditedDogSchools);
-		}
-		return this.dogSchoolService.apiAccreditedDogSchoolsGet().pipe(
-			tap((resp: Array<DogSchoolResponse>) => {
-				const schools = resp.map((school: DogSchoolResponse) => {
-					const formattedSchool: DogSchoolResponseExt = {
-						schoolId: school.id,
-						schoolName: school.schoolName,
-						schoolAddress: this.utilService.getAddressString({
-							addressLine1: school.addressLine1,
-							addressLine2: school.addressLine2,
-							city: school.city,
-							province: school.province,
-							postalCode: school.postalCode,
-							country: school.country,
-						}),
-					};
-					return formattedSchool;
-				});
-				console.debug('[ConfigService] getAccreditedDogSchools', schools);
-
-				this.accreditedDogSchools = schools;
 				return resp;
 			})
 		);

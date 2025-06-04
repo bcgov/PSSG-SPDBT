@@ -90,7 +90,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         {
             preview.SPD_CARD = new SPD_CARD();
             preview.SPD_CARD.Handler = preview.ApplicantName;
-            preview.SPD_CARD.CardType = "GUIDE-DOG-TRAINER";
+            preview.SPD_CARD.CardType = lic.IsDogAssessor == true ? "GUIDE-DOG-ASSESSOR" : "GUIDE-DOG-TRAINER";
         }
         else
         {

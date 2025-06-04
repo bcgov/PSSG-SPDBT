@@ -1,9 +1,8 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/common-application.service';
-import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-form-licence-list-expired',
@@ -15,12 +14,12 @@ import { UtilService } from '@app/core/services/util.service';
 				*ngFor="let licence of expiredLicences; let i = index"
 			>
 				<div class="row">
-					<div [ngClass]="isGdsdRelated ? 'col-lg-2' : 'col-lg-3'">
+					<div class="col-lg-3">
 						<div class="text-minor-heading">
 							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
-					<div [ngClass]="isGdsdRelated ? 'col-lg-10' : 'col-lg-9'">
+					<div class="col-lg-9">
 						<div class="row">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Number</div>
@@ -43,26 +42,6 @@ import { UtilService } from '@app/core/services/util.service';
 								</mat-chip-option>
 							</div>
 						</div>
-						<div class="row mt-2" *ngIf="licence.isExpiredLicenceRenewable">
-							<mat-divider class="my-2"></mat-divider>
-
-							<div class="col-lg-9">
-								<div class="text-data fw-bold">
-									An expired certificate can be renewed if it is within 6 months of the expiry date.
-								</div>
-							</div>
-							<div class="col-lg-3 text-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large my-2"
-									aria-label="Renew the licence"
-									(click)="onRenew(licence)"
-								>
-									<mat-icon>restore</mat-icon>Renew
-								</button>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -81,27 +60,11 @@ import { UtilService } from '@app/core/services/util.service';
 	],
 	standalone: false,
 })
-export class FormLicenceListExpiredComponent implements OnInit {
+export class FormLicenceListExpiredComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	serviceLabelTitle = 'Licences/Permits';
 	serviceLabel = 'Licence';
 
-	@Input() isGdsdRelated = false;
 	@Input() expiredLicences!: Array<MainLicenceResponse>;
-
-	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
-
-	constructor(private utilService: UtilService) {}
-
-	ngOnInit(): void {
-		if (this.isGdsdRelated) {
-			this.serviceLabelTitle = 'Certificates';
-			this.serviceLabel = 'Certificate';
-		}
-	}
-
-	onRenew(licence: MainLicenceResponse): void {
-		this.renewLicence.emit(licence);
-	}
 }

@@ -58,20 +58,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return resps.Where(r => r.ServiceTypeCode != null && PersonalSecurityLicences.Contains(r.ServiceTypeCode.Value)).ToList();
         }
 
-        /// <summary> 
-        /// Get gdsd licences (such as gdsd team, retired dog, dog trainer ) for login user , only return active and Expired ones. 
-        /// Example: http://localhost:5114/api/applicants/xxxx/gdsd-certifications 
-        /// </summary> 
-        /// <param name="applicantId"></param> 
-        /// <returns></returns> 
-        [Route("api/applicants/{applicantId}/gdsd-certifications")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantGdsdCertifications([FromRoute][Required] Guid applicantId)
-        {
-            IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
-            return resps.Where(r => r.ServiceTypeCode != null && GdsdCertifications.Contains(r.ServiceTypeCode.Value)).ToList();
-        }
         /// <summary>
         /// Get latest licence by licence number.
         /// There should be only one active licence for each licenceNumber.
