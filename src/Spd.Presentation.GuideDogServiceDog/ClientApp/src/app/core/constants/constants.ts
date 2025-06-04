@@ -22,6 +22,10 @@ export const SPD_CONSTANTS = {
 		displayMask: '(000) 000-0000',
 		backendMask: '000-000-0000',
 	},
+	message: {
+		submissionSuccess:
+			'Your application has been received. A confirmation email will be sent to you. We will contact you if additional information is needed.',
+	},
 	document: {
 		maxFileSize: 26214400, // bytes
 		maxFileSizeInMb: 25,

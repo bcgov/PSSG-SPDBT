@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, DogTrainerAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app.routes';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 import { StepDtConsentReplacementComponent } from './step-dt-consent-replacement.component';
 import { StepDtMailingAddressComponent } from './step-dt-mailing-address.component';
+import { StepDtPhotographOfYourselfRenewComponent } from './step-dt-photograph-of-yourself-renew.component';
 
 @Component({
 	selector: 'app-dog-trainer-wizard-replacement',
@@ -33,7 +35,17 @@ import { StepDtMailingAddressComponent } from './step-dt-mailing-address.compone
 					></app-wizard-footer>
 				</mat-step>
 
-				<mat-step [completed]="step3Complete">
+				<mat-step [completed]="step3Complete" *ngIf="updatePhoto">
+					<ng-template matStepLabel>Photograph of Yourself</ng-template>
+					<app-step-dt-photograph-of-yourself-renew></app-step-dt-photograph-of-yourself-renew>
+
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+					></app-wizard-footer>
+				</mat-step>
+
+				<mat-step>
 					<ng-template matStepLabel>Acknowledgement</ng-template>
 					<app-step-dt-consent-replacement></app-step-dt-consent-replacement>
 
@@ -56,11 +68,15 @@ import { StepDtMailingAddressComponent } from './step-dt-mailing-address.compone
 export class DogTrainerWizardReplacementComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_SUMMARY = 0;
 	readonly STEP_MAILING_ADDRESS = 1;
+	readonly STEP_PHOTO_OF_YOURSELF = 2;
 
 	step2Complete = false;
 	step3Complete = false;
 
+	updatePhoto = false;
+
 	@ViewChild(StepDtMailingAddressComponent) stepAddress!: StepDtMailingAddressComponent;
+	@ViewChild(StepDtPhotographOfYourselfRenewComponent) stepPhoto!: StepDtPhotographOfYourselfRenewComponent;
 	@ViewChild(StepDtConsentReplacementComponent) stepConsent!: StepDtConsentReplacementComponent;
 
 	applicationTypeReplacement = ApplicationTypeCode.Replacement;
@@ -89,6 +105,10 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 
 		this.dogTrainerChangedSubscription = this.dogTrainerApplicationService.dogTrainerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
+				this.updatePhoto =
+					this.dogTrainerApplicationService.dogTrainerFormGroup.get('photographOfYourselfData.updatePhoto')?.value ===
+					BooleanTypeCode.Yes;
+
 				this.updateCompleteStatus();
 			}
 		);
@@ -114,6 +134,8 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 				return true;
 			case this.STEP_MAILING_ADDRESS:
 				return this.stepAddress.isFormValid();
+			case this.STEP_PHOTO_OF_YOURSELF:
+				return this.stepPhoto.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
@@ -127,7 +149,7 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 	onSubmit(): void {
 		if (!this.stepConsent.isFormValid()) return;
 
-		this.dogTrainerApplicationService.submitLicenceReplacementAnonymous().subscribe({
+		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
 				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
 			},
@@ -139,7 +161,9 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 
 	private updateCompleteStatus(): void {
 		this.step2Complete = this.dogTrainerApplicationService.trainerMailingAddressFormGroup.valid;
-		this.step3Complete = this.dogTrainerApplicationService.consentAndDeclarationDtFormGroup.valid;
+		this.step3Complete = this.updatePhoto
+			? this.dogTrainerApplicationService.photographOfYourselfFormGroup.valid
+			: true;
 
 		console.debug('Complete Status', this.step2Complete, this.step3Complete);
 	}

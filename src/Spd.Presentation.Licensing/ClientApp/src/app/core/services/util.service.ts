@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { LicenceDocumentTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -12,7 +12,6 @@ import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
-import { MainLicenceResponse } from './common-application.service';
 
 export interface LicenceStepperStepComponent {
 	onStepNext(formNumber: number): void;
@@ -143,14 +142,6 @@ export class UtilService {
 
 	getDateMin(): moment.Moment {
 		return moment('1800-01-01');
-	}
-
-	getDogBirthDateMax(): moment.Moment {
-		return moment().startOf('day').subtract(6, 'months');
-	}
-
-	getDogDateMin(): moment.Moment {
-		return moment().startOf('day').subtract(50, 'years');
 	}
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {
@@ -518,19 +509,6 @@ export class UtilService {
 		if (!licenceStatusCode) return false;
 
 		return licenceStatusCode === LicenceStatusCode.Active;
-	}
-
-	isExpiredLicenceRenewable(licence: MainLicenceResponse): boolean {
-		if (
-			licence.licenceStatusCode != LicenceStatusCode.Expired ||
-			(licence.serviceTypeCode != ServiceTypeCode.GdsdTeamCertification &&
-				licence.serviceTypeCode != ServiceTypeCode.RetiredServiceDogCertification)
-		) {
-			return false;
-		}
-
-		const period = SPD_CONSTANTS.periods.gdsdLicenceRenewAfterExpiryPeriodMonths;
-		return !this.getIsDateMonthsOrOlder(licence.expiryDate, period);
 	}
 
 	//------------------------------------

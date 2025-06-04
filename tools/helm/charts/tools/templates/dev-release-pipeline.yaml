@@ -22,6 +22,9 @@ spec:
     - name: promoteJobScheduler
       description: ""
       default: "true"
+    - name: promoteGDSD
+      description: ""
+      default: "true"
 
   tasks:
     ## Promote dev ##
@@ -103,6 +106,28 @@ spec:
           value: $(params.imageTag)
         - name: destinationImage
           value: jag-jobscheduler
+        - name: destinationTag
+          value: dev
+        - name: scheduled
+          value: true
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: dev-gdsd-portal
+      when:
+        - input: "$(params.promoteGDSD)"
+          operator: in
+          values: ["true"]
+      params:
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/gdsd-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
+          value: gdsd-portal
         - name: destinationTag
           value: dev
         - name: scheduled

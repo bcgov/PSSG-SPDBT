@@ -21,19 +21,19 @@ spec:
         kind: Task
         name: promote-image-task
 
-    # - name: prod-licensing-portal
-    #   params:
-    #     - name: imageName
-    #       value: licensing-portal
-    #     - name: fromTag
-    #       value: staging
-    #     - name: toTag
-    #       value: prod
-    #     - name: referencePolicy
-    #       value: local
-    #   taskRef:
-    #     kind: Task
-    #     name: promote-image-task
+    - name: prod-licensing-portal
+      params:
+        - name: imageName
+          value: licensing-portal
+        - name: fromTag
+          value: staging
+        - name: toTag
+          value: prod
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
 
     - name: prod-dynamics-helper
       params:
@@ -53,6 +53,20 @@ spec:
       params:
         - name: imageName
           value: jag-jobscheduler
+        - name: fromTag
+          value: staging
+        - name: toTag
+          value: prod
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: prod-gdsd-portal
+      params:
+        - name: imageName
+          value: gdsd-portal
         - name: fromTag
           value: staging
         - name: toTag

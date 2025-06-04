@@ -153,7 +153,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									You will not remove or alter any proprietary symbol or notice, including any copyright notice,
 									trademark or logo displayed in connection with the Site.
 								</li>
-								<div class="fs-5 terms-subtitle">Suspension or Cancellation of Services:</div>
+								<div class="fs-5 terms-subtitle">Suspension, Cancellation or Changes:</div>
 								<li>
 									Your access to or use of the Site may be suspended or cancelled at any time if:
 									<ol>

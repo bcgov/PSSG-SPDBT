@@ -8,7 +8,7 @@ import { StepRdTermsOfUseComponent } from './step-rd-terms-of-use.component';
 	selector: 'app-steps-rd-details',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showTermsOfUse">
+			<mat-step>
 				<app-step-rd-terms-of-use></app-step-rd-terms-of-use>
 
 				<app-wizard-footer
@@ -26,22 +26,12 @@ import { StepRdTermsOfUseComponent } from './step-rd-terms-of-use.component';
 					<app-step-rd-checklist-renewal></app-step-rd-checklist-renewal>
 				</ng-template>
 
-				<ng-container *ngIf="showTermsOfUse; else NoTermsOfUse">
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
-						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #NoTermsOfUse>
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="false"
-						(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
-						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-template>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -54,7 +44,6 @@ export class StepsRdDetailsComponent extends BaseWizardStepComponent {
 	readonly STEP_CHECKLIST = 1;
 
 	@Input() isFormValid = false;
-	@Input() isLoggedIn = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepRdTermsOfUseComponent) termsOfUseComponent!: StepRdTermsOfUseComponent;
@@ -73,11 +62,6 @@ export class StepsRdDetailsComponent extends BaseWizardStepComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get showTermsOfUse(): boolean {
-		// anonymous: agree everytime for all
-		return !this.isLoggedIn;
 	}
 
 	get isNew(): boolean {

@@ -231,18 +231,6 @@ export class GdsdLicenceMainComponent implements OnInit {
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
-							const originalPhotoOfYourselfExpired = !!this.gdsdTeamApplicationService.gdsdTeamModelFormGroup.get(
-								'originalLicenceData.originalPhotoOfYourselfExpired'
-							)?.value;
-
-							licence.originalPhotoOfYourselfExpired = originalPhotoOfYourselfExpired;
-
-							// User cannot continue with this flow if the photograph of yourself is missing
-							if (originalPhotoOfYourselfExpired) {
-								this.gdsdTeamApplicationService.reset();
-								return;
-							}
-
 							this.router.navigateByUrl(AppRoutes.pathGdsdAuthenticated(AppRoutes.GDSD_TEAM_REPLACEMENT_AUTHENTICATED));
 						}),
 						take(1)
@@ -255,18 +243,6 @@ export class GdsdLicenceMainComponent implements OnInit {
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
-							const originalPhotoOfYourselfExpired = !!this.retiredDogApplicationService.retiredDogModelFormGroup.get(
-								'originalLicenceData.originalPhotoOfYourselfExpired'
-							)?.value;
-
-							licence.originalPhotoOfYourselfExpired = originalPhotoOfYourselfExpired;
-
-							// User cannot continue with this flow if the photograph of yourself is missing
-							if (originalPhotoOfYourselfExpired) {
-								this.retiredDogApplicationService.reset();
-								return;
-							}
-
 							this.router.navigateByUrl(
 								AppRoutes.pathGdsdAuthenticated(AppRoutes.RETIRED_DOG_REPLACEMENT_AUTHENTICATED)
 							);

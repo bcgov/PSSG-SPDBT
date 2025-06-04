@@ -21,7 +21,7 @@ public class ScheduleJobProcessor : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var (sessionId, concurrentRequests) in _queue.Reader.ReadAllAsync(stoppingToken))
+        await foreach (var (sessionId, concurrentRequests, delayInMilliSec) in _queue.Reader.ReadAllAsync(stoppingToken))
         {
             try
             {
@@ -31,7 +31,7 @@ public class ScheduleJobProcessor : BackgroundService
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                await mediator.Send(new RunScheduleJobSessionCommand(sessionId, concurrentRequests), cts.Token);
+                await mediator.Send(new RunScheduleJobSessionCommand(sessionId, concurrentRequests, delayInMilliSec), cts.Token);
             }
             catch (Exception ex)
             {

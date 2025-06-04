@@ -29,10 +29,9 @@ import { StepsRdReviewAndConfirmComponent } from './steps-rd-review-and-confirm.
 			<mat-step [completed]="true">
 				<ng-template matStepLabel>Checklist</ng-template>
 				<app-steps-rd-details
-					[isLoggedIn]="isLoggedIn"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					(childNextStep)="onChildNextStep()"
+					(childNextStep)="goToChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
@@ -291,7 +290,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
-	private goToChildNextStep() {
+	goToChildNextStep() {
 		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
 		component?.onGoToNextStep();
 	}

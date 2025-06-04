@@ -67,6 +67,7 @@ namespace Spd.Resource.Repository.Licence
 
         //gdsd
         public Guid? GDSDTeamId { get; set; }
+        public bool? IsDogAssessor { get; set; }
     }
 
     public record Licence
