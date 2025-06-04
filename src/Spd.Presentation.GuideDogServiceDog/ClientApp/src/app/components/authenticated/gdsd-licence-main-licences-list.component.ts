@@ -81,7 +81,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									color="primary"
 									*ngIf="licence.isRenewalPeriod"
 									class="large my-2"
-									aria-label="Renew the licence"
+									aria-label="Renew the certificate"
 									(click)="onRenew(licence)"
 								>
 									<mat-icon>restore</mat-icon>Renew
@@ -105,7 +105,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 								*ngIf="!applicationIsInProgress"
 								class="large"
 								tabindex="0"
-								aria-label="Request a gdsd licence replacement"
+								aria-label="Request a certificate replacement"
 								(click)="onRequestReplacement(licence)"
 								(keydown)="onKeydownRequestReplacement($event, licence)"
 								>Request a replacement</a

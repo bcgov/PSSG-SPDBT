@@ -912,7 +912,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				this.reset();
 
 				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-				this.utilService.toasterSuccess(successMessage, false);
+				this.utilService.dialogSuccess(successMessage);
 			})
 		);
 	}
@@ -994,7 +994,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				this.reset();
 
 				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-				this.utilService.toasterSuccess(successMessage, false);
+				this.utilService.dialogSuccess(successMessage);
 			})
 		);
 	}
@@ -1102,20 +1102,10 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	private postSubmitAnonymous(
 		body: RetiredDogLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
-		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
-
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
-			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body }).pipe(
-				tap((_resp: any) => {
-					this.utilService.toasterSuccess(successMessage);
-				})
-			);
+			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body });
 		}
 
-		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body }).pipe(
-			tap((_resp: any) => {
-				this.utilService.toasterSuccess(successMessage);
-			})
-		);
+		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body });
 	}
 }

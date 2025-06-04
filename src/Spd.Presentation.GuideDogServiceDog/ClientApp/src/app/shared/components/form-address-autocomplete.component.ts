@@ -54,7 +54,7 @@ export class Address {
 								class="address-option"
 								*ngFor="let field of addressAutocompleteFields; let i = index"
 								[value]="field.text"
-								(click)="onAutocomplete(field)"
+								(onSelectionChange)="onAutocompleteOptionSelected($event, field)"
 							>
 								{{ field.text }} {{ field.description }}
 							</mat-option>
@@ -62,7 +62,6 @@ export class Address {
 						<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
 						<mat-hint> Start typing a street address or postal code </mat-hint>
 					</mat-form-field>
-
 					<button
 						mat-button
 						type="button"
@@ -217,7 +216,11 @@ export class FormAddressAutocompleteComponent implements OnInit {
 			.pipe();
 	}
 
-	public onAutocomplete(field: AddressFindResponse) {
+	public onAutocompleteOptionSelected(_event: any, field: AddressFindResponse): void {
+		this.onAutocomplete(field);
+	}
+
+	private onAutocomplete(field: AddressFindResponse) {
 		if (field.next == 'Find') {
 			this.lastId = field.id!;
 

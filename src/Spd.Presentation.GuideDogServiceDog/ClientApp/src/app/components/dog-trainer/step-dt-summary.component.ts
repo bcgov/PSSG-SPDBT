@@ -23,9 +23,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 2"
-											aria-label="Go to Step 2"
-											(click)="$event.stopPropagation(); onEditStep(1)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 1)"
+											(keydown.enter)="onEditStep($event, 1)"
+											(keydown.space)="onEditStep($event, 1)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -69,9 +71,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											mat-mini-fab
 											color="primary"
 											class="go-to-step-button"
-											matTooltip="Go to Step 3"
-											aria-label="Go to Step 3"
-											(click)="$event.stopPropagation(); onEditStep(2)"
+											matTooltip="Go to Step"
+											aria-label="Go to Step"
+											(click)="onEditStep($event, 2)"
+											(keydown.enter)="onEditStep($event, 2)"
+											(keydown.space)="onEditStep($event, 2)"
 										>
 											<mat-icon>edit</mat-icon>
 										</button>
@@ -205,7 +209,8 @@ export class StepDtSummaryComponent implements OnInit, LicenceChildStepperStepCo
 		};
 	}
 
-	onEditStep(stepNumber: number) {
+	onEditStep(event: any, stepNumber: number) {
+		event.stopPropagation();
 		this.editStep.emit(stepNumber);
 	}
 

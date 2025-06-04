@@ -38,6 +38,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							[maxNumberOfFiles]="10"
 							[files]="attachments.value"
 							[previewImage]="true"
+							ariaFileUploadLabel="Upload your current Guide or Service Dog Certificate"
 						></app-file-upload>
 						<mat-error
 							class="mat-option-error"
