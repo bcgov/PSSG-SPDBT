@@ -22,23 +22,13 @@ internal abstract class DogAppBaseRepository : IDogAppBaseRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
-        if (app.spd_identityconfirmed != null && app.spd_identityconfirmed.Value)
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.Submitted.ToString());
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-            app.spd_submittedon = DateTimeOffset.UtcNow;
-            app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
-            app.spd_licencefee = 0;
-            _context.UpdateObject(app);
-        }
-        else
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.ApplicantVerification.ToString());
-            app.statecode = DynamicsConstants.StateCode_Active;
-            app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
-            app.spd_licencefee = 0;
-            _context.UpdateObject(app);
-        }
+        //spdbt-4143: dog app, no need to verify identification, app go directly to submitted.
+        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(ApplicationStatusEnum.Submitted.ToString());
+        app.statecode = DynamicsConstants.StateCode_Inactive;
+        app.spd_submittedon = DateTimeOffset.UtcNow;
+        app.spd_portalmodifiedon = DateTimeOffset.UtcNow;
+        app.spd_licencefee = 0;
+        _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
     }
 }

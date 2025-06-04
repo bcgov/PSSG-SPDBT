@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		<app-step-section [title]="title">
 			<app-form-photograph-of-yourself-update
 				[form]="form"
-				[serviceTypeCode]="serviceTypeGdsdTeam"
+				[serviceTypeCode]="serviceTypeRetiredDog"
 				[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 				[photographOfYourself]="photographOfYourself"
 				(fileUploaded)="onFileUploaded()"
@@ -22,7 +22,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepRdPhotographOfYourselfRenewComponent implements OnInit, LicenceChildStepperStepComponent {
-	readonly serviceTypeGdsdTeam = ServiceTypeCode.GdsdTeamCertification;
+	readonly serviceTypeRetiredDog = ServiceTypeCode.RetiredServiceDogCertification;
 	title = '';
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.retiredDogApplicationService.photographOfYourself;

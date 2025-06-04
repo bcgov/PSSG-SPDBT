@@ -50,7 +50,7 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
         if (jobStatus == null) throw new InvalidOperationException($"no job status was returned for job {jobId}");
         var counter = 0;
         var delay = 1000;
-        var retries = 30;
+        var retries = 60;
         while (!ct.IsCancellationRequested && jobStatus.Status != JobStatusValues.PdfCreated)
         {
             await Task.Delay(delay, ct); //make configurable

@@ -20,7 +20,6 @@ export const SPD_CONSTANTS = {
 		licenceUpdatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
 		licenceRenewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
 		licenceRenewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
-		gdsdLicenceRenewAfterExpiryPeriodMonths: 6, // gdsd licence can still be renewed until 6 months after expiry
 	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',
@@ -106,7 +105,6 @@ export const SPD_CONSTANTS = {
 	},
 	files: {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
-		guideDogServiceDogTerms: './assets/files/Guide Dog Service Dog Applicant Terms of Use.pdf',
 		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
 		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
 		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use.pdf',

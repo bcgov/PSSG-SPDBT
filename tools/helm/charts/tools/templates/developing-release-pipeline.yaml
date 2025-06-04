@@ -19,9 +19,12 @@ spec:
     - name: promoteDynamicsHelper
       description: ""
       default: "true"
+    - name: promoteGDSD
+      description: ""
+      default: "true"
 
   tasks:
-    ## Promote dev ##
+    ## Promote developing ##
     - name: developing-screening-portal
       when:
         - input: "$(params.promoteScreening)"
@@ -78,6 +81,28 @@ spec:
           value: $(params.imageTag)
         - name: destinationImage
           value: dynamics-helper
+        - name: destinationTag
+          value: developing
+        - name: scheduled
+          value: true
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: developing-gdsd-portal
+      when:
+        - input: "$(params.promoteGDSD)"
+          operator: in
+          values: ["true"]
+      params:
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/gdsd-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
+          value: gdsd-portal
         - name: destinationTag
           value: developing
         - name: scheduled

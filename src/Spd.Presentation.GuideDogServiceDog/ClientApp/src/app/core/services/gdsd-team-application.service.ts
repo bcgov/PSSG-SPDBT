@@ -45,6 +45,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
@@ -504,10 +505,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -589,10 +587,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -766,10 +761,14 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		const dogRenewData = { isAssistanceStillRequired: true };
 
 		const originalLicenceData = gdsdModelData.originalLicenceData;
+		const photographOfYourselfData = gdsdModelData.photographOfYourselfData;
 
 		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
+
+			// set flag - user will be forced to update their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		this.gdsdTeamModelFormGroup.patchValue(
@@ -778,6 +777,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				applicationTypeData,
 				dogRenewData,
 				originalLicenceData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
@@ -1366,32 +1366,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	}
 
 	/**
-	 * Submit the application data for anonymous replacement
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(gdsdModelFormValue);
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		body.documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			}
-		});
-
-		delete body.documentInfos;
-
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-
-		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
-	}
-
-	/**
 	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
 	 */
@@ -1442,13 +1416,11 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	private postSubmitAnonymous(
 		body: any // GdsdTeamLicenceAppChangeRequest or GdsdTeamLicenceAppAnonymousSubmitRequest
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
+		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
+
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						body.serviceTypeCode!,
-						body.applicationTypeCode!
-					);
 					this.utilService.toasterSuccess(successMessage);
 				})
 			);
@@ -1456,10 +1428,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
 				this.utilService.toasterSuccess(successMessage);
 			})
 		);

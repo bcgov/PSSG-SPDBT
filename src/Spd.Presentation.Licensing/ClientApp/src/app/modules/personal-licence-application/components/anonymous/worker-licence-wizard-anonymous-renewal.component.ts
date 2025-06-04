@@ -64,8 +64,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
-					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
+					[showFullCitizenshipQuestion]="true"
 					[showPhotographOfYourselfStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -81,7 +80,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion"
+					[showCitizenshipStep]="true"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -156,8 +155,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	isSoleProprietor = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showFullCitizenshipQuestion = false;
-	showNonCanadianCitizenshipQuestion = false;
 	linkedSoleProprietorBizLicId: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -182,13 +179,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
-
-		// In converted data, 'isCanadianCitizen' may be null so we need to handle that.
-		// Renew will show full 'Is Canadian Citizen' question if this value is missing,
-		// otherwise if not Canadian, ask for proof of ability to work.
-		const citizenshipData = this.workerApplicationService.workerModelFormGroup.get('citizenshipData')?.value;
-		this.showFullCitizenshipQuestion = citizenshipData.showFullCitizenshipQuestion;
-		this.showNonCanadianCitizenshipQuestion = citizenshipData.showNonCanadianCitizenshipQuestion;
 
 		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {

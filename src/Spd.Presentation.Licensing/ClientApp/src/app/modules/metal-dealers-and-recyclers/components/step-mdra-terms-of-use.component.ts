@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -86,11 +86,11 @@ export class StepMdraTermsOfUseComponent implements LicenceChildStepperStepCompo
 	// bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantUpdateTerms;
 
-	form = this.gdsdTeamApplicationService.termsAndConditionsFormGroup;
+	form = this.metalDealersApplicationService.termsAndConditionsFormGroup;
 
 	constructor(
 		private utilService: UtilService,
-		private gdsdTeamApplicationService: GdsdTeamApplicationService
+		private metalDealersApplicationService: MetalDealersApplicationService
 	) {}
 
 	// TODO mdra update terms of use

@@ -48,6 +48,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
              .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition))
              .ForMember(d => d.GDSDTeamId, opt => opt.MapFrom(s => s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault().spd_dogteamid))
+             .ForMember(d => d.IsDogAssessor, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_outd)))
              ;
 
             _ = CreateMap<spd_licence, LicenceBasicResp>()

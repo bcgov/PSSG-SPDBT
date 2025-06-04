@@ -5,7 +5,6 @@ import {
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	Document,
-	GdsdTeamLicenceAppChangeRequest,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceAppDocumentResponse,
@@ -41,6 +40,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
@@ -523,10 +523,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = retiredDogModelData.originalLicenceData;
+		const photographOfYourselfData = retiredDogModelData.photographOfYourselfData;
 
 		// if the photo is missing, set the flag as expired so that it is required
 		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
 			originalLicenceData.originalPhotoOfYourselfExpired = true;
+
+			// set flag - user will be forced to update their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		this.retiredDogModelFormGroup.patchValue(
@@ -534,6 +538,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				licenceAppId: null,
 				applicationTypeData,
 				originalLicenceData,
+				photographOfYourselfData,
 			},
 			{
 				emitEvent: false,
@@ -906,10 +911,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -985,16 +987,13 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	}
 
 	private postChangeAuthenticated(
-		body: GdsdTeamLicenceAppChangeRequest
+		body: RetiredDogLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		return this.retiredDogLicensingService.apiRetiredDogAppChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
 				this.reset();
 
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
+				const successMessage = SPD_CONSTANTS.message.submissionSuccess;
 				this.utilService.toasterSuccess(successMessage, false);
 			})
 		);
@@ -1053,32 +1052,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	}
 
 	/**
-	 * Submit the application data for anonymous replacement
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
-		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseChange(rdModelFormValue);
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		body.documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			}
-		});
-
-		delete body.documentInfos;
-
-		const originalLicenceData = rdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-
-		return this.submitLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
-	}
-
-	/**
 	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
 	 */
@@ -1086,7 +1059,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: GdsdTeamLicenceAppChangeRequest
+		body: RetiredDogLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		if (documentsToSaveApis) {
 			return this.licenceAppDocumentService
@@ -1127,15 +1100,13 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	private postSubmitAnonymous(
-		body: GdsdTeamLicenceAppChangeRequest
+		body: RetiredDogLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+		const successMessage = SPD_CONSTANTS.message.submissionSuccess;
+
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body }).pipe(
 				tap((_resp: any) => {
-					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-						body.serviceTypeCode!,
-						body.applicationTypeCode!
-					);
 					this.utilService.toasterSuccess(successMessage);
 				})
 			);
@@ -1143,10 +1114,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		return this.retiredDogLicensingService.apiRetiredDogAppAnonymousChangePost$Response({ body }).pipe(
 			tap((_resp: any) => {
-				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
-					body.serviceTypeCode!,
-					body.applicationTypeCode!
-				);
 				this.utilService.toasterSuccess(successMessage);
 			})
 		);

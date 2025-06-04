@@ -125,17 +125,5 @@ namespace Spd.Presentation.Licensing.Controllers
             string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
             return await _mediator.Send(new GetLicenceAppListQuery(Guid.Parse(applicantIdStr)), ct);
         }
-
-        /// <summary>
-        /// Get List of draft or InProgress GDSD Team, trainer and retired dog Applications
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicants-anonymous/dog-certification-applications")]
-        [HttpGet]
-        public async Task<IEnumerable<LicenceAppListResponse>> GetGDSDApplicationsAnonymous(CancellationToken ct)
-        {
-            string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
-            return await _mediator.Send(new GetLicenceAppListQuery(Guid.Parse(applicantIdStr), AppScopeCode.DogCertificationApp), ct);
-        }
     }
 }
