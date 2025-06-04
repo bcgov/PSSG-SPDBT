@@ -15,6 +15,7 @@ public record DogTrainerApp
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
     public ApplicationOriginTypeEnum ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.WebForm;
+    public bool? AgreeToCompleteAndAccurate { get; set; } = true;
     public Guid AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
     public string? SchoolDirectorSurname { get; set; }
