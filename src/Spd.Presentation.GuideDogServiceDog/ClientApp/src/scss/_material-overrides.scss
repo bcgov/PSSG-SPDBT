@@ -32,18 +32,18 @@ button.mdc-button {
 button.mdc-button:focus,
 button.mat-mdc-mini-fab:focus,
 a.mdc-button:focus {
-	outline: 3px solid var(--color-grey); /* Stronger contrast */
+	outline: 3px solid var(--color-focus); /* Stronger contrast */
 	outline-offset: 2px;
 }
 
 mat-radio-button:focus-within {
-	outline: 3px solid var(--color-grey); /* Stronger contrast */
+	outline: 3px solid var(--color-focus); /* Stronger contrast */
 	outline-offset: 4px;
 	border-radius: 4px; /* matches the shape */
 }
 
 mat-checkbox:focus-within {
-	outline: 3px solid var(--color-grey); /* Stronger contrast */
+	outline: 3px solid var(--color-focus); /* Stronger contrast */
 	outline-offset: 2px;
 	border-radius: 4px;
 }
@@ -52,6 +52,10 @@ mat-expansion-panel:focus-within {
 	outline: 3px solid #b3c0dc; /* Stronger contrast */
 	outline-offset: 2px;
 	border-radius: 4px; /* matches Material shape */
+}
+
+:focus-visible {
+	outline: var(--color-focus) auto 1px;
 }
 // change ACCESSIBILITY FOCUS end
 
