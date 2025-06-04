@@ -68,10 +68,6 @@ export class GdsdApplicationReceivedComponent implements OnInit {
 		}
 	}
 
-	onPrint(): void {
-		window.print();
-	}
-
 	onBackToHome(): void {
 		this.commonApplicationService.onGoToHome();
 	}
