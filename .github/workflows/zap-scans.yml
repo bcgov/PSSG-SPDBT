@@ -50,3 +50,25 @@ jobs:
           target: "https://spd-train.justice.gov.bc.ca/licensing/swagger/v1/swagger.json"
           artifact_name: "licensing_portal_api_zap_scan"
           issue_title: "licensing_portal_api_zap_scan"
+
+  gdsd-portal-ui-zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: UI
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: "https://spd-train.justice.gov.bc.ca/guide-dog-service-dog/"
+          artifact_name: "gdsd_portal_ui_zap_scan"
+          issue_title: "gdsd_portal_ui_zap_scan"
+
+  gdsd-portal-api-zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: API
+        uses: zaproxy/action-api-scan@v0.9.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: "https://spd-train.justice.gov.bc.ca/guide-dog-service-dog/swagger/v1/swagger.json"
+          artifact_name: "gdsd_portal_api_zap_scan"
+          issue_title: "gdsd_portal_api_zap_scan"
