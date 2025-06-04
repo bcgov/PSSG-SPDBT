@@ -28,6 +28,40 @@ button.mdc-button {
 	}
 }
 
+// change ACCESSIBILITY FOCUS start
+button.mdc-button:focus,
+button.mat-mdc-mini-fab:focus,
+a.mdc-button:focus,
+a:focus {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+}
+
+mat-radio-button:focus-within {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+mat-checkbox:focus-within {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+mat-expansion-panel:focus-within {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-grey);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+// change ACCESSIBILITY FOCUS end
+
 a {
 	&.large {
 		height: 46px !important;
@@ -114,10 +148,12 @@ a {
 	background-color: rgba(245, 245, 245);
 }
 
-.radio-label .mdc-label,
+.radio-label,
+.mdc-label,
 .mat-mdc-checkbox label {
 	font-size: 1em;
 	color: var(--color-primary);
+	margin-right: 0.5rem !important;
 }
 
 .mdc-radio,

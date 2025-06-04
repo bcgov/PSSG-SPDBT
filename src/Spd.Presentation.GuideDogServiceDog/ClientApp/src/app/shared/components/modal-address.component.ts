@@ -23,7 +23,7 @@ export interface AddressDialogData {
 					>
 						<ng-container matColumnDef="addrDescription">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
-							<mat-cell *matCellDef="let addr">
+							<mat-cell *matCellDef="let addr" tabindex="0" (keydown.enter)="onRowClick(addr)">
 								<span class="mobile-label">Address: </span>
 								{{ addr.text }} {{ addr.description }}
 							</mat-cell>

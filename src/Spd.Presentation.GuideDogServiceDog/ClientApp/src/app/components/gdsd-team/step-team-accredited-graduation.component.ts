@@ -33,6 +33,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 								[previewImage]="true"
+								ariaFileUploadLabel="Upload accredited training school completion confirmation"
 							></app-file-upload>
 							<mat-error
 								class="mat-option-error"

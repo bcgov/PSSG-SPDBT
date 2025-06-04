@@ -187,6 +187,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[control]="attachments"
 									#attachmentsRef
 									[files]="attachments.value"
+									ariaFileUploadLabel="Upload supporting training documentation"
 								></app-file-upload>
 							</div>
 						</div>
@@ -202,6 +203,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								[control]="practiceLogAttachments"
 								#practiceLogAttachmentsRef
 								[files]="practiceLogAttachments.value"
+								ariaFileUploadLabel="Upload logs of practice hours"
 							></app-file-upload>
 						</div>
 					</div>
