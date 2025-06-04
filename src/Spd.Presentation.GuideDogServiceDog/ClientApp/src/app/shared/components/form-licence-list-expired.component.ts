@@ -55,7 +55,7 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 									mat-flat-button
 									color="primary"
 									class="large my-2"
-									aria-label="Renew the licence"
+									aria-label="Renew the certificate"
 									(click)="onRenew(licence)"
 								>
 									<mat-icon>restore</mat-icon>Renew
