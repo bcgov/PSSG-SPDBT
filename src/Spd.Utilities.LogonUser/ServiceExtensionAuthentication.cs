@@ -179,7 +179,10 @@ namespace Spd.Utilities.LogonUser
                         }
                         else
                         {
-                            logger.LogError(response?.Exception, "Failed to get userinfo for token {Token}", tokenStr);
+                            if (response?.Exception != null)
+                            {
+                                logger.LogError(response.Exception, "Failed to get userinfo for token");
+                            }
                             //handle for all other failures
                             ctx.Fail($"Failed to get userinfo: {response?.Error}");
                         }
