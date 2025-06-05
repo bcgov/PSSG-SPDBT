@@ -188,29 +188,10 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * Overwrite or change any data specific to the renewal flow
 	 */
 	private applyApplDataToModel(
-		dogTrainerModelData: any,
 		latestApplication: DogTrainerAppResponse,
 		photoOfYourself: Blob | null
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-
-		const photographOfYourselfData = dogTrainerModelData.photographOfYourselfData;
-		const originalLicenceData = dogTrainerModelData.originalLicenceData;
-
-		const originalPhotoOfYourselfLastUploadDateTime = dogTrainerModelData.photographOfYourselfData.uploadedDateTime;
-		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
-			originalPhotoOfYourselfLastUploadDateTime
-		);
-
-		// if the photo is missing, set the flag as expired so that it is required
-		if (!this.isPhotographOfYourselfEmpty(photoOfYourself)) {
-			originalLicenceData.originalPhotoOfYourselfExpired = true;
-		}
-
-		if (originalLicenceData.originalPhotoOfYourselfExpired) {
-			// set flag - user will be forced to update their photo
-			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
-		}
 
 		const trainingSchoolInfoData = {
 			accreditedSchoolId: latestApplication.accreditedSchoolId,
@@ -226,8 +207,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
-				originalLicenceData,
-				photographOfYourselfData,
 				trainingSchoolInfoData,
 			},
 			{
@@ -506,7 +485,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 				return this.applyLicenceProfileIntoModel(applicantProfile, associatedLicence).pipe(
 					switchMap((dogTrainerModelData: any) => {
-						return this.applyApplDataToModel(dogTrainerModelData, latestApplication, photoOfYourself).pipe(
+						return this.applyApplDataToModel(latestApplication, photoOfYourself).pipe(
 							tap((_resp: any) => {
 								if (applicationTypeCode === ApplicationTypeCode.Replacement) {
 									return this.applyReplacementSpecificDataToModel(dogTrainerModelData, photoOfYourself);
