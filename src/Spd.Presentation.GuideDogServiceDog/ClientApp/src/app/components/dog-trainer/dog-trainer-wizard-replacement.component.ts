@@ -106,8 +106,8 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 		this.dogTrainerChangedSubscription = this.dogTrainerApplicationService.dogTrainerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.updatePhoto =
-					this.dogTrainerApplicationService.dogTrainerFormGroup.get('photographOfYourselfData.updatePhoto')?.value ===
-					BooleanTypeCode.Yes;
+					this.dogTrainerApplicationService.dogTrainerModelFormGroup.get('photographOfYourselfData.updatePhoto')
+						?.value === BooleanTypeCode.Yes;
 
 				this.updateCompleteStatus();
 			}
