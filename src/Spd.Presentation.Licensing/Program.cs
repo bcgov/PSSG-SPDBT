@@ -57,7 +57,7 @@ try
 
     builder.Services.AddAutoMapper(assemblies);
     builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();
-    builder.Services.AddHealthChecks();
+    builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 
     builder.ConfigureComponents(assemblies, logger);
 
