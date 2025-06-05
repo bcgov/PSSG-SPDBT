@@ -983,14 +983,14 @@ export class CommonApplicationService {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceResponseExt> {
+	): Observable<LicenceResponseExt | null> {
 		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(
 				switchMap((resp: LicenceResponse) => {
 					if (!resp) {
 						// lookup does not match a licence
-						return of({} as LicenceResponseExt);
+						return of(null);
 					}
 
 					return this.applicantProfileService.apiApplicantsAnonymousLicenceApplicationsGet().pipe(
