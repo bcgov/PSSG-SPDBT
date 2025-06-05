@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -18,12 +19,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-alert type="info" icon="info">
-							Download
-							<a
-								class="large"
-								href="https://www2.gov.bc.ca/assets/gov/law-crime-and-justice/human-rights/guide-animals/spd0803-medical-form.pdf"
-								target="_blank"
-								>medical form confirming requirement for guide dog or service dog</a
+							Download the
+							<a class="large" [href]="medicalFormUrl" target="_blank"
+								>Medical Form Confirming Requirement for Guide Dog or Service Dog</a
 							>.
 						</app-alert>
 
@@ -94,6 +92,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 })
 export class StepTeamMedicalInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	medicalFormUrl = SPD_CONSTANTS.urls.medicalFormUrl;
 
 	form: FormGroup = this.gdsdTeamApplicationService.medicalInformationFormGroup;
 
