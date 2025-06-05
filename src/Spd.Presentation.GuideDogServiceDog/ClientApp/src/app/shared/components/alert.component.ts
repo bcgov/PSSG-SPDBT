@@ -5,8 +5,8 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 @Component({
 	selector: 'app-alert',
 	template: `
-		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
-			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon">{{ icon }}</mat-icon>
+		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getTypeClass()">
+			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon" [ngClass]="geIconClass()">{{ icon }}</mat-icon>
 			<div style="width: inherit;" class="my-2" [ngClass]="getText()">
 				<ng-content #alertContent> </ng-content>
 			</div>
@@ -15,51 +15,63 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	styles: [
 		`
 			.alert-info {
-				border: 1px solid #b6d4fe;
-				background-color: #d9eaf7;
+				border: 3px solid #84ced9;
+				background-color: #f9fcfd;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
 				font-size: 1.1rem !important;
-				color: #1a5a96;
+				color: var(--color-primary);
 				line-height: 1.5 !important;
 			}
 
 			.alert-success {
-				border: 1px solid #badbcc;
-				background-color: #e8f5eb;
+				border: 3px solid #8dd09c;
+				background-color: #e7f5ea;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
 				font-size: 1.1rem !important;
-				color: #155724;
+				color: var(--color-primary);
 				line-height: 1.5 !important;
 			}
 
 			.alert-warning {
-				border: 1px solid #ffecb5;
-				background-color: #f9f1c6;
+				border: 3px solid #ffdb6e;
+				background-color: #fffbed;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
 				font-size: 1.1rem !important;
-				color: #6c4a00;
+				color: var(--color-primary);
 				line-height: 1.5 !important;
 			}
 
 			.alert-danger {
-				border: 1px solid #f5c2c7;
-				background-color: #f2dede;
+				border: 3px solid #ea8590;
+				background-color: #fdf1f3;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;
 				font-size: 1.1rem !important;
-				color: #a12622;
+				color: var(--color-primary);
 				line-height: 1.5 !important;
 			}
 
-			.alert-noborder {
-				border: none !important;
+			.alert-icon-info {
+				color: #84ced9;
+			}
+
+			.alert-icon-success {
+				color: #8dd09c;
+			}
+
+			.alert-icon-warning {
+				color: #ffdb6e;
+			}
+
+			.alert-icon-danger {
+				color: #ea8590;
 			}
 		`,
 	],
@@ -73,11 +85,15 @@ export class AlertComponent {
 
 	@ContentChild('alertContent') alertContent!: ElementRef;
 
-	public getType(): string {
+	public getTypeClass(): string {
 		if (this.showBorder) {
 			return `alert-${this.type}`;
 		}
 		return `alert-${this.type} alert-noborder`;
+	}
+
+	public geIconClass(): string {
+		return `alert-icon-${this.type}`;
 	}
 
 	public getText(): string {
