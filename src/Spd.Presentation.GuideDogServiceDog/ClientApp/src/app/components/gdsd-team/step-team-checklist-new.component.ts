@@ -10,17 +10,13 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Photograph of yourself for the licence</div>
+							<div class="checklist-label">Photograph of yourself for the certificate</div>
 							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
-								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
-								application. For more details on passport-quality photos, please refer to the
-								<a
-									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
-									[href]="canadianPassportPhotoUrl"
-									target="_blank"
-									>Government of Canada's passport photograph guidelines</a
-								>.
+								A clear photo of your face, looking straight at the camera, with a plain, white background.
+							</p>
+							<p class="checklist-info">
+								We understand this may be difficult for some applicants. If you are not able to provide this type of
+								photo, please contact us and we can help find another option.
 							</p>
 						</li>
 						<li>
@@ -30,6 +26,12 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								authority.
 							</p>
 						</li>
+						<li>
+							<div class="checklist-label">Dog information</div>
+							<p class="checklist-info">
+								Be prepared to provide a description of your dog, including their colour, breed, and date of birth.
+							</p>
+						</li>
 					</ul>
 
 					<mat-divider class="my-4"></mat-divider>
@@ -37,25 +39,59 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<ul>
 						<li>
 							<div class="checklist-label">Proof of training and experience from an accredited school</div>
-							<p class="checklist-info">We require proof of training and/or experience from an accredited school.</p>
-						</li>
-						<li>
-							<div class="checklist-label">Medical Information</div>
 							<p class="checklist-info">
-								Medical Form Confirming Requirement for Guide Dog or Service Dog Exam date must be within last 6 months.
+								We require proof of training and/or experience from an accredited school, including a copy of the
+								identification card issued by that school.
 							</p>
 						</li>
 						<li>
-							<div class="checklist-label">Microchip Number</div>
-							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
+							<div class="checklist-label">Medical information</div>
+							<p class="checklist-info">
+								Non-accredited teams must have the
+								<a [href]="medicalFormUrl" target="_blank"
+									>Medical Form Confirming Requirement for Guide Dog or Service Dog</a
+								>
+								completed by a physician or nurse practitioner licensed in Canada or the United States. The exam date
+								must be within the past six months.
+							</p>
 						</li>
 						<li>
-							<div class="checklist-label">Dog Medical Information</div>
+							<div class="checklist-label">Microchip number</div>
 							<p class="checklist-info">
-								Certification from a BC veterinarian or equivalent that my dog has been spayed or neutered.
+								Providing a Microchip Number is optional, however, is helpful for the program.
 							</p>
+						</li>
+						<li>
+							<div class="checklist-label">Dog medical information</div>
+							<p class="checklist-info">
+								Non-accredited teams must provide proof from a B.C. veterinarian (or a Canadian or American veterinarian
+								equivalent) confirming that your dog has been spayed or neutered.
+							</p>
+						</li>
+						<li>
+							<div class="checklist-label">Child handlers</div>
+							<div class="checklist-info">
+								<ul>
+									<li>
+										Please include the child’s birth certificate, along with a parent’s government-issued photo ID and
+										signature.
+									</li>
+									<li>
+										The child will complete the assessment with their dog. A parent or guardian may accompany them for
+										support.
+									</li>
+								</ul>
+							</div>
 						</li>
 					</ul>
+					<p>
+						If your documents are complete and your team is not from an accredited school, Security Programs will direct
+						you to
+						<a aria-label="Navigate to Obedience Unleashed Dog Training site" [href]="oudtUrl" target="_blank"
+							>Obedience Unleashed Dog Training (OUDT)</a
+						>
+						for a public safety assessment once we have processed your file.
+					</p>
 				</div>
 			</div>
 		</app-step-section>
@@ -65,4 +101,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 })
 export class StepTeamChecklistNewComponent {
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
+	oudtUrl = SPD_CONSTANTS.urls.oudtUrl;
+	medicalFormUrl = SPD_CONSTANTS.urls.medicalFormUrl;
 }
