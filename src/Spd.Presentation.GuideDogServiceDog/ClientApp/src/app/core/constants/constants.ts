@@ -61,6 +61,9 @@ export const SPD_CONSTANTS = {
 		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
+		medicalFormUrl:
+			'https://www2.gov.bc.ca/assets/gov/law-crime-and-justice/human-rights/guide-animals/spd0803-medical-form.pdf',
+		oudtUrl: 'https://obedienceunleashed.com/',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
 		securityIndustryLicensingUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing',
