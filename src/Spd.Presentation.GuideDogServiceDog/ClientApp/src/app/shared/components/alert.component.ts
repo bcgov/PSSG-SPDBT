@@ -27,7 +27,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 			.alert-success {
 				border: 3px solid #8dd09c;
-				background-color: #e7f5ea;
+				background-color: #f9fdfa;
 				border-radius: 5px;
 				font-weight: 500;
 				font-style: normal;

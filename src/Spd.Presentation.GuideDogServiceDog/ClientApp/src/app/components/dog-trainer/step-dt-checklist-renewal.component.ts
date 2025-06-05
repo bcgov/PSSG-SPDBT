@@ -10,7 +10,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Government-issued photo ID</div>
+							<div class="checklist-label">Dog trainer’s government-issued photo ID</div>
 							<p class="checklist-info">
 								The identification needs to be issued by a federal, provincial, territorial or state government
 								authority.
@@ -22,17 +22,9 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Photograph of yourself for the licence</div>
+							<div class="checklist-label">Photograph of dog trainer for the certificate</div>
 							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
-								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
-								application. For more details on passport-quality photos, please refer to the
-								<a
-									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
-									[href]="canadianPassportPhotoUrl"
-									target="_blank"
-									>Government of Canada's passport photograph guidelines</a
-								>.
+								A clear photo of your face, looking straight at the camera, with a plain, white background.
 							</p>
 						</li>
 					</ul>

@@ -10,33 +10,27 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Guide or Service Dog Certificate</div>
+							<div class="checklist-label">Guide or service dog certificate or equivalent</div>
 							<p class="checklist-info">
 								Proof of formal GDSDA certification, or an identification card issued by a school that is accredited by
-								ADI or IGDF
+								Assistance Dogs International or the International Guide Dog Federation.
 							</p>
 						</li>
-
+						<li>
+							<div class="checklist-label">Photograph of yourself for the certificate</div>
+							<p class="checklist-info">
+								A clear photo of your face, looking straight at the camera, with a plain, white background.
+							</p>
+							<p class="checklist-info">
+								We understand this may be difficult for some applicants. If you are not able to provide this type of
+								photo, please contact us and we can help find another option.
+							</p>
+						</li>
 						<li>
 							<div class="checklist-label">Government-issued photo ID</div>
 							<p class="checklist-info">
 								The identification needs to be issued by a federal, provincial, territorial or state government
 								authority.
-							</p>
-						</li>
-
-						<li>
-							<div class="checklist-label">Photograph of yourself for the licence</div>
-							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
-								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
-								application. For more details on passport-quality photos, please refer to the
-								<a
-									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
-									[href]="canadianPassportPhotoUrl"
-									target="_blank"
-									>Government of Canada's passport photograph guidelines</a
-								>.
 							</p>
 						</li>
 					</ul>
@@ -45,8 +39,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<div class="fw-semibold fs-6 mb-2">For some applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Microchip Number</div>
-							<p class="checklist-info">Optionally, the Microchip Number can be supplied.</p>
+							<div class="checklist-label">Microchip number</div>
+							<p class="checklist-info">
+								Providing a Microchip Number is optional, however, is helpful for the program.
+							</p>
 						</li>
 					</ul>
 				</div>

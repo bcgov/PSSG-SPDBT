@@ -7,24 +7,22 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 		<app-step-section title="Checklist" subtitle="Make sure you have the following items before you continue">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<p>
+						Please note: The registrar will <b>not</b> issue or renew a dog trainer certificate unless the individual
+						identified in the application trains dogs on behalf of an accredited training school for the purpose of the
+						dogs becoming guide dogs or service dogs. Dog trainer applications are submitted by accredited training
+						schools.
+					</p>
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
-							<div class="checklist-label">Photograph of yourself for the licence</div>
+							<div class="checklist-label">Photograph of dog trainer for the certificate</div>
 							<p class="checklist-info">
-								You will need to upload a passport-quality photo of your face looking at the camera, with a plain, white
-								background. Uploading a photo that doesn't meet these requirements will delay the processing of your
-								application. For more details on passport-quality photos, please refer to the
-								<a
-									aria-label="Navigate to Government of Canada's passport photograph guidelines site"
-									[href]="canadianPassportPhotoUrl"
-									target="_blank"
-									>Government of Canada's passport photograph guidelines</a
-								>.
+								A clear photo of your face, looking straight at the camera, with a plain, white background.
 							</p>
 						</li>
 						<li>
-							<div class="checklist-label">Government-issued photo ID</div>
+							<div class="checklist-label">Dog trainer’s government-issued photo ID</div>
 							<p class="checklist-info">
 								The identification needs to be issued by a federal, provincial, territorial or state government
 								authority.
