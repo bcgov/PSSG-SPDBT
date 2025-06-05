@@ -33,7 +33,7 @@ export class StepDtPhotographOfYourselfRenewComponent implements OnInit, Licence
 	constructor(private dogTrainerApplicationService: DogTrainerApplicationService) {}
 
 	ngOnInit(): void {
-		this.originalPhotoOfYourselfExpired = this.dogTrainerApplicationService.dogTrainerFormGroup.get(
+		this.originalPhotoOfYourselfExpired = this.dogTrainerApplicationService.dogTrainerModelFormGroup.get(
 			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
