@@ -13,7 +13,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	template: `
 		<app-step-section
 			title="Medical Information"
-			subtitle="Confirm your need of a guide or service dog by providing a medical form."
+			subtitle="Confirm your need for a guide or service dog by submitting a completed medical form."
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
@@ -55,8 +55,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							<mat-divider class="mt-3 mat-divider-primary"></mat-divider>
 
 							<div class="text-minor-heading lh-base mt-3 mb-2">
-								Upload Medical Form Confirming Requirement for Guide Dog or Service Dog. Exam date must be within last 6
-								months.
+								Upload the “Medical Form Confirming Requirement for Guide Dog or Service Dog.” The exam date must be
+								within the past 6 months.
 							</div>
 
 							<app-file-upload
@@ -66,7 +66,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 								[previewImage]="true"
-								ariaFileUploadLabel="Upload medical form confirming requirement for Guide Dog or Service Dog"
+								ariaFileUploadLabel="Upload Medical Form Confirming Requirement for Guide Dog or Service Dog"
 							></app-file-upload>
 							<mat-error
 								class="mt-3 mat-option-error"

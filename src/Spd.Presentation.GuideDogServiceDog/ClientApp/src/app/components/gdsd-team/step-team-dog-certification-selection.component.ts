@@ -14,10 +14,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<app-alert type="info" icon="info">
-								Not sure if your dog was trained by an accredited school? You can check the
+								Not sure if your dog was trained by an accredited school? Visit the
 								<a href="https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank"
 									>Guide Dog and Service Dog Certification</a
-								>.
+								>
+								webpage. It has links to help you look up accredited schools.
 							</app-alert>
 
 							<div class="text-minor-heading lh-base mb-3">
