@@ -1,10 +1,15 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -14,66 +19,64 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<PermitAppSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
-        private readonly IValidator<PermitAppUpsertRequest> _permitAppUpsertValidator;
+        private readonly IValidator<MDRARegistrationRequest> _mdraRequestValidator;
 
         public MDRAController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<PermitAppSubmitRequest> permitAppAnonymousSubmitRequestValidator,
-            IValidator<PermitAppUpsertRequest> permitAppUpsertValidator,
+            IDataProtectionProvider dataProtector,
             IRecaptchaVerificationService recaptchaVerificationService,
-            IDistributedCache cache) : base(cache, recaptchaVerificationService, configuration)
+            IDistributedCache cache,
+            IValidator<MDRARegistrationRequest> mdraRequestValidator) : base(cache, dataProtector, recaptchaVerificationService, configuration)
         {
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
-            _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
-            _permitAppUpsertValidator = permitAppUpsertValidator;
+            _mdraRequestValidator = mdraRequestValidator;
         }
 
         #region anonymous
 
         /// <summary>
-        /// Submit Body Armour or Armour Vehicle permit application Anonymously
+        /// Submit MDRA registration Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>
-        /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="jsonRequest">MDRARegistrationRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/mdra-registrations")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse?> SubmitMDRARegistrationAnonymous(MDRARegistrationRequest jsonRequest, CancellationToken ct)
+        public async Task<MDRARegistrationCommandResponse?> SubmitMDRARegistrationAnonymous(MDRARegistrationRequest jsonRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
-            //IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
-            //var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
-            //if (!validateResult.IsValid)
-            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-            //jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+            var validateResult = await _mdraRequestValidator.ValidateAsync(jsonRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
-            PermitAppCommandResponse? response = null;
+            MDRARegistrationCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                PermitAppNewCommand command = new(jsonRequest, newDocInfos);
+                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                PermitAppRenewCommand command = new(jsonRequest, newDocInfos);
+                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
-            //SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
-            //SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return null;
         }
 

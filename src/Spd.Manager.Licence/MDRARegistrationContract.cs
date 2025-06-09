@@ -17,6 +17,7 @@ public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeReques
 public record MDRARegistrationRequest
 {
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
+    public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.WebForm;
     public string BizOwnerLastName { get; set; }
     public string BizOwnerFirstName { get; set; }
     public string BizOwnerMiddleName { get; set; }
@@ -30,12 +31,12 @@ public record MDRARegistrationRequest
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
-    public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 }
 
 public record MDRARegistrationCommandResponse
 {
-    public Guid? LicenceAppId { get; set; }
+    public Guid? OrgRegistrationId { get; set; }
+    public string? OrgRegistrationNumber { get; set; }
 }
 
