@@ -1,5 +1,4 @@
 namespace Spd.Manager.Licence;
-
 public class UploadFileRequest
 {
     public LicenceDocumentTypeCode FileTypeCode { get; set; }
