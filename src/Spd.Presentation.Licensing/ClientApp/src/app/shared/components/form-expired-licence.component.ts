@@ -111,11 +111,22 @@ export class FormExpiredLicenceComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-		this.typeLabel =
-			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
-			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-				? 'Permit'
-				: 'Licence';
+
+		switch (this.serviceTypeCode) {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
+				this.typeLabel = 'Permit';
+				break;
+			}
+			case ServiceTypeCode.Mdra: {
+				this.typeLabel = 'Registration';
+				break;
+			}
+			default: {
+				this.typeLabel = 'Licence';
+				break;
+			}
+		}
 	}
 
 	onLookup(): void {

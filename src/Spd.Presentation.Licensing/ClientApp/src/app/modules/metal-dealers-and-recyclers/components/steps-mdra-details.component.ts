@@ -30,7 +30,7 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+					(nextStepperStep)="onChecklistNextStep(STEP_CHECKLIST)"
 					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 				></app-wizard-footer>
 			</mat-step>
@@ -41,7 +41,7 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+					(nextStepperStep)="onStepNext(STEP_LICENCE_EXPIRED)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
@@ -64,6 +64,15 @@ export class StepsMdraDetailsComponent extends BaseWizardStepComponent {
 
 	constructor(utilService: UtilService) {
 		super(utilService);
+	}
+
+	onChecklistNextStep(step: number): void {
+		if (this.isNew) {
+			super.onFormValidNextStep(step);
+			return;
+		}
+
+		super.onStepNext(step);
 	}
 
 	override dirtyForm(step: number): boolean {
