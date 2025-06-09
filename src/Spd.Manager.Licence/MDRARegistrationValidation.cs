@@ -2,29 +2,41 @@ using FluentValidation;
 
 namespace Spd.Manager.Licence;
 
-public class MDRARegistrationManagerValidator : AbstractValidator<MDRARegistrationRequest>
+public class MDRARegistrationValidator : AbstractValidator<MDRARegistrationRequest>
 {
-    public MDRARegistrationManagerValidator()
+    public MDRARegistrationValidator()
     {
-        //RuleFor(r => r.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty);
-        //RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.DogTrainerCertification); //must be team, dog trainer or retired dog
-        //RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        //RuleFor(x => x.AccreditedSchoolName).NotEmpty().MaximumLength(250);
-        //RuleFor(r => r.SchoolContactEmailAddress).MaximumLength(75)
-        //    .EmailAddress()
-        //    .When(r => r.SchoolContactEmailAddress != null);
-        //RuleFor(r => r.SchoolContactPhoneNumber).MaximumLength(30);
-        //RuleFor(r => r.SchoolDirectorGivenName).MaximumLength(40);
-        //RuleFor(r => r.SchoolDirectorSurname).MaximumLength(40).NotEmpty();
-        //RuleFor(r => r.SchoolDirectorMiddleName).MaximumLength(40);
-        //RuleFor(r => r.TrainerGivenName).MaximumLength(40);
-        //RuleFor(r => r.TrainerSurname).MaximumLength(40).NotEmpty();
-        //RuleFor(r => r.TrainerMiddleName).MaximumLength(40);
-        //RuleFor(r => r.TrainerMailingAddress).SetValidator(new MailingAddressValidator())
-        //    .When(r => r.TrainerMailingAddress != null);
-        //RuleFor(r => r.TrainerDateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
-        //RuleFor(r => r.TrainerPhoneNumber).MaximumLength(30);
-        //RuleFor(r => r.TrainerEmailAddress).EmailAddress().MaximumLength(75).When(r => r.TrainerEmailAddress != null);
+        RuleFor(x => x.BizOwnerLastName).NotEmpty().MaximumLength(40);
+        RuleFor(r => r.BizLegalName).MaximumLength(200);
+        RuleFor(r => r.BizEmailAddress).EmailAddress();
+        RuleFor(x => x.BizManagerLastName).NotEmpty().MaximumLength(40);
+        RuleFor(r => r.BizAddress).SetValidator(new AddressValidator());
+        RuleFor(r => r.BizMailingAddress).SetValidator(new AddressValidator());
+        RuleFor(r => r.Branches)
+            .ForEach(r => r
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.AddressLine1))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.City))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Country))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Province))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.PostalCode))
+                .Must(r => !string.IsNullOrEmpty(r.BranchManager))
+                .Must(r => r.BranchPhoneNumber == null || r.BranchPhoneNumber?.Length <= 15))
+                .WithMessage("Missing branch address information.")
+            .When(r => r.Branches != null);
     }
 }
+
+public class AddressValidator : AbstractValidator<Address>
+{
+    public AddressValidator()
+    {
+        RuleFor(r => r.Province).NotEmpty().MaximumLength(100);
+        RuleFor(r => r.City).NotEmpty().MaximumLength(100);
+        RuleFor(r => r.AddressLine1).NotEmpty().MaximumLength(100);
+        RuleFor(r => r.Country).NotEmpty().MaximumLength(100);
+        RuleFor(r => r.PostalCode).NotEmpty().MaximumLength(20);
+    }
+}
+
+
 

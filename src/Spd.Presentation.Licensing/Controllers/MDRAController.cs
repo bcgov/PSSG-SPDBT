@@ -7,8 +7,8 @@ using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Security.Principal;
 using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -16,22 +16,17 @@ namespace Spd.Presentation.Licensing.Controllers
     [ApiController]
     public class MDRAController : SpdLicenceControllerBase
     {
-        private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        private readonly IConfiguration _configuration;
         private readonly IValidator<MDRARegistrationRequest> _mdraRequestValidator;
 
-        public MDRAController(IPrincipal currentUser,
-            IMediator mediator,
+        public MDRAController(IMediator mediator,
             IConfiguration configuration,
             IDataProtectionProvider dataProtector,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IValidator<MDRARegistrationRequest> mdraRequestValidator) : base(cache, dataProtector, recaptchaVerificationService, configuration)
         {
-            _currentUser = currentUser;
             _mediator = mediator;
-            _configuration = configuration;
             _mdraRequestValidator = mdraRequestValidator;
         }
 
@@ -47,9 +42,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/mdra-registrations")]
         [HttpPost]
-        public async Task<MDRARegistrationCommandResponse?> SubmitMDRARegistrationAnonymous(MDRARegistrationRequest jsonRequest, CancellationToken ct)
+        public async Task<MDRARegistrationCommandResponse?> SubmitMDRARegistrationAnonymous([FromBody][Required] MDRARegistrationRequest jsonRequest, CancellationToken ct)
         {
-            await VerifyKeyCode();
+            //await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _mdraRequestValidator.ValidateAsync(jsonRequest, ct);
