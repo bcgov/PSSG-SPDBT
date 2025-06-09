@@ -17,10 +17,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="col-xxl-10 col-xl-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
-											Guide dog (Trained as a guide for a blind person)
+											Guide Dog – Trained to guide a person who is blind or has low vision
 										</mat-radio-button>
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
-											Service dog (Trained to perform specific tasks to assist a person with a disability)
+											Service Dog – Trained to do specific tasks to help a person with a disability
 										</mat-radio-button>
 									</mat-radio-group>
 									<mat-error
@@ -81,8 +81,8 @@ export class StepTeamDogServiceInfoComponent implements OnInit, LicenceChildStep
 
 	ngOnInit(): void {
 		this.title = this.showDogServiceStep
-			? 'Is your dog trained as a Guide Dog or a Service Dog?'
-			: "Do you continue to require the dog's assistance for daily living as a result of blindness, visual impairment or another disability?";
+			? 'What type of trained dog do you have?'
+			: 'Do you still rely on your dog’s assistance for daily living due to blindness, visual impairment, or another disability?';
 	}
 
 	isFormValid(): boolean {

@@ -16,7 +16,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<app-step-section
 			title="Other Training"
-			subtitle="If you did not attend a training school or formalized training program, list the informal training that have received."
+			subtitle="If you have not attended a training school or formal training program, please list any informal training you have received."
 		>
 			<div [formGroup]="form">
 				<div class="row my-2">
@@ -176,7 +176,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 						<div class="mb-4">
 							<div class="text-minor-heading">
-								Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+								Upload supporting documentation (e.g. curriculum document, certificate, etc.)
 								<span class="optional-label">(optional)</span>
 							</div>
 							<div class="mt-2">
