@@ -216,7 +216,7 @@ import moment from 'moment';
 						</div>
 
 						<div class="text-minor-heading">
-							Upload supporting documentation that is appropriate (e.g. curriculum document, certificate, etc.)
+							Upload supporting documentation (e.g. curriculum document, certificate, etc.)
 							<span class="optional-label">(optional)</span>
 						</div>
 						<div class="mt-2">

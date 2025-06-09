@@ -13,8 +13,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Apply for a new certification if you've never held this type of certification, or if your existing
-							certification has expired.
+							Select this if you’ve never had this certification before, or if your previous certification has expired.
 						</app-alert>
 					</div>
 				</div>
@@ -25,7 +24,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Renew your existing certification before it expires, within 90 days of the expiry date.
+							Select this if you currently have a certification and want to renew it within 90 days of its expiry.
 						</app-alert>
 					</div>
 				</div>
@@ -38,7 +37,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Lost your certificate? Request a replacement card and we'll send you one.
+							Select this if your certificate has been lost or damaged and you need a replacement.
 						</app-alert>
 					</div>
 				</div>
