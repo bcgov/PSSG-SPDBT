@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription } from 'rxjs';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription, tap } from 'rxjs';
 import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService } from './file-util.service';
@@ -75,11 +75,34 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 * @returns
 	 */
 	createNewRegistration(): Observable<any> {
+		// this.reset();
+
+		// this.commonApplicationService.setMdraApplicationTitle(ApplicationTypeCode.New);
+
+		// this.initialized = true;
+		// return of(this.metalDealersModelFormGroup.value);
+
+		return this.getApplEmptyAnonymous().pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setMdraApplicationTitle(ApplicationTypeCode.New);
+			})
+		);
+	}
+
+	private getApplEmptyAnonymous(): Observable<any> {
 		this.reset();
 
-		this.commonApplicationService.setMdraApplicationTitle(ApplicationTypeCode.New);
+		this.metalDealersModelFormGroup.patchValue(
+			{
+				serviceTypeData: { serviceTypeCode: ServiceTypeCode.Mdra },
+			},
+			{
+				emitEvent: false,
+			}
+		);
 
-		this.initialized = true;
 		return of(this.metalDealersModelFormGroup.value);
 	}
 

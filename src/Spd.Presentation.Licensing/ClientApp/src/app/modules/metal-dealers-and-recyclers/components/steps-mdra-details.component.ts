@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepMdraLicenceExpiredComponent } from './step-mdra-licence-expired.component';
 import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component';
 
 @Component({
@@ -18,8 +19,6 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 				></app-wizard-footer>
 			</mat-step>
 
-			<!-- // TODO MDRA add do you have an expired licence question -->
-
 			<mat-step>
 				<ng-container *ngIf="isNew; else isRenewal">
 					<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
@@ -35,6 +34,17 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 				></app-wizard-footer>
 			</mat-step>
+
+			<mat-step *ngIf="isNew">
+				<app-step-mdra-licence-expired></app-step-mdra-licence-expired>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -44,11 +54,13 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 export class StepsMdraDetailsComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
 	readonly STEP_CHECKLIST = 1;
+	readonly STEP_LICENCE_EXPIRED = 2;
 
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepMdraTermsOfUseComponent) termsOfUseComponent!: StepMdraTermsOfUseComponent;
+	@ViewChild(StepMdraLicenceExpiredComponent) expiredComponent!: StepMdraLicenceExpiredComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -60,6 +72,8 @@ export class StepsMdraDetailsComponent extends BaseWizardStepComponent {
 				return this.termsOfUseComponent.isFormValid();
 			case this.STEP_CHECKLIST:
 				return true;
+			case this.STEP_LICENCE_EXPIRED:
+				return this.expiredComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

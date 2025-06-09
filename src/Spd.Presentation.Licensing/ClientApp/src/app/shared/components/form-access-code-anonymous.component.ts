@@ -118,11 +118,22 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel =
-			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
-			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-				? 'Permit'
-				: 'Licence';
+		switch (this.serviceTypeCode) {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
+				this.titleLabel = 'Permit';
+				break;
+			}
+			case ServiceTypeCode.Mdra: {
+				this.titleLabel = 'Registration';
+				break;
+			}
+			default: {
+				this.titleLabel = 'Licence';
+				break;
+			}
+		}
+
 		this.label = this.titleLabel.toLowerCase();
 	}
 
@@ -173,6 +184,18 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			// 		.subscribe();
 			// 	break;
 			// }
+			case ServiceTypeCode.Mdra: {
+				this.commonApplicationService
+					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+					.pipe(
+						tap((resp: LicenceResponseExt | null) => {
+							this.handleLookupResponse(resp);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
 		}
 	}
 
