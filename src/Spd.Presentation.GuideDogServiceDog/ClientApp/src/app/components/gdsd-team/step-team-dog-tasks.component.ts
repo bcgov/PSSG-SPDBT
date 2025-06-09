@@ -9,22 +9,21 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<app-step-section
 			title="Specialized tasks"
-			subtitle="Provide a list of the specialized tasks your dog performs to help you with day-to-day living."
+			subtitle="Describe the specific tasks your dog is trained to do that help with your daily life."
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="col-12 mt-3">
 							<app-alert type="info" icon="info">
-								Examples of these include:
+								Here are some examples:
 								<ul>
-									<li>Dog fetches my medications when I need them.</li>
-									<li>Dog alerts to telephone ring.</li>
-									<li>Dog pushes me to a safe place when an epileptic seizure is imminent.</li>
-									<li>Dog picks up clothing or items for me when I am dressing.</li>
+									<li>My dog brings me my medication when I need it.</li>
+									<li>My dog alerts me when the phone rings.</li>
+									<li>My dog moves me to a safe place when I’m about to have a seizure.</li>
+									<li>My dog picks up clothing or other items to help me get dressed.</li>
 									<li>
-										Dog prevents (autistic) child from running away when outside and the child starts moving away from
-										close proximity to dog/caregiver.
+										My dog helps keep my (autistic) child safe by staying close and preventing them from running off.
 									</li>
 								</ul>
 							</app-alert>
