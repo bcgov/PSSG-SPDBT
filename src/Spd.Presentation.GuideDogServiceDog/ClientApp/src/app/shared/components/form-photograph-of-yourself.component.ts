@@ -14,16 +14,19 @@ import { OptionsPipe } from '../pipes/options.pipe';
 					<div class="mb-3">
 						<app-alert type="info" icon="info">
 							<p>
-								Upload a passport-quality photo of your face looking at the camera, with a plain, white background. This
-								photo will be used for your {{ serviceTypeDesc }} if your application is approved. Submitting a photo
-								that does not meet these requirements will delay your application’s processing time.
+								Please upload a clear photo of your face, looking straight at the camera, with a plain, white
+								background.
+							</p>
+							<p>
+								We understand this may be difficult for some applicants. If you are not able to provide this type of
+								photo, please contact us and we can help find another option.
 							</p>
 
 							Photo Guidelines:
 							<ul class="mb-0">
-								<li>The photo must be in colour and well-lit</li>
-								<li>Your face must be fully visible, with no hats, sunglasses, or filters</li>
-								<li>Use a plain, white background</li>
+								<li>Please use a clear, well-lit colour photo</li>
+								<li>Make sure your full face is visible, without hats, sunglasses, or filterss</li>
+								<li>Try to use a plain white background if possible</li>
 							</ul>
 						</app-alert>
 					</div>

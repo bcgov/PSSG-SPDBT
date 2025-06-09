@@ -12,15 +12,16 @@ import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-
 	selector: 'app-step-dt-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+			title="Provide access code"
 			info="<p>
-						You need both <strong>your licence number</strong> as it appears on your current certification, plus the <strong>access code number</strong>
-						provided following your initial application or in your renewal letter from the Registrar, Security Services. Enter the two numbers below then click 'Next' to continue.
-					</p>
-					<p>
-						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
-					</p>"
+					To continue, please enter the <strong>trainer’s certificate number</strong> as it appears on their
+					current certificate along with the <strong>access code</strong> provided after their initial application
+					or in their renewal letter from the Registrar, Security Services.
+				</p>
+				<p>
+					If you don’t have the trainer’s access code, you can contact the Security Program's
+					Licensing Unit at {{ spdPhoneNumber }}  during regular office hours for assistance.
+				</p>"
 		>
 			<app-form-gdsd-licence-access-code
 				(linkSuccess)="onLinkSuccess($event)"

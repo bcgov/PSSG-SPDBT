@@ -10,7 +10,7 @@ import { UtilService } from '@app/core/services/util.service';
 @Component({
 	selector: 'app-step-rd-application-type',
 	template: `
-		<app-step-section title="What type of Retired Dog Certification are you applying for?">
+		<app-step-section title="Which Retired Dog Certification are you applying for?">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 					<app-form-gdsd-application-type [form]="form"></app-form-gdsd-application-type>

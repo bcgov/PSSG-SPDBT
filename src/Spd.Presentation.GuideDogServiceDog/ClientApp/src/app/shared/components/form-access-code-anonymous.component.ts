@@ -24,7 +24,7 @@ import { Subject, take, tap } from 'rxjs';
 					<div class="row mt-4">
 						<div class="col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Current {{ titleLabel }} Number</mat-label>
+								<mat-label>Current Certificate Number</mat-label>
 								<input
 									matInput
 									type="search"
@@ -85,7 +85,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	errorMessage: string | null = null;
 	isExpired = false;
 
-	titleLabel = '';
 	label = '';
 
 	@Input() form!: FormGroup;
@@ -101,8 +100,8 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-		this.label = this.titleLabel.toLowerCase();
+		const titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+		this.label = titleLabel.toLowerCase();
 	}
 
 	searchByAccessCode(): void {
@@ -222,7 +221,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	}
 
 	private invalidCombination(): void {
-		this.errorMessage = `This ${this.label} number and access code are not a valid combination.`;
+		this.errorMessage = `This certificate number and access code are not a valid combination.`;
 		this.resetCaptcha();
 	}
 
