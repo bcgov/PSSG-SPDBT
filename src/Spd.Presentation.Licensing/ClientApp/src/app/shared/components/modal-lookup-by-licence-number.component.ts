@@ -13,6 +13,7 @@ export interface LookupByLicenceNumberDialogData {
 	subtitle?: string;
 	notValidSwlMessage?: string;
 	lookupServiceTypeCode: ServiceTypeCode;
+	typeLabel?: string;
 	isExpiredLicenceSearch: boolean;
 	isLoggedIn: boolean;
 	selectButtonLabel?: string;
@@ -26,18 +27,18 @@ export interface LookupByLicenceNumberDialogData {
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
 				<ng-container *ngIf="isLoggedIn; else notLoggedInMsg">
-					<app-alert type="info" icon="info"> Enter the Licence Number and click the search button. </app-alert>
+					<app-alert type="info" icon="info"> Enter the {{ typeLabel }} Number and click the search button. </app-alert>
 				</ng-container>
 				<ng-template #notLoggedInMsg>
 					<app-alert type="info" icon="info">
-						Enter the Licence Number, perform the reCaptcha and then click the search button.
+						Enter the {{ typeLabel }} Number, perform the reCaptcha and then click the search button.
 					</app-alert>
 				</ng-template>
 
 				<div class="row">
 					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
 						<mat-form-field>
-							<mat-label>Licence Number</mat-label>
+							<mat-label>{{ typeLabel }} Number</mat-label>
 							<input
 								matInput
 								type="search"
@@ -50,8 +51,8 @@ export interface LookupByLicenceNumberDialogData {
 								mat-button
 								matSuffix
 								mat-flat-button
-								aria-label="Perform licence search"
-								matTooltip="Perform licence search"
+								aria-label="Perform the search"
+								matTooltip="Perform the search"
 								(click)="onSearch()"
 								class="search-icon-button"
 							>
@@ -98,7 +99,7 @@ export interface LookupByLicenceNumberDialogData {
 											<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
 										</div>
 										<div class="col-md-6 col-sm-12">
-											<div class="d-block text-muted mt-2">Licence Status</div>
+											<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
 											<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
 										</div>
 									</div>
@@ -122,7 +123,7 @@ export interface LookupByLicenceNumberDialogData {
 								<div class="mt-3">
 									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
-											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
+											This {{ typeLabel }} is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
 										</div>
 
 										<div class="row">
@@ -137,7 +138,7 @@ export interface LookupByLicenceNumberDialogData {
 												<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
 											</div>
 											<div class="col-md-4 col-sm-12">
-												<div class="d-block text-muted mt-2">Licence Status</div>
+												<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
 												<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
 											</div>
 										</div>
@@ -202,6 +203,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	notValidSwlMessage: string | null = null;
 
 	selectButtonLabel = 'Select';
+	typeLabel = 'Licence';
 
 	searchResultDisplay: LicenceResponse | null = null;
 
@@ -233,6 +235,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.lookupServiceTypeCode = this.dialogData.lookupServiceTypeCode;
 		this.isLoggedIn = this.dialogData.isLoggedIn;
 		this.selectButtonLabel = this.dialogData.selectButtonLabel ?? 'Select';
+		this.typeLabel = this.dialogData.typeLabel ?? 'Licence';
 	}
 
 	onSearchKeyDown(): void {
@@ -259,6 +262,13 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		}
 
 		this.performSearch(this.licenceNumberLookup.value, recaptchaCode);
+
+		this.resetCaptcha();
+	}
+
+	private resetCaptcha(): void {
+		this.resetRecaptcha.next(); // reset the recaptcha
+		this.captchaFormGroup.reset();
 	}
 
 	private performSearch(licenceNumberLookup: string, recaptchaCode: string | null) {
