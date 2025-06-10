@@ -24,14 +24,6 @@ import { take, tap } from 'rxjs';
 							<div class="col-xl-6 col-lg-8 col-md-12 my-auto">
 								<div class="text-minor-heading mb-4">Registering as a Metal Dealer or Recycler</div>
 							</div>
-
-							<div class="col-xl-6 col-lg-4 col-md-12">
-								<div class="d-flex justify-content-end mb-4">
-									<button mat-flat-button color="primary" class="large w-auto" (click)="onRegister()">
-										Register as a Metal Dealer or Recycler
-									</button>
-								</div>
-							</div>
 						</div>
 
 						<div class="row">
@@ -46,7 +38,13 @@ import { take, tap } from 'rxjs';
 									legally required for metal dealers and recyclers in most cases.
 								</p>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<div class="d-flex justify-content-end">
+									<button mat-flat-button color="primary" class="large w-auto" (click)="onRegister()">
+										Register as a Metal Dealer or Recycler
+									</button>
+								</div>
+
+								<mat-divider class="mt-4 mb-2"></mat-divider>
 								<div class="text-minor-heading my-3">Terms and Conditions of Registration</div>
 								<ul>
 									<li>No registration fee</li>

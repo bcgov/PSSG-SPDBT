@@ -118,22 +118,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		switch (this.serviceTypeCode) {
-			case ServiceTypeCode.ArmouredVehiclePermit:
-			case ServiceTypeCode.BodyArmourPermit: {
-				this.titleLabel = 'Permit';
-				break;
-			}
-			case ServiceTypeCode.Mdra: {
-				this.titleLabel = 'Registration';
-				break;
-			}
-			default: {
-				this.titleLabel = 'Licence';
-				break;
-			}
-		}
-
+		this.titleLabel = this.commonApplicationService.getLicenceTypeName(this.serviceTypeCode);
 		this.label = this.titleLabel.toLowerCase();
 	}
 
@@ -235,7 +220,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		if (resp.serviceTypeCode !== this.serviceTypeCode) {
 			//  access code matches licence, but the ServiceTypeCode does not match
 			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
+			this.errorMessage = `This ${this.label} number is not a ${selServiceTypeCodeDesc}.`;
 		} else if (!this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 			if (resp.licenceStatusCode === LicenceStatusCode.Expired) {
 				// access code matches licence, but the licence is expired
