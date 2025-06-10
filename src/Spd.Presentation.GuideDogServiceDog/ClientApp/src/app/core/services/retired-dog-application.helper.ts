@@ -34,14 +34,6 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseNew(retiredDogModelFormGroup: any): any {
-		return this.getSaveBodyBase(retiredDogModelFormGroup);
-	}
-
-	/**
-	 * get body the form group data into the correct structure
-	 * @returns
-	 */
 	getSaveBodyBaseChange(retiredDogModelFormGroup: any): any {
 		const bodyBase = this.getSaveBodyBase(retiredDogModelFormGroup);
 
@@ -77,7 +69,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(retiredDogModelFormValue: any): any {
+	getSaveBodyBase(retiredDogModelFormValue: any): any {
 		const serviceTypeData = retiredDogModelFormValue.serviceTypeData;
 		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
 		const personalInformationData = retiredDogModelFormValue.personalInformationData;
@@ -148,6 +140,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		const body = {
 			licenceAppId: retiredDogModelFormValue.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
+			applicantId: originalLicenceData.originalLicenceHolderId,
 			dogId: retiredDogModelFormValue.dogId,
 			applicationOriginTypeCode: retiredDogModelFormValue.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
