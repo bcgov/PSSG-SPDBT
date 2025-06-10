@@ -7,11 +7,12 @@ public class MDRARegistrationValidator : AbstractValidator<MDRARegistrationReque
     public MDRARegistrationValidator()
     {
         RuleFor(x => x.BizOwnerSurname).NotEmpty().MaximumLength(40);
+        RuleFor(x => x.BizOwnerGivenNames).MaximumLength(100);
         RuleFor(r => r.BizLegalName).MaximumLength(160);
         RuleFor(r => r.BizTradeName).MaximumLength(160);
         RuleFor(r => r.BizEmailAddress).EmailAddress();
         RuleFor(r => r.BizManagerEmailAddress).EmailAddress();
-        RuleFor(x => x.BizManagerFullName).NotEmpty().MaximumLength(40);
+        RuleFor(x => x.BizManagerFullName).NotEmpty().MaximumLength(150);
         RuleFor(r => r.BizAddress).SetValidator(new AddressValidator());
         RuleFor(r => r.BizMailingAddress).SetValidator(new AddressValidator());
         RuleFor(r => r.Branches)
