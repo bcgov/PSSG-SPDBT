@@ -37,6 +37,5 @@ public record MDRARegistrationRequest
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }
-    public string? OrgRegistrationNumber { get; set; }
 }
 
