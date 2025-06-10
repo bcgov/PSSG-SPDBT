@@ -5,6 +5,7 @@ import { ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import {
 	LookupByLicenceNumberDialogData,
@@ -106,16 +107,13 @@ export class FormExpiredLicenceComponent implements OnInit {
 
 	constructor(
 		private dialog: MatDialog,
-		private optionsPipe: OptionsPipe
+		private optionsPipe: OptionsPipe,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-		this.typeLabel =
-			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
-			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-				? 'Permit'
-				: 'Licence';
+		this.typeLabel = this.commonApplicationService.getLicenceTypeName(this.serviceTypeCode);
 	}
 
 	onLookup(): void {
@@ -123,6 +121,7 @@ export class FormExpiredLicenceComponent implements OnInit {
 			title: `Search for a ${this.titleLabel}`,
 			isExpiredLicenceSearch: true,
 			lookupServiceTypeCode: this.serviceTypeCode,
+			typeLabel: this.typeLabel,
 			isLoggedIn: this.isLoggedIn,
 		};
 		this.dialog

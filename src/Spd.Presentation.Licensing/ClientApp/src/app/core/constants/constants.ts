@@ -111,6 +111,7 @@ export const SPD_CONSTANTS = {
 		securityServicesBusinessApplicantUpdateTerms:
 			'./assets/files/Security Services Business Applicant Update Terms of Use.pdf',
 		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',
+		mdraApplicantTerms: './assets/files/MDRA Applicant Terms of Use.pdf',
 	},
 	address: {
 		provinceBC: 'BC',
