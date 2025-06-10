@@ -4,7 +4,7 @@ import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-app
 @Component({
 	selector: 'app-step-dt-licence-confirmation',
 	template: `
-		<app-step-section title="Confirm your current licence information">
+		<app-step-section title="Confirm your current certificate information">
 			<app-form-gdsd-licence-confirmation
 				[originalLicenceHolderName]="originalLicenceHolderName"
 				[originalLicenceNumber]="originalLicenceNumber"

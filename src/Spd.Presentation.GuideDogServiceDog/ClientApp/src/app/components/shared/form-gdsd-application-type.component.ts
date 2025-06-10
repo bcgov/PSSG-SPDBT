@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 
 @Component({
 	selector: 'app-form-gdsd-application-type',
@@ -13,7 +13,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Select this if you’ve never had this certification before, or if your previous certification has expired.
+							{{ newInfoText }}
 						</app-alert>
 					</div>
 				</div>
@@ -24,7 +24,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Select this if you currently have a certification and want to renew it within 90 days of its expiry.
+							{{ renewalInfoText }}
 						</app-alert>
 					</div>
 				</div>
@@ -37,7 +37,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 					</div>
 					<div class="col-lg-8">
 						<app-alert type="info" icon="">
-							Select this if your certificate has been lost or damaged and you need a replacement.
+							{{ replacementInfoText }}
 						</app-alert>
 					</div>
 				</div>
@@ -56,8 +56,31 @@ import { ApplicationTypeCode } from '@app/api/models';
 	styles: [],
 	standalone: false,
 })
-export class FormGdsdApplicationTypeComponent {
+export class FormGdsdApplicationTypeComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
 
+	newInfoText = '';
+	renewalInfoText = '';
+	replacementInfoText = '';
+
 	@Input() form!: FormGroup;
+	@Input() serviceTypeCode!: ServiceTypeCode;
+
+	ngOnInit(): void {
+		if (this.serviceTypeCode === ServiceTypeCode.DogTrainerCertification) {
+			this.newInfoText =
+				'Select this if the trainer has never held this certification before, or if a previous certification has expired.';
+			this.renewalInfoText =
+				'Select this if the trainer currently holds a valid certification and is renewing it within 90 days of expiry.';
+			this.replacementInfoText =
+				"Select this if the trainer's certificate has been lost or damaged and needs to be reissued.";
+			return;
+		}
+
+		this.newInfoText =
+			'Select this if you’ve never had this certification before, or if your previous certification has expired.';
+		this.renewalInfoText =
+			'Select this if you currently have a certification and want to renew it within 90 days of its expiry.';
+		this.replacementInfoText = 'Select this if your certificate has been lost or damaged and you need a replacement.';
+	}
 }

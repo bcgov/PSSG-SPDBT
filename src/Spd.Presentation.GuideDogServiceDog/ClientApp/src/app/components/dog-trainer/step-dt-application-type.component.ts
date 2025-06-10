@@ -13,7 +13,10 @@ import { UtilService } from '@app/core/services/util.service';
 		<app-step-section title="Which type of Dog Trainer Certification is this application for?">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
-					<app-form-gdsd-application-type [form]="form"></app-form-gdsd-application-type>
+					<app-form-gdsd-application-type
+						[form]="form"
+						[serviceTypeCode]="serviceTypeCode"
+					></app-form-gdsd-application-type>
 				</div>
 			</div>
 		</app-step-section>
@@ -25,6 +28,7 @@ import { UtilService } from '@app/core/services/util.service';
 })
 export class StepDtApplicationTypeComponent implements OnInit {
 	form: FormGroup = this.dogTrainerApplicationService.applicationTypeFormGroup;
+	serviceTypeCode = ServiceTypeCode.DogTrainerCertification;
 
 	constructor(
 		private router: Router,
@@ -34,7 +38,7 @@ export class StepDtApplicationTypeComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.commonApplicationService.setGdsdApplicationTitle(ServiceTypeCode.DogTrainerCertification);
+		this.commonApplicationService.setGdsdApplicationTitle(this.serviceTypeCode);
 	}
 
 	onStepNext(): void {
@@ -44,7 +48,7 @@ export class StepDtApplicationTypeComponent implements OnInit {
 		}
 
 		const applicationTypeCode = this.applicationTypeCode.value;
-		this.commonApplicationService.setGdsdApplicationTitle(ServiceTypeCode.DogTrainerCertification, applicationTypeCode);
+		this.commonApplicationService.setGdsdApplicationTitle(this.serviceTypeCode, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {
