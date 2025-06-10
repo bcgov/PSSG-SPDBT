@@ -93,14 +93,6 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseNew(gdsdModelFormValue: any): any {
-		return this.getSaveBodyBase(gdsdModelFormValue);
-	}
-
-	/**
-	 * get body the form group data into the correct structure
-	 * @returns
-	 */
 	getSaveBodyBaseChange(gdsdModelFormValue: any): any {
 		const bodyBase = this.getSaveBodyBase(gdsdModelFormValue);
 
@@ -136,7 +128,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(gdsdModelFormValue: any): any {
+	getSaveBodyBase(gdsdModelFormValue: any): any {
 		const serviceTypeData = gdsdModelFormValue.serviceTypeData;
 		const applicationTypeData = gdsdModelFormValue.applicationTypeData;
 		const dogCertificationSelectionData = gdsdModelFormValue.dogCertificationSelectionData;
@@ -313,6 +305,7 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 		const body = {
 			licenceAppId: gdsdModelFormValue.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
+			applicantId: originalLicenceData.originalLicenceHolderId,
 			isAssistanceStillRequired: this.utilService.booleanTypeToBoolean(dogRenewData.isAssistanceStillRequired),
 			dogId: gdsdModelFormValue.dogId,
 			applicantOrLegalGuardianName: null,

@@ -12,6 +12,7 @@ import {
 	LicenceResponse,
 	LicenceTermCode,
 	RetiredDogAppCommandResponse,
+	RetiredDogLicenceAppAnonymousSubmitRequest,
 	RetiredDogLicenceAppChangeRequest,
 	RetiredDogLicenceAppResponse,
 	RetiredDogLicenceAppUpsertRequest,
@@ -334,7 +335,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 
-		const body = this.getSaveBodyBaseNew(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBase(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -900,7 +901,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 */
 	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBase(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
@@ -927,7 +928,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as RetiredDogLicenceAppChangeRequest;
-
 		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1001,15 +1001,11 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(rdModelFormValue);
+		const body = this.getSaveBodyBase(rdModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(rdModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-		const originalLicenceData = rdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -1100,7 +1096,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * @returns
 	 */
 	private postSubmitAnonymous(
-		body: RetiredDogLicenceAppChangeRequest
+		body: RetiredDogLicenceAppAnonymousSubmitRequest | RetiredDogLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.retiredDogLicensingService.apiRetiredDogAppAnonymousSubmitPost$Response({ body });

@@ -39,13 +39,13 @@ public record CreateDogTrainerAppCmd() : DogTrainerApp
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
-    public Guid? ContactId { get; set; }
+    public Guid? ApplicantId { get; set; }
 };
 
 public record DogTrainerAppResp : DogTrainerApp
 {
     public Guid LicenceAppId { get; set; }
-    public Guid? ContactId { get; set; }
+    public Guid? ApplicantId { get; set; }
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
 }
