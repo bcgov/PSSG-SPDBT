@@ -4,7 +4,7 @@ import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-applica
 @Component({
 	selector: 'app-step-team-licence-confirmation',
 	template: `
-		<app-step-section title="Confirm your current licence information">
+		<app-step-section title="Confirm your current certificate information">
 			<app-form-gdsd-licence-confirmation
 				[originalLicenceHolderName]="originalLicenceHolderName"
 				[originalLicenceNumber]="originalLicenceNumber"

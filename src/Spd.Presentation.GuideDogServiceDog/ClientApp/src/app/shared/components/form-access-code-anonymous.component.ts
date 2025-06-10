@@ -165,17 +165,17 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		if (resp.serviceTypeCode !== this.serviceTypeCode) {
 			//  access code matches licence, but the ServiceTypeCode does not match
 			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
+			this.errorMessage = `This certificate number is not a ${selServiceTypeCodeDesc}.`;
 		} else if (!this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 			if (resp.licenceStatusCode === LicenceStatusCode.Expired) {
 				// access code matches licence, but the licence is expired
 				this.isExpired = true;
 				if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-					this.errorMessage = `This ${this.label} has expired so you can no longer renew it. Please apply for a new ${this.label}.`;
+					this.errorMessage = `This certificate has expired so you can no longer renew it. Please apply for a new ${this.label}.`;
 				} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-					this.errorMessage = `This ${this.label} has expired so you cannot update it. Please apply for a new ${this.label}.`;
+					this.errorMessage = `This certificate has expired so you cannot update it. Please apply for a new ${this.label}.`;
 				} else {
-					this.errorMessage = `This ${this.label} has expired so you cannot replace it. Please apply for a new ${this.label}.`;
+					this.errorMessage = `This certificate has expired so you cannot replace it. Please apply for a new ${this.label}.`;
 				}
 			} else {
 				this.invalidCombination();
@@ -186,10 +186,10 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			daysBetween <= replacementPeriodPreventionDays
 		) {
 			// Replacement-specific error: access code matches licence, but the licence is not within the replacement period
-			this.errorMessage = `This ${this.label} is too close to its expiry date to allow replacement. Please renew it instead.`;
+			this.errorMessage = `This certificate is too close to its expiry date to allow replacement. Please renew it instead.`;
 		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
 			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
-			this.errorMessage = `This ${this.label} is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
+			this.errorMessage = `This certificate is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
 			//  access code matches licence, but the licence has application in progress
 			if (resp.inProgressApplications) {
