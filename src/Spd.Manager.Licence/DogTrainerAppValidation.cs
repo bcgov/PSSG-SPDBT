@@ -35,6 +35,6 @@ public class DogTrainerChangeRequestValidator : AbstractValidator<DogTrainerChan
     {
         Include(new DogTrainerRequestValidator());
         RuleFor(r => r.OriginalLicenceId).NotEmpty();
-        RuleFor(r => r.ContactId).NotEqual(Guid.Empty).NotEmpty();
+        RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty).NotEmpty();
     }
 }
