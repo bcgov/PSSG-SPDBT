@@ -18,8 +18,15 @@ internal class MDRARegistrationRepository : IMDRARegistrationRepository
     {
         spd_orgregistration registration = _mapper.Map<spd_orgregistration>(cmd);
         _context.AddTospd_orgregistrations(registration);
-        LinkType();
+        LinkType(_context, registration);
         LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, registration);
+
+        List<spd_address> addrs = _mapper.Map<List<spd_address>>(cmd);
+        foreach (spd_address addr in addrs)
+        {
+            _context.AddTospd_addresses(addr);
+            _context.SetLink(addr, nameof(addr.spd_OrgRegistrationId), registration);
+        }
         await _context.SaveChangesAsync(ct);
 
         return new MDRARegistrationResp(registration.spd_orgregistrationid.Value);
@@ -30,5 +37,11 @@ internal class MDRARegistrationRepository : IMDRARegistrationRepository
         Guid teamGuid = Guid.Parse(teamGuidStr);
         team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         _context.SetLink(registration, nameof(spd_orgregistration.owningteam), serviceTeam);
+    }
+
+    public static void LinkType(DynamicsContext _context, spd_orgregistration registration)
+    {
+        spd_organizationtype? type = _context.LookupOrganizationType("MetalDealerRecycler");
+        _context.SetLink(registration, nameof(spd_orgregistration.spd_OrganizationTypeId), type);
     }
 }

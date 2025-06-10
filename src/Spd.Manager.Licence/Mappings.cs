@@ -508,7 +508,8 @@ internal class Mappings : Profile
         CreateMap<RetiredDogLicenceAppChangeRequest, CreateRetiredDogAppCmd>();
         CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
-        CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>();
+        CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>()
+           .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

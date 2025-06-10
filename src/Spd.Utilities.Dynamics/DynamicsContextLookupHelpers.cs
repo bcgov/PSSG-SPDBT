@@ -28,6 +28,7 @@ namespace Spd.Utilities.Dynamics
             {"Employee-Registrant", Guid.Parse("489d1f0a-5bb8-ed11-b83e-00505683fbf4")},
             {"Employee-GovnBody", Guid.Parse("fcaa5d11-5bb8-ed11-b83e-00505683fbf4")},
             {"Employee-Appointed", Guid.Parse("61b9301b-5bb8-ed11-b83e-00505683fbf4")},
+            {"MetalDealerRecycler", Guid.Parse("527e0e38-91ff-ef11-b857-00505683fbf4")},
         }.ToImmutableDictionary();
         public static spd_organizationtype? LookupOrganizationType(this DynamicsContext context, string key)
         {

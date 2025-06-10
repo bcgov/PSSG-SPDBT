@@ -209,11 +209,11 @@ public enum ApplicationOriginTypeEnum
     OrganizationSubmitted
 }
 
-public record BranchInfo
-{
-    public Guid? BranchId { get; set; }
-    public Addr? BranchAddress { get; set; }
-    public string? BranchManager { get; set; }
-    public string? BranchPhoneNumber { get; set; }
-    public string? BranchEmailAddr { get; set; }
-}
+//public record BranchInfo
+//{
+//    public Guid? BranchId { get; set; }
+//    public Addr? BranchAddress { get; set; }
+//    public string? BranchManager { get; set; }
+//    public string? BranchPhoneNumber { get; set; }
+//    public string? BranchEmailAddr { get; set; }
+//}

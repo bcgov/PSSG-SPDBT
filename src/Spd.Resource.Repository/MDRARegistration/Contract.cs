@@ -1,4 +1,6 @@
 ﻿
+using Spd.Resource.Repository.Biz;
+
 namespace Spd.Resource.Repository.MDRARegistration;
 public interface IMDRARegistrationRepository
 {
@@ -23,7 +25,7 @@ public record CreateMDRARegistrationCmd
     public string? BizManagerMiddleName { get; set; }
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
-    public IEnumerable<BranchInfo>? Branches { get; set; }
+    public IEnumerable<BranchAddr>? Branches { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 
 }

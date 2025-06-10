@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.MDRARegistration;
 internal class Mappings : Profile
@@ -8,36 +9,90 @@ internal class Mappings : Profile
     {
         _ = CreateMap<CreateMDRARegistrationCmd, spd_orgregistration>()
         .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-        .ForMember(d => d.spr_organizationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
-        //.ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.TrainerGivenName))
-        //.ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.TrainerSurname))
-        //.ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.TrainerMiddleName))
-        //.ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.TrainerDateOfBirth)))
-        //.ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.TrainerEmailAddress))
-        //.ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.TrainerPhoneNumber))
-        //.ForMember(d => d.spd_origin, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<ApplicationOriginTypeEnum, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
-        //.ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-        //.ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.AddressLine1)))
-        //.ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.AddressLine2)))
-        //.ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.City)))
-        //.ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.PostalCode)))
-        //.ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.Province)))
-        //.ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.TrainerMailingAddress == null ? null : StringHelper.SanitizeEmpty(s.TrainerMailingAddress.Country)))
-        //.ForMember(d => d.spd_submittedon, opt => opt.Ignore())
-        //.ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-        //.ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<LicenceTermEnum, LicenceTermOptionSet>(s.LicenceTermCode)))
-        //.ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
-        //.ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
-        //.ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDeclarationDate(s.AgreeToCompleteAndAccurate)))
-        //.ReverseMap()
-        //.ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
-        //.ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(s.spd_origin)))
-        //.ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
-        //.ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
-        //.ForMember(d => d.TrainerDateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
-        //.ForMember(d => d.TrainerMailingAddress, opt => opt.MapFrom(s => SharedMappingFuncs.GetMailingAddressData(s)))
+        .ForMember(d => d.spd_applicationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
+        .ForMember(d => d.spd_authorizedcontactgivenname, opt => opt.MapFrom(s => $"{s.BizOwnerFirstName.Trim()} {s.BizOwnerMiddleName.Trim()}"))
+        .ForMember(d => d.spd_authorizedcontactsurname, opt => opt.MapFrom(s => s.BizOwnerLastName))
+        .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
+        .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => s.BizTradeName))
+        .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.BizEmailAddress))
+        .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.BizPhoneNumber))
+        .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => true))
+        .ForMember(d => d.spd_street1, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.AddressLine1))
+        .ForMember(d => d.spd_street2, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.AddressLine2))
+        .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.City))
+        .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.Province))
+        .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
+        .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.Country))
+        .ReverseMap()
+        .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_applicationtype)))
+        .ForMember(d => d.BizOwnerFirstName, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname)) //tbd
+        .ForMember(d => d.BizOwnerMiddleName, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname)) //tbd
         ;
 
+        CreateMap<CreateMDRARegistrationCmd, List<spd_address>>()
+        .ConvertUsing((src, dest, context) =>
+        {
+            var result = new List<spd_address>();
+
+            // Main Office
+            if (src.BizAddress != null)
+            {
+                result.Add(new spd_address
+                {
+                    spd_addressid = Guid.NewGuid(),
+                    spd_type = (int)AddressTypeOptionSet.MainOffice,
+                    spd_branchmanagername = $"{src.BizManagerFirstName} {src.BizManagerMiddleName} {src.BizManagerLastName}".Trim(),
+                    spd_branchphone = src.BizPhoneNumber,
+                    spd_branchemail = src.BizEmailAddress,
+                    spd_address1 = src.BizAddress.AddressLine1,
+                    spd_address2 = src.BizAddress.AddressLine2,
+                    spd_city = src.BizAddress.City,
+                    spd_provincestate = src.BizAddress.Province,
+                    spd_postalcode = src.BizAddress.PostalCode,
+                    spd_country = src.BizAddress.Country
+                });
+            }
+
+            // Mailing Address
+            if (src.BizMailingAddress != null)
+            {
+                result.Add(new spd_address
+                {
+                    spd_addressid = Guid.NewGuid(),
+                    spd_type = (int)AddressTypeOptionSet.Mailing,
+                    spd_address1 = src.BizMailingAddress.AddressLine1,
+                    spd_address2 = src.BizMailingAddress.AddressLine2,
+                    spd_city = src.BizMailingAddress.City,
+                    spd_provincestate = src.BizMailingAddress.Province,
+                    spd_postalcode = src.BizMailingAddress.PostalCode,
+                    spd_country = src.BizMailingAddress.Country
+                });
+            }
+
+            // Branches
+            if (src.Branches != null)
+            {
+                foreach (var branch in src.Branches)
+                {
+                    result.Add(new spd_address
+                    {
+                        spd_addressid = Guid.NewGuid(),
+                        spd_type = (int)AddressTypeOptionSet.Branch,
+                        spd_branchmanagername = branch.BranchManager,
+                        spd_branchphone = branch.BranchPhoneNumber,
+                        spd_branchemail = branch.BranchEmailAddr,
+                        spd_address1 = branch.AddressLine1,
+                        spd_address2 = branch.AddressLine2,
+                        spd_city = branch.City,
+                        spd_provincestate = branch.Province,
+                        spd_postalcode = branch.PostalCode,
+                        spd_country = branch.Country
+                    });
+                }
+            }
+
+            return result;
+        });
 
 
     }
