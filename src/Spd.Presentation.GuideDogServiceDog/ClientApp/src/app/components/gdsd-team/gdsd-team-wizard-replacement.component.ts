@@ -20,7 +20,7 @@ import { StepTeamPhotographOfYourselfRenewComponent } from './step-team-photogra
 		<div class="row">
 			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 				<mat-step>
-					<ng-template matStepLabel>Licence Confirmation</ng-template>
+					<ng-template matStepLabel>Certificate Confirmation</ng-template>
 					<app-step-team-licence-confirmation></app-step-team-licence-confirmation>
 
 					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_SUMMARY)"></app-wizard-footer>
