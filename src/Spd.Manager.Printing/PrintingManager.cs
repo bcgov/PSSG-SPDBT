@@ -205,9 +205,9 @@ internal class PrintingManager
                     EventTypeEnum.BCMPSecurityWorkerLicencePrinting,
                     EventTypeEnum.BCMPArmouredVehiclePermitPrinting,
                     EventTypeEnum.BCMPBodyArmourPermitPrinting,
-                    //EventTypeEnum.BCMPRetiredServiceDogPrinting,
-                    //EventTypeEnum.BCMPDogTrainerPrinting,
-                    //EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
+                    EventTypeEnum.BCMPRetiredServiceDogPrinting,
+                    EventTypeEnum.BCMPDogTrainerPrinting,
+                    EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
                 },
                 CutOffDateTime = DateTimeOffset.UtcNow,
             }, ct);
