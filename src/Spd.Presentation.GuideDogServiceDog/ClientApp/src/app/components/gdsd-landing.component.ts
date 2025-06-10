@@ -15,17 +15,17 @@ import { take, tap } from 'rxjs';
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section>
-				<app-step-title title="Log in to manage your guide dog and service dog certifications"></app-step-title>
+				<app-step-title title="Log in to manage your guide dog and service dog certification"></app-step-title>
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 mx-auto">
 						<div class="row">
 							<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-								<div class="fw-bold mb-3">Use your BC Services Card account:</div>
+								<div class="fw-bold mb-3">Use your BC Services Card account to:</div>
 								<table>
 									<tr>
 										<td><mat-icon class="icon me-2">circle</mat-icon></td>
-										<td class="pb-2">Manage your licence with ease online</td>
+										<td class="pb-2">Manage your certificate with ease online</td>
 									</tr>
 									<tr>
 										<td><mat-icon class="icon me-2">circle</mat-icon></td>
@@ -69,7 +69,6 @@ import { take, tap } from 'rxjs';
 										color="primary"
 										class="xlarge mt-3"
 										aria-label="Log in with your BC Services Card and manage guide dog and service dog team certifications"
-										matTooltip="Log in with your BC Services Card and manage guide dog and service dog team certifications"
 										(click)="onRegisterGuideDog()"
 									>
 										Log In with <span class="fw-bold">BC Services Card</span>
@@ -83,7 +82,6 @@ import { take, tap } from 'rxjs';
 											tabindex="0"
 											class="large login-link"
 											aria-label="Continue without a BC Services Card and manage guide dog and service dog team certifications"
-											matTooltip="Continue without a BC Services Card and manage guide dog and service dog team certifications"
 											(click)="onContinue(serviceTypes.GdsdTeamCertification)"
 											(keydown)="onKeydownContinue($event, serviceTypes.GdsdTeamCertification)"
 										>
@@ -110,7 +108,6 @@ import { take, tap } from 'rxjs';
 										color="primary"
 										class="xlarge mt-3"
 										aria-label="Log in with your BC Services Card and manage retired dog certifications"
-										matTooltip="Log in with your BC Services Card and manage retired dog certifications"
 										(click)="onRegisterRetiredServiceDog()"
 									>
 										Log In with <span class="fw-bold">BC Services Card</span>
@@ -124,7 +121,6 @@ import { take, tap } from 'rxjs';
 											tabindex="0"
 											class="large login-link"
 											aria-label="Continue without a BC Services Card and manage retired dog certifications"
-											matTooltip="Continue without a BC Services Card and manage retired dog certifications"
 											(click)="onContinue(serviceTypes.RetiredServiceDogCertification)"
 											(keydown)="onKeydownContinue($event, serviceTypes.RetiredServiceDogCertification)"
 										>
@@ -150,7 +146,6 @@ import { take, tap } from 'rxjs';
 										tabindex="0"
 										class="large login-link"
 										aria-label="Continue without a BC Services Card and manage dog trainer certifications"
-										matTooltip="Continue without a BC Services Card and manage dog trainer certifications"
 										(click)="onContinue(serviceTypes.DogTrainerCertification)"
 										(keydown)="onKeydownContinue($event, serviceTypes.DogTrainerCertification)"
 									>
