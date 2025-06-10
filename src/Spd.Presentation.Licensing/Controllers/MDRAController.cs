@@ -44,7 +44,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<MDRARegistrationCommandResponse?> SubmitMDRARegistrationAnonymous([FromBody][Required] MDRARegistrationRequest jsonRequest, CancellationToken ct)
         {
-            //await VerifyKeyCode();
+            await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _mdraRequestValidator.ValidateAsync(jsonRequest, ct);
