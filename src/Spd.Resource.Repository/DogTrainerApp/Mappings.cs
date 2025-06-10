@@ -90,7 +90,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
             .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
             .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-            .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
             ;
 
         _ = CreateMap<spd_dogtrainingschool, DogTrainerAppResp>()

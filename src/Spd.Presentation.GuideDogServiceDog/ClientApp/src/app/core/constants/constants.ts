@@ -22,6 +22,10 @@ export const SPD_CONSTANTS = {
 		displayMask: '(000) 000-0000',
 		backendMask: '000-000-0000',
 	},
+	label: {
+		guideDogLabel: 'Guide Dog – Trained to guide a person who is blind or has low vision',
+		serviceDogLabel: 'Service Dog – Trained to do specific tasks to help a person with a disability',
+	},
 	message: {
 		submissionSuccess:
 			'Your application has been received. A confirmation email will be sent to you. We will contact you if additional information is needed.',

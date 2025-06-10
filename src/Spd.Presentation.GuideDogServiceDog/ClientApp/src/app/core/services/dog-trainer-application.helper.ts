@@ -50,28 +50,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	 * get body the form group data into the correct structure
 	 * @returns
 	 */
-	getSaveBodyBaseNewOrRenewal(dogTrainerModelFormGroup: any): any {
-		return this.getSaveBodyBase(dogTrainerModelFormGroup);
-	}
-
-	/**
-	 * get body the form group data into the correct structure
-	 * @returns
-	 */
-	getSaveBodyBaseReplacement(dogTrainerModelFormGroup: any): any {
-		const body = this.getSaveBodyBase(dogTrainerModelFormGroup);
-
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
-		body.trainerMailingAddress = mailingAddressData;
-
-		return body;
-	}
-
-	/**
-	 * get body the form group data into the correct structure
-	 * @returns
-	 */
-	private getSaveBodyBase(dogTrainerModelFormGroup: any): any {
+	getSaveBodyBase(dogTrainerModelFormGroup: any): any {
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
@@ -128,6 +107,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const body = {
 			licenceAppId: dogTrainerModelFormGroup.licenceAppId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
+			applicantId: originalLicenceData.originalLicenceHolderId,
 			applicationOriginTypeCode: dogTrainerModelFormGroup.applicationOriginTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,

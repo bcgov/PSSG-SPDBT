@@ -45,7 +45,7 @@ public record DogTrainerChangeRequest : DogTrainerRequest
 {
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid OriginalLicenceId { get; set; }
-    public Guid ContactId { get; set; }
+    public Guid ApplicantId { get; set; }
 }
 
 public record DogTrainerAppCommandResponse
@@ -57,7 +57,7 @@ public record DogTrainerAppResponse : DogTrainerRequest
 {
     public Guid? LicenceAppId { get; set; }
     public string? CaseNumber { get; set; }
-    public Guid? ContactId { get; set; }
+    public Guid? ApplicantId { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }

@@ -12,10 +12,10 @@ import { ServiceTypeCode } from '../models/service-type-code';
 export interface DogTrainerChangeRequest {
   accreditedSchoolId?: string;
   accreditedSchoolName?: string | null;
+  applicantId?: string;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
-  contactId?: string;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;
   licenceTermCode?: LicenceTermCode;

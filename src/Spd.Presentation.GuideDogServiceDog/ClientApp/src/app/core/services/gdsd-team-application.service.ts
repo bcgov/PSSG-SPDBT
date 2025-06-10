@@ -7,6 +7,7 @@ import {
 	Document,
 	DogSchoolResponse,
 	GdsdTeamAppCommandResponse,
+	GdsdTeamLicenceAppAnonymousSubmitRequest,
 	GdsdTeamLicenceAppChangeRequest,
 	GdsdTeamLicenceAppResponse,
 	GdsdTeamLicenceAppUpsertRequest,
@@ -324,9 +325,9 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
+		const teamModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
 
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const body = this.getSaveBodyBase(teamModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -341,7 +342,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				}
 				this.utilService.toasterSuccess(msg);
 
-				if (!gdsdModelFormValue.licenceAppId) {
+				if (!teamModelFormValue.licenceAppId) {
 					this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
@@ -493,8 +494,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
+		const teamModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(teamModelFormValue) as GdsdTeamLicenceAppUpsertRequest;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
@@ -516,13 +517,12 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	private submitLicenceChangeAuthenticated(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBaseChange(gdsdModelFormValue);
+		const teamModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
+		const bodyUpsert = this.getSaveBodyBaseChange(teamModelFormValue);
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as GdsdTeamLicenceAppChangeRequest;
-
-		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(teamModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
@@ -1314,16 +1314,12 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	}
 
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
-		const gdsdModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNew(gdsdModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(gdsdModelFormValue);
+		const teamModelFormValue = this.gdsdTeamModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(teamModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(teamModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.applicantOrLegalGuardianName = consentData.applicantOrLegalGuardianName;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-		const originalLicenceData = gdsdModelFormValue.originalLicenceData;
-		body.applicantId = originalLicenceData.originalLicenceHolderId;
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -1414,7 +1410,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	 * @returns
 	 */
 	private postSubmitAnonymous(
-		body: any // GdsdTeamLicenceAppChangeRequest or GdsdTeamLicenceAppAnonymousSubmitRequest
+		body: GdsdTeamLicenceAppAnonymousSubmitRequest | GdsdTeamLicenceAppChangeRequest
 	): Observable<StrictHttpResponse<GdsdTeamAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.gdsdTeamLicensingService.apiGdsdTeamAppAnonymousSubmitPost$Response({ body });
