@@ -7,8 +7,8 @@ internal class Mappings : Profile
     public Mappings()
     {
         _ = CreateMap<CreateMDRARegistrationCmd, spd_orgregistration>()
-        //.ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-        //.ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
+        .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+        .ForMember(d => d.spr_organizationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
         //.ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.TrainerGivenName))
         //.ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.TrainerSurname))
         //.ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.TrainerMiddleName))
