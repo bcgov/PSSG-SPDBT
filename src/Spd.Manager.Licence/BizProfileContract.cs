@@ -41,15 +41,6 @@ public record BizInfo
 
 }
 
-public record BranchInfo
-{
-    public Guid? BranchId { get; set; }
-    public Address? BranchAddress { get; set; }
-    public string? BranchManager { get; set; }
-    public string? BranchPhoneNumber { get; set; }
-    public string? BranchEmailAddr { get; set; }
-}
-
 public record BizListResponse
 {
     public Guid BizId { get; set; } //which is accountid in account
