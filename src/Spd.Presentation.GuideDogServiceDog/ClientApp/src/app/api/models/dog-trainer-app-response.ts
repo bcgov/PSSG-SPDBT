@@ -14,12 +14,12 @@ import { ServiceTypeCode } from '../models/service-type-code';
 export interface DogTrainerAppResponse {
   accreditedSchoolId?: string;
   accreditedSchoolName?: string | null;
+  applicantId?: string | null;
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
   caseNumber?: string | null;
-  contactId?: string | null;
   documentInfos?: Array<Document> | null;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;

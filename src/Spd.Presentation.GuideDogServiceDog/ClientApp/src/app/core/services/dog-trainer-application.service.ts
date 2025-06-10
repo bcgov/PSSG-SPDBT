@@ -8,6 +8,7 @@ import {
 	DogSchoolResponse,
 	DogTrainerAppCommandResponse,
 	DogTrainerAppResponse,
+	DogTrainerChangeRequest,
 	DogTrainerRequest,
 	GoogleRecaptcha,
 	IActionResult,
@@ -505,7 +506,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
 		const dogTrainerModelFormValue = this.dogTrainerModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseNewOrRenewal(dogTrainerModelFormValue);
+		const body = this.getSaveBodyBase(dogTrainerModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(dogTrainerModelFormValue);
 
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
@@ -513,11 +514,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const consentData = this.consentAndDeclarationDtFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-
-		if (body.applicationTypeCode == ApplicationTypeCode.Renewal) {
-			const originalLicenceData = dogTrainerModelFormValue.originalLicenceData;
-			body.contactId = originalLicenceData.originalLicenceHolderId;
-		}
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
@@ -563,7 +559,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		return { existingDocumentIds, documentsToSaveApis };
 	}
 
-	private postSubmitAnonymous(body: DogTrainerRequest): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
+	private postSubmitAnonymous(
+		body: DogTrainerRequest | DogTrainerChangeRequest
+	): Observable<StrictHttpResponse<DogTrainerAppCommandResponse>> {
 		if (body.applicationTypeCode == ApplicationTypeCode.New) {
 			return this.dogTrainerLicensingService.apiDogTrainerAppAnonymousSubmitPost$Response({ body });
 		}
