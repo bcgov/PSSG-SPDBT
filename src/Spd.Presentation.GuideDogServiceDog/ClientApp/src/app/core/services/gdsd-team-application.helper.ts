@@ -538,8 +538,8 @@ export abstract class GdsdTeamApplicationHelper extends GdsdCommonApplicationHel
 	}
 	getSummarydogType(gdsdModelData: any): string {
 		return gdsdModelData.dogGdsdData.isGuideDog === BooleanTypeCode.Yes
-			? 'Guide dog (Trained as a guide for a blind person)'
-			: 'Service dog (Trained to perform specific tasks to assist a person with a disability)';
+			? SPD_CONSTANTS.label.guideDogLabel
+			: SPD_CONSTANTS.label.serviceDogLabel;
 	}
 	getSummaryapplicantName(gdsdModelData: any): string {
 		return (

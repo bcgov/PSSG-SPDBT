@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -17,10 +18,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="col-xxl-10 col-xl-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
-											Guide Dog – Trained to guide a person who is blind or has low vision
+											{{ guideDogLabel }}
 										</mat-radio-button>
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
-											Service Dog – Trained to do specific tasks to help a person with a disability
+											{{ serviceDogLabel }}
 										</mat-radio-button>
 									</mat-radio-group>
 									<mat-error
@@ -70,6 +71,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepTeamDogServiceInfoComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
+
+	guideDogLabel = SPD_CONSTANTS.label.guideDogLabel;
+	serviceDogLabel = SPD_CONSTANTS.label.serviceDogLabel;
 
 	dogGdsdForm: FormGroup = this.gdsdTeamApplicationService.dogGdsdFormGroup;
 	dogRenewForm: FormGroup = this.gdsdTeamApplicationService.dogRenewFormGroup;
