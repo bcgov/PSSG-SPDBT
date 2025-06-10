@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 
 @Component({
 	selector: 'app-mdra-base',
@@ -17,9 +20,18 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 	standalone: false,
 })
 export class MdraBaseComponent implements OnInit {
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor(
+		private router: Router,
+		private commonApplicationService: CommonApplicationService,
+		private metalDealersApplicationService: MetalDealersApplicationService
+	) {}
 
 	ngOnInit(): void {
+		if (!this.metalDealersApplicationService.initialized) {
+			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
+			return;
+		}
+
 		this.commonApplicationService.setMdraApplicationTitle();
 	}
 }

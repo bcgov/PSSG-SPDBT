@@ -740,12 +740,12 @@ export class CommonApplicationService {
 		let messageWarn = null;
 		let messageError = null;
 
-		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
 		if (licence) {
 			if (licence.serviceTypeCode !== serviceTypeCode) {
-				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
+				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(serviceTypeCode);
 			} else {
 				if (!isExpired) {
+					const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
 					const securityIndustryLicensingUrl = SPD_CONSTANTS.urls.securityIndustryLicensingUrl;
 					if (isInRenewalPeriod) {
 						messageWarn = `Your ${selServiceTypeCodeDesc} is still valid, and needs to be renewed. Please exit and <a href="${securityIndustryLicensingUrl}" target="_blank">renew your ${selServiceTypeCodeDesc}</a>.`;
@@ -764,10 +764,9 @@ export class CommonApplicationService {
 	setLicenceLookupMessage(licence: LicenceResponse | null, serviceTypeCode: ServiceTypeCode): string | null {
 		let messageError = null;
 
-		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
 		if (licence) {
 			if (licence.serviceTypeCode !== serviceTypeCode) {
-				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc);
+				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(serviceTypeCode);
 			}
 		} else {
 			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
@@ -998,15 +997,35 @@ export class CommonApplicationService {
 		}
 	}
 
-	private getLicenceLookupServiceTypeCodeMismatchErrorMessage(selServiceTypeCodeDesc: string): string {
-		return `This licence number is not a ${selServiceTypeCodeDesc}.`;
+	private getLicenceLookupServiceTypeCodeMismatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
+		const typeLabel = this.getLicenceTypeName(serviceTypeCode);
+		const serviceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+
+		return `The ${typeLabel} number you entered is not a ${serviceTypeCodeDesc}.`;
 	}
 
 	private getLicenceLookupNoMatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
+		const typeLabel = this.getLicenceTypeName(serviceTypeCode);
+
 		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
-			return 'The licence number you entered does not match any existing records in our system for your business in BC.';
+			return `The ${typeLabel} number you entered does not match any existing records in our system for your business in BC.`;
 		} else {
-			return 'The licence number you entered does not match any existing records in our system.';
+			return `The ${typeLabel} number you entered does not match any existing records in our system.`;
+		}
+	}
+
+	getLicenceTypeName(serviceTypeCode: ServiceTypeCode): string {
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
+				return 'Permit';
+			}
+			case ServiceTypeCode.Mdra: {
+				return 'Registration';
+			}
+			default: {
+				return 'Licence';
+			}
 		}
 	}
 

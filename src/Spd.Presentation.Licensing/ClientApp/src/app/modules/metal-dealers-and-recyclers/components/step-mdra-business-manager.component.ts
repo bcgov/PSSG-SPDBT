@@ -47,7 +47,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
 									/>
-									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 									<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 								</mat-form-field>
 							</div>

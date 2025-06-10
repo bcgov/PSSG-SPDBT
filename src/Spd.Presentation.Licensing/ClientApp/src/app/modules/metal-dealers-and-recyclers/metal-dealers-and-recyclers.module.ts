@@ -5,7 +5,7 @@ import { FormMdraBranchesComponent } from './components/form-mdra-branches.compo
 import { FormMdraLicenceAccessCodeComponent } from './components/form-mdra-licence-access-code.component';
 import { MdraBaseComponent } from './components/mdra-base.component';
 import { MdraWizardNewRenewalComponent } from './components/mdra-wizard-new-renewal.component';
-import { MetalDealersMainComponent } from './components/metal-dealers-main.component';
+import { MetalDealersLandingComponent } from './components/metal-dealers-landing.component';
 import { MetalDealersRegistrationReceivedComponent } from './components/metal-dealers-registration-received.component';
 import { ModalMdraBranchComponent } from './components/modal-mdra-branch.component';
 import { StepMdraLicenceAccessCodeComponent } from './components/step-mdra-access-code.component';
@@ -16,6 +16,7 @@ import { StepMdraBusinessManagerComponent } from './components/step-mdra-busines
 import { StepMdraBusinessOwnerComponent } from './components/step-mdra-business-owner.component';
 import { StepMdraChecklistNewComponent } from './components/step-mdra-checklist-new.component';
 import { StepMdraConsentComponent } from './components/step-mdra-consent.component';
+import { StepMdraLicenceExpiredComponent } from './components/step-mdra-licence-expired.component';
 import { StepMdraSummaryComponent } from './components/step-mdra-summary.component';
 import { StepMdraTermsOfUseComponent } from './components/step-mdra-terms-of-use.component';
 import { StepsMdraBranchesComponent } from './components/steps-mdra-branches.component';
@@ -27,7 +28,7 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 @NgModule({
 	declarations: [
 		MdraBaseComponent,
-		MetalDealersMainComponent,
+		MetalDealersLandingComponent,
 		MdraWizardNewRenewalComponent,
 		StepMdraTermsOfUseComponent,
 		StepMdraLicenceAccessCodeComponent,
@@ -39,6 +40,7 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 		StepMdraBranchesComponent,
 		StepMdraSummaryComponent,
 		StepMdraConsentComponent,
+		StepMdraLicenceExpiredComponent,
 		StepsMdraBusinessInfoComponent,
 		StepsMdraDetailsComponent,
 		StepsMdraBranchesComponent,

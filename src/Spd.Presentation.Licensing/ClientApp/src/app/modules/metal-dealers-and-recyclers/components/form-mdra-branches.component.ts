@@ -4,10 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import {
-	MetalDealersAndRecyclersBranchResponse,
-	ModalMdraBranchComponent,
-} from './modal-mdra-branch.component';
+import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from './modal-mdra-branch.component';
 
 @Component({
 	selector: 'app-form-mdra-branches',
@@ -16,6 +13,14 @@ import {
 			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
 				<ng-container *ngIf="branchesExist">
 					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
+						<ng-container matColumnDef="branchManager">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Branch Manager</mat-header-cell>
+							<mat-cell *matCellDef="let branch">
+								<span class="mobile-label">Manager:</span>
+								{{ branch | fullname | default }}
+							</mat-cell>
+						</ng-container>
+
 						<ng-container matColumnDef="addressLine1">
 							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Address Line 1</mat-header-cell>
 							<mat-cell *matCellDef="let branch">
@@ -29,14 +34,6 @@ import {
 							<mat-cell *matCellDef="let branch">
 								<span class="mobile-label">City:</span>
 								{{ branch.city | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="branchManager">
-							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Manager</mat-header-cell>
-							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">Manager:</span>
-								{{ branch | fullname | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -131,9 +128,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 		this.branchesExist = this.dataSource.data.length > 0;
 
 		if (this.isReadonly) {
-			this.columns = ['addressLine1', 'city', 'branchManager'];
+			this.columns = ['branchManager', 'addressLine1', 'city'];
 		} else {
-			this.columns = ['addressLine1', 'city', 'branchManager', 'action1', 'action2'];
+			this.columns = ['branchManager', 'addressLine1', 'city', 'action1', 'action2'];
 		}
 	}
 

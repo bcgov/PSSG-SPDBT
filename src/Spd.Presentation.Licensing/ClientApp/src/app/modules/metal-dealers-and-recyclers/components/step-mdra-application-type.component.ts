@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { take, tap } from 'rxjs';
 import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 
 @Component({
@@ -81,7 +81,8 @@ export class StepMdraApplicationTypeComponent implements LicenceChildStepperStep
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private metalDealersApplicationService: MetalDealersApplicationService
+		private metalDealersApplicationService: MetalDealersApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	isFormValid(): boolean {
@@ -97,23 +98,14 @@ export class StepMdraApplicationTypeComponent implements LicenceChildStepperStep
 
 		const applicationTypeCode = this.applicationTypeCode.value;
 
+		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.Mdra, applicationTypeCode);
+
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.metalDealersApplicationService
-					.createNewRegistration()
-					.pipe(
-						tap((_resp: any) => {
-							this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
-						}),
-						take(1)
-					)
-					.subscribe();
-
+				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_NEW));
 				break;
 			}
-			case ApplicationTypeCode.Update:
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Replacement: {
+			default: {
 				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_ACCESS_CODE));
 				break;
 			}

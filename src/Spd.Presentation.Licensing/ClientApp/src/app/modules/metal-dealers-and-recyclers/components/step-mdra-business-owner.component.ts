@@ -64,7 +64,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Trade or 'Doing Business As' Name</mat-label>
 									<input matInput formControlName="tradeName" [errorStateMatcher]="matcher" maxlength="40" />
 									<mat-hint>This is the name commonly used to refer to your business</mat-hint>
-									<mat-error *ngIf="form.get('tradeName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 						</div>
