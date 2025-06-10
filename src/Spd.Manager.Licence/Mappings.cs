@@ -795,7 +795,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
-        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
