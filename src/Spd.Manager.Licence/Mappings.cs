@@ -17,6 +17,7 @@ using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.MDRARegistration;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.RetiredDogApp;
@@ -507,6 +508,8 @@ internal class Mappings : Profile
         CreateMap<RetiredDogLicenceAppChangeRequest, CreateRetiredDogAppCmd>();
         CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
+        CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>()
+           .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
