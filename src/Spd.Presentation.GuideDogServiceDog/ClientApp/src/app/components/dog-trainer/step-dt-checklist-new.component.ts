@@ -18,7 +18,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<li>
 							<div class="checklist-label">Photograph of dog trainer for the certificate</div>
 							<p class="checklist-info">
-								A clear photo of your face, looking straight at the camera, with a plain, white background.
+								A clear photo of the dog trainer’s face, looking straight at the camera, with a plain, white background.
 							</p>
 						</li>
 						<li>

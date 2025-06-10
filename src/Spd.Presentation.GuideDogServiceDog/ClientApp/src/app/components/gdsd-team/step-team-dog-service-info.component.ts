@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -17,10 +18,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="col-xxl-10 col-xl-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
-											Guide dog (Trained as a guide for a blind person)
+											{{ guideDogLabel }}
 										</mat-radio-button>
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
-											Service dog (Trained to perform specific tasks to assist a person with a disability)
+											{{ serviceDogLabel }}
 										</mat-radio-button>
 									</mat-radio-group>
 									<mat-error
@@ -71,6 +72,9 @@ export class StepTeamDogServiceInfoComponent implements OnInit, LicenceChildStep
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 
+	guideDogLabel = SPD_CONSTANTS.label.guideDogLabel;
+	serviceDogLabel = SPD_CONSTANTS.label.serviceDogLabel;
+
 	dogGdsdForm: FormGroup = this.gdsdTeamApplicationService.dogGdsdFormGroup;
 	dogRenewForm: FormGroup = this.gdsdTeamApplicationService.dogRenewFormGroup;
 
@@ -81,8 +85,8 @@ export class StepTeamDogServiceInfoComponent implements OnInit, LicenceChildStep
 
 	ngOnInit(): void {
 		this.title = this.showDogServiceStep
-			? 'Is your dog trained as a Guide Dog or a Service Dog?'
-			: "Do you continue to require the dog's assistance for daily living as a result of blindness, visual impairment or another disability?";
+			? 'What type of trained dog do you have?'
+			: 'Do you still rely on your dog’s assistance for daily living due to blindness, visual impairment, or another disability?';
 	}
 
 	isFormValid(): boolean {

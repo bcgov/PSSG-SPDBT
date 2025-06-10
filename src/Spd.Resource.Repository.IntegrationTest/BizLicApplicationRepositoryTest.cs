@@ -1039,7 +1039,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         PrivateInvestigatorSwlContactInfo privateInvestigator = new()
         {
-            ContactId = contact.contactid,
+            ApplicantId = contact.contactid,
             GivenName = "InvestigatorGivenName",
             Surname = "InvestigatorSurname",
             LicenceId = licence.spd_licenceid
