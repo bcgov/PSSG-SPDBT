@@ -17,7 +17,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 						<ng-container matColumnDef="serviceTypeCode">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Certification Type</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Licence Type:</span>
+								<span class="mobile-label">Certificate Type:</span>
 								{{ application.serviceTypeCode | options: 'ServiceTypes' }}
 							</mat-cell>
 						</ng-container>

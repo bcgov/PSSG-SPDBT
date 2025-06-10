@@ -19,7 +19,7 @@ import { StepDtPhotographOfYourselfRenewComponent } from './step-dt-photograph-o
 		<div class="row">
 			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 				<mat-step [completed]="true">
-					<ng-template matStepLabel>Licence Confirmation</ng-template>
+					<ng-template matStepLabel>Certificate Confirmation</ng-template>
 					<app-step-dt-licence-confirmation></app-step-dt-licence-confirmation>
 
 					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_SUMMARY)"></app-wizard-footer>
