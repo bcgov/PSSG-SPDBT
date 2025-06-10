@@ -26,7 +26,7 @@ internal class DogTrainerAppRepository : DogAppBaseRepository, IDogTrainerAppRep
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
         {
             app = PrepareNewAppDataInDbContext(cmd, contact);
-            contact = UpdateContact(cmd, (Guid)cmd.ContactId);
+            contact = UpdateContact(cmd, (Guid)cmd.ApplicantId);
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
