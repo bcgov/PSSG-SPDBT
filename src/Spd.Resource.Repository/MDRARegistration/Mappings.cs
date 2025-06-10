@@ -10,8 +10,8 @@ internal class Mappings : Profile
         _ = CreateMap<CreateMDRARegistrationCmd, spd_orgregistration>()
         .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
         .ForMember(d => d.spd_applicationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
-        .ForMember(d => d.spd_authorizedcontactgivenname, opt => opt.MapFrom(s => $"{s.BizOwnerFirstName.Trim()} {s.BizOwnerMiddleName.Trim()}"))
-        .ForMember(d => d.spd_authorizedcontactsurname, opt => opt.MapFrom(s => s.BizOwnerLastName))
+        .ForMember(d => d.spd_authorizedcontactgivenname, opt => opt.MapFrom(s => s.BizOwnerGivenNames == null ? null : s.BizOwnerGivenNames.Trim()))
+        .ForMember(d => d.spd_authorizedcontactsurname, opt => opt.MapFrom(s => s.BizOwnerSurname))
         .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
         .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => s.BizTradeName))
         .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.BizEmailAddress))
@@ -25,8 +25,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.Country))
         .ReverseMap()
         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_applicationtype)))
-        .ForMember(d => d.BizOwnerFirstName, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname)) //tbd
-        .ForMember(d => d.BizOwnerMiddleName, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname)) //tbd
+        .ForMember(d => d.BizOwnerGivenNames, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname))
         ;
 
         CreateMap<CreateMDRARegistrationCmd, List<spd_address>>()
@@ -41,9 +40,9 @@ internal class Mappings : Profile
                 {
                     spd_addressid = Guid.NewGuid(),
                     spd_type = (int)AddressTypeOptionSet.MainOffice,
-                    spd_branchmanagername = $"{src.BizManagerFirstName} {src.BizManagerMiddleName} {src.BizManagerLastName}".Trim(),
+                    spd_branchmanagername = src.BizManagerFullName,
                     spd_branchphone = src.BizPhoneNumber,
-                    spd_branchemail = src.BizEmailAddress,
+                    spd_branchemail = src.BizManagerEmailAddress,
                     spd_address1 = src.BizAddress.AddressLine1,
                     spd_address2 = src.BizAddress.AddressLine2,
                     spd_city = src.BizAddress.City,
