@@ -151,6 +151,13 @@ internal class DocumentRepository : IDocumentRepository
                 throw new ArgumentException("invalid contact id");
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_contact), contact);
         }
+        if (cmd.OrgRegistrationId != null)
+        {
+            spd_orgregistration? registration = await _context.GetOrgRegistrationById((Guid)cmd.OrgRegistrationId, ct);
+            if (registration == null)
+                throw new ArgumentException("invalid org registration id");
+            _context.SetLink(documenturl, nameof(documenturl.spd_OrgRegistrationId), registration);
+        }
         if (cmd.TaskId != null)
         {
             task? task = await _context.GetTaskById((Guid)cmd.TaskId, ct);

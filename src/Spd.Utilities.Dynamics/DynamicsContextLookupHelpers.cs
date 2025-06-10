@@ -344,6 +344,24 @@ namespace Spd.Utilities.Dynamics
             }
         }
 
+        public static async Task<spd_orgregistration?> GetOrgRegistrationById(this DynamicsContext context, Guid orgRegistrationId, CancellationToken ct)
+        {
+            try
+            {
+                spd_orgregistration? registration = await context.spd_orgregistrations
+                    .Where(a => a.spd_orgregistrationid == orgRegistrationId)
+                    .SingleOrDefaultAsync(ct);
+                return registration;
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+        }
+
         public static async Task<spd_clearance?> GetClearanceById(this DynamicsContext context, Guid clearanceId, CancellationToken ct)
            => await context.spd_clearances.Where(a => a.spd_clearanceid == clearanceId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)

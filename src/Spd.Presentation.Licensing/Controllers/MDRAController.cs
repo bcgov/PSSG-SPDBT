@@ -59,17 +59,17 @@ namespace Spd.Presentation.Licensing.Controllers
                 response = await _mediator.Send(command, ct);
             }
 
-            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
-            {
-                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
-                response = await _mediator.Send(command, ct);
-            }
+            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            //{
+            //    MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
+            //    response = await _mediator.Send(command, ct);
+            //}
 
-            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
-            {
-                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
-                response = await _mediator.Send(command, ct);
-            }
+            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            //{
+            //    MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
+            //    response = await _mediator.Send(command, ct);
+            //}
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return null;
