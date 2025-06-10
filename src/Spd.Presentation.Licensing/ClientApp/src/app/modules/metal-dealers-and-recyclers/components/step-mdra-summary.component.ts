@@ -47,13 +47,13 @@ import { MetalDealersAndRecyclersBranchResponse } from './modal-mdra-branch.comp
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Legal Business Name</div>
 										<div class="summary-text-data">
-											{{ businessOwnerDatalegalBusinessName | default }}
+											{{ businessOwnerDatabizLegalName | default }}
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Trade or 'Doing Business As' Name</div>
 										<div class="summary-text-data">
-											{{ businessOwnerDatatradeName | default }}
+											{{ businessOwnerDatabizTradeName | default }}
 										</div>
 									</div>
 									<div class="col-12">
@@ -227,11 +227,11 @@ export class StepMdraSummaryComponent implements OnInit, LicenceChildStepperStep
 	get businessOwnerDataname(): string {
 		return this.metalDealersApplicationService.getSummarybusinessOwnerDataname(this.metalDealersModelData);
 	}
-	get businessOwnerDatalegalBusinessName(): string {
-		return this.metalDealersApplicationService.getSummarybusinessOwnerDatalegalBusinessName(this.metalDealersModelData);
+	get businessOwnerDatabizLegalName(): string {
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDatabizLegalName(this.metalDealersModelData);
 	}
-	get businessOwnerDatatradeName(): string {
-		return this.metalDealersApplicationService.getSummarybusinessOwnerDatatradeName(this.metalDealersModelData);
+	get businessOwnerDatabizTradeName(): string {
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDatabizTradeName(this.metalDealersModelData);
 	}
 
 	get businessManagerDataname(): string {

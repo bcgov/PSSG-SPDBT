@@ -14,15 +14,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="row">
 							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Given Name</mat-label>
-									<input matInput formControlName="givenName" maxlength="40" />
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Middle Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="middleName" maxlength="40" />
+									<mat-label>Given Name(s)</mat-label>
+									<input matInput formControlName="givenName" maxlength="100" />
 								</mat-form-field>
 							</div>
 
@@ -54,15 +47,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Legal Business Name</mat-label>
-									<input matInput formControlName="legalBusinessName" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('legalBusinessName')?.hasError('required')"> This is required </mat-error>
+									<input matInput formControlName="bizLegalName" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('bizLegalName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 
 							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Trade or 'Doing Business As' Name</mat-label>
-									<input matInput formControlName="tradeName" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="40" />
 									<mat-hint>This is the name commonly used to refer to your business</mat-hint>
 								</mat-form-field>
 							</div>
