@@ -21,6 +21,7 @@ public record CreateMDRARegistrationCmd
     public Addr? BizAddress { get; set; }
     public string BizManagerFullName { get; set; }
     public string BizManagerEmailAddress { get; set; }
+    public string? BizManagerPhoneNumber { get; set; }
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchAddr>? Branches { get; set; }
