@@ -17,8 +17,6 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly IMediator _mediator;
         private static List<ServiceTypeCode> PersonalSecurityLicences = new() { ServiceTypeCode.BodyArmourPermit, ServiceTypeCode.ArmouredVehiclePermit, ServiceTypeCode.SecurityWorkerLicence };
-        private static List<ServiceTypeCode> GdsdCertifications = new() { ServiceTypeCode.GDSDTeamCertification, ServiceTypeCode.RetiredServiceDogCertification, ServiceTypeCode.DogTrainerCertification };
-
         public LicenceController(
             IMediator mediator,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -102,11 +100,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
                 || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
-                //gdsd, dog
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
-                string str = $"{response.LicenceId}*{response.LicenceAppId}";
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
-                return response;
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
 
             if (response != null)
