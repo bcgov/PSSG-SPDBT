@@ -41,7 +41,7 @@ internal class Mappings : Profile
                     spd_addressid = Guid.NewGuid(),
                     spd_type = (int)AddressTypeOptionSet.MainOffice,
                     spd_branchmanagername = src.BizManagerFullName,
-                    spd_branchphone = src.BizPhoneNumber,
+                    spd_branchphone = src.BizManagerPhoneNumber,
                     spd_branchemail = src.BizManagerEmailAddress,
                     spd_address1 = src.BizAddress.AddressLine1,
                     spd_address2 = src.BizAddress.AddressLine2,
