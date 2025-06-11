@@ -165,6 +165,7 @@ namespace Spd.Resource.Repository.Document
         VeterinarianConfirmationForSpayedNeuteredDog,
         DogTrainingCurriculumCertificateSupportingDocument,
         GDSDPracticeHoursLog,
-        GDSDCertificate
+        GDSDCertificate,
+        BusinessLicenceDocuments
     }
 }

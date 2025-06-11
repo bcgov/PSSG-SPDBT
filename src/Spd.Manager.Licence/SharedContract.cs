@@ -74,7 +74,8 @@ public enum LicenceDocumentTypeCode
     VeterinarianConfirmationForSpayedNeuteredDog,
     DogTrainingCurriculumCertificateSupportingDocument,
     GDSDPracticeHoursLog,
-    GDSDCertificate
+    GDSDCertificate,
+    BusinessLicenceDocuments
 }
 
 public enum PoliceOfficerRoleCode

@@ -18,16 +18,14 @@ public record MDRARegistrationRequest
 {
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.WebForm;
-    public string BizOwnerLastName { get; set; }
-    public string BizOwnerFirstName { get; set; }
-    public string BizOwnerMiddleName { get; set; }
+    public string BizOwnerSurname { get; set; }
+    public string BizOwnerGivenNames { get; set; }
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
     public Address? BizMailingAddress { get; set; }
     public Address? BizAddress { get; set; }
-    public string BizManagerLastName { get; set; }
-    public string BizManagerFirstName { get; set; }
-    public string BizManagerMiddleName { get; set; }
+    public string BizManagerFullName { get; set; }
+    public string? BizManagerEmailAddress { get; set; }
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }

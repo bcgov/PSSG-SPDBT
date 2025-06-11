@@ -55,7 +55,7 @@ internal class MDRARegistrationManager :
 
         if (request.ApplicationTypeCode == ApplicationTypeCode.New) //both new and renew need biz licence Registry Document
         {
-            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CorporateRegistryDocument))
+            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BusinessLicenceDocuments))
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Must provide copies of business licence registration documents.");
             }
