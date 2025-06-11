@@ -103,6 +103,7 @@ namespace Spd.Utilities.Dynamics
             {"BodyArmourPurpose", Guid.Parse("e1bc7549-0cea-ed11-b840-005056830319")},
             {"BodyArmourRationale", Guid.Parse("e3bc7549-0cea-ed11-b840-005056830319")},
             {"BusinessInsurance", Guid.Parse("fdbc7549-0cea-ed11-b840-005056830319")},
+            {"BusinessLicenceDocuments", Guid.Parse("dc6e1e8c-98ff-ef11-b857-00505683fbf4")},
             {"BasicSecurityTrainingCertificate", Guid.Parse("218de034-d47d-ee11-b846-00505683fbf4")},
             {"BasicSecurityTrainingCourseEquivalent", Guid.Parse("aaf10b62-d47d-ee11-b846-00505683fbf4")},
             {"CanadianCitizenship", Guid.Parse("c5bc7549-0cea-ed11-b840-005056830319")},
