@@ -40,6 +40,6 @@ public record MDRARegistrationNewRequest : MDRARegistrationRequest
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }
-    public bool? HasPotentialDuplicate { get; set; } = null;
+    public bool? HasPotentialDuplicate { get; set; }
 }
 

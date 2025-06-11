@@ -73,16 +73,14 @@ internal class MDRARegistrationManager :
         if (hasDuplicateInOrg)
         {
             resp.HasPotentialDuplicate = true;
-            resp.DuplicateFoundIn = OrgProcess.ExistingOrganization;
             return resp;
         }
 
         var searchQry = _mapper.Map<SearchRegistrationQry>(request);
-        bool hasDuplicateInOrgReg = await _orgRegRepository.CheckDuplicateAsync(searchQry, cancellationToken);
+        bool hasDuplicateInOrgReg = await _orgRegistrationRepository.CheckDuplicateAsync(searchQry, cancellationToken);
         if (hasDuplicateInOrgReg)
         {
             resp.HasPotentialDuplicate = true;
-            resp.DuplicateFoundIn = OrgProcess.Registration;
         }
 
         return resp;
