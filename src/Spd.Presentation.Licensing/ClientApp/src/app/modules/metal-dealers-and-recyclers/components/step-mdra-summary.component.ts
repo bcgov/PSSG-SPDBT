@@ -36,7 +36,6 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading-small">Expired Licence</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
@@ -60,10 +59,22 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 
 								<div class="text-minor-heading-small">Business Owner</div>
 								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-12 col-md-12">
 										<div class="text-label d-block text-muted">Business Owner Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDataname | default }}
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Phone Number</div>
+										<div class="summary-text-data">
+											{{ businessOwnerDatabizPhoneNumber | formatPhoneNumber | default }}
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Email Address</div>
+										<div class="summary-text-data">
+											{{ businessOwnerDatabizEmailAddress | default }}
 										</div>
 									</div>
 									<div class="col-lg-6 col-md-12">
@@ -76,12 +87,6 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 										<div class="text-label d-block text-muted">Trade or 'Doing Business As' Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatabizTradeName | default }}
-										</div>
-									</div>
-									<div class="col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDatabizEmailAddress | default }}
 										</div>
 									</div>
 									<div class="col-12">
@@ -108,7 +113,7 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
-											{{ businessManagerDatabizPhoneNumber | formatPhoneNumber | default }}
+											{{ businessManagerDatabizManagerPhoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-12">
@@ -263,12 +268,17 @@ export class StepMdraSummaryComponent implements OnInit, LicenceChildStepperStep
 	get businessOwnerDatabizEmailAddress(): string {
 		return this.metalDealersApplicationService.getSummarybusinessOwnerDatabizEmailAddress(this.metalDealersModelData);
 	}
+	get businessOwnerDatabizPhoneNumber(): string {
+		return this.metalDealersApplicationService.getSummarybusinessOwnerDatabizPhoneNumber(this.metalDealersModelData);
+	}
 
 	get businessManagerDataname(): string {
 		return this.metalDealersApplicationService.getSummarybusinessManagerDataname(this.metalDealersModelData);
 	}
-	get businessManagerDatabizPhoneNumber(): string {
-		return this.metalDealersApplicationService.getSummarybusinessManagerDatabizPhoneNumber(this.metalDealersModelData);
+	get businessManagerDatabizManagerPhoneNumber(): string {
+		return this.metalDealersApplicationService.getSummarybusinessManagerDatabizManagerPhoneNumber(
+			this.metalDealersModelData
+		);
 	}
 	get businessManagerDatabizManagerEmailAddress(): string {
 		return this.metalDealersApplicationService.getSummarybusinessManagerDatabizManagerEmailAddress(

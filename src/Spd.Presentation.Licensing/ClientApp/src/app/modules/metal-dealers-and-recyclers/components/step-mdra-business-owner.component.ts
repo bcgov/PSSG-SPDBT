@@ -46,8 +46,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 
 							<div class="col-xl-6 col-lg-6 col-md-12">
-								Phone Number
-								<!-- <mat-form-field>
+								<mat-form-field>
 									<mat-label>Phone Number</mat-label>
 									<input
 										matInput
@@ -57,7 +56,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[errorStateMatcher]="matcher"
 									/>
 									<mat-error *ngIf="form.get('bizPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
-								</mat-form-field> -->
+								</mat-form-field>
 							</div>
 
 							<div class="col-xl-6 col-lg-6 col-md-12">

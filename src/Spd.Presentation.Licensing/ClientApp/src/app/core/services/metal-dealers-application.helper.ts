@@ -16,12 +16,13 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		bizOwnerGivenNames: new FormControl(''),
 		bizOwnerSurname: new FormControl('', [FormControlValidators.required]),
 		bizEmailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		bizPhoneNumber: new FormControl(''),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
 		bizManagerFullName: new FormControl('', [FormControlValidators.required]),
-		bizPhoneNumber: new FormControl(''),
+		bizManagerPhoneNumber: new FormControl(''),
 		bizManagerEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
@@ -96,11 +97,9 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			FormControlValidators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
-		givenName: new FormControl(''),
-		middleName: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.email]),
+		branchManager: new FormControl('', [FormControlValidators.required]),
+		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
+		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
@@ -214,25 +213,21 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 
 		const body = {
 			applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
-			// applicationTypeCode: applicationTypeData.applicationTypeCode,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			bizOwnerGivenNames: businessOwnerData.bizOwnerGivenNames,
 			bizOwnerSurname: businessOwnerData.bizOwnerSurname,
 			bizEmailAddress: businessOwnerData.bizEmailAddress,
+			bizPhoneNumber: businessOwnerData.bizPhoneNumber,
 			bizLegalName: businessOwnerData.bizLegalName,
 			bizTradeName: businessOwnerData.bizTradeName,
 			bizManagerFullName: businessManagerData.bizManagerFullName,
-			bizPhoneNumber: businessManagerData.bizPhoneNumber,
+			bizManagerPhoneNumber: businessManagerData.bizManagerPhoneNumber,
 			bizManagerEmailAddress: businessManagerData.bizManagerEmailAddress,
 			bizAddress,
 			bizMailingAddress,
 			branches,
-			//   documentKeyCodes: Array<string> | null;
-
 			// 	licenceAppId,
-			// 	originalApplicationId: originalLicenceData.originalApplicationId,
 			// 	originalLicenceId: originalLicenceData.originalLicenceId,
-			// 	applicationTypeCode: applicationTypeData.applicationTypeCode,
-			// 	serviceTypeCode: serviceTypeData.serviceTypeCode,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
@@ -278,6 +273,9 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	getSummarybusinessOwnerDatabizEmailAddress(metalDealersModelData: any): string {
 		return metalDealersModelData.businessOwnerData.bizEmailAddress ?? '';
 	}
+	getSummarybusinessOwnerDatabizPhoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizPhoneNumber ?? '';
+	}
 	getSummarybusinessOwnerDataattachments(metalDealersModelData: any): File[] {
 		return metalDealersModelData.businessOwnerData.attachments ?? [];
 	}
@@ -285,12 +283,13 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	getSummarybusinessManagerDataname(metalDealersModelData: any): string {
 		return metalDealersModelData.businessManagerData.bizManagerFullName;
 	}
-	getSummarybusinessManagerDatabizPhoneNumber(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.bizPhoneNumber ?? '';
-	}
 	getSummarybusinessManagerDatabizManagerEmailAddress(metalDealersModelData: any): string {
 		return metalDealersModelData.businessManagerData.bizManagerEmailAddress ?? '';
 	}
+	getSummarybusinessManagerDatabizManagerPhoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.bizManagerPhoneNumber ?? '';
+	}
+
 	getSummarybranchesDatabranches(metalDealersModelData: any): Array<any> {
 		return metalDealersModelData.branchesData.branches ?? [];
 	}

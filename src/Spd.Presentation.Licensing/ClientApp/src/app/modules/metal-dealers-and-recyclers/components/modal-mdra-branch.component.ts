@@ -31,7 +31,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 				</div>
 
 				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12">
+					<div class="col-xl-12 col-lg-12 col-md-12">
 						<mat-form-field>
 							<mat-label>Full Name</mat-label>
 							<input matInput formControlName="branchManager" maxlength="150" [errorStateMatcher]="matcher" />
@@ -39,7 +39,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 						</mat-form-field>
 					</div>
 
-					<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="col-xl-6 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
 							<input
@@ -55,7 +55,7 @@ export interface MetalDealersAndRecyclersBranchResponse {
 						</mat-form-field>
 					</div>
 
-					<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="col-xl-6 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Email <span class="optional-label">(if any)</span></mat-label>
 							<input

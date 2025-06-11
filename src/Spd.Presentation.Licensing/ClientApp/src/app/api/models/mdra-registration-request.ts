@@ -15,6 +15,7 @@ export interface MdraRegistrationRequest {
   bizMailingAddress?: Address;
   bizManagerEmailAddress?: string | null;
   bizManagerFullName?: string | null;
+  bizManagerPhoneNumber?: string | null;
   bizOwnerGivenNames?: string | null;
   bizOwnerSurname?: string | null;
   bizPhoneNumber?: string | null;
