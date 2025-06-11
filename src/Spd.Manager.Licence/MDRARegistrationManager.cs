@@ -49,9 +49,9 @@ internal class MDRARegistrationManager :
         }
         ValidateFilesForNewApp(cmd);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
-        MDRARegistrationResp respone = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
-        await UploadNewDocsAsync(cmd.LicAppFileInfos, respone.RegistrationId, ct);
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = respone.RegistrationId };
+        MDRARegistrationResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
+        await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
+        return new MDRARegistrationCommandResponse { OrgRegistrationId = resp.RegistrationId };
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand cmd, CancellationToken ct)
