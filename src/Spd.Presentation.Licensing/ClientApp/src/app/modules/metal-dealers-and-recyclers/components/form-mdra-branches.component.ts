@@ -17,7 +17,7 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Branch Manager</mat-header-cell>
 							<mat-cell *matCellDef="let branch">
 								<span class="mobile-label">Manager:</span>
-								{{ branch | fullname | default }}
+								{{ branch.branchManager | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -134,6 +134,11 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 		}
 	}
 
+	refreshTable(): void {
+		this.dataSource = new MatTableDataSource(this.branchesArray.value);
+		this.branchesExist = this.dataSource.data.length > 0;
+	}
+
 	onEditBranch(branch: MetalDealersAndRecyclersBranchResponse): void {
 		this.branchDialog(branch, false);
 	}
@@ -173,7 +178,7 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 
 		this.dialog
 			.open(ModalMdraBranchComponent, {
-				width: '1200px',
+				width: '900px',
 				data: dialogOptions,
 				autoFocus: true,
 			})
@@ -204,11 +209,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 			postalCode: [branchData.postalCode],
 			province: [branchData.province],
 			country: [branchData.country],
-			givenName: [branchData.givenName],
-			middleName: [branchData.middleName],
-			surname: [branchData.surname],
-			phoneNumber: [branchData.phoneNumber],
-			emailAddress: [branchData.emailAddress],
+			branchManager: [branchData.branchManager],
+			branchPhoneNumber: [branchData.branchPhoneNumber],
+			branchEmailAddr: [branchData.branchEmailAddr],
 		});
 	}
 
@@ -224,11 +227,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 			postalCode: branchData.postalCode,
 			province: branchData.province,
 			country: branchData.country,
-			givenName: branchData.givenName,
-			middleName: branchData.middleName,
-			surname: branchData.surname,
-			phoneNumber: branchData.phoneNumber,
-			emailAddress: branchData.emailAddress,
+			branchManager: branchData.branchManager,
+			branchPhoneNumber: branchData.branchPhoneNumber,
+			branchEmailAddr: branchData.branchEmailAddr,
 		});
 	}
 

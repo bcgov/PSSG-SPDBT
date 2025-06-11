@@ -13,12 +13,10 @@ export interface MdraRegistrationRequest {
   bizEmailAddress?: string | null;
   bizLegalName?: string | null;
   bizMailingAddress?: Address;
-  bizManagerFirstName?: string | null;
-  bizManagerLastName?: string | null;
-  bizManagerMiddleName?: string | null;
-  bizOwnerFirstName?: string | null;
-  bizOwnerLastName?: string | null;
-  bizOwnerMiddleName?: string | null;
+  bizManagerEmailAddress?: string | null;
+  bizManagerFullName?: string | null;
+  bizOwnerGivenNames?: string | null;
+  bizOwnerSurname?: string | null;
   bizPhoneNumber?: string | null;
   bizTradeName?: string | null;
   branches?: Array<BranchInfo> | null;

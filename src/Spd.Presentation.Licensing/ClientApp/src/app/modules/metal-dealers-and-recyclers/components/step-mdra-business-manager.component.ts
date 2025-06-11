@@ -12,42 +12,42 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			subtitle="The business manager is the person responsible for the day to day management of the business."
 		>
 			<div class="row">
-				<div class="col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
-							<div class="col-xxl-5 col-xl-8 col-lg-12 col-md-12">
+							<div class="col-12">
 								<mat-form-field>
 									<mat-label>Full Name</mat-label>
-									<input matInput formControlName="fullName" [errorStateMatcher]="matcher" maxlength="150" />
-									<mat-error *ngIf="form.get('fullName')?.hasError('required')"> This is required </mat-error>
+									<input matInput formControlName="bizManagerFullName" [errorStateMatcher]="matcher" maxlength="150" />
+									<mat-error *ngIf="form.get('bizManagerFullName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 
-							<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Phone Number</mat-label>
 									<input
 										matInput
-										formControlName="phoneNumber"
+										formControlName="bizPhoneNumber"
 										[mask]="phoneMask"
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
 									/>
-									<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+									<mat-error *ngIf="form.get('bizPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 								</mat-form-field>
 							</div>
 
-							<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Email Address <span class="optional-label">(if any)</span></mat-label>
 									<input
 										matInput
-										formControlName="emailAddress"
+										formControlName="bizManagerEmailAddress"
 										[errorStateMatcher]="matcher"
 										placeholder="name@domain.com"
 										maxlength="75"
 									/>
-									<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
+									<mat-error *ngIf="form.get('bizManagerEmailAddress')?.hasError('email')">
 										Must be a valid email address
 									</mat-error>
 								</mat-form-field>

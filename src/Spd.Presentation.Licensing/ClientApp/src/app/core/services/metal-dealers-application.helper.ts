@@ -1,27 +1,28 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Address, ApplicationOriginTypeCode, BranchInfo } from '@app/api/models';
+import { Address, ApplicationOriginTypeCode, BranchInfo, Document, LicenceDocumentTypeCode } from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		bizLegalName: new FormControl('', [FormControlValidators.required]),
 		bizTradeName: new FormControl(''),
-		givenName: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		bizOwnerGivenNames: new FormControl(''),
+		bizOwnerSurname: new FormControl('', [FormControlValidators.required]),
+		bizEmailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		fullName: new FormControl('', [FormControlValidators.required]),
-		phoneNumber: new FormControl(''),
-		emailAddress: new FormControl('', [FormControlValidators.email]),
+		bizManagerFullName: new FormControl('', [FormControlValidators.required]),
+		bizPhoneNumber: new FormControl(''),
+		bizManagerEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -120,14 +121,29 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		super(formBuilder);
 	}
 
+	getDocsToSaveBlobs(mdraModelFormValue: any): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const businessOwnerData = mdraModelFormValue.businessOwnerData;
+		if (businessOwnerData.attachments) {
+			const docs: Array<Blob> = [];
+			businessOwnerData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.BusinessLicenceDocuments, documents: docs });
+		}
+
+		return documents;
+	}
+
 	/**
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(mdraModelFormValue: any): any {
-		const licenceAppId = mdraModelFormValue.licenceAppId;
-		const originalLicenceData = mdraModelFormValue.originalLicenceData;
-		const serviceTypeData = mdraModelFormValue.serviceTypeData;
+	getSaveBodyBase(mdraModelFormValue: any): any {
+		// const licenceAppId = mdraModelFormValue.licenceAppId;
+		// const originalLicenceData = mdraModelFormValue.originalLicenceData;
+		// const serviceTypeData = mdraModelFormValue.serviceTypeData;
 		const applicationTypeData = mdraModelFormValue.applicationTypeData;
 		const expiredLicenceData = mdraModelFormValue.expiredLicenceData;
 		const businessOwnerData = mdraModelFormValue.businessOwnerData;
@@ -176,62 +192,37 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 				branchAddress,
 			};
 			branches.push(branch);
+			console.log('**************** item', item);
+			console.log('**************** branch', branch);
 		});
+		console.log('**************** branches', branches);
 
 		const documentInfos: Array<Document> = [];
 
-		// const isCanadianCitizen = this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen);
+		businessOwnerData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BusinessLicenceDocuments,
+			});
+		});
 
-		// citizenshipData.attachments?.forEach((doc: any) => {
-		// 	let licenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
-		// 	if (!isCanadianCitizen) {
-		// 		if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
-		// 			licenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
-		// 		} else {
-		// 			licenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
-		// 		}
-		// 	}
-
-		// 	documentInfos.push({
-		// 		documentUrlId: doc.documentUrlId,
-		// 		expiryDate: this.utilService.dateToDbDate(citizenshipData.expiryDate),
-		// 		documentIdNumber: citizenshipData.documentIdNumber,
-		// 		licenceDocumentTypeCode,
-		// 	});
-		// });
-
-		// }
-
-		// const documentRelatedInfos: Array<DocumentRelatedInfo> =
-		// 	documentInfos
-		// 		.filter((doc) => doc.expiryDate || doc.documentIdNumber)
-		// 		.map((doc: Document) => {
-		// 			return {
-		// 				expiryDate: doc.expiryDate,
-		// 				documentIdNumber: doc.documentIdNumber,
-		// 				licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-		// 			} as DocumentRelatedInfo;
-		// 		}) ?? [];
-
-		// const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		// const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
-		// if (!hasExpiredLicence) {
-		// 	this.clearExpiredLicenceModelData();
-		// }
+		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+		if (!hasExpiredLicence) {
+			this.clearExpiredLicenceModelData();
+		}
 
 		const body = {
 			applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
-			applicationTypeCode: applicationTypeData.applicationTypeCode,
-			bizOwnerFirstName: businessOwnerData.givenName,
-			bizOwnerLastName: businessOwnerData.surname,
-			bizOwnerMiddleName: businessOwnerData.middleName,
-			bizEmailAddress: businessOwnerData.emailAddress,
+			// applicationTypeCode: applicationTypeData.applicationTypeCode,
+			bizOwnerGivenNames: businessOwnerData.bizOwnerGivenNames,
+			bizOwnerSurname: businessOwnerData.bizOwnerSurname,
+			bizEmailAddress: businessOwnerData.bizEmailAddress,
 			bizLegalName: businessOwnerData.bizLegalName,
 			bizTradeName: businessOwnerData.bizTradeName,
-			bizManagerFirstName: businessManagerData.givenName,
-			bizManagerLastName: businessManagerData.surname,
-			bizManagerMiddleName: businessManagerData.middleName,
-			bizPhoneNumber: businessManagerData.phoneNumber,
+			bizManagerFullName: businessManagerData.bizManagerFullName,
+			bizPhoneNumber: businessManagerData.bizPhoneNumber,
+			bizManagerEmailAddress: businessManagerData.bizManagerEmailAddress,
 			bizAddress,
 			bizMailingAddress,
 			branches,
@@ -242,14 +233,12 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			// 	originalLicenceId: originalLicenceData.originalLicenceId,
 			// 	applicationTypeCode: applicationTypeData.applicationTypeCode,
 			// 	serviceTypeCode: serviceTypeData.serviceTypeCode,
-			// 	//-----------------------------------
-			// 	hasExpiredLicence,
-			// 	expiredLicenceId,
-			// 	//-----------------------------------
-			// 	documentRelatedInfos: documentRelatedInfos,
-			// 	documentInfos: isAuthenticated ? documentInfos : undefined,
+			//-----------------------------------
+			hasExpiredLicence,
+			expiredLicenceId,
+			//-----------------------------------
+			documentInfos,
 		};
-
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
 	}
@@ -265,10 +254,19 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		return userNameArray.join(' ');
 	}
 
+	getSummaryhasExpiredLicence(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	getSummaryexpiredLicenceNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	getSummaryexpiredLicenceExpiryDate(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+	}
 	getSummarybusinessOwnerDataname(metalDealersModelData: any): string {
 		return this.getFullNameWithMiddle(
-			metalDealersModelData.businessOwnerData.givenName,
-			metalDealersModelData.businessOwnerData.surname
+			metalDealersModelData.businessOwnerData.bizOwnerGivenNames,
+			metalDealersModelData.businessOwnerData.bizOwnerSurname
 		);
 	}
 	getSummarybusinessOwnerDatabizLegalName(metalDealersModelData: any): string {
@@ -277,18 +275,21 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	getSummarybusinessOwnerDatabizTradeName(metalDealersModelData: any): string {
 		return metalDealersModelData.businessOwnerData.bizTradeName ?? '';
 	}
+	getSummarybusinessOwnerDatabizEmailAddress(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizEmailAddress ?? '';
+	}
 	getSummarybusinessOwnerDataattachments(metalDealersModelData: any): File[] {
 		return metalDealersModelData.businessOwnerData.attachments ?? [];
 	}
 
 	getSummarybusinessManagerDataname(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.fullName;
+		return metalDealersModelData.businessManagerData.bizManagerFullName;
 	}
-	getSummarybusinessManagerDataphoneNumber(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.phoneNumber ?? '';
+	getSummarybusinessManagerDatabizPhoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.bizPhoneNumber ?? '';
 	}
-	getSummarybusinessManagerDataemailAddress(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.emailAddress ?? '';
+	getSummarybusinessManagerDatabizManagerEmailAddress(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.bizManagerEmailAddress ?? '';
 	}
 	getSummarybranchesDatabranches(metalDealersModelData: any): Array<any> {
 		return metalDealersModelData.branchesData.branches ?? [];
