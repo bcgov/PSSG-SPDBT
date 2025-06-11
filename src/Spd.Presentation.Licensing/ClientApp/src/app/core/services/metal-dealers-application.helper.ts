@@ -77,14 +77,9 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		}
 	);
 
-	branchesFormGroup: FormGroup = this.formBuilder.group(
-		{
-			branches: this.formBuilder.array([]),
-		},
-		{
-			validators: [FormGroupValidators.branchrequiredValidator('branches')],
-		}
-	);
+	branchesFormGroup: FormGroup = this.formBuilder.group({
+		branches: this.formBuilder.array([]),
+	});
 
 	branchFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -238,17 +233,6 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		return body;
 	}
 
-	getFullNameWithMiddle(givenName: string | null | undefined, surname: string | null | undefined): string {
-		const userNameArray: string[] = [];
-		if (givenName) {
-			userNameArray.push(givenName);
-		}
-		if (surname) {
-			userNameArray.push(surname);
-		}
-		return userNameArray.join(' ');
-	}
-
 	getSummaryhasExpiredLicence(metalDealersModelData: any): string {
 		return metalDealersModelData.expiredLicenceData.hasExpiredLicence ?? '';
 	}
@@ -259,9 +243,11 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		return metalDealersModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 	getSummarybusinessOwnerDataname(metalDealersModelData: any): string {
-		return this.getFullNameWithMiddle(
-			metalDealersModelData.businessOwnerData.bizOwnerGivenNames,
-			metalDealersModelData.businessOwnerData.bizOwnerSurname
+		return (
+			this.utilService.getFullName(
+				metalDealersModelData.businessOwnerData.bizOwnerGivenNames,
+				metalDealersModelData.businessOwnerData.bizOwnerSurname
+			) ?? ''
 		);
 	}
 	getSummarybusinessOwnerDatabizLegalName(metalDealersModelData: any): string {
