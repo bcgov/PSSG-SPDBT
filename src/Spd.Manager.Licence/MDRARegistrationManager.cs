@@ -4,6 +4,8 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.MDRARegistration;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -17,19 +19,34 @@ internal class MDRARegistrationManager :
     private readonly IMapper _mapper;
     private readonly IMDRARegistrationRepository _repository;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IOrgRepository _orgRepository;
+    private readonly IOrgRegistrationRepository _orgRegistrationRepository;
 
     public MDRARegistrationManager(IMapper mapper,
         IMDRARegistrationRepository repository,
-        IDocumentRepository documentRepository)
+        IDocumentRepository documentRepository,
+        IOrgRepository orgRepository,
+        IOrgRegistrationRepository orgRegistrationRepository)
     {
         this._mapper = mapper;
         this._repository = repository;
         this._documentRepository = documentRepository;
+        this._orgRepository = orgRepository;
+        this._orgRegistrationRepository = orgRegistrationRepository;
     }
 
     #region anonymous
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand cmd, CancellationToken ct)
     {
+        MDRARegistrationCommandResponse response;
+        if (cmd.SubmitRequest.RequireDuplicateCheck)
+        {
+            response = await CheckDuplicate(cmd.SubmitRequest, ct);
+            if (response.HasPotentialDuplicate == true)
+            {
+                return response = new MDRARegistrationCommandResponse { HasPotentialDuplicate = true };
+            }
+        }
         ValidateFilesForNewApp(cmd);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
         MDRARegistrationResp respone = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
@@ -48,6 +65,29 @@ internal class MDRARegistrationManager :
     }
     #endregion
 
+    private async Task<MDRARegistrationCommandResponse> CheckDuplicate(MDRARegistrationNewRequest request, CancellationToken cancellationToken)
+    {
+        MDRARegistrationCommandResponse resp = new MDRARegistrationCommandResponse();
+        var searchOrgQry = _mapper.Map<SearchOrgQry>(request);
+        bool hasDuplicateInOrg = await _orgRepository.CheckDuplicateAsync(searchOrgQry, cancellationToken);
+        if (hasDuplicateInOrg)
+        {
+            resp.HasPotentialDuplicate = true;
+            resp.DuplicateFoundIn = OrgProcess.ExistingOrganization;
+            return resp;
+        }
+
+        var searchQry = _mapper.Map<SearchRegistrationQry>(request);
+        bool hasDuplicateInOrgReg = await _orgRegRepository.CheckDuplicateAsync(searchQry, cancellationToken);
+        if (hasDuplicateInOrgReg)
+        {
+            resp.HasPotentialDuplicate = true;
+            resp.DuplicateFoundIn = OrgProcess.Registration;
+        }
+
+        return resp;
+    }
+
     private static void ValidateFilesForNewApp(MDRARegistrationNewCommand cmd)
     {
         MDRARegistrationRequest request = cmd.SubmitRequest;
@@ -63,7 +103,7 @@ internal class MDRARegistrationManager :
     }
 
     //upload file from cache to main bucket
-    protected async Task UploadNewDocsAsync(
+    private async Task UploadNewDocsAsync(
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? orgRegistrationId,
         CancellationToken ct)

@@ -10,7 +10,7 @@ public interface IMDRARegistrationManager
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand command, CancellationToken ct);
 }
 
-public record MDRARegistrationNewCommand(MDRARegistrationRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
+public record MDRARegistrationNewCommand(MDRARegistrationNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 
@@ -32,8 +32,14 @@ public record MDRARegistrationRequest
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
 }
 
+public record MDRARegistrationNewRequest : MDRARegistrationRequest
+{
+    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
+    public bool RequireDuplicateCheck { get; set; } = true;
+}
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }
+    public bool? HasPotentialDuplicate { get; set; } = null;
 }
 
