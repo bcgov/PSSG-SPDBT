@@ -47,7 +47,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Phone Number</mat-label>
+									<mat-label>Phone Number <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
 										formControlName="bizPhoneNumber"
@@ -69,7 +69,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Trade or 'Doing Business As' Name</mat-label>
+									<mat-label
+										>Trade or 'Doing Business As' Name <span class="optional-label">(optional)</span></mat-label
+									>
 									<input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="40" />
 									<mat-hint>This is the name commonly used to refer to your business</mat-hint>
 								</mat-form-field>

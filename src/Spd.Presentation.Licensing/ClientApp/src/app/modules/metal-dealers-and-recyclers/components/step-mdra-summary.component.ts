@@ -36,13 +36,9 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 							</mat-expansion-panel-header>
 
 							<div class="panel-body">
-								<div class="text-minor-heading-small">Expired Licence</div>
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Expired Licence</div>
-										<div class="summary-text-data">{{ hasExpiredLicence | default }}</div>
-									</div>
-									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodeYes">
+								<ng-container *ngIf="hasExpiredLicence === booleanTypeCodeYes">
+									<div class="text-minor-heading-small">Expired Licence</div>
+									<div class="row mt-0">
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Expired Licence Number</div>
 											<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
@@ -53,9 +49,9 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 												{{ expiredLicenceExpiryDate | formatDate | default }}
 											</div>
 										</div>
-									</ng-container>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+									</div>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								</ng-container>
 
 								<div class="text-minor-heading-small">Business Owner</div>
 								<div class="row mt-0">

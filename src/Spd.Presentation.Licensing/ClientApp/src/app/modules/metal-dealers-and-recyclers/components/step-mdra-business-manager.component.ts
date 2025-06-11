@@ -25,7 +25,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 							<div class="col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Phone Number</mat-label>
+									<mat-label>Phone Number <span class="optional-label">(optional)</span></mat-label>
 									<input
 										matInput
 										formControlName="bizManagerPhoneNumber"
