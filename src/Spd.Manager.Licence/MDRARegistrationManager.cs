@@ -14,6 +14,7 @@ internal class MDRARegistrationManager :
         IRequestHandler<MDRARegistrationNewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationRenewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationUpdateCommand, MDRARegistrationCommandResponse>,
+        IRequestHandler<GetMDRARegistrationIdQuery, Guid>,
         IMDRARegistrationManager
 {
     private readonly IMapper _mapper;
@@ -63,6 +64,11 @@ internal class MDRARegistrationManager :
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand cmd, CancellationToken ct)
+    {
+        return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
+    }
+
+    public async Task<Guid> Handle(Get cmd, CancellationToken ct)
     {
         return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
     }

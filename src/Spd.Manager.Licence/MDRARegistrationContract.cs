@@ -8,11 +8,14 @@ public interface IMDRARegistrationManager
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand command, CancellationToken ct);
+    public Task<Guid> Handle(GetMDRARegistrationIdQuery query, CancellationToken ct);
+
 }
 
 public record MDRARegistrationNewCommand(MDRARegistrationNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
+public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid>;
 
 public record MDRARegistrationRequest
 {
@@ -45,4 +48,5 @@ public record MDRARegistrationCommandResponse
     //this = true, then fe show message that "if user still want to proceed", if user response with yes, set HasPotentialDuplicate=true, RequireDuplicateCheck= false.
     public bool? HasPotentialDuplicate { get; set; }
 }
+
 
