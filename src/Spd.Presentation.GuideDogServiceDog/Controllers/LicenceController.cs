@@ -76,13 +76,7 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
-            if (response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
-                latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
-                return response;
-            else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
-                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+            if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
                 || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
                 || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
@@ -92,14 +86,10 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
                 return response;
             }
-
-            if (response != null)
+            else
             {
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
-                string str = $"{response.LicenceId}*{latestAppId}";
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
-            return response;
         }
 
         /// <summary>
