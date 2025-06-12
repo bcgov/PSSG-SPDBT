@@ -65,7 +65,11 @@ namespace Spd.Resource.Repository.Registration
         public async Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct)
         {
             string key;
-            if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
+            if (searchQry.RegistrationTypeCode == RegistrationTypeCode.MDRA)
+            {
+                key = "MetalDealerRecycler";
+            }
+            else if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
             {
                 key = $"{searchQry.RegistrationTypeCode}-{searchQry.EmployeeOrganizationTypeCode}";
             }
