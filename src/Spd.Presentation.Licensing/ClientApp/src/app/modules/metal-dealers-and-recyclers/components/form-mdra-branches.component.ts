@@ -11,13 +11,13 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 	template: `
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
-				<ng-container *ngIf="branchesExist">
+				<ng-container *ngIf="branchesExist; else noBranchesExist">
 					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
 						<ng-container matColumnDef="branchManager">
 							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Branch Manager</mat-header-cell>
 							<mat-cell *matCellDef="let branch">
 								<span class="mobile-label">Manager:</span>
-								{{ branch | fullname | default }}
+								{{ branch.branchManager | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -72,14 +72,14 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 					</mat-table>
 				</ng-container>
 
+				<ng-template #noBranchesExist>
+					<div class="text-minor-heading-small mt-3" *ngIf="isReadonly">No branches have been entered</div>
+				</ng-template>
+
 				<div class="text-center" *ngIf="!isReadonly">
 					<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
 						<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
 					</button>
-
-					<div class="mt-3" *ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('branchrequired')">
-						<mat-error class="mat-option-error">At least one branch is required</mat-error>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -134,6 +134,11 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 		}
 	}
 
+	refreshTable(): void {
+		this.dataSource = new MatTableDataSource(this.branchesArray.value);
+		this.branchesExist = this.dataSource.data.length > 0;
+	}
+
 	onEditBranch(branch: MetalDealersAndRecyclersBranchResponse): void {
 		this.branchDialog(branch, false);
 	}
@@ -173,7 +178,7 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 
 		this.dialog
 			.open(ModalMdraBranchComponent, {
-				width: '1200px',
+				width: '900px',
 				data: dialogOptions,
 				autoFocus: true,
 			})
@@ -204,11 +209,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 			postalCode: [branchData.postalCode],
 			province: [branchData.province],
 			country: [branchData.country],
-			givenName: [branchData.givenName],
-			middleName: [branchData.middleName],
-			surname: [branchData.surname],
-			phoneNumber: [branchData.phoneNumber],
-			emailAddress: [branchData.emailAddress],
+			branchManager: [branchData.branchManager],
+			branchPhoneNumber: [branchData.branchPhoneNumber],
+			branchEmailAddr: [branchData.branchEmailAddr],
 		});
 	}
 
@@ -224,11 +227,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 			postalCode: branchData.postalCode,
 			province: branchData.province,
 			country: branchData.country,
-			givenName: branchData.givenName,
-			middleName: branchData.middleName,
-			surname: branchData.surname,
-			phoneNumber: branchData.phoneNumber,
-			emailAddress: branchData.emailAddress,
+			branchManager: branchData.branchManager,
+			branchPhoneNumber: branchData.branchPhoneNumber,
+			branchEmailAddr: branchData.branchEmailAddr,
 		});
 	}
 

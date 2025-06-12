@@ -112,8 +112,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	standalone: false,
 })
 export class StepMdraConsentComponent implements LicenceChildStepperStepComponent {
-	collectionNoticeActName = 'Metal Dealers and Recyclers Act';
-
 	form: FormGroup = this.metalDealersApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(

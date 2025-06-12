@@ -14,11 +14,9 @@ export interface MetalDealersAndRecyclersBranchResponse {
 	country?: null | string;
 	postalCode?: null | string;
 	province?: null | string;
-	givenName?: null | string;
-	middleName?: null | string;
-	surname?: null | string;
-	phoneNumber?: null | string;
-	emailAddress?: null | string;
+	branchManager?: null | string;
+	branchPhoneNumber?: null | string;
+	branchEmailAddr?: null | string;
 }
 
 @Component({
@@ -33,55 +31,43 @@ export interface MetalDealersAndRecyclersBranchResponse {
 				</div>
 
 				<div class="row">
-					<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="col-xl-12 col-lg-12 col-md-12">
 						<mat-form-field>
-							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="givenName" maxlength="40" />
+							<mat-label>Full Name</mat-label>
+							<input matInput formControlName="branchManager" maxlength="150" [errorStateMatcher]="matcher" />
+							<mat-error *ngIf="form.get('branchManager')?.hasError('branchManager')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 
-					<div class="col-xl-4 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Middle Name <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName" maxlength="40" />
-						</mat-form-field>
-					</div>
-
-					<div class="col-xl-4 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Surname</mat-label>
-							<input matInput formControlName="surname" maxlength="40" [errorStateMatcher]="matcher" />
-							<mat-error *ngIf="form.get('surname')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-
-					<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="col-xl-6 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
 							<input
 								matInput
-								formControlName="phoneNumber"
+								formControlName="branchPhoneNumber"
 								[errorStateMatcher]="matcher"
 								[mask]="phoneMask"
 								[showMaskTyped]="false"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 
-					<div class="col-xl-4 col-lg-6 col-md-12">
+					<div class="col-xl-6 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Email <span class="optional-label">(if any)</span></mat-label>
 							<input
 								matInput
-								formControlName="emailAddress"
+								formControlName="branchEmailAddr"
 								placeholder="name@domain.com"
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('branchEmailAddr')?.hasError('email')">
+								Must be a valid email address
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
