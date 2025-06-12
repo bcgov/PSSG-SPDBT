@@ -17,7 +17,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-checklist-new></app-step-permit-checklist-new>
+				<app-step-permit-checklist-new [isBodyArmourPermit]="isBodyArmourPermit"></app-step-permit-checklist-new>
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
 					<app-wizard-footer
@@ -97,5 +97,9 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	get showTermsOfUse(): boolean {
 		// anonymous: agree everytime for all
 		return !this.isLoggedIn;
+	}
+
+	get isBodyArmourPermit(): boolean {
+		return this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit;
 	}
 }
