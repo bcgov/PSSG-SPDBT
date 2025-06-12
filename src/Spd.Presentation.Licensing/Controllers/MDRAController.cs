@@ -55,7 +55,7 @@ namespace Spd.Presentation.Licensing.Controllers
             MDRARegistrationCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
+                MDRARegistrationNewCommand command = new((MDRARegistrationNewRequest)jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 

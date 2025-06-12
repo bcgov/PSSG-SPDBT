@@ -18,8 +18,10 @@ using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.MDRARegistration;
+using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.RetiredDogApp;
 using System.Collections.Immutable;
 using System.Text.Json;
@@ -510,6 +512,16 @@ internal class Mappings : Profile
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
         CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>()
            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+        CreateMap<MDRARegistrationNewRequest, SearchRegistrationQry>()
+            .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
+            .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
+            .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
+        CreateMap<MDRARegistrationNewRequest, SearchOrgQry>()
+            .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
+            .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
+            .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
