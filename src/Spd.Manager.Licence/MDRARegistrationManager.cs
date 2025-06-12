@@ -14,6 +14,7 @@ internal class MDRARegistrationManager :
         IRequestHandler<MDRARegistrationNewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationRenewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationUpdateCommand, MDRARegistrationCommandResponse>,
+        IRequestHandler<GetMDRARegistrationIdQuery, Guid?>,
         IMDRARegistrationManager
 {
     private readonly IMapper _mapper;
@@ -66,9 +67,15 @@ internal class MDRARegistrationManager :
     {
         return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
     }
+
+    public async Task<Guid?> Handle(GetMDRARegistrationIdQuery cmd, CancellationToken ct)
+    {
+        OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.BizId), ct);
+        return org.OrgResult.OrgRegistrationId;
+    }
     #endregion
 
-    private async Task<(bool HasPotentialDuplicate, bool HasSilentPotentialDuplicate)> CheckDuplicate(MDRARegistrationNewRequest request, CancellationToken cancellationToken)
+    private async Task<(bool HasPotentialDuplicate, bool HasSilentPotentialDuplicate)> CheckDuplicate(MDRARegistrationRequest request, CancellationToken cancellationToken)
     {
         bool hasPotentialDuplicate = false;
         bool hasSilentPotentialDuplicate = false;
