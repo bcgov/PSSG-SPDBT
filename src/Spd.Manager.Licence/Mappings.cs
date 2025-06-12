@@ -512,12 +512,12 @@ internal class Mappings : Profile
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
         CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>()
            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
-        CreateMap<MDRARegistrationNewRequest, SearchRegistrationQry>()
+        CreateMap<MDRARegistrationRequest, SearchRegistrationQry>()
             .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
             .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
             .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
-        CreateMap<MDRARegistrationNewRequest, SearchOrgQry>()
+        CreateMap<MDRARegistrationRequest, SearchOrgQry>()
             .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
             .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
             .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
