@@ -26,6 +26,6 @@ public record CreateMDRARegistrationCmd
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchAddr>? Branches { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-
+    public bool? HasPotentialDuplicate { get; set; }
 }
 
