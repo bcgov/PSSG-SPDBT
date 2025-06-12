@@ -32,6 +32,16 @@ namespace Spd.Presentation.Licensing.Controllers
 
         #region anonymous
 
+        [Route("api/mdra-registration")]
+        [HttpGet]
+        public async Task<WorkerLicenceAppResponse> GetMDRARegistraionAnonymous()
+        {
+
+            //string swlApplicationId = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            //return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(swlApplicationId)));
+            return null;
+        }
+
         /// <summary>
         /// Submit MDRA registration Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
