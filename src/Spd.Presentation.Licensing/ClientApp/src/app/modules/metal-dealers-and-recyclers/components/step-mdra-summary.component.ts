@@ -55,37 +55,37 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 
 								<div class="text-minor-heading-small">Business Owner</div>
 								<div class="row mt-0">
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Owner Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDataname | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Phone Number</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatabizPhoneNumber | formatPhoneNumber | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatabizEmailAddress | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Legal Business Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatabizLegalName | default }}
 										</div>
 									</div>
-									<div class="col-lg-6 col-md-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Trade or 'Doing Business As' Name</div>
 										<div class="summary-text-data">
 											{{ businessOwnerDatabizTradeName | default }}
 										</div>
 									</div>
-									<div class="col-12">
+									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Business Licence Documents</div>
 										<div class="summary-text-data">
 											<ul class="m-0">
