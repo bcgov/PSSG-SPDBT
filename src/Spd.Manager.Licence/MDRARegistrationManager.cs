@@ -39,16 +39,19 @@ internal class MDRARegistrationManager :
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand cmd, CancellationToken ct)
     {
         MDRARegistrationCommandResponse response;
+        bool? hasSilentDuplicate = null;
         if (cmd.SubmitRequest.RequireDuplicateCheck)
         {
-            response = await CheckDuplicate(cmd.SubmitRequest, ct);
-            if (response.HasPotentialDuplicate == true)
+            bool hasDuplicate;
+            (hasDuplicate, hasSilentDuplicate) = await CheckDuplicate(cmd.SubmitRequest, ct);
+            if (hasDuplicate)
             {
                 return response = new MDRARegistrationCommandResponse { HasPotentialDuplicate = true };
             }
         }
         ValidateFilesForNewApp(cmd);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
+        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate == BooleanTypeCode.Yes || hasSilentDuplicate == true;
         MDRARegistrationResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
         await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
         return new MDRARegistrationCommandResponse { OrgRegistrationId = resp.RegistrationId };
@@ -65,25 +68,17 @@ internal class MDRARegistrationManager :
     }
     #endregion
 
-    private async Task<MDRARegistrationCommandResponse> CheckDuplicate(MDRARegistrationNewRequest request, CancellationToken cancellationToken)
+    private async Task<(bool HasPotentialDuplicate, bool HasSilentPotentialDuplicate)> CheckDuplicate(MDRARegistrationNewRequest request, CancellationToken cancellationToken)
     {
-        MDRARegistrationCommandResponse resp = new MDRARegistrationCommandResponse();
-        var searchOrgQry = _mapper.Map<SearchOrgQry>(request);
-        bool hasDuplicateInOrg = await _orgRepository.CheckDuplicateAsync(searchOrgQry, cancellationToken);
-        if (hasDuplicateInOrg)
-        {
-            resp.HasPotentialDuplicate = true;
-            return resp;
-        }
-
+        bool hasPotentialDuplicate = false;
+        bool hasSilentPotentialDuplicate = false;
         var searchQry = _mapper.Map<SearchRegistrationQry>(request);
-        bool hasDuplicateInOrgReg = await _orgRegistrationRepository.CheckDuplicateAsync(searchQry, cancellationToken);
-        if (hasDuplicateInOrgReg)
-        {
-            resp.HasPotentialDuplicate = true;
-        }
+        hasPotentialDuplicate = await _orgRegistrationRepository.CheckDuplicateAsync(searchQry, cancellationToken);
 
-        return resp;
+        var searchOrgQry = _mapper.Map<SearchOrgQry>(request);
+        hasSilentPotentialDuplicate = await _orgRepository.CheckDuplicateAsync(searchOrgQry, cancellationToken);
+
+        return (hasPotentialDuplicate, hasSilentPotentialDuplicate);
     }
 
     private static void ValidateFilesForNewApp(MDRARegistrationNewCommand cmd)

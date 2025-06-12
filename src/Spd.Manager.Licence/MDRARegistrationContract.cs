@@ -19,7 +19,7 @@ public record MDRARegistrationRequest
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.WebForm;
     public string BizOwnerSurname { get; set; }
-    public string BizOwnerGivenNames { get; set; }
+    public string? BizOwnerGivenNames { get; set; }
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
     public Address? BizMailingAddress { get; set; }
@@ -40,6 +40,8 @@ public record MDRARegistrationNewRequest : MDRARegistrationRequest
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }
+
+    //this = true, then fe show message that "if user still want to proceed", if user response with yes, set HasPotentialDuplicate=true, RequireDuplicateCheck= false.
     public bool? HasPotentialDuplicate { get; set; }
 }
 

@@ -14,6 +14,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_authorizedcontactsurname, opt => opt.MapFrom(s => s.BizOwnerSurname))
         .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
         .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => s.BizTradeName))
+        .ForMember(d => d.spd_potentialduplicate, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPotentialDuplicate)))
         .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.BizEmailAddress))
         .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.BizPhoneNumber))
         .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => true))
