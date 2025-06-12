@@ -1,28 +1,19 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, MdraRegistrationCommandResponse } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
-import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
-import {
-	ModalMdraDuplicateComponent,
-	ModalMdraDuplicateDialogData,
-	ModalMdraDuplicateDialogResponse,
-} from './modal-mdra-duplicate.component';
 import { StepsMdraBranchesComponent } from './steps-mdra-branches.component';
 import { StepsMdraBusinessInfoComponent } from './steps-mdra-business-info.component';
 import { StepsMdraDetailsComponent } from './steps-mdra-details.component';
 import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-confirm.component';
 
 @Component({
-	selector: 'app-mdra-wizard-new-renewal',
+	selector: 'app-mdra-wizard-update',
 	template: `
 		<mat-stepper
 			linear
@@ -91,7 +82,7 @@ import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-conf
 	styles: ``,
 	standalone: false,
 })
-export class MdraWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class MdraWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
@@ -113,7 +104,6 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private dialog: MatDialog,
 		private router: Router,
 		private metalDealersApplicationService: MetalDealersApplicationService
 	) {
@@ -143,80 +133,16 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	onSubmit(): void {
-		// if (this.applicationTypeCode === ApplicationTypeCode.New) {
-		const requireDuplicateCheck = true;
-		this.metalDealersApplicationService.submitLicenceAnonymous(requireDuplicateCheck).subscribe({
-			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-				this.displayDataValidationMessage(dupres.body);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
-		return;
-		// }
-
-		// this.metalDealersApplicationService.submitLicenceRenewalAnonymous().subscribe({
+		// this.metalDealersApplicationService.submitLicenceAnonymous().subscribe({
 		// 	next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-		// 		this.handleSaveSuccess();
+		// 		this.router.navigateByUrl(
+		// 			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
+		// 		);
 		// 	},
 		// 	error: (error: any) => {
 		// 		console.log('An error occurred during save', error);
 		// 	},
 		// });
-	}
-
-	private displayDataValidationMessage(dupres: MdraRegistrationCommandResponse): void {
-		if (!!dupres.orgRegistrationId) {
-			this.handleSaveSuccess();
-			return;
-		}
-
-		if (dupres.hasPotentialDuplicate == true) {
-			const data: ModalMdraDuplicateDialogData = {
-				title: 'Potential duplicate detected',
-				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-				actionText: 'Yes, create registration',
-				cancelText: 'Cancel',
-			};
-			this.dialog
-				.open(ModalMdraDuplicateComponent, { data })
-				.afterClosed()
-				.subscribe((response: ModalMdraDuplicateDialogResponse) => {
-					if (response.success) {
-						// body.recaptcha =  response.captchaResponse?.resolved ;
-						this.saveRegistration(BooleanTypeCode.Yes, response.captchaResponse?.resolved!);
-						// } else {
-						// 	this.resetRecaptcha.next(); // reset the recaptcha
-					}
-				});
-		}
-	}
-
-	private saveRegistration(hasPotentialDuplicate: BooleanTypeCode, recaptchaCode: string) {
-		this.metalDealersApplicationService.resubmitLicenceAnonymous(hasPotentialDuplicate, recaptchaCode).subscribe({
-			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-				this.displayDataValidationMessage(dupres.body);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
-
-		// body.hasPotentialDuplicate = hasPotentialDuplicate;
-		// body.requireDuplicateCheck = false;
-		// this.orgRegistrationService
-		// 	.apiAnonymousOrgRegistrationsPost({ body })
-		// 	.pipe()
-		// 	.subscribe((_res: any) => {
-		// 		this.handleSaveSuccess();
-		// 	});
-	}
-
-	private handleSaveSuccess(): void {
-		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
-		);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

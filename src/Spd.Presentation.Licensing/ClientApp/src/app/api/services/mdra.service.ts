@@ -11,14 +11,42 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { apiMdraRegistrationGet } from '../fn/mdra/api-mdra-registration-get';
+import { ApiMdraRegistrationGet$Params } from '../fn/mdra/api-mdra-registration-get';
 import { apiMdraRegistrationsPost } from '../fn/mdra/api-mdra-registrations-post';
 import { ApiMdraRegistrationsPost$Params } from '../fn/mdra/api-mdra-registrations-post';
 import { MdraRegistrationCommandResponse } from '../models/mdra-registration-command-response';
+import { WorkerLicenceAppResponse } from '../models/worker-licence-app-response';
 
 @Injectable({ providedIn: 'root' })
 export class MdraService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `apiMdraRegistrationGet()` */
+  static readonly ApiMdraRegistrationGetPath = '/api/mdra-registration';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiMdraRegistrationGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiMdraRegistrationGet$Response(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
+    return apiMdraRegistrationGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiMdraRegistrationGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiMdraRegistrationGet(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<WorkerLicenceAppResponse> {
+    return this.apiMdraRegistrationGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceAppResponse>): WorkerLicenceAppResponse => r.body)
+    );
   }
 
   /** Path part for operation `apiMdraRegistrationsPost()` */

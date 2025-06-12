@@ -6,6 +6,7 @@ import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode, LicenceStatusCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CaptchaResponse, CaptchaResponseType } from '@app/shared/components/captcha-v2.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
@@ -325,6 +326,10 @@ export class UtilService {
 
 	//------------------------------------
 	// Misc
+
+	captchaTokenResponse(captchaResponse: CaptchaResponse): boolean {
+		return !!(captchaResponse.type === CaptchaResponseType.success && captchaResponse.resolved);
+	}
 
 	getDateString(date: Date): string {
 		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';

@@ -5,9 +5,11 @@ import { FormMdraBranchesComponent } from './components/form-mdra-branches.compo
 import { FormMdraLicenceAccessCodeComponent } from './components/form-mdra-licence-access-code.component';
 import { MdraBaseComponent } from './components/mdra-base.component';
 import { MdraWizardNewRenewalComponent } from './components/mdra-wizard-new-renewal.component';
+import { MdraWizardUpdateComponent } from './components/mdra-wizard-update.component';
 import { MetalDealersLandingComponent } from './components/metal-dealers-landing.component';
 import { MetalDealersRegistrationReceivedComponent } from './components/metal-dealers-registration-received.component';
 import { ModalMdraBranchComponent } from './components/modal-mdra-branch.component';
+import { ModalMdraDuplicateComponent } from './components/modal-mdra-duplicate.component';
 import { StepMdraLicenceAccessCodeComponent } from './components/step-mdra-access-code.component';
 import { StepMdraApplicationTypeComponent } from './components/step-mdra-application-type.component';
 import { StepMdraBranchesComponent } from './components/step-mdra-branches.component';
@@ -27,9 +29,15 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 
 @NgModule({
 	declarations: [
+		FormMdraBranchesComponent,
+		FormMdraLicenceAccessCodeComponent,
 		MdraBaseComponent,
 		MetalDealersLandingComponent,
 		MdraWizardNewRenewalComponent,
+		MdraWizardUpdateComponent,
+		ModalMdraDuplicateComponent,
+		ModalMdraBranchComponent,
+		MetalDealersRegistrationReceivedComponent,
 		StepMdraTermsOfUseComponent,
 		StepMdraLicenceAccessCodeComponent,
 		StepMdraChecklistNewComponent,
@@ -45,10 +53,6 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 		StepsMdraDetailsComponent,
 		StepsMdraBranchesComponent,
 		StepsMdraReviewAndConfirmComponent,
-		ModalMdraBranchComponent,
-		MetalDealersRegistrationReceivedComponent,
-		FormMdraBranchesComponent,
-		FormMdraLicenceAccessCodeComponent,
 	],
 	imports: [SharedModule, MetalDealersAndRecyclersRoutingModule],
 })

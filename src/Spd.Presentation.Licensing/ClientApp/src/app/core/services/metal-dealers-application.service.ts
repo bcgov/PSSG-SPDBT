@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
+	BooleanTypeCode,
 	GoogleRecaptcha,
 	IActionResult,
 	MdraRegistrationCommandResponse,
@@ -146,7 +147,9 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
+	submitLicenceAnonymous(
+		requireDuplicateCheck: boolean
+	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
 		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(metalDealersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);
@@ -154,8 +157,35 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
+		body.hasPotentialDuplicate = BooleanTypeCode.No;
+		body.requireDuplicateCheck = true;
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
+		return this.submitLicenceAnonymousDocuments(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
+	}
+
+	resubmitLicenceAnonymous(
+		hasPotentialDuplicate: BooleanTypeCode,
+		recaptchaCode: string
+	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
+		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(metalDealersModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);
+
+		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
+		delete body.documentInfos;
+
+		body.hasPotentialDuplicate = hasPotentialDuplicate;
+		body.requireDuplicateCheck = false;
+
+		const googleRecaptcha = { recaptchaCode: recaptchaCode };
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
