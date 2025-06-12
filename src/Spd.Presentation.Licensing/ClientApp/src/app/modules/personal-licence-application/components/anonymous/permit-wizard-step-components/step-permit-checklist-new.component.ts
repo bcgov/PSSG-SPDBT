@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 @Component({
@@ -51,6 +51,42 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							</p>
 						</li>
 					</ul>
+
+					<ng-container *ngIf="isBodyArmourPermit">
+						<mat-divider class="my-4"></mat-divider>
+						<div class="fw-semibold fs-6 mb-2">Before continuing your application, please review the following:</div>
+						<ul>
+							<li class="checklist-info">
+								If there is an imminent risk to your safety, you may wish to apply for a
+								<a
+									aria-label="Navigate to Application for a 90-day EXEMPTION"
+									[href]="bodyArmourPermit90ExemptionApplicationUrl"
+									target="_blank"
+									>90-day exemption</a
+								>
+								from the requirement to have a body armour permit.
+							</li>
+							<li class="checklist-info">
+								Individuals who hold a valid security worker licence as an armoured car guard, private investigator,
+								security consultant, security guard, or body armour salesperson do not need a permit to possess body
+								armour while in the course of their employment.
+							</li>
+							<li class="checklist-info">
+								Peace officers, government employees, and security guards at gaming facilities (who are registered
+								gaming workers) do not need a permit to possess body armour while in the course of their employment.
+							</li>
+							<li class="checklist-info">
+								Individuals who hold a valid licence issued under the
+								<a aria-label="Navigate to Firearms Act" [href]="firearmsActUrl" target="_blank">Firearms Act</a>
+								authorizing them to acquire or possess a firearm do not need a body armour permit.
+							</li>
+							<li class="checklist-info">
+								If you are unsure if you require a permit, please
+								<a aria-label="Navigate to SPD contact" [href]="bodyArmourSpdContactUrl" target="_blank">contact</a>
+								our office.
+							</li>
+						</ul>
+					</ng-container>
 				</div>
 			</div>
 		</app-step-section>
@@ -59,5 +95,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	standalone: false,
 })
 export class StepPermitChecklistNewComponent {
+	bodyArmourSpdContactUrl = SPD_CONSTANTS.urls.bodyArmourSpdContactUrl;
+	bodyArmourPermit90ExemptionApplicationUrl = SPD_CONSTANTS.urls.bodyArmourPermit90ExemptionApplicationUrl;
+	firearmsActUrl = SPD_CONSTANTS.urls.firearmsActUrl;
 	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
+
+	@Input() isBodyArmourPermit!: boolean;
 }
