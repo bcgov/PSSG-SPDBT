@@ -12,7 +12,7 @@ public interface IMDRARegistrationManager
 
 }
 
-public record MDRARegistrationNewCommand(MDRARegistrationNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
+public record MDRARegistrationNewCommand(MDRARegistrationRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid?>;
@@ -34,13 +34,10 @@ public record MDRARegistrationRequest
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No; //only for new
+    public bool RequireDuplicateCheck { get; set; } = true; //only for new
 }
 
-public record MDRARegistrationNewRequest : MDRARegistrationRequest
-{
-    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
-    public bool RequireDuplicateCheck { get; set; } = true;
-}
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }

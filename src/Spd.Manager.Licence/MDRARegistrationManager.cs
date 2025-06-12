@@ -75,7 +75,7 @@ internal class MDRARegistrationManager :
     }
     #endregion
 
-    private async Task<(bool HasPotentialDuplicate, bool HasSilentPotentialDuplicate)> CheckDuplicate(MDRARegistrationNewRequest request, CancellationToken cancellationToken)
+    private async Task<(bool HasPotentialDuplicate, bool HasSilentPotentialDuplicate)> CheckDuplicate(MDRARegistrationRequest request, CancellationToken cancellationToken)
     {
         bool hasPotentialDuplicate = false;
         bool hasSilentPotentialDuplicate = false;
