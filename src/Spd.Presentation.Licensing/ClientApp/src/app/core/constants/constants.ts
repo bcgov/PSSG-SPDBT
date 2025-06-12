@@ -62,6 +62,8 @@ export const SPD_CONSTANTS = {
 	},
 	urls: {
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
+		aboutSpdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division',
 		bcCorporateRegistriesUrl: 'https://www.bcregistry.gov.bc.ca/',
 		bceidUrl: 'https://www.bceid.ca',
 		bceidBluePagesUrl: 'https://www.bceid.ca/directories/bluepages/',
@@ -73,15 +75,18 @@ export const SPD_CONSTANTS = {
 		bcGovContactUrl: 'https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services',
 		bcRegistriesAccountUrl: 'https://www.account.bcregistry.gov.bc.ca/decide-business',
 		bcServicesCardUrl: 'https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card',
+		bodyArmourSpdContactUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/body-armour/contact',
+		bodyArmourPermit90ExemptionApplicationUrl:
+			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/body-armour/sl201_-_baca_90_day_exemption_-_june_2025.pdf',
 		canadianPassportPhotoUrl:
 			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
 		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
-		aboutSpdUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division',
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		controllingMemberChecklistUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
+		firearmsActUrl: 'https://laws-lois.justice.gc.ca/eng/acts/f-11.6/',
 		swlLearnMoreUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/training',
 		swlAcceptedIdUrl:
