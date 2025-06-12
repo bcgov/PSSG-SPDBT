@@ -15,7 +15,7 @@ public interface IMDRARegistrationManager
 public record MDRARegistrationNewCommand(MDRARegistrationNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
-public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid>;
+public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid?>;
 
 public record MDRARegistrationRequest
 {
