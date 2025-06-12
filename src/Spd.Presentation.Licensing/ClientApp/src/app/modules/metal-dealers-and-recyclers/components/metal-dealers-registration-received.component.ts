@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 
 @Component({
 	selector: 'app-metal-dealers-registration-received',
@@ -12,48 +13,12 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 							<div class="col-6">
 								<h2 class="fs-3 mt-0 mt-md-3">Registration Received</h2>
 							</div>
-
-							<div class="no-print col-6">
-								<div class="d-flex justify-content-end">
-									<button
-										mat-flat-button
-										color="primary"
-										class="large w-auto m-2"
-										aria-label="Print screen"
-										(click)="onPrint()"
-									>
-										<mat-icon class="d-none d-md-block">print</mat-icon>Print
-									</button>
-								</div>
-							</div>
 						</div>
 
-						<mat-divider class="mat-divider-main mb-4"></mat-divider>
-
-						<app-alert type="info" icon="info"> Your registration has been received. </app-alert>
-
-						<div class="my-4 text-center">We will contact you if we need more information.</div>
-
-						<div class="row mb-3">
-							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Application Number</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">---</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Business Name</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">---</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Business Owner</div>
-							</div>
-							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">---</div>
-							</div>
-						</div>
+						<app-alert type="info" icon="info">
+							Your registration has been received. A confirmation email will be sent to you. We will contact you if
+							additional information is needed.
+						</app-alert>
 					</div>
 				</div>
 
@@ -75,10 +40,14 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	styles: [],
 	standalone: false,
 })
-export class MetalDealersRegistrationReceivedComponent {
+export class MetalDealersRegistrationReceivedComponent implements OnInit {
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
-	onPrint(): void {
-		window.print();
+	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
+
+	ngOnInit(): void {
+		if (this.metalDealersApplicationService.initialized) {
+			this.metalDealersApplicationService.reset();
+		}
 	}
 }

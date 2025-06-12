@@ -2,10 +2,13 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Router } from '@angular/router';
+import { ApplicationTypeCode, MdraRegistrationCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 import { StepsMdraBranchesComponent } from './steps-mdra-branches.component';
 import { StepsMdraBusinessInfoComponent } from './steps-mdra-business-info.component';
 import { StepsMdraDetailsComponent } from './steps-mdra-details.component';
@@ -103,6 +106,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private metalDealersApplicationService: MetalDealersApplicationService
 	) {
 		super(breakpointObserver);
@@ -131,7 +135,16 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	onSubmit(): void {
-		// TODO mdra submit
+		this.metalDealersApplicationService.submitLicenceAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+				this.router.navigateByUrl(
+					MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

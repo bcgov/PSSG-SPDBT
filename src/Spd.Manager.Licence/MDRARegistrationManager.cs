@@ -107,6 +107,7 @@ internal class MDRARegistrationManager :
             {
                 SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
                 CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                fileCmd.TempFile = tempFile;
                 fileCmd.OrgRegistrationId = orgRegistrationId;
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }

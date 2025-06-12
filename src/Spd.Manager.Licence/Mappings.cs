@@ -876,7 +876,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
-        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

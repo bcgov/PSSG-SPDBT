@@ -15,6 +15,7 @@ export { LicenceAppService } from './services/licence-app.service';
 export { LicenceAppDocumentService } from './services/licence-app-document.service';
 export { LicenceFeeService } from './services/licence-fee.service';
 export { LoginService } from './services/login.service';
+export { MdraService } from './services/mdra.service';
 export { PaymentService } from './services/payment.service';
 export { PermitService } from './services/permit.service';
 export { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
