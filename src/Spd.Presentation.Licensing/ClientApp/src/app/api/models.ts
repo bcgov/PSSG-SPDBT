@@ -63,6 +63,8 @@ export type { LicenceResponse } from './models/licence-response';
 export { LicenceStatusCode } from './models/licence-status-code';
 export { LicenceTermCode } from './models/licence-term-code';
 export type { MailingAddress } from './models/mailing-address';
+export type { MdraRegistrationCommandResponse } from './models/mdra-registration-command-response';
+export type { MdraRegistrationRequest } from './models/mdra-registration-request';
 export type { Members } from './models/members';
 export type { MembersRequest } from './models/members-request';
 export type { NonSwlContactInfo } from './models/non-swl-contact-info';

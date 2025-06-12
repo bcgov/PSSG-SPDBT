@@ -19,6 +19,7 @@ import { LicenceAppService } from './services/licence-app.service';
 import { LicenceAppDocumentService } from './services/licence-app-document.service';
 import { LicenceFeeService } from './services/licence-fee.service';
 import { LoginService } from './services/login.service';
+import { MdraService } from './services/mdra.service';
 import { PaymentService } from './services/payment.service';
 import { PermitService } from './services/permit.service';
 import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
@@ -44,6 +45,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     LicenceAppDocumentService,
     LicenceFeeService,
     LoginService,
+    MdraService,
     PaymentService,
     PermitService,
     SecurityWorkerLicensingService,
