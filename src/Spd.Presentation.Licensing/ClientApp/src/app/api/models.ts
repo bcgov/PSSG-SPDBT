@@ -31,7 +31,6 @@ export type { BizProfileUpdateRequest } from './models/biz-profile-update-reques
 export { BizTypeCode } from './models/biz-type-code';
 export type { BizUserLoginResponse } from './models/biz-user-login-response';
 export { BodyArmourPermitReasonCode } from './models/body-armour-permit-reason-code';
-export { BooleanTypeCode } from './models/boolean-type-code';
 export type { BranchInfo } from './models/branch-info';
 export type { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';

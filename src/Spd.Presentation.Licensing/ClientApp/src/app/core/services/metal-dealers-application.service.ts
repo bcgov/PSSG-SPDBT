@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	BooleanTypeCode,
 	GoogleRecaptcha,
 	IActionResult,
 	MdraRegistrationCommandResponse,
@@ -157,7 +156,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		body.hasPotentialDuplicate = BooleanTypeCode.No;
+		// body.hasPotentialDuplicate = false;
 		body.requireDuplicateCheck = true;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -172,7 +171,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	}
 
 	resubmitLicenceAnonymous(
-		hasPotentialDuplicate: BooleanTypeCode,
+		hasPotentialDuplicate: boolean,
 		recaptchaCode: string
 	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
 		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();

@@ -6,7 +6,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, MdraRegistrationCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
@@ -185,7 +184,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 				.subscribe((response: ModalMdraDuplicateDialogResponse) => {
 					if (response.success) {
 						// body.recaptcha =  response.captchaResponse?.resolved ;
-						this.saveRegistration(BooleanTypeCode.Yes, response.captchaResponse?.resolved!);
+						this.saveRegistration(true, response.captchaResponse?.resolved!);
 						// } else {
 						// 	this.resetRecaptcha.next(); // reset the recaptcha
 					}
@@ -193,7 +192,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 		}
 	}
 
-	private saveRegistration(hasPotentialDuplicate: BooleanTypeCode, recaptchaCode: string) {
+	private saveRegistration(hasPotentialDuplicate: boolean, recaptchaCode: string) {
 		this.metalDealersApplicationService.resubmitLicenceAnonymous(hasPotentialDuplicate, recaptchaCode).subscribe({
 			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
 				this.displayDataValidationMessage(dupres.body);

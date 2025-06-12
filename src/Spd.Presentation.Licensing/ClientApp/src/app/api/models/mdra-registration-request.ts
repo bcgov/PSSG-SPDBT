@@ -5,7 +5,6 @@
 import { Address } from '../models/address';
 import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
-import { BooleanTypeCode } from '../models/boolean-type-code';
 import { BranchInfo } from '../models/branch-info';
 export interface MdraRegistrationRequest {
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
@@ -23,6 +22,6 @@ export interface MdraRegistrationRequest {
   bizTradeName?: string | null;
   branches?: Array<BranchInfo> | null;
   documentKeyCodes?: Array<string> | null;
-  hasPotentialDuplicate?: BooleanTypeCode;
+  hasPotentialDuplicate?: boolean | null;
   requireDuplicateCheck?: boolean;
 }

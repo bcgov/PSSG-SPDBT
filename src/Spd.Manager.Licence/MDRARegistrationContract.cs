@@ -34,7 +34,7 @@ public record MDRARegistrationRequest
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No; //only for new
+    public bool? HasPotentialDuplicate { get; set; } //only for new
     public bool RequireDuplicateCheck { get; set; } = true; //only for new
 }
 
