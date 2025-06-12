@@ -74,7 +74,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Get latest licence by licence number with google recaptcha for anonymous
-        /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
+        /// Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
         /// <param name="recaptcha"></param>
@@ -94,6 +94,10 @@ namespace Spd.Presentation.Licensing.Controllers
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
             else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 return response;
+            else if (response?.ServiceTypeCode == ServiceTypeCode.MDRA)
+            {
+                latestAppId = await _mediator.Send(new GetMDRARegistrationIdQuery((Guid)response.LicenceHolderId)) ?? Guid.Empty;
+            }
             else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
             else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification

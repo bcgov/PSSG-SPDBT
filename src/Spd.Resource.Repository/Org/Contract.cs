@@ -53,6 +53,7 @@ namespace Spd.Resource.Repository.Org
         public string? AddressProvince { get; set; }
         public EmployeeInteractionTypeCode? EmployeeInteractionType { get; set; }
         public bool HasInvoiceSupport { get; set; }
+        public Guid? OrgRegistrationId { get; set; }
     }
     public record OrgResult : Org
     {
