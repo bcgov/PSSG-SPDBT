@@ -50,7 +50,7 @@ namespace Spd.Utilities.Dynamics
             if (orgTypeId == null) return (null, null);
             string key = LookupOrganizationTypeKey((Guid)orgTypeId);
             var str = key.Split("-");
-            if (str.Length == 0 || str.Length > 2) return (null, null);
+            if (str.Length != 2) return (null, null);
             if (str[0].Equals("Volunteer", StringComparison.InvariantCultureIgnoreCase))
             {
                 return (null, str[1]);

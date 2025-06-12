@@ -26,6 +26,7 @@ namespace Spd.Resource.Repository.Org
             .ForMember(d => d.PayerPreference, opt => opt.MapFrom(s => GetPayerPreferenceType(s.spd_payerpreference)))
             .ForMember(d => d.ContractorsNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havecontractors)))
             .ForMember(d => d.EmployeeInteractionType, opt => opt.MapFrom(s => GetEmployeeInteractionCode(s.spd_workswith)))
+            .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value))
             .ForMember(d => d.LicenseesNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havelicenseesorregistrants)));
 
             _ = CreateMap<account, OrgResult>()

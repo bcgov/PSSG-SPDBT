@@ -8,11 +8,14 @@ public interface IMDRARegistrationManager
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand command, CancellationToken ct);
+    public Task<Guid?> Handle(GetMDRARegistrationIdQuery query, CancellationToken ct);
+
 }
 
-public record MDRARegistrationNewCommand(MDRARegistrationNewRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
+public record MDRARegistrationNewCommand(MDRARegistrationRequest SubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
+public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid?>;
 
 public record MDRARegistrationRequest
 {
@@ -31,13 +34,10 @@ public record MDRARegistrationRequest
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No; //only for new
+    public bool RequireDuplicateCheck { get; set; } = true; //only for new
 }
 
-public record MDRARegistrationNewRequest : MDRARegistrationRequest
-{
-    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
-    public bool RequireDuplicateCheck { get; set; } = true;
-}
 public record MDRARegistrationCommandResponse
 {
     public Guid? OrgRegistrationId { get; set; }
@@ -45,4 +45,5 @@ public record MDRARegistrationCommandResponse
     //this = true, then fe show message that "if user still want to proceed", if user response with yes, set HasPotentialDuplicate=true, RequireDuplicateCheck= false.
     public bool? HasPotentialDuplicate { get; set; }
 }
+
 

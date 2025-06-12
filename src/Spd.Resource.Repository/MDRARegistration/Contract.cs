@@ -8,7 +8,6 @@ public interface IMDRARegistrationRepository
 }
 
 public record MDRARegistrationResp(Guid RegistrationId);
-
 public record CreateMDRARegistrationCmd
 {
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
