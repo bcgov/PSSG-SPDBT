@@ -174,7 +174,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 		if (dupres.hasPotentialDuplicate == true) {
 			const data: ModalMdraDuplicateDialogData = {
 				title: 'Potential duplicate detected',
-				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+				message: 'A potential duplicate has been found. Are you sure this is a new registration request?',
 				actionText: 'Yes, create registration',
 				cancelText: 'Cancel',
 			};
