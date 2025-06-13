@@ -8,8 +8,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-dt-photograph-of-yourself',
 	template: `
 		<app-step-section
-			title="Passport-quality photo of the dog trainer"
-			subtitle="This photo will appear on your certificate."
+			heading="Passport-quality photo of the dog trainer"
+			subheading="This photo will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
 				[serviceTypeCode]="serviceTypeDogTrainer"

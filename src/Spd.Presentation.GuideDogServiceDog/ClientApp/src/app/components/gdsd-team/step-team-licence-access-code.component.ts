@@ -12,7 +12,7 @@ import { FormGdsdLicenceAccessCodeComponent } from '../shared/form-gdsd-licence-
 	selector: 'app-step-team-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide access code"
+			heading="Provide access code"
 			info="<p>
 					To continue, please enter both your <strong>certificate number</strong> as shown on your current certificate and the <strong>access code</strong> provided to you after your initial application or in your renewal letter from the Registrar, Security Services.
 				</p>

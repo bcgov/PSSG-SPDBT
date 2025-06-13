@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-rd-summary',
 	template: `
 		<app-step-section
-			title="Registration summary"
-			subtitle="Review your information before submitting your application."
+			heading="Registration summary"
+			subheading="Review your information before submitting your application."
 			*ngIf="retiredDogModelData"
 		>
 			<div class="row">

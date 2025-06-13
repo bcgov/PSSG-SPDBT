@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-rd-dog-retired-info',
 	template: `
-		<app-step-section title="When was your dog retired from service?">
+		<app-step-section heading="When was your dog retired from service?">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-5 col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">

@@ -9,7 +9,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-team-dog-service-info',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<div class="row">
 				<div class="col-xxl-6 col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<ng-container *ngIf="showDogServiceStep">
