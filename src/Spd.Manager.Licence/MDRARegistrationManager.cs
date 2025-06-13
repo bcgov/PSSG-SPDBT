@@ -15,6 +15,7 @@ internal class MDRARegistrationManager :
         IRequestHandler<MDRARegistrationRenewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationUpdateCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<GetMDRARegistrationIdQuery, Guid?>,
+        IRequestHandler<GetMDRARegistrationQuery, MDRARegistrationResponse>,
         IMDRARegistrationManager
 {
     private readonly IMapper _mapper;
@@ -50,28 +51,34 @@ internal class MDRARegistrationManager :
                 return response = new MDRARegistrationCommandResponse { HasPotentialDuplicate = true };
             }
         }
-        ValidateFilesForNewApp(cmd);
+        //ValidateFilesForNewApp(cmd);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
-        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate == BooleanTypeCode.Yes || hasSilentDuplicate == true;
-        MDRARegistrationResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
+        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate.Value || hasSilentDuplicate == true;
+        MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
         await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = resp.RegistrationId };
+        return new MDRARegistrationCommandResponse { RegistrationId = resp.RegistrationId };
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand cmd, CancellationToken ct)
     {
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
+        return new MDRARegistrationCommandResponse { RegistrationId = Guid.Empty };
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand cmd, CancellationToken ct)
     {
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
+        return new MDRARegistrationCommandResponse { RegistrationId = Guid.Empty };
     }
 
     public async Task<Guid?> Handle(GetMDRARegistrationIdQuery cmd, CancellationToken ct)
     {
         OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.BizId), ct);
         return org.OrgResult.OrgRegistrationId;
+    }
+
+    public async Task<MDRARegistrationResponse> Handle(GetMDRARegistrationQuery query, CancellationToken ct)
+    {
+        MDRARegistrationResp registration = await _repository.GetMDRARegistrationAsync(query.BizRegistrationId, ct);
+        return _mapper.Map<MDRARegistrationResponse>(registration);
     }
     #endregion
 
