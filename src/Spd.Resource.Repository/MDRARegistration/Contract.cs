@@ -24,7 +24,7 @@ public record MDRARegistration
     public string? BizManagerPhoneNumber { get; set; }
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
-    public IEnumerable<BranchAddr>? Branches { get; set; }
+    public IList<BranchAddr>? Branches { get; set; }
 }
 public record CreateMDRARegistrationCmd : MDRARegistration
 {

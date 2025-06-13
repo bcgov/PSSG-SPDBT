@@ -51,9 +51,9 @@ internal class MDRARegistrationManager :
                 return response = new MDRARegistrationCommandResponse { HasPotentialDuplicate = true };
             }
         }
-        //ValidateFilesForNewApp(cmd);
+        ValidateFilesForNewApp(cmd);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
-        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate.Value || hasSilentDuplicate == true;
+        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate == true || hasSilentDuplicate == true;
         MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
         await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
         return new MDRARegistrationCommandResponse { RegistrationId = resp.RegistrationId };

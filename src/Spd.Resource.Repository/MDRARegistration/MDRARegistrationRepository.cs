@@ -40,7 +40,9 @@ internal class MDRARegistrationRepository : IMDRARegistrationRepository
         if (registration == null)
             throw new ApiException(HttpStatusCode.BadRequest, $"No registration found for id = {registrationId}");
         var resp = _mapper.Map<MDRARegistrationResp>(registration);
-        //todo: get branches
+        var addrs = _context.spd_addresses.Where(a => a._spd_orgregistrationid_value == registrationId && a.statecode == DynamicsConstants.StateCode_Active)
+            .ToList();
+        _mapper.Map(addrs, resp);
         return resp;
     }
 

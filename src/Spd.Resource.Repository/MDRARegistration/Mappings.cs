@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.Biz;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.MDRARegistration;
@@ -39,7 +40,7 @@ internal class Mappings : Profile
             .ForMember(d => d.RegistrationNumber, opt => opt.MapFrom(s => s.spd_registrationnumber))
             ;
 
-        CreateMap<CreateMDRARegistrationCmd, List<spd_address>>()
+        CreateMap<MDRARegistration, List<spd_address>>()
         .ConvertUsing((src, dest, context) =>
         {
             var result = new List<spd_address>();
@@ -102,6 +103,60 @@ internal class Mappings : Profile
             }
 
             return result;
+        });
+
+        CreateMap<List<spd_address>, MDRARegistrationResp>()
+        .AfterMap((src, dest) =>
+        {
+            foreach (var address in src)
+            {
+                switch ((AddressTypeOptionSet)address.spd_type)
+                {
+                    case AddressTypeOptionSet.MainOffice:
+                        dest.BizManagerFullName = address.spd_branchmanagername;
+                        dest.BizManagerPhoneNumber = address.spd_branchphone;
+                        dest.BizManagerEmailAddress = address.spd_branchemail;
+                        dest.BizAddress = new Addr
+                        {
+                            AddressLine1 = address.spd_address1,
+                            AddressLine2 = address.spd_address2,
+                            City = address.spd_city,
+                            Province = address.spd_provincestate,
+                            PostalCode = address.spd_postalcode,
+                            Country = address.spd_country
+                        };
+                        break;
+
+                    case AddressTypeOptionSet.Mailing:
+                        dest.BizMailingAddress = new Addr
+                        {
+                            AddressLine1 = address.spd_address1,
+                            AddressLine2 = address.spd_address2,
+                            City = address.spd_city,
+                            Province = address.spd_provincestate,
+                            PostalCode = address.spd_postalcode,
+                            Country = address.spd_country
+                        };
+                        break;
+
+                    case AddressTypeOptionSet.Branch:
+                        dest.Branches ??= new List<BranchAddr>();
+                        dest.Branches.Add(new BranchAddr
+                        {
+                            BranchId = address.spd_addressid,
+                            BranchManager = address.spd_branchmanagername,
+                            BranchPhoneNumber = address.spd_branchphone,
+                            BranchEmailAddr = address.spd_branchemail,
+                            AddressLine1 = address.spd_address1,
+                            AddressLine2 = address.spd_address2,
+                            City = address.spd_city,
+                            Province = address.spd_provincestate,
+                            PostalCode = address.spd_postalcode,
+                            Country = address.spd_country
+                        });
+                        break;
+                }
+            }
         });
 
 
