@@ -522,6 +522,8 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
             .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
+        CreateMap<MDRARegistrationResp, MDRARegistrationResponse>()
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.Branches)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

@@ -8,6 +8,7 @@ public interface IMDRARegistrationManager
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand command, CancellationToken ct);
+    public Task<MDRARegistrationResponse> Handle(GetMDRARegistrationQuery query, CancellationToken ct);
     public Task<Guid?> Handle(GetMDRARegistrationIdQuery query, CancellationToken ct);
 
 }
@@ -16,8 +17,9 @@ public record MDRARegistrationNewCommand(MDRARegistrationRequest SubmitRequest, 
 public record MDRARegistrationRenewCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record MDRARegistrationUpdateCommand(MDRARegistrationRequest ChangeRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<MDRARegistrationCommandResponse>;
 public record GetMDRARegistrationIdQuery(Guid BizId) : IRequest<Guid?>;
+public record GetMDRARegistrationQuery(Guid BizRegistrationId) : IRequest<MDRARegistrationResponse>;
 
-public record MDRARegistrationRequest
+public abstract record MDRARegistration
 {
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.WebForm;
@@ -33,17 +35,26 @@ public record MDRARegistrationRequest
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
+    public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it means previous licenceId
+}
+
+public record MDRARegistrationRequest : MDRARegistration
+{
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-    public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No; //only for new
+    public bool? HasPotentialDuplicate { get; set; } //only for new
     public bool RequireDuplicateCheck { get; set; } = true; //only for new
 }
 
 public record MDRARegistrationCommandResponse
 {
-    public Guid? OrgRegistrationId { get; set; }
+    public Guid? RegistrationId { get; set; }
 
     //this = true, then fe show message that "if user still want to proceed", if user response with yes, set HasPotentialDuplicate=true, RequireDuplicateCheck= false.
     public bool? HasPotentialDuplicate { get; set; }
 }
 
-
+public record MDRARegistrationResponse : MDRARegistration
+{
+    public Guid? RegistrationId { get; set; }
+    public string RegistrationNumber { get; set; }
+}

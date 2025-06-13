@@ -34,12 +34,10 @@ namespace Spd.Presentation.Licensing.Controllers
 
         [Route("api/mdra-registration")]
         [HttpGet]
-        public async Task<WorkerLicenceAppResponse> GetMDRARegistraionAnonymous()
+        public async Task<MDRARegistrationResponse> GetMDRARegistrationAnonymous()
         {
-
-            //string swlApplicationId = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
-            //return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(swlApplicationId)));
-            return null;
+            string registrationId = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetMDRARegistrationQuery(Guid.Parse(registrationId)));
         }
 
         /// <summary>
@@ -69,17 +67,17 @@ namespace Spd.Presentation.Licensing.Controllers
                 response = await _mediator.Send(command, ct);
             }
 
-            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
-            //{
-            //    MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
-            //    response = await _mediator.Send(command, ct);
-            //}
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                MDRARegistrationRenewCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
 
-            //if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
-            //{
-            //    MDRARegistrationNewCommand command = new(jsonRequest, newDocInfos);
-            //    response = await _mediator.Send(command, ct);
-            //}
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            {
+                MDRARegistrationUpdateCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return response;
