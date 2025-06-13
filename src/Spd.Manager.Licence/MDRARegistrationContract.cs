@@ -35,7 +35,9 @@ public abstract record MDRARegistration
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
+    public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it means previous licenceId
 }
+
 public record MDRARegistrationRequest : MDRARegistration
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }

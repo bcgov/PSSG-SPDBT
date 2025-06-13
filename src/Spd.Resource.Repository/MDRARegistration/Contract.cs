@@ -25,6 +25,8 @@ public record MDRARegistration
     public string? BizPhoneNumber { get; set; }
     public string? BizEmailAddress { get; set; }
     public IList<BranchAddr>? Branches { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
+
 }
 public record CreateMDRARegistrationCmd : MDRARegistration
 {
