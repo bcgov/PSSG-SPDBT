@@ -16,7 +16,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="row">
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Legal Given Name</mat-label>
+									<mat-label>Legal First Name</mat-label>
 									<input matInput formControlName="trainerGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
