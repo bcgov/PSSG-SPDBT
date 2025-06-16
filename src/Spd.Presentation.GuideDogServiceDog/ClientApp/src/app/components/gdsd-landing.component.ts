@@ -15,7 +15,7 @@ import { take, tap } from 'rxjs';
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section>
-				<app-step-title title="Log in to manage your guide dog and service dog certification"></app-step-title>
+				<app-step-title heading="Log in to manage your guide dog and service dog certification"></app-step-title>
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 mx-auto">

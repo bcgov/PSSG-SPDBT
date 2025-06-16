@@ -8,7 +8,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-team-dog-medical',
 	template: `
-		<app-step-section title="Dog medical information">
+		<app-step-section heading="Dog medical information">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

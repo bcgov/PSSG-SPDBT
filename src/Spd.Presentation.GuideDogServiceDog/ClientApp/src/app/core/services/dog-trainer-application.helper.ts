@@ -29,7 +29,6 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	});
 
 	trainerMailingAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),
 		city: new FormControl('', [FormControlValidators.required]),

@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { ViewportScroller } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
@@ -22,14 +23,14 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 	selector: 'app-gdsd-team-wizard-new-renewal',
 	template: `
 		<mat-stepper
+			class="child-stepper"
 			linear
 			labelPosition="bottom"
 			[orientation]="orientation"
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Certificate Selection</ng-template>
+			<mat-step>
 				<app-steps-team-selection
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -40,8 +41,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-selection>
 			</mat-step>
 
-			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Personal Information</ng-template>
+			<mat-step>
 				<app-steps-team-personal-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -57,8 +57,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-personal-info>
 			</mat-step>
 
-			<mat-step [completed]="step3Complete">
-				<ng-template matStepLabel>Dog Information</ng-template>
+			<mat-step>
 				<app-steps-team-dog-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -74,8 +73,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-dog-info>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete" *ngIf="isNew">
-				<ng-template matStepLabel>Training Information</ng-template>
+			<mat-step *ngIf="isNew">
 				<app-steps-team-training-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -92,8 +90,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-training-info>
 			</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Review & Confirm</ng-template>
+			<mat-step>
 				<app-steps-team-review-and-confirm
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
@@ -151,11 +148,12 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		override viewportScroller: ViewportScroller,
 		private router: Router,
 		private authenticationService: AuthenticationService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
-		super(breakpointObserver);
+		super(breakpointObserver, viewportScroller);
 	}
 
 	ngOnInit(): void {

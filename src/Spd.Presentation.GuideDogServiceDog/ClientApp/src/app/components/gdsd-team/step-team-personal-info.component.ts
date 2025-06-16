@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-team-personal-info',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<app-form-gdsd-personal-info
 				[form]="form"
 				[isReadonly]="isReadonly"

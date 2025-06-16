@@ -10,7 +10,7 @@ import { UtilService } from '@app/core/services/util.service';
 @Component({
 	selector: 'app-step-dt-application-type',
 	template: `
-		<app-step-section title="Which type of Dog Trainer Certification is this application for?">
+		<app-step-section heading="Which type of Dog Trainer Certification is this application for?">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 					<app-form-gdsd-application-type

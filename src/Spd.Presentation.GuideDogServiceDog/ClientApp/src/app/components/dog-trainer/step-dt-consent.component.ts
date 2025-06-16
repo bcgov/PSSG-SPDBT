@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 @Component({
 	selector: 'app-step-dt-consent',
 	template: `
-		<app-step-section title="Acknowledgement">
+		<app-step-section heading="Acknowledgement">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
