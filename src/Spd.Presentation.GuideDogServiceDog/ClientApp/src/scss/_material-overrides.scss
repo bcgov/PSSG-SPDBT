@@ -103,8 +103,14 @@ a {
 }
 
 .mat-vertical-stepper-header,
-.mat-horizontal-stepper-header {
+.mat-vertical-stepper-header-container,
+.mat-horizontal-stepper-header,
+.mat-horizontal-stepper-header-container {
 	display: none !important;
+}
+
+.mat-vertical-content-container {
+	margin: 0 !important;
 }
 
 .mat-horizontal-content-container {
