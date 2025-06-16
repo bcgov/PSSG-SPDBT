@@ -12,13 +12,11 @@ import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { FormAccessCodeAnonymousComponent } from './components/form-access-code-anonymous.component';
-import { FormAddressAutocompleteComponent } from './components/form-address-autocomplete.component';
 import { FormAddressSummaryComponent } from './components/form-address-summary.component';
 import { FormAddressComponent } from './components/form-address.component';
 import { FormLicenceListExpiredComponent } from './components/form-licence-list-expired.component';
 import { FormPhotographOfYourselfUpdateComponent } from './components/form-photograph-of-yourself-update.component';
 import { FormPhotographOfYourselfComponent } from './components/form-photograph-of-yourself.component';
-import { ModalAddressComponent } from './components/modal-address.component';
 import { SpdFooterComponent } from './components/spd-footer.component';
 import { SpdHeaderComponent } from './components/spd-header.component';
 import { StepSectionComponent } from './components/step-section.component';
@@ -49,12 +47,10 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	ModalAddressComponent,
 	WizardFooterComponent,
 	FormLicenceListExpiredComponent,
 	ContainerComponent,
 	FileDragNDropDirective,
-	FormAddressAutocompleteComponent,
 	FormAddressComponent,
 	FormAddressSummaryComponent,
 	FormPhotographOfYourselfComponent,

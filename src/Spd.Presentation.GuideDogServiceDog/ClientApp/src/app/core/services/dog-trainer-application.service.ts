@@ -284,7 +284,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		}
 
 		this.mailingAddressFormGroup.patchValue({
-			addressSelected: !!trainerMailingAddressData && !!trainerMailingAddressData.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: trainerMailingAddressData?.addressLine1,
 			addressLine2: trainerMailingAddressData?.addressLine2,
@@ -338,7 +337,6 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 
 		const applicantMailingAddress = applicantProfile?.mailingAddress;
 		const trainerMailingAddressData = {
-			addressSelected: !!applicantMailingAddress && !!applicantMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: applicantMailingAddress?.addressLine1,
 			addressLine2: applicantMailingAddress?.addressLine2,
