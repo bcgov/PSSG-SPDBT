@@ -10,7 +10,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import moment from 'moment';
 
 @Component({
 	selector: 'app-step-team-school-trainings',
@@ -40,10 +39,7 @@ import moment from 'moment';
 								<div class="row">
 									<div class="text-minor-heading my-2">Training School Contact Information</div>
 
-									<div
-										class="mt-3"
-										*ngIf="(group.dirty || group.touched) && group.invalid && group.hasError('daterange')"
-									>
+									<div class="mt-3" *ngIf="invalidDateRange">
 										<app-alert type="danger" icon="dangerous">
 											Training Start Date must be on or before the Training End Date
 										</app-alert>
@@ -94,29 +90,28 @@ import moment from 'moment';
 											</mat-error>
 										</mat-form-field>
 									</div>
-
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Training Start Date</mat-label>
 											<input
 												matInput
-												[matDatepicker]="picker1"
 												formControlName="trainingStartDate"
-												[max]="maxDate"
-												[min]="minDate"
+												[mask]="dateMask"
+												[showMaskTyped]="true"
 												[errorStateMatcher]="matcher"
+												(blur)="onValidateStartDate(i)"
 											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-											<mat-datepicker #picker1 startView="multi-year"></mat-datepicker>
+											<!-- We always want the date format hint to display -->
+											<mat-hint>Date format YYYY-MM-DD</mat-hint>
 											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('required')"
 												>This is required</mat-error
 											>
-											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('matDatepickerMin')">
-												Invalid date of birth
-											</mat-error>
-											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('matDatepickerMax')">
-												This must be on or before {{ maxDate | formatDate }}
-											</mat-error>
+											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('invalidDate')"
+												>This date is invalid</mat-error
+											>
+											<mat-error *ngIf="group.get('trainingStartDate')?.hasError('futureDate')"
+												>This date cannot be in the future</mat-error
+											>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -124,21 +119,21 @@ import moment from 'moment';
 											<mat-label>Training End Date</mat-label>
 											<input
 												matInput
-												[matDatepicker]="picker2"
 												formControlName="trainingEndDate"
-												[max]="maxDate"
-												[min]="minDate"
+												[mask]="dateMask"
+												[showMaskTyped]="true"
 												[errorStateMatcher]="matcher"
+												(blur)="onValidateEndDate(i)"
 											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-											<mat-datepicker #picker2 startView="multi-year"></mat-datepicker>
+											<!-- We always want the date format hint to display -->
+											<mat-hint>Date format YYYY-MM-DD</mat-hint>
 											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('required')">This is required</mat-error>
-											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('matDatepickerMin')">
-												Invalid date of birth
-											</mat-error>
-											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('matDatepickerMax')">
-												This must be on or before {{ maxDate | formatDate }}
-											</mat-error>
+											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('invalidDate')"
+												>This date is invalid</mat-error
+											>
+											<mat-error *ngIf="group.get('trainingEndDate')?.hasError('futureDate')"
+												>This date cannot be in the future</mat-error
+											>
 										</mat-form-field>
 									</div>
 									<div class="col-xxl-8 col-xl-6 col-lg-6 col-md-12">
@@ -250,10 +245,11 @@ import moment from 'moment';
 export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.gdsdTeamApplicationService.schoolTrainingHistoryFormGroup;
 
+	invalidDateRange = false;
+
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
-	maxDate = moment();
-	minDate = this.utilService.getDateMin();
+	dateMask = SPD_CONSTANTS.date.dateMask;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
@@ -263,6 +259,46 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 		private utilService: UtilService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {}
+
+	onValidateStartDate(index: number): void {
+		const schoolTrainingsArray = this.form.get('schoolTrainings') as FormArray;
+		const form = schoolTrainingsArray.at(index);
+
+		const dateFormControl = form.get('trainingStartDate');
+		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value);
+		if (errorKey) {
+			dateFormControl?.setErrors({ [errorKey]: true });
+			return;
+		}
+
+		const dateEndFormControl = form.get('trainingEndDate');
+		if (dateEndFormControl?.value && dateEndFormControl?.value) {
+			this.invalidDateRange = !this.utilService.getIsInputValidDateRange(
+				dateFormControl?.value,
+				dateEndFormControl?.value
+			);
+		}
+	}
+
+	onValidateEndDate(index: number): void {
+		const schoolTrainingsArray = this.form.get('schoolTrainings') as FormArray;
+		const form = schoolTrainingsArray.at(index);
+
+		const dateFormControl = form.get('trainingEndDate');
+		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value);
+		if (errorKey) {
+			dateFormControl?.setErrors({ [errorKey]: true });
+			return;
+		}
+
+		const dateStartFormControl = form.get('trainingStartDate');
+		if (dateStartFormControl?.value && dateFormControl?.value) {
+			this.invalidDateRange = !this.utilService.getIsInputValidDateRange(
+				dateStartFormControl?.value,
+				dateFormControl?.value
+			);
+		}
+	}
 
 	onRemoveSchoolTrainingRow(index: number) {
 		const data: DialogOptions = {
@@ -316,7 +352,7 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 	get schoolTrainingsArray(): FormArray {
 		return <FormArray>this.form.get('schoolTrainings');
 	}
-	public get attachments(): FormControl {
+	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
 }

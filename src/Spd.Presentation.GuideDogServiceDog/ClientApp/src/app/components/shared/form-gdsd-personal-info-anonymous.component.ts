@@ -36,24 +36,20 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Date of Birth</mat-label>
 								<input
 									matInput
-									[matDatepicker]="picker"
 									formControlName="dateOfBirth"
-									[max]="maxBirthDate"
-									[min]="minDate"
+									[mask]="dateMask"
+									[showMaskTyped]="true"
 									[errorStateMatcher]="matcher"
+									(blur)="onValidateDate()"
 								/>
-								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<!-- We always want the date format hint to display -->
 								<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
 								<mat-error *ngIf="showHintError">
 									<span class="hint-inline">Date format YYYY-MM-DD</span>
 								</mat-error>
 								<mat-error *ngIf="dateOfBirth?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="dateOfBirth?.hasError('matDatepickerMin')"> Invalid date of birth </mat-error>
-								<mat-error *ngIf="dateOfBirth?.hasError('matDatepickerMax')">
-									This must be on or before {{ maxBirthDate | formatDate }}
-								</mat-error>
+								<mat-error *ngIf="dateOfBirth?.hasError('invalidDate')">This date is invalid</mat-error>
+								<mat-error *ngIf="dateOfBirth?.hasError('futureDate')">This date cannot be in the future</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -96,14 +92,21 @@ export class FormGdsdPersonalInfoAnonymousComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	maxBirthDate = this.utilService.getBirthDateMax();
-	minDate = this.utilService.getDateMin();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
+	dateMask = SPD_CONSTANTS.date.dateMask;
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private utilService: UtilService) {}
+
+	onValidateDate(): void {
+		const errorKey = this.utilService.getIsInputValidDate(this.dateOfBirth.value);
+		if (errorKey) {
+			this.dateOfBirth.setErrors({ [errorKey]: true });
+			return;
+		}
+	}
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
@@ -111,7 +114,7 @@ export class FormGdsdPersonalInfoAnonymousComponent {
 	get showHintError(): boolean {
 		return (this.dateOfBirth?.dirty || this.dateOfBirth?.touched) && this.dateOfBirth?.invalid;
 	}
-	public get dateOfBirth(): FormControl {
+	get dateOfBirth(): FormControl {
 		return this.form.get('dateOfBirth') as FormControl;
 	}
 }
