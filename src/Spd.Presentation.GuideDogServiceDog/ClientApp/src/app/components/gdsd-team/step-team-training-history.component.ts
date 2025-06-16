@@ -9,8 +9,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-training-history',
 	template: `
 		<app-step-section
-			title="Training History Information"
-			subtitle="Please provide as much detail as possible about your dog’s training history, including
+			heading="Training History Information"
+			subheading="Please provide as much detail as possible about your dog’s training history, including
 any joint training you and your dog have completed."
 		>
 			<form [formGroup]="form" novalidate>

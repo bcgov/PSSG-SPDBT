@@ -15,7 +15,7 @@ import moment from 'moment';
 @Component({
 	selector: 'app-step-team-school-trainings',
 	template: `
-		<app-step-section title="Training schools" subtitle="List the formal training that have received.">
+		<app-step-section heading="Training schools" subheading="List the formal training that have received.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">

@@ -444,7 +444,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -831,7 +830,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile?.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -955,7 +953,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = gdsdAppl.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -1508,7 +1505,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 					trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
 					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
 					whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
-					addressSelected: new FormControl(!!train?.trainingBizMailingAddress?.addressLine1, [Validators.requiredTrue]),
 					addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
 						FormControlValidators.required,
 					]),

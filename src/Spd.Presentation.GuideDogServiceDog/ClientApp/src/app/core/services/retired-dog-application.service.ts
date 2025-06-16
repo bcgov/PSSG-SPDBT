@@ -207,7 +207,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -593,7 +592,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile?.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -714,7 +712,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = rdAppl.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,

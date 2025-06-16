@@ -9,8 +9,8 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 	selector: 'app-step-rd-photograph-of-yourself',
 	template: `
 		<app-step-section
-			title="Passport-quality photo of yourself"
-			subtitle="This must be a photo of the handler and will appear on your certificate."
+			heading="Passport-quality photo of yourself"
+			subheading="This must be a photo of the handler and will appear on your certificate."
 		>
 			<app-form-photograph-of-yourself
 				[serviceTypeCode]="serviceTypeRetiredDog"

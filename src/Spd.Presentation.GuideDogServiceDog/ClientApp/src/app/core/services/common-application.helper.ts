@@ -114,7 +114,6 @@ export abstract class CommonApplicationHelper {
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
-			addressSelected: new FormControl(false),
 			addressLine1: new FormControl(''),
 			addressLine2: new FormControl(''),
 			city: new FormControl(''),
@@ -139,10 +138,6 @@ export abstract class CommonApplicationHelper {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
-					'addressSelected',
-					(_form) => _form.get('isAddressTheSame')?.value != true
-				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressLine1',
 					(_form) => _form.get('isAddressTheSame')?.value != true

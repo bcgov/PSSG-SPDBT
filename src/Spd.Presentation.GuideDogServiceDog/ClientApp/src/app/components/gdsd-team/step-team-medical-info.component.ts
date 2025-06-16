@@ -12,8 +12,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-team-medical-info',
 	template: `
 		<app-step-section
-			title="Medical Information"
-			subtitle="Confirm your need for a guide or service dog by submitting a completed medical form."
+			heading="Medical Information"
+			subheading="Confirm your need for a guide or service dog by submitting a completed medical form."
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">

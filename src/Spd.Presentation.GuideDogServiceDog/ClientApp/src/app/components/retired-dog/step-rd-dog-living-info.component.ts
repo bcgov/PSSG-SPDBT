@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-rd-dog-living-info',
 	template: `
-		<app-step-section title="Will your dog continue to live with you in his/her retirement?">
+		<app-step-section heading="Will your dog continue to live with you in his/her retirement?">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
