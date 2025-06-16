@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -109,10 +110,11 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		override viewportScroller: ViewportScroller,
 		private router: Router,
 		private dogTrainerApplicationService: DogTrainerApplicationService
 	) {
-		super(breakpointObserver);
+		super(breakpointObserver, viewportScroller);
 	}
 
 	ngOnInit(): void {

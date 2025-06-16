@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, DogTrainerAppCommandResponse } from '@app/api/models';
@@ -85,11 +86,12 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		override viewportScroller: ViewportScroller,
 		private router: Router,
 		private utilService: UtilService,
 		private dogTrainerApplicationService: DogTrainerApplicationService
 	) {
-		super(breakpointObserver);
+		super(breakpointObserver, viewportScroller);
 	}
 
 	ngOnInit(): void {
