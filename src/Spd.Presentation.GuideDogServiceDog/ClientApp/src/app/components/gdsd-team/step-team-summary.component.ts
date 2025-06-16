@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-summary',
 	template: `
 		<app-step-section
-			title="Registration summary"
-			subtitle="Review your information before submitting your application."
+			heading="Registration summary"
+			subheading="Review your information before submitting your application."
 			*ngIf="gdsdModelData"
 		>
 			<div class="row">
@@ -20,16 +20,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<mat-toolbar class="d-flex justify-content-between">
 										<div class="panel-header">Certificate Selection</div>
 										<button
-											mat-mini-fab
+											mat-flat-button
 											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step"
+											class="w-auto"
 											aria-label="Go to Step"
 											(click)="onEditStep($event, 0)"
 											(keydown.enter)="onEditStep($event, 0)"
 											(keydown.space)="onEditStep($event, 0)"
 										>
-											<mat-icon>edit</mat-icon>
+											Edit Step
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>
@@ -56,16 +55,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<mat-toolbar class="d-flex justify-content-between">
 										<div class="panel-header">Personal Information</div>
 										<button
-											mat-mini-fab
+											mat-flat-button
 											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step"
+											class="w-auto"
 											aria-label="Go to Step"
 											(click)="onEditStep($event, 1)"
 											(keydown.enter)="onEditStep($event, 1)"
 											(keydown.space)="onEditStep($event, 1)"
 										>
-											<mat-icon>edit</mat-icon>
+											Edit Step
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>
@@ -171,16 +169,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<mat-toolbar class="d-flex justify-content-between">
 										<div class="panel-header">Dog Information</div>
 										<button
-											mat-mini-fab
+											mat-flat-button
 											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step"
+											class="w-auto"
 											aria-label="Go to Step"
 											(click)="onEditStep($event, 2)"
 											(keydown.enter)="onEditStep($event, 2)"
 											(keydown.space)="onEditStep($event, 2)"
 										>
-											<mat-icon>edit</mat-icon>
+											Edit Step
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>
@@ -263,16 +260,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									<mat-toolbar class="d-flex justify-content-between">
 										<div class="panel-header">Training Information</div>
 										<button
-											mat-mini-fab
+											mat-flat-button
 											color="primary"
-											class="go-to-step-button"
-											matTooltip="Go to Step"
+											class="w-auto"
 											aria-label="Go to Step"
 											(click)="onEditStep($event, 3)"
 											(keydown.enter)="onEditStep($event, 3)"
 											(keydown.space)="onEditStep($event, 3)"
 										>
-											<mat-icon>edit</mat-icon>
+											Edit Step
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>

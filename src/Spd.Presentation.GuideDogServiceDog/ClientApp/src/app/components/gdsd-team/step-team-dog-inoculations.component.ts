@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-team-dog-inoculations',
 	template: `
-		<app-step-section title="Dog inoculations information">
+		<app-step-section heading="Dog inoculations information">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

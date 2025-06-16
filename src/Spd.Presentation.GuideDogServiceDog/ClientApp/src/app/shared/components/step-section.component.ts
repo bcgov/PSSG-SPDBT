@@ -6,8 +6,8 @@ import { Component, Input } from '@angular/core';
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					[title]="title"
-					[subtitle]="subtitle"
+					[heading]="heading"
+					[subheading]="subheading"
 					[info]="info"
 					[showDivider]="showDivider"
 				></app-step-title>
@@ -27,8 +27,8 @@ import { Component, Input } from '@angular/core';
 	standalone: false,
 })
 export class StepSectionComponent {
-	@Input() title = '';
-	@Input() subtitle = '';
+	@Input() heading = '';
+	@Input() subheading = '';
 	@Input() info = '';
 	@Input() showDivider = false;
 }

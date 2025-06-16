@@ -7,8 +7,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-dt-government-id',
 	template: `
 		<app-step-section
-			title="Government-issued photo ID of the dog trainer"
-			subtitle="Upload a piece of your dog trainer's government-issued photo ID."
+			heading="Government-issued photo ID of the dog trainer"
+			subheading="Upload a piece of your dog trainer's government-issued photo ID."
 		>
 			<app-form-gdsd-government-id
 				[form]="form"

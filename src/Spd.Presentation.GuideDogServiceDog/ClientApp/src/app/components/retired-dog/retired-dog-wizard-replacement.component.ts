@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, RetiredDogAppCommandResponse } from '@app/api/models';
@@ -89,12 +90,13 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		override viewportScroller: ViewportScroller,
 		private router: Router,
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
-		super(breakpointObserver);
+		super(breakpointObserver, viewportScroller);
 	}
 
 	ngOnInit(): void {

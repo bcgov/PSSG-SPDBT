@@ -15,8 +15,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-team-other-trainings',
 	template: `
 		<app-step-section
-			title="Other Training"
-			subtitle="If you have not attended a training school or formal training program, please list any informal training you have received."
+			heading="Other Training"
+			subheading="If you have not attended a training school or formal training program, please list any informal training you have received."
 		>
 			<div [formGroup]="form">
 				<div class="row my-2">

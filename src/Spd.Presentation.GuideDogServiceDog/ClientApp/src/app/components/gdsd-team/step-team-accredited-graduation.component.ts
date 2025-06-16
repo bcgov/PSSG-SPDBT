@@ -10,8 +10,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-team-accredited-graduation',
 	template: `
 		<app-step-section
-			title="Accredited graduation information"
-			subtitle="Provide information about the accredited school your dog attended"
+			heading="Accredited graduation information"
+			subheading="Provide information about the accredited school your dog attended"
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
