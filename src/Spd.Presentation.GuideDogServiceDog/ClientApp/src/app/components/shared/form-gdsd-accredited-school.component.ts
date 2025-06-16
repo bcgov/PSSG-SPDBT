@@ -1,42 +1,35 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { map, Observable, startWith } from 'rxjs';
 
 @Component({
 	selector: 'app-form-gdsd-accredited-school',
 	template: `
 		<div class="text-minor-heading lh-base my-2">{{ schoolLabel }}</div>
 		<mat-form-field>
-			<mat-label> School Name </mat-label>
-			<mat-select
-				[formControl]="accreditedSchoolIdControl"
-				[errorStateMatcher]="matcher"
-				(selectionChange)="onSchoolChange($event)"
-			>
-				<mat-select-trigger>
-					{{ selectedSchool?.schoolName }}
-				</mat-select-trigger>
-
-				<mat-option *ngFor="let item of accreditedDogSchools; let i = index" [value]="item.schoolId">
-					<div class="my-3">
-						<div class="school-name">{{ item.schoolName }}</div>
-						<div class="school-address">{{ item.schoolAddress }}</div>
-					</div>
+			<mat-label>School Name</mat-label>
+			<input matInput [formControl]="accreditedSchoolIdControl" [matAutocomplete]="auto" (blur)="onSchoolIdBlur()" />
+			<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+				<mat-option *ngFor="let field of filteredOptions | async" [value]="field.schoolId">
+					<div class="school-name mt-2">{{ field.schoolName }}</div>
+					<div class="school-address mb-2">{{ field.schoolAddress }}</div>
 				</mat-option>
-			</mat-select>
-			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')">This is required</mat-error>
+			</mat-autocomplete>
+			<mat-icon *if="!isRenewal" style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
+			<mat-hint *if="!isRenewal"> Start typing name of school or address </mat-hint>
+			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')"> This is required </mat-error>
 		</mat-form-field>
 
-		<ng-container *ngIf="!selectedSchool">
+		<div class="mt-4" *ngIf="!accreditedSchoolIdValue">
 			<app-alert type="info" icon="info">
 				If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
 				regular office hours.
 			</app-alert>
-		</ng-container>
+		</div>
 	`,
 	styles: [
 		`
@@ -61,6 +54,7 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	accreditedDogSchools = this.configService.accreditedDogSchools;
+	filteredOptions!: Observable<DogSchoolResponseExt[]>;
 
 	constructor(private configService: ConfigService) {}
 
@@ -70,16 +64,59 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 		} else {
 			this.accreditedSchoolIdControl.enable({ emitEvent: false });
 		}
+
+		this.filteredOptions = this.accreditedSchoolIdControl.valueChanges.pipe(
+			startWith(''),
+			map((value) => {
+				const searchValue =
+					typeof value === 'number' || typeof value === 'string' ? this.getName(value) || value : value;
+				return this._filterAccreditedSchool(searchValue?.toString());
+			})
+		);
 	}
 
-	get selectedSchool(): DogSchoolResponseExt | null | undefined {
-		return this.accreditedSchoolIdControl.value
-			? this.accreditedDogSchools?.find((school) => school.schoolId === this.accreditedSchoolIdControl.value)
-			: null;
+	onSchoolIdBlur(): void {
+		const inputText = this.displayFn(this.accreditedSchoolIdControl.value)?.trim();
+		const matchedSchool = this.accreditedDogSchools?.find(
+			(s) => s.schoolName?.toLowerCase() === inputText.toLowerCase()
+		);
+		if (matchedSchool) {
+			this.accreditedSchoolIdControl.setValue(matchedSchool.schoolId);
+			this.accreditedSchoolNameControl.setValue(matchedSchool.schoolName);
+		} else {
+			this.accreditedSchoolIdControl.setValue(null);
+			this.accreditedSchoolNameControl.setValue(null);
+		}
 	}
 
-	onSchoolChange(_event: MatSelectChange): void {
-		this.accreditedSchoolNameControl.setValue(this.selectedSchool?.schoolName);
+	getName(id: number | string): string {
+		if (typeof id !== 'number' && typeof id !== 'string') return '';
+
+		const match = this.accreditedDogSchools?.find((o) => o.schoolId == id);
+		return match ? match.schoolName! : '';
+	}
+
+	displayFn = (id: number): string => {
+		return this.getName(id);
+	};
+
+	private _filterAccreditedSchool(value: string): DogSchoolResponseExt[] {
+		if (!value) {
+			return this.accreditedDogSchools!;
+		}
+
+		const filterValue = value.toLowerCase();
+		return (
+			this.accreditedDogSchools?.filter(
+				(option: DogSchoolResponseExt) =>
+					option.schoolName?.toLowerCase().includes(filterValue) ||
+					option.schoolAddress?.toLowerCase().includes(filterValue)
+			) ?? []
+		);
+	}
+
+	get accreditedSchoolIdValue() {
+		return this.accreditedSchoolIdControl.value;
 	}
 
 	get isRenewal(): boolean {

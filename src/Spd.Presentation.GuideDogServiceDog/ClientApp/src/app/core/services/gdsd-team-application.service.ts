@@ -336,12 +336,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((res: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.hasValueChanged = false;
 
-				let msg = 'Your application has been saved';
-				if (isSaveAndExit) {
-					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.utilService.toasterSuccess(msg);
-
 				if (!teamModelFormValue.licenceAppId) {
 					this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}

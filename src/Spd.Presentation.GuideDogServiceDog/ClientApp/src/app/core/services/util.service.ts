@@ -9,7 +9,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -42,8 +41,7 @@ export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
 		private dialog: MatDialog,
-		private formatDatePipe: FormatDatePipe,
-		private hotToastService: HotToastService
+		private formatDatePipe: FormatDatePipe
 	) {}
 
 	//------------------------------------
@@ -480,10 +478,6 @@ export class UtilService {
 		formArray.controls.forEach((control) => {
 			control.disable({ emitEvent: false });
 		});
-	}
-
-	toasterSuccess(msg: string): void {
-		this.hotToastService.success(msg, { ariaLive: 'polite' });
 	}
 
 	dialogSuccess(msg: string): void {
