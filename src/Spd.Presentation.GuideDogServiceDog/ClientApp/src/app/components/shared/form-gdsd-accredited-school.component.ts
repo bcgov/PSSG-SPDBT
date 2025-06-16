@@ -19,8 +19,8 @@ import { map, Observable, startWith } from 'rxjs';
 					<div class="school-address mb-2">{{ field.schoolAddress }}</div>
 				</mat-option>
 			</mat-autocomplete>
-			<mat-icon *if="!isRenewal" style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
-			<mat-hint *if="!isRenewal"> Start typing name of school or address </mat-hint>
+			<mat-icon *ngIf="!isRenewal" style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
+			<mat-hint *ngIf="!isRenewal"> Start typing name of school or address </mat-hint>
 			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')"> This is required </mat-error>
 		</mat-form-field>
 

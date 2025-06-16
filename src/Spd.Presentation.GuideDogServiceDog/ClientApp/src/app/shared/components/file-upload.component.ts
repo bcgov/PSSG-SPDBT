@@ -102,7 +102,6 @@ export class FileUploadHelper {
 					</div>
 				</ng-container>
 			</div>
-
 			<label
 				class="dropzone-area"
 				[for]="id"
@@ -130,9 +129,23 @@ export class FileUploadHelper {
 				/>
 			</label>
 		</div>
+		<div aria-live="polite" class="sr-only" role="status">
+			{{ uploadStatusMessage }}
+		</div>
 	`,
 	styles: [
 		`
+			.sr-only {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border: 0;
+			}
+
 			.file-preview {
 				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
 				align-items: center;
@@ -213,6 +226,8 @@ export class FileUploadComponent implements OnInit {
 
 	imagePreviews: Array<string | null> = [];
 
+	uploadStatusMessage = '';
+
 	constructor(
 		private utilService: UtilService,
 		private dialog: MatDialog,
@@ -276,6 +291,11 @@ export class FileUploadComponent implements OnInit {
 		if (newFile) {
 			this.files.push(newFile);
 			this.filesUpdated();
+
+			this.uploadStatusMessage = ''; // Clear first to trigger screen reader reliably
+			setTimeout(() => {
+				this.uploadStatusMessage = 'File uploaded successfully';
+			}, 100); // Small delay helps ensure the change is recognized
 
 			this.fileUploaded.emit(newFile);
 		}
@@ -346,6 +366,11 @@ export class FileUploadComponent implements OnInit {
 		this.imagePreviews.splice(removeFileIndex, 1);
 		this.files.splice(removeFileIndex, 1);
 		this.filesUpdated();
+
+		this.uploadStatusMessage = ''; // Clear first to trigger screen reader reliably
+		setTimeout(() => {
+			this.uploadStatusMessage = 'File successfully removed';
+		}, 100); // Small delay helps ensure the change is recognized
 	}
 
 	getFileIcon(file: File): IconType {
