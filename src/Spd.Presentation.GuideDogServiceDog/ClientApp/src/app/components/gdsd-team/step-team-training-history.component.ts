@@ -68,15 +68,13 @@ export class StepTeamTrainingHistoryComponent implements LicenceChildStepperStep
 		this.logattachments.setValue([]);
 	}
 
-	public get schoolattachments(): FormControl {
+	get schoolattachments(): FormControl {
 		return this.gdsdTeamApplicationService.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
-
-	public get otherattachments(): FormControl {
+	get otherattachments(): FormControl {
 		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
-
-	public get logattachments(): FormControl {
+	get logattachments(): FormControl {
 		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('practiceLogAttachments') as FormControl;
 	}
 }

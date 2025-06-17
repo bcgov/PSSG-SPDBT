@@ -12,7 +12,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		<app-step-section [heading]="title" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-form-gdsd-accredited-school
 							schoolLabel="Name of Assistance Dogs International or International Guide Dog Federation Accredited School"
 							[accreditedSchoolIdControl]="accreditedSchoolId"
