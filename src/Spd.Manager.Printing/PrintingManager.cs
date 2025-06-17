@@ -192,7 +192,8 @@ internal class PrintingManager
         return eventResp.EventTypeEnum switch
         {
             EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest(eventResp.RegardingObjectId.Value),
-            EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest(eventResp.RegardingObjectId.Value),
+            EventTypeEnum.BCMPMetalDealersPermitPrinting => new MDRALicencePrintingTransformRequest(eventResp.RegardingObjectId.Value),
             _ => throw new NotImplementedException()
         };
     }
