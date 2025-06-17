@@ -210,9 +210,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				linkedLicenceHolderName: resp.licenceHolderName,
 			});
 			this.linkSuccess.emit(resp);
-
-			const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.utilService.toasterSuccess(`The ${serviceTypeCodeDesc} has been found.`);
 		}
 
 		if (this.errorMessage) {

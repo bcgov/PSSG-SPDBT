@@ -19,13 +19,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
 					<mat-form-field>
 						<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-						<input matInput formControlName="addressLine2" maxlength="100" />
+						<input matInput formControlName="addressLine2" [errorStateMatcher]="matcher" maxlength="100" />
 					</mat-form-field>
 				</div>
 				<div class="col-md-6 col-sm-12">
 					<mat-form-field>
 						<mat-label>City</mat-label>
-						<input matInput formControlName="city" maxlength="100" />
+						<input matInput formControlName="city" [errorStateMatcher]="matcher" maxlength="100" />
 						<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
 					</mat-form-field>
 				</div>
@@ -36,6 +36,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							matInput
 							formControlName="postalCode"
 							oninput="this.value = this.value.toUpperCase()"
+							[errorStateMatcher]="matcher"
 							maxlength="20"
 						/>
 						<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
@@ -44,7 +45,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="col-md-6 col-sm-12">
 					<mat-form-field>
 						<mat-label>Province/State</mat-label>
-						<input matInput formControlName="province" maxlength="100" />
+						<input matInput formControlName="province" [errorStateMatcher]="matcher" maxlength="100" />
 						<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
 						<mat-error *ngIf="form.get('province')?.hasError('requiredValue')"
 							>This must be '{{ provinceOfBC }}' or '{{ provinceBritishColumbia }}'</mat-error
@@ -54,7 +55,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="col-md-6 col-sm-12">
 					<mat-form-field>
 						<mat-label>Country</mat-label>
-						<input matInput formControlName="country" maxlength="100" />
+						<input matInput formControlName="country" [errorStateMatcher]="matcher" maxlength="100" />
 						<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
 						<mat-error *ngIf="form.get('country')?.hasError('requiredValue')"
 							>This must be '{{ countryCA }}' or '{{ countryCanada }}'</mat-error

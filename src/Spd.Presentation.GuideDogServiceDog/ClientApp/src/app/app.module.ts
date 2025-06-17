@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppRoutingModule } from './app-routing.module';
@@ -246,7 +245,6 @@ import { SharedModule } from './shared/shared.module';
 		SharedModule,
 	],
 	providers: [
-		provideHotToastConfig(),
 		{
 			provide: APP_BASE_HREF,
 			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
