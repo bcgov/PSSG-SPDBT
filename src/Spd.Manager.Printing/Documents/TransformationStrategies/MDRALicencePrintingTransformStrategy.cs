@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
-using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.ServiceTypes;
-using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -15,9 +13,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 internal class MDRALicencePrintingTransformStrategy(
     ILicenceRepository licRepository,
     IServiceTypeRepository serviceTypeRepository,
-    IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
     IBizRepository bizRepository,
-    IIncidentRepository incidentRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<MDRALicencePrintingTransformRequest, MDRALicencePrintingJson>(Jobs.MetalDealerAndRecyclersPermit)
 {
