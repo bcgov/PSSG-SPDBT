@@ -151,7 +151,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 				console.log('An error occurred during save', error);
 			},
 		});
-		return;
+		// return;
 		// }
 
 		// this.metalDealersApplicationService.submitLicenceRenewalAnonymous().subscribe({
@@ -170,7 +170,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 			return;
 		}
 
-		if (dupres.hasPotentialDuplicate == true) {
+		if (dupres.hasPotentialDuplicate) {
 			const data: ModalMdraDuplicateDialogData = {
 				title: 'Potential duplicate detected',
 				message: 'A potential duplicate has been found. Are you sure this is a new registration request?',
