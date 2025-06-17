@@ -165,7 +165,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	private displayDataValidationMessage(dupres: MdraRegistrationCommandResponse): void {
-		if (!!dupres.registrationId) {
+		if (dupres.registrationId) {
 			this.handleSaveSuccess();
 			return;
 		}
