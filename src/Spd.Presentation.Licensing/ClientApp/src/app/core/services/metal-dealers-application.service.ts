@@ -146,9 +146,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	/**
 	 * Submit the application data for anonymous new
 	 */
-	submitLicenceAnonymous(
-		requireDuplicateCheck: boolean
-	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
 		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(metalDealersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);

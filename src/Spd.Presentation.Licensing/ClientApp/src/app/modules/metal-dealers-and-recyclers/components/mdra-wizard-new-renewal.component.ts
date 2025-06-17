@@ -143,8 +143,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 
 	onSubmit(): void {
 		// if (this.applicationTypeCode === ApplicationTypeCode.New) {
-		const requireDuplicateCheck = true;
-		this.metalDealersApplicationService.submitLicenceAnonymous(requireDuplicateCheck).subscribe({
+		this.metalDealersApplicationService.submitLicenceAnonymous().subscribe({
 			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
 				this.displayDataValidationMessage(dupres.body);
 			},
