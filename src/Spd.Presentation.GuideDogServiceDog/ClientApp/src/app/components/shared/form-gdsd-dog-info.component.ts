@@ -103,7 +103,6 @@ export class FormGdsdDogInfoComponent implements OnInit {
 		const errorKey = this.utilService.getIsInputValidDate(this.dogDateOfBirth.value);
 		if (errorKey) {
 			this.dogDateOfBirth.setErrors({ [errorKey]: true });
-			return;
 		}
 	}
 
