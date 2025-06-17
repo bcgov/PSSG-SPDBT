@@ -36,7 +36,16 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<MDRARegistrationResponse> GetMDRARegistrationAnonymous()
         {
-            string registrationId = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            string? registrationId;
+            try
+            {
+                registrationId = licenceIdsStr.Split("*")[1];
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "registrationId is incorrect");
+            }
             return await _mediator.Send(new GetMDRARegistrationQuery(Guid.Parse(registrationId)));
         }
 
