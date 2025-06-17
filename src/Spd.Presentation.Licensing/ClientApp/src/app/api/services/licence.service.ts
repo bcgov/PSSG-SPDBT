@@ -150,7 +150,7 @@ export class LicenceService extends BaseService {
 
   /**
    * Get latest licence by licence number with google recaptcha for anonymous
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   * Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST.
    *
    *
    *
@@ -165,7 +165,7 @@ export class LicenceService extends BaseService {
 
   /**
    * Get latest licence by licence number with google recaptcha for anonymous
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   * Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST.
    *
    *
    *
