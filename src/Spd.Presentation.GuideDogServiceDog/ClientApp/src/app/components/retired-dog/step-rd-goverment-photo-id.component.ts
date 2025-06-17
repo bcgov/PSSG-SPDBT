@@ -6,7 +6,10 @@ import { FormGdsdGovermentPhotoIdComponent } from '../shared/form-gdsd-goverment
 @Component({
 	selector: 'app-step-rd-government-id',
 	template: `
-		<app-step-section title="Government-issued photo ID" subtitle="Upload a piece of your government-issued photo ID.">
+		<app-step-section
+			heading="Government-issued photo ID"
+			subheading="Upload a piece of your government-issued photo ID."
+		>
 			<app-form-gdsd-government-id
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"

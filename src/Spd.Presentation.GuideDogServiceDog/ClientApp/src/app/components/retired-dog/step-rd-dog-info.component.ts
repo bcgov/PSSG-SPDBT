@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-rd-dog-info',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-form-gdsd-dog-info [form]="form" [applicationTypeCode]="applicationTypeCode"></app-form-gdsd-dog-info>
 		</app-step-section>
 	`,

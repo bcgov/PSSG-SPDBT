@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.MDRARegistration;
@@ -15,6 +14,7 @@ internal class MDRARegistrationManager :
         IRequestHandler<MDRARegistrationRenewCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<MDRARegistrationUpdateCommand, MDRARegistrationCommandResponse>,
         IRequestHandler<GetMDRARegistrationIdQuery, Guid?>,
+        IRequestHandler<GetMDRARegistrationQuery, MDRARegistrationResponse>,
         IMDRARegistrationManager
 {
     private readonly IMapper _mapper;
@@ -50,28 +50,44 @@ internal class MDRARegistrationManager :
                 return response = new MDRARegistrationCommandResponse { HasPotentialDuplicate = true };
             }
         }
-        ValidateFilesForNewApp(cmd);
+        ValidateFiles(cmd.LicAppFileInfos);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.SubmitRequest);
-        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate.Value || hasSilentDuplicate == true;
-        MDRARegistrationResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
+        createCmd.HasPotentialDuplicate = cmd.SubmitRequest.HasPotentialDuplicate == true || hasSilentDuplicate == true;
+        MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
         await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = resp.RegistrationId };
+        return new MDRARegistrationCommandResponse { RegistrationId = resp.RegistrationId };
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand cmd, CancellationToken ct)
     {
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
+        MDRARegistrationCommandResponse response;
+        ValidateFiles(cmd.LicAppFileInfos);
+        CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.ChangeRequest);
+        MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
+        await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
+        return new MDRARegistrationCommandResponse { RegistrationId = resp.RegistrationId };
     }
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand cmd, CancellationToken ct)
     {
-        return new MDRARegistrationCommandResponse { OrgRegistrationId = Guid.Empty };
+        MDRARegistrationCommandResponse response;
+        ValidateFiles(cmd.LicAppFileInfos);
+        CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.ChangeRequest);
+        MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
+        await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);
+        return new MDRARegistrationCommandResponse { RegistrationId = resp.RegistrationId };
     }
 
     public async Task<Guid?> Handle(GetMDRARegistrationIdQuery cmd, CancellationToken ct)
     {
         OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.BizId), ct);
         return org.OrgResult.OrgRegistrationId;
+    }
+
+    public async Task<MDRARegistrationResponse> Handle(GetMDRARegistrationQuery query, CancellationToken ct)
+    {
+        MDRARegistrationResp registration = await _repository.GetMDRARegistrationAsync(query.BizRegistrationId, ct);
+        return _mapper.Map<MDRARegistrationResponse>(registration);
     }
     #endregion
 
@@ -88,18 +104,13 @@ internal class MDRARegistrationManager :
         return (hasPotentialDuplicate, hasSilentPotentialDuplicate);
     }
 
-    private static void ValidateFilesForNewApp(MDRARegistrationNewCommand cmd)
+    private static void ValidateFiles(IEnumerable<LicAppFileInfo> fileInfos)
     {
-        MDRARegistrationRequest request = cmd.SubmitRequest;
-        IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
-
-        if (request.ApplicationTypeCode == ApplicationTypeCode.New) //both new and renew need biz licence Registry Document
+        if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BusinessLicenceDocuments))
         {
-            if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BusinessLicenceDocuments))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Must provide copies of business licence registration documents.");
-            }
+            throw new ApiException(HttpStatusCode.BadRequest, "Must provide copies of business licence registration documents.");
         }
+
     }
 
     //upload file from cache to main bucket

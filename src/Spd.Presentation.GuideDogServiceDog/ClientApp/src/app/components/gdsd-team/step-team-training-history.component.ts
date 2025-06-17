@@ -9,8 +9,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-training-history',
 	template: `
 		<app-step-section
-			title="Training History Information"
-			subtitle="Please provide as much detail as possible about your dog’s training history, including
+			heading="Training History Information"
+			subheading="Please provide as much detail as possible about your dog’s training history, including
 any joint training you and your dog have completed."
 		>
 			<form [formGroup]="form" novalidate>
@@ -68,15 +68,13 @@ export class StepTeamTrainingHistoryComponent implements LicenceChildStepperStep
 		this.logattachments.setValue([]);
 	}
 
-	public get schoolattachments(): FormControl {
+	get schoolattachments(): FormControl {
 		return this.gdsdTeamApplicationService.schoolTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
-
-	public get otherattachments(): FormControl {
+	get otherattachments(): FormControl {
 		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('attachments') as FormControl;
 	}
-
-	public get logattachments(): FormControl {
+	get logattachments(): FormControl {
 		return this.gdsdTeamApplicationService.otherTrainingHistoryFormGroup.get('practiceLogAttachments') as FormControl;
 	}
 }

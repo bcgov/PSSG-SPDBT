@@ -6,11 +6,14 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 @Component({
 	selector: 'app-form-gdsd-terms-of-use',
 	template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+		<app-step-section
+			heading="Terms and Conditions"
+			subheading="Read, download, and accept the Terms of Use to continue"
+		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-						<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)" tabindex="0">
+						<div class="px-3 mb-3">
 							<div class="fs-5 mt-2 mb-3">
 								Terms of Use for Submitting an Application for Guide Dog or Service Dog Certification Online
 							</div>
@@ -203,12 +206,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 								</li>
 							</ol>
 						</div>
-
-						<ng-container *ngIf="displayValidationErrors && !hasScrolledToBottom">
-							<div class="alert alert-danger" role="alert">
-								Scroll to the bottom of the terms and conditions section to proceed
-							</div>
-						</ng-container>
+						<mat-divider class="mat-divider-primary mt-3 mb-2"></mat-divider>
 					</div>
 				</div>
 
@@ -236,7 +234,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							download="Guide Dog Service Dog Applicant Terms of Use"
 							[href]="downloadFilePath"
 						>
-							<mat-icon>file_download</mat-icon>Terms of Use
+							Download Terms of Use
 						</a>
 					</div>
 				</div>
@@ -258,19 +256,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			li {
 				margin-bottom: 0.5rem !important;
 			}
-
-			.conditions {
-				max-height: 400px;
-				overflow-y: auto;
-			}
 		`,
 	],
 	standalone: false,
 })
 export class FormGdsdTermsOfUseComponent implements LicenceChildStepperStepComponent {
-	hasScrolledToBottom = false;
-	displayValidationErrors = false;
-
 	bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;
 	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
 	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
@@ -282,16 +272,7 @@ export class FormGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		this.displayValidationErrors = !this.hasScrolledToBottom;
-
-		return this.form.valid && this.hasScrolledToBottom;
-	}
-
-	onScrollTermsAndConditions(e: any) {
-		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
-			this.hasScrolledToBottom = true;
-			this.setFormValid();
-		}
+		return this.form.valid;
 	}
 
 	onCheckboxChange(): void {
@@ -299,10 +280,6 @@ export class FormGdsdTermsOfUseComponent implements LicenceChildStepperStepCompo
 	}
 
 	private setFormValid(): void {
-		if (!this.hasScrolledToBottom) {
-			return;
-		}
-
 		const data = this.form.value;
 		if (data.agreeToTermsAndConditions) {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));

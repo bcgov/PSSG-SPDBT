@@ -3,13 +3,12 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
-import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-rd-dog-living-info',
 	template: `
-		<app-step-section title="Will your dog continue to live with you in his/her retirement?">
+		<app-step-section heading="Will your dog continue to live with you in his/her retirement?">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -40,19 +39,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepRdDogLivingInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	matcher = new FormErrorStateMatcher();
-
 	form: FormGroup = this.retiredDogApplicationService.dogLivingForm;
-
-	maxToday = this.utilService.getToday();
-	minDate = this.utilService.getDogDateMin();
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	constructor(
-		private utilService: UtilService,
-		private retiredDogApplicationService: RetiredDogApplicationService
-	) {}
+	constructor(private retiredDogApplicationService: RetiredDogApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

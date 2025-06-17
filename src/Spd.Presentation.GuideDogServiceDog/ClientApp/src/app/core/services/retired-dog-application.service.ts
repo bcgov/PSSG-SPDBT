@@ -207,7 +207,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -343,12 +342,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			take(1),
 			tap((res: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 				this.hasValueChanged = false;
-
-				let msg = 'Your application has been saved';
-				if (isSaveAndExit) {
-					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.utilService.toasterSuccess(msg);
 
 				if (!rdModelFormValue.licenceAppId) {
 					this.retiredDogModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -593,7 +586,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile?.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -714,7 +706,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 
 		const bcscMailingAddress = rdAppl.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,

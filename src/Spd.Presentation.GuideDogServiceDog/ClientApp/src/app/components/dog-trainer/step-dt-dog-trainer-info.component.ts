@@ -9,14 +9,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-dt-dog-trainer-info',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Legal Given Name</mat-label>
+									<mat-label>Legal First Name</mat-label>
 									<input matInput formControlName="trainerGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
 							</div>
@@ -38,26 +38,22 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Date of Birth</mat-label>
 									<input
 										matInput
-										[matDatepicker]="picker"
 										formControlName="trainerDateOfBirth"
-										[max]="maxBirthDate"
-										[min]="minDate"
+										[mask]="dateMask"
+										[showMaskTyped]="true"
 										[errorStateMatcher]="matcher"
+										(blur)="onValidateDate()"
 									/>
-									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 									<!-- We always want the date format hint to display -->
 									<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
 									<mat-error *ngIf="showHintError">
 										<span class="hint-inline">Date format YYYY-MM-DD</span>
 									</mat-error>
 									<mat-error *ngIf="trainerDateOfBirth?.hasError('required')">This is required</mat-error>
-									<mat-error *ngIf="trainerDateOfBirth?.hasError('matDatepickerMin')">
-										Invalid date of birth
-									</mat-error>
-									<mat-error *ngIf="trainerDateOfBirth?.hasError('matDatepickerMax')">
-										This must be on or before {{ maxBirthDate | formatDate }}
-									</mat-error>
+									<mat-error *ngIf="trainerDateOfBirth?.hasError('invalidDate')">This date is invalid</mat-error>
+									<mat-error *ngIf="trainerDateOfBirth?.hasError('futureDate')"
+										>This date cannot be in the future</mat-error
+									>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -104,8 +100,7 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	maxBirthDate = this.utilService.getBirthDateMax();
-	minDate = this.utilService.getDateMin();
+	dateMask = SPD_CONSTANTS.date.dateMask;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.dogTrainerApplicationService.dogTrainerFormGroup;
@@ -127,13 +122,20 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 		return this.form.valid;
 	}
 
+	onValidateDate(): void {
+		const errorKey = this.utilService.getIsInputValidDate(this.trainerDateOfBirth.value);
+		if (errorKey) {
+			this.trainerDateOfBirth.setErrors({ [errorKey]: true });
+		}
+	}
+
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
 	}
 	get showHintError(): boolean {
 		return (this.trainerDateOfBirth?.dirty || this.trainerDateOfBirth?.touched) && this.trainerDateOfBirth?.invalid;
 	}
-	public get trainerDateOfBirth(): FormControl {
+	get trainerDateOfBirth(): FormControl {
 		return this.form.get('trainerDateOfBirth') as FormControl;
 	}
 }

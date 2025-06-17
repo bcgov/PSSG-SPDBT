@@ -8,8 +8,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-team-dog-tasks',
 	template: `
 		<app-step-section
-			title="Specialized tasks"
-			subtitle="Describe the specific tasks your dog is trained to do that help with your daily life."
+			heading="Specialized tasks"
+			subheading="Describe the specific tasks your dog is trained to do that help with your daily life."
 		>
 			<form [formGroup]="form" novalidate>
 				<div class="row">

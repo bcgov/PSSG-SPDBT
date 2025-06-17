@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-team-consent-replacement',
 	template: `
-		<app-step-section title="Acknowledgement">
+		<app-step-section heading="Acknowledgement">
 			<app-form-gdsd-consent-replacement
 				[form]="form"
 				[showApplicantOrLegalGuardianName]="true"

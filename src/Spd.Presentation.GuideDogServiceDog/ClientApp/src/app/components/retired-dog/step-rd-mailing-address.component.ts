@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-rd-mailing-address',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<div class="row" *ngIf="isLoggedIn">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="info" icon="">

@@ -9,10 +9,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-dt-training-school-info',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-form-gdsd-accredited-school
 							schoolLabel="Name of Assistance Dogs International or International Guide Dog Federation Accredited School"
 							[accreditedSchoolIdControl]="accreditedSchoolId"
@@ -32,7 +32,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 							<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
-									<mat-label>Legal Given Name</mat-label>
+									<mat-label>Legal First Name</mat-label>
 									<input
 										matInput
 										formControlName="schoolDirectorGivenName"

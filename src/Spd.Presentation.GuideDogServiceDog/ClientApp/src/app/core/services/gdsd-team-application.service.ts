@@ -336,12 +336,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			tap((res: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
 				this.hasValueChanged = false;
 
-				let msg = 'Your application has been saved';
-				if (isSaveAndExit) {
-					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.utilService.toasterSuccess(msg);
-
 				if (!teamModelFormValue.licenceAppId) {
 					this.gdsdTeamModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
@@ -444,7 +438,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -831,7 +824,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = applicantProfile?.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -955,7 +947,6 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 
 		const bcscMailingAddress = gdsdAppl.mailingAddress;
 		const mailingAddressData = {
-			addressSelected: !!bcscMailingAddress && !!bcscMailingAddress.addressLine1,
 			isAddressTheSame: false,
 			addressLine1: bcscMailingAddress?.addressLine1,
 			addressLine2: bcscMailingAddress?.addressLine2,
@@ -1495,37 +1486,29 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			'schoolTrainingHistoryData.schoolTrainings'
 		) as FormArray;
 		schoolTrainingsArray.push(
-			new FormGroup(
-				{
-					trainingId: new FormControl(train?.trainingId ?? null), // placeholder for ID
-					trainingBizName: new FormControl(train?.trainingBizName ?? null, [FormControlValidators.required]),
-					contactGivenName: new FormControl(train?.contactGivenName ?? null),
-					contactSurname: new FormControl(train?.contactSurname ?? null, [FormControlValidators.required]),
-					contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [FormControlValidators.required]),
-					contactEmailAddress: new FormControl(train?.contactEmailAddress ?? null, [FormControlValidators.email]),
-					trainingStartDate: new FormControl(train?.trainingStartDate ?? null, [Validators.required]),
-					trainingEndDate: new FormControl(train?.trainingEndDate ?? null, [Validators.required]),
-					trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
-					totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
-					whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
-					addressSelected: new FormControl(!!train?.trainingBizMailingAddress?.addressLine1, [Validators.requiredTrue]),
-					addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
-						FormControlValidators.required,
-					]),
-					addressLine2: new FormControl(train?.trainingBizMailingAddress?.addressLine2 ?? null),
-					city: new FormControl(train?.trainingBizMailingAddress?.city ?? null, [FormControlValidators.required]),
-					postalCode: new FormControl(train?.trainingBizMailingAddress?.postalCode ?? null, [
-						FormControlValidators.required,
-					]),
-					province: new FormControl(train?.trainingBizMailingAddress?.province ?? null, [
-						FormControlValidators.required,
-					]),
-					country: new FormControl(train?.trainingBizMailingAddress?.country ?? null, [FormControlValidators.required]),
-				},
-				{
-					validators: [FormGroupValidators.daterangeValidator('trainingStartDate', 'trainingEndDate')],
-				}
-			)
+			new FormGroup({
+				trainingId: new FormControl(train?.trainingId ?? null), // placeholder for ID
+				trainingBizName: new FormControl(train?.trainingBizName ?? null, [FormControlValidators.required]),
+				contactGivenName: new FormControl(train?.contactGivenName ?? null),
+				contactSurname: new FormControl(train?.contactSurname ?? null, [FormControlValidators.required]),
+				contactPhoneNumber: new FormControl(train?.contactPhoneNumber ?? null, [FormControlValidators.required]),
+				contactEmailAddress: new FormControl(train?.contactEmailAddress ?? null, [FormControlValidators.email]),
+				trainingStartDate: new FormControl(train?.trainingStartDate ?? null, [Validators.required]),
+				trainingEndDate: new FormControl(train?.trainingEndDate ?? null, [Validators.required]),
+				trainingName: new FormControl(train?.trainingName ?? null, [FormControlValidators.required]),
+				totalTrainingHours: new FormControl(train?.totalTrainingHours ?? null, [Validators.required]),
+				whatLearned: new FormControl(train?.whatLearned ?? null, [FormControlValidators.required]),
+				addressLine1: new FormControl(train?.trainingBizMailingAddress?.addressLine1 ?? null, [
+					FormControlValidators.required,
+				]),
+				addressLine2: new FormControl(train?.trainingBizMailingAddress?.addressLine2 ?? null),
+				city: new FormControl(train?.trainingBizMailingAddress?.city ?? null, [FormControlValidators.required]),
+				postalCode: new FormControl(train?.trainingBizMailingAddress?.postalCode ?? null, [
+					FormControlValidators.required,
+				]),
+				province: new FormControl(train?.trainingBizMailingAddress?.province ?? null, [FormControlValidators.required]),
+				country: new FormControl(train?.trainingBizMailingAddress?.country ?? null, [FormControlValidators.required]),
+			})
 		);
 	}
 
