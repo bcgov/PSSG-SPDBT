@@ -272,7 +272,7 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 		}
 
 		const dateEndFormControl = form.get('trainingEndDate');
-		if (dateEndFormControl?.value && dateEndFormControl?.value) {
+		if (dateFormControl?.value && dateEndFormControl?.value) {
 			this.invalidDateRange = !this.utilService.getIsInputValidDateRange(
 				dateFormControl?.value,
 				dateEndFormControl?.value
