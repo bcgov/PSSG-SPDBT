@@ -4,5 +4,5 @@
 
 export interface MdraRegistrationCommandResponse {
   hasPotentialDuplicate?: boolean | null;
-  orgRegistrationId?: string | null;
+  registrationId?: string | null;
 }

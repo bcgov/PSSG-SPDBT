@@ -16,7 +16,7 @@ import { ApiMdraRegistrationGet$Params } from '../fn/mdra/api-mdra-registration-
 import { apiMdraRegistrationsPost } from '../fn/mdra/api-mdra-registrations-post';
 import { ApiMdraRegistrationsPost$Params } from '../fn/mdra/api-mdra-registrations-post';
 import { MdraRegistrationCommandResponse } from '../models/mdra-registration-command-response';
-import { WorkerLicenceAppResponse } from '../models/worker-licence-app-response';
+import { MdraRegistrationResponse } from '../models/mdra-registration-response';
 
 @Injectable({ providedIn: 'root' })
 export class MdraService extends BaseService {
@@ -33,7 +33,7 @@ export class MdraService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiMdraRegistrationGet$Response(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
+  apiMdraRegistrationGet$Response(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<MdraRegistrationResponse>> {
     return apiMdraRegistrationGet(this.http, this.rootUrl, params, context);
   }
 
@@ -43,9 +43,9 @@ export class MdraService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiMdraRegistrationGet(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<WorkerLicenceAppResponse> {
+  apiMdraRegistrationGet(params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<MdraRegistrationResponse> {
     return this.apiMdraRegistrationGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppResponse>): WorkerLicenceAppResponse => r.body)
+      map((r: StrictHttpResponse<MdraRegistrationResponse>): MdraRegistrationResponse => r.body)
     );
   }
 

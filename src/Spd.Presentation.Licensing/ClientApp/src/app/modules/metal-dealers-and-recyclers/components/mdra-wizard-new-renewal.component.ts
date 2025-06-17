@@ -166,7 +166,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	private displayDataValidationMessage(dupres: MdraRegistrationCommandResponse): void {
-		if (!!dupres.orgRegistrationId) {
+		if (!!dupres.registrationId) {
 			this.handleSaveSuccess();
 			return;
 		}
@@ -183,16 +183,13 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 				.afterClosed()
 				.subscribe((response: ModalMdraDuplicateDialogResponse) => {
 					if (response.success) {
-						// body.recaptcha =  response.captchaResponse?.resolved ;
-						this.saveRegistration(true, response.captchaResponse?.resolved!);
-						// } else {
-						// 	this.resetRecaptcha.next(); // reset the recaptcha
+						this.resubmitLicenceAnonymous(true, response.captchaResponse?.resolved!);
 					}
 				});
 		}
 	}
 
-	private saveRegistration(hasPotentialDuplicate: boolean, recaptchaCode: string) {
+	private resubmitLicenceAnonymous(hasPotentialDuplicate: boolean, recaptchaCode: string) {
 		this.metalDealersApplicationService.resubmitLicenceAnonymous(hasPotentialDuplicate, recaptchaCode).subscribe({
 			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
 				this.displayDataValidationMessage(dupres.body);
@@ -201,15 +198,6 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 				console.log('An error occurred during save', error);
 			},
 		});
-
-		// body.hasPotentialDuplicate = hasPotentialDuplicate;
-		// body.requireDuplicateCheck = false;
-		// this.orgRegistrationService
-		// 	.apiAnonymousOrgRegistrationsPost({ body })
-		// 	.pipe()
-		// 	.subscribe((_res: any) => {
-		// 		this.handleSaveSuccess();
-		// 	});
 	}
 
 	private handleSaveSuccess(): void {

@@ -60,7 +60,6 @@ internal class MDRARegistrationManager :
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand cmd, CancellationToken ct)
     {
-        MDRARegistrationCommandResponse response;
         ValidateFiles(cmd.LicAppFileInfos);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.ChangeRequest);
         MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
@@ -70,7 +69,6 @@ internal class MDRARegistrationManager :
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand cmd, CancellationToken ct)
     {
-        MDRARegistrationCommandResponse response;
         ValidateFiles(cmd.LicAppFileInfos);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.ChangeRequest);
         MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);

@@ -8,12 +8,12 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { WorkerLicenceAppResponse } from '../../models/worker-licence-app-response';
+import { MdraRegistrationResponse } from '../../models/mdra-registration-response';
 
 export interface ApiMdraRegistrationGet$Params {
 }
 
-export function apiMdraRegistrationGet(http: HttpClient, rootUrl: string, params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
+export function apiMdraRegistrationGet(http: HttpClient, rootUrl: string, params?: ApiMdraRegistrationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<MdraRegistrationResponse>> {
   const rb = new RequestBuilder(rootUrl, apiMdraRegistrationGet.PATH, 'get');
   if (params) {
   }
@@ -23,7 +23,7 @@ export function apiMdraRegistrationGet(http: HttpClient, rootUrl: string, params
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<WorkerLicenceAppResponse>;
+      return r as StrictHttpResponse<MdraRegistrationResponse>;
     })
   );
 }

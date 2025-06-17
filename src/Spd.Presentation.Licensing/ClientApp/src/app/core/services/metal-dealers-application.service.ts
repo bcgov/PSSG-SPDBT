@@ -156,7 +156,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
-		// body.hasPotentialDuplicate = false;
+		body.hasPotentialDuplicate = false;
 		body.requireDuplicateCheck = true;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
