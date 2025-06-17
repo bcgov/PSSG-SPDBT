@@ -154,8 +154,35 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
 		delete body.documentInfos;
 
+		body.hasPotentialDuplicate = false;
+		body.requireDuplicateCheck = true;
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+
+		return this.submitLicenceAnonymousDocuments(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
+	}
+
+	resubmitLicenceAnonymous(
+		hasPotentialDuplicate: boolean,
+		recaptchaCode: string
+	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
+		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(metalDealersModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);
+
+		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
+		delete body.documentInfos;
+
+		body.hasPotentialDuplicate = hasPotentialDuplicate;
+		body.requireDuplicateCheck = false;
+
+		const googleRecaptcha = { recaptchaCode: recaptchaCode };
 
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,

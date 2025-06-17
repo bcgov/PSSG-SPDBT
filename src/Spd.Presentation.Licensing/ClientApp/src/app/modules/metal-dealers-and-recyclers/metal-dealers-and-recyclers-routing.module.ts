@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MdraBaseComponent } from './components/mdra-base.component';
 import { MdraWizardNewRenewalComponent } from './components/mdra-wizard-new-renewal.component';
+import { MdraWizardUpdateComponent } from './components/mdra-wizard-update.component';
 import { MetalDealersLandingComponent } from './components/metal-dealers-landing.component';
 import { MetalDealersRegistrationReceivedComponent } from './components/metal-dealers-registration-received.component';
 import { StepMdraLicenceAccessCodeComponent } from './components/step-mdra-access-code.component';
@@ -28,6 +29,10 @@ const routes: Routes = [
 			{
 				path: MetalDealersAndRecyclersRoutes.MDRA_RENEWAL,
 				component: MdraWizardNewRenewalComponent,
+			},
+			{
+				path: MetalDealersAndRecyclersRoutes.MDRA_UPDATE,
+				component: MdraWizardUpdateComponent,
 			},
 			{
 				path: MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED,
