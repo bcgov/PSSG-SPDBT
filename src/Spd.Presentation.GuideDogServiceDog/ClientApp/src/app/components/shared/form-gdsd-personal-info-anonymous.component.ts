@@ -104,7 +104,6 @@ export class FormGdsdPersonalInfoAnonymousComponent {
 		const errorKey = this.utilService.getIsInputValidDate(this.dateOfBirth.value);
 		if (errorKey) {
 			this.dateOfBirth.setErrors({ [errorKey]: true });
-			return;
 		}
 	}
 

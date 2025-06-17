@@ -68,7 +68,6 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 		const errorKey = this.utilService.getIsInputValidDate(this.dogRetiredDate.value);
 		if (errorKey) {
 			this.dogRetiredDate.setErrors({ [errorKey]: true });
-			return;
 		}
 	}
 

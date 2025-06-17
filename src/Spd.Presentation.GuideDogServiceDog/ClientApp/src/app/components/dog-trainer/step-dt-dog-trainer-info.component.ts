@@ -126,7 +126,6 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 		const errorKey = this.utilService.getIsInputValidDate(this.trainerDateOfBirth.value);
 		if (errorKey) {
 			this.trainerDateOfBirth.setErrors({ [errorKey]: true });
-			return;
 		}
 	}
 

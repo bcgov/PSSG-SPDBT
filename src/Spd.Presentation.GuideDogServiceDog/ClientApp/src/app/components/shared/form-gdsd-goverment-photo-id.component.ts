@@ -102,7 +102,6 @@ export class FormGdsdGovermentPhotoIdComponent {
 		const errorKey = this.utilService.getIsInputValidDate(this.expiryDate.value);
 		if (errorKey) {
 			this.expiryDate.setErrors({ [errorKey]: true });
-			return;
 		}
 	}
 
