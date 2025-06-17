@@ -32,7 +32,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</mat-form-field>
 						</div>
 						<div *ngIf="photoTypeCode.value" @showHideTriggerSlideAnimation>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12 mt-3">
 								<mat-form-field>
 									<mat-label>Document Expiry Date</mat-label>
 									<input

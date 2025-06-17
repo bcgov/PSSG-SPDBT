@@ -256,7 +256,7 @@ export class UtilService {
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc ?? '', b.desc));
+		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc, b.desc));
 		return codeDescs;
 	}
 

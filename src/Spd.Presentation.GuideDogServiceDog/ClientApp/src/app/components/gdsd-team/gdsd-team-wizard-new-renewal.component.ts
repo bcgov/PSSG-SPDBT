@@ -30,7 +30,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step>
+			<mat-step [completed]="step1Complete">
 				<app-steps-team-selection
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -41,7 +41,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-selection>
 			</mat-step>
 
-			<mat-step>
+			<mat-step [completed]="step2Complete">
 				<app-steps-team-personal-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -57,7 +57,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-personal-info>
 			</mat-step>
 
-			<mat-step>
+			<mat-step [completed]="step3Complete">
 				<app-steps-team-dog-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -73,7 +73,7 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-dog-info>
 			</mat-step>
 
-			<mat-step *ngIf="isNew">
+			<mat-step [completed]="step4Complete" *ngIf="isNew">
 				<app-steps-team-training-info
 					[isLoggedIn]="isLoggedIn"
 					[showSaveAndExit]="showSaveAndExit"
@@ -278,9 +278,10 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		if (this.gdsdTeamApplicationService.isAutoSave()) {
 			this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
+					const matchingIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
-						this.stepper.selectedIndex = this.getMatchingIndex(this.STEP_REVIEW_AND_CONFIRM);
+						this.stepper.selectedIndex = matchingIndex;
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {

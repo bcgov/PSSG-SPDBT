@@ -24,7 +24,7 @@ import { map, Observable, startWith } from 'rxjs';
 			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')"> This is required </mat-error>
 		</mat-form-field>
 
-		<div class="mt-4" *ngIf="!accreditedSchoolIdValue">
+		<div class="mt-4" *ngIf="!isRenewal">
 			<app-alert type="info" icon="info">
 				If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
 				regular office hours.
@@ -113,10 +113,6 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 					option.schoolAddress?.toLowerCase().includes(filterValue)
 			) ?? []
 		);
-	}
-
-	get accreditedSchoolIdValue() {
-		return this.accreditedSchoolIdControl.value;
 	}
 
 	get isRenewal(): boolean {
