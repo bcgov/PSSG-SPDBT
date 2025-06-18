@@ -95,6 +95,7 @@ export class FileUploadHelper {
 									(click)="onRemoveFile(file)"
 									(keydown)="onRemoveFileKeyDown($event, file)"
 									aria-label="Remove this file"
+									role="button"
 									>cancel</mat-icon
 								>
 							</div>
@@ -102,13 +103,13 @@ export class FileUploadHelper {
 					</div>
 				</ng-container>
 			</div>
-
 			<label
 				class="dropzone-area"
 				[for]="id"
 				tabindex="0"
 				[attr.aria-label]="ariaFileUploadLabel"
 				(keydown)="onAddFileKeyDown($event)"
+				role="button"
 			>
 				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
 				<div class="fw-bold m-2">Drag and Drop your file here or click to browse</div>
@@ -127,8 +128,12 @@ export class FileUploadHelper {
 					[multiple]="false"
 					[hidden]="true"
 					[accept]="accept"
+					role="button"
 				/>
 			</label>
+		</div>
+		<div aria-live="polite" class="mt-2" role="status">
+			{{ uploadStatusMessage }}
 		</div>
 	`,
 	styles: [
@@ -213,6 +218,8 @@ export class FileUploadComponent implements OnInit {
 
 	imagePreviews: Array<string | null> = [];
 
+	uploadStatusMessage = '';
+
 	constructor(
 		private utilService: UtilService,
 		private dialog: MatDialog,
@@ -276,6 +283,11 @@ export class FileUploadComponent implements OnInit {
 		if (newFile) {
 			this.files.push(newFile);
 			this.filesUpdated();
+
+			this.uploadStatusMessage = ''; // Clear first to trigger screen reader reliably
+			setTimeout(() => {
+				this.uploadStatusMessage = 'File uploaded successfully';
+			}, 100); // Small delay helps ensure the change is recognized
 
 			this.fileUploaded.emit(newFile);
 		}
@@ -346,6 +358,11 @@ export class FileUploadComponent implements OnInit {
 		this.imagePreviews.splice(removeFileIndex, 1);
 		this.files.splice(removeFileIndex, 1);
 		this.filesUpdated();
+
+		this.uploadStatusMessage = ''; // Clear first to trigger screen reader reliably
+		setTimeout(() => {
+			this.uploadStatusMessage = 'File successfully removed';
+		}, 100); // Small delay helps ensure the change is recognized
 	}
 
 	getFileIcon(file: File): IconType {

@@ -6,7 +6,7 @@ import { Address } from '../models/address';
 import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BranchInfo } from '../models/branch-info';
-export interface MdraRegistrationRequest {
+export interface MdraRegistrationResponse {
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizAddress?: Address;
@@ -21,8 +21,7 @@ export interface MdraRegistrationRequest {
   bizPhoneNumber?: string | null;
   bizTradeName?: string | null;
   branches?: Array<BranchInfo> | null;
-  documentKeyCodes?: Array<string> | null;
   expiredLicenceId?: string | null;
-  hasPotentialDuplicate?: boolean | null;
-  requireDuplicateCheck?: boolean;
+  registrationId?: string | null;
+  registrationNumber?: string | null;
 }

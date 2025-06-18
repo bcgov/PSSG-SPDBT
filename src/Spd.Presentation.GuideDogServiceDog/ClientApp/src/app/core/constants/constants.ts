@@ -7,6 +7,7 @@ export const SPD_CONSTANTS = {
 		monthYearFormat: 'MMM yyyy',
 		dateTimeFormat: 'YYYY-MM-DD HH:mm',
 		backendDateFormat: 'YYYY-MM-DD',
+		dateMask: '0000-00-00',
 	},
 	periods: {
 		applicationNotSubmittedWarningDays: 14, // show warning 14 days before the 30 day mark

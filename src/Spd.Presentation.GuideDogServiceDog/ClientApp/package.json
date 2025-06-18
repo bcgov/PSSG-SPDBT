@@ -29,7 +29,6 @@
     "@bcgov/bc-sans": "^2.1.0",
     "@ngneat/overview": "^6.1.1",
     "@ngneat/until-destroy": "^10.0.0",
-    "@ngxpert/hot-toast": "^4.1.2",
     "angular-oauth2-oidc": "^19.0.0",
     "bootstrap": "^5.3.5",
     "jquery": "^3.7.0",

@@ -105,10 +105,6 @@ internal class LicenceRepository : ILicenceRepository
             lics = (bool)qry.IsExpired ? lics.Where(l => l.statuscode == (int)LicenceStatusOptionSet.Expired) :
                 lics.Where(l => l.statuscode != (int)LicenceStatusOptionSet.Expired);
         }
-        if (qry.AccessCode != null)
-        {
-            lics = lics.Where(a => a.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode);
-        }
         if (qry.LastName != null || qry.FirstName != null)
         {
             lics = lics.Where(a => a.spd_LicenceHolder_contact.firstname == qry.FirstName && a.spd_LicenceHolder_contact.lastname == qry.LastName);
@@ -117,9 +113,19 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = lics.Where(a => a.spd_LicenceHolder_account.name.StartsWith(qry.BizName) || a.spd_LicenceHolder_account.spd_organizationlegalname.StartsWith(qry.BizName));
         }
+        var result = lics.ToList();
+        if (qry.AccessCode != null)
+        {
+            Guid? mdraServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.MDRA.ToString());
+            Guid? bizServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SecurityBusinessLicence.ToString());
+            result = result.Where(r =>
+                (r._spd_licencetype_value == mdraServiceTypeId && r.spd_LicenceHolder_account.spd_accesscode == qry.AccessCode)
+                || (r._spd_licencetype_value == bizServiceTypeId && r.spd_LicenceHolder_account.spd_accesscode == qry.AccessCode)
+                || r.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode).ToList();
+        }
         return new LicenceListResp()
         {
-            Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)
+            Items = _mapper.Map<IEnumerable<LicenceResp>>(result)
         };
     }
 

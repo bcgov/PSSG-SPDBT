@@ -300,10 +300,10 @@ export class StepTeamOtherTrainingsComponent implements LicenceChildStepperStepC
 	get otherTrainingsArray(): FormArray {
 		return <FormArray>this.form.get('otherTrainings');
 	}
-	public get attachments(): FormControl {
+	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
-	public get practiceLogAttachments(): FormControl {
+	get practiceLogAttachments(): FormControl {
 		return this.form.get('practiceLogAttachments') as FormControl;
 	}
 }

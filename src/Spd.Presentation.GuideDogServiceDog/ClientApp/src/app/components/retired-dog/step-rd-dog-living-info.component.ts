@@ -3,8 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
-import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-rd-dog-living-info',
@@ -40,19 +39,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class StepRdDogLivingInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	matcher = new FormErrorStateMatcher();
-
 	form: FormGroup = this.retiredDogApplicationService.dogLivingForm;
-
-	maxToday = this.utilService.getToday();
-	minDate = this.utilService.getDogDateMin();
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	constructor(
-		private utilService: UtilService,
-		private retiredDogApplicationService: RetiredDogApplicationService
-	) {}
+	constructor(private retiredDogApplicationService: RetiredDogApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
