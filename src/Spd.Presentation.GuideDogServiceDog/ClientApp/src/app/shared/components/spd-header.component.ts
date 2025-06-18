@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 			</div>
 			<span style="flex: 1 1 auto;"></span>
 
-			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
+			<mat-icon role="button" matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
 				>logout</mat-icon
 			>
 			<div *ngIf="loggedInUserDisplay">
