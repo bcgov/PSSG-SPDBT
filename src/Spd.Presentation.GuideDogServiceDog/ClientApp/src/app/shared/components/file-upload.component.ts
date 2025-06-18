@@ -95,6 +95,7 @@ export class FileUploadHelper {
 									(click)="onRemoveFile(file)"
 									(keydown)="onRemoveFileKeyDown($event, file)"
 									aria-label="Remove this file"
+									role="button"
 									>cancel</mat-icon
 								>
 							</div>
@@ -108,6 +109,7 @@ export class FileUploadHelper {
 				tabindex="0"
 				[attr.aria-label]="ariaFileUploadLabel"
 				(keydown)="onAddFileKeyDown($event)"
+				role="button"
 			>
 				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
 				<div class="fw-bold m-2">Drag and Drop your file here or click to browse</div>
@@ -126,6 +128,7 @@ export class FileUploadHelper {
 					[multiple]="false"
 					[hidden]="true"
 					[accept]="accept"
+					role="button"
 				/>
 			</label>
 		</div>
