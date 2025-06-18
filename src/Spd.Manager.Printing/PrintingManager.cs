@@ -169,8 +169,9 @@ internal class PrintingManager
         EventResp? eventResp = await _eventRepo.GetAsync(request.EventId, ct);
         if (eventResp == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.");
-        if (eventResp.EventTypeEnum != EventTypeEnum.BCMPBusinessLicencePrinting)
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only support Business Licence document download.");
+        if (eventResp.EventTypeEnum != EventTypeEnum.BCMPBusinessLicencePrinting
+            && eventResp.EventTypeEnum != EventTypeEnum.BCMPMetalDealersPermitPrinting)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only support Business Licence/mdra licence download.");
         if (eventResp.JobId == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "the printing event is not executed successfully yet.");
         AssetResponse response = await _printer.Asset(new BCMailPlusPrintImageRequest(eventResp.JobId), ct);
