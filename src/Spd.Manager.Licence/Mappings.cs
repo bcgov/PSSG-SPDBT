@@ -240,7 +240,8 @@ internal class Mappings : Profile
              .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData));
 
         CreateMap<LicenceResp, LicenceBasicResponse>()
-             .ForMember(d => d.LicenceHolderName, opt => opt.MapFrom(s => GetHolderName(s.LicenceHolderFirstName, s.LicenceHolderMiddleName1, s.LicenceHolderLastName)));
+             .ForMember(d => d.LicenceHolderName, opt => opt.MapFrom(s => GetHolderName(s.LicenceHolderFirstName, s.LicenceHolderMiddleName1, s.LicenceHolderLastName)))
+             .ForMember(d => d.ShowSecurityGuardAST, opt => opt.MapFrom(s => s.Conditions.Any(c => c.Name.Equals("AUTHORIZED TO CARRY AND USE RESTRAINTS (HANDCUFFS ONLY)", StringComparison.InvariantCultureIgnoreCase))));
 
         CreateMap<LicenceResp, LicenceResponse>()
             .IncludeBase<LicenceResp, LicenceBasicResponse>()

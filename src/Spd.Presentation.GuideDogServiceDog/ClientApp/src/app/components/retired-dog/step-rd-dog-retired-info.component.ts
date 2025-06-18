@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -17,24 +18,21 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-label>Date of Retirement</mat-label>
 							<input
 								matInput
-								[matDatepicker]="picker"
 								formControlName="dogRetiredDate"
-								[max]="maxToday"
-								[min]="minDate"
+								[mask]="dateMask"
+								[showMaskTyped]="true"
 								[errorStateMatcher]="matcher"
+								(blur)="onValidateDate()"
+								aria-label="Date in format YYYY-MM-DD"
 							/>
-							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 							<!-- We always want the date format hint to display -->
 							<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
 							<mat-error *ngIf="showHintError">
 								<span class="hint-inline">Date format YYYY-MM-DD</span>
 							</mat-error>
 							<mat-error *ngIf="dogRetiredDate?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMin')"> Invalid date of retirement </mat-error>
-							<mat-error *ngIf="dogRetiredDate?.hasError('matDatepickerMax')">
-								This must be on or before {{ maxToday | formatDate }}
-							</mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('invalidDate')">This date is invalid</mat-error>
+							<mat-error *ngIf="dogRetiredDate?.hasError('futureDate')">This date cannot be in the future</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -58,8 +56,7 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 
 	form: FormGroup = this.retiredDogApplicationService.dogRetiredForm;
 
-	maxToday = this.utilService.getToday();
-	minDate = this.utilService.getDogDateMin();
+	dateMask = SPD_CONSTANTS.date.dateMask;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
@@ -67,6 +64,13 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 		private utilService: UtilService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {}
+
+	onValidateDate(): void {
+		const errorKey = this.utilService.getIsInputValidDate(this.dogRetiredDate.value, true);
+		if (errorKey) {
+			this.dogRetiredDate.setErrors({ [errorKey]: true });
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -79,7 +83,7 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 	get showHintError(): boolean {
 		return (this.dogRetiredDate?.dirty || this.dogRetiredDate?.touched) && this.dogRetiredDate?.invalid;
 	}
-	public get dogRetiredDate(): FormControl {
+	get dogRetiredDate(): FormControl {
 		return this.form.get('dogRetiredDate') as FormControl;
 	}
 }

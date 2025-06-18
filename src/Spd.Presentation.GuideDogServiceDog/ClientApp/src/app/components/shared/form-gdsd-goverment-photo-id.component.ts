@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GovernmentIssuedPhotoIdTypes } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -31,25 +32,26 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</mat-form-field>
 						</div>
 						<div *ngIf="photoTypeCode.value" @showHideTriggerSlideAnimation>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12 mt-3">
 								<mat-form-field>
 									<mat-label>Document Expiry Date</mat-label>
 									<input
 										matInput
-										[matDatepicker]="picker"
 										formControlName="expiryDate"
-										[min]="minDate"
+										[mask]="dateMask"
+										[showMaskTyped]="true"
 										[errorStateMatcher]="matcher"
+										(blur)="onValidateDate()"
+										aria-label="Date in format YYYY-MM-DD"
 									/>
-									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 									<!-- We always want the date format hint to display -->
 									<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
 									<mat-error *ngIf="showHintError">
 										<span class="hint-inline">Date format YYYY-MM-DD</span>
 									</mat-error>
-									<mat-error *ngIf="expiryDate?.hasError('required')"> This is required </mat-error>
-									<mat-error *ngIf="expiryDate?.hasError('matDatepickerMin')"> Invalid expiry date </mat-error>
+									<mat-error *ngIf="expiryDate?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="expiryDate?.hasError('invalidDate')">This date is invalid</mat-error>
+									<mat-error *ngIf="expiryDate?.hasError('futureDate')">This date cannot be in the future</mat-error>
 								</mat-form-field>
 							</div>
 
@@ -85,8 +87,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class FormGdsdGovermentPhotoIdComponent {
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
-	minDate = this.utilService.getDateMin();
 	matcher = new FormErrorStateMatcher();
+	dateMask = SPD_CONSTANTS.date.dateMask;
 
 	@Input() form!: FormGroup;
 
@@ -96,6 +98,13 @@ export class FormGdsdGovermentPhotoIdComponent {
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private utilService: UtilService) {}
+
+	onValidateDate(): void {
+		const errorKey = this.utilService.getIsInputValidDate(this.expiryDate.value, false);
+		if (errorKey) {
+			this.expiryDate.setErrors({ [errorKey]: true });
+		}
+	}
 
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);
@@ -118,7 +127,7 @@ export class FormGdsdGovermentPhotoIdComponent {
 	get showHintError(): boolean {
 		return (this.expiryDate?.dirty || this.expiryDate?.touched) && this.expiryDate?.invalid;
 	}
-	public get expiryDate(): FormControl {
+	get expiryDate(): FormControl {
 		return this.form.get('expiryDate') as FormControl;
 	}
 }

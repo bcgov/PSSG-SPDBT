@@ -343,12 +343,6 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			tap((res: StrictHttpResponse<RetiredDogAppCommandResponse>) => {
 				this.hasValueChanged = false;
 
-				let msg = 'Your application has been saved';
-				if (isSaveAndExit) {
-					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.utilService.toasterSuccess(msg);
-
 				if (!rdModelFormValue.licenceAppId) {
 					this.retiredDogModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}

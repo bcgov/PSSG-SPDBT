@@ -13,7 +13,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-						<div class="px-3 mb-3" tabindex="0">
+						<div class="px-3 mb-3">
 							<div class="fs-5 mt-2 mb-3">
 								Terms of Use for Submitting an Application for Guide Dog or Service Dog Certification Online
 							</div>

@@ -9,7 +9,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -42,8 +41,7 @@ export class UtilService {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
 		private dialog: MatDialog,
-		private formatDatePipe: FormatDatePipe,
-		private hotToastService: HotToastService
+		private formatDatePipe: FormatDatePipe
 	) {}
 
 	//------------------------------------
@@ -117,22 +115,6 @@ export class UtilService {
 		return moment().startOf('day');
 	}
 
-	getBirthDateMax(): moment.Moment {
-		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
-	}
-
-	getDateMin(): moment.Moment {
-		return moment('1800-01-01');
-	}
-
-	getDogBirthDateMax(): moment.Moment {
-		return moment().startOf('day').subtract(6, 'months');
-	}
-
-	getDogDateMin(): moment.Moment {
-		return moment().startOf('day').subtract(50, 'years');
-	}
-
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
@@ -184,6 +166,60 @@ export class UtilService {
 		}
 	}
 
+	// Used by the date fields
+	// Validates the date and returns the errorKey
+	getIsInputValidDate(input: string, applyFutureDateRestriction: boolean = false): string | null {
+		if (!input || input.length == 0) {
+			return null;
+		}
+
+		const date = this.getInputDate(input);
+		if (!date) {
+			return 'invalidDate';
+		}
+
+		if (applyFutureDateRestriction) {
+			const now = new Date();
+			return date.getTime() > now.getTime() ? 'futureDate' : null;
+		}
+
+		return null;
+	}
+
+	getIsInputValidDateRange(input1: string, input2: string): boolean {
+		const date1 = this.getInputDate(input1);
+		if (!date1) {
+			return true;
+		}
+
+		const date2 = this.getInputDate(input2);
+		if (!date2) {
+			return true;
+		}
+
+		return moment(date1).startOf('day').isSameOrBefore(moment(date2).startOf('day'));
+	}
+
+	private getInputDate(input: string): Date | null {
+		if (!/^\d{8}$/.test(input)) return null;
+
+		const year = +input.slice(0, 4);
+		const month = +input.slice(4, 6);
+		const day = +input.slice(6, 8);
+
+		// Basic range checks
+		if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1800) return null;
+
+		// Create a Date object (note: JS months are 0-based)
+		const date = new Date(year, month - 1, day);
+
+		// Check if Date object matches input
+		const isDateValid = date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+		if (!isDateValid) return null;
+
+		return date;
+	}
+
 	getAddressString(params: {
 		addressLine1: string | null | undefined;
 		addressLine2?: string | null | undefined;
@@ -228,7 +264,7 @@ export class UtilService {
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc ?? '', b.desc));
+		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc, b.desc));
 		return codeDescs;
 	}
 
@@ -480,10 +516,6 @@ export class UtilService {
 		formArray.controls.forEach((control) => {
 			control.disable({ emitEvent: false });
 		});
-	}
-
-	toasterSuccess(msg: string): void {
-		this.hotToastService.success(msg, { ariaLive: 'polite' });
 	}
 
 	dialogSuccess(msg: string): void {

@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
 	selector: 'app-spd-header',
 	template: `
-		<mat-toolbar color="primary" class="spd-header">
+		<mat-toolbar color="primary" class="spd-header" role="banner">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 			</div>
 			<span style="flex: 1 1 auto;"></span>
 
-			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
+			<mat-icon role="button" matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
 				>logout</mat-icon
 			>
 			<div *ngIf="loggedInUserDisplay">

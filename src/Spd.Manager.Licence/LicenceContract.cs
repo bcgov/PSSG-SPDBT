@@ -26,6 +26,7 @@ public record LicenceBasicResponse
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
+    public bool? ShowSecurityGuardAST { get; set; } //spdbt-4257
 
     //issued categories
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();

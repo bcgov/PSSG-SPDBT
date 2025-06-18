@@ -12,7 +12,7 @@ import { SPD_CONSTANTS } from '../constants/constants';
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		bizLegalName: new FormControl('', [FormControlValidators.required]),
-		bizTradeName: new FormControl(''),
+		bizTradeName: new FormControl('', [FormControlValidators.required]),
 		bizOwnerGivenNames: new FormControl(''),
 		bizOwnerSurname: new FormControl('', [FormControlValidators.required]),
 		bizEmailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
@@ -186,10 +186,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 				branchAddress,
 			};
 			branches.push(branch);
-			console.log('**************** item', item);
-			console.log('**************** branch', branch);
 		});
-		console.log('**************** branches', branches);
 
 		const documentInfos: Array<Document> = [];
 
