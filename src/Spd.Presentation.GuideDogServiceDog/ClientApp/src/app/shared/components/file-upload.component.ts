@@ -132,23 +132,12 @@ export class FileUploadHelper {
 				/>
 			</label>
 		</div>
-		<div aria-live="polite" class="sr-only" role="status">
+		<div aria-live="polite" class="mt-2" role="status">
 			{{ uploadStatusMessage }}
 		</div>
 	`,
 	styles: [
 		`
-			.sr-only {
-				position: absolute;
-				width: 1px;
-				height: 1px;
-				padding: 0;
-				overflow: hidden;
-				clip: rect(0, 0, 0, 0);
-				white-space: nowrap;
-				border: 0;
-			}
-
 			.file-preview {
 				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
 				align-items: center;
