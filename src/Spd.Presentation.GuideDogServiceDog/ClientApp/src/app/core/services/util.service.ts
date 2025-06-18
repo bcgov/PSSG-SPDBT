@@ -168,14 +168,18 @@ export class UtilService {
 
 	// Used by the date fields
 	// Validates the date and returns the errorKey
-	getIsInputValidDate(input: string): string | null {
+	getIsInputValidDate(input: string, applyFutureDateRestriction: boolean = false): string | null {
 		const date = this.getInputDate(input);
 		if (!date) {
 			return 'invalidDate';
 		}
 
-		const now = new Date();
-		return date.getTime() > now.getTime() ? 'futureDate' : null;
+		if (applyFutureDateRestriction) {
+			const now = new Date();
+			return date.getTime() > now.getTime() ? 'futureDate' : null;
+		}
+
+		return null;
 	}
 
 	getIsInputValidDateRange(input1: string, input2: string): boolean {

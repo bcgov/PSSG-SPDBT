@@ -100,6 +100,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[showMaskTyped]="true"
 												[errorStateMatcher]="matcher"
 												(blur)="onValidateStartDate(i)"
+												aria-label="Date in format YYYY-MM-DD"
 											/>
 											<!-- We always want the date format hint to display -->
 											<mat-hint>Date format YYYY-MM-DD</mat-hint>
@@ -124,6 +125,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[showMaskTyped]="true"
 												[errorStateMatcher]="matcher"
 												(blur)="onValidateEndDate(i)"
+												aria-label="Date in format YYYY-MM-DD"
 											/>
 											<!-- We always want the date format hint to display -->
 											<mat-hint>Date format YYYY-MM-DD</mat-hint>
@@ -265,7 +267,7 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 		const form = schoolTrainingsArray.at(index);
 
 		const dateFormControl = form.get('trainingStartDate');
-		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value);
+		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value, true);
 		if (errorKey) {
 			dateFormControl?.setErrors({ [errorKey]: true });
 			return;
@@ -285,7 +287,7 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 		const form = schoolTrainingsArray.at(index);
 
 		const dateFormControl = form.get('trainingEndDate');
-		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value);
+		const errorKey = this.utilService.getIsInputValidDate(dateFormControl?.value, true);
 		if (errorKey) {
 			dateFormControl?.setErrors({ [errorKey]: true });
 			return;

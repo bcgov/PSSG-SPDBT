@@ -23,6 +23,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								[showMaskTyped]="true"
 								[errorStateMatcher]="matcher"
 								(blur)="onValidateDate()"
+								aria-label="Date in format YYYY-MM-DD"
 							/>
 							<!-- We always want the date format hint to display -->
 							<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
@@ -65,7 +66,7 @@ export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepCom
 	) {}
 
 	onValidateDate(): void {
-		const errorKey = this.utilService.getIsInputValidDate(this.dogRetiredDate.value);
+		const errorKey = this.utilService.getIsInputValidDate(this.dogRetiredDate.value, true);
 		if (errorKey) {
 			this.dogRetiredDate.setErrors({ [errorKey]: true });
 		}
