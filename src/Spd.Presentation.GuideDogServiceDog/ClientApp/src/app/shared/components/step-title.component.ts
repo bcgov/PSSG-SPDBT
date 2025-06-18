@@ -6,9 +6,9 @@ import { Component, Input } from '@angular/core';
 		<div class="row" *ngIf="heading">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="heading lh-base mb-4">
-					<div class="fs-4" [innerHtml]="heading"></div>
-					<div class="fs-6 mt-3" *ngIf="subheading" [innerHtml]="subheading"></div>
-					<div class="fs-6 mt-3 text-start" *ngIf="info" [innerHtml]="info"></div>
+					<h1 class="fs-4" [innerHtml]="heading"></h1>
+					<h2 class="fs-6 mt-3" *ngIf="subheading" [innerHtml]="subheading"></h2>
+					<h3 class="fs-6 mt-3 text-start" *ngIf="info" [innerHtml]="info"></h3>
 					<mat-divider *ngIf="showDivider" class="mat-divider-main my-3"></mat-divider>
 				</div>
 			</div>

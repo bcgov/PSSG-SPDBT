@@ -4,7 +4,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { map, Observable, startWith } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-form-gdsd-accredited-school',
@@ -66,7 +66,8 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 		}
 
 		this.filteredOptions = this.accreditedSchoolIdControl.valueChanges.pipe(
-			startWith(''),
+			debounceTime(300),
+			distinctUntilChanged(),
 			map((value) => {
 				const searchValue =
 					typeof value === 'number' || typeof value === 'string' ? this.getName(value) || value : value;
