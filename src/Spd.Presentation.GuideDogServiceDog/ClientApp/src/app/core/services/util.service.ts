@@ -169,6 +169,10 @@ export class UtilService {
 	// Used by the date fields
 	// Validates the date and returns the errorKey
 	getIsInputValidDate(input: string, applyFutureDateRestriction: boolean = false): string | null {
+		if (!input || input.length == 0) {
+			return null;
+		}
+
 		const date = this.getInputDate(input);
 		if (!date) {
 			return 'invalidDate';
