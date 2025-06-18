@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
 	selector: 'app-spd-header',
 	template: `
-		<mat-toolbar color="primary" class="spd-header">
+		<mat-toolbar color="primary" class="spd-header" role="banner">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
