@@ -4,16 +4,18 @@ import { Component, Input } from '@angular/core';
 	selector: 'app-step-section',
 	template: `
 		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					[heading]="heading"
-					[subheading]="subheading"
-					[info]="info"
-					[showDivider]="showDivider"
-				></app-step-title>
+			<main tabindex="-1" role="main">
+				<div class="step">
+					<app-step-title
+						[heading]="heading"
+						[subheading]="subheading"
+						[info]="info"
+						[showDivider]="showDivider"
+					></app-step-title>
 
-				<ng-content></ng-content>
-			</div>
+					<ng-content></ng-content>
+				</div>
+			</main>
 		</section>
 	`,
 	styles: [

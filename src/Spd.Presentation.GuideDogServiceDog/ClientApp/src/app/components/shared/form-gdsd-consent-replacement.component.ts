@@ -12,19 +12,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-12 py-3 hereby">
-							<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-								There have been no changes since my current certificate was issued, and I understand that the expiry
-								date on the replacement certificate will remain the same.
-							</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('check1')?.dirty || form.get('check1')?.touched) &&
-									form.get('check1')?.invalid &&
-									form.get('check1')?.hasError('required')
-								"
-								>This is required
-							</mat-error>
+							There have been no changes since my current certificate was issued, and I understand that the expiry date
+							on the replacement certificate will remain the same.
 						</div>
 					</div>
 
@@ -103,7 +92,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class FormGdsdConsentReplacementComponent implements OnInit, LicenceChildStepperStepComponent {
-	check1Name = '';
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
