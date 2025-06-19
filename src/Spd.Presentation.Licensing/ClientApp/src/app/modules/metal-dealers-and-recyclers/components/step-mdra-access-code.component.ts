@@ -71,7 +71,7 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 
 	onLinkSuccess(associatedLicence: LicenceResponse): void {
 		this.mdraDealersApplicationService
-			.getMdraWithAccessCodeData(associatedLicence, this.applicationTypeCode!)
+			.getMdraWithAccessCodeData(associatedLicence, this.applicationTypeCode)
 			.subscribe((_resp: any) => {
 				switch (this.applicationTypeCode) {
 					case ApplicationTypeCode.Update: {

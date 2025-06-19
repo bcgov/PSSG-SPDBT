@@ -28,7 +28,7 @@ import {
 } from 'rxjs';
 import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
-import { FileUtilService, SpdFile } from './file-util.service';
+import { FileUtilService } from './file-util.service';
 import { MetalDealersApplicationHelper } from './metal-dealers-application.helper';
 import { LicenceDocumentsToSave, UtilService } from './util.service';
 
@@ -246,7 +246,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			}
 		);
 		if (mdraLicenceAppl.branches && mdraLicenceAppl.branches.length > 0) {
-			const branchList = [...mdraLicenceAppl.branches!].sort((a, b) =>
+			const branchList = [...mdraLicenceAppl.branches].sort((a, b) =>
 				this.utilService.sortByDirection(a.branchAddress?.city?.toUpperCase(), b.branchAddress?.city?.toUpperCase())
 			);
 			const branchesArray = this.metalDealersModelFormGroup.get('branchesData.branches') as FormArray;
@@ -385,7 +385,6 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			// Only pass new documents and get a keyCode for each of those.
 			const newDocumentsOnly: Array<Blob> = [];
 			docBody.documents.forEach((doc: any) => {
-				const spdFile: SpdFile = doc as SpdFile;
 				newDocumentsOnly.push(doc);
 			});
 			// should always be at least one new document
