@@ -87,7 +87,33 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.CategoryCodes));
 
+            CreateMap<LicenceResp, MDRALicencePrintingJson>()
+                .ForMember(d => d.ApplicantName, opt => opt.Ignore())
+                .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
+                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
+                .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => s.IssuedDate.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.LicenceCategories, opt => opt.Ignore());
+
             CreateMap<BizResult, BizLicencePrintingJson>()
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => s.BizLegalName))
+                .ForMember(d => d.LicenceNumber, opt => opt.Ignore())
+                .ForMember(d => d.LicenceType, opt => opt.Ignore())
+                .ForMember(d => d.IssuedDate, opt => opt.Ignore())
+                .ForMember(d => d.ExpiryDate, opt => opt.Ignore())
+                .ForMember(d => d.Photo, opt => opt.Ignore())
+                .ForMember(d => d.Conditions, opt => opt.Ignore())
+                .ForMember(d => d.LicenceCategories, opt => opt.Ignore())
+                .ForMember(d => d.DoingBusinessAsName, opt => opt.MapFrom(s => s.BizName))
+                .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
+                .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
+                .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.City))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Province))
+                .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Country))
+                .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.PostalCode))
+                .ForMember(d => d.BranchOffices, opt => opt.MapFrom(s => s.BranchAddresses));
+
+            CreateMap<BizResult, MDRALicencePrintingJson>()
                 .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => s.BizLegalName))
                 .ForMember(d => d.LicenceNumber, opt => opt.Ignore())
                 .ForMember(d => d.LicenceType, opt => opt.Ignore())
