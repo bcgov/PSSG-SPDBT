@@ -80,8 +80,4 @@ export class StepsMdraBusinessInfoComponent extends BaseWizardStepComponent {
 		}
 		return false;
 	}
-
-	get isNew(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.New;
-	}
 }

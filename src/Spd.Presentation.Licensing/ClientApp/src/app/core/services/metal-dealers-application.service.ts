@@ -139,7 +139,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	}
 
 	/**
-	 * Load an existing permit application
+	 * Load an existing mdra registration
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -161,7 +161,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	}
 
 	/**
-	 * Load an existing permit application
+	 * Load an existing mdra registration
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -181,7 +181,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	}
 
 	/**
-	 * Load an existing permit related to an access code search
+	 * Load an existing mdra registration related to an access code search
 	 * @returns
 	 */
 	private loadExistingMdra(associatedLicence: LicenceResponse): Observable<MdraRegistrationResponse> {
@@ -306,7 +306,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(metalDealersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);
-		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
+
+		const documentsToSaveApis = this.getDocumentsToSaveApis(documentsToSave);
 		delete body.documentInfos;
 
 		body.hasPotentialDuplicate = false;
@@ -316,7 +317,6 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
-			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -329,14 +329,14 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		const metalDealersModelFormValue = this.metalDealersModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(metalDealersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(metalDealersModelFormValue);
-		const { existingDocumentIds, documentsToSaveApis } = this.getDocumentData(documentsToSave);
+
+		const documentsToSaveApis = this.getDocumentsToSaveApis(documentsToSave);
 		delete body.documentInfos;
 		body.hasPotentialDuplicate = hasPotentialDuplicate;
 		body.requireDuplicateCheck = false;
 		const googleRecaptcha = { recaptchaCode: recaptchaCode };
 		return this.submitLicenceAnonymousDocuments(
 			googleRecaptcha,
-			existingDocumentIds,
 			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
 			body
 		);
@@ -348,7 +348,6 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 */
 	private submitLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
 		body: any // MdraRegistrationRequest
 	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
@@ -362,17 +361,12 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 					switchMap((resps: string[]) => {
 						// pass in the list of document key codes
 						body.documentKeyCodes = [...resps];
-						// pass in the list of document ids that were in the original
-						// application and are still being used
-						body.previousDocumentIds = [...existingDocumentIds];
+
 						return this.postSubmitAnonymous(body);
 					})
 				)
 				.pipe(take(1));
 		} else {
-			// pass in the list of document ids that were in the original
-			// application and are still being used
-			body.previousDocumentIds = [...existingDocumentIds];
 			return this.licenceAppDocumentService
 				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
@@ -384,23 +378,15 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		}
 	}
 
-	private getDocumentData(documentsToSave: Array<LicenceDocumentsToSave>): {
-		existingDocumentIds: Array<string>;
-		documentsToSaveApis: Observable<string>[];
-	} {
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
+	private getDocumentsToSaveApis(documentsToSave: Array<LicenceDocumentsToSave>): Observable<string>[] {
 		const documentsToSaveApis: Observable<string>[] = [];
+
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			// Only pass new documents and get a keyCode for each of those.
 			const newDocumentsOnly: Array<Blob> = [];
 			docBody.documents.forEach((doc: any) => {
 				const spdFile: SpdFile = doc as SpdFile;
-				if (spdFile.documentUrlId) {
-					existingDocumentIds.push(spdFile.documentUrlId);
-				} else {
-					newDocumentsOnly.push(doc);
-				}
+				newDocumentsOnly.push(doc);
 			});
 			// should always be at least one new document
 			if (newDocumentsOnly.length > 0) {
@@ -414,15 +400,13 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 				);
 			}
 		});
-		return { existingDocumentIds, documentsToSaveApis };
+
+		return documentsToSaveApis;
 	}
 
 	private postSubmitAnonymous(
 		body: MdraRegistrationRequest
 	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {
-		// if (body.applicationTypeCode == ApplicationTypeCode.New) {
 		return this.mdraService.apiMdraRegistrationsPost$Response({ body });
-		// }
-		// return this.mdraService.apiMdraRegistrationsChangePost$Response({ body });
 	}
 }

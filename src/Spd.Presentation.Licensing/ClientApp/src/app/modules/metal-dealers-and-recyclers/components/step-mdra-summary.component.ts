@@ -53,26 +53,34 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 								</ng-container>
 
-								<div class="text-minor-heading-small">Business Owner</div>
+								<ng-container *ngIf="isUpdate; else isNotUpdate">
+									<div class="text-minor-heading-small">Business Names</div>
+								</ng-container>
+								<ng-template #isNotUpdate>
+									<div class="text-minor-heading-small">Business Owner</div>
+								</ng-template>
+
 								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Business Owner Name</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDataname | default }}
+									<ng-container *ngIf="!isUpdate">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Business Owner Name</div>
+											<div class="summary-text-data">
+												{{ businessOwnerDataname | default }}
+											</div>
 										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDatabizPhoneNumber | formatPhoneNumber | default }}
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Phone Number</div>
+											<div class="summary-text-data">
+												{{ businessOwnerDatabizPhoneNumber | formatPhoneNumber | default }}
+											</div>
 										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">
-											{{ businessOwnerDatabizEmailAddress | default }}
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Email Address</div>
+											<div class="summary-text-data">
+												{{ businessOwnerDatabizEmailAddress | default }}
+											</div>
 										</div>
-									</div>
+									</ng-container>
 									<div class="col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Legal Business Name</div>
 										<div class="summary-text-data">
@@ -85,41 +93,45 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 											{{ businessOwnerDatabizTradeName | default }}
 										</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Business Licence Documents</div>
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of businessLicenceAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
+									<ng-container *ngIf="!isUpdate">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Business Licence Documents</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of businessLicenceAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
 										</div>
-									</div>
+									</ng-container>
 								</div>
 								<mat-divider class="mt-3 mb-2"></mat-divider>
 
-								<div class="text-minor-heading-small">Business Manager</div>
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Business Manager Name</div>
-										<div class="summary-text-data">
-											{{ businessManagerDataname | default }}
+								<ng-container *ngIf="!isUpdate">
+									<div class="text-minor-heading-small">Business Manager</div>
+									<div class="row mt-0">
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Business Manager Name</div>
+											<div class="summary-text-data">
+												{{ businessManagerDataname | default }}
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Phone Number</div>
+											<div class="summary-text-data">
+												{{ businessManagerDatabizManagerPhoneNumber | formatPhoneNumber | default }}
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Email Address</div>
+											<div class="summary-text-data">
+												{{ businessManagerDatabizManagerEmailAddress | default }}
+											</div>
 										</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
-										<div class="summary-text-data">
-											{{ businessManagerDatabizManagerPhoneNumber | formatPhoneNumber | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">
-											{{ businessManagerDatabizManagerEmailAddress | default }}
-										</div>
-									</div>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								</ng-container>
 
 								<app-form-address-summary
 									[formData]="metalDealersModelData.businessAddressData"
@@ -127,13 +139,15 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 									[isAddressTheSame]="false"
 								></app-form-address-summary>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-								<app-form-address-summary
-									[formData]="metalDealersModelData.businessMailingAddressData"
-									headingLabel="Business Mailing Address"
-									[isAddressTheSame]="isAddressTheSame"
-									isAddressTheSameLabel="The business address and mailing address are the same"
-								></app-form-address-summary>
+								<ng-container *ngIf="!isUpdate">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<app-form-address-summary
+										[formData]="metalDealersModelData.businessMailingAddressData"
+										headingLabel="Business Mailing Address"
+										[isAddressTheSame]="isAddressTheSame"
+										isAddressTheSameLabel="The business address and mailing address are the same"
+									></app-form-address-summary>
+								</ng-container>
 							</div>
 						</mat-expansion-panel>
 
@@ -292,5 +306,8 @@ export class StepMdraSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get branchesArray(): Array<any> {
 		return this.metalDealersApplicationService.getSummarybranchesDatabranches(this.metalDealersModelData);
+	}
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

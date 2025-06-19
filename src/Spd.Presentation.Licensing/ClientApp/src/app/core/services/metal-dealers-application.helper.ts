@@ -17,6 +17,10 @@ import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
+	updateAgreementFormGroup: FormGroup = this.formBuilder.group({
+		agreeToUpdate: new FormControl('', [Validators.requiredTrue]),
+	});
+
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		bizLegalName: new FormControl('', [FormControlValidators.required]),
 		bizTradeName: new FormControl('', [FormControlValidators.required]),

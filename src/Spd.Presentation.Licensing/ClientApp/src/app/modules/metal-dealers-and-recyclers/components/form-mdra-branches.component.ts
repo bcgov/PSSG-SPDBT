@@ -10,11 +10,13 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 	selector: 'app-form-mdra-branches',
 	template: `
 		<div class="row">
-			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
-				<ng-container *ngIf="!isReadonly">
+			<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto" *ngIf="!isReadonly">
+				<ng-container>
 					<app-alert type="info" icon="info"> Click on the 'Add Branch' button to add your branch offices. </app-alert>
 				</ng-container>
+			</div>
 
+			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
 				<ng-container *ngIf="branchesExist; else noBranchesExist">
 					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
 						<ng-container matColumnDef="branchManager">
