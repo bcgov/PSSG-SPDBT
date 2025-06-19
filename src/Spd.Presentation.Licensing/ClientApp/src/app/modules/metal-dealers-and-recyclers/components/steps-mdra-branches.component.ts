@@ -9,7 +9,7 @@ import { StepMdraBranchesComponent } from './step-mdra-branches.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-mdra-branches></app-step-mdra-branches>
+				<app-step-mdra-branches [applicationTypeCode]="applicationTypeCode"></app-step-mdra-branches>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

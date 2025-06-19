@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from './modal-mdra-branch.component';
 
@@ -10,6 +10,12 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 	selector: 'app-form-mdra-branches',
 	template: `
 		<div class="row">
+			<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto" *ngIf="!isReadonly">
+				<ng-container>
+					<app-alert type="info" icon="info"> Click on the 'Add Branch' button to add your branch offices. </app-alert>
+				</ng-container>
+			</div>
+
 			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
 				<ng-container *ngIf="branchesExist; else noBranchesExist">
 					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
@@ -21,19 +27,11 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="addressLine1">
-							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Address Line 1</mat-header-cell>
+						<ng-container matColumnDef="branchAddress">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Address</mat-header-cell>
 							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">Address Line 1:</span>
-								{{ branch.addressLine1 | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="city">
-							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>City</mat-header-cell>
-							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">City:</span>
-								{{ branch.city | default }}
+								<span class="mobile-label">Address:</span>
+								{{ getAddressString(branch) | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -120,6 +118,7 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 
 	constructor(
 		private formBuilder: FormBuilder,
+		private utilService: UtilService,
 		private dialog: MatDialog
 	) {}
 
@@ -128,9 +127,9 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 		this.branchesExist = this.dataSource.data.length > 0;
 
 		if (this.isReadonly) {
-			this.columns = ['branchManager', 'addressLine1', 'city'];
+			this.columns = ['branchManager', 'branchAddress'];
 		} else {
-			this.columns = ['branchManager', 'addressLine1', 'city', 'action1', 'action2'];
+			this.columns = ['branchManager', 'branchAddress', 'action1', 'action2'];
 		}
 	}
 
@@ -173,6 +172,10 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 		return this.form.valid;
 	}
 
+	getAddressString(branch: any): string {
+		return this.utilService.getAddressString(branch);
+	}
+
 	private branchDialog(dialogOptions: MetalDealersAndRecyclersBranchResponse, isCreate: boolean): void {
 		dialogOptions.isCreate = isCreate;
 
@@ -203,6 +206,7 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 
 	private newBranchRow(branchData: any): FormGroup {
 		return this.formBuilder.group({
+			branchId: null,
 			addressLine1: [branchData.addressLine1],
 			addressLine2: [branchData.addressLine2],
 			city: [branchData.city],

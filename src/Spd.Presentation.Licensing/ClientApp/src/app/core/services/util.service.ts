@@ -223,7 +223,7 @@ export class UtilService {
 		if (params.postalCode) {
 			addressArray.push(params.postalCode);
 		}
-		return addressArray.join(' ');
+		return addressArray.join(', ');
 	}
 
 	//------------------------------------
