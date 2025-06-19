@@ -49,7 +49,9 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		branchesData: this.branchesFormGroup,
 		consentAndDeclarationData: this.consentAndDeclarationFormGroup,
 	});
+
 	metalDealersModelChangedSubscription!: Subscription;
+
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
@@ -73,6 +75,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 				}
 			});
 	}
+
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
@@ -82,6 +85,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			this.businessOwnerFormGroup.valid && this.businessManagerFormGroup.valid && this.businessAddressFormGroup.valid
 		);
 	}
+
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
@@ -89,20 +93,18 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	isStepBranchOfficesComplete(): boolean {
 		return this.branchesFormGroup.valid;
 	}
+
 	isRenewalOrUpdate(): boolean {
 		const applicationTypeFormValue = this.applicationTypeFormGroup.value;
 		const applicationTypeCode = applicationTypeFormValue.applicationTypeCode;
 		return applicationTypeCode === ApplicationTypeCode.Renewal || applicationTypeCode === ApplicationTypeCode.Update;
 	}
+
 	/**
 	 * Create an empty registration
 	 * @returns
 	 */
 	createNewRegistration(): Observable<any> {
-		// this.reset();
-		// this.commonApplicationService.setMdraApplicationTitle(ApplicationTypeCode.New);
-		// this.initialized = true;
-		// return of(this.metalDealersModelFormGroup.value);
 		return this.getApplEmptyAnonymous().pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
@@ -110,6 +112,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			})
 		);
 	}
+
 	private getApplEmptyAnonymous(): Observable<any> {
 		this.reset();
 		this.metalDealersModelFormGroup.patchValue(
@@ -122,6 +125,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		);
 		return of(this.metalDealersModelFormGroup.value);
 	}
+
 	/**
 	 * Reset the licence data
 	 * @returns
@@ -133,6 +137,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		this.metalDealersModelFormGroup.reset();
 		console.debug('RESET', this.initialized, this.metalDealersModelFormGroup.value);
 	}
+
 	/**
 	 * Load an existing permit application
 	 * @param licenceAppId
@@ -144,11 +149,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	): Observable<MdraRegistrationResponse> {
 		return this.getMdraUsingAccessCode(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
-				// const personalInformationData = _resp.personalInformationData;
-				// personalInformationData.cardHolderName = associatedLicence.nameOnCard;
-				// personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
-				// this.permitModelFormGroup.patchValue({ personalInformationData }, { emitEvent: false });
 				this.initialized = true;
+
 				this.commonApplicationService.setApplicationTitle(
 					ServiceTypeCode.Mdra,
 					_resp.applicationTypeData.applicationTypeCode,
@@ -157,6 +159,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			})
 		);
 	}
+
 	/**
 	 * Load an existing permit application
 	 * @param licenceAppId
@@ -176,6 +179,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			})
 		);
 	}
+
 	/**
 	 * Load an existing permit related to an access code search
 	 * @returns
@@ -184,20 +188,11 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		this.reset();
 		return this.mdraService.apiMdraRegistrationGet().pipe(
 			tap((mdraLicenceAppl: MdraRegistrationResponse) => {
-				// remove reference to expired licence.
-				// mdraLicenceAppl.expiredLicenceId = null;
 				return this.applyApplIntoModel({ associatedLicence, mdraLicenceAppl });
 			})
 		);
 	}
-	// private applyLicenceIntoModel({
-	// 		associatedLicence,
-	// 		applicationTypeCode,
-	// 	}: {
-	// 		associatedLicence: LicenceResponse ;
-	// 		applicationTypeCode: ApplicationTypeCode;
-	// 	}):  Observable<any> {
-	// }
+
 	private applyApplIntoModel({
 		associatedLicence,
 		mdraLicenceAppl,
@@ -275,6 +270,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		}
 		return of(this.metalDealersModelFormGroup.value);
 	}
+
 	private applyRenewalSpecificDataToModel(_resp: MdraRegistrationResponse): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		this.metalDealersModelFormGroup.patchValue(
@@ -287,6 +283,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		);
 		return of(this.metalDealersModelFormGroup.value);
 	}
+
 	private applyUpdateSpecificDataToModel(_resp: MdraRegistrationResponse): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		this.metalDealersModelFormGroup.patchValue(
@@ -299,6 +296,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		);
 		return of(this.metalDealersModelFormGroup.value);
 	}
+
 	/**
 	 * Submit the application data for anonymous new
 	 */
@@ -323,6 +321,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			body
 		);
 	}
+
 	resubmitLicenceAnonymous(
 		hasPotentialDuplicate: boolean,
 		recaptchaCode: string
@@ -342,6 +341,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			body
 		);
 	}
+
 	/**
 	 * Submit the application data for anonymous renewal or replacement including documents
 	 * @returns
@@ -383,6 +383,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 				.pipe(take(1));
 		}
 	}
+
 	private getDocumentData(documentsToSave: Array<LicenceDocumentsToSave>): {
 		existingDocumentIds: Array<string>;
 		documentsToSaveApis: Observable<string>[];
@@ -415,6 +416,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		});
 		return { existingDocumentIds, documentsToSaveApis };
 	}
+
 	private postSubmitAnonymous(
 		body: MdraRegistrationRequest
 	): Observable<StrictHttpResponse<MdraRegistrationCommandResponse>> {

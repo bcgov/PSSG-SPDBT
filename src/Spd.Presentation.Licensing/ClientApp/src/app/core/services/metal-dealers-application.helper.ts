@@ -89,6 +89,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	});
 
 	branchFormGroup: FormGroup = this.formBuilder.group({
+		branchId: new FormControl(''),
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -8,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-mdra-business-owner',
 	template: `
-		<app-step-section title="Business owner" subtitle="Provide the business owner information.">
+		<app-step-section title="Business owner" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
@@ -108,15 +109,24 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	standalone: false,
 })
-export class StepMdraBusinessOwnerComponent implements LicenceChildStepperStepComponent {
+export class StepMdraBusinessOwnerComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
+	subtitle = '';
 	form = this.metalDealersApplicationService.businessOwnerFormGroup;
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
 
+	ngOnInit(): void {
+		const isRenewalOrUpdate = this.metalDealersApplicationService.isRenewalOrUpdate();
+		this.subtitle = isRenewalOrUpdate
+			? 'Confirm your business owner information'
+			: 'Provide the business owner information';
+	}
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;

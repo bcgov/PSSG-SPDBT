@@ -11,7 +11,7 @@ import { StepMdraBusinessOwnerComponent } from './step-mdra-business-owner.compo
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-mdra-business-owner></app-step-mdra-business-owner>
+				<app-step-mdra-business-owner [applicationTypeCode]="applicationTypeCode"></app-step-mdra-business-owner>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -23,7 +23,7 @@ import { StepMdraBusinessOwnerComponent } from './step-mdra-business-owner.compo
 			</mat-step>
 
 			<mat-step>
-				<app-step-mdra-business-manager></app-step-mdra-business-manager>
+				<app-step-mdra-business-manager [applicationTypeCode]="applicationTypeCode"></app-step-mdra-business-manager>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -35,7 +35,7 @@ import { StepMdraBusinessOwnerComponent } from './step-mdra-business-owner.compo
 			</mat-step>
 
 			<mat-step>
-				<app-step-mdra-business-address></app-step-mdra-business-address>
+				<app-step-mdra-business-address [applicationTypeCode]="applicationTypeCode"></app-step-mdra-business-address>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

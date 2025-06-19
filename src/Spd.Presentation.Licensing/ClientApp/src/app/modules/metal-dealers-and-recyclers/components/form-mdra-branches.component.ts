@@ -11,6 +11,10 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 	template: `
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
+				<ng-container *ngIf="!isReadonly">
+					<app-alert type="info" icon="info"> Click on the 'Add Branch' button to add your branch offices. </app-alert>
+				</ng-container>
+
 				<ng-container *ngIf="branchesExist; else noBranchesExist">
 					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
 						<ng-container matColumnDef="branchManager">
@@ -203,6 +207,7 @@ export class FormMdraBranchesComponent implements OnInit, LicenceChildStepperSte
 
 	private newBranchRow(branchData: any): FormGroup {
 		return this.formBuilder.group({
+			branchId: null,
 			addressLine1: [branchData.addressLine1],
 			addressLine2: [branchData.addressLine2],
 			city: [branchData.city],
