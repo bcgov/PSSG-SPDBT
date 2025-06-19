@@ -13,6 +13,7 @@ import {
 } from '@app/api/models';
 import { LicenceAppDocumentService, MdraService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { NgxMaskPipe } from 'ngx-mask';
 import {
 	BehaviorSubject,
 	catchError,
@@ -57,11 +58,12 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		configService: ConfigService,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		maskPipe: NgxMaskPipe,
 		private commonApplicationService: CommonApplicationService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private mdraService: MdraService
 	) {
-		super(formBuilder, configService, utilService, fileUtilService);
+		super(formBuilder, configService, utilService, fileUtilService, maskPipe);
 		this.metalDealersModelChangedSubscription = this.metalDealersModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
@@ -69,7 +71,9 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 					const step2Complete = this.isStepBusinessInfoComplete();
 					const step3Complete = this.isStepBranchOfficesComplete();
 					const isValid = step2Complete && step3Complete;
+
 					console.debug('metalDealersModelFormGroup CHANGED', this.metalDealersModelFormGroup.getRawValue());
+
 					this.updateModelChangeFlags();
 					this.metalDealersModelValueChanges$.next(isValid);
 				}
@@ -135,6 +139,7 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		this.resetCommon();
 		this.consentAndDeclarationFormGroup.reset();
 		this.metalDealersModelFormGroup.reset();
+
 		console.debug('RESET', this.initialized, this.metalDealersModelFormGroup.value);
 	}
 

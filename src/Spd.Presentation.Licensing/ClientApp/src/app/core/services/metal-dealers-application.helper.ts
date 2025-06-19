@@ -13,6 +13,7 @@ import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
@@ -122,7 +123,8 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected utilService: UtilService,
-		protected fileUtilService: FileUtilService
+		protected fileUtilService: FileUtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
@@ -180,6 +182,10 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 
 		const branches: Array<BranchInfo> = [];
 		branchesData.branches.forEach((item: any) => {
+			if (item.branchPhoneNumber) {
+				item.branchPhoneNumber = this.maskPipe.transform(item.branchPhoneNumber, SPD_CONSTANTS.phone.backendMask);
+			}
+
 			const branchAddress: Address = {
 				addressLine1: item.addressLine1,
 				addressLine2: item.addressLine2,
@@ -219,6 +225,20 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		} else {
 			// For Renewals and Updates, pass the original Licence Id
 			expiredLicenceId = originalLicenceId;
+		}
+
+		if (businessOwnerData.bizPhoneNumber) {
+			businessOwnerData.bizPhoneNumber = this.maskPipe.transform(
+				businessOwnerData.bizPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		if (businessManagerData.bizManagerPhoneNumber) {
+			businessManagerData.bizManagerPhoneNumber = this.maskPipe.transform(
+				businessManagerData.bizManagerPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
 		}
 
 		const body = {
