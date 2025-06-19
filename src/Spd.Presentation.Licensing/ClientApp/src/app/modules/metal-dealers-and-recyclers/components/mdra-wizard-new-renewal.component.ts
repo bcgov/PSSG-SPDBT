@@ -142,26 +142,26 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	onSubmit(): void {
-		// if (this.applicationTypeCode === ApplicationTypeCode.New) {
-		this.metalDealersApplicationService.submitLicenceAnonymous().subscribe({
-			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-				this.displayDataValidationMessage(dupres.body);
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
+			this.metalDealersApplicationService.submitLicenceAnonymous(true).subscribe({
+				next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+					this.displayDataValidationMessage(dupres.body);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+			return;
+		}
+
+		this.metalDealersApplicationService.submitLicenceAnonymous(false).subscribe({
+			next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+				this.handleSaveSuccess();
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
 			},
 		});
-		// return;
-		// }
-
-		// this.metalDealersApplicationService.submitLicenceRenewalAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-		// 		this.handleSaveSuccess();
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
 	}
 
 	private displayDataValidationMessage(dupres: MdraRegistrationCommandResponse): void {

@@ -1,5 +1,12 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Address, ApplicationOriginTypeCode, BranchInfo, Document, LicenceDocumentTypeCode } from '@app/api/models';
+import {
+	Address,
+	ApplicationOriginTypeCode,
+	ApplicationTypeCode,
+	BranchInfo,
+	Document,
+	LicenceDocumentTypeCode,
+} from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
@@ -135,9 +142,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	 * @returns
 	 */
 	getSaveBodyBase(mdraModelFormValue: any): any {
-		// const licenceAppId = mdraModelFormValue.licenceAppId;
-		// const originalLicenceData = mdraModelFormValue.originalLicenceData;
-		// const serviceTypeData = mdraModelFormValue.serviceTypeData;
+		const originalLicenceId = mdraModelFormValue.originalLicenceId;
 		const applicationTypeData = mdraModelFormValue.applicationTypeData;
 		const expiredLicenceData = mdraModelFormValue.expiredLicenceData;
 		const businessOwnerData = mdraModelFormValue.businessOwnerData;
@@ -197,10 +202,18 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			});
 		});
 
-		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
-		if (!hasExpiredLicence) {
-			this.clearExpiredLicenceModelData();
+		let hasExpiredLicence = null;
+		let expiredLicenceId = null;
+
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New) {
+			hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+			expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+			if (!hasExpiredLicence) {
+				this.clearExpiredLicenceModelData();
+			}
+		} else {
+			// For Renewals and Updates, pass the original Licence Id
+			expiredLicenceId = originalLicenceId;
 		}
 
 		const body = {
@@ -218,8 +231,6 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			bizAddress,
 			bizMailingAddress,
 			branches,
-			// 	licenceAppId,
-			// 	originalLicenceId: originalLicenceData.originalLicenceId,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
