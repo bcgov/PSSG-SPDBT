@@ -69,30 +69,20 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 		this.accessCodeComponent.searchByAccessCode();
 	}
 
-	onLinkSuccess(_linkLicence: LicenceResponse): void {
-		// this.mdraDealersApplicationService
-		// 	.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
-		// 	.subscribe((_resp: any) => {
-		// 		switch (this.applicationTypeCode) {
-		// 			case ApplicationTypeCode.Renewal: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_RENEWAL)
-		// 				);
-		// 				break;
-		// 			}
-		// 			case ApplicationTypeCode.Replacement: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_REPLACEMENT)
-		// 				);
-		// 				break;
-		// 			}
-		// 			case ApplicationTypeCode.Update: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_UPDATE)
-		// 				);
-		// 				break;
-		// 			}
-		// 		}
-		// 	});
+	onLinkSuccess(associatedLicence: LicenceResponse): void {
+		this.mdraDealersApplicationService
+			.getMdraWithAccessCodeData(associatedLicence, this.applicationTypeCode)
+			.subscribe((_resp: any) => {
+				switch (this.applicationTypeCode) {
+					case ApplicationTypeCode.Update: {
+						this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_UPDATE));
+						break;
+					}
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_RENEWAL));
+						break;
+					}
+				}
+			});
 	}
 }

@@ -1,15 +1,27 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Address, ApplicationOriginTypeCode, BranchInfo, Document, LicenceDocumentTypeCode } from '@app/api/models';
+import {
+	Address,
+	ApplicationOriginTypeCode,
+	ApplicationTypeCode,
+	BranchInfo,
+	Document,
+	LicenceDocumentTypeCode,
+} from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
+	updateAgreementFormGroup: FormGroup = this.formBuilder.group({
+		agreeToUpdate: new FormControl('', [Validators.requiredTrue]),
+	});
+
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
 		bizLegalName: new FormControl('', [FormControlValidators.required]),
 		bizTradeName: new FormControl('', [FormControlValidators.required]),
@@ -82,6 +94,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	});
 
 	branchFormGroup: FormGroup = this.formBuilder.group({
+		branchId: new FormControl(''),
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),
@@ -110,7 +123,8 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected utilService: UtilService,
-		protected fileUtilService: FileUtilService
+		protected fileUtilService: FileUtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
@@ -135,9 +149,7 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 	 * @returns
 	 */
 	getSaveBodyBase(mdraModelFormValue: any): any {
-		// const licenceAppId = mdraModelFormValue.licenceAppId;
-		// const originalLicenceData = mdraModelFormValue.originalLicenceData;
-		// const serviceTypeData = mdraModelFormValue.serviceTypeData;
+		const originalLicenceId = mdraModelFormValue.originalLicenceId;
 		const applicationTypeData = mdraModelFormValue.applicationTypeData;
 		const expiredLicenceData = mdraModelFormValue.expiredLicenceData;
 		const businessOwnerData = mdraModelFormValue.businessOwnerData;
@@ -170,6 +182,10 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 
 		const branches: Array<BranchInfo> = [];
 		branchesData.branches.forEach((item: any) => {
+			if (item.branchPhoneNumber) {
+				item.branchPhoneNumber = this.maskPipe.transform(item.branchPhoneNumber, SPD_CONSTANTS.phone.backendMask);
+			}
+
 			const branchAddress: Address = {
 				addressLine1: item.addressLine1,
 				addressLine2: item.addressLine2,
@@ -197,10 +213,32 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			});
 		});
 
-		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
-		if (!hasExpiredLicence) {
-			this.clearExpiredLicenceModelData();
+		let hasExpiredLicence = null;
+		let expiredLicenceId = null;
+
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New) {
+			hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+			expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+			if (!hasExpiredLicence) {
+				this.clearExpiredLicenceModelData();
+			}
+		} else {
+			// For Renewals and Updates, pass the original Licence Id
+			expiredLicenceId = originalLicenceId;
+		}
+
+		if (businessOwnerData.bizPhoneNumber) {
+			businessOwnerData.bizPhoneNumber = this.maskPipe.transform(
+				businessOwnerData.bizPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		if (businessManagerData.bizManagerPhoneNumber) {
+			businessManagerData.bizManagerPhoneNumber = this.maskPipe.transform(
+				businessManagerData.bizManagerPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
 		}
 
 		const body = {
@@ -218,8 +256,6 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			bizAddress,
 			bizMailingAddress,
 			branches,
-			// 	licenceAppId,
-			// 	originalLicenceId: originalLicenceData.originalLicenceId,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,

@@ -69,7 +69,7 @@ internal class MDRARegistrationManager :
 
     public async Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand cmd, CancellationToken ct)
     {
-        ValidateFiles(cmd.LicAppFileInfos);
+        //ValidateFiles(cmd.LicAppFileInfos);
         CreateMDRARegistrationCmd createCmd = _mapper.Map<CreateMDRARegistrationCmd>(cmd.ChangeRequest);
         MDRARegistrationCmdResp resp = await _repository.CreateMDRARegistrationAsync(createCmd, ct);
         await UploadNewDocsAsync(cmd.LicAppFileInfos, resp.RegistrationId, ct);

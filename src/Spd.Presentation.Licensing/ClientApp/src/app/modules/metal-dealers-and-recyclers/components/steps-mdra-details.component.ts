@@ -20,10 +20,10 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 			</mat-step>
 
 			<mat-step>
-				<ng-container *ngIf="isNew; else isRenewal">
-					<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
+				<ng-container *ngIf="isUpdate; else isNewOrRenewal">
+					<app-step-mdra-checklist-update></app-step-mdra-checklist-update>
 				</ng-container>
-				<ng-template #isRenewal>
+				<ng-template #isNewOrRenewal>
 					<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
 				</ng-template>
 
@@ -91,5 +91,8 @@ export class StepsMdraDetailsComponent extends BaseWizardStepComponent {
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

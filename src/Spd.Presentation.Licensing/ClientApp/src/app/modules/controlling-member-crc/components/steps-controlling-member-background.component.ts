@@ -59,9 +59,9 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsControllingMemberBackgroundComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_HISTORY = 0;
@@ -95,9 +95,5 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get isNew(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

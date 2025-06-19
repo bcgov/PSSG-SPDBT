@@ -3,12 +3,14 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, MdraRegistrationCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
 import { StepsMdraBranchesComponent } from './steps-mdra-branches.component';
-import { StepsMdraBusinessInfoComponent } from './steps-mdra-business-info.component';
+import { StepsMdraBusinessInfoUpdateComponent } from './steps-mdra-business-info-update.component';
 import { StepsMdraDetailsComponent } from './steps-mdra-details.component';
 import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-confirm.component';
 
@@ -38,15 +40,14 @@ import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-conf
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Business Information</ng-template>
 
-				<app-steps-mdra-business-info
+				<app-steps-mdra-business-info-update
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-mdra-business-info>
+				></app-steps-mdra-business-info-update>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
@@ -54,7 +55,6 @@ import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-conf
 
 				<app-steps-mdra-branches
 					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -93,7 +93,7 @@ export class MdraWizardUpdateComponent extends BaseWizardComponent implements On
 	readonly STEP_REVIEW_AND_CONFIRM = 3;
 
 	@ViewChild(StepsMdraDetailsComponent) stepChecklist!: StepsMdraDetailsComponent;
-	@ViewChild(StepsMdraBusinessInfoComponent) stepsBusinessInfo!: StepsMdraBusinessInfoComponent;
+	@ViewChild(StepsMdraBusinessInfoUpdateComponent) stepsBusinessInfo!: StepsMdraBusinessInfoUpdateComponent;
 	@ViewChild(StepsMdraBranchesComponent) stepBranches!: StepsMdraBranchesComponent;
 	@ViewChild(StepsMdraReviewAndConfirmComponent) stepReview!: StepsMdraReviewAndConfirmComponent;
 
@@ -133,16 +133,16 @@ export class MdraWizardUpdateComponent extends BaseWizardComponent implements On
 	}
 
 	onSubmit(): void {
-		// this.metalDealersApplicationService.submitLicenceAnonymous().subscribe({
-		// 	next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-		// 		this.router.navigateByUrl(
-		// 			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
-		// 		);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 	},
-		// });
+		this.metalDealersApplicationService.submitLicenceAnonymous(false).subscribe({
+			next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+				this.router.navigateByUrl(
+					MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
