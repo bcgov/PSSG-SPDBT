@@ -46,6 +46,7 @@ export interface LicenceResponse {
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;
   serviceTypeCode?: ServiceTypeCode;
+  showSecurityGuardAST?: boolean | null;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;
