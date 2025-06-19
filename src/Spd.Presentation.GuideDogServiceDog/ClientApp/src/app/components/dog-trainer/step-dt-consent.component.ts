@@ -12,22 +12,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-12 py-3 hereby">
-								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-									I certify that the dog trainer identified in this application trains dogs on behalf of this accredited
-									or recognized training school for the purpose of the dogs becoming guide dogs or service dogs. I
-									understand that inaccurate, misleading, missing or false information may lead to refusal or
-									cancellation of the dog trainer certificate. On behalf of this accredited or recognized training
-									school and the dog trainer, I agree to adhere to any terms and conditions of certification.
-								</mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('check1')?.dirty || form.get('check1')?.touched) &&
-										form.get('check1')?.invalid &&
-										form.get('check1')?.hasError('required')
-									"
-									>This is required
-								</mat-error>
+								I certify that the dog trainer identified in this application trains dogs on behalf of this accredited
+								or recognized training school for the purpose of the dogs becoming guide dogs or service dogs. I
+								understand that inaccurate, misleading, missing or false information may lead to refusal or cancellation
+								of the dog trainer certificate. On behalf of this accredited or recognized training school and the dog
+								trainer, I agree to adhere to any terms and conditions of certification.
 							</div>
 						</div>
 
@@ -93,8 +82,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	standalone: false,
 })
 export class StepDtConsentComponent implements LicenceChildStepperStepComponent {
-	check1Name = '';
-
 	form: FormGroup = this.dogTrainerApplicationService.consentAndDeclarationDtFormGroup;
 
 	constructor(
