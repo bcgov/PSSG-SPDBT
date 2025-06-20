@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LicenceBasicResponse, LicenceStatusCode } from '@app/api/models';
+import { LicenceBasicResponse, LicenceStatusCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
@@ -126,8 +127,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Type(s)</div>
 												<div class="text-data fw-bold">
 													<ul class="m-0">
-														<ng-container *ngFor="let category of licence.categoryCodes?.sort(); let i = index">
-															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+														<ng-container *ngFor="let category of getSwlLicenceCategories(licence); let i = index">
+															<li>{{ category }}</li>
 														</ng-container>
 													</ul>
 												</div>
@@ -215,6 +216,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		private router: Router,
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
+		private optionsPipe: OptionsPipe,
 		private licenceService: LicenceService
 	) {}
 
@@ -278,6 +280,16 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		} else {
 			this.lastNameLabel = 'Last Name';
 		}
+	}
+
+	getSwlLicenceCategories(licence: LicenceBasicResponse): Array<string> {
+		const catList = licence.categoryCodes?.map((item: WorkerCategoryTypeCode) =>
+			this.optionsPipe.transform(item, 'WorkerCategoryTypes')
+		);
+		if (licence.showSecurityGuardAST) {
+			catList?.push('Security Guard - AST');
+		}
+		return catList?.sort() ?? [];
 	}
 
 	get firstName(): FormControl {

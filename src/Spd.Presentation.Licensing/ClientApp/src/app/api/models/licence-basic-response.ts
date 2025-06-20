@@ -20,4 +20,5 @@ export interface LicenceBasicResponse {
   licenceTermCode?: LicenceTermCode;
   nameOnCard?: string | null;
   serviceTypeCode?: ServiceTypeCode;
+  showSecurityGuardAST?: boolean | null;
 }
