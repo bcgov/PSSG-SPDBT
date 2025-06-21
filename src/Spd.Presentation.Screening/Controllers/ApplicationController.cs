@@ -271,7 +271,8 @@ namespace Spd.Presentation.Screening.Controllers
                             {
                                 if (!string.IsNullOrWhiteSpace(a.Surname))
                                     aliasCreates.Add(a);
-                            };
+                            }
+                            ;
                             oneRequest.Aliases = aliasCreates.AsEnumerable();
                             var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
                             if (!validateResult.IsValid)
@@ -434,9 +435,6 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize, bool showAllPSSOApps = false)
         {
-            var token = Request.Headers["Authorization"];
-            _logger.LogDebug($"GetList token={token}");
-
             bool isPSSO = false;
             bool showAll = false;
             Guid? idirUserId = null;
