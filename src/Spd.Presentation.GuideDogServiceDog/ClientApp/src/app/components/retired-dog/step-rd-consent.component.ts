@@ -14,21 +14,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<div class="col-12 py-3 hereby">
-								<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
-									I certify that the information I have provided is true and correct to the best of my knowledge and
-									belief. I understand that inaccurate, misleading, missing or false information may lead to refusal or
-									cancellation of my retired guide or service dog team certificate. I agree to adhere to any terms and
-									conditions of certification.
-								</mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('check1')?.dirty || form.get('check1')?.touched) &&
-										form.get('check1')?.invalid &&
-										form.get('check1')?.hasError('required')
-									"
-									>This is required
-								</mat-error>
+								I certify that the information I have provided is true and correct to the best of my knowledge and
+								belief. I understand that inaccurate, misleading, missing or false information may lead to refusal or
+								cancellation of my retired guide or service dog team certificate. I agree to adhere to any terms and
+								conditions of certification.
 							</div>
 						</div>
 
@@ -109,7 +98,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepRdConsentComponent implements OnInit, LicenceChildStepperStepComponent {
-	check1Name = '';
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.retiredDogApplicationService.consentAndDeclarationFormGroup;
