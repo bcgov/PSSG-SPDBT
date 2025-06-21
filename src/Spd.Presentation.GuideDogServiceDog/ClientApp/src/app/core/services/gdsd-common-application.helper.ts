@@ -30,7 +30,6 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
-		check1: new FormControl(null, [Validators.requiredTrue]),
 		applicantOrLegalGuardianName: new FormControl('', [FormControlValidators.required]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
@@ -51,7 +50,6 @@ export abstract class GdsdCommonApplicationHelper extends CommonApplicationHelpe
 	});
 
 	consentAndDeclarationDtFormGroup: FormGroup = this.formBuilder.group({
-		check1: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
