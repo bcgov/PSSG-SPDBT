@@ -5,7 +5,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 @Component({
 	selector: 'app-alert',
 	template: `
-		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getTypeClass()">
+		<div class="alert d-flex d-inline-flex align-items-center w-100" role="note" [ngClass]="getTypeClass()">
 			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon" [ngClass]="geIconClass()">{{ icon }}</mat-icon>
 			<div style="width: inherit;" class="my-2" [ngClass]="getText()">
 				<ng-content #alertContent> </ng-content>
