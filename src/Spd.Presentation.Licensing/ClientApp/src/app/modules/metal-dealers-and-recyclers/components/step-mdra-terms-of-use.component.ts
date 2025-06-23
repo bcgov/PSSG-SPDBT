@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 @Component({
 	selector: 'app-step-mdra-terms-of-use',
 	template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+		<app-step-section title="Terms and conditions" subtitle="Read, download, and accept the Terms of Use to continue">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
@@ -132,7 +132,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									You will not remove or alter any proprietary symbol or notice, including any copyright notice,
 									trademark or logo displayed in connection with the Site.
 								</li>
-								<div class="fs-5 terms-subtitle">Suspension or Cancellation of Services:</div>
+								<div class="fs-5 terms-subtitle">Suspension, Cancellation or Changes:</div>
 								<li>
 									Your access to or use of the Site may be suspended or cancelled at any time if:
 									<ol>
