@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 @Component({
 	selector: 'app-step-mdra-terms-of-use',
 	template: `
-		<app-step-section title="Terms and conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
