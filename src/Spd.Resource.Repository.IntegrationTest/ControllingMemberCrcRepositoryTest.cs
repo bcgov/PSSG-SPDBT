@@ -3,14 +3,8 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
-using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 public class ControllingMemberCrcRepositoryTest : IClassFixture<IntegrationTestSetup>
@@ -489,7 +483,7 @@ public class ControllingMemberCrcRepositoryTest : IClassFixture<IntegrationTestS
             contactid = contactId,
             firstname = cmd.GivenName,
             lastname = cmd.Surname,
-            birthdate = new Microsoft.OData.Edm.Date(cmd.DateOfBirth.Year, cmd.DateOfBirth.Month, cmd.DateOfBirth.Day),
+            birthdate = new Microsoft.OData.Edm.Date(cmd.DateOfBirth.Value.Year, cmd.DateOfBirth.Value.Month, cmd.DateOfBirth.Value.Day),
             spd_bcdriverslicense = cmd.BcDriversLicenceNumber
         };
         _context.AddTocontacts(contact);
