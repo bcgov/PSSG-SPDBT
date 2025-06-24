@@ -12,6 +12,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsTeamDogInfoComponent } from './steps-team-dog-info.component';
 import { StepsTeamPersonalInfoComponent } from './steps-team-personal-info.component';
@@ -149,11 +150,12 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		override viewportScroller: ViewportScroller,
+		override utilService: UtilService,
 		private router: Router,
 		private authenticationService: AuthenticationService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
-		super(breakpointObserver, viewportScroller);
+		super(breakpointObserver, viewportScroller, utilService);
 	}
 
 	ngOnInit(): void {

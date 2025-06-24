@@ -9,6 +9,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app.routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsDtDetailsComponent } from './steps-dt-details.component';
 import { StepsDtPersonalInfoComponent } from './steps-dt-personal-info.component';
@@ -111,10 +112,11 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		override viewportScroller: ViewportScroller,
+		override utilService: UtilService,
 		private router: Router,
 		private dogTrainerApplicationService: DogTrainerApplicationService
 	) {
-		super(breakpointObserver, viewportScroller);
+		super(breakpointObserver, viewportScroller, utilService);
 	}
 
 	ngOnInit(): void {

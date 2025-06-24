@@ -91,12 +91,12 @@ export class GdsdTeamWizardReplacementComponent extends BaseWizardComponent impl
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		override viewportScroller: ViewportScroller,
+		override utilService: UtilService,
 		private router: Router,
-		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService
 	) {
-		super(breakpointObserver, viewportScroller);
+		super(breakpointObserver, viewportScroller, utilService);
 	}
 
 	ngOnInit(): void {

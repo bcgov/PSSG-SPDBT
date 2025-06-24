@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
 	selector: 'app-step-section',
 	template: `
 		<section class="step-section">
-			<main tabindex="-1" role="main">
+			<main id="mainContent" tabindex="-1" role="main">
 				<div class="step">
 					<app-step-title
 						[heading]="heading"

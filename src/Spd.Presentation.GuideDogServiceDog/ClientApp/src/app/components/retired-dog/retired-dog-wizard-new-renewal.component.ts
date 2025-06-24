@@ -11,6 +11,7 @@ import { AppRoutes } from '@app/app.routes';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsRdDetailsComponent } from './steps-rd-details.component';
 import { StepsRdDogInfoComponent } from './steps-rd-dog-info.component';
@@ -123,11 +124,12 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		override viewportScroller: ViewportScroller,
+		override utilService: UtilService,
 		private router: Router,
 		private authenticationService: AuthenticationService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
-		super(breakpointObserver, viewportScroller);
+		super(breakpointObserver, viewportScroller, utilService);
 	}
 
 	ngOnInit(): void {

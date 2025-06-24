@@ -14,7 +14,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-team-school-trainings',
 	template: `
-		<app-step-section heading="Training schools" subheading="List the formal training that have received.">
+		<app-step-section heading="Training schools" subheading="List the formal training that you have received.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
@@ -70,6 +70,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[showMaskTyped]="false"
 												[errorStateMatcher]="matcher"
 											/>
+											<mat-hint>A 10 digit phone number</mat-hint>
 											<mat-error *ngIf="group.get('contactPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
 											>
