@@ -71,7 +71,7 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText.Equals("Payment canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     _logger.LogInformation("Payment is being cancelled.");
                     return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
@@ -182,7 +182,7 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText.Equals("Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     _logger.LogInformation("Payment is being cancelled.");
                     return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
@@ -298,7 +298,7 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText.Equals("Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     _logger.LogInformation("Payment is being cancelled.");
                     return Redirect($"{hostUrl}{cancelPath}?bizId={bizId}");
