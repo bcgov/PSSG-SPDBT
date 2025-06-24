@@ -357,11 +357,16 @@ export class UtilService {
 
 	/**
 	 * @description
-	 * Scroll to the top of the mat-sidenav container.
+	 * Scroll to the top of the container.
 	 */
-	public scrollTop() {
-		const contentContainer = this.document.querySelector('.mat-sidenav-content') || window;
-		contentContainer.scroll({ top: 0, left: 0, behavior: 'smooth' });
+	public scrollMainContainer() {
+		const mainElement = document.getElementById('mainContainer');
+		if (mainElement) {
+			setTimeout(() => {
+				mainElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				mainElement.focus();
+			}, 250);
+		}
 	}
 
 	/**
@@ -398,7 +403,7 @@ export class UtilService {
 
 			this.scrollTo(element);
 		} else {
-			this.scrollTop();
+			this.scrollMainContainer();
 		}
 	}
 
