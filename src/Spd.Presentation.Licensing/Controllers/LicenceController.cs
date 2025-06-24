@@ -89,30 +89,28 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
-            Guid latestAppId = Guid.Empty;
-            if (response != null && response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+            if (response == null) return null;
+
+            Guid latestAppId;
+            if (response.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response != null && response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+            else if (response.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 return response;
-            else if (response != null && response?.ServiceTypeCode == ServiceTypeCode.MDRA)
+            else if (response.ServiceTypeCode == ServiceTypeCode.MDRA)
             {
                 latestAppId = await _mediator.Send(new GetMDRARegistrationIdQuery((Guid)response.LicenceHolderId)) ?? Guid.Empty;
             }
-            else if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit))
+            else if (response.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification))
+            else
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
 
-            if (response != null)
-            {
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
-                string str = $"{response.LicenceId}*{latestAppId}";
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
-            }
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
+            string str = $"{response.LicenceId}*{latestAppId}";
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
+
             return response;
         }
 

@@ -75,10 +75,12 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            if (response == null) return null;
+
             Guid latestAppId = Guid.Empty;
-            if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification))
+            if (response.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+                || response.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
+                || response.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
@@ -86,11 +88,10 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
                 return response;
             }
-            else if (response != null)
+            else
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
-            return response;
         }
 
         /// <summary>
