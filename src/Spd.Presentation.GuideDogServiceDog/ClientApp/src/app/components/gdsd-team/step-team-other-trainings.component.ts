@@ -110,6 +110,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												[showMaskTyped]="false"
 												[errorStateMatcher]="matcher"
 											/>
+											<mat-hint>A 10 digit phone number</mat-hint>
 											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
 												This is required
 											</mat-error>

@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { ViewportScroller } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { UtilService } from '../services/util.service';
 
 @Component({
 	selector: 'app-base-wizard',
@@ -17,7 +18,8 @@ export class BaseWizardComponent {
 
 	constructor(
 		protected breakpointObserver: BreakpointObserver,
-		protected viewportScroller: ViewportScroller
+		protected viewportScroller: ViewportScroller,
+		protected utilService: UtilService
 	) {}
 
 	onScrollIntoView(): void {
@@ -37,6 +39,6 @@ export class BaseWizardComponent {
 	}
 
 	scrollIntoView(): void {
-		this.viewportScroller.scrollToPosition([0, 0]);
+		this.utilService.scrollMainContainer();
 	}
 }

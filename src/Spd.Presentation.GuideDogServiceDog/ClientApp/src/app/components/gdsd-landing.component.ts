@@ -13,7 +13,7 @@ import { take, tap } from 'rxjs';
 @Component({
 	selector: 'app-gdsd-landing',
 	template: `
-		<div class="container px-0 my-0 px-md-2 my-md-3">
+		<app-container>
 			<app-step-section>
 				<app-step-title heading="Log in to manage your guide dog and service dog certification"></app-step-title>
 
@@ -159,7 +159,7 @@ import { take, tap } from 'rxjs';
 					</div>
 				</div>
 			</app-step-section>
-		</div>
+		</app-container>
 	`,
 	styles: [
 		`

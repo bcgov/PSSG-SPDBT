@@ -9,7 +9,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 	selector: 'app-gdsd-application-received',
 	template: `
 		<app-container>
-			<section class="step-section">
+			<app-step-section>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
@@ -39,7 +39,7 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 						>
 					</div>
 				</div>
-			</section>
+			</app-step-section>
 		</app-container>
 	`,
 	styles: [],

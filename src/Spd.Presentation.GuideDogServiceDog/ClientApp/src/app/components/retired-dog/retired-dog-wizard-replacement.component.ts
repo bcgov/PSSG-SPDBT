@@ -91,12 +91,12 @@ export class RetiredDogWizardReplacementComponent extends BaseWizardComponent im
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		override viewportScroller: ViewportScroller,
+		override utilService: UtilService,
 		private router: Router,
-		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private retiredDogApplicationService: RetiredDogApplicationService
 	) {
-		super(breakpointObserver, viewportScroller);
+		super(breakpointObserver, viewportScroller, utilService);
 	}
 
 	ngOnInit(): void {
