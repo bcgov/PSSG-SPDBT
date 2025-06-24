@@ -90,19 +90,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
-            if (response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+            if (response != null && response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+            else if (response != null && response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 return response;
-            else if (response?.ServiceTypeCode == ServiceTypeCode.MDRA)
+            else if (response != null && response?.ServiceTypeCode == ServiceTypeCode.MDRA)
             {
                 latestAppId = await _mediator.Send(new GetMDRARegistrationIdQuery((Guid)response.LicenceHolderId)) ?? Guid.Empty;
             }
-            else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
+            else if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit))
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+            else if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
                 || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
+                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification))
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }

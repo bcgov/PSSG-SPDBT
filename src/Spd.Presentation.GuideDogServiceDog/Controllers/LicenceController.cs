@@ -76,9 +76,9 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
-            if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+            if (response != null && (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
                 || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
+                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification))
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
@@ -86,10 +86,11 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
                 return response;
             }
-            else
+            else if (response != null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
+            return response;
         }
 
         /// <summary>
