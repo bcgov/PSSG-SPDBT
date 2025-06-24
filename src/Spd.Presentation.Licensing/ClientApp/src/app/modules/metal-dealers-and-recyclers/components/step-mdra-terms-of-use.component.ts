@@ -58,7 +58,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 										<li>c. THE SITE WILL MEET YOUR EXPECTATIONS OR REQUIREMENTS.</li>
 									</ol>
 								</li>
-								<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
 								<div class="fs-5 terms-subtitle">Information Collection:</div>
 								<li>
 									When you visit the Site, certain types of information are automatically collected from you, through
