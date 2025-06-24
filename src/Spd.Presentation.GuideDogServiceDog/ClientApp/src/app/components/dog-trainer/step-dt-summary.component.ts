@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
-						<mat-expansion-panel class="mb-4" [expanded]="true">
+						<mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
@@ -28,7 +28,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											(keydown.enter)="onEditStep($event, 1)"
 											(keydown.space)="onEditStep($event, 1)"
 										>
-											Edit Step
+											Edit
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>
@@ -61,7 +61,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							</div>
 						</mat-expansion-panel>
 
-						<mat-expansion-panel class="mb-4" [expanded]="true">
+						<mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
 							<mat-expansion-panel-header>
 								<mat-panel-title class="review-panel-title">
 									<mat-toolbar class="d-flex justify-content-between">
@@ -75,7 +75,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 											(keydown.enter)="onEditStep($event, 2)"
 											(keydown.space)="onEditStep($event, 2)"
 										>
-											Edit Step
+											Edit
 										</button>
 									</mat-toolbar>
 								</mat-panel-title>
