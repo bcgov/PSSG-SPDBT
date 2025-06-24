@@ -78,7 +78,7 @@ import { take, tap } from 'rxjs';
 									</p>
 									<p>
 										If you have any questions, please call the Security Program's Licensing Unit during regular office
-										hours: {{ spdPhoneNumber }}
+										hours: {{ mdraPhoneNumber }}.
 									</p>
 								</app-alert>
 							</div>
@@ -99,7 +99,7 @@ import { take, tap } from 'rxjs';
 	standalone: false,
 })
 export class MetalDealersLandingComponent implements OnInit {
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	mdraPhoneNumber = SPD_CONSTANTS.phone.mdraPhoneNumber;
 
 	constructor(
 		private router: Router,

@@ -23,6 +23,7 @@ export const SPD_CONSTANTS = {
 	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',
+		mdraPhoneNumber: '1-855-587-0185 (option 5)',
 		displayMask: '(000) 000-0000',
 		backendMask: '000-000-0000',
 	},

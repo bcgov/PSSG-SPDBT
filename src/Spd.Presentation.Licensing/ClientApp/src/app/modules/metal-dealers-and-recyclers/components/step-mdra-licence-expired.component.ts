@@ -15,7 +15,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						<p>Provide information from your expired registration to reduce processing time.</p>
 						<p>
 							If you don’t know your expired registration number, call Security Program’s Licensing Unit during regular
-							office hours at {{ spdPhoneNumber }}.
+							office hours at {{ mdraPhoneNumber }}.
 						</p>
 					</app-alert>
 				</div>
@@ -32,7 +32,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	standalone: false,
 })
 export class StepMdraLicenceExpiredComponent implements LicenceChildStepperStepComponent {
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	mdraPhoneNumber = SPD_CONSTANTS.phone.mdraPhoneNumber;
 
 	form: FormGroup = this.mdraDealersApplicationService.expiredLicenceFormGroup;
 	mdraServiceTypeCode = ServiceTypeCode.Mdra;
