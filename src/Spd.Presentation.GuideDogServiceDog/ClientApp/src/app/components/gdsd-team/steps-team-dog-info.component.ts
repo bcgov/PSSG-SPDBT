@@ -40,33 +40,31 @@ import { StepTeamDogServiceInfoComponent } from './step-team-dog-service-info.co
 				></app-wizard-footer>
 			</mat-step>
 
-			<ng-container *ngIf="showDogMedicalStep">
-				<mat-step>
-					<app-step-team-dog-inoculations></app-step-team-dog-inoculations>
+			<mat-step *ngIf="showDogMedicalStep">
+				<app-step-team-dog-inoculations></app-step-team-dog-inoculations>
 
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_DOG_INOCULATIONS)"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_DOG_INOCULATIONS)"
-						(nextReviewStepperStep)="onNextReview(STEP_DOG_INOCULATIONS)"
-					></app-wizard-footer>
-				</mat-step>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_INOCULATIONS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_DOG_INOCULATIONS)"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_INOCULATIONS)"
+				></app-wizard-footer>
+			</mat-step>
 
-				<mat-step>
-					<app-step-team-dog-medical></app-step-team-dog-medical>
+			<mat-step *ngIf="showDogMedicalStep">
+				<app-step-team-dog-medical></app-step-team-dog-medical>
 
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_DOG_MEDICAL)"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_DOG_MEDICAL)"
-						(nextReviewStepperStep)="onNextReview(STEP_DOG_MEDICAL)"
-					></app-wizard-footer>
-				</mat-step>
-			</ng-container>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOG_MEDICAL)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_DOG_MEDICAL)"
+					(nextReviewStepperStep)="onNextReview(STEP_DOG_MEDICAL)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],

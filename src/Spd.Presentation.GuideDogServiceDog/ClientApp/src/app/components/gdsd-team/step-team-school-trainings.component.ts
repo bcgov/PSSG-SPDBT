@@ -14,7 +14,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-team-school-trainings',
 	template: `
-		<app-step-section heading="Training schools" subheading="List the formal training that have received.">
+		<app-step-section heading="Training schools" subheading="List the formal training that you have received.">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-11 col-xl-12 mx-auto">
