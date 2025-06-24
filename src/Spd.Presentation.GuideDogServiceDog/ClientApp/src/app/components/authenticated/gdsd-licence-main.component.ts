@@ -16,96 +16,99 @@ import { forkJoin, Observable, take, tap } from 'rxjs';
 @Component({
 	selector: 'app-gdsd-licence-main',
 	template: `
-		<section class="step-section" *ngIf="results$ | async">
-			<div class="row">
-				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row">
-						<div class="col-12">
-							<h2 class="fs-3 mt-2">Guide Dog and Service Dog Certifications</h2>
-						</div>
-					</div>
-
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-
-					<ng-container *ngFor="let msg of errorMessages; let i = index">
-						<app-alert type="danger" icon="dangerous">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
-
-					<ng-container *ngFor="let msg of warningMessages; let i = index">
-						<app-alert type="warning" icon="warning">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
-
-					<app-gdsd-licence-main-applications-list
-						[applicationsDataSource]="applicationsDataSource"
-						[applicationIsInProgress]="applicationIsInProgress"
-						(resumeApplication)="onResume($event)"
-					></app-gdsd-licence-main-applications-list>
-
-					<app-gdsd-licence-main-licences-list
-						[activeLicences]="activeLicencesList"
-						[applicationIsInProgress]="applicationIsInProgress"
-						(replaceLicence)="onReplace($event)"
-						(renewLicence)="onRenew($event)"
-					></app-gdsd-licence-main-licences-list>
-
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableGdsdTeamExist">
-						<div class="row">
-							<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
-								<div class="text-data">You don't have an active guide dog and service dog team certification.</div>
+		<div *ngIf="results$ | async">
+			<app-step-section>
+				<div class="row">
+					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<header class="row">
+							<div class="col-12">
+								<h2 class="fs-3 mt-2">Guide Dog and Service Dog Certifications</h2>
 							</div>
-							<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewGuideDogServiceDogTeam()"
-								>
-									<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
-								</button>
-							</div>
-							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-								<app-alert type="info" icon="info">
-									A guide dog and service dog team certification cannot be created while an application is in progress.
-								</app-alert>
-							</div>
-						</div>
-					</div>
+						</header>
 
-					<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableRetiredDogExist">
-						<div class="row">
-							<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
-								<div class="text-data">You don't have an active retired dog certification.</div>
-							</div>
-							<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewRetiredServiceDog()"
-									aria-label="Apply for a New GDSD Team Certification"
-								>
-									<mat-icon>add</mat-icon>Apply for a New Retired Dog Certification
-								</button>
-							</div>
-							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-								<app-alert type="info" icon="info">
-									A retired dog certification cannot be created while an application is in progress.
-								</app-alert>
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+
+						<ng-container *ngFor="let msg of errorMessages; let i = index">
+							<app-alert type="danger" icon="dangerous">
+								<div [innerHTML]="msg"></div>
+							</app-alert>
+						</ng-container>
+
+						<ng-container *ngFor="let msg of warningMessages; let i = index">
+							<app-alert type="warning" icon="warning">
+								<div [innerHTML]="msg"></div>
+							</app-alert>
+						</ng-container>
+
+						<app-gdsd-licence-main-applications-list
+							[applicationsDataSource]="applicationsDataSource"
+							[applicationIsInProgress]="applicationIsInProgress"
+							(resumeApplication)="onResume($event)"
+						></app-gdsd-licence-main-applications-list>
+
+						<app-gdsd-licence-main-licences-list
+							[activeLicences]="activeLicencesList"
+							[applicationIsInProgress]="applicationIsInProgress"
+							(replaceLicence)="onReplace($event)"
+							(renewLicence)="onRenew($event)"
+						></app-gdsd-licence-main-licences-list>
+
+						<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableGdsdTeamExist">
+							<div class="row">
+								<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
+									<div class="text-data">You don't have an active guide dog and service dog team certification.</div>
+								</div>
+								<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
+									<button
+										mat-flat-button
+										color="primary"
+										class="large mt-2 mt-lg-0"
+										(click)="onNewGuideDogServiceDogTeam()"
+									>
+										<mat-icon>add</mat-icon>Apply for a New GDSD Team Certification
+									</button>
+								</div>
+								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+									<app-alert type="info" icon="info">
+										A guide dog and service dog team certification cannot be created while an application is in
+										progress.
+									</app-alert>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<app-form-licence-list-expired
-						[expiredLicences]="expiredLicencesList"
-						(renewLicence)="onRenew($event)"
-					></app-form-licence-list-expired>
+						<div class="summary-card-section mt-4 mb-3 px-4 py-3" *ngIf="!activeOrRenewableRetiredDogExist">
+							<div class="row">
+								<div [ngClass]="applicationIsInProgress ? 'col-12' : 'col-xl-6 col-lg-6'">
+									<div class="text-data">You don't have an active retired dog certification.</div>
+								</div>
+								<div class="col-xl-6 col-lg-6 text-end" *ngIf="!applicationIsInProgress">
+									<button
+										mat-flat-button
+										color="primary"
+										class="large mt-2 mt-lg-0"
+										(click)="onNewRetiredServiceDog()"
+										aria-label="Apply for a New GDSD Team Certification"
+									>
+										<mat-icon>add</mat-icon>Apply for a New Retired Dog Certification
+									</button>
+								</div>
+								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+									<app-alert type="info" icon="info">
+										A retired dog certification cannot be created while an application is in progress.
+									</app-alert>
+								</div>
+							</div>
+						</div>
+
+						<app-form-licence-list-expired
+							[expiredLicences]="expiredLicencesList"
+							(renewLicence)="onRenew($event)"
+						></app-form-licence-list-expired>
+					</div>
 				</div>
-			</div>
-		</section>
+			</app-step-section>
+		</div>
 	`,
 	styles: [],
 	standalone: false,
