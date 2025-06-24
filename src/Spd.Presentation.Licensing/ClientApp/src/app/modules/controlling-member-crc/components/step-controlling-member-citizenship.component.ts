@@ -8,7 +8,7 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 @Component({
 	selector: 'app-step-controlling-member-citizenship',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-form-swl-citizenship
 				[applicationTypeCode]="applicationTypeCodeNew"
 				[form]="form"

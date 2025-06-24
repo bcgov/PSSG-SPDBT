@@ -5,9 +5,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-mailing-address-anonymous',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-worker-licence-mailing-address-anonymous',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-form-address-and-is-same-flag
@@ -19,8 +19,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceMailingAddressAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.mailingAddressFormGroup;

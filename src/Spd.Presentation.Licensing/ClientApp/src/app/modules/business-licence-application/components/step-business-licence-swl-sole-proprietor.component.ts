@@ -5,9 +5,9 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-swl-sole-proprietor',
-    template: `
-		<app-step-section title="What is the type of business or company?">
+	selector: 'app-step-business-licence-swl-sole-proprietor',
+	template: `
+		<app-step-section heading="What is the type of business or company?">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-4">
 					<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 mx-auto">
@@ -34,8 +34,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</form>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceSwlSoleProprietorComponent implements LicenceChildStepperStepComponent {
 	bizTypeCodes = BizTypeCode;

@@ -5,7 +5,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-mdra-business-address-update',
 	template: `
-		<app-step-section title="Business address" subtitle="Confirm your business location address">
+		<app-step-section heading="Business address" subheading="Confirm your business location address">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-form-address [form]="businessAddressForm" [isWideView]="false"></app-form-address>

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-step-mdra-checklist-new',
 	template: `
-		<app-step-section title="Checklist" subtitle="Make sure you have the following items before you continue">
+		<app-step-section heading="Checklist" subheading="Make sure you have the following items before you continue">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>

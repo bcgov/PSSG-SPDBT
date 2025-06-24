@@ -6,9 +6,9 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-permit-criminal-history',
-    template: `
-		<app-step-section [title]="title">
+	selector: 'app-step-permit-criminal-history',
+	template: `
+		<app-step-section [heading]="title">
 			<app-common-criminal-history
 				[form]="form"
 				[applicationTypeCode]="applicationTypeCode"
@@ -16,8 +16,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			></app-common-criminal-history>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

@@ -13,7 +13,7 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 	selector: 'app-step-worker-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+			heading="Provide your access code"
 			info="<p>
 						You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 						provided following your initial security worker application or in your renewal letter from the Registrar,

@@ -12,7 +12,7 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 @Component({
 	selector: 'app-step-mdra-application-type',
 	template: `
-		<app-step-section title="Registration information">
+		<app-step-section heading="Registration information">
 			<div class="row">
 				<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">

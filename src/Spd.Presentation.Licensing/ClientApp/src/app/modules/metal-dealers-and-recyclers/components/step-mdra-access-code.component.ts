@@ -12,7 +12,7 @@ import { FormMdraLicenceAccessCodeComponent } from './form-mdra-licence-access-c
 	selector: 'app-step-mdra-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+			heading="Provide your access code"
 			info="<p>
 						You need both your <strong>registration number</strong> as it appears on your current registration, plus the <strong>access code</strong>
 						provided following your initial application or in your renewal letter from the Registrar, Security Services. Enter the two numbers below then click 'Next' to continue.
