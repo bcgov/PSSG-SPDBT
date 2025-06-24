@@ -87,8 +87,7 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 										class="email-address-link"
 										>securitylicensing&#64;gov.bc.ca</a
 									>
-									or phone us at {{ spdPhoneNumber }} (option 1) Monday to Friday, 9 am to 4 pm. Closed on statutory
-									holidays.
+									or phone us at {{ mdraPhoneNumber }} Monday to Friday, 9 am to 4 pm. Closed on statutory holidays.
 								</p>
 
 								<mat-checkbox formControlName="agreeToUpdate">I understand</mat-checkbox>
@@ -117,7 +116,7 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 })
 export class StepMdraApplicationTypeComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	mdraPhoneNumber = SPD_CONSTANTS.phone.mdraPhoneNumber;
 
 	form = this.metalDealersApplicationService.applicationTypeFormGroup;
 	formAgreement = this.metalDealersApplicationService.updateAgreementFormGroup;
