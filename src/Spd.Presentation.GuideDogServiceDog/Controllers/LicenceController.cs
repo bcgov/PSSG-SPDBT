@@ -75,10 +75,11 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
-            Guid latestAppId = Guid.Empty;
-            if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
+            if (response == null) return null;
+
+            if (response.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
+                || response.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
+                || response.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
             {
                 //gdsd, dog
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
