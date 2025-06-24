@@ -77,7 +77,6 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             if (response == null) return null;
 
-            Guid latestAppId = Guid.Empty;
             if (response.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
                 || response.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
                 || response.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
