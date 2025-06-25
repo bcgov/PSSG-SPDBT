@@ -76,7 +76,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && String.Equals(paybcPaymentResult.MessageText, "Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     _logger.LogInformation("Payment is being cancelled.");
                     return Redirect($"{hostUrl}{cancelPath}");
@@ -193,7 +193,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && String.Equals(paybcPaymentResult.MessageText, "Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                     return Redirect($"{hostUrl}{cancelPath}?orgId={orgId}");
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
@@ -304,7 +304,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                if (!paybcPaymentResult.Success && String.Equals(paybcPaymentResult.MessageText, "Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return Redirect($"{hostUrl}{cancelPath}");
                 }

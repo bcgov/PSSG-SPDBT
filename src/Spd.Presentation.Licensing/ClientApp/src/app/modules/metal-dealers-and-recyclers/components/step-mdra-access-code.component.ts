@@ -19,7 +19,7 @@ import { FormMdraLicenceAccessCodeComponent } from './form-mdra-licence-access-c
 					</p>
 					<p>
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
+						hours and answer identifying questions to get your access code: {{ mdraPhoneNumber }}.
 					</p>"
 		>
 			<app-form-mdra-licence-access-code
@@ -36,7 +36,7 @@ import { FormMdraLicenceAccessCodeComponent } from './form-mdra-licence-access-c
 	standalone: false,
 })
 export class StepMdraLicenceAccessCodeComponent implements OnInit {
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	mdraPhoneNumber = SPD_CONSTANTS.phone.mdraPhoneNumber;
 
 	form: FormGroup = this.mdraDealersApplicationService.accessCodeFormGroup;
 
