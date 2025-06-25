@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { UtilService } from '@app/core/services/util.service';
+import { StepTeamAccreditedSchoolIdCardComponent } from './step-team-accredited-school-id-card.component';
 import { StepTeamGovermentPhotoIdComponent } from './step-team-goverment-photo-id.component';
 import { StepTeamMailingAddressComponent } from './step-team-mailing-address.component';
 import { StepTeamMedicalInfoComponent } from './step-team-medical-info.component';
@@ -89,6 +90,19 @@ import { StepTeamPhotographOfYourselfComponent } from './step-team-photograph-of
 				></app-wizard-footer>
 			</mat-step>
 
+			<mat-step *ngIf="!isNew && isTrainedByAccreditedSchools">
+				<app-step-team-accredited-school-id-card></app-step-team-accredited-school-id-card>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+					(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+				></app-wizard-footer>
+			</mat-step>
+
 			<mat-step>
 				<app-step-team-government-id></app-step-team-government-id>
 
@@ -113,7 +127,8 @@ export class StepsTeamPersonalInfoComponent extends BaseWizardStepComponent {
 	readonly STEP_MEDICAL = 2;
 	readonly STEP_PHOTO_OF_YOURSELF = 3;
 	readonly STEP_PHOTO_OF_YOURSELF_RENEW = 4;
-	readonly STEP_GOV_ID = 5;
+	readonly STEP_ACCREDITED_SCHOOL_ID_CARD = 5;
+	readonly STEP_GOV_ID = 6;
 
 	@Input() isLoggedIn = false;
 	@Input() showSaveAndExit = false;
@@ -129,6 +144,7 @@ export class StepsTeamPersonalInfoComponent extends BaseWizardStepComponent {
 	@ViewChild(StepTeamGovermentPhotoIdComponent) govPhotoIdComponent!: StepTeamGovermentPhotoIdComponent;
 	@ViewChild(StepTeamMailingAddressComponent) mailingAddressComponent!: StepTeamMailingAddressComponent;
 	@ViewChild(StepTeamMedicalInfoComponent) medicalComponent!: StepTeamMedicalInfoComponent;
+	@ViewChild(StepTeamAccreditedSchoolIdCardComponent) schoolIdCardComponent!: StepTeamAccreditedSchoolIdCardComponent;
 
 	constructor(utilService: UtilService) {
 		super(utilService);
@@ -147,6 +163,8 @@ export class StepsTeamPersonalInfoComponent extends BaseWizardStepComponent {
 				return this.photoComponent.isFormValid();
 			case this.STEP_PHOTO_OF_YOURSELF_RENEW:
 				return this.photoRenewComponent.isFormValid();
+			case this.STEP_ACCREDITED_SCHOOL_ID_CARD:
+				return this.schoolIdCardComponent.isFormValid();
 			case this.STEP_GOV_ID:
 				return this.govPhotoIdComponent.isFormValid();
 			default:

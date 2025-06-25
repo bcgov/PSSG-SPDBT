@@ -41,6 +41,7 @@ import { FormTeamSummarySchoolTrainingComponent } from './components/gdsd-team/f
 import { GdsdTeamWizardNewRenewalComponent } from './components/gdsd-team/gdsd-team-wizard-new-renewal.component';
 import { GdsdTeamWizardReplacementComponent } from './components/gdsd-team/gdsd-team-wizard-replacement.component';
 import { StepTeamAccreditedGraduationComponent } from './components/gdsd-team/step-team-accredited-graduation.component';
+import { StepTeamAccreditedSchoolIdCardComponent } from './components/gdsd-team/step-team-accredited-school-id-card.component';
 import { StepTeamApplicationTypeComponent } from './components/gdsd-team/step-team-application-type.component';
 import { StepTeamChecklistNewComponent } from './components/gdsd-team/step-team-checklist-new.component';
 import { StepTeamChecklistRenewalComponent } from './components/gdsd-team/step-team-checklist-renewal.component';
@@ -145,6 +146,7 @@ import { SharedModule } from './shared/shared.module';
 		StepsTeamTrainingInfoComponent,
 		StepsTeamReviewAndConfirmComponent,
 
+		StepTeamAccreditedSchoolIdCardComponent,
 		StepTeamApplicationTypeComponent,
 		StepTeamChecklistNewComponent,
 		StepTeamChecklistRenewalComponent,

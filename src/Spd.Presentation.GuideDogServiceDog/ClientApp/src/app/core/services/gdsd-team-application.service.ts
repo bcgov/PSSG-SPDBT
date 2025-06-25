@@ -88,7 +88,8 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 		trainingHistoryData: this.trainingHistoryFormGroup,
 		schoolTrainingHistoryData: this.schoolTrainingHistoryFormGroup,
 		otherTrainingHistoryData: this.otherTrainingHistoryFormGroup,
-		dogRenewData: this.dogRenewFormGroup,
+		dogRenewData: this.dogRenewFormGroup, // For Renewal
+		accreditedSchoolIdCardData: this.accreditedSchoolIdCardFormGroup, // For Renewal
 	});
 
 	gdsdTeamModelChangedSubscription!: Subscription;
@@ -186,18 +187,23 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 	isStepPersonalInfoComplete(): boolean {
 		const applicationTypeCode = this.gdsdTeamModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
-		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-			return (
-				this.personalInformationFormGroup.valid &&
-				this.photographOfYourselfFormGroup.valid &&
-				this.governmentPhotoIdFormGroup.valid &&
-				this.mailingAddressFormGroup.valid
-			);
-		}
-
 		const isTrainedByAccreditedSchools =
 			this.gdsdTeamModelFormGroup.get('dogCertificationSelectionData.isDogTrainedByAccreditedSchool')?.value ===
 			BooleanTypeCode.Yes;
+
+		if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+			const isValid =
+				this.personalInformationFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid &&
+				this.governmentPhotoIdFormGroup.valid &&
+				this.mailingAddressFormGroup.valid;
+
+			if (!isTrainedByAccreditedSchools) {
+				return isValid;
+			}
+
+			return isValid && this.accreditedSchoolIdCardFormGroup.valid;
+		}
 
 		if (isTrainedByAccreditedSchools) {
 			return (
