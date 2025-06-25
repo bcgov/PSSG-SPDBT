@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-business-licence-business-address',
 	template: `
-		<app-step-section title="Do you need to update any of the following address information?">
+		<app-step-section heading="Do you need to update any of the following address information?">
 			<div class="row">
 				<div class="col-lg-6 col-md-12">
 					<section>

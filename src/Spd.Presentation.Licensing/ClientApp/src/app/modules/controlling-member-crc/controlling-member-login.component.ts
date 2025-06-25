@@ -19,7 +19,7 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 	selector: 'app-controlling-member-login',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
-			<app-step-section [title]="title">
+			<app-step-section [heading]="title">
 				<div class="row">
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="login-selection-container text-start mb-4 mb-lg-5">

@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-mdra-branches',
 	template: `
-		<app-step-section title="Branch offices" [subtitle]="subtitle">
+		<app-step-section heading="Branch offices" [subheading]="subtitle">
 			<app-form-mdra-branches [form]="form" [isReadonly]="false"></app-form-mdra-branches>
 		</app-step-section>
 	`,

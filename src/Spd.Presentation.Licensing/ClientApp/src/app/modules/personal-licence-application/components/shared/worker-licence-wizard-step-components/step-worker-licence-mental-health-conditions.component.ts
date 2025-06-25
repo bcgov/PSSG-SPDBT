@@ -8,7 +8,7 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 @Component({
 	selector: 'app-step-worker-licence-mental-health-conditions',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<app-form-mental-health-conditions
 				[form]="form"
 				[isWizardStep]="true"
