@@ -8,7 +8,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-business-licence-corporate-registry-document',
 	template: `
-		<app-step-section title="Upload corporate registry documents">
+		<app-step-section heading="Upload corporate registry documents">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="text-minor-heading lh-base mb-2">

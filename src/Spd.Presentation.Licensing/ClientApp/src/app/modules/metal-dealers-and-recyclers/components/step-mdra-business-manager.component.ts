@@ -8,7 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-mdra-business-manager',
 	template: `
-		<app-step-section title="Business manager" [subtitle]="subtitle">
+		<app-step-section heading="Business manager" [subheading]="subtitle">
 			<div class="row">
 				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="info" icon="info">

@@ -6,9 +6,12 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { FormBusinessTermsComponent } from '@app/shared/components/form-business-terms.component';
 
 @Component({
-    selector: 'app-step-business-licence-update-terms',
-    template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+	selector: 'app-step-business-licence-update-terms',
+	template: `
+		<app-step-section
+			heading="Terms and Conditions"
+			subheading="Read, download, and accept the Terms of Use to continue"
+		>
 			<app-form-business-terms
 				[form]="form"
 				[applicationTypeCode]="applicationTypeCodeUpdate"
@@ -17,9 +20,9 @@ import { FormBusinessTermsComponent } from '@app/shared/components/form-business
 
 		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepBusinessLicenceUpdateTermsComponent {
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
@@ -30,7 +33,7 @@ export class StepBusinessLicenceUpdateTermsComponent {
 
 	constructor(
 		private router: Router,
-		private businessApplicationService: BusinessApplicationService,
+		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	onFormValidNextStep(): void {
@@ -38,9 +41,9 @@ export class StepBusinessLicenceUpdateTermsComponent {
 
 		this.router.navigateByUrl(
 			BusinessLicenceApplicationRoutes.pathBusinessLicence(
-				BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE,
+				BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 			),
-			{ state: { applicationTypeCode: ApplicationTypeCode.Update } },
+			{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
 		);
 	}
 }

@@ -9,7 +9,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-sole-proprietor',
 	template: `
-		<app-step-section [title]="title" [subtitle]="infoTitle">
+		<app-step-section [heading]="title" [subheading]="infoTitle">
 			<div class="row">
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="warning">

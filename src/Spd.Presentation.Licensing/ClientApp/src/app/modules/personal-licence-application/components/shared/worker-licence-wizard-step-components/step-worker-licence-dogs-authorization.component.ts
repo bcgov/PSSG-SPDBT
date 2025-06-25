@@ -10,7 +10,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-worker-licence-dogs-authorization',
 	template: `
-		<app-step-section title="Are you requesting authorization to use dogs for security work?" [subtitle]="subtitle">
+		<app-step-section heading="Are you requesting authorization to use dogs for security work?" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">

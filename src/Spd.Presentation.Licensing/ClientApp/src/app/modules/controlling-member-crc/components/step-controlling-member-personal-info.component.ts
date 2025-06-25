@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-controlling-member-personal-info',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<ng-container *ngIf="isLoggedIn; else notLoggedIn">
 				<app-form-personal-information
 					[personalInformationFormGroup]="personalInformationFormGroup"

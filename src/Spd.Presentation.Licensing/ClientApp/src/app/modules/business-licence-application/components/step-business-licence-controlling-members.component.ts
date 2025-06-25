@@ -8,8 +8,8 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 	selector: 'app-step-business-licence-controlling-members',
 	template: `
 		<app-step-section
-			[title]="title"
-			subtitle="A controlling member is any person who can direct the activity of your business."
+			[heading]="title"
+			subheading="A controlling member is any person who can direct the activity of your business."
 			[info]="info"
 		>
 			<div class="row">

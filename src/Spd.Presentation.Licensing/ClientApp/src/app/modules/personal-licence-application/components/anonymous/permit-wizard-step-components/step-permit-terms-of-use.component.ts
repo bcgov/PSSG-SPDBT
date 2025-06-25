@@ -6,9 +6,12 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 import { CommonSwlPermitTermsUpdateReplaceComponent } from '../../shared/common-step-components/common-swl-permit-terms-update-replace.component';
 
 @Component({
-    selector: 'app-step-permit-terms-of-use',
-    template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+	selector: 'app-step-permit-terms-of-use',
+	template: `
+		<app-step-section
+			heading="Terms and Conditions"
+			subheading="Read, download, and accept the Terms of Use to continue"
+		>
 			<ng-container *ngIf="isNewOrRenewal; else isUpdate">
 				<app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
 			</ng-container>
@@ -17,8 +20,8 @@ import { CommonSwlPermitTermsUpdateReplaceComponent } from '../../shared/common-
 			</ng-template>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitTermsOfUseComponent implements LicenceChildStepperStepComponent {
 	form = this.permitApplicationService.termsAndConditionsFormGroup;

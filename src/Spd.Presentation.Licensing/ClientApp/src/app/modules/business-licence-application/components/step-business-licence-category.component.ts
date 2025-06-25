@@ -17,7 +17,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
 	selector: 'app-step-business-licence-category',
 	template: `
-		<app-step-section [title]="title" [subtitle]="infoTitle">
+		<app-step-section [heading]="title" [subheading]="infoTitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">

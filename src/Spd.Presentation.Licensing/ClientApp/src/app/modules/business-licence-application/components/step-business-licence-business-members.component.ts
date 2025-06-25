@@ -8,8 +8,8 @@ import { CommonBusinessMembersComponent } from './common-business-members.compon
 	selector: 'app-step-business-licence-business-members',
 	template: `
 		<app-step-section
-			[title]="title"
-			subtitle="A business manager is the person responsible for the day-to-day supervision of licensed security workers at the locations from which a security business operates."
+			[heading]="title"
+			subheading="A business manager is the person responsible for the day-to-day supervision of licensed security workers at the locations from which a security business operates."
 			[info]="info"
 		>
 			<div class="row">
