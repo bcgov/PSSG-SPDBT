@@ -168,4 +168,4 @@ Contributions are welcome! Please fork the repo and submit a pull request.
 
 ## Credits
 
-Thanks to all contributors ( Carol Carpenter, Peggy Zhang, and Yossi Tamari etc.) and third-party libraries.
+Thanks to all contributors ( Carol Carpenter, Peggy Zhang, Yossi Tamari, Ruben Araya, Emad Salamat etc.) and third-party libraries.
