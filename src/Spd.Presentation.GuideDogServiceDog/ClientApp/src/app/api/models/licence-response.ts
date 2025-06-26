@@ -22,6 +22,7 @@ export interface LicenceResponse {
   dogDocumentInfos?: Array<Document> | null;
   dogId?: string | null;
   dogInfo?: DogInfo;
+  dogTrainedByAccreditedSchool?: boolean | null;
   employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;
@@ -46,6 +47,7 @@ export interface LicenceResponse {
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;
   serviceTypeCode?: ServiceTypeCode;
+  showSecurityGuardAST?: boolean | null;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;
