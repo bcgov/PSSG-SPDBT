@@ -5,9 +5,9 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-permit-review-name-change',
-    template: `
-		<app-step-section title="Review your updated name" subtitle="Your permit will be updated with your new name">
+	selector: 'app-step-permit-review-name-change',
+	template: `
+		<app-step-section heading="Review your updated name" subheading="Your permit will be updated with your new name">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div [formGroup]="form">
@@ -26,8 +26,8 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitReviewNameChangeComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.personalInformationFormGroup;

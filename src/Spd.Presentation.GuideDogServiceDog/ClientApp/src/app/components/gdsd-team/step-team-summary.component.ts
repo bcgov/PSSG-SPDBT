@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -144,8 +145,23 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 									</div>
 								</ng-container>
 
-								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<ng-container *ngIf="!isNew && isTrainedByAccreditedSchool">
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<div class="text-minor-heading-small">Accredited School Identification Card</div>
+									<div class="row mt-0">
+										<div class="col-lg-6 col-md-12">
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let doc of accreditedSchoolIdCardAttachments; let i = index">
+														<li>{{ doc.name }}</li>
+													</ng-container>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</ng-container>
 
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading-small">
 									{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
 								</div>
@@ -442,6 +458,10 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 		return this.gdsdTeamApplicationService.getSummaryisDoctorSendingGdsdMedicalForm(this.gdsdModelData);
 	}
 
+	get accreditedSchoolIdCardAttachments(): File[] | null {
+		return this.gdsdTeamApplicationService.getSummaryaccreditedSchoolIdCardAttachments(this.gdsdModelData);
+	}
+
 	get governmentIssuedPhotoTypeCode(): LicenceDocumentTypeCode | null {
 		return this.gdsdTeamApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.gdsdModelData);
 	}
@@ -462,5 +482,8 @@ export class StepTeamSummaryComponent implements OnInit, LicenceChildStepperStep
 
 	get isNew(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
+	}
+	get isTrainedByAccreditedSchool(): boolean {
+		return this.isDogTrainedByAccreditedSchool === BooleanTypeCode.Yes;
 	}
 }

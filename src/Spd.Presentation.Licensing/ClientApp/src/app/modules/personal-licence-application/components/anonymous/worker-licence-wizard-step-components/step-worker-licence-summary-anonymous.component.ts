@@ -13,7 +13,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-summary-anonymous',
 	template: `
-		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
+		<app-step-section
+			heading="Application summary"
+			subheading="Review your information before submitting your application"
+		>
 			<div class="row">
 				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
 					<mat-accordion multi="true">

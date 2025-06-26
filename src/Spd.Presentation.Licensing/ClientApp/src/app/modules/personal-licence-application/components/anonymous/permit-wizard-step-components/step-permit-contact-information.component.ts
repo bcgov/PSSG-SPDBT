@@ -6,9 +6,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 
 @Component({
-    selector: 'app-step-permit-contact-information',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-permit-contact-information',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<div class="row">
 				<div class="col-12 mx-auto">
 					<app-form-contact-information [form]="form"></app-form-contact-information>
@@ -16,8 +16,8 @@ import { FormContactInformationComponent } from '@app/shared/components/form-con
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitContactInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

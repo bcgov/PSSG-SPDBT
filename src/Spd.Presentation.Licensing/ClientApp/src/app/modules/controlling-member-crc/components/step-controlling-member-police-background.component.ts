@@ -8,7 +8,7 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 @Component({
 	selector: 'app-step-controlling-member-police-background',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-form-police-background
 				[form]="form"
 				[isWizardStep]="true"

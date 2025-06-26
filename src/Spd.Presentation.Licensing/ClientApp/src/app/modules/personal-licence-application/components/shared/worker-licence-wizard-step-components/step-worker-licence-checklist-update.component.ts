@@ -5,8 +5,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	selector: 'app-step-worker-licence-checklist-update',
 	template: `
 		<app-step-section
-			title="Checklist"
-			subtitle="Make sure you have the following items before you continue"
+			heading="Checklist"
+			subheading="Make sure you have the following items before you continue"
 			info="<strong>Required documents depend on what updates you need to make to your licence</strong>"
 		>
 			<div class="row">

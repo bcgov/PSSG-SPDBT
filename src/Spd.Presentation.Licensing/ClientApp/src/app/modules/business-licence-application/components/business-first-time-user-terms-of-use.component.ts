@@ -15,8 +15,8 @@ import { FormBusinessTermsComponent } from '@app/shared/components/form-business
 			<div class="row">
 				<div class="col-12">
 					<app-step-section
-						title="Terms and Conditions"
-						subtitle="Read, download, and accept the Terms of Use to continue"
+						heading="Terms and Conditions"
+						subheading="Read, download, and accept the Terms of Use to continue"
 					>
 						<app-form-business-terms
 							[form]="form"

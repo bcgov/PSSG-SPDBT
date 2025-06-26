@@ -12,7 +12,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 	template: `
 		<section class="step-section" *ngIf="options">
 			<div class="step">
-				<app-step-title title="Getting Started"></app-step-title>
+				<app-step-title heading="Getting Started"></app-step-title>
 
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">

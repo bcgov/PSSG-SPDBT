@@ -6,7 +6,7 @@ import { CommonEmployeesComponent } from './common-employees.component';
 @Component({
 	selector: 'app-step-business-licence-employees',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-common-employees [defaultExpanded]="true"></app-common-employees>

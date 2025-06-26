@@ -5,9 +5,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-personal-information-anonymous',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-worker-licence-personal-information-anonymous',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
 			</ng-container>
@@ -22,8 +22,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</ng-container>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicencePersonalInformationAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent

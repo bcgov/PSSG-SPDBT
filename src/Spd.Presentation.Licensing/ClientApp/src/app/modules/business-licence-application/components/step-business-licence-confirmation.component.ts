@@ -8,7 +8,7 @@ import { UtilService } from '@app/core/services/util.service';
 @Component({
 	selector: 'app-step-business-licence-confirmation',
 	template: `
-		<app-step-section title="Confirm your current business licence information">
+		<app-step-section heading="Confirm your current business licence information">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="warning" icon="warning">

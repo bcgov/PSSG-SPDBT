@@ -4,7 +4,10 @@ import { CommonBusinessLicenceSummaryComponent } from './common-business-licence
 @Component({
 	selector: 'app-step-business-licence-summary',
 	template: `
-		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
+		<app-step-section
+			heading="Application summary"
+			subheading="Review your information before submitting your application"
+		>
 			<app-common-business-licence-summary
 				[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 				[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"

@@ -7,7 +7,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
 	template: `
-		<app-step-section title="Confirm your current licence information">
+		<app-step-section heading="Confirm your current licence information">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="warning" icon="warning">

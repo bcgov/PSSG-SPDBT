@@ -9,7 +9,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-business-licence-company-branding',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
