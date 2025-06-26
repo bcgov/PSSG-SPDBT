@@ -18,192 +18,205 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 	selector: 'app-common-business-information',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
-					<ng-container *ngIf="isBusinessLicenceSoleProprietor">
-						<app-alert type="info" icon="" [showBorder]="false">
-							If you are a Sole Proprietor, you must have a Security Worker Licence. Your business name must exactly
-							match the name you used on your Security Worker Licence.
-						</app-alert>
-					</ng-container>
-					<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
-						<ng-container *ngTemplateOutlet="LegalBusinessName"></ng-container>
-					</ng-container>
-				</div>
-				<div class="col-lg-6 col-md-12" *ngIf="!isSoleProprietorCombinedFlow">
-					<app-alert type="info" icon="" [showBorder]="false">
-						Check your <a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a> if you
-						don’t know your business type.
-					</app-alert>
-				</div>
-
-				<div class="col-lg-6 col-md-12">
-					<ng-container *ngIf="isBusinessLicenceSoleProprietor">
-						<ng-container *ngTemplateOutlet="LegalBusinessName"></ng-container>
-					</ng-container>
-
-					<div class="mb-3">
-						<div class="text-primary-color fw-semibold">
-							Trade or 'Doing Business As' Name
-							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
-						</div>
-						<ng-container *ngIf="bizTradeNameReadonly; else EditBizTradeName">
-							<div class="text-minor-heading">{{ bizTradeName.value | default }}</div>
-						</ng-container>
-						<ng-template #EditBizTradeName>
-							<mat-form-field>
-								<input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="160" />
-								<mat-error *ngIf="form.get('bizTradeName')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</ng-template>
-					</div>
-				</div>
-
-				<ng-template #LegalBusinessName>
-					<div class="mb-3">
-						<div class="text-primary-color fw-semibold">Legal Business Name</div>
-						<div class="text-minor-heading">{{ legalBusinessName.value | default }}</div>
-					</div>
-				</ng-template>
-
-				<div class="col-lg-6 col-md-12">
-					<mat-form-field>
-						<mat-label>Business Type</mat-label>
-						<mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher">
-							<mat-option *ngFor="let item of businessTypes; let i = index" [value]="item.code">
-								{{ item.desc }}
-							</mat-option>
-						</mat-select>
-						<mat-error *ngIf="form.get('bizTypeCode')?.hasError('required')">This is required</mat-error>
-					</mat-form-field>
-				</div>
-			</div>
-
-			<div *ngIf="isBusinessLicenceSoleProprietor" @showHideTriggerSlideAnimation>
-				<mat-divider class="mat-divider-main my-3"></mat-divider>
-				<div class="row mb-3">
-					<div class="col-md-6 col-sm-12"><div class="text-minor-heading">Sole Proprietor</div></div>
-					<div class="col-md-6 col-sm-12 text-end" *ngIf="!isReadonly && !isSoleProprietorCombinedFlow">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							aria-label="Search for the sole proprietor"
-							(click)="onLookupSoleProprietor()"
-						>
-							Search for Sole Proprietor
-						</button>
-					</div>
-				</div>
-
-				<div class="my-2">
-					<ng-container *ngIf="!isSoleProprietorCombinedFlow">
-						<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
-							<app-alert type="success" icon="check_circle">
-								<div class="row">
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Name</div>
-										<div class="text-minor-heading">{{ soleProprietorLicenceHolderName.value }}</div>
-									</div>
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-minor-heading">{{ soleProprietorLicenceNumber.value }}</div>
-									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-minor-heading">
-											{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
-										</div>
-									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Licence Status</div>
-										<div class="text-minor-heading fw-bold">
-											{{ soleProprietorLicenceStatusCode.value }}
-										</div>
-									</div>
-								</div>
-							</app-alert>
-						</ng-container>
-						<ng-template #SearchForSP>
-							<app-alert type="warning" icon="">
-								Search for a sole proprietor with a valid security worker licence.
-							</app-alert>
-						</ng-template>
-
-						<mat-error
-							class="mat-option-error mb-4"
-							*ngIf="
-								(form.get('soleProprietorLicenceId')?.dirty || form.get('soleProprietorLicenceId')?.touched) &&
-								form.get('soleProprietorLicenceId')?.invalid &&
-								form.get('soleProprietorLicenceId')?.hasError('required')
-							"
-						>
-							You must have a valid security worker licence to apply for a sole proprietor business licence.
-						</mat-error>
-
-						<div
-							class="col-12"
-							*ngIf="
-								(form.dirty || form.touched) &&
-								form.invalid &&
-								!form.get('soleProprietorLicenceId')?.hasError('required') &&
-								form.hasError('licencemustbeactive')
-							"
-						>
-							<app-alert type="danger" icon="dangerous">
-								<div>
-									You must have a valid security worker licence to apply for a sole proprietor business licence.
-								</div>
-								<div class="mt-2">
-									To renew your security worker licence, visit
-									<a href="https://prod-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/" target="_blank"
-										>Security worker licencing</a
-									>. Once you have your renewed licence, return to complete your business licence application.
-								</div>
-							</app-alert>
-						</div>
-					</ng-container>
-
-					<div class="row">
-						<div class="col-md-7 col-sm-12">
-							<mat-form-field>
-								<mat-label>Email Address</mat-label>
-								<input
-									matInput
-									formControlName="soleProprietorSwlEmailAddress"
-									[errorStateMatcher]="matcher"
-									placeholder="name@domain.com"
-									maxlength="75"
-								/>
-								<mat-error *ngIf="form.get('soleProprietorSwlEmailAddress')?.hasError('required')"
-									>This is required</mat-error
-								>
-								<mat-error *ngIf="form.get('soleProprietorSwlEmailAddress')?.hasError('email')"
-									>Must be a valid email address</mat-error
-								>
-							</mat-form-field>
-						</div>
-
-						<div class="col-md-5 col-sm-12">
-							<mat-form-field>
-								<mat-label>Phone Number</mat-label>
-								<input
-									matInput
-									formControlName="soleProprietorSwlPhoneNumber"
-									[errorStateMatcher]="matcher"
-									maxlength="30"
-									appPhoneNumberTransform
-								/>
-								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('required')"
-									>This is required</mat-error
-								>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="row">
+		    <div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
+		      @if (isBusinessLicenceSoleProprietor) {
+		        <app-alert type="info" icon="" [showBorder]="false">
+		          If you are a Sole Proprietor, you must have a Security Worker Licence. Your business name must exactly
+		          match the name you used on your Security Worker Licence.
+		        </app-alert>
+		      }
+		      @if (!isBusinessLicenceSoleProprietor) {
+		        <ng-container *ngTemplateOutlet="LegalBusinessName"></ng-container>
+		      }
+		    </div>
+		    @if (!isSoleProprietorCombinedFlow) {
+		      <div class="col-lg-6 col-md-12">
+		        <app-alert type="info" icon="" [showBorder]="false">
+		          Check your <a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a> if you
+		          don’t know your business type.
+		        </app-alert>
+		      </div>
+		    }
+		
+		    <div class="col-lg-6 col-md-12">
+		      @if (isBusinessLicenceSoleProprietor) {
+		        <ng-container *ngTemplateOutlet="LegalBusinessName"></ng-container>
+		      }
+		
+		      <div class="mb-3">
+		        <div class="text-primary-color fw-semibold">
+		          Trade or 'Doing Business As' Name
+		          <mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
+		        </div>
+		        @if (bizTradeNameReadonly) {
+		          <div class="text-minor-heading">{{ bizTradeName.value | default }}</div>
+		        } @else {
+		          <mat-form-field>
+		            <input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="160" />
+		            @if (form.get('bizTradeName')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        }
+		      </div>
+		    </div>
+		
+		    <ng-template #LegalBusinessName>
+		      <div class="mb-3">
+		        <div class="text-primary-color fw-semibold">Legal Business Name</div>
+		        <div class="text-minor-heading">{{ legalBusinessName.value | default }}</div>
+		      </div>
+		    </ng-template>
+		
+		    <div class="col-lg-6 col-md-12">
+		      <mat-form-field>
+		        <mat-label>Business Type</mat-label>
+		        <mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher">
+		          @for (item of businessTypes; track item; let i = $index) {
+		            <mat-option [value]="item.code">
+		              {{ item.desc }}
+		            </mat-option>
+		          }
+		        </mat-select>
+		        @if (form.get('bizTypeCode')?.hasError('required')) {
+		          <mat-error>This is required</mat-error>
+		        }
+		      </mat-form-field>
+		    </div>
+		  </div>
+		
+		  @if (isBusinessLicenceSoleProprietor) {
+		    <div @showHideTriggerSlideAnimation>
+		      <mat-divider class="mat-divider-main my-3"></mat-divider>
+		      <div class="row mb-3">
+		        <div class="col-md-6 col-sm-12"><div class="text-minor-heading">Sole Proprietor</div></div>
+		        @if (!isReadonly && !isSoleProprietorCombinedFlow) {
+		          <div class="col-md-6 col-sm-12 text-end">
+		            <button
+		              mat-flat-button
+		              color="primary"
+		              class="large w-auto mt-2 mt-lg-0"
+		              aria-label="Search for the sole proprietor"
+		              (click)="onLookupSoleProprietor()"
+		              >
+		              Search for Sole Proprietor
+		            </button>
+		          </div>
+		        }
+		      </div>
+		      <div class="my-2">
+		        @if (!isSoleProprietorCombinedFlow) {
+		          @if (soleProprietorLicenceId.value) {
+		            <app-alert type="success" icon="check_circle">
+		              <div class="row">
+		                <div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+		                  <div class="text-primary-color">Name</div>
+		                  <div class="text-minor-heading">{{ soleProprietorLicenceHolderName.value }}</div>
+		                </div>
+		                <div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+		                  <div class="text-primary-color">Security Worker Licence Number</div>
+		                  <div class="text-minor-heading">{{ soleProprietorLicenceNumber.value }}</div>
+		                </div>
+		                <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+		                  <div class="text-primary-color">Expiry Date</div>
+		                  <div class="text-minor-heading">
+		                    {{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
+		                  </div>
+		                </div>
+		                <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+		                  <div class="text-primary-color">Licence Status</div>
+		                  <div class="text-minor-heading fw-bold">
+		                    {{ soleProprietorLicenceStatusCode.value }}
+		                  </div>
+		                </div>
+		              </div>
+		            </app-alert>
+		          } @else {
+		            <app-alert type="warning" icon="">
+		              Search for a sole proprietor with a valid security worker licence.
+		            </app-alert>
+		          }
+		          @if (
+		            (form.get('soleProprietorLicenceId')?.dirty || form.get('soleProprietorLicenceId')?.touched) &&
+		            form.get('soleProprietorLicenceId')?.invalid &&
+		            form.get('soleProprietorLicenceId')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error mb-4"
+		              >
+		              You must have a valid security worker licence to apply for a sole proprietor business licence.
+		            </mat-error>
+		          }
+		          @if (
+		            (form.dirty || form.touched) &&
+		            form.invalid &&
+		            !form.get('soleProprietorLicenceId')?.hasError('required') &&
+		            form.hasError('licencemustbeactive')
+		            ) {
+		            <div
+		              class="col-12"
+		              >
+		              <app-alert type="danger" icon="dangerous">
+		                <div>
+		                  You must have a valid security worker licence to apply for a sole proprietor business licence.
+		                </div>
+		                <div class="mt-2">
+		                  To renew your security worker licence, visit
+		                  <a href="https://prod-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/" target="_blank"
+		                    >Security worker licencing</a
+		                    >. Once you have your renewed licence, return to complete your business licence application.
+		                  </div>
+		                </app-alert>
+		              </div>
+		            }
+		          }
+		          <div class="row">
+		            <div class="col-md-7 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Email Address</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="soleProprietorSwlEmailAddress"
+		                  [errorStateMatcher]="matcher"
+		                  placeholder="name@domain.com"
+		                  maxlength="75"
+		                  />
+		                  @if (form.get('soleProprietorSwlEmailAddress')?.hasError('required')) {
+		                    <mat-error
+		                      >This is required</mat-error
+		                      >
+		                  }
+		                  @if (form.get('soleProprietorSwlEmailAddress')?.hasError('email')) {
+		                    <mat-error
+		                      >Must be a valid email address</mat-error
+		                      >
+		                    }
+		                  </mat-form-field>
+		                </div>
+		                <div class="col-md-5 col-sm-12">
+		                  <mat-form-field>
+		                    <mat-label>Phone Number</mat-label>
+		                    <input
+		                      matInput
+		                      formControlName="soleProprietorSwlPhoneNumber"
+		                      [errorStateMatcher]="matcher"
+		                      maxlength="30"
+		                      appPhoneNumberTransform
+		                      />
+		                      @if (form.get('soleProprietorSwlPhoneNumber')?.hasError('required')) {
+		                        <mat-error
+		                          >This is required</mat-error
+		                          >
+		                      }
+		                    </mat-form-field>
+		                  </div>
+		                </div>
+		              </div>
+		            </div>
+		          }
+		        </form>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

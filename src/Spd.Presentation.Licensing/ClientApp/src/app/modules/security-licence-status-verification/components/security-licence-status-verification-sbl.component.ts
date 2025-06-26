@@ -11,142 +11,143 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	selector: 'app-security-licence-status-verification-sbl',
 	template: `
 		<section class="step-section">
-			<div class="row">
-				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row">
-						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
-							<h2 class="fs-3">Verify a Security Business Licence</h2>
-						</div>
-
-						<div class="col-xl-4 col-lg-4 col-md-12 no-print">
-							<div class="d-flex justify-content-end">
-								<button
-									mat-stroked-button
-									color="primary"
-									class="large w-auto mb-3"
-									aria-label="Back to main page"
-									(click)="onBack()"
-								>
-									<mat-icon>arrow_back</mat-icon>Back
-								</button>
-							</div>
-						</div>
-
-						<mat-divider class="mat-divider-main mb-4"></mat-divider>
-
-						<div class="col-12 mb-3">
-							<app-alert type="info" icon="">
-								Enter a security business <strong>licence number</strong> or at least the
-								<strong>first three (3)</strong> letters of the name of a security business below. The results will
-								display the Legal Business Name, the Trade Name, the Licence Number, the Licence Status (valid, not
-								valid), and the Licence Type of any businesses matching the search criteria.
-							</app-alert>
-						</div>
-					</div>
-
-					<form [formGroup]="form" novalidate>
-						<div class="row mb-2">
-							<div class="col-xl-5 col-lg-5 col-md-12">
-								<mat-form-field>
-									<mat-label>Business Licence Number</mat-label>
-									<input
-										matInput
-										formControlName="businessLicenceNumber"
-										oninput="this.value = this.value.toUpperCase()"
-										placeholder="B123456"
-										[errorStateMatcher]="matcher"
-										maxlength="20"
-									/>
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-1 col-lg-1 col-md-12 text-center">
-								<div class="text-minor-heading text-red my-3">OR</div>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Business Name</mat-label>
-									<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
-								</mat-form-field>
-							</div>
-						</div>
-
-						<ng-container *ngIf="showSearchDataError">
-							<app-alert type="danger" icon="dangerous">
-								{{ searchDataError }}
-							</app-alert>
-						</ng-container>
-
-						<div class="row no-print my-2">
-							<div class="col-12 text-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
-							</div>
-						</div>
-					</form>
-
-					<ng-container *ngIf="showSearchResults">
-						<div class="mb-3" *ngIf="searchResults.length > 0; else NoSearchResults">
-							<mat-divider class="my-3"></mat-divider>
-							<div class="text-minor-heading my-3">Search Results</div>
-
-							<div
-								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-								*ngFor="let licence of searchResults; let i = index"
-							>
-								<div class="row">
-									<div class="col-xl-2 col-lg-2">
-										<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-										<div class="fs-5" style="color: var(--color-primary);">
-											{{ licence.licenceNumber }}
-										</div>
-									</div>
-									<div class="col-xl-8 col-lg-8">
-										<div class="row">
-											<div class="col-xl-6 col-lg-6">
-												<div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
-												<div class="text-data fw-bold">{{ licence.bizLegalName }}</div>
-											</div>
-											<div class="col-xl-6 col-lg-6">
-												<div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
-												<div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
-											</div>
-											<div class="col-xl-12 col-lg-6">
-												<div class="d-block text-muted mt-2">Licence Type(s)</div>
-												<div class="text-data fw-bold">
-													<ul class="m-0">
-														<ng-container *ngFor="let category of licence.categoryCodes?.sort(); let i = index">
-															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xl-2 col-lg-2 text-end">
-										<mat-chip-option
-											[selectable]="false"
-											class="appl-chip-option"
-											[ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
-										>
-											<span class="appl-chip-option-item mx-2 fs-5">{{
-												getLicenceStatus(licence.licenceStatusCode)
-											}}</span>
-										</mat-chip-option>
-									</div>
-								</div>
-							</div>
-						</div>
-						<ng-template #NoSearchResults>
-							<div class="mt-3">
-								<app-alert type="danger" icon="dangerous"> No results match your search. </app-alert>
-							</div>
-						</ng-template>
-					</ng-container>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="row">
+		    <div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		      <div class="row">
+		        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
+		          <h2 class="fs-3">Verify a Security Business Licence</h2>
+		        </div>
+		
+		        <div class="col-xl-4 col-lg-4 col-md-12 no-print">
+		          <div class="d-flex justify-content-end">
+		            <button
+		              mat-stroked-button
+		              color="primary"
+		              class="large w-auto mb-3"
+		              aria-label="Back to main page"
+		              (click)="onBack()"
+		              >
+		              <mat-icon>arrow_back</mat-icon>Back
+		            </button>
+		          </div>
+		        </div>
+		
+		        <mat-divider class="mat-divider-main mb-4"></mat-divider>
+		
+		        <div class="col-12 mb-3">
+		          <app-alert type="info" icon="">
+		            Enter a security business <strong>licence number</strong> or at least the
+		            <strong>first three (3)</strong> letters of the name of a security business below. The results will
+		            display the Legal Business Name, the Trade Name, the Licence Number, the Licence Status (valid, not
+		            valid), and the Licence Type of any businesses matching the search criteria.
+		          </app-alert>
+		        </div>
+		      </div>
+		
+		      <form [formGroup]="form" novalidate>
+		        <div class="row mb-2">
+		          <div class="col-xl-5 col-lg-5 col-md-12">
+		            <mat-form-field>
+		              <mat-label>Business Licence Number</mat-label>
+		              <input
+		                matInput
+		                formControlName="businessLicenceNumber"
+		                oninput="this.value = this.value.toUpperCase()"
+		                placeholder="B123456"
+		                [errorStateMatcher]="matcher"
+		                maxlength="20"
+		                />
+		              </mat-form-field>
+		            </div>
+		
+		            <div class="col-xl-1 col-lg-1 col-md-12 text-center">
+		              <div class="text-minor-heading text-red my-3">OR</div>
+		            </div>
+		
+		            <div class="col-xl-6 col-lg-6 col-md-12">
+		              <mat-form-field>
+		                <mat-label>Business Name</mat-label>
+		                <input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
+		              </mat-form-field>
+		            </div>
+		          </div>
+		
+		          @if (showSearchDataError) {
+		            <app-alert type="danger" icon="dangerous">
+		              {{ searchDataError }}
+		            </app-alert>
+		          }
+		
+		          <div class="row no-print my-2">
+		            <div class="col-12 text-end">
+		              <button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
+		            </div>
+		          </div>
+		        </form>
+		
+		        @if (showSearchResults) {
+		          @if (searchResults.length > 0) {
+		            <div class="mb-3">
+		              <mat-divider class="my-3"></mat-divider>
+		              <div class="text-minor-heading my-3">Search Results</div>
+		              @for (licence of searchResults; track licence; let i = $index) {
+		                <div
+		                  class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
+		                  >
+		                  <div class="row">
+		                    <div class="col-xl-2 col-lg-2">
+		                      <div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+		                      <div class="fs-5" style="color: var(--color-primary);">
+		                        {{ licence.licenceNumber }}
+		                      </div>
+		                    </div>
+		                    <div class="col-xl-8 col-lg-8">
+		                      <div class="row">
+		                        <div class="col-xl-6 col-lg-6">
+		                          <div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
+		                          <div class="text-data fw-bold">{{ licence.bizLegalName }}</div>
+		                        </div>
+		                        <div class="col-xl-6 col-lg-6">
+		                          <div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
+		                          <div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
+		                        </div>
+		                        <div class="col-xl-12 col-lg-6">
+		                          <div class="d-block text-muted mt-2">Licence Type(s)</div>
+		                          <div class="text-data fw-bold">
+		                            <ul class="m-0">
+		                              @for (category of licence.categoryCodes?.sort(); track category; let i = $index) {
+		                                <li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+		                              }
+		                            </ul>
+		                          </div>
+		                        </div>
+		                      </div>
+		                    </div>
+		                    <div class="col-xl-2 col-lg-2 text-end">
+		                      <mat-chip-option
+		                        [selectable]="false"
+		                        class="appl-chip-option"
+		                        [ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
+		                        >
+		                        <span class="appl-chip-option-item mx-2 fs-5">{{
+		                          getLicenceStatus(licence.licenceStatusCode)
+		                        }}</span>
+		                      </mat-chip-option>
+		                    </div>
+		                  </div>
+		                </div>
+		              }
+		            </div>
+		          } @else {
+		            <div class="mt-3">
+		              <app-alert type="danger" icon="dangerous"> No results match your search. </app-alert>
+		            </div>
+		          }
+		        }
+		      </div>
+		    </div>
+		  </section>
+		`,
 	styles: [
 		`
 			.text-red {

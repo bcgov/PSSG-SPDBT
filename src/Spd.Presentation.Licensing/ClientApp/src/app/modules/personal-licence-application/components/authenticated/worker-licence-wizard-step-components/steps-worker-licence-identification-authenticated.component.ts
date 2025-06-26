@@ -10,54 +10,55 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 	selector: 'app-steps-worker-licence-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion">
-				<app-step-worker-licence-citizenship
-					[applicationTypeCode]="applicationTypeCode"
-					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
-					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
-				></app-step-worker-licence-citizenship>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
-					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-bc-driver-licence>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
-					(previousStepperStep)="onDriversLicenceStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-					(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-photograph-of-yourself
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-photograph-of-yourself>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHOTO)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_PHOTO)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO)"
-				></app-wizard-footer>
-			</mat-step>
+		  @if (showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion) {
+		    <mat-step>
+		      <app-step-worker-licence-citizenship
+		        [applicationTypeCode]="applicationTypeCode"
+		        [showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+		        [showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
+		      ></app-step-worker-licence-citizenship>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
+		        (previousStepperStep)="onStepPrevious()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+		        (nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-worker-licence-bc-driver-licence
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-bc-driver-licence>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+		      (previousStepperStep)="onDriversLicenceStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+		      (nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-photograph-of-yourself
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-photograph-of-yourself>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_PHOTO)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_PHOTO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_PHOTO)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

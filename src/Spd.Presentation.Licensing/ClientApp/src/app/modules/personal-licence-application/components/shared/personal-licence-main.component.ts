@@ -22,155 +22,161 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 @Component({
 	selector: 'app-personal-licence-main',
 	template: `
-		<section class="step-section" *ngIf="results$ | async">
-			<div class="row">
-				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row">
-						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
-							<h2 class="fs-3">Security Licences & Permits</h2>
-						</div>
-
-						<div class="col-xl-6 col-lg-4 col-md-12">
-							<div class="d-flex justify-content-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large w-auto mb-3"
-									(click)="onUserProfile()"
-									aria-label="Manage your user profile"
-								>
-									<mat-icon>person</mat-icon>
-									{{ yourProfileLabel }}
-								</button>
-							</div>
-						</div>
-					</div>
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-
-					<ng-container *ngFor="let msg of errorMessages; let i = index">
-						<app-alert type="danger" icon="dangerous">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
-
-					<ng-container *ngFor="let msg of warningMessages; let i = index">
-						<app-alert type="warning" icon="warning">
-							<div [innerHTML]="msg"></div>
-						</app-alert>
-					</ng-container>
-
-					<app-personal-licence-main-applications-list
-						[applicationsDataSource]="applicationsDataSource"
-						[applicationIsInProgress]="applicationIsInProgress"
-						(resumeApplication)="onResume($event)"
-						(payApplication)="onPay($event)"
-						(cancelApplication)="onDelete($event)"
-					></app-personal-licence-main-applications-list>
-
-					<app-personal-licence-main-licence-list
-						[activeLicences]="activeLicencesList"
-						[applicationIsInProgress]="applicationIsInProgress"
-						(replaceLicence)="onReplace($event)"
-						(updateLicence)="onUpdate($event)"
-						(renewLicence)="onRenew($event)"
-					></app-personal-licence-main-licence-list>
-
-					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeSwlExist">
-						<div class="row">
-							<div class="col-xl-7 col-lg-6">
-								<div class="text-data">You don't have an active Security Worker licence</div>
-							</div>
-							<div class="col-xl-5 col-lg-6 text-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewSecurityWorkerLicence()"
-									*ngIf="!applicationIsInProgress"
-									aria-label="Apply for a new Security Worker Licence"
-								>
-									<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
-								</button>
-							</div>
-							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-								<app-alert type="info" icon="info">
-									A Security Worker Licence cannot be created while an application is in progress.
-								</app-alert>
-							</div>
-						</div>
-					</div>
-
-					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitExist">
-						<div class="row">
-							<div class="col-xl-7 col-lg-6">
-								<div class="text-data">You don't have an active Body Armour permit</div>
-							</div>
-							<div class="col-xl-5 col-lg-6 text-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewBodyArmourPermit()"
-									*ngIf="!applicationIsInProgress"
-									aria-label="Apply for a new Body Armour Permit"
-								>
-									<mat-icon>add</mat-icon>Apply for a New Body Armour Permit
-								</button>
-							</div>
-							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-								<app-alert type="info" icon="info">
-									A Body Armour Permit cannot be created while an application is in progress.
-								</app-alert>
-							</div>
-						</div>
-					</div>
-
-					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitExist">
-						<div class="row">
-							<div class="col-xl-7 col-lg-6">
-								<div class="text-data">You don't have an active Armoured Vehicle permit</div>
-							</div>
-							<div class="col-xl-5 col-lg-6 text-end">
-								<button
-									mat-flat-button
-									color="primary"
-									class="large mt-2 mt-lg-0"
-									(click)="onNewArmouredVehiclePermit()"
-									*ngIf="!applicationIsInProgress"
-									aria-label="Apply for a new Armoured Vehicle Permit"
-								>
-									<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
-								</button>
-							</div>
-							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-								<app-alert type="info" icon="info">
-									An Armoured Vehicle Permit cannot be created while an application is in progress.
-								</app-alert>
-							</div>
-						</div>
-					</div>
-
-					<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
-
-					<div class="mt-4">
-						<app-alert type="info" icon="info">
-							Do you have a security licence, body armour permit, or armoured vehicle permit that isn’t displayed here?
-
-							<a
-								class="fw-normal"
-								tabindex="0"
-								aria-label="Link a current or expired licence or permit to your account"
-								(click)="onConnectToExpiredLicence()"
-								(keydown)="onKeydownConnectToExpiredLicence($event)"
-								>Link a current or expired licence or permit</a
-							>
-							to your account.
-						</app-alert>
-					</div>
-				</div>
-			</div>
-		</section>
-	`,
+		@if (results$ | async) {
+		  <section class="step-section">
+		    <div class="row">
+		      <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		        <div class="row">
+		          <div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+		            <h2 class="fs-3">Security Licences & Permits</h2>
+		          </div>
+		          <div class="col-xl-6 col-lg-4 col-md-12">
+		            <div class="d-flex justify-content-end">
+		              <button
+		                mat-flat-button
+		                color="primary"
+		                class="large w-auto mb-3"
+		                (click)="onUserProfile()"
+		                aria-label="Manage your user profile"
+		                >
+		                <mat-icon>person</mat-icon>
+		                {{ yourProfileLabel }}
+		              </button>
+		            </div>
+		          </div>
+		        </div>
+		        <mat-divider class="mat-divider-main mb-3"></mat-divider>
+		        @for (msg of errorMessages; track msg; let i = $index) {
+		          <app-alert type="danger" icon="dangerous">
+		            <div [innerHTML]="msg"></div>
+		          </app-alert>
+		        }
+		        @for (msg of warningMessages; track msg; let i = $index) {
+		          <app-alert type="warning" icon="warning">
+		            <div [innerHTML]="msg"></div>
+		          </app-alert>
+		        }
+		        <app-personal-licence-main-applications-list
+		          [applicationsDataSource]="applicationsDataSource"
+		          [applicationIsInProgress]="applicationIsInProgress"
+		          (resumeApplication)="onResume($event)"
+		          (payApplication)="onPay($event)"
+		          (cancelApplication)="onDelete($event)"
+		        ></app-personal-licence-main-applications-list>
+		        <app-personal-licence-main-licence-list
+		          [activeLicences]="activeLicencesList"
+		          [applicationIsInProgress]="applicationIsInProgress"
+		          (replaceLicence)="onReplace($event)"
+		          (updateLicence)="onUpdate($event)"
+		          (renewLicence)="onRenew($event)"
+		        ></app-personal-licence-main-licence-list>
+		        @if (!activeSwlExist) {
+		          <div class="summary-card-section mb-3 px-4 py-3">
+		            <div class="row">
+		              <div class="col-xl-7 col-lg-6">
+		                <div class="text-data">You don't have an active Security Worker licence</div>
+		              </div>
+		              <div class="col-xl-5 col-lg-6 text-end">
+		                @if (!applicationIsInProgress) {
+		                  <button
+		                    mat-flat-button
+		                    color="primary"
+		                    class="large mt-2 mt-lg-0"
+		                    (click)="onNewSecurityWorkerLicence()"
+		                    aria-label="Apply for a new Security Worker Licence"
+		                    >
+		                    <mat-icon>add</mat-icon>Apply for a New Security Worker Licence
+		                  </button>
+		                }
+		              </div>
+		              @if (applicationIsInProgress) {
+		                <div class="col-12 mt-3">
+		                  <app-alert type="info" icon="info">
+		                    A Security Worker Licence cannot be created while an application is in progress.
+		                  </app-alert>
+		                </div>
+		              }
+		            </div>
+		          </div>
+		        }
+		        @if (!activeBaPermitExist) {
+		          <div class="summary-card-section mb-3 px-4 py-3">
+		            <div class="row">
+		              <div class="col-xl-7 col-lg-6">
+		                <div class="text-data">You don't have an active Body Armour permit</div>
+		              </div>
+		              <div class="col-xl-5 col-lg-6 text-end">
+		                @if (!applicationIsInProgress) {
+		                  <button
+		                    mat-flat-button
+		                    color="primary"
+		                    class="large mt-2 mt-lg-0"
+		                    (click)="onNewBodyArmourPermit()"
+		                    aria-label="Apply for a new Body Armour Permit"
+		                    >
+		                    <mat-icon>add</mat-icon>Apply for a New Body Armour Permit
+		                  </button>
+		                }
+		              </div>
+		              @if (applicationIsInProgress) {
+		                <div class="col-12 mt-3">
+		                  <app-alert type="info" icon="info">
+		                    A Body Armour Permit cannot be created while an application is in progress.
+		                  </app-alert>
+		                </div>
+		              }
+		            </div>
+		          </div>
+		        }
+		        @if (!activeAvPermitExist) {
+		          <div class="summary-card-section mb-3 px-4 py-3">
+		            <div class="row">
+		              <div class="col-xl-7 col-lg-6">
+		                <div class="text-data">You don't have an active Armoured Vehicle permit</div>
+		              </div>
+		              <div class="col-xl-5 col-lg-6 text-end">
+		                @if (!applicationIsInProgress) {
+		                  <button
+		                    mat-flat-button
+		                    color="primary"
+		                    class="large mt-2 mt-lg-0"
+		                    (click)="onNewArmouredVehiclePermit()"
+		                    aria-label="Apply for a new Armoured Vehicle Permit"
+		                    >
+		                    <mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
+		                  </button>
+		                }
+		              </div>
+		              @if (applicationIsInProgress) {
+		                <div class="col-12 mt-3">
+		                  <app-alert type="info" icon="info">
+		                    An Armoured Vehicle Permit cannot be created while an application is in progress.
+		                  </app-alert>
+		                </div>
+		              }
+		            </div>
+		          </div>
+		        }
+		        <app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
+		        <div class="mt-4">
+		          <app-alert type="info" icon="info">
+		            Do you have a security licence, body armour permit, or armoured vehicle permit that isn’t displayed here?
+		            <a
+		              class="fw-normal"
+		              tabindex="0"
+		              aria-label="Link a current or expired licence or permit to your account"
+		              (click)="onConnectToExpiredLicence()"
+		              (keydown)="onKeydownConnectToExpiredLicence($event)"
+		              >Link a current or expired licence or permit</a
+		              >
+		              to your account.
+		            </app-alert>
+		          </div>
+		        </div>
+		      </div>
+		    </section>
+		  }
+		`,
 	styles: [],
 	standalone: false,
 })

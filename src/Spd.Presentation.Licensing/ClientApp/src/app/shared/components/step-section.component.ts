@@ -5,22 +5,22 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 	selector: 'app-step-section',
 	template: `
 		<section class="step-section">
-			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-form-alert-update-or-renewal [serviceTypeCode]="serviceTypeCode"></app-form-alert-update-or-renewal>
-				</ng-container>
-
-				<app-step-title
-					[heading]="heading"
-					[subheading]="subheading"
-					[info]="info"
-					[showDivider]="showDivider"
-				></app-step-title>
-
-				<ng-content></ng-content>
-			</div>
+		  <div class="step">
+		    @if (isRenewalOrUpdate) {
+		      <app-form-alert-update-or-renewal [serviceTypeCode]="serviceTypeCode"></app-form-alert-update-or-renewal>
+		    }
+		
+		    <app-step-title
+		      [heading]="heading"
+		      [subheading]="subheading"
+		      [info]="info"
+		      [showDivider]="showDivider"
+		    ></app-step-title>
+		
+		    <ng-content></ng-content>
+		  </div>
 		</section>
-	`,
+		`,
 	styles: [
 		`
 			.title {

@@ -9,17 +9,16 @@ import { CommonSwlPermitTermsUpdateReplaceComponent } from '../../shared/common-
 	selector: 'app-step-permit-terms-of-use',
 	template: `
 		<app-step-section
-			heading="Terms and Conditions"
-			subheading="Read, download, and accept the Terms of Use to continue"
-		>
-			<ng-container *ngIf="isNewOrRenewal; else isUpdate">
-				<app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
-			</ng-container>
-			<ng-template #isUpdate>
-				<app-common-swl-permit-terms-update-replace [form]="form"></app-common-swl-permit-terms-update-replace>
-			</ng-template>
+		  heading="Terms and Conditions"
+		  subheading="Read, download, and accept the Terms of Use to continue"
+		  >
+		  @if (isNewOrRenewal) {
+		    <app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
+		  } @else {
+		    <app-common-swl-permit-terms-update-replace [form]="form"></app-common-swl-permit-terms-update-replace>
+		  }
 		</app-step-section>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })
