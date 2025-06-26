@@ -138,14 +138,31 @@ The application can be accessed using the links below:
 
 ## Configuration
 
-Most communications are handled through the BC Parks Service Transformation Microsoft Teams instance. Please reach out to your Project Manager for access.
+- For Screening, Licensing and GDSD portal, we support Maintenance Mode.
+  Set MaintenanceMode to true, then user only see maintenance page.
+
+```
+ "MaintenanceMode": false,
+```
+
+- For licensing, we support one bceid has multiple business accounts. So for licensing prod, we need to set
+
+```
+"OneOrgGuidHasOneBizLicencePortal": true,
+```
 
 ## Additional Documentation
 
-Coming soon.
+Please refer to [SPD Business Transformation Project](https://wiki.justice.gov.bc.ca/wiki/spaces/SPDBT/overview) for requirements, project milestones and technical design.
 
 ## Deployment
 
-For deployment and content sync information, contact [Leah Wilcock](mailto:Leah.Wilcock@gov.bc.ca), Manager of Information Services.
+For deployment and content sync information, contact [James Bradbury](mailto:james.bradbury@gov.bc.ca)
 
-# PSSG-SPDBT
+## Contributing
+
+Contributions are welcome! Please fork the repo and submit a pull request.
+
+## Credits
+
+Thanks to all contributors ( Carol Carpenter, Peggy Zhang, and Yossi Tamari etc.) and third-party libraries.
