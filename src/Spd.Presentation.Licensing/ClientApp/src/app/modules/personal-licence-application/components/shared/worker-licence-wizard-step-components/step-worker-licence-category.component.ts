@@ -12,8 +12,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	selector: 'app-step-worker-licence-category',
 	template: `
 		<app-step-section
-			[title]="title"
-			[subtitle]="infoTitle"
+			[heading]="title"
+			[subheading]="infoTitle"
 			[isRenewalOrUpdate]="isRenewalOrUpdate"
 			[serviceTypeCode]="securityWorkerLicenceCode"
 			[applicationTypeCode]="applicationTypeCode"

@@ -8,7 +8,7 @@ import { FormPhotographOfYourselfComponent } from '@app/shared/components/form-p
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-new',
 	template: `
-		<app-step-section title="Upload a photo of yourself">
+		<app-step-section heading="Upload a photo of yourself">
 			<app-form-photograph-of-yourself
 				[serviceTypeCode]="securityWorkerLicenceCode"
 				[form]="form"

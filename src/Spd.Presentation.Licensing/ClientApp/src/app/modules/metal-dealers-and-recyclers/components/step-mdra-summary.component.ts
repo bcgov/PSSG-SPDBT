@@ -9,8 +9,8 @@ import { FormMdraBranchesComponent } from './form-mdra-branches.component';
 	selector: 'app-step-mdra-summary',
 	template: `
 		<app-step-section
-			title="Registration summary"
-			subtitle="Review your information before submitting your application"
+			heading="Registration summary"
+			subheading="Review your information before submitting your application"
 			*ngIf="metalDealersModelData"
 		>
 			<div class="row">

@@ -8,7 +8,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-criminal-history',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-common-criminal-history
 				[form]="form"
 				[applicationTypeCode]="applicationTypeCode"

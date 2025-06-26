@@ -7,7 +7,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-review-name-change',
 	template: `
-		<app-step-section title="Review your updated name">
+		<app-step-section heading="Review your updated name">
 			<div class="row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 					<app-alert type="info" icon="info"> Your licence will be updated with your new name.</app-alert>

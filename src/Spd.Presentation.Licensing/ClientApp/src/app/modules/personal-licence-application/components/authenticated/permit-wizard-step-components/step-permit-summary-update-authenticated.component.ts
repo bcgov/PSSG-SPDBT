@@ -7,7 +7,10 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 @Component({
 	selector: 'app-step-permit-summary-update-authenticated',
 	template: `
-		<app-step-section title="Application summary" subtitle="Review your information before submitting your application">
+		<app-step-section
+			heading="Application summary"
+			subheading="Review your information before submitting your application"
+		>
 			<div class="row">
 				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-accordion multi="true">
