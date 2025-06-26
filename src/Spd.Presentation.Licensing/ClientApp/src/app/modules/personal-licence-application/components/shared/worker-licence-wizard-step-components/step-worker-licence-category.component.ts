@@ -12,431 +12,428 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	selector: 'app-step-worker-licence-category',
 	template: `
 		<app-step-section
-		  [heading]="title"
-		  [subheading]="infoTitle"
-		  [isRenewalOrUpdate]="isRenewalOrUpdate"
-		  [serviceTypeCode]="securityWorkerLicenceCode"
-		  [applicationTypeCode]="applicationTypeCode"
-		  >
-		  <form [formGroup]="form" novalidate>
-		    <div class="row">
-		      <div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-		        <div class="row">
-		          <div class="col-12 mb-3">
-		            <app-alert type="info" icon="info">
-		              Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
-		              categories.
-		            </app-alert>
-		          </div>
-		
-		          <div class="col-md-8 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Category</mat-label>
-		              <mat-select formControlName="categoryCode">
-		                @for (item of validCategoryList; track item; let i = $index) {
-		                  <mat-option [value]="item.code">
-		                    {{ item.desc }}
-		                  </mat-option>
-		                }
-		              </mat-select>
-		            </mat-form-field>
-		            @if (isCategoryListEmpty) {
-		              <mat-error class="mat-option-error">
-		                At least one category must be added. Click 'Add Category' after selecting a category.
-		              </mat-error>
-		            }
-		          </div>
-		          @if (categoryList.length < 6) {
-		            <div class="col-md-4 col-sm-12">
-		              <button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
-		                Add Category
-		              </button>
-		            </div>
-		          }
-		          @if (categoryList.length >= 6) {
-		            <div class="col-md-4 col-sm-12">
-		              <app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
-		            </div>
-		          }
-		        </div>
-		      </div>
-		    </div>
-		
-		    <div class="row">
-		      <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <mat-accordion multi="false">
-		          @if (showArmouredCarGuard) {
-		            <div class="row">
-		              <div class="col-12">
-		                <mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
-		                  <mat-expansion-panel-header>
-		                    <mat-panel-title>
-		                      @if (
-		                        categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
-		                        ) {
-		                        <mat-icon
-		                          class="error-icon"
-		                          color="warn"
-		                          matTooltip="One or more errors exist in this category"
-		                          >error</mat-icon
-		                          >
-		                        }
-		                        {{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
-		                      </mat-panel-title>
-		                    </mat-expansion-panel-header>
-		                    <div class="row my-3">
-		                      <div class="col-12 mx-auto">
-		                        <button
-		                          mat-stroked-button
-		                          class="xlarge w-auto float-end"
-		                          aria-label="Remove category"
-		                          (click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
-		                          >
-		                          <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                        </button>
-		                      </div>
-		                    </div>
-		                    <app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
-		                  </mat-expansion-panel>
-		                </div>
-		              </div>
-		            }
-		
-		            @if (showBodyArmourSales) {
-		              <app-form-licence-category-panel-simple
-		                [categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
-		                [expandCategory]="expandBodyArmourSales"
-		                (removeCategory)="onRemove($event)"
-		              ></app-form-licence-category-panel-simple>
-		            }
-		
-		            @if (showClosedCircuitTelevisionInstaller) {
-		              <app-form-licence-category-panel-simple
-		                [categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
-		                [expandCategory]="expandClosedCircuitTelevisionInstaller"
-		                (removeCategory)="onRemove($event)"
-		              ></app-form-licence-category-panel-simple>
-		            }
-		
-		            @if (showElectronicLockingDeviceInstaller) {
-		              <app-form-licence-category-panel-simple
-		                [categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
-		                [expandCategory]="expandElectronicLockingDeviceInstaller"
-		                (removeCategory)="onRemove($event)"
-		              ></app-form-licence-category-panel-simple>
-		            }
-		
-		            @if (showFireInvestigator) {
-		              <div class="row">
-		                <div class="col-12">
-		                  <mat-expansion-panel class="my-3 w-100" [expanded]="expandFireInvestigator">
-		                    <mat-expansion-panel-header>
-		                      <mat-panel-title>
-		                        @if (
-		                          categoryFireInvestigatorFormGroup?.touched && categoryFireInvestigatorFormGroup?.invalid
-		                          ) {
-		                          <mat-icon
-		                            class="error-icon"
-		                            color="warn"
-		                            matTooltip="One or more errors exist in this category"
-		                            >error</mat-icon
-		                            >
-		                          }
-		                          {{ workerCategoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }}
-		                        </mat-panel-title>
-		                      </mat-expansion-panel-header>
-		                      <div class="row my-3">
-		                        <div class="col-12 mx-auto">
-		                          <button
-		                            mat-stroked-button
-		                            class="xlarge w-auto float-end"
-		                            aria-label="Remove category"
-		                            (click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
-		                            >
-		                            <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                          </button>
-		                        </div>
-		                      </div>
-		                      <app-licence-category-fire-investigator></app-licence-category-fire-investigator>
-		                    </mat-expansion-panel>
-		                  </div>
-		                </div>
-		              }
-		
-		              @if (showLocksmith) {
-		                <div class="row">
-		                  <div class="col-12">
-		                    <mat-expansion-panel class="my-3 w-100" [expanded]="expandLocksmith">
-		                      <mat-expansion-panel-header>
-		                        <mat-panel-title>
-		                          @if (categoryLocksmithFormGroup?.touched && categoryLocksmithFormGroup?.invalid) {
-		                            <mat-icon
-		                              class="error-icon"
-		                              color="warn"
-		                              matTooltip="One or more errors exist in this category"
-		                              >error</mat-icon
-		                              >
-		                            }
-		                            {{ workerCategoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }}
-		                          </mat-panel-title>
-		                        </mat-expansion-panel-header>
-		                        <div class="row my-3">
-		                          <div class="col-12 mx-auto">
-		                            <button
-		                              mat-stroked-button
-		                              class="xlarge w-auto float-end"
-		                              aria-label="Remove category"
-		                              (click)="onRemove(workerCategoryTypeCodes.Locksmith)"
-		                              >
-		                              <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                            </button>
-		                          </div>
-		                        </div>
-		                        <app-licence-category-locksmith></app-licence-category-locksmith>
-		                      </mat-expansion-panel>
-		                    </div>
-		                  </div>
-		                }
-		
-		                @if (showLocksmithUnderSupervision) {
-		                  <app-form-licence-category-panel-simple
-		                    [categoryTypeCode]="workerCategoryTypeCodes.LocksmithUnderSupervision"
-		                    [expandCategory]="expandLocksmithUnderSupervision"
-		                    (removeCategory)="onRemove($event)"
-		                  ></app-form-licence-category-panel-simple>
-		                }
-		
-		                @if (showPrivateInvestigator) {
-		                  <div class="row">
-		                    <div class="col-12">
-		                      <mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
-		                        <mat-expansion-panel-header>
-		                          <mat-panel-title>
-		                            @if (
-		                              categoryPrivateInvestigatorFormGroup?.touched &&
-		                              categoryPrivateInvestigatorFormGroup?.invalid
-		                              ) {
-		                              <mat-icon
-		                                class="error-icon"
-		                                color="warn"
-		                                matTooltip="One or more errors exist in this category"
-		                                >error</mat-icon
-		                                >
-		                                }{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
-		                              </mat-panel-title>
-		                            </mat-expansion-panel-header>
-		                            <div class="row my-3">
-		                              <div class="col-12 mx-auto">
-		                                <button
-		                                  mat-stroked-button
-		                                  class="xlarge w-auto float-end"
-		                                  aria-label="Remove category"
-		                                  (click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
-		                                  >
-		                                  <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                </button>
-		                              </div>
-		                            </div>
-		                            <app-licence-category-private-investigator></app-licence-category-private-investigator>
-		                          </mat-expansion-panel>
-		                        </div>
-		                      </div>
-		                    }
-		
-		                    @if (showPrivateInvestigatorUnderSupervision) {
-		                      <div class="row">
-		                        <div class="col-12">
-		                          <mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigatorUnderSupervision">
-		                            <mat-expansion-panel-header>
-		                              <mat-panel-title>
-		                                @if (
-		                                  categoryPrivateInvestigatorSupFormGroup?.touched &&
-		                                  categoryPrivateInvestigatorSupFormGroup?.invalid
-		                                  ) {
-		                                  <mat-icon
-		                                    class="error-icon"
-		                                    color="warn"
-		                                    matTooltip="One or more errors exist in this category"
-		                                    >error</mat-icon
-		                                    >
-		                                  }
-		                                  {{
-		                                  workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes'
-		                                  }}
-		                                </mat-panel-title>
-		                              </mat-expansion-panel-header>
-		                              <div class="row my-3">
-		                                <div class="col-12 mx-auto">
-		                                  <button
-		                                    mat-stroked-button
-		                                    class="xlarge w-auto float-end"
-		                                    aria-label="Remove category"
-		                                    (click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
-		                                    >
-		                                    <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                  </button>
-		                                </div>
-		                              </div>
-		                              <app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
-		                            </mat-expansion-panel>
-		                          </div>
-		                        </div>
-		                      }
-		
-		                      @if (showSecurityAlarmInstaller) {
-		                        <div class="row">
-		                          <div class="col-12">
-		                            <mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityAlarmInstaller">
-		                              <mat-expansion-panel-header>
-		                                <mat-panel-title>
-		                                  @if (
-		                                    categorySecurityAlarmInstallerFormGroup?.touched &&
-		                                    categorySecurityAlarmInstallerFormGroup?.invalid
-		                                    ) {
-		                                    <mat-icon
-		                                      class="error-icon"
-		                                      color="warn"
-		                                      matTooltip="One or more errors exist in this category"
-		                                      >error</mat-icon
-		                                      >
-		                                    }
-		                                    {{ workerCategoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
-		                                  </mat-panel-title>
-		                                </mat-expansion-panel-header>
-		                                <div class="row my-3">
-		                                  <div class="col-12 mx-auto">
-		                                    <button
-		                                      mat-stroked-button
-		                                      class="xlarge w-auto float-end"
-		                                      aria-label="Remove category"
-		                                      (click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
-		                                      >
-		                                      <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                    </button>
-		                                  </div>
-		                                </div>
-		                                <app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
-		                              </mat-expansion-panel>
-		                            </div>
-		                          </div>
-		                        }
-		
-		                        @if (showSecurityAlarmInstallerUnderSupervision) {
-		                          <app-form-licence-category-panel-simple
-		                            [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision"
-		                            [expandCategory]="expandSecurityAlarmInstallerUnderSupervision"
-		                            (removeCategory)="onRemove($event)"
-		                          ></app-form-licence-category-panel-simple>
-		                        }
-		
-		                        @if (showSecurityAlarmMonitor) {
-		                          <app-form-licence-category-panel-simple
-		                            [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
-		                            [expandCategory]="expandSecurityAlarmMonitor"
-		                            (removeCategory)="onRemove($event)"
-		                          ></app-form-licence-category-panel-simple>
-		                        }
-		
-		                        @if (showSecurityAlarmResponse) {
-		                          <app-form-licence-category-panel-simple
-		                            [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
-		                            [expandCategory]="expandSecurityAlarmResponse"
-		                            (removeCategory)="onRemove($event)"
-		                          ></app-form-licence-category-panel-simple>
-		                        }
-		
-		                        @if (showSecurityAlarmSales) {
-		                          <app-form-licence-category-panel-simple
-		                            [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
-		                            [expandCategory]="expandSecurityAlarmSales"
-		                            (removeCategory)="onRemove($event)"
-		                          ></app-form-licence-category-panel-simple>
-		                        }
-		
-		                        @if (showSecurityConsultant) {
-		                          <div class="row">
-		                            <div class="col-12">
-		                              <mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityConsultant">
-		                                <mat-expansion-panel-header>
-		                                  <mat-panel-title>
-		                                    @if (
-		                                      categorySecurityConsultantFormGroup?.touched &&
-		                                      categorySecurityConsultantFormGroup?.invalid
-		                                      ) {
-		                                      <mat-icon
-		                                        class="error-icon"
-		                                        color="warn"
-		                                        matTooltip="One or more errors exist in this category"
-		                                        >error</mat-icon
-		                                        >
-		                                        }{{ workerCategoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }}
-		                                      </mat-panel-title>
-		                                    </mat-expansion-panel-header>
-		                                    <div class="row my-3">
-		                                      <div class="col-12 mx-auto">
-		                                        <button
-		                                          mat-stroked-button
-		                                          class="xlarge w-auto float-end"
-		                                          aria-label="Remove category"
-		                                          (click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
-		                                          >
-		                                          <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                        </button>
-		                                      </div>
-		                                    </div>
-		                                    <app-licence-category-security-consultant></app-licence-category-security-consultant>
-		                                  </mat-expansion-panel>
-		                                </div>
-		                              </div>
-		                            }
-		
-		                            @if (showSecurityGuard) {
-		                              <div class="row">
-		                                <div class="col-12">
-		                                  <mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
-		                                    <mat-expansion-panel-header>
-		                                      <mat-panel-title>
-		                                        @if (categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid) {
-		                                          <mat-icon
-		                                            class="error-icon"
-		                                            color="warn"
-		                                            matTooltip="One or more errors exist in this category"
-		                                            >error</mat-icon
-		                                            >
-		                                            }{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
-		                                          </mat-panel-title>
-		                                        </mat-expansion-panel-header>
-		                                        <div class="row my-3">
-		                                          <div class="col-12 mx-auto">
-		                                            <button
-		                                              mat-stroked-button
-		                                              class="xlarge w-auto float-end"
-		                                              aria-label="Remove category"
-		                                              (click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
-		                                              >
-		                                              <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                            </button>
-		                                          </div>
-		                                        </div>
-		                                        <app-licence-category-security-guard></app-licence-category-security-guard>
-		                                      </mat-expansion-panel>
-		                                    </div>
-		                                  </div>
-		                                }
-		
-		                                @if (showSecurityGuardUnderSupervision) {
-		                                  <app-form-licence-category-panel-simple
-		                                    [categoryTypeCode]="workerCategoryTypeCodes.SecurityGuardUnderSupervision"
-		                                    [expandCategory]="expandSecurityGuardUnderSupervision"
-		                                    (removeCategory)="onRemove($event)"
-		                                  ></app-form-licence-category-panel-simple>
-		                                }
-		                              </mat-accordion>
-		                            </div>
-		                          </div>
-		                        </form>
-		                      </app-step-section>
-		`,
+			[heading]="title"
+			[subheading]="infoTitle"
+			[isRenewalOrUpdate]="isRenewalOrUpdate"
+			[serviceTypeCode]="securityWorkerLicenceCode"
+			[applicationTypeCode]="applicationTypeCode"
+		>
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+						<div class="row">
+							<div class="col-12 mb-3">
+								<app-alert type="info" icon="info">
+									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
+									categories.
+								</app-alert>
+							</div>
+
+							<div class="col-md-8 col-sm-12">
+								<mat-form-field>
+									<mat-label>Category</mat-label>
+									<mat-select formControlName="categoryCode">
+										@for (item of validCategoryList; track item; let i = $index) {
+											<mat-option [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										}
+									</mat-select>
+								</mat-form-field>
+								@if (isCategoryListEmpty) {
+									<mat-error class="mat-option-error">
+										At least one category must be added. Click 'Add Category' after selecting a category.
+									</mat-error>
+								}
+							</div>
+							@if (categoryList.length < 6) {
+								<div class="col-md-4 col-sm-12">
+									<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+										Add Category
+									</button>
+								</div>
+							}
+							@if (categoryList.length >= 6) {
+								<div class="col-md-4 col-sm-12">
+									<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<mat-accordion multi="false">
+							@if (showArmouredCarGuard) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categoryArmouredCarGuardFormGroup.touched && categoryArmouredCarGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showBodyArmourSales) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
+									[expandCategory]="expandBodyArmourSales"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showClosedCircuitTelevisionInstaller) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
+									[expandCategory]="expandClosedCircuitTelevisionInstaller"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showElectronicLockingDeviceInstaller) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
+									[expandCategory]="expandElectronicLockingDeviceInstaller"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showFireInvestigator) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandFireInvestigator">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categoryFireInvestigatorFormGroup.touched && categoryFireInvestigatorFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showLocksmith) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandLocksmith">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categoryLocksmithFormGroup.touched && categoryLocksmithFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-locksmith></app-licence-category-locksmith>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showLocksmithUnderSupervision) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.LocksmithUnderSupervision"
+									[expandCategory]="expandLocksmithUnderSupervision"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showPrivateInvestigator) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (
+														categoryPrivateInvestigatorFormGroup.touched && categoryPrivateInvestigatorFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-private-investigator></app-licence-category-private-investigator>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showPrivateInvestigatorUnderSupervision) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigatorUnderSupervision">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (
+														categoryPrivateInvestigatorSupFormGroup.touched &&
+														categoryPrivateInvestigatorSupFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{
+														workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes'
+													}}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showSecurityAlarmInstaller) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityAlarmInstaller">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (
+														categorySecurityAlarmInstallerFormGroup.touched &&
+														categorySecurityAlarmInstallerFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showSecurityAlarmInstallerUnderSupervision) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision"
+									[expandCategory]="expandSecurityAlarmInstallerUnderSupervision"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmMonitor) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
+									[expandCategory]="expandSecurityAlarmMonitor"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmResponse) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
+									[expandCategory]="expandSecurityAlarmResponse"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmSales) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
+									[expandCategory]="expandSecurityAlarmSales"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityConsultant) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityConsultant">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (
+														categorySecurityConsultantFormGroup.touched && categorySecurityConsultantFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-security-consultant></app-licence-category-security-consultant>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showSecurityGuard) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categorySecurityGuardFormGroup.touched && categorySecurityGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-licence-category-security-guard></app-licence-category-security-guard>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showSecurityGuardUnderSupervision) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityGuardUnderSupervision"
+									[expandCategory]="expandSecurityGuardUnderSupervision"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+						</mat-accordion>
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [
 		`
 			.title {
