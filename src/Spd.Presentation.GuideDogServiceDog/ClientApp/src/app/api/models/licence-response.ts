@@ -26,6 +26,7 @@ export interface LicenceResponse {
   employerPrimaryAddress?: Address;
   expiryDate?: string;
   gdsdTeamId?: string | null;
+  isDogTrainedByAccreditedSchool?: boolean | null;
   isDogsPurposeDetectionDrugs?: boolean;
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;
@@ -46,6 +47,7 @@ export interface LicenceResponse {
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;
   serviceTypeCode?: ServiceTypeCode;
+  showSecurityGuardAST?: boolean | null;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;
