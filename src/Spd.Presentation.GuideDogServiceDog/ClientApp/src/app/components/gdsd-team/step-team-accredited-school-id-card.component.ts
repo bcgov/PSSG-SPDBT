@@ -12,7 +12,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="text-minor-heading mb-2">
-							Upload a copy of your valid identification card from the accredited school
+							Upload a copy of your valid identification card from the accredited school or a letter from the accredited
+							school identifying the individual and dog as an active working team
 						</div>
 						<app-file-upload
 							(fileUploaded)="onFileUploaded($event)"
