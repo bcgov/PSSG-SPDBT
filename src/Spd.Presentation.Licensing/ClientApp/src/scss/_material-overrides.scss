@@ -1,6 +1,6 @@
 button.mdc-button {
 	width: 100%;
-	letter-spacing: var(--mdc-typography-button-letter-spacing, 0.02em);
+	letter-spacing: var(--mat-typography-button-letter-spacing, 0.02em);
 
 	&.xlarge {
 		height: 60px;
@@ -14,7 +14,7 @@ button.mdc-button {
 
 	&.bordered {
 		border: 1px solid;
-		border-color: var(--mdc-outlined-button-outline-color, rgba(0, 0, 0, 0.12));
+		border-color: var(--mat-button-outlined-outline-color, rgba(0, 0, 0, 0.12));
 	}
 
 	&.medium {
@@ -181,7 +181,7 @@ button.mat-red-button {
 
 .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label,
 .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label--float-above {
-	color: var(--mdc-filled-text-field-error-label-text-color) !important;
+	color: var(--mat-form-field-filled-error-label-text-color) !important;
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label,
