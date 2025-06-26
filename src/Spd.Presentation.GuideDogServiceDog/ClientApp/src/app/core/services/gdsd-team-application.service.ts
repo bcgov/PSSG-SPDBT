@@ -911,6 +911,12 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 			updateAttachments: [],
 		};
 
+		const dogCertificationSelectionData = {
+			isDogTrainedByAccreditedSchool: this.utilService.booleanToBooleanType(
+				associatedLicence.isDogTrainedByAccreditedSchool
+			),
+		};
+
 		this.gdsdTeamModelFormGroup.patchValue(
 			{
 				applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
@@ -922,6 +928,7 @@ export class GdsdTeamApplicationService extends GdsdTeamApplicationHelper {
 				personalInformationData,
 				photographOfYourselfData,
 				dogInfoData,
+				dogCertificationSelectionData,
 			},
 			{
 				emitEvent: false,

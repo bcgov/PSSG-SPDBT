@@ -19,6 +19,6 @@ namespace Spd.Resource.Repository.DogTeam
         public string? DogColorAndMarkings { get; set; }
         public GenderEnum? DogGender { get; set; }
         public string? MicrochipNumber { get; set; }
-        public bool? DogTrainedByAccreditedSchool { get; set; }
+        public bool? IsDogTrainedByAccreditedSchool { get; set; }
     }
 }

@@ -7,7 +7,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-team-accredited-school-id-card',
 	template: `
-		<app-step-section heading="Accredited School ID Card">
+		<app-step-section heading="Accredited School Identification Card">
 			<form [formGroup]="form" novalidate>
 				<div class="row my-2">
 					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">

@@ -147,7 +147,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 								<ng-container *ngIf="!isNew && isTrainedByAccreditedSchool">
 									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<div class="text-minor-heading-small">Accredited School ID Card</div>
+									<div class="text-minor-heading-small">Accredited School Identification Card</div>
 									<div class="row mt-0">
 										<div class="col-lg-6 col-md-12">
 											<div class="summary-text-data">

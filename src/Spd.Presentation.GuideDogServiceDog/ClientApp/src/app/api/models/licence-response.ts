@@ -22,11 +22,11 @@ export interface LicenceResponse {
   dogDocumentInfos?: Array<Document> | null;
   dogId?: string | null;
   dogInfo?: DogInfo;
-  dogTrainedByAccreditedSchool?: boolean | null;
   employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;
   gdsdTeamId?: string | null;
+  isDogTrainedByAccreditedSchool?: boolean | null;
   isDogsPurposeDetectionDrugs?: boolean;
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;
