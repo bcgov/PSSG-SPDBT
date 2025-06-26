@@ -53,7 +53,7 @@ export const SPD_CONSTANTS = {
 		cmCrcStateKey: 'cm-crc-state',
 	},
 	payment: {
-		maxNumberOfAttempts: 10,
+		maxNumberOfAttempts: 3,
 	},
 	maxCount: {
 		aliases: 10,
