@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-renew-and-update',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-form-photograph-of-yourself-update
 				[form]="form"
 				serviceTypeLabel="permit"

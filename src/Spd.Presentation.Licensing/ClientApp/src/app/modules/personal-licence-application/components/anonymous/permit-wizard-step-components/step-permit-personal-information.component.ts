@@ -5,9 +5,9 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-permit-personal-information',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-permit-personal-information',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
 			</ng-container>
@@ -22,8 +22,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</ng-container>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

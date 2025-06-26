@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-step-controlling-member-bc-security-licence-history',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

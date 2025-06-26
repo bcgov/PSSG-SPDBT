@@ -9,7 +9,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
 	selector: 'app-step-permit-reason',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
 					<div class="col-xxl-5 col-xl-5 col-lg-8 col-md-12 mx-auto">

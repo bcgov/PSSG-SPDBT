@@ -9,8 +9,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	selector: 'app-step-worker-licence-term',
 	template: `
 		<app-step-section
-			title="Select your licence term"
-			subtitle="The licence term will apply to all licence categories"
+			heading="Select your licence term"
+			subheading="The licence term will apply to all licence categories"
 			[isRenewalOrUpdate]="applicationTypeCode === applicationTypeCodes.Renewal"
 			[serviceTypeCode]="securityWorkerLicenceCode"
 		>

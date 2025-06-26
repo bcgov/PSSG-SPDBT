@@ -6,11 +6,11 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-term',
-    template: `
+	selector: 'app-step-business-licence-term',
+	template: `
 		<app-step-section
-			title="Select your licence term"
-			subtitle="The licence term will apply to all licence categories"
+			heading="Select your licence term"
+			subheading="The licence term will apply to all licence categories"
 			[isRenewalOrUpdate]="applicationTypeCode === applicationTypeRenewal"
 			[serviceTypeCode]="securityBusinessLicenceCode"
 		>
@@ -49,8 +49,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;

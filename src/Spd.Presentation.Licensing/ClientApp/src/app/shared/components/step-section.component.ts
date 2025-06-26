@@ -11,8 +11,8 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 				</ng-container>
 
 				<app-step-title
-					[title]="title"
-					[subtitle]="subtitle"
+					[heading]="heading"
+					[subheading]="subheading"
 					[info]="info"
 					[showDivider]="showDivider"
 				></app-step-title>
@@ -32,8 +32,8 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 	standalone: false,
 })
 export class StepSectionComponent {
-	@Input() title = '';
-	@Input() subtitle = '';
+	@Input() heading = '';
+	@Input() subheading = '';
 	@Input() info = '';
 	@Input() showDivider = false;
 	@Input() isRenewalOrUpdate = false;

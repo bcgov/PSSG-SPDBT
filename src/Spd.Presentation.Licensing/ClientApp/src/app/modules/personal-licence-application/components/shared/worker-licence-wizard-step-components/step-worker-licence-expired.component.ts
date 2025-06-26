@@ -8,7 +8,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-expired',
 	template: `
-		<app-step-section title="Do you have an expired security worker licence in BC?">
+		<app-step-section heading="Do you have an expired security worker licence in BC?">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">
