@@ -17,9 +17,11 @@ This site is built with a .NET Core OData service serving as the backend. The fr
 - [Commit/branching](#commitbranching)
 - [Application walkthrough](#application-walkthrough)
 - [Usage](#usage)
-- [Communication Channels](#communication-channels)
+- [Configuration](#communication-channels)
 - [Additional Documentation](#additional-documentation)
 - [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Credits](#credits)
 
 ## Getting Started
 
@@ -33,8 +35,9 @@ This site is built with a .NET Core OData service serving as the backend. The fr
 
 ### Backend Development
 
-    .NET 8.0 + OData Connected Service
-    Open Spd.sln with Visual Studio and rebuild all
+.NET 8.0 + OData Connected Service
+
+Open Spd.sln with Visual Studio and rebuild all
 
 ### Frontend development - Angular
 
