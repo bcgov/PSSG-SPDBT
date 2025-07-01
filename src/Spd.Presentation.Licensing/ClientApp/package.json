@@ -31,7 +31,7 @@
     "@ngneat/until-destroy": "^10.0.0",
     "@ngxpert/hot-toast": "^4.1.2",
     "angular-oauth2-oidc": "^19.0.0",
-    "bootstrap": "^5.3.5",
+    "bootstrap": "^5.3.7",
     "jquery": "^3.7.0",
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
