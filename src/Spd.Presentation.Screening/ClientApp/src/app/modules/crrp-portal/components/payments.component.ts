@@ -40,178 +40,184 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2">Payments</h2>
-
-					<ng-container *ngIf="applicationStatistics$ | async">
-						<app-alert type="warning" *ngIf="count > 0">
-							<ng-container>
-								<ng-container *ngIf="count === 1; else notOne">
-									<div>There is 1 application which requires payment</div>
-								</ng-container>
-								<ng-template #notOne>
-									<div>There are {{ count }} applications which require payment</div>
-								</ng-template>
-							</ng-container>
-						</app-alert>
-					</ng-container>
-
-					<app-alert type="success" icon="info" *ngIf="payBcSearchInvoiceUrl">
-						<div>
-							Click <a [href]="payBcSearchInvoiceUrl" target="_blank">here</a> to access {{ loggedInOrgDisplay }}'s
-							monthly invoices and submit payment
-						</div>
-					</app-alert>
-				</div>
-			</div>
-
-			<div class="row" [formGroup]="formFilter">
-				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-					<mat-form-field>
-						<input
-							matInput
-							type="search"
-							formControlName="search"
-							placeholder="Search applicant's name or case ID"
-							(keydown.enter)="onSearchKeyDown($event)"
-						/>
-						<button
-							mat-button
-							matSuffix
-							mat-flat-button
-							aria-label="search"
-							(click)="onSearch()"
-							class="search-icon-button"
-						>
-							<mat-icon>search</mat-icon>
-						</button>
-					</mat-form-field>
-				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
-					<app-dropdown-overlay
-						[showDropdownOverlay]="showDropdownOverlay"
-						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
-						[matBadgeShow]="filterCriteriaExists"
-					>
-						<app-payment-filter
-							[formGroup]="formFilter"
-							(filterChange)="onFilterChange($event)"
-							(filterClear)="onFilterClear()"
-							(filterClose)="onFilterClose()"
-						></app-payment-filter>
-					</app-dropdown-overlay>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Applicant Name:</span>
-								{{ application | fullname }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | formatDate }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="paidOn">
-							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | formatDate | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Case ID:</span>
-								{{ application.applicationNumber }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Status:</span>
-								<mat-chip-row
-									aria-label="Status"
-									class="mat-chip-green"
-									*ngIf="application.status && application.isPaid; else notpaid"
-								>
-									Paid
-								</mat-chip-row>
-								<ng-template #notpaid>
-									<mat-chip-row aria-label="Status" class="mat-chip-yellow"> Not Paid </mat-chip-row>
-								</ng-template>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-primary-light);"
-									*ngIf="application.isDownloadReceipt"
-									aria-label="Download Receipt"
-									matTooltip="Download Receipt"
-									(click)="onDownloadReceipt(application)"
-								>
-									<mat-icon>file_download</mat-icon>Receipt
-								</button>
-
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-green);"
-									*ngIf="application.isPayNow"
-									aria-label="Pay now"
-									(click)="onPayNow(application)"
-								>
-									<mat-icon>payment</mat-icon>Pay Now
-								</button>
-
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-red);"
-									*ngIf="application.isPayManual"
-									aria-label="Pay manually"
-									(click)="onPayManual(application)"
-								>
-									<mat-icon>payment</mat-icon>Pay Manually
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<mat-paginator
-						[showFirstLastButtons]="true"
-						[hidePageSize]="true"
-						[pageIndex]="tablePaginator.pageIndex"
-						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
-						aria-label="Select page"
-					>
-					</mat-paginator>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="row">
+		    <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+		      <h2 class="mb-2">Payments</h2>
+		
+		      @if (applicationStatistics$ | async) {
+		        @if (count > 0) {
+		          <app-alert type="warning">
+		            <ng-container>
+		              @if (count === 1) {
+		                <div>There is 1 application which requires payment</div>
+		              } @else {
+		                <div>There are {{ count }} applications which require payment</div>
+		              }
+		            </ng-container>
+		          </app-alert>
+		        }
+		      }
+		
+		      @if (payBcSearchInvoiceUrl) {
+		        <app-alert type="success" icon="info">
+		          <div>
+		            Click <a [href]="payBcSearchInvoiceUrl" target="_blank">here</a> to access {{ loggedInOrgDisplay }}'s
+		            monthly invoices and submit payment
+		          </div>
+		        </app-alert>
+		      }
+		    </div>
+		  </div>
+		
+		  <div class="row" [formGroup]="formFilter">
+		    <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		      <mat-form-field>
+		        <input
+		          matInput
+		          type="search"
+		          formControlName="search"
+		          placeholder="Search applicant's name or case ID"
+		          (keydown.enter)="onSearchKeyDown($event)"
+		          />
+		          <button
+		            mat-button
+		            matSuffix
+		            mat-flat-button
+		            aria-label="search"
+		            (click)="onSearch()"
+		            class="search-icon-button"
+		            >
+		            <mat-icon>search</mat-icon>
+		          </button>
+		        </mat-form-field>
+		      </div>
+		      <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
+		        <app-dropdown-overlay
+		          [showDropdownOverlay]="showDropdownOverlay"
+		          (showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+		          [matBadgeShow]="filterCriteriaExists"
+		          >
+		          <app-payment-filter
+		            [formGroup]="formFilter"
+		            (filterChange)="onFilterChange($event)"
+		            (filterClear)="onFilterClear()"
+		            (filterClose)="onFilterClose()"
+		          ></app-payment-filter>
+		        </app-dropdown-overlay>
+		      </div>
+		    </div>
+		
+		    <div class="row">
+		      <div class="col-12">
+		        <mat-table [dataSource]="dataSource">
+		          <ng-container matColumnDef="applicantName">
+		            <mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Applicant Name:</span>
+		              {{ application | fullname }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="createdOn">
+		            <mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Submitted On:</span>
+		              {{ application.createdOn | formatDate }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="paidOn">
+		            <mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Paid On:</span>
+		              {{ application.paidOn | formatDate | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="applicationNumber">
+		            <mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Case ID:</span>
+		              {{ application.applicationNumber }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="status">
+		            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Status:</span>
+		              @if (application.status && application.isPaid) {
+		                <mat-chip-row
+		                  aria-label="Status"
+		                  class="mat-chip-green"
+		                  >
+		                  Paid
+		                </mat-chip-row>
+		              } @else {
+		                <mat-chip-row aria-label="Status" class="mat-chip-yellow"> Not Paid </mat-chip-row>
+		              }
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="action1">
+		            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              @if (application.isDownloadReceipt) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-primary-light);"
+		                  aria-label="Download Receipt"
+		                  matTooltip="Download Receipt"
+		                  (click)="onDownloadReceipt(application)"
+		                  >
+		                  <mat-icon>file_download</mat-icon>Receipt
+		                </button>
+		              }
+		
+		              @if (application.isPayNow) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-green);"
+		                  aria-label="Pay now"
+		                  (click)="onPayNow(application)"
+		                  >
+		                  <mat-icon>payment</mat-icon>Pay Now
+		                </button>
+		              }
+		
+		              @if (application.isPayManual) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-red);"
+		                  aria-label="Pay manually"
+		                  (click)="onPayManual(application)"
+		                  >
+		                  <mat-icon>payment</mat-icon>Pay Manually
+		                </button>
+		              }
+		            </mat-cell>
+		          </ng-container>
+		
+		          <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		          <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		        </mat-table>
+		        <mat-paginator
+		          [showFirstLastButtons]="true"
+		          [hidePageSize]="true"
+		          [pageIndex]="tablePaginator.pageIndex"
+		          [pageSize]="tablePaginator.pageSize"
+		          [length]="tablePaginator.length"
+		          (page)="onPageChanged($event)"
+		          aria-label="Select page"
+		          >
+		        </mat-paginator>
+		      </div>
+		    </div>
+		  </section>
+		`,
 	styles: [
 		`
 			.mat-column-status {

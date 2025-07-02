@@ -11,66 +11,72 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
     selector: 'app-sa-consent-to-release-of-info',
     template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
-
-					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<div class="conditions p-3 mb-3">
-								<ng-container *ngIf="isMcfdOrPssoVs">
-									<app-sa-consent-to-release-mcfd
-										[form]="form"
-										(checkboxChanged)="onCheckboxChange()"
-									></app-sa-consent-to-release-mcfd>
-								</ng-container>
-
-								<ng-container *ngIf="isCrrpa">
-									<app-sa-consent-to-release-crrpa
-										[form]="form"
-										(checkboxChanged)="onCheckboxChange()"
-									></app-sa-consent-to-release-crrpa>
-								</ng-container>
-
-								<ng-container *ngIf="isPssoa">
-									<app-sa-consent-to-release-pssoa
-										[form]="form"
-										(checkboxChanged)="onCheckboxChange()"
-									></app-sa-consent-to-release-pssoa>
-								</ng-container>
-
-								<ng-container *ngIf="isPeCrc">
-									<app-sa-consent-to-release-pecrc
-										[form]="form"
-										(checkboxChanged)="onCheckboxChange()"
-									></app-sa-consent-to-release-pecrc>
-								</ng-container>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12 mt-4">
-							<mat-form-field class="w-auto" style="background-color: unset;">
-								<mat-label>Date Signed</mat-label>
-								<input matInput formControlName="dateSigned" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('dateSigned')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-
-					<div class="row mb-4" *ngIf="displayCaptcha">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
-								This is required
-							</mat-error>
-						</div>
-					</div>
-				</div>
-			</form>
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title title="Consent to a Criminal Record Check"></app-step-title>
+		
+		      <div class="row">
+		        <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+		          <div class="conditions p-3 mb-3">
+		            @if (isMcfdOrPssoVs) {
+		              <app-sa-consent-to-release-mcfd
+		                [form]="form"
+		                (checkboxChanged)="onCheckboxChange()"
+		              ></app-sa-consent-to-release-mcfd>
+		            }
+		
+		            @if (isCrrpa) {
+		              <app-sa-consent-to-release-crrpa
+		                [form]="form"
+		                (checkboxChanged)="onCheckboxChange()"
+		              ></app-sa-consent-to-release-crrpa>
+		            }
+		
+		            @if (isPssoa) {
+		              <app-sa-consent-to-release-pssoa
+		                [form]="form"
+		                (checkboxChanged)="onCheckboxChange()"
+		              ></app-sa-consent-to-release-pssoa>
+		            }
+		
+		            @if (isPeCrc) {
+		              <app-sa-consent-to-release-pecrc
+		                [form]="form"
+		                (checkboxChanged)="onCheckboxChange()"
+		              ></app-sa-consent-to-release-pecrc>
+		            }
+		          </div>
+		        </div>
+		      </div>
+		
+		      <div class="row">
+		        <div class="offset-md-2 col-md-8 col-sm-12 mt-4">
+		          <mat-form-field class="w-auto" style="background-color: unset;">
+		            <mat-label>Date Signed</mat-label>
+		            <input matInput formControlName="dateSigned" [errorStateMatcher]="matcher" />
+		            @if (form.get('dateSigned')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		      </div>
+		
+		      @if (displayCaptcha) {
+		        <div class="row mb-4">
+		          <div class="offset-md-2 col-md-8 col-sm-12">
+		            <app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+		            @if (displayValidationErrors && !captchaPassed) {
+		              <mat-error class="mat-option-error">
+		                This is required
+		              </mat-error>
+		            }
+		          </div>
+		        </div>
+		      }
+		    </div>
+		  </form>
 		</section>
-	`,
+		`,
     styles: [
         `
 			.conditions {

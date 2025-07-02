@@ -11,81 +11,82 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 	selector: 'app-sa-step-terms-and-cond',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-sa-declaration [orgData]="orgData"></app-sa-declaration>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onDeclarationNextStep(STEP_DECLARATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="agreeToShareCrc">
-				<app-sa-consent-to-crc [orgData]="orgData"></app-sa-consent-to-crc>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onConsentToCrcNextStep(STEP_CONSENT_TO_CRC)"
-						>
-							Submit
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="!agreeToShareCrc">
-				<app-sa-consent-to-release-of-info [orgData]="orgData"></app-sa-consent-to-release-of-info>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<ng-container *ngIf="orgData?.performPaymentProcess; else noPay">
-							<button
-								mat-flat-button
-								color="primary"
-								class="large mb-2"
-								(click)="goToStepNext(STEP_CONSENT)"
-								aria-label="Pay now"
-							>
-								Pay Now
-							</button>
-						</ng-container>
-						<ng-template #noPay>
-							<button
-								mat-flat-button
-								color="primary"
-								class="large mb-2"
-								(click)="goToStepNext(STEP_CONSENT)"
-								aria-label="Submit"
-							>
-								Submit
-							</button>
-						</ng-template>
-					</div>
-				</div>
-			</mat-step>
+		  <mat-step>
+		    <app-sa-declaration [orgData]="orgData"></app-sa-declaration>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onDeclarationNextStep(STEP_DECLARATION)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  @if (agreeToShareCrc) {
+		    <mat-step>
+		      <app-sa-consent-to-crc [orgData]="orgData"></app-sa-consent-to-crc>
+		      <div class="row mt-4">
+		        <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		          <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		        </div>
+		        <div class="col-lg-3 col-md-4 col-sm-6">
+		          <button
+		            mat-flat-button
+		            color="primary"
+		            class="large mb-2"
+		            (click)="onConsentToCrcNextStep(STEP_CONSENT_TO_CRC)"
+		            >
+		            Submit
+		          </button>
+		        </div>
+		      </div>
+		    </mat-step>
+		  }
+		
+		  @if (!agreeToShareCrc) {
+		    <mat-step>
+		      <app-sa-consent-to-release-of-info [orgData]="orgData"></app-sa-consent-to-release-of-info>
+		      <div class="row mt-4">
+		        <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		          <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		        </div>
+		        <div class="col-lg-3 col-md-4 col-sm-6">
+		          @if (orgData?.performPaymentProcess) {
+		            <button
+		              mat-flat-button
+		              color="primary"
+		              class="large mb-2"
+		              (click)="goToStepNext(STEP_CONSENT)"
+		              aria-label="Pay now"
+		              >
+		              Pay Now
+		            </button>
+		          } @else {
+		            <button
+		              mat-flat-button
+		              color="primary"
+		              class="large mb-2"
+		              (click)="goToStepNext(STEP_CONSENT)"
+		              aria-label="Submit"
+		              >
+		              Submit
+		            </button>
+		          }
+		        </div>
+		      </div>
+		    </mat-step>
+		  }
 		</mat-stepper>
-	`,
+		`,
     styles: [],
     encapsulation: ViewEncapsulation.None,
     standalone: false

@@ -43,175 +43,212 @@ export interface ScreeningRequestAddDialogData {
     template: `
 		<div mat-dialog-title>Add {{ requestName }}</div>
 		<mat-dialog-content>
-			<form [formGroup]="form" novalidate>
-				<div class="row mt-4">
-					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-						<div class="alert alert-danger d-flex" role="alert" *ngIf="isDuplicateDetected">
-							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-							<div>
-								Duplicates are not allowed. Update the data associated with the following:
-								<ul>
-									<li>Email: {{ duplicateEmail }}</li>
-								</ul>
-							</div>
-						</div>
-						<ng-container formArrayName="crcs" *ngFor="let group of getFormControls.controls; let i = index">
-							<mat-divider class="mat-divider-main mb-3" *ngIf="i > 0"></mat-divider>
-							<div class="row" [formGroupName]="i">
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
-										<mat-label>Given Name</mat-label>
-										<input
-											matInput
-											type="text"
-											formControlName="firstName"
-											[errorStateMatcher]="matcher"
-											maxlength="40"
-										/>
-										<mat-error *ngIf="group.get('firstName')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
-										<mat-label>Surname</mat-label>
-										<input
-											matInput
-											type="text"
-											formControlName="lastName"
-											[errorStateMatcher]="matcher"
-											maxlength="40"
-										/>
-										<mat-error *ngIf="group.get('lastName')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
-										<mat-label>Email</mat-label>
-										<input
-											matInput
-											formControlName="email"
-											type="email"
-											required
-											[errorStateMatcher]="matcher"
-											maxlength="75"
-										/>
-										<mat-error *ngIf="group.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
-										<mat-error *ngIf="group.get('email')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
-										<mat-label>Job Title</mat-label>
-										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-										<mat-error *ngIf="group.get('jobTitle')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showScreeningType">
-									<mat-form-field>
-										<mat-label>Application Type</mat-label>
-										<mat-select formControlName="screeningType" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
-												{{ scr.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('screeningType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 pe-md-0" *ngIf="showMinistries">
-									<mat-form-field>
-										<mat-label>Ministry</mat-label>
-										<mat-select
-											formControlName="orgId"
-											(selectionChange)="onChangeMinistry($event, i)"
-											[errorStateMatcher]="matcher"
-										>
-											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
-												{{ ministry.name }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('orgId')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showServiceType">
-									<mat-form-field>
-										<mat-label>Service Type</mat-label>
-										<mat-select
-											formControlName="serviceType"
-											(selectionChange)="onChangeServiceType($event, i)"
-											[errorStateMatcher]="matcher"
-										>
-											<mat-option *ngFor="let srv of serviceTypes[i]" [value]="srv.code">
-												{{ srv.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('serviceType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div
-									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
-									*ngIf="showPaidByPsso[i] || isNotVolunteerOrg"
-								>
-									<mat-form-field>
-										<mat-label>Paid by</mat-label>
-										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
-												{{ payer.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('payeeType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-3 mb-4 mb-md-0">
-									<button
-										mat-icon-button
-										class="delete-row-button"
-										matTooltip="Remove criminal record check"
-										(click)="onDeleteRow(i)"
-										*ngIf="rowsExist"
-										aria-label="Remove criminal record check"
-									>
-										<mat-icon>delete_outline</mat-icon>
-									</button>
-								</div>
-							</div>
-							<ng-container *ngIf="showPssoVsWarning[i]">
-								<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
-							</ng-container>
-						</ng-container>
-					</div>
-					<div class="row" *ngIf="isAllowMultiple">
-						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-							<button
-								mat-stroked-button
-								class="large w-100 mb-2"
-								style="color: var(--color-green);"
-								(click)="onAddRow()"
-							>
-								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Request
-							</button>
-						</div>
-					</div>
-				</div>
-			</form>
-		</mat-dialog-content>
-		<mat-dialog-actions>
-			<div class="row m-0 w-100">
-				<div class="col-lg-3 col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
-				</div>
-				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSendScreeningRequest()">
-						Send {{ requestName }}
-					</button>
-				</div>
-			</div>
-		</mat-dialog-actions>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="row mt-4">
+		      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+		        @if (isDuplicateDetected) {
+		          <div class="alert alert-danger d-flex" role="alert">
+		            <mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+		            <div>
+		              Duplicates are not allowed. Update the data associated with the following:
+		              <ul>
+		                <li>Email: {{ duplicateEmail }}</li>
+		              </ul>
+		            </div>
+		          </div>
+		        }
+		        @for (group of getFormControls.controls; track group; let i = $index) {
+		          <ng-container formArrayName="crcs">
+		            @if (i > 0) {
+		              <mat-divider class="mat-divider-main mb-3"></mat-divider>
+		            }
+		            <div class="row" [formGroupName]="i">
+		              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                <mat-form-field>
+		                  <mat-label>Given Name</mat-label>
+		                  <input
+		                    matInput
+		                    type="text"
+		                    formControlName="firstName"
+		                    [errorStateMatcher]="matcher"
+		                    maxlength="40"
+		                    />
+		                    @if (group.get('firstName')?.hasError('required')) {
+		                      <mat-error>This is required</mat-error>
+		                    }
+		                  </mat-form-field>
+		                </div>
+		                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                  <mat-form-field>
+		                    <mat-label>Surname</mat-label>
+		                    <input
+		                      matInput
+		                      type="text"
+		                      formControlName="lastName"
+		                      [errorStateMatcher]="matcher"
+		                      maxlength="40"
+		                      />
+		                      @if (group.get('lastName')?.hasError('required')) {
+		                        <mat-error>This is required</mat-error>
+		                      }
+		                    </mat-form-field>
+		                  </div>
+		                  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                    <mat-form-field>
+		                      <mat-label>Email</mat-label>
+		                      <input
+		                        matInput
+		                        formControlName="email"
+		                        type="email"
+		                        required
+		                        [errorStateMatcher]="matcher"
+		                        maxlength="75"
+		                        />
+		                        @if (group.get('email')?.hasError('email')) {
+		                          <mat-error> Must be a valid email address </mat-error>
+		                        }
+		                        @if (group.get('email')?.hasError('required')) {
+		                          <mat-error>This is required</mat-error>
+		                        }
+		                      </mat-form-field>
+		                    </div>
+		                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                      <mat-form-field>
+		                        <mat-label>Job Title</mat-label>
+		                        <input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
+		                        @if (group.get('jobTitle')?.hasError('required')) {
+		                          <mat-error>This is required</mat-error>
+		                        }
+		                      </mat-form-field>
+		                    </div>
+		                    @if (showScreeningType) {
+		                      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                        <mat-form-field>
+		                          <mat-label>Application Type</mat-label>
+		                          <mat-select formControlName="screeningType" [errorStateMatcher]="matcher">
+		                            @for (scr of screeningTypes; track scr) {
+		                              <mat-option [value]="scr.code">
+		                                {{ scr.desc }}
+		                              </mat-option>
+		                            }
+		                          </mat-select>
+		                          @if (group.get('screeningType')?.hasError('required')) {
+		                            <mat-error>This is required</mat-error>
+		                          }
+		                        </mat-form-field>
+		                      </div>
+		                    }
+		                    @if (showMinistries) {
+		                      <div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 pe-md-0">
+		                        <mat-form-field>
+		                          <mat-label>Ministry</mat-label>
+		                          <mat-select
+		                            formControlName="orgId"
+		                            (selectionChange)="onChangeMinistry($event, i)"
+		                            [errorStateMatcher]="matcher"
+		                            >
+		                            @for (ministry of ministries; track ministry) {
+		                              <mat-option [value]="ministry.id">
+		                                {{ ministry.name }}
+		                              </mat-option>
+		                            }
+		                          </mat-select>
+		                          @if (group.get('orgId')?.hasError('required')) {
+		                            <mat-error>This is required</mat-error>
+		                          }
+		                        </mat-form-field>
+		                      </div>
+		                    }
+		                    @if (showServiceType) {
+		                      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+		                        <mat-form-field>
+		                          <mat-label>Service Type</mat-label>
+		                          <mat-select
+		                            formControlName="serviceType"
+		                            (selectionChange)="onChangeServiceType($event, i)"
+		                            [errorStateMatcher]="matcher"
+		                            >
+		                            @for (srv of serviceTypes[i]; track srv) {
+		                              <mat-option [value]="srv.code">
+		                                {{ srv.desc }}
+		                              </mat-option>
+		                            }
+		                          </mat-select>
+		                          @if (group.get('serviceType')?.hasError('required')) {
+		                            <mat-error>This is required</mat-error>
+		                          }
+		                        </mat-form-field>
+		                      </div>
+		                    }
+		                    @if (showPaidByPsso[i] || isNotVolunteerOrg) {
+		                      <div
+		                        class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
+		                        >
+		                        <mat-form-field>
+		                          <mat-label>Paid by</mat-label>
+		                          <mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
+		                            @for (payer of payerPreferenceTypes; track payer) {
+		                              <mat-option [value]="payer.code">
+		                                {{ payer.desc }}
+		                              </mat-option>
+		                            }
+		                          </mat-select>
+		                          @if (group.get('payeeType')?.hasError('required')) {
+		                            <mat-error>This is required</mat-error>
+		                          }
+		                        </mat-form-field>
+		                      </div>
+		                    }
+		                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-3 mb-4 mb-md-0">
+		                      @if (rowsExist) {
+		                        <button
+		                          mat-icon-button
+		                          class="delete-row-button"
+		                          matTooltip="Remove criminal record check"
+		                          (click)="onDeleteRow(i)"
+		                          aria-label="Remove criminal record check"
+		                          >
+		                          <mat-icon>delete_outline</mat-icon>
+		                        </button>
+		                      }
+		                    </div>
+		                  </div>
+		                  @if (showPssoVsWarning[i]) {
+		                    <app-alert type="warning">{{ pssoVsWarning }}</app-alert>
+		                  }
+		                </ng-container>
+		              }
+		            </div>
+		            @if (isAllowMultiple) {
+		              <div class="row">
+		                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+		                  <button
+		                    mat-stroked-button
+		                    class="large w-100 mb-2"
+		                    style="color: var(--color-green);"
+		                    (click)="onAddRow()"
+		                    >
+		                    <mat-icon class="add-icon">add_circle</mat-icon>Add Another Request
+		                  </button>
+		                </div>
+		              </div>
+		            }
+		          </div>
+		        </form>
+		      </mat-dialog-content>
+		      <mat-dialog-actions>
+		        <div class="row m-0 w-100">
+		          <div class="col-lg-3 col-md-4 col-sm-12 mb-2">
+		            <button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+		          </div>
+		          <div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
+		            <button mat-flat-button color="primary" class="large" (click)="onSendScreeningRequest()">
+		              Send {{ requestName }}
+		            </button>
+		          </div>
+		        </div>
+		      </mat-dialog-actions>
+		`,
     styles: [
         `
 			.button-toggle {

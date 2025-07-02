@@ -28,51 +28,54 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
     selector: 'app-screening-status-filter-common',
     template: `
 		<div class="filter-container mat-elevation-z8">
-			<form [formGroup]="formGroup" novalidate>
-				<mat-toolbar>
-					<span class="fw-bold">Filters</span>
-					<button mat-icon-button aria-label="close" (click)="emitFilterClose()">
-						<mat-icon>close</mat-icon>
-					</button>
-				</mat-toolbar>
-				<mat-card>
-					<mat-card-content class="mb-2 text-start">
-						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 300px">
-							<mat-label>Filter by status</mat-label>
-							<mat-select formControlName="statuses" placeholder="All statuses" multiple>
-								<mat-select-trigger>
-									<mat-chip-listbox>
-										<mat-chip
-											class="filter-chip"
-											*ngFor="let status of statuses.value"
-											[removable]="true"
-											(removed)="onItemRemoved(status)"
-											selected
-										>
-											{{ getFilterStatusDesc(status) }}
-											<mat-icon matChipRemove class="filter-chip__icon">cancel</mat-icon>
-										</mat-chip>
-									</mat-chip-listbox>
-								</mat-select-trigger>
-
-								<mat-option *ngFor="let status of applicationPortalStatusCodes" [value]="status.code">
-									{{ status.desc }}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</mat-card-content>
-					<mat-divider class="my-3"></mat-divider>
-					<mat-card-actions>
-						<div>
-							<button mat-stroked-button class="large w-auto me-2" (click)="emitFilterClear()">Clear</button>
-							<button mat-flat-button class="large mat-green-button w-auto" (click)="emitFilterReset()">Reset</button>
-						</div>
-						<button mat-flat-button class="large w-auto" color="primary" (click)="emitFilterChange()">Search</button>
-					</mat-card-actions>
-				</mat-card>
-			</form>
+		  <form [formGroup]="formGroup" novalidate>
+		    <mat-toolbar>
+		      <span class="fw-bold">Filters</span>
+		      <button mat-icon-button aria-label="close" (click)="emitFilterClose()">
+		        <mat-icon>close</mat-icon>
+		      </button>
+		    </mat-toolbar>
+		    <mat-card>
+		      <mat-card-content class="mb-2 text-start">
+		        <mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 300px">
+		          <mat-label>Filter by status</mat-label>
+		          <mat-select formControlName="statuses" placeholder="All statuses" multiple>
+		            <mat-select-trigger>
+		              <mat-chip-listbox>
+		                @for (status of statuses.value; track status) {
+		                  <mat-chip
+		                    class="filter-chip"
+		                    [removable]="true"
+		                    (removed)="onItemRemoved(status)"
+		                    selected
+		                    >
+		                    {{ getFilterStatusDesc(status) }}
+		                    <mat-icon matChipRemove class="filter-chip__icon">cancel</mat-icon>
+		                  </mat-chip>
+		                }
+		              </mat-chip-listbox>
+		            </mat-select-trigger>
+		
+		            @for (status of applicationPortalStatusCodes; track status) {
+		              <mat-option [value]="status.code">
+		                {{ status.desc }}
+		              </mat-option>
+		            }
+		          </mat-select>
+		        </mat-form-field>
+		      </mat-card-content>
+		      <mat-divider class="my-3"></mat-divider>
+		      <mat-card-actions>
+		        <div>
+		          <button mat-stroked-button class="large w-auto me-2" (click)="emitFilterClear()">Clear</button>
+		          <button mat-flat-button class="large mat-green-button w-auto" (click)="emitFilterReset()">Reset</button>
+		        </div>
+		        <button mat-flat-button class="large w-auto" color="primary" (click)="emitFilterChange()">Search</button>
+		      </mat-card-actions>
+		    </mat-card>
+		  </form>
 		</div>
-	`,
+		`,
     styles: [
         `
 			.mat-toolbar-single-row {

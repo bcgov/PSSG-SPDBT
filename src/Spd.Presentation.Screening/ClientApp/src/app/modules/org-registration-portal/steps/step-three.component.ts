@@ -13,118 +13,119 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
     selector: 'app-step-three',
     template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-contact-information></app-contact-information>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CONTACT_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-organization-name></app-organization-name>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_ORGANIZATION_NAME)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-organization-information></app-organization-information>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_ORGANIZATION_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-mailing-address></app-mailing-address>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-screenings-question></app-screenings-question>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_SCREENINGS_QUESTION)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showStepPaymentQuestion">
-				<app-payment-question></app-payment-question>
-				<!-- Note: This screen is only shows up when “employees" is selected -->
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_PAYMENT_QUESTION)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+		  <mat-step>
+		    <app-contact-information></app-contact-information>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_CONTACT_INFORMATION)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-organization-name></app-organization-name>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_ORGANIZATION_NAME)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-organization-information></app-organization-information>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_ORGANIZATION_INFORMATION)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-mailing-address></app-mailing-address>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-screenings-question></app-screenings-question>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_SCREENINGS_QUESTION)">
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  @if (showStepPaymentQuestion) {
+		    <mat-step>
+		      <app-payment-question></app-payment-question>
+		      <!-- Note: This screen is only shows up when “employees" is selected -->
+		      <div class="row mt-4">
+		        <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		          <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		        </div>
+		        <div class="col-lg-3 col-md-4 col-sm-6">
+		          <button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_PAYMENT_QUESTION)">
+		            Next
+		          </button>
+		        </div>
+		      </div>
+		    </mat-step>
+		  }
 		</mat-stepper>
-	`,
+		`,
     styles: [],
     encapsulation: ViewEncapsulation.None,
     standalone: false

@@ -18,68 +18,72 @@ export interface DelegateManageDialogData {
     template: `
 		<div mat-dialog-title>Manage Delegates for {{ data.application.applicationNumber }}</div>
 		<mat-dialog-content>
-			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="name">
-							<mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-							<mat-cell *matCellDef="let delegate">
-								<span class="mobile-label">Name:</span>
-								{{ delegate | fullname }}
-								<mat-icon
-									class="initiator-icon"
-									matTooltip="Initiator"
-									*ngIf="delegate.pssoUserRoleCode === initiatorCode"
-								>
-									emergency
-								</mat-icon>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell class="mat-cell-email" *matCellDef="let delegate">
-								<span class="mobile-label">Email:</span>
-								{{ delegate.emailAddress | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let delegate">
-								<span class="mobile-label"></span>
-								<button
-									mat-flat-button
-									(click)="onRemoveDelegate(delegate)"
-									class="m-2"
-									style="color: var(--color-primary-light);"
-									aria-label="Remove delegate"
-									*ngIf="isAllowDelegateDelete(delegate)"
-								>
-									<mat-icon>delete_outline</mat-icon>Remove
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-				</div>
-			</div>
+		  <div class="row">
+		    <div class="col-12">
+		      <mat-table [dataSource]="dataSource">
+		        <ng-container matColumnDef="name">
+		          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+		          <mat-cell *matCellDef="let delegate">
+		            <span class="mobile-label">Name:</span>
+		            {{ delegate | fullname }}
+		            @if (delegate.pssoUserRoleCode === initiatorCode) {
+		              <mat-icon
+		                class="initiator-icon"
+		                matTooltip="Initiator"
+		                >
+		                emergency
+		              </mat-icon>
+		            }
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="emailAddress">
+		          <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+		          <mat-cell class="mat-cell-email" *matCellDef="let delegate">
+		            <span class="mobile-label">Email:</span>
+		            {{ delegate.emailAddress | default }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="actions">
+		          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		          <mat-cell *matCellDef="let delegate">
+		            <span class="mobile-label"></span>
+		            @if (isAllowDelegateDelete(delegate)) {
+		              <button
+		                mat-flat-button
+		                (click)="onRemoveDelegate(delegate)"
+		                class="m-2"
+		                style="color: var(--color-primary-light);"
+		                aria-label="Remove delegate"
+		                >
+		                <mat-icon>delete_outline</mat-icon>Remove
+		              </button>
+		            }
+		          </mat-cell>
+		        </ng-container>
+		
+		        <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		        <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		      </mat-table>
+		    </div>
+		  </div>
 		</mat-dialog-content>
 		<mat-dialog-actions>
-			<div class="row m-0 w-100">
-				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
-				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()" *ngIf="isAllowDelegateAdd()">
-						Add Delegate
-					</button>
-				</div>
-			</div>
+		  <div class="row m-0 w-100">
+		    <div class="col-md-4 col-sm-12 mb-2">
+		      <button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
+		    </div>
+		    <div class="offset-md-4 col-md-4 col-sm-12 mb-2">
+		      @if (isAllowDelegateAdd()) {
+		        <button mat-flat-button color="primary" class="large" (click)="onAddDelegate()">
+		          Add Delegate
+		        </button>
+		      }
+		    </div>
+		  </div>
 		</mat-dialog-actions>
-	`,
+		`,
     styles: [
         `
 			.initiator-icon {
