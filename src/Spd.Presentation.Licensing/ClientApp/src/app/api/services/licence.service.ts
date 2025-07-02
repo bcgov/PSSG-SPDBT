@@ -29,6 +29,8 @@ import { apiLicencesLicencePhotoLicenceIdGet } from '../fn/licence/api-licences-
 import { ApiLicencesLicencePhotoLicenceIdGet$Params } from '../fn/licence/api-licences-licence-photo-licence-id-get';
 import { apiLicencesSecurityWorkerLicenceGet } from '../fn/licence/api-licences-security-worker-licence-get';
 import { ApiLicencesSecurityWorkerLicenceGet$Params } from '../fn/licence/api-licences-security-worker-licence-get';
+import { apiLicencesSecurityWorkerLicenceInBulkPost } from '../fn/licence/api-licences-security-worker-licence-in-bulk-post';
+import { ApiLicencesSecurityWorkerLicenceInBulkPost$Params } from '../fn/licence/api-licences-security-worker-licence-in-bulk-post';
 import { LicenceBasicResponse } from '../models/licence-basic-response';
 import { LicenceResponse } from '../models/licence-response';
 
@@ -306,6 +308,41 @@ export class LicenceService extends BaseService {
    */
   apiLicencesSecurityWorkerLicenceGet(params?: ApiLicencesSecurityWorkerLicenceGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
     return this.apiLicencesSecurityWorkerLicenceGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
+    );
+  }
+
+  /** Path part for operation `apiLicencesSecurityWorkerLicenceInBulkPost()` */
+  static readonly ApiLicencesSecurityWorkerLicenceInBulkPostPath = '/api/licences/security-worker-licence-in-bulk';
+
+  /**
+   * Get latest secure worker licences info by a list of licence numbers
+   * Example: http://localhost:5114/api/licences/security-worker-licence-in-bulk.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesSecurityWorkerLicenceInBulkPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiLicencesSecurityWorkerLicenceInBulkPost$Response(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+    return apiLicencesSecurityWorkerLicenceInBulkPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get latest secure worker licences info by a list of licence numbers
+   * Example: http://localhost:5114/api/licences/security-worker-licence-in-bulk.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesSecurityWorkerLicenceInBulkPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiLicencesSecurityWorkerLicenceInBulkPost(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+    return this.apiLicencesSecurityWorkerLicenceInBulkPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
     );
   }
