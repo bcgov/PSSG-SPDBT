@@ -225,7 +225,7 @@ export class RetiredDogWizardNewRenewalComponent extends BaseWizardComponent imp
 			return;
 		}
 
-		this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+		this.retiredDogApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.router.navigateByUrl(AppRoutes.pathGdsdMainApplications());
 			},

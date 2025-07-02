@@ -24,98 +24,98 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 	selector: 'app-gdsd-team-wizard-new-renewal',
 	template: `
 		<mat-stepper
-		  class="child-stepper"
-		  linear
-		  labelPosition="bottom"
-		  [orientation]="orientation"
-		  (selectionChange)="onStepSelectionChange($event)"
-		  #stepper
-		  >
-		  <mat-step [completed]="step1Complete">
-		    <app-steps-team-selection
-		      [isFormValid]="isFormValid"
-		      [applicationTypeCode]="applicationTypeCode"
-		      (childNextStep)="onSelectionChildNextStep()"
-		      (nextReview)="onGoToReview()"
-		      (nextStepperStep)="onNextStepperStep(stepper)"
-		      (scrollIntoView)="onScrollIntoView()"
-		    ></app-steps-team-selection>
-		  </mat-step>
-		
-		  <mat-step [completed]="step2Complete">
-		    <app-steps-team-personal-info
-		      [isLoggedIn]="isLoggedIn"
-		      [showSaveAndExit]="showSaveAndExit"
-		      [isFormValid]="isFormValid"
-		      [applicationTypeCode]="applicationTypeCode"
-		      [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-		      (childNextStep)="onChildNextStep()"
-		      (saveAndExit)="onSaveAndExit()"
-		      (nextReview)="onGoToReview()"
-		      (previousStepperStep)="onPreviousStepperStep(stepper)"
-		      (nextStepperStep)="onNextStepperStep(stepper)"
-		      (scrollIntoView)="onScrollIntoView()"
-		    ></app-steps-team-personal-info>
-		  </mat-step>
-		
-		  <mat-step [completed]="step3Complete">
-		    <app-steps-team-dog-info
-		      [isLoggedIn]="isLoggedIn"
-		      [showSaveAndExit]="showSaveAndExit"
-		      [isFormValid]="isFormValid"
-		      [applicationTypeCode]="applicationTypeCode"
-		      [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-		      (childNextStep)="onChildNextStep()"
-		      (saveAndExit)="onSaveAndExit()"
-		      (nextReview)="onGoToReview()"
-		      (previousStepperStep)="onPreviousStepperStep(stepper)"
-		      (nextStepperStep)="onNextStepperStep(stepper)"
-		      (scrollIntoView)="onScrollIntoView()"
-		    ></app-steps-team-dog-info>
-		  </mat-step>
-		
-		  @if (isNew) {
-		    <mat-step [completed]="step4Complete">
-		      <app-steps-team-training-info
-		        [isLoggedIn]="isLoggedIn"
-		        [showSaveAndExit]="showSaveAndExit"
-		        [isFormValid]="isFormValid"
-		        [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-		        [hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
-		        [isServiceDog]="isServiceDog"
-		        (childNextStep)="onChildNextStep()"
-		        (saveAndExit)="onSaveAndExit()"
-		        (nextReview)="onGoToReview()"
-		        (previousStepperStep)="onPreviousStepperStep(stepper)"
-		        (nextStepperStep)="onNextStepperStep(stepper)"
-		        (scrollIntoView)="onScrollIntoView()"
-		      ></app-steps-team-training-info>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-steps-team-review-and-confirm
-		      [showSaveAndExit]="showSaveAndExit"
-		      [isFormValid]="isFormValid"
-		      [applicationTypeCode]="applicationTypeCode"
-		      [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-		      [hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
-		      [isServiceDog]="isServiceDog"
-		      (childNextStep)="onChildNextStep()"
-		      (saveAndExit)="onSaveAndExit()"
-		      (nextReview)="onGoToReview()"
-		      (previousStepperStep)="onPreviousStepperStep(stepper)"
-		      (nextStepperStep)="onSubmit()"
-		      (scrollIntoView)="onScrollIntoView()"
-		      (goToStep)="onGoToStep($event)"
-		    ></app-steps-team-review-and-confirm>
-		  </mat-step>
-		
-		  <mat-step completed="false">
-		    <ng-template matStepLabel>Submit</ng-template>
-		  </mat-step>
+			class="child-stepper"
+			linear
+			labelPosition="bottom"
+			[orientation]="orientation"
+			(selectionChange)="onStepSelectionChange($event)"
+			#stepper
+		>
+			<mat-step [completed]="step1Complete">
+				<app-steps-team-selection
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					(childNextStep)="onSelectionChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-team-selection>
+			</mat-step>
+
+			<mat-step [completed]="step2Complete">
+				<app-steps-team-personal-info
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-team-personal-info>
+			</mat-step>
+
+			<mat-step [completed]="step3Complete">
+				<app-steps-team-dog-info
+					[isLoggedIn]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-team-dog-info>
+			</mat-step>
+
+			@if (isNew) {
+				<mat-step [completed]="step4Complete">
+					<app-steps-team-training-info
+						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="showSaveAndExit"
+						[isFormValid]="isFormValid"
+						[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+						[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+						[isServiceDog]="isServiceDog"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(nextReview)="onGoToReview()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-team-training-info>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-steps-team-review-and-confirm
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+					[isServiceDog]="isServiceDog"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onSubmit()"
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+				></app-steps-team-review-and-confirm>
+			</mat-step>
+
+			<mat-step completed="false">
+				<ng-template matStepLabel>Submit</ng-template>
+			</mat-step>
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })
@@ -268,7 +268,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.router.navigateByUrl(AppRoutes.pathGdsdMainApplications());
 			},
