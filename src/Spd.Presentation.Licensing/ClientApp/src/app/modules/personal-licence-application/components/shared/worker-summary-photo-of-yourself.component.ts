@@ -6,18 +6,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<div class="text-minor-heading-small">Photograph of Yourself</div>
 		<div class="row mt-0">
-			<div class="col-lg-6 col-md-12">
-				<div class="text-label d-block text-muted">Photograph of Yourself</div>
-				<div class="summary-text-data">
-					<ul class="m-0">
-						<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-							<li>{{ doc.name }}</li>
-						</ng-container>
-					</ul>
-				</div>
-			</div>
+		  <div class="col-lg-6 col-md-12">
+		    <div class="text-label d-block text-muted">Photograph of Yourself</div>
+		    <div class="summary-text-data">
+		      <ul class="m-0">
+		        @for (doc of photoOfYourselfAttachments; track doc; let i = $index) {
+		          <li>{{ doc.name }}</li>
+		        }
+		      </ul>
+		    </div>
+		  </div>
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

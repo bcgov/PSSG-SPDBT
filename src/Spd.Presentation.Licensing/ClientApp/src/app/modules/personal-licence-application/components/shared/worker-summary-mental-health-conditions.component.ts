@@ -7,24 +7,26 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<div class="text-minor-heading-small">Mental Health Conditions</div>
 		<div class="row mt-0">
-			<div class="col-lg-6 col-md-12">
-				<div class="text-label d-block text-muted">Mental Health Conditions</div>
-				<div class="summary-text-data">{{ isTreatedForMHC }}</div>
-			</div>
-			<ng-container *ngIf="isTreatedForMHC === booleanTypeCodes.Yes">
-				<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
-					<div class="text-label d-block text-muted">Mental Health Condition Form</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-			</ng-container>
+		  <div class="col-lg-6 col-md-12">
+		    <div class="text-label d-block text-muted">Mental Health Conditions</div>
+		    <div class="summary-text-data">{{ isTreatedForMHC }}</div>
+		  </div>
+		  @if (isTreatedForMHC === booleanTypeCodes.Yes) {
+		    @if (mentalHealthConditionAttachments.length > 0) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">Mental Health Condition Form</div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of mentalHealthConditionAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		  }
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

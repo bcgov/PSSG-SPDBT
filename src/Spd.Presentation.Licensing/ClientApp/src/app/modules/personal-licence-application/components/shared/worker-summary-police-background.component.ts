@@ -8,33 +8,38 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<div class="text-minor-heading-small">Police Background</div>
 		<div class="row mt-0">
-			<div class="col-lg-4 col-md-12">
-				<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
-				<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
-			</div>
-			<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
-				<div class="col-lg-4 col-md-12">
-					<div class="text-label d-block text-muted">Role</div>
-					<div class="summary-text-data">
-						<span *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.Other; else otherPoliceOfficerRole">{{
-							policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default
-						}}</span>
-						<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
-					<div class="text-label d-block text-muted">Letter of No Conflict</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-			</ng-container>
+		  <div class="col-lg-4 col-md-12">
+		    <div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
+		    <div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
+		  </div>
+		  @if (isPoliceOrPeaceOfficer === booleanTypeCodes.Yes) {
+		    <div class="col-lg-4 col-md-12">
+		      <div class="text-label d-block text-muted">Role</div>
+		      <div class="summary-text-data">
+		        @if (policeOfficerRoleCode !== policeOfficerRoleCodes.Other) {
+		          <span>{{
+		            policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default
+		          }}</span>
+		        } @else {
+		          Other: {{ otherOfficerRole }}
+		        }
+		      </div>
+		    </div>
+		    @if (letterOfNoConflictAttachments) {
+		      <div class="col-lg-4 col-md-12">
+		        <div class="text-label d-block text-muted">Letter of No Conflict</div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of letterOfNoConflictAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		  }
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

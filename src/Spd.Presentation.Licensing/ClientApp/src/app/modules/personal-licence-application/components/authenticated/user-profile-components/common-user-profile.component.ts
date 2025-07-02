@@ -12,109 +12,111 @@ import { FormPhysicalCharacteristicsComponent } from '@app/shared/components/for
 	selector: 'app-common-user-profile',
 	template: `
 		<div class="row">
-			<div class="col-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Personal Information</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="my-3">
-							<app-form-personal-information
-								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactInformationFormGroup]="contactInformationFormGroup"
-								[isReadonly]="isReadonlyPersonalInfo"
-								[isWizardStep]="false"
-							></app-form-personal-information>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-
-			<div class="col-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Identifying Information</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="my-3">
-							<app-form-physical-characteristics
-								[form]="characteristicsFormGroup"
-								[isReadonly]="isReadonlyPersonalInfo"
-								[isWizardStep]="false"
-							></app-form-physical-characteristics>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-
-			<div class="col-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Previous Names or Aliases</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="my-3">
-							<app-common-alias-list
-								[form]="aliasesFormGroup"
-								[isReadonly]="isReadonlyPersonalInfo"
-							></app-common-alias-list>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Residential Address</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="my-3">
-							<div class="fs-6 fw-bold mb-4">
-								Have you moved?
-								<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
-									>Update your address online.</a
-								>
-								Any changes you make will automatically be updated here.
-							</div>
-
-							<section>
-								<app-form-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-form-address>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Mailing Address</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="my-3">
-							<div class="fs-6 fw-bold mb-4" *ngIf="!isReadonlyMailingAddress">
-								Please provide your mailing address if it differs from your residential address. Note that a company
-								address cannot be used.
-							</div>
-
-							<app-form-address-and-is-same-flag
-								[form]="mailingAddressFormGroup"
-								[isReadonly]="isReadonlyMailingAddress"
-								[isCheckboxReadOnly]="isReadonlyMailingAddress"
-								isAddressTheSameLabel="The residential address and mailing address are the same"
-							></app-form-address-and-is-same-flag>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-		</div>
-	`,
+		  <div class="col-12">
+		    <mat-accordion>
+		      <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		        <mat-expansion-panel-header>
+		          <mat-panel-title>Personal Information</mat-panel-title>
+		        </mat-expansion-panel-header>
+		
+		        <div class="my-3">
+		          <app-form-personal-information
+		            [personalInformationFormGroup]="personalInformationFormGroup"
+		            [contactInformationFormGroup]="contactInformationFormGroup"
+		            [isReadonly]="isReadonlyPersonalInfo"
+		            [isWizardStep]="false"
+		          ></app-form-personal-information>
+		        </div>
+		      </mat-expansion-panel>
+		    </mat-accordion>
+		  </div>
+		
+		  <div class="col-12">
+		    <mat-accordion>
+		      <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		        <mat-expansion-panel-header>
+		          <mat-panel-title>Identifying Information</mat-panel-title>
+		        </mat-expansion-panel-header>
+		
+		        <div class="my-3">
+		          <app-form-physical-characteristics
+		            [form]="characteristicsFormGroup"
+		            [isReadonly]="isReadonlyPersonalInfo"
+		            [isWizardStep]="false"
+		          ></app-form-physical-characteristics>
+		        </div>
+		      </mat-expansion-panel>
+		    </mat-accordion>
+		  </div>
+		
+		  <div class="col-12">
+		    <mat-accordion>
+		      <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		        <mat-expansion-panel-header>
+		          <mat-panel-title>Previous Names or Aliases</mat-panel-title>
+		        </mat-expansion-panel-header>
+		
+		        <div class="my-3">
+		          <app-common-alias-list
+		            [form]="aliasesFormGroup"
+		            [isReadonly]="isReadonlyPersonalInfo"
+		          ></app-common-alias-list>
+		        </div>
+		      </mat-expansion-panel>
+		    </mat-accordion>
+		  </div>
+		
+		  <div class="col-lg-6 col-md-12">
+		    <mat-accordion>
+		      <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		        <mat-expansion-panel-header>
+		          <mat-panel-title>Residential Address</mat-panel-title>
+		        </mat-expansion-panel-header>
+		
+		        <div class="my-3">
+		          <div class="fs-6 fw-bold mb-4">
+		            Have you moved?
+		            <a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
+		              >Update your address online.</a
+		              >
+		              Any changes you make will automatically be updated here.
+		            </div>
+		
+		            <section>
+		              <app-form-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-form-address>
+		            </section>
+		          </div>
+		        </mat-expansion-panel>
+		      </mat-accordion>
+		    </div>
+		
+		    <div class="col-lg-6 col-md-12">
+		      <mat-accordion>
+		        <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		          <mat-expansion-panel-header>
+		            <mat-panel-title>Mailing Address</mat-panel-title>
+		          </mat-expansion-panel-header>
+		
+		          <div class="my-3">
+		            @if (!isReadonlyMailingAddress) {
+		              <div class="fs-6 fw-bold mb-4">
+		                Please provide your mailing address if it differs from your residential address. Note that a company
+		                address cannot be used.
+		              </div>
+		            }
+		
+		            <app-form-address-and-is-same-flag
+		              [form]="mailingAddressFormGroup"
+		              [isReadonly]="isReadonlyMailingAddress"
+		              [isCheckboxReadOnly]="isReadonlyMailingAddress"
+		              isAddressTheSameLabel="The residential address and mailing address are the same"
+		            ></app-form-address-and-is-same-flag>
+		          </div>
+		        </mat-expansion-panel>
+		      </mat-accordion>
+		    </div>
+		  </div>
+		`,
 	styles: [],
 	standalone: false,
 })

@@ -13,521 +13,508 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 @Component({
 	selector: 'app-common-business-licence-summary',
 	template: `
-		<div class="row" *ngIf="businessModelData">
-			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-				<div class="row mb-3">
-					<div class="col-12">
-						<mat-accordion multi="true">
-							<mat-expansion-panel class="mb-2" [expanded]="true">
-								<mat-expansion-panel-header>
-									<mat-panel-title class="review-panel-title">
-										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Business Information</div>
-											<button
-												*ngIf="showEditButton"
-												mat-mini-fab
-												color="primary"
-												class="go-to-step-button"
-												matTooltip="Go to Step 1"
-												aria-label="Go to Step 1"
-												(click)="$event.stopPropagation(); onEditStep(0)"
-											>
-												<mat-icon>edit</mat-icon>
-											</button>
-										</mat-toolbar>
-									</mat-panel-title>
-								</mat-expansion-panel-header>
-
-								<div class="panel-body">
-									<div class="text-minor-heading-small mt-4">Business Information</div>
-									<div class="row mt-0">
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Licence Type</div>
-											<div class="summary-text-data">
-												{{ serviceTypeCode | options: 'ServiceTypes' }}
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Application Type</div>
-											<div class="summary-text-data">
-												{{ applicationTypeCode | options: 'ApplicationTypes' }}
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Business Type</div>
-											<div class="summary-text-data">
-												{{ bizTypeCode | options: 'BizTypes' }}
-											</div>
-										</div>
-
-										<ng-container *ngIf="isUpdate">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Print Licence</div>
-												<div class="summary-text-data">Yes</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Reprint Fee</div>
-												<div class="summary-text-data">
-													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
-												</div>
-											</div>
-										</ng-container>
-									</div>
-
-									<ng-container *ngIf="isBusinessLicenceSoleProprietor">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Sole Proprietor</div>
-										<div class="row mt-0">
-											<ng-container *ngIf="soleProprietorLicenceHolderName">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Name</div>
-													<div class="summary-text-data">
-														{{ soleProprietorLicenceHolderName | default }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Security Worker Licence Number</div>
-													<div class="summary-text-data">
-														{{ soleProprietorLicenceNumber | default }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Expiry Date</div>
-													<div class="summary-text-data">
-														{{ soleProprietorLicenceExpiryDate | formatDate | default }}
-													</div>
-												</div>
-											</ng-container>
-
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Email Address</div>
-												<div class="summary-text-data">
-													{{ soleProprietorSwlEmailAddress | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Phone Number</div>
-												<div class="summary-text-data">
-													{{ soleProprietorSwlPhoneNumber | formatPhoneNumber | default }}
-												</div>
-											</div>
-										</div>
-									</ng-container>
-
-									<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<app-form-address-summary
-											[formData]="businessModelData.businessMailingAddressData"
-											headingLabel="Mailing Address"
-											[isAddressTheSame]="false"
-										></app-form-address-summary>
-
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<app-form-address-summary
-											[formData]="businessModelData.businessAddressData"
-											headingLabel="Business Address"
-											[isAddressTheSame]="isAddressTheSame"
-											isAddressTheSameLabel="Business address is the same as the mailing address"
-										></app-form-address-summary>
-
-										<ng-container *ngIf="!isBcBusinessAddress">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<app-form-address-summary
-												[formData]="businessModelData.bcBusinessAddressData"
-												headingLabel="B.C. Business Address"
-												[isAddressTheSame]="false"
-											></app-form-address-summary>
-										</ng-container>
-									</ng-container>
-
-									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Expired Licence</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Expired Licence Number</div>
-												<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Expiry Date</div>
-												<div class="summary-text-data">
-													{{ expiredLicenceExpiryDate | formatDate | default }}
-												</div>
-											</div>
-										</div>
-									</ng-container>
-
-									<ng-container *ngIf="!isUpdate">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Company Branding</div>
-										<div class="row">
-											<div class="col-12">
-												<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
-													<div class="summary-text-data mt-3">There is no logo or branding</div>
-												</ng-container>
-												<ng-template #CompanyBrandingExamples>
-													<div class="text-label d-block text-muted">Documents</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of companyBrandingAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</ng-template>
-											</div>
-										</div>
-
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Proof of Insurance</div>
-										<div class="row">
-											<div class="col-12">
-												<div class="text-label d-block text-muted">Documents</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</ng-container>
-
-									<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<app-common-business-employees-summary
-											[businessModelData]="businessModelData"
-										></app-common-business-employees-summary>
-									</ng-container>
-								</div>
-							</mat-expansion-panel>
-
-							<mat-expansion-panel class="mb-2" [expanded]="true">
-								<mat-expansion-panel-header>
-									<mat-panel-title class="review-panel-title">
-										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Licence Selection</div>
-											<button
-												*ngIf="showEditButton"
-												mat-mini-fab
-												color="primary"
-												class="go-to-step-button"
-												matTooltip="Go to Step 2"
-												aria-label="Go to Step 2"
-												(click)="$event.stopPropagation(); onEditStep(1)"
-											>
-												<mat-icon>edit</mat-icon>
-											</button>
-										</mat-toolbar>
-									</mat-panel-title>
-								</mat-expansion-panel-header>
-
-								<div class="panel-body">
-									<ng-container *ngIf="!isUpdate">
-										<div class="text-minor-heading-small mt-4">Licence Information</div>
-										<div class="row mt-0">
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Licence Term</div>
-												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Fee</div>
-												<div class="summary-text-data">
-													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
-												</div>
-											</div>
-										</div>
-									</ng-container>
-
-									<app-form-licence-category-summary
-										[categoryList]="categoryList"
-										[showDivider]="!isUpdate"
-									></app-form-licence-category-summary>
-
-									<ng-container *ngIf="isPrivateInvestigator && !isBusinessLicenceSoleProprietor">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Private Investigator Information</div>
-										<div class="row mt-0">
-											<div class="col-lg-5 col-md-12">
-												<div class="text-label d-block text-muted">Manager Name</div>
-												<div class="summary-text-data">
-													{{ privateInvestigatorName | default }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Licence Number</div>
-												<div class="summary-text-data">
-													{{ privateInvestigatorLicenceNumber | default }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Expiry Date</div>
-												<div class="summary-text-data">
-													{{ privateInvestigatorExpiryDate | formatDate | default }}
-												</div>
-											</div>
-										</div>
-									</ng-container>
-
-									<ng-container *ngIf="isDogs">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Dogs Authorization</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Request to Use Dogs</div>
-												<div class="summary-text-data">{{ useDogs }}</div>
-											</div>
-											<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Reason</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<li *ngIf="isDogsPurposeProtection">Protection</li>
-															<li *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</li>
-															<li *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</li>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-											</ng-container>
-										</div>
-									</ng-container>
-
-									<ng-container *ngIf="isAnyDocuments">
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Documents Uploaded</div>
-										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
-												<div class="text-label d-block text-muted">
-													{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
-												</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</ng-container>
-								</div>
-							</mat-expansion-panel>
-
-							<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Contact Information</div>
-												<button
-													*ngIf="showEditButton"
-													mat-mini-fab
-													color="primary"
-													class="go-to-step-button"
-													matTooltip="Go to Step 3"
-													aria-label="Go to Step 3"
-													(click)="$event.stopPropagation(); onEditStep(2)"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-
-									<div class="panel-body">
-										<div class="text-minor-heading-small mt-4">Business Manager Information</div>
-										<div class="row mt-0">
-											<div class="col-lg-5 col-md-12">
-												<div class="text-label d-block text-muted">Name</div>
-												<div class="summary-text-data">
-													{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
-													{{ businessManagerMiddleName2 }}
-													{{ businessManagerSurname }}
-												</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Email Address</div>
-												<div class="summary-text-data">
-													{{ businessManagerEmailAddress | default }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Phone Number</div>
-												<div class="summary-text-data">
-													{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
-												</div>
-											</div>
-										</div>
-
-										<ng-container *ngIf="!applicantIsBizManager">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading-small">Your Information</div>
-											<div class="row mt-0">
-												<div class="col-lg-5 col-md-12">
-													<div class="text-label d-block text-muted">Name</div>
-													<div class="summary-text-data">
-														{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
-														{{ yourContactSurname }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">
-														{{ yourContactEmailAddress | default }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Phone Number</div>
-													<div class="summary-text-data">
-														{{ yourContactPhoneNumber | formatPhoneNumber | default }}
-													</div>
-												</div>
-											</div>
-										</ng-container>
-									</div>
-								</mat-expansion-panel>
-							</ng-container>
-
-							<ng-container *ngIf="!isUpdate && !isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Controlling Members, Business Managers & Employees</div>
-												<button
-													*ngIf="showEditButton"
-													mat-mini-fab
-													color="primary"
-													class="go-to-step-button"
-													matTooltip="Go to Step 4"
-													aria-label="Go to Step 4"
-													(click)="$event.stopPropagation(); onEditStep(3)"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-
-									<div class="panel-body">
-										<div class="text-minor-heading-small mt-4 mb-2">Active Security Worker Licence Holders</div>
-										<div class="row summary-text-data mt-0">
-											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
-												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
-													<div class="col-xl-6 col-lg-12">
-														<ul class="m-0">
-															<li>{{ member.licenceHolderName }} - {{ member.licenceNumber }}</li>
-														</ul>
-													</div>
-												</ng-container>
-											</ng-container>
-											<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
-										</div>
-
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small mb-2">Members who require Criminal Record Checks</div>
-										<div class="row summary-text-data mt-0">
-											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
-												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
-													<div class="col-xl-6 col-lg-12">
-														<ul class="m-0">
-															<li style="word-break: break-all;">
-																{{ member.licenceHolderName }} -
-																{{ member.emailAddress ? member.emailAddress : 'No email address' }}
-															</li>
-														</ul>
-													</div>
-												</ng-container>
-											</ng-container>
-											<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
-										</div>
-
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<app-common-business-employees-summary
-											[businessModelData]="businessModelData"
-										></app-common-business-employees-summary>
-
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading-small">Corporate Registry Documents</div>
-										<div class="row">
-											<div class="col-12">
-												<div class="text-label d-block text-muted">Documents</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of corporateRegistryDocumentsAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-								</mat-expansion-panel>
-							</ng-container>
-
-							<ng-container *ngIf="isUpdate && !isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Employees</div>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-
-									<div class="panel-body">
-										<app-common-business-employees-summary
-											[businessModelData]="businessModelData"
-										></app-common-business-employees-summary>
-									</div>
-								</mat-expansion-panel>
-							</ng-container>
-
-							<ng-container *ngIf="!isSoleProprietorSimultaneousFlow && isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
-									<mat-expansion-panel-header>
-										<mat-panel-title class="review-panel-title">
-											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Employees</div>
-												<button
-													*ngIf="showEditButton"
-													mat-mini-fab
-													color="primary"
-													class="go-to-step-button"
-													matTooltip="Go to Step 3"
-													aria-label="Go to Step 3"
-													(click)="$event.stopPropagation(); onEditStep(2)"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-											</mat-toolbar>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-
-									<div class="panel-body">
-										<app-common-business-employees-summary
-											[businessModelData]="businessModelData"
-										></app-common-business-employees-summary>
-									</div>
-								</mat-expansion-panel>
-							</ng-container>
-						</mat-accordion>
-					</div>
-				</div>
-			</div>
-		</div>
-	`,
+		@if (businessModelData) {
+		  <div class="row">
+		    <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		      <div class="row mb-3">
+		        <div class="col-12">
+		          <mat-accordion multi="true">
+		            <mat-expansion-panel class="mb-2" [expanded]="true">
+		              <mat-expansion-panel-header>
+		                <mat-panel-title class="review-panel-title">
+		                  <mat-toolbar class="d-flex justify-content-between">
+		                    <div class="panel-header">Business Information</div>
+		                    @if (showEditButton) {
+		                      <button
+		                        mat-mini-fab
+		                        color="primary"
+		                        class="go-to-step-button"
+		                        matTooltip="Go to Step 1"
+		                        aria-label="Go to Step 1"
+		                        (click)="$event.stopPropagation(); onEditStep(0)"
+		                        >
+		                        <mat-icon>edit</mat-icon>
+		                      </button>
+		                    }
+		                  </mat-toolbar>
+		                </mat-panel-title>
+		              </mat-expansion-panel-header>
+		              <div class="panel-body">
+		                <div class="text-minor-heading-small mt-4">Business Information</div>
+		                <div class="row mt-0">
+		                  <div class="col-lg-4 col-md-12">
+		                    <div class="text-label d-block text-muted">Licence Type</div>
+		                    <div class="summary-text-data">
+		                      {{ serviceTypeCode | options: 'ServiceTypes' }}
+		                    </div>
+		                  </div>
+		                  <div class="col-lg-4 col-md-12">
+		                    <div class="text-label d-block text-muted">Application Type</div>
+		                    <div class="summary-text-data">
+		                      {{ applicationTypeCode | options: 'ApplicationTypes' }}
+		                    </div>
+		                  </div>
+		                  <div class="col-lg-4 col-md-12">
+		                    <div class="text-label d-block text-muted">Business Type</div>
+		                    <div class="summary-text-data">
+		                      {{ bizTypeCode | options: 'BizTypes' }}
+		                    </div>
+		                  </div>
+		                  @if (isUpdate) {
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Print Licence</div>
+		                      <div class="summary-text-data">Yes</div>
+		                    </div>
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Reprint Fee</div>
+		                      <div class="summary-text-data">
+		                        {{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+		                      </div>
+		                    </div>
+		                  }
+		                </div>
+		                @if (isBusinessLicenceSoleProprietor) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Sole Proprietor</div>
+		                  <div class="row mt-0">
+		                    @if (soleProprietorLicenceHolderName) {
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Name</div>
+		                        <div class="summary-text-data">
+		                          {{ soleProprietorLicenceHolderName | default }}
+		                        </div>
+		                      </div>
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Security Worker Licence Number</div>
+		                        <div class="summary-text-data">
+		                          {{ soleProprietorLicenceNumber | default }}
+		                        </div>
+		                      </div>
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Expiry Date</div>
+		                        <div class="summary-text-data">
+		                          {{ soleProprietorLicenceExpiryDate | formatDate | default }}
+		                        </div>
+		                      </div>
+		                    }
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Email Address</div>
+		                      <div class="summary-text-data">
+		                        {{ soleProprietorSwlEmailAddress | default }}
+		                      </div>
+		                    </div>
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Phone Number</div>
+		                      <div class="summary-text-data">
+		                        {{ soleProprietorSwlPhoneNumber | formatPhoneNumber | default }}
+		                      </div>
+		                    </div>
+		                  </div>
+		                }
+		                @if (isSoleProprietorSimultaneousFlow) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <app-form-address-summary
+		                    [formData]="businessModelData.businessMailingAddressData"
+		                    headingLabel="Mailing Address"
+		                    [isAddressTheSame]="false"
+		                  ></app-form-address-summary>
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <app-form-address-summary
+		                    [formData]="businessModelData.businessAddressData"
+		                    headingLabel="Business Address"
+		                    [isAddressTheSame]="isAddressTheSame"
+		                    isAddressTheSameLabel="Business address is the same as the mailing address"
+		                  ></app-form-address-summary>
+		                  @if (!isBcBusinessAddress) {
+		                    <mat-divider class="mt-3 mb-2"></mat-divider>
+		                    <app-form-address-summary
+		                      [formData]="businessModelData.bcBusinessAddressData"
+		                      headingLabel="B.C. Business Address"
+		                      [isAddressTheSame]="false"
+		                    ></app-form-address-summary>
+		                  }
+		                }
+		                @if (hasExpiredLicence === booleanTypeCodes.Yes) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Expired Licence</div>
+		                  <div class="row mt-0">
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Expired Licence Number</div>
+		                      <div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
+		                    </div>
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Expiry Date</div>
+		                      <div class="summary-text-data">
+		                        {{ expiredLicenceExpiryDate | formatDate | default }}
+		                      </div>
+		                    </div>
+		                  </div>
+		                }
+		                @if (!isUpdate) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Company Branding</div>
+		                  <div class="row">
+		                    <div class="col-12">
+		                      @if (noLogoOrBranding) {
+		                        <div class="summary-text-data mt-3">There is no logo or branding</div>
+		                      } @else {
+		                        <div class="text-label d-block text-muted">Documents</div>
+		                        <div class="summary-text-data">
+		                          <ul class="m-0">
+		                            @for (doc of companyBrandingAttachments; track doc; let i = $index) {
+		                              <li>{{ doc.name }}</li>
+		                            }
+		                          </ul>
+		                        </div>
+		                      }
+		                    </div>
+		                  </div>
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Proof of Insurance</div>
+		                  <div class="row">
+		                    <div class="col-12">
+		                      <div class="text-label d-block text-muted">Documents</div>
+		                      <div class="summary-text-data">
+		                        <ul class="m-0">
+		                          @for (doc of proofOfInsuranceAttachments; track doc; let i = $index) {
+		                            <li>{{ doc.name }}</li>
+		                          }
+		                        </ul>
+		                      </div>
+		                    </div>
+		                  </div>
+		                }
+		                @if (isSoleProprietorSimultaneousFlow) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <app-common-business-employees-summary
+		                    [businessModelData]="businessModelData"
+		                  ></app-common-business-employees-summary>
+		                }
+		              </div>
+		            </mat-expansion-panel>
+		            <mat-expansion-panel class="mb-2" [expanded]="true">
+		              <mat-expansion-panel-header>
+		                <mat-panel-title class="review-panel-title">
+		                  <mat-toolbar class="d-flex justify-content-between">
+		                    <div class="panel-header">Licence Selection</div>
+		                    @if (showEditButton) {
+		                      <button
+		                        mat-mini-fab
+		                        color="primary"
+		                        class="go-to-step-button"
+		                        matTooltip="Go to Step 2"
+		                        aria-label="Go to Step 2"
+		                        (click)="$event.stopPropagation(); onEditStep(1)"
+		                        >
+		                        <mat-icon>edit</mat-icon>
+		                      </button>
+		                    }
+		                  </mat-toolbar>
+		                </mat-panel-title>
+		              </mat-expansion-panel-header>
+		              <div class="panel-body">
+		                @if (!isUpdate) {
+		                  <div class="text-minor-heading-small mt-4">Licence Information</div>
+		                  <div class="row mt-0">
+		                    <div class="col-lg-3 col-md-12">
+		                      <div class="text-label d-block text-muted">Licence Term</div>
+		                      <div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
+		                    </div>
+		                    <div class="col-lg-3 col-md-12">
+		                      <div class="text-label d-block text-muted">Fee</div>
+		                      <div class="summary-text-data">
+		                        {{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+		                      </div>
+		                    </div>
+		                  </div>
+		                }
+		                <app-form-licence-category-summary
+		                  [categoryList]="categoryList"
+		                  [showDivider]="!isUpdate"
+		                ></app-form-licence-category-summary>
+		                @if (isPrivateInvestigator && !isBusinessLicenceSoleProprietor) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Private Investigator Information</div>
+		                  <div class="row mt-0">
+		                    <div class="col-lg-5 col-md-12">
+		                      <div class="text-label d-block text-muted">Manager Name</div>
+		                      <div class="summary-text-data">
+		                        {{ privateInvestigatorName | default }}
+		                      </div>
+		                    </div>
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Licence Number</div>
+		                      <div class="summary-text-data">
+		                        {{ privateInvestigatorLicenceNumber | default }}
+		                      </div>
+		                    </div>
+		                    <div class="col-lg-3 col-md-12">
+		                      <div class="text-label d-block text-muted">Expiry Date</div>
+		                      <div class="summary-text-data">
+		                        {{ privateInvestigatorExpiryDate | formatDate | default }}
+		                      </div>
+		                    </div>
+		                  </div>
+		                }
+		                @if (isDogs) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Dogs Authorization</div>
+		                  <div class="row mt-0">
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Request to Use Dogs</div>
+		                      <div class="summary-text-data">{{ useDogs }}</div>
+		                    </div>
+		                    @if (useDogs === booleanTypeCodes.Yes) {
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Reason</div>
+		                        <div class="summary-text-data">
+		                          <ul class="m-0">
+		                            @if (isDogsPurposeProtection) {
+		                              <li>Protection</li>
+		                            }
+		                            @if (isDogsPurposeDetectionDrugs) {
+		                              <li>Detection - Drugs</li>
+		                            }
+		                            @if (isDogsPurposeDetectionExplosives) {
+		                              <li>Detection - Explosives</li>
+		                            }
+		                          </ul>
+		                        </div>
+		                      </div>
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Dog Validation Certificate</div>
+		                        <div class="summary-text-data">
+		                          <ul class="m-0">
+		                            @for (doc of dogsPurposeAttachments; track doc; let i = $index) {
+		                              <li>{{ doc.name }}</li>
+		                            }
+		                          </ul>
+		                        </div>
+		                      </div>
+		                    }
+		                  </div>
+		                }
+		                @if (isAnyDocuments) {
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Documents Uploaded</div>
+		                  <div class="row mt-0">
+		                    @if (showArmouredCarGuard) {
+		                      <div class="col-lg-6 col-md-12">
+		                        <div class="text-label d-block text-muted">
+		                          {{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
+		                        </div>
+		                        <div class="summary-text-data">
+		                          <ul class="m-0">
+		                            @for (doc of categoryArmouredCarGuardAttachments; track doc; let i = $index) {
+		                              <li>{{ doc.name }}</li>
+		                            }
+		                          </ul>
+		                        </div>
+		                      </div>
+		                    }
+		                  </div>
+		                }
+		              </div>
+		            </mat-expansion-panel>
+		            @if (!isBusinessLicenceSoleProprietor) {
+		              <mat-expansion-panel class="mb-2" [expanded]="true">
+		                <mat-expansion-panel-header>
+		                  <mat-panel-title class="review-panel-title">
+		                    <mat-toolbar class="d-flex justify-content-between">
+		                      <div class="panel-header">Contact Information</div>
+		                      @if (showEditButton) {
+		                        <button
+		                          mat-mini-fab
+		                          color="primary"
+		                          class="go-to-step-button"
+		                          matTooltip="Go to Step 3"
+		                          aria-label="Go to Step 3"
+		                          (click)="$event.stopPropagation(); onEditStep(2)"
+		                          >
+		                          <mat-icon>edit</mat-icon>
+		                        </button>
+		                      }
+		                    </mat-toolbar>
+		                  </mat-panel-title>
+		                </mat-expansion-panel-header>
+		                <div class="panel-body">
+		                  <div class="text-minor-heading-small mt-4">Business Manager Information</div>
+		                  <div class="row mt-0">
+		                    <div class="col-lg-5 col-md-12">
+		                      <div class="text-label d-block text-muted">Name</div>
+		                      <div class="summary-text-data">
+		                        {{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
+		                        {{ businessManagerMiddleName2 }}
+		                        {{ businessManagerSurname }}
+		                      </div>
+		                    </div>
+		                    <div class="col-lg-4 col-md-12">
+		                      <div class="text-label d-block text-muted">Email Address</div>
+		                      <div class="summary-text-data">
+		                        {{ businessManagerEmailAddress | default }}
+		                      </div>
+		                    </div>
+		                    <div class="col-lg-3 col-md-12">
+		                      <div class="text-label d-block text-muted">Phone Number</div>
+		                      <div class="summary-text-data">
+		                        {{ businessManagerPhoneNumber | formatPhoneNumber | default }}
+		                      </div>
+		                    </div>
+		                  </div>
+		                  @if (!applicantIsBizManager) {
+		                    <mat-divider class="mt-3 mb-2"></mat-divider>
+		                    <div class="text-minor-heading-small">Your Information</div>
+		                    <div class="row mt-0">
+		                      <div class="col-lg-5 col-md-12">
+		                        <div class="text-label d-block text-muted">Name</div>
+		                        <div class="summary-text-data">
+		                          {{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
+		                          {{ yourContactSurname }}
+		                        </div>
+		                      </div>
+		                      <div class="col-lg-4 col-md-12">
+		                        <div class="text-label d-block text-muted">Email Address</div>
+		                        <div class="summary-text-data">
+		                          {{ yourContactEmailAddress | default }}
+		                        </div>
+		                      </div>
+		                      <div class="col-lg-3 col-md-12">
+		                        <div class="text-label d-block text-muted">Phone Number</div>
+		                        <div class="summary-text-data">
+		                          {{ yourContactPhoneNumber | formatPhoneNumber | default }}
+		                        </div>
+		                      </div>
+		                    </div>
+		                  }
+		                </div>
+		              </mat-expansion-panel>
+		            }
+		            @if (!isUpdate && !isBusinessLicenceSoleProprietor) {
+		              <mat-expansion-panel class="mb-2" [expanded]="true">
+		                <mat-expansion-panel-header>
+		                  <mat-panel-title class="review-panel-title">
+		                    <mat-toolbar class="d-flex justify-content-between">
+		                      <div class="panel-header">Controlling Members, Business Managers & Employees</div>
+		                      @if (showEditButton) {
+		                        <button
+		                          mat-mini-fab
+		                          color="primary"
+		                          class="go-to-step-button"
+		                          matTooltip="Go to Step 4"
+		                          aria-label="Go to Step 4"
+		                          (click)="$event.stopPropagation(); onEditStep(3)"
+		                          >
+		                          <mat-icon>edit</mat-icon>
+		                        </button>
+		                      }
+		                    </mat-toolbar>
+		                  </mat-panel-title>
+		                </mat-expansion-panel-header>
+		                <div class="panel-body">
+		                  <div class="text-minor-heading-small mt-4 mb-2">Active Security Worker Licence Holders</div>
+		                  <div class="row summary-text-data mt-0">
+		                    @if (membersWithSwlList.length > 0) {
+		                      @for (member of membersWithSwlList; track member; let i = $index) {
+		                        <div class="col-xl-6 col-lg-12">
+		                          <ul class="m-0">
+		                            <li>{{ member.licenceHolderName }} - {{ member.licenceNumber }}</li>
+		                          </ul>
+		                        </div>
+		                      }
+		                    } @else {
+		                      <div class="col-12">None</div>
+		                    }
+		                  </div>
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small mb-2">Members who require Criminal Record Checks</div>
+		                  <div class="row summary-text-data mt-0">
+		                    @if (membersWithoutSwlList.length > 0) {
+		                      @for (member of membersWithoutSwlList; track member; let i = $index) {
+		                        <div class="col-xl-6 col-lg-12">
+		                          <ul class="m-0">
+		                            <li style="word-break: break-all;">
+		                              {{ member.licenceHolderName }} -
+		                              {{ member.emailAddress ? member.emailAddress : 'No email address' }}
+		                            </li>
+		                          </ul>
+		                        </div>
+		                      }
+		                    } @else {
+		                      <div class="col-12">None</div>
+		                    }
+		                  </div>
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <app-common-business-employees-summary
+		                    [businessModelData]="businessModelData"
+		                  ></app-common-business-employees-summary>
+		                  <mat-divider class="mt-3 mb-2"></mat-divider>
+		                  <div class="text-minor-heading-small">Corporate Registry Documents</div>
+		                  <div class="row">
+		                    <div class="col-12">
+		                      <div class="text-label d-block text-muted">Documents</div>
+		                      <div class="summary-text-data">
+		                        <ul class="m-0">
+		                          @for (doc of corporateRegistryDocumentsAttachments; track doc; let i = $index) {
+		                            <li>{{ doc.name }}</li>
+		                          }
+		                        </ul>
+		                      </div>
+		                    </div>
+		                  </div>
+		                </div>
+		              </mat-expansion-panel>
+		            }
+		            @if (isUpdate && !isBusinessLicenceSoleProprietor) {
+		              <mat-expansion-panel class="mb-2" [expanded]="true">
+		                <mat-expansion-panel-header>
+		                  <mat-panel-title class="review-panel-title">
+		                    <mat-toolbar class="d-flex justify-content-between">
+		                      <div class="panel-header">Employees</div>
+		                    </mat-toolbar>
+		                  </mat-panel-title>
+		                </mat-expansion-panel-header>
+		                <div class="panel-body">
+		                  <app-common-business-employees-summary
+		                    [businessModelData]="businessModelData"
+		                  ></app-common-business-employees-summary>
+		                </div>
+		              </mat-expansion-panel>
+		            }
+		            @if (!isSoleProprietorSimultaneousFlow && isBusinessLicenceSoleProprietor) {
+		              <mat-expansion-panel class="mb-2" [expanded]="true">
+		                <mat-expansion-panel-header>
+		                  <mat-panel-title class="review-panel-title">
+		                    <mat-toolbar class="d-flex justify-content-between">
+		                      <div class="panel-header">Employees</div>
+		                      @if (showEditButton) {
+		                        <button
+		                          mat-mini-fab
+		                          color="primary"
+		                          class="go-to-step-button"
+		                          matTooltip="Go to Step 3"
+		                          aria-label="Go to Step 3"
+		                          (click)="$event.stopPropagation(); onEditStep(2)"
+		                          >
+		                          <mat-icon>edit</mat-icon>
+		                        </button>
+		                      }
+		                    </mat-toolbar>
+		                  </mat-panel-title>
+		                </mat-expansion-panel-header>
+		                <div class="panel-body">
+		                  <app-common-business-employees-summary
+		                    [businessModelData]="businessModelData"
+		                  ></app-common-business-employees-summary>
+		                </div>
+		              </mat-expansion-panel>
+		            }
+		          </mat-accordion>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		}
+		`,
 	styles: [
 		`
 			.mat-expansion-panel {

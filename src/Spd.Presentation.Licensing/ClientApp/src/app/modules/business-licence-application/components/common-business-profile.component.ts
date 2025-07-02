@@ -11,141 +11,144 @@ import { BranchResponse, BusinessBcBranchesComponent } from './business-bc-branc
 	selector: 'app-common-business-profile',
 	template: `
 		<div class="row">
-			<div class="col-12">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>Business Information</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<app-common-business-information
-									[form]="businessInformationFormGroup"
-									[isReadonly]="isReadonly"
-								></app-common-business-information>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
-
-			<div class="col-12" *ngIf="!isBusinessLicenceSoleProprietor">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>Business Manager</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<app-common-business-manager
-									[form]="businessManagerFormGroup"
-									[isReadonly]="isReadonly"
-								></app-common-business-manager>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>Mailing Address</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<div class="mb-4 text-primary-color">
-									To update your mailing address, please <a [href]="bceidUrl" target="_blank">visit BCeID</a>.
-								</div>
-
-								<app-form-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-form-address>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>Business Address</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<div class="mb-4 text-primary-color">
-									Provide your business address, if different from your mailing address.
-								</div>
-
-								<app-form-address-and-is-same-flag
-									[form]="businessAddressFormGroup"
-									[isReadonly]="isReadonly"
-									[isCheckboxReadOnly]="isReadonly"
-									isAddressTheSameLabel="The business address and mailing address are the same"
-								></app-form-address-and-is-same-flag>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
-
-			<div class="col-12" *ngIf="!showBcBusinessAddress">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>B.C. Business Address</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<app-alert type="info" icon="" [showBorder]="false">
-									Provide an address in British Columbia for document service.
-								</app-alert>
-
-								<app-form-address
-									[form]="bcBusinessAddressFormGroup"
-									[isWideView]="true"
-									[isReadonly]="isReadonly"
-								></app-form-address>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
-
-			<div class="col-12" *ngIf="!isBusinessLicenceSoleProprietor">
-				<section>
-					<mat-accordion>
-						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title>Branches in B.C.</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="mt-3">
-								<app-business-bc-branches
-									[form]="branchesInBcFormGroup"
-									[isReadonly]="isReadonly"
-									(branchChange)="onBranchChange()"
-								></app-business-bc-branches>
-
-								<div class="mt-3" *ngIf="!isBusinessBcBranchesValid">
-									<app-alert type="danger" icon="dangerous">
-										Some branch details for your organization are incomplete. Edit the marked branches and provide the
-										missing information before proceeding.
-									</app-alert>
-								</div>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</section>
-			</div>
+		  <div class="col-12">
+		    <section>
+		      <mat-accordion>
+		        <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		          <mat-expansion-panel-header>
+		            <mat-panel-title>Business Information</mat-panel-title>
+		          </mat-expansion-panel-header>
+		
+		          <div class="mt-3">
+		            <app-common-business-information
+		              [form]="businessInformationFormGroup"
+		              [isReadonly]="isReadonly"
+		            ></app-common-business-information>
+		          </div>
+		        </mat-expansion-panel>
+		      </mat-accordion>
+		    </section>
+		  </div>
+		
+		  @if (!isBusinessLicenceSoleProprietor) {
+		    <div class="col-12">
+		      <section>
+		        <mat-accordion>
+		          <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		            <mat-expansion-panel-header>
+		              <mat-panel-title>Business Manager</mat-panel-title>
+		            </mat-expansion-panel-header>
+		            <div class="mt-3">
+		              <app-common-business-manager
+		                [form]="businessManagerFormGroup"
+		                [isReadonly]="isReadonly"
+		              ></app-common-business-manager>
+		            </div>
+		          </mat-expansion-panel>
+		        </mat-accordion>
+		      </section>
+		    </div>
+		  }
+		
+		  <div class="col-lg-6 col-md-12">
+		    <section>
+		      <mat-accordion>
+		        <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		          <mat-expansion-panel-header>
+		            <mat-panel-title>Mailing Address</mat-panel-title>
+		          </mat-expansion-panel-header>
+		
+		          <div class="mt-3">
+		            <div class="mb-4 text-primary-color">
+		              To update your mailing address, please <a [href]="bceidUrl" target="_blank">visit BCeID</a>.
+		            </div>
+		
+		            <app-form-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-form-address>
+		          </div>
+		        </mat-expansion-panel>
+		      </mat-accordion>
+		    </section>
+		  </div>
+		
+		  <div class="col-lg-6 col-md-12">
+		    <section>
+		      <mat-accordion>
+		        <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		          <mat-expansion-panel-header>
+		            <mat-panel-title>Business Address</mat-panel-title>
+		          </mat-expansion-panel-header>
+		
+		          <div class="mt-3">
+		            <div class="mb-4 text-primary-color">
+		              Provide your business address, if different from your mailing address.
+		            </div>
+		
+		            <app-form-address-and-is-same-flag
+		              [form]="businessAddressFormGroup"
+		              [isReadonly]="isReadonly"
+		              [isCheckboxReadOnly]="isReadonly"
+		              isAddressTheSameLabel="The business address and mailing address are the same"
+		            ></app-form-address-and-is-same-flag>
+		          </div>
+		        </mat-expansion-panel>
+		      </mat-accordion>
+		    </section>
+		  </div>
+		
+		  @if (!showBcBusinessAddress) {
+		    <div class="col-12">
+		      <section>
+		        <mat-accordion>
+		          <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		            <mat-expansion-panel-header>
+		              <mat-panel-title>B.C. Business Address</mat-panel-title>
+		            </mat-expansion-panel-header>
+		            <div class="mt-3">
+		              <app-alert type="info" icon="" [showBorder]="false">
+		                Provide an address in British Columbia for document service.
+		              </app-alert>
+		              <app-form-address
+		                [form]="bcBusinessAddressFormGroup"
+		                [isWideView]="true"
+		                [isReadonly]="isReadonly"
+		              ></app-form-address>
+		            </div>
+		          </mat-expansion-panel>
+		        </mat-accordion>
+		      </section>
+		    </div>
+		  }
+		
+		  @if (!isBusinessLicenceSoleProprietor) {
+		    <div class="col-12">
+		      <section>
+		        <mat-accordion>
+		          <mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+		            <mat-expansion-panel-header>
+		              <mat-panel-title>Branches in B.C.</mat-panel-title>
+		            </mat-expansion-panel-header>
+		            <div class="mt-3">
+		              <app-business-bc-branches
+		                [form]="branchesInBcFormGroup"
+		                [isReadonly]="isReadonly"
+		                (branchChange)="onBranchChange()"
+		              ></app-business-bc-branches>
+		              @if (!isBusinessBcBranchesValid) {
+		                <div class="mt-3">
+		                  <app-alert type="danger" icon="dangerous">
+		                    Some branch details for your organization are incomplete. Edit the marked branches and provide the
+		                    missing information before proceeding.
+		                  </app-alert>
+		                </div>
+		              }
+		            </div>
+		          </mat-expansion-panel>
+		        </mat-accordion>
+		      </section>
+		    </div>
+		  }
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

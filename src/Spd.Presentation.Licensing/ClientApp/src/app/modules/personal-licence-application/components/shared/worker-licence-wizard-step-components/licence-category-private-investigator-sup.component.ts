@@ -11,102 +11,107 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-licence-category-private-investigator-sup',
 	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
-
+		
 		<form [formGroup]="form" novalidate>
-			<div class="alert alert-category d-flex" role="alert">
-				<div>
-					<div class="text-minor-heading mb-2">Training:</div>
-					To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
-					requirements:
-
-					<mat-radio-group
-						class="category-radio-group"
-						aria-label="Select an option"
-						formControlName="requirementCode"
-						(change)="onChangeDocumentType($event)"
-					>
-						<mat-radio-button
+		  <div class="alert alert-category d-flex" role="alert">
+		    <div>
+		      <div class="text-minor-heading mb-2">Training:</div>
+		      To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
+		      requirements:
+		
+		      <mat-radio-group
+		        class="category-radio-group"
+		        aria-label="Select an option"
+		        formControlName="requirementCode"
+		        (change)="onChangeDocumentType($event)"
+		        >
+		        <mat-radio-button
 							[value]="
 								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
 							"
-						>
-							Successful completion of the Private Security Training Network (PSTnetwork) online course
-							<i>Introduction to Private Investigation</i> and proof of final exam completion
-						</mat-radio-button>
-						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button
+		          >
+		          Successful completion of the Private Security Training Network (PSTnetwork) online course
+		          <i>Introduction to Private Investigation</i> and proof of final exam completion
+		        </mat-radio-button>
+		        <mat-divider class="my-2"></mat-divider>
+		        <mat-radio-button
 							[value]="
 								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
 							"
-						>
-							Completion of courses or demonstrated knowledge in the areas of:
-							<ul>
-								<li>Criminal law</li>
-								<li>Civil law and process</li>
-								<li>Human rights legislation</li>
-								<li>Information and privacy legislation</li>
-								<li>Evidence recognition, presentation and protocols</li>
-								<li>Interviewing techniques</li>
-								<li>Report writing</li>
-								<li>Documentary research (electronic and hard copy), and</li>
-								<li>Surveillance techniques</li>
-							</ul>
-						</mat-radio-button>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
-							form.get('requirementCode')?.invalid &&
-							form.get('requirementCode')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-
-			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
-					<span
-						*ngIf="
-							requirementCode.value ===
-							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
-						"
-					>
-						Upload proof of course completion
-					</span>
-					<span
-						*ngIf="
-							requirementCode.value ===
-							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
-						"
-					>
-						Upload document(s) providing proof of course completion or equivalent knowledge
-					</span>
-				</div>
-
-				<div class="my-2">
-					<app-file-upload
-						(fileUploaded)="onFileUploaded($event)"
-						(fileRemoved)="onFileRemoved()"
-						[control]="attachments"
-						[maxNumberOfFiles]="10"
-						#attachmentsRef
-						[files]="attachments.value"
-					></app-file-upload>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-							form.get('attachments')?.invalid &&
-							form.get('attachments')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-		</form>
-	`,
+		          >
+		          Completion of courses or demonstrated knowledge in the areas of:
+		          <ul>
+		            <li>Criminal law</li>
+		            <li>Civil law and process</li>
+		            <li>Human rights legislation</li>
+		            <li>Information and privacy legislation</li>
+		            <li>Evidence recognition, presentation and protocols</li>
+		            <li>Interviewing techniques</li>
+		            <li>Report writing</li>
+		            <li>Documentary research (electronic and hard copy), and</li>
+		            <li>Surveillance techniques</li>
+		          </ul>
+		        </mat-radio-button>
+		      </mat-radio-group>
+		      @if (
+		        (form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+		        form.get('requirementCode')?.invalid &&
+		        form.get('requirementCode')?.hasError('required')
+		        ) {
+		        <mat-error
+		          class="mat-option-error"
+		          >This is required</mat-error
+		          >
+		        }
+		      </div>
+		    </div>
+		
+		    @if (requirementCode.value) {
+		      <div @showHideTriggerSlideAnimation>
+		        <div class="text-minor-heading mb-2">
+		          @if (
+		            requirementCode.value ===
+		            privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
+		            ) {
+		            <span
+		              >
+		              Upload proof of course completion
+		            </span>
+		          }
+		          @if (
+		            requirementCode.value ===
+		            privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
+		            ) {
+		            <span
+		              >
+		              Upload document(s) providing proof of course completion or equivalent knowledge
+		            </span>
+		          }
+		        </div>
+		        <div class="my-2">
+		          <app-file-upload
+		            (fileUploaded)="onFileUploaded($event)"
+		            (fileRemoved)="onFileRemoved()"
+		            [control]="attachments"
+		            [maxNumberOfFiles]="10"
+		            #attachmentsRef
+		            [files]="attachments.value"
+		          ></app-file-upload>
+		          @if (
+		            (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		            form.get('attachments')?.invalid &&
+		            form.get('attachments')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >This is required</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		      }
+		    </form>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

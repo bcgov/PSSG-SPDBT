@@ -9,44 +9,43 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 	selector: 'app-steps-business-licence-updates',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-business-licence-category
-					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-					[applicationTypeCode]="applicationTypeCodes.Update"
-				></app-step-business-licence-category>
-
-				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
-				<mat-step>
-					<app-step-business-licence-manager-information
-						[applicationTypeCode]="applicationTypeCodes.Update"
-					></app-step-business-licence-manager-information>
-
-					<app-wizard-footer
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
-					></app-wizard-footer>
-				</mat-step>
-			</ng-container>
-
-			<mat-step>
-				<app-step-business-licence-employees
-					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-					[applicationTypeCode]="applicationTypeCodes.Update"
-				></app-step-business-licence-employees>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-business-licence-category
+		      [isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+		      [applicationTypeCode]="applicationTypeCodes.Update"
+		    ></app-step-business-licence-category>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (!isBusinessLicenceSoleProprietor) {
+		    <mat-step>
+		      <app-step-business-licence-manager-information
+		        [applicationTypeCode]="applicationTypeCodes.Update"
+		      ></app-step-business-licence-manager-information>
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-business-licence-employees
+		      [isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+		      [applicationTypeCode]="applicationTypeCodes.Update"
+		    ></app-step-business-licence-employees>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,
