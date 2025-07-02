@@ -18,318 +18,317 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	selector: 'app-step-business-licence-category',
 	template: `
 		<app-step-section [heading]="title" [subheading]="infoTitle">
-		  <form [formGroup]="form" novalidate>
-		    <div class="row">
-		      <div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-		        <div class="row">
-		          <div class="col-12 mb-3">
-		            <app-alert type="info" icon="info">
-		              Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
-		              categories.
-		            </app-alert>
-		          </div>
-		
-		          <div class="col-md-8 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Category</mat-label>
-		              <mat-select formControlName="categoryCode">
-		                @for (item of validCategoryList; track item; let i = $index) {
-		                  <mat-option [value]="item.code">
-		                    {{ item.desc }}
-		                  </mat-option>
-		                }
-		              </mat-select>
-		            </mat-form-field>
-		            @if (isDirtyAndInvalid) {
-		              <mat-error class="mat-option-error">
-		                At least one category must be added. Click 'Add Category' after selecting a category.
-		              </mat-error>
-		            }
-		          </div>
-		          @if (categoryList.length < 6) {
-		            <div class="col-md-4 col-sm-12">
-		              <button
-		                mat-stroked-button
-		                color="primary"
-		                class="large my-2"
-		                aria-label="Add a category"
-		                (click)="onAddCategory()"
-		                >
-		                Add Category
-		              </button>
-		            </div>
-		          }
-		          @if (categoryList.length >= 6) {
-		            <div class="col-md-4 col-sm-12">
-		              <app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
-		            </div>
-		          }
-		        </div>
-		      </div>
-		    </div>
-		
-		    <div class="row">
-		      <div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
-		        @if (showInsurance) {
-		          <div class="mt-2">
-		            <app-alert type="warning" icon="warning">
-		              Security businesses are required to carry and maintain general liability insurance in an amount not less
-		              than $1,000,000. Please ensure you have the appropriate insurance. You may be asked to provide proof of
-		              insurance by Security Services at any time while licensed.
-		            </app-alert>
-		          </div>
-		        }
-		
-		        @if (showLocksmithMessage) {
-		          <div class="mt-2">
-		            <app-alert type="success" icon="">
-		              The <strong>Locksmith</strong> business licence includes the licence category
-		              <strong>Electronic Locking Device Installer</strong>.
-		            </app-alert>
-		          </div>
-		        }
-		
-		        @if (showSecurityAlarmInstallerMessage) {
-		          <div class="mt-2">
-		            <app-alert type="success" icon="">
-		              The <strong>Security Alarm Installer</strong> business licence includes the following licence
-		              categories:
-		              <strong
-		                >Security Alarm Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television
-		                Installer, and Electronic Locking Device Installer</strong
-		                >.
-		              </app-alert>
-		            </div>
-		          }
-		
-		          @if (showSecurityAlarmResponseMessage) {
-		            <div class="mt-2">
-		              <app-alert type="success" icon="">
-		                The <strong>Security Alarm Response</strong> business licence includes the licence category
-		                <strong>Security Alarm Monitor</strong>.
-		              </app-alert>
-		            </div>
-		          }
-		
-		          @if (showSecurityGuardMessage) {
-		            <div class="mt-2">
-		              <app-alert type="success" icon="">
-		                The <strong>Security Guard</strong> business licence includes the following licence categories:
-		                <strong>Security Alarm Monitor and Security Alarm Response</strong>.
-		              </app-alert>
-		            </div>
-		          }
-		
-		          <mat-accordion multi="false">
-		            @if (this.ArmouredCarGuard.value) {
-		              <div class="row">
-		                <div class="col-12">
-		                  <mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
-		                    <mat-expansion-panel-header>
-		                      <mat-panel-title>
-		                        @if (
-		                          categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
-		                          ) {
-		                          <mat-icon
-		                            class="error-icon"
-		                            color="warn"
-		                            matTooltip="One or more errors exist in this category"
-		                            >error</mat-icon
-		                            >
-		                            }{{ armouredCarGuardCode | options: 'WorkerCategoryTypes' }}
-		                          </mat-panel-title>
-		                        </mat-expansion-panel-header>
-		                        <div class="row my-3">
-		                          <div class="col-12 mx-auto">
-		                            <button
-		                              mat-stroked-button
-		                              class="xlarge w-auto float-end"
-		                              aria-label="Remove category"
-		                              (click)="onRemove(armouredCarGuardCode)"
-		                              >
-		                              <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                            </button>
-		                          </div>
-		                        </div>
-		                        <app-business-category-armoured-car-guard></app-business-category-armoured-car-guard>
-		                      </mat-expansion-panel>
-		                    </div>
-		                  </div>
-		                }
-		
-		                @if (showBodyArmourSales) {
-		                  <app-form-licence-category-panel-simple
-		                    [categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
-		                    [expandCategory]="expandBodyArmourSales"
-		                    (removeCategory)="onRemove($event)"
-		                  ></app-form-licence-category-panel-simple>
-		                }
-		
-		                @if (showClosedCircuitTelevisionInstaller) {
-		                  <app-form-licence-category-panel-simple
-		                    [categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
-		                    [expandCategory]="expandClosedCircuitTelevisionInstaller"
-		                    (removeCategory)="onRemove($event)"
-		                  ></app-form-licence-category-panel-simple>
-		                }
-		
-		                @if (showElectronicLockingDeviceInstaller) {
-		                  <app-form-licence-category-panel-simple
-		                    [categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
-		                    [expandCategory]="expandElectronicLockingDeviceInstaller"
-		                    (removeCategory)="onRemove($event)"
-		                  ></app-form-licence-category-panel-simple>
-		                }
-		
-		                @if (showLocksmith) {
-		                  <app-form-licence-category-panel-simple
-		                    [categoryTypeCode]="workerCategoryTypeCodes.Locksmith"
-		                    [expandCategory]="expandLocksmith"
-		                    (removeCategory)="onRemove($event)"
-		                  ></app-form-licence-category-panel-simple>
-		                }
-		
-		                @if (showPrivateInvestigator) {
-		                  <div class="row">
-		                    <div class="col-12">
-		                      <mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
-		                        <mat-expansion-panel-header>
-		                          <mat-panel-title>
-		                            @if (
-		                              categoryPrivateInvestigatorFormGroup?.touched &&
-		                              categoryPrivateInvestigatorFormGroup?.invalid
-		                              ) {
-		                              <mat-icon
-		                                class="error-icon"
-		                                color="warn"
-		                                matTooltip="One or more errors exist in this category"
-		                                >error</mat-icon
-		                                >
-		                                }{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
-		                              </mat-panel-title>
-		                            </mat-expansion-panel-header>
-		                            <div class="row my-3">
-		                              <div class="col-12 mx-auto">
-		                                <button
-		                                  mat-stroked-button
-		                                  class="xlarge w-auto float-end"
-		                                  aria-label="Remove category"
-		                                  (click)="onRemove(privateInvestigatorCode)"
-		                                  >
-		                                  <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                </button>
-		                              </div>
-		                            </div>
-		                            <app-business-category-private-investigator></app-business-category-private-investigator>
-		                          </mat-expansion-panel>
-		                        </div>
-		                      </div>
-		                    }
-		
-		                    @if (showSecurityAlarmInstaller) {
-		                      <app-form-licence-category-panel-simple
-		                        [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstaller"
-		                        [expandCategory]="expandSecurityAlarmInstaller"
-		                        (removeCategory)="onRemove($event)"
-		                      ></app-form-licence-category-panel-simple>
-		                    }
-		
-		                    @if (showSecurityAlarmMonitor) {
-		                      <app-form-licence-category-panel-simple
-		                        [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
-		                        [expandCategory]="expandSecurityAlarmMonitor"
-		                        (removeCategory)="onRemove($event)"
-		                      ></app-form-licence-category-panel-simple>
-		                    }
-		
-		                    @if (showSecurityAlarmResponse) {
-		                      <app-form-licence-category-panel-simple
-		                        [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
-		                        [expandCategory]="expandSecurityAlarmResponse"
-		                        (removeCategory)="onRemove($event)"
-		                      ></app-form-licence-category-panel-simple>
-		                    }
-		
-		                    @if (showSecurityAlarmSales) {
-		                      <app-form-licence-category-panel-simple
-		                        [categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
-		                        [expandCategory]="expandSecurityAlarmSales"
-		                        (removeCategory)="onRemove($event)"
-		                      ></app-form-licence-category-panel-simple>
-		                    }
-		
-		                    @if (showSecurityConsultant) {
-		                      <app-form-licence-category-panel-simple
-		                        [categoryTypeCode]="workerCategoryTypeCodes.SecurityConsultant"
-		                        [expandCategory]="expandSecurityConsultant"
-		                        (removeCategory)="onRemove($event)"
-		                      ></app-form-licence-category-panel-simple>
-		                    }
-		
-		                    @if (showSecurityGuard) {
-		                      <div class="row">
-		                        <div class="col-12">
-		                          <mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
-		                            <mat-expansion-panel-header>
-		                              <mat-panel-title>
-		                                @if (categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid) {
-		                                  <mat-icon
-		                                    class="error-icon"
-		                                    color="warn"
-		                                    matTooltip="One or more errors exist in this category"
-		                                    >error</mat-icon
-		                                    >
-		                                  }
-		                                  {{ securityGuardCode | options: 'WorkerCategoryTypes' }}
-		                                </mat-panel-title>
-		                              </mat-expansion-panel-header>
-		                              <div class="row my-3">
-		                                <div class="col-12 mx-auto">
-		                                  <button
-		                                    mat-stroked-button
-		                                    class="xlarge w-auto float-end"
-		                                    aria-label="Remove category"
-		                                    (click)="onRemove(securityGuardCode)"
-		                                    >
-		                                    <mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
-		                                  </button>
-		                                </div>
-		                              </div>
-		                              <app-business-category-security-guard></app-business-category-security-guard>
-		                            </mat-expansion-panel>
-		                          </div>
-		                        </div>
-		                      }
-		                    </mat-accordion>
-		
-		                    @if (showInsurance) {
-		                      <div class="my-2" @showHideTriggerSlideAnimation>
-		                        <mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-		                        <div class="text-minor-heading mb-2">Upload proof of insurance</div>
-		                        <div>The insurance document must also include:</div>
-		                        <ul>
-		                          <li>The business name</li>
-		                          <li>The business location(s)</li>
-		                          <li>The expiry date of the insurance</li>
-		                          <li>Proof that the insurance is valid in B.C.</li>
-		                        </ul>
-		                        <app-file-upload
-		                          (fileUploaded)="onFileUploaded($event)"
-		                          (fileRemoved)="onFileRemoved()"
-		                          [control]="attachments"
-		                          [maxNumberOfFiles]="10"
-		                          [files]="attachments.value"
-		                        ></app-file-upload>
-		                        @if (showInsuranceError) {
-		                          <mat-error class="mat-option-error">This is required</mat-error>
-		                        }
-		                      </div>
-		                    }
-		                  </div>
-		                </div>
-		              </form>
-		            </app-step-section>
-		`,
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+						<div class="row">
+							<div class="col-12 mb-3">
+								<app-alert type="info" icon="info">
+									Select a category from the dropdown and then click 'Add Category'. Repeat this process for multiple
+									categories.
+								</app-alert>
+							</div>
+
+							<div class="col-md-8 col-sm-12">
+								<mat-form-field>
+									<mat-label>Category</mat-label>
+									<mat-select formControlName="categoryCode">
+										@for (item of validCategoryList; track item; let i = $index) {
+											<mat-option [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										}
+									</mat-select>
+								</mat-form-field>
+								@if (isDirtyAndInvalid) {
+									<mat-error class="mat-option-error">
+										At least one category must be added. Click 'Add Category' after selecting a category.
+									</mat-error>
+								}
+							</div>
+							@if (categoryList.length < 6) {
+								<div class="col-md-4 col-sm-12">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large my-2"
+										aria-label="Add a category"
+										(click)="onAddCategory()"
+									>
+										Add Category
+									</button>
+								</div>
+							}
+							@if (categoryList.length >= 6) {
+								<div class="col-md-4 col-sm-12">
+									<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
+						@if (showInsurance) {
+							<div class="mt-2">
+								<app-alert type="warning" icon="warning">
+									Security businesses are required to carry and maintain general liability insurance in an amount not
+									less than $1,000,000. Please ensure you have the appropriate insurance. You may be asked to provide
+									proof of insurance by Security Services at any time while licensed.
+								</app-alert>
+							</div>
+						}
+
+						@if (showLocksmithMessage) {
+							<div class="mt-2">
+								<app-alert type="success" icon="">
+									The <strong>Locksmith</strong> business licence includes the licence category
+									<strong>Electronic Locking Device Installer</strong>.
+								</app-alert>
+							</div>
+						}
+
+						@if (showSecurityAlarmInstallerMessage) {
+							<div class="mt-2">
+								<app-alert type="success" icon="">
+									The <strong>Security Alarm Installer</strong> business licence includes the following licence
+									categories:
+									<strong
+										>Security Alarm Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television
+										Installer, and Electronic Locking Device Installer</strong
+									>.
+								</app-alert>
+							</div>
+						}
+
+						@if (showSecurityAlarmResponseMessage) {
+							<div class="mt-2">
+								<app-alert type="success" icon="">
+									The <strong>Security Alarm Response</strong> business licence includes the licence category
+									<strong>Security Alarm Monitor</strong>.
+								</app-alert>
+							</div>
+						}
+
+						@if (showSecurityGuardMessage) {
+							<div class="mt-2">
+								<app-alert type="success" icon="">
+									The <strong>Security Guard</strong> business licence includes the following licence categories:
+									<strong>Security Alarm Monitor and Security Alarm Response</strong>.
+								</app-alert>
+							</div>
+						}
+
+						<mat-accordion multi="false">
+							@if (this.ArmouredCarGuard.value) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categoryArmouredCarGuardFormGroup.touched && categoryArmouredCarGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ armouredCarGuardCode | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(armouredCarGuardCode)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-business-category-armoured-car-guard></app-business-category-armoured-car-guard>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showBodyArmourSales) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
+									[expandCategory]="expandBodyArmourSales"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showClosedCircuitTelevisionInstaller) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
+									[expandCategory]="expandClosedCircuitTelevisionInstaller"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showElectronicLockingDeviceInstaller) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
+									[expandCategory]="expandElectronicLockingDeviceInstaller"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showLocksmith) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.Locksmith"
+									[expandCategory]="expandLocksmith"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showPrivateInvestigator) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (
+														categoryPrivateInvestigatorFormGroup.touched && categoryPrivateInvestigatorFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ privateInvestigatorCode | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(privateInvestigatorCode)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-business-category-private-investigator></app-business-category-private-investigator>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+
+							@if (showSecurityAlarmInstaller) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstaller"
+									[expandCategory]="expandSecurityAlarmInstaller"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmMonitor) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
+									[expandCategory]="expandSecurityAlarmMonitor"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmResponse) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
+									[expandCategory]="expandSecurityAlarmResponse"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityAlarmSales) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
+									[expandCategory]="expandSecurityAlarmSales"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityConsultant) {
+								<app-form-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityConsultant"
+									[expandCategory]="expandSecurityConsultant"
+									(removeCategory)="onRemove($event)"
+								></app-form-licence-category-panel-simple>
+							}
+
+							@if (showSecurityGuard) {
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													@if (categorySecurityGuardFormGroup.touched && categorySecurityGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ securityGuardCode | options: 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(securityGuardCode)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+											<app-business-category-security-guard></app-business-category-security-guard>
+										</mat-expansion-panel>
+									</div>
+								</div>
+							}
+						</mat-accordion>
+
+						@if (showInsurance) {
+							<div class="my-2" @showHideTriggerSlideAnimation>
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+								<div class="text-minor-heading mb-2">Upload proof of insurance</div>
+								<div>The insurance document must also include:</div>
+								<ul>
+									<li>The business name</li>
+									<li>The business location(s)</li>
+									<li>The expiry date of the insurance</li>
+									<li>Proof that the insurance is valid in B.C.</li>
+								</ul>
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="10"
+									[files]="attachments.value"
+								></app-file-upload>
+								@if (showInsuranceError) {
+									<mat-error class="mat-option-error">This is required</mat-error>
+								}
+							</div>
+						}
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [
 		`
 			.title {
