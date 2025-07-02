@@ -9,59 +9,65 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-mdra-business-manager',
 	template: `
 		<app-step-section heading="Business manager" [subheading]="subtitle">
-			<div class="row">
-				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info">
-						The business manager is the person responsible for the day to day management of the business.
-					</app-alert>
-
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-12">
-								<mat-form-field>
-									<mat-label>Full Name</mat-label>
-									<input matInput formControlName="bizManagerFullName" [errorStateMatcher]="matcher" maxlength="150" />
-									<mat-error *ngIf="form.get('bizManagerFullName')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Phone Number <span class="optional-label">(optional)</span></mat-label>
-									<input
-										matInput
-										formControlName="bizManagerPhoneNumber"
-										[mask]="phoneMask"
-										[showMaskTyped]="false"
-										[errorStateMatcher]="matcher"
-									/>
-									<mat-error *ngIf="form.get('bizManagerPhoneNumber')?.hasError('mask')"
-										>This must be 10 digits</mat-error
-									>
-								</mat-form-field>
-							</div>
-
-							<div class="col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Email Address <span class="optional-label">(if any)</span></mat-label>
-									<input
-										matInput
-										formControlName="bizManagerEmailAddress"
-										[errorStateMatcher]="matcher"
-										placeholder="name@domain.com"
-										maxlength="75"
-									/>
-									<mat-error *ngIf="form.get('bizManagerEmailAddress')?.hasError('email')">
-										Must be a valid email address
-									</mat-error>
-								</mat-form-field>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</app-step-section>
-	`,
+		  <div class="row">
+		    <div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		      <app-alert type="info" icon="info">
+		        The business manager is the person responsible for the day to day management of the business.
+		      </app-alert>
+		
+		      <form [formGroup]="form" novalidate>
+		        <div class="row">
+		          <div class="col-12">
+		            <mat-form-field>
+		              <mat-label>Full Name</mat-label>
+		              <input matInput formControlName="bizManagerFullName" [errorStateMatcher]="matcher" maxlength="150" />
+		              @if (form.get('bizManagerFullName')?.hasError('required')) {
+		                <mat-error> This is required </mat-error>
+		              }
+		            </mat-form-field>
+		          </div>
+		
+		          <div class="col-lg-6 col-md-12">
+		            <mat-form-field>
+		              <mat-label>Phone Number <span class="optional-label">(optional)</span></mat-label>
+		              <input
+		                matInput
+		                formControlName="bizManagerPhoneNumber"
+		                [mask]="phoneMask"
+		                [showMaskTyped]="false"
+		                [errorStateMatcher]="matcher"
+		                />
+		                @if (form.get('bizManagerPhoneNumber')?.hasError('mask')) {
+		                  <mat-error
+		                    >This must be 10 digits</mat-error
+		                    >
+		                }
+		              </mat-form-field>
+		            </div>
+		
+		            <div class="col-lg-6 col-md-12">
+		              <mat-form-field>
+		                <mat-label>Email Address <span class="optional-label">(if any)</span></mat-label>
+		                <input
+		                  matInput
+		                  formControlName="bizManagerEmailAddress"
+		                  [errorStateMatcher]="matcher"
+		                  placeholder="name@domain.com"
+		                  maxlength="75"
+		                  />
+		                  @if (form.get('bizManagerEmailAddress')?.hasError('email')) {
+		                    <mat-error>
+		                      Must be a valid email address
+		                    </mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		            </div>
+		          </form>
+		        </div>
+		      </div>
+		    </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

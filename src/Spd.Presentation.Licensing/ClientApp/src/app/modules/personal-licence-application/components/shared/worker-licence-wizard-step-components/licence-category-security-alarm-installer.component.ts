@@ -11,88 +11,93 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-licence-category-security-alarm-installer',
 	template: `
 		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
-
+		
 		<form [formGroup]="form" novalidate>
-			<div class="alert alert-category d-flex" role="alert">
-				<div>
-					To qualify for a security alarm installer security worker licence, you must meet one of the following
-					experience requirements:
-
-					<mat-radio-group
-						class="category-radio-group"
-						aria-label="Select an option"
-						formControlName="requirementCode"
-						(change)="onChangeDocumentType($event)"
-					>
-						<mat-radio-button
+		  <div class="alert alert-category d-flex" role="alert">
+		    <div>
+		      To qualify for a security alarm installer security worker licence, you must meet one of the following
+		      experience requirements:
+		
+		      <mat-radio-group
+		        class="category-radio-group"
+		        aria-label="Select an option"
+		        formControlName="requirementCode"
+		        (change)="onChangeDocumentType($event)"
+		        >
+		        <mat-radio-button
 							[value]="
 								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
 							"
-						>
-							Trades Qualification Certificate
-						</mat-radio-button>
-						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button
+		          >
+		          Trades Qualification Certificate
+		        </mat-radio-button>
+		        <mat-divider class="my-2"></mat-divider>
+		        <mat-radio-button
 							[value]="
 								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
 							"
-						>
-							Experience or training equivalent to the Trades Qualification Certificate
-						</mat-radio-button>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
-							form.get('requirementCode')?.invalid &&
-							form.get('requirementCode')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-
-			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
-					<span
-						*ngIf="
-							requirementCode.value ===
-							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
-						"
-					>
-						Upload a copy of your certificate
-					</span>
-					<span
-						*ngIf="
-							requirementCode.value ===
-							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
-						"
-					>
-						Upload document(s) providing proof of equivalent training
-					</span>
-				</div>
-
-				<div class="my-2">
-					<app-file-upload
-						(fileUploaded)="onFileUploaded($event)"
-						(fileRemoved)="onFileRemoved()"
-						[control]="attachments"
-						[maxNumberOfFiles]="10"
-						[files]="attachments.value"
-					></app-file-upload>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-							form.get('attachments')?.invalid &&
-							form.get('attachments')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-		</form>
-	`,
+		          >
+		          Experience or training equivalent to the Trades Qualification Certificate
+		        </mat-radio-button>
+		      </mat-radio-group>
+		      @if (
+		        (form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+		        form.get('requirementCode')?.invalid &&
+		        form.get('requirementCode')?.hasError('required')
+		        ) {
+		        <mat-error
+		          class="mat-option-error"
+		          >This is required</mat-error
+		          >
+		        }
+		      </div>
+		    </div>
+		
+		    @if (requirementCode.value) {
+		      <div @showHideTriggerSlideAnimation>
+		        <div class="text-minor-heading mb-2">
+		          @if (
+		            requirementCode.value ===
+		            securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
+		            ) {
+		            <span
+		              >
+		              Upload a copy of your certificate
+		            </span>
+		          }
+		          @if (
+		            requirementCode.value ===
+		            securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
+		            ) {
+		            <span
+		              >
+		              Upload document(s) providing proof of equivalent training
+		            </span>
+		          }
+		        </div>
+		        <div class="my-2">
+		          <app-file-upload
+		            (fileUploaded)="onFileUploaded($event)"
+		            (fileRemoved)="onFileRemoved()"
+		            [control]="attachments"
+		            [maxNumberOfFiles]="10"
+		            [files]="attachments.value"
+		          ></app-file-upload>
+		          @if (
+		            (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		            form.get('attachments')?.invalid &&
+		            form.get('attachments')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >This is required</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		      }
+		    </form>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

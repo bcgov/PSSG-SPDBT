@@ -11,41 +11,42 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	template: `
 		<div class="text-minor-heading mt-3 mb-2">You must provide the Registrar with:</div>
 		<div class="alert alert-category d-flex" role="alert">
-			<ul class="m-0">
-				<li>Proof you own, lease or rent an approved armoured car</li>
-				<li>Proof you have liability insurance</li>
-				<li>
-					A copy of a safety certificate issued under
-					<a [href]="safetyCertificateChecklistUrl" target="_blank">
-						section 37.04 of the Motor Vehicle Act Regulations (See also s. 4(3)(e) of the Security Services
-						Regulation)</a
-					>.
-				</li>
-			</ul>
-		</div>
-
-		<form [formGroup]="form" novalidate>
-			<div class="text-minor-heading">Upload your documents</div>
-			<div class="my-2">
-				<app-file-upload
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-					[maxNumberOfFiles]="10"
-					[control]="attachments"
-					[files]="attachments.value"
-				></app-file-upload>
-				<mat-error
-					class="mat-option-error"
-					*ngIf="
-						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-						form.get('attachments')?.invalid &&
-						form.get('attachments')?.hasError('required')
-					"
-					>This is required</mat-error
-				>
-			</div>
-		</form>
-	`,
+		  <ul class="m-0">
+		    <li>Proof you own, lease or rent an approved armoured car</li>
+		    <li>Proof you have liability insurance</li>
+		    <li>
+		      A copy of a safety certificate issued under
+		      <a [href]="safetyCertificateChecklistUrl" target="_blank">
+		        section 37.04 of the Motor Vehicle Act Regulations (See also s. 4(3)(e) of the Security Services
+		        Regulation)</a
+		        >.
+		      </li>
+		    </ul>
+		  </div>
+		
+		  <form [formGroup]="form" novalidate>
+		    <div class="text-minor-heading">Upload your documents</div>
+		    <div class="my-2">
+		      <app-file-upload
+		        (fileUploaded)="onFileUploaded($event)"
+		        (fileRemoved)="onFileRemoved()"
+		        [maxNumberOfFiles]="10"
+		        [control]="attachments"
+		        [files]="attachments.value"
+		      ></app-file-upload>
+		      @if (
+		        (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		        form.get('attachments')?.invalid &&
+		        form.get('attachments')?.hasError('required')
+		        ) {
+		        <mat-error
+		          class="mat-option-error"
+		          >This is required</mat-error
+		          >
+		        }
+		      </div>
+		    </form>
+		`,
 	styles: ``,
 	standalone: false,
 })

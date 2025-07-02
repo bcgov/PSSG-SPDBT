@@ -12,91 +12,103 @@ import { DialogComponent, DialogOptions } from './dialog.component';
 	selector: 'app-form-aliases',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
-					<mat-radio-group
-						aria-label="Select an option"
-						formControlName="previousNameFlag"
-						(change)="onPreviousNameFlagChange()"
-					>
-						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-						<mat-divider class="my-2" *ngIf="isWizardStep"></mat-divider>
-						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-							form.get('previousNameFlag')?.invalid &&
-							form.get('previousNameFlag')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-			<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div class="row">
-					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
-						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-						<div class="text-minor-heading mb-2">Previous Names or Aliases</div>
-						<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
-							<div class="row" [formGroupName]="i">
-								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Given Name</mat-label>
-										<input matInput type="text" formControlName="givenName" maxlength="40" />
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput type="text" formControlName="middleName1" maxlength="40" />
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput type="text" formControlName="middleName2" maxlength="40" />
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-									<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
-										<mat-label>Surname</mat-label>
-										<input
-											matInput
-											type="text"
-											formControlName="surname"
-											required
-											[errorStateMatcher]="matcher"
-											maxlength="40"
-										/>
-										<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
-									</mat-form-field>
-									<button
-										mat-mini-fab
-										class="delete-row-button ms-1 mb-3"
-										matTooltip="Remove previous name"
-										(click)="onDeleteRow(i)"
-										*ngIf="moreThanOneRowExists"
-										aria-label="Remove this previous name"
-									>
-										<mat-icon>delete_outline</mat-icon>
-									</button>
-								</div>
-							</div>
-						</ng-container>
-						<div class="row mb-2" *ngIf="isAllowAliasAdd">
-							<div class="col-12">
-								<button mat-stroked-button (click)="onAddRow()" class="w-auto" aria-label="Add an alias">
-									<mat-icon class="add-icon">add_circle</mat-icon>Add Name
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="row">
+		    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
+		      <mat-radio-group
+		        aria-label="Select an option"
+		        formControlName="previousNameFlag"
+		        (change)="onPreviousNameFlagChange()"
+		        >
+		        <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+		        @if (isWizardStep) {
+		          <mat-divider class="my-2"></mat-divider>
+		        }
+		        <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+		      </mat-radio-group>
+		      @if (
+		        (form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+		        form.get('previousNameFlag')?.invalid &&
+		        form.get('previousNameFlag')?.hasError('required')
+		        ) {
+		        <mat-error
+		          class="mat-option-error"
+		          >This is required</mat-error
+		          >
+		        }
+		      </div>
+		    </div>
+		    @if (previousNameFlag.value === booleanTypeCodes.Yes) {
+		      <div @showHideTriggerSlideAnimation>
+		        <div class="row">
+		          <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
+		            <mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+		            <div class="text-minor-heading mb-2">Previous Names or Aliases</div>
+		            @for (group of aliasesArray.controls; track group; let i = $index) {
+		              <ng-container formArrayName="aliases">
+		                <div class="row" [formGroupName]="i">
+		                  <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                    <mat-form-field>
+		                      <mat-label>Given Name</mat-label>
+		                      <input matInput type="text" formControlName="givenName" maxlength="40" />
+		                    </mat-form-field>
+		                  </div>
+		                  <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                    <mat-form-field>
+		                      <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+		                      <input matInput type="text" formControlName="middleName1" maxlength="40" />
+		                    </mat-form-field>
+		                  </div>
+		                  <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                    <mat-form-field>
+		                      <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+		                      <input matInput type="text" formControlName="middleName2" maxlength="40" />
+		                    </mat-form-field>
+		                  </div>
+		                  <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                    <mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
+		                      <mat-label>Surname</mat-label>
+		                      <input
+		                        matInput
+		                        type="text"
+		                        formControlName="surname"
+		                        required
+		                        [errorStateMatcher]="matcher"
+		                        maxlength="40"
+		                        />
+		                        @if (group.get('surname')?.hasError('required')) {
+		                          <mat-error> This is required </mat-error>
+		                        }
+		                      </mat-form-field>
+		                      @if (moreThanOneRowExists) {
+		                        <button
+		                          mat-mini-fab
+		                          class="delete-row-button ms-1 mb-3"
+		                          matTooltip="Remove previous name"
+		                          (click)="onDeleteRow(i)"
+		                          aria-label="Remove this previous name"
+		                          >
+		                          <mat-icon>delete_outline</mat-icon>
+		                        </button>
+		                      }
+		                    </div>
+		                  </div>
+		                </ng-container>
+		              }
+		              @if (isAllowAliasAdd) {
+		                <div class="row mb-2">
+		                  <div class="col-12">
+		                    <button mat-stroked-button (click)="onAddRow()" class="w-auto" aria-label="Add an alias">
+		                      <mat-icon class="add-icon">add_circle</mat-icon>Add Name
+		                    </button>
+		                  </div>
+		                </div>
+		              }
+		            </div>
+		          </div>
+		        </div>
+		      }
+		    </form>
+		`,
 	styles: [
 		`
 			.mat-mdc-mini-fab {

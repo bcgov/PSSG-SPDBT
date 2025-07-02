@@ -11,24 +11,28 @@ import { Subscription } from 'rxjs';
     selector: 'app-spd-header',
     template: `
 		<mat-toolbar color="primary" class="spd-header">
-			<span>
-				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
-			</span>
-			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
-			<div class="app-header-text pl-3">
-				<span class="desktop"> {{ fullTitle }}</span>
-				<span class="mobile"> {{ mobileTitle }} </span>
-			</div>
-			<span style="flex: 1 1 auto;"></span>
-
-			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
-				>logout</mat-icon
-			>
-			<div *ngIf="loggedInUserDisplay">
-				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
-			</div>
-		</mat-toolbar>
-	`,
+		  <span>
+		    <img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
+		  </span>
+		  <mat-divider vertical class="app-header-divider mx-3"></mat-divider>
+		  <div class="app-header-text pl-3">
+		    <span class="desktop"> {{ fullTitle }}</span>
+		    <span class="mobile"> {{ mobileTitle }} </span>
+		  </div>
+		  <span style="flex: 1 1 auto;"></span>
+		
+		  @if (hasValidToken) {
+		    <mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()"
+		      >logout</mat-icon
+		      >
+		    }
+		    @if (loggedInUserDisplay) {
+		      <div>
+		        <span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
+		      </div>
+		    }
+		  </mat-toolbar>
+		`,
     styles: [
         `
 			.mat-toolbar-row,
