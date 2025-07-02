@@ -17,7 +17,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
-							<h2 class="fs-3">Verify a Set of Security Worker Licence Numbers</h2>
+							<h2 class="fs-3">Verify a set of security worker licence numbers</h2>
 						</div>
 
 						<div class="col-xl-4 col-lg-4 col-md-12 no-print">
@@ -52,7 +52,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						<div class="row mb-2">
 							<div class="col-12">
 								<mat-form-field>
-									<mat-label>Worker Licence Numbers</mat-label>
+									<mat-label>Security Worker Licence Numbers</mat-label>
 									<textarea
 										matInput
 										formControlName="licenceNumbers"

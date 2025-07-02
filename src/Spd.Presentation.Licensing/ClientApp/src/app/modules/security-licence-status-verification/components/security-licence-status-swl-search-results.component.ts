@@ -11,7 +11,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			@if (searchResults && searchResults.length > 0) {
 				<div class="mb-3">
 					<mat-divider class="my-3"></mat-divider>
-					<div class="text-minor-heading my-3">Search Results</div>
+					<div class="text-minor-heading my-3">Search results</div>
 					@for (licence of searchResults; track licence; let i = $index) {
 						<div class="summary-card-section summary-card-section__green mb-3 px-4 py-3">
 							<div class="row">
@@ -66,7 +66,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									</div>
 								} @else {
 									<div class="col-xl-8 col-lg-8 my-auto">
-										<div class="text-data fw-bold">Not a valid Security Worker Licence</div>
+										<div class="text-data fw-bold">Not a valid security worker licence</div>
 									</div>
 								}
 							</div>

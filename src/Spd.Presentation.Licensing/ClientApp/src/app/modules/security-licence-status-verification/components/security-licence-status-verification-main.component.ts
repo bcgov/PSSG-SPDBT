@@ -10,12 +10,12 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-12 my-auto">
-							<h2 class="fs-3">Security Licence Status Verification</h2>
+							<h2 class="fs-3">Security licence status verification</h2>
 						</div>
 					</div>
 
 					<mat-divider class="mat-divider-main mb-4"></mat-divider>
-					<div class="text-minor-heading my-3">Verify a Security Worker Licence</div>
+					<div class="text-minor-heading my-3">Verify a security worker licence</div>
 
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
@@ -26,13 +26,13 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<button mat-flat-button color="primary" class="large" (click)="onVerifySwl()">
-								Verify a Security Worker Licence
+								Verify a security worker licence
 							</button>
 						</div>
 					</div>
 
 					<mat-divider class="mt-3 mb-4"></mat-divider>
-					<div class="text-minor-heading my-3">Verify a Set of Security Worker Licence Numbers</div>
+					<div class="text-minor-heading my-3">Verify a set of security worker licence numbers</div>
 
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
@@ -43,13 +43,13 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<button mat-flat-button color="primary" class="large" (click)="onVerifySwls()">
-								Verify a Set of Security Worker Licences
+								Verify a set of security worker licences
 							</button>
 						</div>
 					</div>
 
 					<mat-divider class="mt-3 mb-4"></mat-divider>
-					<div class="text-minor-heading my-3">Verify a Security Business Licence</div>
+					<div class="text-minor-heading my-3">Verify a security business licence</div>
 
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
@@ -62,7 +62,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<button mat-flat-button color="primary" class="large" (click)="onVerifySbl()">
-								Verify a Security Business Licence
+								Verify a security business licence
 							</button>
 						</div>
 					</div>
