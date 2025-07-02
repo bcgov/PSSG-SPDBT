@@ -9,15 +9,17 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 @Component({
 	selector: 'app-stakeholder-invitation',
 	template: `
-		<div class="container-fluid text-center mt-4" *ngIf="message">
-			<mat-icon class="my-4">error</mat-icon>
-			<h1>CRC Invitation</h1>
-			<h2 class="mt-4">
-				{{ message }}
-			</h2>
-			<p class="mt-4">Please contact your business manager for assistance.</p>
-		</div>
-	`,
+		@if (message) {
+		  <div class="container-fluid text-center mt-4">
+		    <mat-icon class="my-4">error</mat-icon>
+		    <h1>CRC Invitation</h1>
+		    <h2 class="mt-4">
+		      {{ message }}
+		    </h2>
+		    <p class="mt-4">Please contact your business manager for assistance.</p>
+		  </div>
+		}
+		`,
 	styles: [
 		`
 			.mat-icon {

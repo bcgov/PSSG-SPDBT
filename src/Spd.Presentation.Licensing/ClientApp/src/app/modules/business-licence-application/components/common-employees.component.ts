@@ -19,100 +19,98 @@ import {
 	selector: 'app-common-employees',
 	template: `
 		<mat-accordion multi="false">
-			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
-				<mat-expansion-panel-header>
-					<mat-panel-title>Employees</mat-panel-title>
-				</mat-expansion-panel-header>
-
-				<form [formGroup]="form" novalidate>
-					<div class="row mt-2" *ngIf="employeesExist">
-						<div class="col-12">
-							<mat-table [dataSource]="dataSource">
-								<ng-container matColumnDef="licenceHolderName">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
-									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Full Name:</span>
-										{{ member.licenceHolderName | default }}
-									</mat-cell>
-								</ng-container>
-
-								<ng-container matColumnDef="licenceNumber">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
-										Security Worker Licence Number
-									</mat-header-cell>
-									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Security Worker Licence Number:</span>
-										{{ member.licenceNumber | default }}
-									</mat-cell>
-								</ng-container>
-
-								<ng-container matColumnDef="licenceStatusCode">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
-									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Status:</span>
-										{{ member.licenceStatusCode | default }}
-									</mat-cell>
-								</ng-container>
-
-								<ng-container matColumnDef="expiryDate">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
-									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Expiry Date:</span>
-										{{ member.expiryDate | formatDate | default }}
-									</mat-cell>
-								</ng-container>
-
-								<ng-container matColumnDef="action1">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-									<mat-cell *matCellDef="let member; let i = index">
-										<button
-											mat-flat-button
-											class="table-button w-auto"
-											style="color: var(--color-red);"
-											aria-label="Remove the employee"
-											(click)="onRemoveEmployee(member.bizContactId, i)"
-										>
-											<mat-icon>delete_outline</mat-icon>Remove
-										</button>
-									</mat-cell>
-								</ng-container>
-
-								<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-								<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
-							</mat-table>
-						</div>
-					</div>
-
-					<div class="row">
-						<ng-container *ngIf="!employeesExist && isReadonly">
-							<div class="text-minor-heading mt-4 mb-2">No employees</div>
-						</ng-container>
-
-						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">
-							<div class="mt-4">
-								<app-alert type="warning" icon="warning">
-									<div>The maximum number of employees has been reached.</div>
-								</app-alert>
-							</div>
-						</ng-container>
-						<ng-template #CanAddEmployee>
-							<div class="col-12 mt-4 mb-2" *ngIf="!isReadonly">
-								<a
-									class="large"
-									tabindex="0"
-									aria-label="Add an Employee"
-									(click)="onAddEmployee()"
-									(keydown)="onKeydownAddEmployee($event)"
-								>
-									Add Employee
-								</a>
-							</div>
-						</ng-template>
-					</div>
-				</form>
-			</mat-expansion-panel>
+		  <mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
+		    <mat-expansion-panel-header>
+		      <mat-panel-title>Employees</mat-panel-title>
+		    </mat-expansion-panel-header>
+		
+		    <form [formGroup]="form" novalidate>
+		      @if (employeesExist) {
+		        <div class="row mt-2">
+		          <div class="col-12">
+		            <mat-table [dataSource]="dataSource">
+		              <ng-container matColumnDef="licenceHolderName">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
+		                <mat-cell *matCellDef="let member">
+		                  <span class="mobile-label">Full Name:</span>
+		                  {{ member.licenceHolderName | default }}
+		                </mat-cell>
+		              </ng-container>
+		              <ng-container matColumnDef="licenceNumber">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
+		                  Security Worker Licence Number
+		                </mat-header-cell>
+		                <mat-cell *matCellDef="let member">
+		                  <span class="mobile-label">Security Worker Licence Number:</span>
+		                  {{ member.licenceNumber | default }}
+		                </mat-cell>
+		              </ng-container>
+		              <ng-container matColumnDef="licenceStatusCode">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
+		                <mat-cell *matCellDef="let member">
+		                  <span class="mobile-label">Status:</span>
+		                  {{ member.licenceStatusCode | default }}
+		                </mat-cell>
+		              </ng-container>
+		              <ng-container matColumnDef="expiryDate">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
+		                <mat-cell *matCellDef="let member">
+		                  <span class="mobile-label">Expiry Date:</span>
+		                  {{ member.expiryDate | formatDate | default }}
+		                </mat-cell>
+		              </ng-container>
+		              <ng-container matColumnDef="action1">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+		                <mat-cell *matCellDef="let member; let i = index">
+		                  <button
+		                    mat-flat-button
+		                    class="table-button w-auto"
+		                    style="color: var(--color-red);"
+		                    aria-label="Remove the employee"
+		                    (click)="onRemoveEmployee(member.bizContactId, i)"
+		                    >
+		                    <mat-icon>delete_outline</mat-icon>Remove
+		                  </button>
+		                </mat-cell>
+		              </ng-container>
+		              <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		              <mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
+		            </mat-table>
+		          </div>
+		        </div>
+		      }
+		
+		      <div class="row">
+		        @if (!employeesExist && isReadonly) {
+		          <div class="text-minor-heading mt-4 mb-2">No employees</div>
+		        }
+		
+		        @if (isMaxNumberOfEmployees) {
+		          <div class="mt-4">
+		            <app-alert type="warning" icon="warning">
+		              <div>The maximum number of employees has been reached.</div>
+		            </app-alert>
+		          </div>
+		        } @else {
+		          @if (!isReadonly) {
+		            <div class="col-12 mt-4 mb-2">
+		              <a
+		                class="large"
+		                tabindex="0"
+		                aria-label="Add an Employee"
+		                (click)="onAddEmployee()"
+		                (keydown)="onKeydownAddEmployee($event)"
+		                >
+		                Add Employee
+		              </a>
+		            </div>
+		          }
+		        }
+		      </div>
+		    </form>
+		  </mat-expansion-panel>
 		</mat-accordion>
-	`,
+		`,
 	styles: [
 		`
 			.mat-column-action1 {

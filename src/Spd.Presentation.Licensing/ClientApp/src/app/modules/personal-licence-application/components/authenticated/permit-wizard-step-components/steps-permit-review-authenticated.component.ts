@@ -10,62 +10,59 @@ import { StepPermitSummaryUpdateAuthenticatedComponent } from './step-permit-sum
 	selector: 'app-steps-permit-review-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
-					<app-step-permit-summary-update-authenticated
-						[showEmployerInformation]="showEmployerInformation"
-					></app-step-permit-summary-update-authenticated>
-				</ng-container>
-				<ng-template #notUpdateReview>
-					<app-step-permit-summary-authenticated
-						[showEmployerInformation]="showEmployerInformation"
-						(editStep)="onGoToStep($event)"
-					></app-step-permit-summary-authenticated>
-				</ng-template>
-
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else NotNewWizardFooter">
-					<app-wizard-footer
-						[isFormValid]="true"
-						[showSaveAndExit]="true"
-						(saveAndExit)="onNoSaveAndExit()"
-						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onGoToNextStep()"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #NotNewWizardFooter>
-					<app-wizard-footer
-						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onGoToNextStep()"
-					></app-wizard-footer>
-				</ng-template>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-consent-and-declaration
-					[serviceTypeCode]="serviceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-consent-and-declaration>
-
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else NotNewConsentWizardFooter">
-					<app-wizard-footer
-						[isFormValid]="true"
-						[showSaveAndExit]="true"
-						(saveAndExit)="onNoSaveAndExit()"
-						[nextButtonLabel]="submitPayLabel"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onPayNow()"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #NotNewConsentWizardFooter>
-					<app-wizard-footer
-						[nextButtonLabel]="submitPayLabel"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onPayNow()"
-					></app-wizard-footer>
-				</ng-template>
-			</mat-step>
+		  <mat-step>
+		    @if (applicationTypeCode === applicationTypeCodes.Update) {
+		      <app-step-permit-summary-update-authenticated
+		        [showEmployerInformation]="showEmployerInformation"
+		      ></app-step-permit-summary-update-authenticated>
+		    } @else {
+		      <app-step-permit-summary-authenticated
+		        [showEmployerInformation]="showEmployerInformation"
+		        (editStep)="onGoToStep($event)"
+		      ></app-step-permit-summary-authenticated>
+		    }
+		
+		    @if (applicationTypeCode === applicationTypeCodes.New) {
+		      <app-wizard-footer
+		        [isFormValid]="true"
+		        [showSaveAndExit]="true"
+		        (saveAndExit)="onNoSaveAndExit()"
+		        (previousStepperStep)="onStepPrevious()"
+		        (nextStepperStep)="onGoToNextStep()"
+		      ></app-wizard-footer>
+		    } @else {
+		      <app-wizard-footer
+		        (previousStepperStep)="onStepPrevious()"
+		        (nextStepperStep)="onGoToNextStep()"
+		      ></app-wizard-footer>
+		    }
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-permit-consent-and-declaration
+		      [serviceTypeCode]="serviceTypeCode"
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-permit-consent-and-declaration>
+		
+		    @if (applicationTypeCode === applicationTypeCodes.New) {
+		      <app-wizard-footer
+		        [isFormValid]="true"
+		        [showSaveAndExit]="true"
+		        (saveAndExit)="onNoSaveAndExit()"
+		        [nextButtonLabel]="submitPayLabel"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onPayNow()"
+		      ></app-wizard-footer>
+		    } @else {
+		      <app-wizard-footer
+		        [nextButtonLabel]="submitPayLabel"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onPayNow()"
+		      ></app-wizard-footer>
+		    }
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
     styles: [],
     encapsulation: ViewEncapsulation.None,
     standalone: false

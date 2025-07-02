@@ -22,111 +22,108 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 	selector: 'app-worker-licence-wizard-anonymous-new',
 	template: `
 		<mat-stepper
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Licence Selection</ng-template>
-				<app-steps-worker-licence-selection
-					[isLoggedIn]="false"
-					[showSaveAndExit]="showSaveAndExit"
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
-					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showWorkerLicenceSoleProprietorStep]="true"
-					(childNextStep)="onChildNextStep()"
-					(nextReview)="onGoToReview()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-worker-licence-selection>
-			</mat-step>
-
-			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-worker-licence-background
-					[showSaveAndExit]="showSaveAndExit"
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					(childNextStep)="onChildNextStep()"
-					(nextReview)="onGoToReview()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-worker-licence-background>
-			</mat-step>
-
-			<mat-step [completed]="step3Complete">
-				<ng-template matStepLabel>Identification</ng-template>
-				<app-steps-worker-licence-identification-anonymous
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					[showFullCitizenshipQuestion]="true"
-					[showNonCanadianCitizenshipQuestion]="false"
-					[showPhotographOfYourselfStep]="true"
-					(childNextStep)="onChildNextStep()"
-					(nextReview)="onGoToReview()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-worker-licence-identification-anonymous>
-			</mat-step>
-
-			<mat-step completed="false">
-				<ng-template matStepLabel
-					>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
-				>
-				<app-steps-worker-licence-review-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="true"
-					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(nextSubmitStep)="onNextSoleProprietor()"
-					(nextPayStep)="onNextPayStep()"
-					(scrollIntoView)="onScrollIntoView()"
-					(goToStep)="onGoToStep($event)"
-				></app-steps-worker-licence-review-anonymous>
-			</mat-step>
-
-			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
-				<mat-step completed="false">
-					<ng-template matStepLabel
-						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
-					>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel
-						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
-					>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel
-						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
-							*ngTemplateOutlet="StepNameSpace"
-						></ng-container
-						>Licence</ng-template
-					>
-				</mat-step>
-			</ng-container>
-
-			<ng-template #isNotSoleProprietor>
-				<mat-step completed="false">
-					<ng-template matStepLabel>Pay</ng-template>
-				</mat-step>
-			</ng-template>
-		</mat-stepper>
-
-		<ng-template #StepNameSpace>
-			<!-- wrap label in large view -->
-			<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
-		</ng-template>
-	`,
+		  linear
+		  labelPosition="bottom"
+		  [orientation]="orientation"
+		  (selectionChange)="onStepSelectionChange($event)"
+		  #stepper
+		  >
+		  <mat-step [completed]="step1Complete">
+		    <ng-template matStepLabel>Licence Selection</ng-template>
+		    <app-steps-worker-licence-selection
+		      [isLoggedIn]="false"
+		      [showSaveAndExit]="showSaveAndExit"
+		      [isFormValid]="isFormValid"
+		      [applicationTypeCode]="applicationTypeCode"
+		      [showStepDogsAndRestraints]="showStepDogsAndRestraints"
+		      [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+		      [showWorkerLicenceSoleProprietorStep]="true"
+		      (childNextStep)="onChildNextStep()"
+		      (nextReview)="onGoToReview()"
+		      (nextStepperStep)="onNextStepperStep(stepper)"
+		      (scrollIntoView)="onScrollIntoView()"
+		    ></app-steps-worker-licence-selection>
+		  </mat-step>
+		
+		  <mat-step [completed]="step2Complete">
+		    <ng-template matStepLabel>Background</ng-template>
+		    <app-steps-worker-licence-background
+		      [showSaveAndExit]="showSaveAndExit"
+		      [isFormValid]="isFormValid"
+		      [applicationTypeCode]="applicationTypeCode"
+		      (childNextStep)="onChildNextStep()"
+		      (nextReview)="onGoToReview()"
+		      (previousStepperStep)="onPreviousStepperStep(stepper)"
+		      (nextStepperStep)="onNextStepperStep(stepper)"
+		      (scrollIntoView)="onScrollIntoView()"
+		    ></app-steps-worker-licence-background>
+		  </mat-step>
+		
+		  <mat-step [completed]="step3Complete">
+		    <ng-template matStepLabel>Identification</ng-template>
+		    <app-steps-worker-licence-identification-anonymous
+		      [isFormValid]="isFormValid"
+		      [applicationTypeCode]="applicationTypeCode"
+		      [showFullCitizenshipQuestion]="true"
+		      [showNonCanadianCitizenshipQuestion]="false"
+		      [showPhotographOfYourselfStep]="true"
+		      (childNextStep)="onChildNextStep()"
+		      (nextReview)="onGoToReview()"
+		      (previousStepperStep)="onPreviousStepperStep(stepper)"
+		      (nextStepperStep)="onNextStepperStep(stepper)"
+		      (scrollIntoView)="onScrollIntoView()"
+		    ></app-steps-worker-licence-identification-anonymous>
+		  </mat-step>
+		
+		  <mat-step completed="false">
+		    <ng-template matStepLabel
+		      >Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Worker Licence</ng-template
+		      >
+		      <app-steps-worker-licence-review-anonymous
+		        [applicationTypeCode]="applicationTypeCode"
+		        [showCitizenshipStep]="true"
+		        [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+		        (previousStepperStep)="onPreviousStepperStep(stepper)"
+		        (nextStepperStep)="onNextStepperStep(stepper)"
+		        (nextSubmitStep)="onNextSoleProprietor()"
+		        (nextPayStep)="onNextPayStep()"
+		        (scrollIntoView)="onScrollIntoView()"
+		        (goToStep)="onGoToStep($event)"
+		      ></app-steps-worker-licence-review-anonymous>
+		    </mat-step>
+		
+		    @if (isSoleProprietorSimultaneousFlow) {
+		      <mat-step completed="false">
+		        <ng-template matStepLabel
+		          >Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
+		          >
+		        </mat-step>
+		        <mat-step completed="false">
+		          <ng-template matStepLabel
+		            >Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+		            >
+		          </mat-step>
+		          <mat-step completed="false">
+		            <ng-template matStepLabel
+		              >Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
+		              *ngTemplateOutlet="StepNameSpace"
+		              ></ng-container
+		              >Licence</ng-template
+		              >
+		            </mat-step>
+		          } @else {
+		            <mat-step completed="false">
+		              <ng-template matStepLabel>Pay</ng-template>
+		            </mat-step>
+		          }
+		
+		        </mat-stepper>
+		
+		        <ng-template #StepNameSpace>
+		          <!-- wrap label in large view -->
+		          <span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
+		        </ng-template>
+		`,
 	styles: [],
 	standalone: false,
 })

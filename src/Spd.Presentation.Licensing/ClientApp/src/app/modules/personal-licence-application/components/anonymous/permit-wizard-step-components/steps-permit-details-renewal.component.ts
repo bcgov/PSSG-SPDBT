@@ -9,45 +9,45 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	selector: 'app-steps-permit-details-renewal',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showTermsOfUse">
-				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
-
-				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-checklist-renewal></app-step-permit-checklist-renewal>
-
-				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onGoToNextStep()"
-						(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #isLoggedInChecklistSteps>
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(previousStepperStep)="onGotoUserProfile()"
-						(nextStepperStep)="onGoToNextStep()"
-						(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
-					></app-wizard-footer>
-				</ng-template>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_PERMIT_CONFIRMATION)"
-					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_CONFIRMATION)"
-				></app-wizard-footer>
-			</mat-step>
+		  @if (showTermsOfUse) {
+		    <mat-step>
+		      <app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
+		      <app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-permit-checklist-renewal></app-step-permit-checklist-renewal>
+		
+		    @if (showTermsOfUse) {
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onGoToNextStep()"
+		        (nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
+		      ></app-wizard-footer>
+		    } @else {
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGotoUserProfile()"
+		        (nextStepperStep)="onGoToNextStep()"
+		        (nextReviewStepperStep)="onNextReview(STEP_PERMIT_CHECKLIST)"
+		      ></app-wizard-footer>
+		    }
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_PERMIT_CONFIRMATION)"
+		      (nextReviewStepperStep)="onNextReview(STEP_PERMIT_CONFIRMATION)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

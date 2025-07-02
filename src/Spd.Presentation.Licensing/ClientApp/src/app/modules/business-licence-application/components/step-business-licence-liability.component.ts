@@ -10,51 +10,52 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-business-licence-liability',
 	template: `
 		<app-step-section heading="Proof of insurance">
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-						<app-alert type="warning" icon="warning">
-							Provide
-							<a
-								class="large"
-								aria-label="Navigate to proof of insurance site"
-								[href]="proofOfInsuranceUrl"
-								target="_blank"
-								>proof of insurance</a
-							>
-							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability.
-						</app-alert>
-
-						<div class="text-minor-heading mb-2">Upload proof of insurance</div>
-						<div>The insurance must be active at the time of application, and the documents must include:</div>
-						<ul>
-							<li>The business name</li>
-							<li>The business location(s)</li>
-							<li>The expiry date of the insurance</li>
-							<li>Proof that the insurance is valid in B.C.</li>
-						</ul>
-
-						<app-file-upload
-							(fileUploaded)="onFileUploaded($event)"
-							(fileRemoved)="onFileRemoved()"
-							[control]="attachments"
-							[maxNumberOfFiles]="10"
-							[files]="attachments.value"
-						></app-file-upload>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+		        <app-alert type="warning" icon="warning">
+		          Provide
+		          <a
+		            class="large"
+		            aria-label="Navigate to proof of insurance site"
+		            [href]="proofOfInsuranceUrl"
+		            target="_blank"
+		            >proof of insurance</a
+		            >
+		            that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability.
+		          </app-alert>
+		
+		          <div class="text-minor-heading mb-2">Upload proof of insurance</div>
+		          <div>The insurance must be active at the time of application, and the documents must include:</div>
+		          <ul>
+		            <li>The business name</li>
+		            <li>The business location(s)</li>
+		            <li>The expiry date of the insurance</li>
+		            <li>Proof that the insurance is valid in B.C.</li>
+		          </ul>
+		
+		          <app-file-upload
+		            (fileUploaded)="onFileUploaded($event)"
+		            (fileRemoved)="onFileRemoved()"
+		            [control]="attachments"
+		            [maxNumberOfFiles]="10"
+		            [files]="attachments.value"
+		          ></app-file-upload>
+		          @if (
+		            (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		            form.get('attachments')?.invalid &&
+		            form.get('attachments')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >This is required</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		      </form>
+		    </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

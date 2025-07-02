@@ -12,82 +12,84 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-worker-licence-restraints',
 	template: `
 		<app-step-section
-			heading="Are you requesting authorization to use restraints (such has handcuffs)?"
-			[subheading]="subtitle"
-		>
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-2"></mat-divider>
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('carryAndUseRestraints')?.dirty || form.get('carryAndUseRestraints')?.touched) &&
-								form.get('carryAndUseRestraints')?.invalid &&
-								form.get('carryAndUseRestraints')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
-				</div>
-
-				<div class="row" *ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
-
-						<div class="text-minor-heading mb-2">Proof of qualification</div>
-						<mat-radio-group
-							class="category-radio-group"
-							aria-label="Select an option"
-							formControlName="carryAndUseRestraintsDocument"
-							(change)="onChangeDocumentType($event)"
-						>
-							<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
-								<mat-radio-button class="radio-label" [value]="doc.code">
-									{{ doc.desc }}
-								</mat-radio-button>
-							</ng-container>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('carryAndUseRestraintsDocument')?.dirty ||
-									form.get('carryAndUseRestraintsDocument')?.touched) &&
-								form.get('carryAndUseRestraintsDocument')?.invalid &&
-								form.get('carryAndUseRestraintsDocument')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-
-						<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
-
-						<div class="my-2">
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		  heading="Are you requesting authorization to use restraints (such has handcuffs)?"
+		  [subheading]="subtitle"
+		  >
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+		        <mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
+		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+		          <mat-divider class="my-2"></mat-divider>
+		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+		        </mat-radio-group>
+		        @if (
+		          (form.get('carryAndUseRestraints')?.dirty || form.get('carryAndUseRestraints')?.touched) &&
+		          form.get('carryAndUseRestraints')?.invalid &&
+		          form.get('carryAndUseRestraints')?.hasError('required')
+		          ) {
+		          <mat-error
+		            class="mat-option-error"
+		            >This is required</mat-error
+		            >
+		          }
+		        </div>
+		      </div>
+		
+		      @if (carryAndUseRestraints.value === booleanTypeCodes.Yes) {
+		        <div class="row" @showHideTriggerSlideAnimation>
+		          <div class="offset-md-2 col-md-8 col-sm-12">
+		            <mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
+		            <div class="text-minor-heading mb-2">Proof of qualification</div>
+		            <mat-radio-group
+		              class="category-radio-group"
+		              aria-label="Select an option"
+		              formControlName="carryAndUseRestraintsDocument"
+		              (change)="onChangeDocumentType($event)"
+		              >
+		              @for (doc of restraintDocumentTypes; track doc; let i = $index) {
+		                <mat-radio-button class="radio-label" [value]="doc.code">
+		                  {{ doc.desc }}
+		                </mat-radio-button>
+		              }
+		            </mat-radio-group>
+		            @if (
+		              (form.get('carryAndUseRestraintsDocument')?.dirty ||
+		              form.get('carryAndUseRestraintsDocument')?.touched) &&
+		              form.get('carryAndUseRestraintsDocument')?.invalid &&
+		              form.get('carryAndUseRestraintsDocument')?.hasError('required')
+		              ) {
+		              <mat-error
+		                class="mat-option-error"
+		                >This is required</mat-error
+		                >
+		              }
+		              <div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
+		              <div class="my-2">
+		                <app-file-upload
+		                  (fileUploaded)="onFileUploaded($event)"
+		                  (fileRemoved)="onFileRemoved()"
+		                  [control]="attachments"
+		                  [maxNumberOfFiles]="10"
+		                  [files]="attachments.value"
+		                ></app-file-upload>
+		                @if (
+		                  (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		                  form.get('attachments')?.invalid &&
+		                  form.get('attachments')?.hasError('required')
+		                  ) {
+		                  <mat-error
+		                    class="mat-option-error"
+		                    >This is required</mat-error
+		                    >
+		                  }
+		                </div>
+		              </div>
+		            </div>
+		          }
+		        </form>
+		      </app-step-section>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

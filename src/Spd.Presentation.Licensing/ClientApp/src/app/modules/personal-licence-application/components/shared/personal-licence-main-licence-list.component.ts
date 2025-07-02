@@ -8,229 +8,243 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 @Component({
 	selector: 'app-personal-licence-main-licence-list',
 	template: `
-		<div class="mb-3" *ngIf="activeLicences.length > 0">
-			<div class="text-minor-heading py-3">Active Licences/Permits</div>
-			<div
-				class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-				*ngFor="let licence of activeLicences; let i = index"
-			>
-				<div class="row">
-					<div class="col-lg-2">
-						<div class="text-minor-heading">
-							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
-						</div>
-					</div>
-					<div class="col-lg-10">
-						<div class="row">
-							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-								<div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-								<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-									{{ licence.expiryDate | formatDate: formalDateFormat }}
-								</div>
-							</div>
-							<div class="col-lg-3 text-end">
-								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-									<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-									<span class="appl-chip-option-item mx-2 fs-5">Active</span>
-								</mat-chip-option>
-							</div>
-							<mat-divider class="my-2"></mat-divider>
-						</div>
-
-						<ng-container
-							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitContent"
-						>
-							<div class="row mb-2">
-								<div class="col-lg-6">
-									<div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
-									<div class="text-data">
-										<ul class="m-0">
-											<ng-container *ngFor="let catCode of licence.licenceCategoryCodes; let i = index">
-												<li>{{ catCode | options: 'WorkerCategoryTypes' }}</li>
-											</ng-container>
-										</ul>
-									</div>
-								</div>
-								<ng-container *ngIf="licence.hasSecurityGuardCategory">
-									<div class="col-lg-3">
-										<div class="d-block text-muted mt-2">Dog Authorization</div>
-										<div class="text-data">
-											<ng-container *ngIf="licence.dogAuthorization; else noDogAuthorization">
-												Authorized to use dogs
-											</ng-container>
-											<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
-										</div>
-										<ng-container *ngIf="licence.dogAuthorizationExpiryDate">
-											<div class="d-block text-muted mt-2">Expiry Date</div>
-											<div class="text-data">
-												{{ licence.dogAuthorizationExpiryDate | formatDate: formalDateFormat }}
-											</div>
-										</ng-container>
-									</div>
-									<div class="col-lg-3">
-										<div class="d-block text-muted mt-2">Restraint Authorization</div>
-										<div class="text-data">
-											<ng-container *ngIf="licence.restraintAuthorization; else noRestraintAuthorization">
-												Authorized to use restraints
-											</ng-container>
-											<ng-template #noRestraintAuthorization> Not authorized to use restraints </ng-template>
-										</div>
-										<ng-container *ngIf="licence.restraintAuthorizationExpiryDate">
-											<div class="d-block text-muted mt-2">Expiry Date</div>
-											<div class="text-data">
-												{{ licence.restraintAuthorizationExpiryDate | formatDate: formalDateFormat }}
-											</div>
-										</ng-container>
-									</div>
-								</ng-container>
-							</div>
-							<mat-divider class="my-2"></mat-divider>
-							<div class="row mb-2">
-								<div class="col-lg-9">
-									The following updates have a
-									{{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
-									<ul class="m-0">
-										<li>Licence category change</li>
-										<li>Authorization for dogs or restraints (e.g., handcuffs)</li>
-										<li>Name change</li>
-										<li>Licence replacement</li>
-									</ul>
-								</div>
-								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
-									<button
-										mat-flat-button
-										color="primary"
-										*ngIf="licence.isRenewalPeriod"
-										class="large my-2"
-										aria-label="Renew the licence"
-										(click)="onRenew(licence)"
-									>
-										<mat-icon>restore</mat-icon>Renew
-									</button>
-									<button
-										mat-flat-button
-										color="primary"
-										*ngIf="licence.isUpdatePeriod"
-										class="large my-2"
-										aria-label="Update the licence"
-										(click)="onUpdate(licence)"
-									>
-										<mat-icon>update</mat-icon>Update
-									</button>
-								</div>
-								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-									<app-alert type="info" icon="info">
-										This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
-										while an application is in progress.
-									</app-alert>
-								</div>
-							</div>
-						</ng-container>
-						<ng-template #IsPermitContent>
-							<div class="row mb-2">
-								<div class="col-lg-9">
-									Permit updates include the following changes:
-									<ul class="m-0">
-										<li>Name change</li>
-										<li>Reason or rationale change</li>
-										<li>Employer information change</li>
-										<li>Permit replacement</li>
-									</ul>
-								</div>
-								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
-									<button
-										mat-flat-button
-										color="primary"
-										*ngIf="licence.isRenewalPeriod"
-										class="large my-2"
-										aria-label="Renew the permit"
-										(click)="onRenew(licence)"
-									>
-										<mat-icon>restore</mat-icon>Renew
-									</button>
-									<button
-										mat-flat-button
-										color="primary"
-										*ngIf="licence.isUpdatePeriod"
-										class="large my-2"
-										aria-label="Update the permit"
-										(click)="onUpdate(licence)"
-									>
-										<mat-icon>update</mat-icon>Update
-									</button>
-								</div>
-								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
-									<app-alert type="info" icon="info">
-										<ng-container *ngIf="licence.isReplacementPeriod; else NoPermitReplacementPeriod">
-											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or
-											replaced while an application is in progress.
-										</ng-container>
-										<ng-template #NoPermitReplacementPeriod>
-											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or updated while an
-											application is in progress.
-										</ng-template>
-									</app-alert>
-								</div>
-							</div>
-						</ng-template>
-					</div>
-
-					<div class="row">
-						<ng-container
-							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitFooter"
-						>
-							<div class="col-12">
-								<mat-divider class="my-2"></mat-divider>
-								<span class="fw-semibold">Lost your licence? </span>
-								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-								<a
-									*ngIf="!applicationIsInProgress"
-									class="large"
-									tabindex="0"
-									aria-label="Request a security worker licence replacement"
-									(click)="onRequestReplacement(licence)"
-									(keydown)="onKeydownRequestReplacement($event, licence)"
-									>Request a replacement</a
-								>
-
-								<div class="mt-4" *ngIf="licence.originalPhotoOfYourselfExpired">
-									<app-alert type="danger" icon="dangerous">
-										A replacement for this record is not available at this time. Use update to provide missing
-										information and receive a replacement.
-									</app-alert>
-								</div>
-							</div>
-						</ng-container>
-
-						<ng-template #IsPermitFooter>
-							<div class="col-12">
-								<mat-divider class="my-2"></mat-divider>
-								<span class="fw-semibold">Lost or stolen permit? </span>
-								<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-								<a
-									*ngIf="!applicationIsInProgress"
-									class="large"
-									tabindex="0"
-									aria-label="Request a permit replacement"
-									(click)="onRequestReplacement(licence)"
-									(keydown)="onKeydownRequestReplacement($event, licence)"
-									>Request a replacement</a
-								>
-							</div>
-						</ng-template>
-					</div>
-				</div>
-			</div>
-		</div>
-	`,
+		@if (activeLicences.length > 0) {
+		  <div class="mb-3">
+		    <div class="text-minor-heading py-3">Active Licences/Permits</div>
+		    @for (licence of activeLicences; track licence; let i = $index) {
+		      <div
+		        class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
+		        >
+		        <div class="row">
+		          <div class="col-lg-2">
+		            <div class="text-minor-heading">
+		              {{ licence.serviceTypeCode | options: 'ServiceTypes' }}
+		            </div>
+		          </div>
+		          <div class="col-lg-10">
+		            <div class="row">
+		              <div class="col-lg-3">
+		                <div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+		                <div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
+		              </div>
+		              <div class="col-lg-3">
+		                <div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
+		                <div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
+		              </div>
+		              <div class="col-lg-3">
+		                <div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
+		                <div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+		                  {{ licence.expiryDate | formatDate: formalDateFormat }}
+		                </div>
+		              </div>
+		              <div class="col-lg-3 text-end">
+		                <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+		                  <mat-icon class="appl-chip-option-item">check_circle</mat-icon>
+		                  <span class="appl-chip-option-item mx-2 fs-5">Active</span>
+		                </mat-chip-option>
+		              </div>
+		              <mat-divider class="my-2"></mat-divider>
+		            </div>
+		            @if (licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence) {
+		              <div class="row mb-2">
+		                <div class="col-lg-6">
+		                  <div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
+		                  <div class="text-data">
+		                    <ul class="m-0">
+		                      @for (catCode of licence.licenceCategoryCodes; track catCode; let i = $index) {
+		                        <li>{{ catCode | options: 'WorkerCategoryTypes' }}</li>
+		                      }
+		                    </ul>
+		                  </div>
+		                </div>
+		                @if (licence.hasSecurityGuardCategory) {
+		                  <div class="col-lg-3">
+		                    <div class="d-block text-muted mt-2">Dog Authorization</div>
+		                    <div class="text-data">
+		                      @if (licence.dogAuthorization) {
+		                        Authorized to use dogs
+		                      } @else {
+		                        Not authorized to use dogs
+		                      }
+		                    </div>
+		                    @if (licence.dogAuthorizationExpiryDate) {
+		                      <div class="d-block text-muted mt-2">Expiry Date</div>
+		                      <div class="text-data">
+		                        {{ licence.dogAuthorizationExpiryDate | formatDate: formalDateFormat }}
+		                      </div>
+		                    }
+		                  </div>
+		                  <div class="col-lg-3">
+		                    <div class="d-block text-muted mt-2">Restraint Authorization</div>
+		                    <div class="text-data">
+		                      @if (licence.restraintAuthorization) {
+		                        Authorized to use restraints
+		                      } @else {
+		                        Not authorized to use restraints
+		                      }
+		                    </div>
+		                    @if (licence.restraintAuthorizationExpiryDate) {
+		                      <div class="d-block text-muted mt-2">Expiry Date</div>
+		                      <div class="text-data">
+		                        {{ licence.restraintAuthorizationExpiryDate | formatDate: formalDateFormat }}
+		                      </div>
+		                    }
+		                  </div>
+		                }
+		              </div>
+		              <mat-divider class="my-2"></mat-divider>
+		              <div class="row mb-2">
+		                <div class="col-lg-9">
+		                  The following updates have a
+		                  {{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
+		                  <ul class="m-0">
+		                    <li>Licence category change</li>
+		                    <li>Authorization for dogs or restraints (e.g., handcuffs)</li>
+		                    <li>Name change</li>
+		                    <li>Licence replacement</li>
+		                  </ul>
+		                </div>
+		                @if (!applicationIsInProgress) {
+		                  <div class="col-lg-3 text-end">
+		                    @if (licence.isRenewalPeriod) {
+		                      <button
+		                        mat-flat-button
+		                        color="primary"
+		                        class="large my-2"
+		                        aria-label="Renew the licence"
+		                        (click)="onRenew(licence)"
+		                        >
+		                        <mat-icon>restore</mat-icon>Renew
+		                      </button>
+		                    }
+		                    @if (licence.isUpdatePeriod) {
+		                      <button
+		                        mat-flat-button
+		                        color="primary"
+		                        class="large my-2"
+		                        aria-label="Update the licence"
+		                        (click)="onUpdate(licence)"
+		                        >
+		                        <mat-icon>update</mat-icon>Update
+		                      </button>
+		                    }
+		                  </div>
+		                }
+		                @if (applicationIsInProgress) {
+		                  <div class="col-12 mt-3">
+		                    <app-alert type="info" icon="info">
+		                      This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
+		                      while an application is in progress.
+		                    </app-alert>
+		                  </div>
+		                }
+		              </div>
+		            } @else {
+		              <div class="row mb-2">
+		                <div class="col-lg-9">
+		                  Permit updates include the following changes:
+		                  <ul class="m-0">
+		                    <li>Name change</li>
+		                    <li>Reason or rationale change</li>
+		                    <li>Employer information change</li>
+		                    <li>Permit replacement</li>
+		                  </ul>
+		                </div>
+		                @if (!applicationIsInProgress) {
+		                  <div class="col-lg-3 text-end">
+		                    @if (licence.isRenewalPeriod) {
+		                      <button
+		                        mat-flat-button
+		                        color="primary"
+		                        class="large my-2"
+		                        aria-label="Renew the permit"
+		                        (click)="onRenew(licence)"
+		                        >
+		                        <mat-icon>restore</mat-icon>Renew
+		                      </button>
+		                    }
+		                    @if (licence.isUpdatePeriod) {
+		                      <button
+		                        mat-flat-button
+		                        color="primary"
+		                        class="large my-2"
+		                        aria-label="Update the permit"
+		                        (click)="onUpdate(licence)"
+		                        >
+		                        <mat-icon>update</mat-icon>Update
+		                      </button>
+		                    }
+		                  </div>
+		                }
+		                @if (applicationIsInProgress) {
+		                  <div class="col-12 mt-3">
+		                    <app-alert type="info" icon="info">
+		                      @if (licence.isReplacementPeriod) {
+		                        This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or
+		                        replaced while an application is in progress.
+		                      } @else {
+		                        This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or updated while an
+		                        application is in progress.
+		                      }
+		                    </app-alert>
+		                  </div>
+		                }
+		              </div>
+		            }
+		          </div>
+		          <div class="row">
+		            @if (licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence) {
+		              <div class="col-12">
+		                <mat-divider class="my-2"></mat-divider>
+		                <span class="fw-semibold">Lost your licence? </span>
+		                @if (applicationIsInProgress) {
+		                  <a class="large disable">Request a replacement</a>
+		                }
+		                @if (!applicationIsInProgress) {
+		                  <a
+		                    class="large"
+		                    tabindex="0"
+		                    aria-label="Request a security worker licence replacement"
+		                    (click)="onRequestReplacement(licence)"
+		                    (keydown)="onKeydownRequestReplacement($event, licence)"
+		                    >Request a replacement</a
+		                    >
+		                  }
+		                  @if (licence.originalPhotoOfYourselfExpired) {
+		                    <div class="mt-4">
+		                      <app-alert type="danger" icon="dangerous">
+		                        A replacement for this record is not available at this time. Use update to provide missing
+		                        information and receive a replacement.
+		                      </app-alert>
+		                    </div>
+		                  }
+		                </div>
+		              } @else {
+		                <div class="col-12">
+		                  <mat-divider class="my-2"></mat-divider>
+		                  <span class="fw-semibold">Lost or stolen permit? </span>
+		                  @if (applicationIsInProgress) {
+		                    <a class="large disable">Request a replacement</a>
+		                  }
+		                  @if (!applicationIsInProgress) {
+		                    <a
+		                      class="large"
+		                      tabindex="0"
+		                      aria-label="Request a permit replacement"
+		                      (click)="onRequestReplacement(licence)"
+		                      (keydown)="onKeydownRequestReplacement($event, licence)"
+		                      >Request a replacement</a
+		                      >
+		                    }
+		                  </div>
+		                }
+		              </div>
+		            </div>
+		          </div>
+		        }
+		      </div>
+		    }
+		`,
 	styles: [
 		`
 			.appl-chip-option {
