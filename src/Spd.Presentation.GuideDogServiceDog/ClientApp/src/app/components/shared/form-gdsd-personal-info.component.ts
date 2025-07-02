@@ -9,73 +9,78 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-form-gdsd-personal-info',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-xxl-8 col-xl-10 mx-auto">
-					<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
-						<app-alert type="warning" icon="warning">
-							We noticed you changed your name recently on your BC Services Card.
-						</app-alert>
-					</ng-container>
-					<ng-template #hasNameChanged>
-						<app-alert type="info" icon="info">
-							Have you changed your name?
-							<a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
-								>Visit ICBC</a
-							>
-							to update your information. Any changes you make will automatically be updated here.
-						</app-alert>
-					</ng-template>
-
-					<div class="row mb-3">
-						<div class="col-xl-7 col-lg-6 col-md-12 col-sm-12 px-3">
-							<div class="fs-6 text-muted">Full Name</div>
-							<div class="text-minor-heading">{{ fullname }}</div>
-						</div>
-
-						<div class="col-xl-5 col-lg-6 col-md-12 col-sm-12 px-3">
-							<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
-							<div class="text-minor-heading">
-								{{ dateOfBirth.value | formatDate: formalDateFormat }}
-							</div>
-						</div>
-					</div>
-
-					<div class="row mt-3">
-						<div class="col-xl-7 col-lg-6 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Email Address</mat-label>
-								<input
-									matInput
-									formControlName="emailAddress"
-									[errorStateMatcher]="matcher"
-									placeholder="name@domain.com"
-									maxlength="75"
-								/>
-								<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
-									Must be a valid email address
-								</mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Phone Number</mat-label>
-								<input
-									matInput
-									formControlName="phoneNumber"
-									[mask]="phoneMask"
-									[showMaskTyped]="false"
-									[errorStateMatcher]="matcher"
-								/>
-								<mat-hint>A 10 digit phone number</mat-hint>
-								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="row">
+		    <div class="col-xxl-8 col-xl-10 mx-auto">
+		      @if (hasBcscNameChanged.value) {
+		        <app-alert type="warning" icon="warning">
+		          We noticed you changed your name recently on your BC Services Card.
+		        </app-alert>
+		      } @else {
+		        <app-alert type="info" icon="info">
+		          Have you changed your name?
+		          <a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
+		            >Visit ICBC</a
+		            >
+		            to update your information. Any changes you make will automatically be updated here.
+		          </app-alert>
+		        }
+		
+		        <div class="row mb-3">
+		          <div class="col-xl-7 col-lg-6 col-md-12 col-sm-12 px-3">
+		            <div class="fs-6 text-muted">Full Name</div>
+		            <div class="text-minor-heading">{{ fullname }}</div>
+		          </div>
+		
+		          <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12 px-3">
+		            <div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
+		            <div class="text-minor-heading">
+		              {{ dateOfBirth.value | formatDate: formalDateFormat }}
+		            </div>
+		          </div>
+		        </div>
+		
+		        <div class="row mt-3">
+		          <div class="col-xl-7 col-lg-6 col-md-12 col-sm-12">
+		            <mat-form-field>
+		              <mat-label>Email Address</mat-label>
+		              <input
+		                matInput
+		                formControlName="emailAddress"
+		                [errorStateMatcher]="matcher"
+		                placeholder="name@domain.com"
+		                maxlength="75"
+		                />
+		                @if (form.get('emailAddress')?.hasError('required')) {
+		                  <mat-error> This is required </mat-error>
+		                }
+		                @if (form.get('emailAddress')?.hasError('email')) {
+		                  <mat-error>
+		                    Must be a valid email address
+		                  </mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Phone Number</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="phoneNumber"
+		                  [mask]="phoneMask"
+		                  [showMaskTyped]="false"
+		                  [errorStateMatcher]="matcher"
+		                  />
+		                  <mat-hint>A 10 digit phone number</mat-hint>
+		                  @if (form.get('phoneNumber')?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		            </div>
+		          </div>
+		        </div>
+		      </form>
+		`,
 	styles: [],
 	standalone: false,
 })

@@ -8,33 +8,32 @@ import { StepDtTermsOfUseComponent } from './step-dt-terms-of-use.component';
 	selector: 'app-steps-dt-details',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-dt-terms-of-use></app-step-dt-terms-of-use>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
-					(nextReviewStepperStep)="onNextReview(STEP_TERMS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<ng-container *ngIf="isNew; else isRenewal">
-					<app-step-dt-checklist-new></app-step-dt-checklist-new>
-				</ng-container>
-				<ng-template #isRenewal>
-					<app-step-dt-checklist-renewal></app-step-dt-checklist-renewal>
-				</ng-template>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CHECKLIST)"
-					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-dt-terms-of-use></app-step-dt-terms-of-use>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_TERMS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    @if (isNew) {
+		      <app-step-dt-checklist-new></app-step-dt-checklist-new>
+		    } @else {
+		      <app-step-dt-checklist-renewal></app-step-dt-checklist-renewal>
+		    }
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_CHECKLIST)"
+		      (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

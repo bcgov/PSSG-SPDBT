@@ -12,74 +12,90 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-form-gdsd-government-id',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row my-2">
-				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row my-2">
-						<div class="col-lg-12 col-md-12">
-							<mat-form-field>
-								<mat-label>Type of Proof</mat-label>
-								<mat-select
-									formControlName="photoTypeCode"
-									[errorStateMatcher]="matcher"
-									(selectionChange)="onChangeProof($event)"
-								>
-									<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes; let i = index" [value]="item.code">
-										{{ item.desc }}
-									</mat-option>
-								</mat-select>
-								<mat-hint>This ID can be from another country</mat-hint>
-								<mat-error *ngIf="form.get('photoTypeCode')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div *ngIf="photoTypeCode.value" @showHideTriggerSlideAnimation>
-							<div class="col-lg-6 col-md-12 mt-3">
-								<mat-form-field>
-									<mat-label>Document Expiry Date</mat-label>
-									<input
-										matInput
-										formControlName="expiryDate"
-										[mask]="dateMask"
-										[showMaskTyped]="true"
-										[errorStateMatcher]="matcher"
-										(blur)="onValidateDate()"
-										aria-label="Date in format YYYY-MM-DD"
-									/>
-									<!-- We always want the date format hint to display -->
-									<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
-									<mat-error *ngIf="showHintError">
-										<span class="hint-inline">Date format YYYY-MM-DD</span>
-									</mat-error>
-									<mat-error *ngIf="expiryDate?.hasError('required')">This is required</mat-error>
-									<mat-error *ngIf="expiryDate?.hasError('invalidDate')">This date is invalid</mat-error>
-									<mat-error *ngIf="expiryDate?.hasError('futureDate')">This date cannot be in the future</mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="text-minor-heading mt-3 mb-2">Upload a photo of your ID</div>
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-								[previewImage]="true"
-								ariaFileUploadLabel="Upload government photo ID"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="row my-2">
+		    <div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		      <div class="row my-2">
+		        <div class="col-lg-12 col-md-12">
+		          <mat-form-field>
+		            <mat-label>Type of Proof</mat-label>
+		            <mat-select
+		              formControlName="photoTypeCode"
+		              [errorStateMatcher]="matcher"
+		              (selectionChange)="onChangeProof($event)"
+		              >
+		              @for (item of governmentIssuedPhotoIdTypes; track item; let i = $index) {
+		                <mat-option [value]="item.code">
+		                  {{ item.desc }}
+		                </mat-option>
+		              }
+		            </mat-select>
+		            <mat-hint>This ID can be from another country</mat-hint>
+		            @if (form.get('photoTypeCode')?.hasError('required')) {
+		              <mat-error> This is required </mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        @if (photoTypeCode.value) {
+		          <div @showHideTriggerSlideAnimation>
+		            <div class="col-lg-6 col-md-12 mt-3">
+		              <mat-form-field>
+		                <mat-label>Document Expiry Date</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="expiryDate"
+		                  [mask]="dateMask"
+		                  [showMaskTyped]="true"
+		                  [errorStateMatcher]="matcher"
+		                  (blur)="onValidateDate()"
+		                  aria-label="Date in format YYYY-MM-DD"
+		                  />
+		                  <!-- We always want the date format hint to display -->
+		                  @if (!showHintError) {
+		                    <mat-hint>Date format YYYY-MM-DD</mat-hint>
+		                  }
+		                  @if (showHintError) {
+		                    <mat-error>
+		                      <span class="hint-inline">Date format YYYY-MM-DD</span>
+		                    </mat-error>
+		                  }
+		                  @if (expiryDate?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                  @if (expiryDate?.hasError('invalidDate')) {
+		                    <mat-error>This date is invalid</mat-error>
+		                  }
+		                  @if (expiryDate?.hasError('futureDate')) {
+		                    <mat-error>This date cannot be in the future</mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		              <div class="text-minor-heading mt-3 mb-2">Upload a photo of your ID</div>
+		              <app-file-upload
+		                (fileUploaded)="onFileUploaded($event)"
+		                (fileRemoved)="onFileRemoved()"
+		                [control]="attachments"
+		                [maxNumberOfFiles]="10"
+		                [files]="attachments.value"
+		                [previewImage]="true"
+		                ariaFileUploadLabel="Upload government photo ID"
+		              ></app-file-upload>
+		              @if (
+		                (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		                form.get('attachments')?.invalid &&
+		                form.get('attachments')?.hasError('required')
+		                ) {
+		                <mat-error
+		                  class="mat-option-error"
+		                  >This is required</mat-error
+		                  >
+		              }
+		            </div>
+		          }
+		        </div>
+		      </div>
+		    </div>
+		  </form>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

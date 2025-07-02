@@ -9,39 +9,40 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	selector: 'app-wizard-footer',
 	template: `
 		<div class="row wizard-button-row">
-			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-				<ng-container *ngIf="showExit">
-					<ng-container *ngIf="showSaveAndExit; else showCancel">
-						<button
-							*ngIf="isSaveAndExitObserved"
-							mat-flat-button
-							class="large button-small-caps bordered mb-2"
-							(click)="onSaveAndExit()"
-						>
-							Save & Exit
-						</button>
-					</ng-container>
-					<ng-template #showCancel>
-						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">{{ cancelLabel }}</button>
-					</ng-template>
-				</ng-container>
-			</div>
-
-			<ng-container *ngIf="isPreviousStepperStepObserved; else noPreviousButton">
-				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-					<button
-						*ngIf="isPreviousStepperStepObserved"
-						mat-stroked-button
-						color="primary"
-						class="large mb-2"
-						(click)="onPrevious()"
-						aria-label="Go to the previous step"
-					>
-						Previous
-					</button>
-				</div>
-				<div
-					class="col-md-12"
+		  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+		    @if (showExit) {
+		      @if (showSaveAndExit) {
+		        @if (isSaveAndExitObserved) {
+		          <button
+		            mat-flat-button
+		            class="large button-small-caps bordered mb-2"
+		            (click)="onSaveAndExit()"
+		            >
+		            Save & Exit
+		          </button>
+		        }
+		      } @else {
+		        <button mat-flat-button class="large bordered mb-2" (click)="onCancel()">{{ cancelLabel }}</button>
+		      }
+		    }
+		  </div>
+		
+		  @if (isPreviousStepperStepObserved) {
+		    <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+		      @if (isPreviousStepperStepObserved) {
+		        <button
+		          mat-stroked-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onPrevious()"
+		          aria-label="Go to the previous step"
+		          >
+		          Previous
+		        </button>
+		      }
+		    </div>
+		    <div
+		      class="col-md-12"
 					[ngClass]="
 						isWidestNext
 							? 'col-xxl-6 col-xl-6 col-lg-6'
@@ -49,56 +50,59 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 								? 'col-xxl-3 col-xl-3 col-lg-4'
 								: 'col-xxl-2 col-xl-3 col-lg-3'
 					"
-				>
-					<button
-						*ngIf="isNextStepperStepObserved"
-						mat-flat-button
-						color="primary"
-						class="large mb-2"
-						(click)="onNext()"
-						aria-label="Go to the next step"
-					>
-						{{ nextButtonLabel }}
-					</button>
-				</div>
-			</ng-container>
-			<ng-template #noPreviousButton>
-				<div
-					class="col-md-12"
+		      >
+		      @if (isNextStepperStepObserved) {
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onNext()"
+		          aria-label="Go to the next step"
+		          >
+		          {{ nextButtonLabel }}
+		        </button>
+		      }
+		    </div>
+		  } @else {
+		    <div
+		      class="col-md-12"
 					[ngClass]="
 						isWideNext ? 'offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
 					"
-				>
-					<button
-						*ngIf="isNextStepperStepObserved"
-						mat-flat-button
-						color="primary"
-						class="large mb-2"
-						(click)="onNext()"
-						aria-label="Go to the next step"
-					>
-						{{ nextButtonLabel }}
-					</button>
-				</div>
-			</ng-template>
-
-			<div
-				class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
-				[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
-				*ngIf="isFormValid"
-			>
-				<button
-					*ngIf="isNextReviewStepperStepObserved"
-					mat-stroked-button
-					color="primary"
-					class="large button-small-caps mb-2"
-					(click)="onReview()"
-				>
-					Next: Review
-				</button>
-			</div>
+		      >
+		      @if (isNextStepperStepObserved) {
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onNext()"
+		          aria-label="Go to the next step"
+		          >
+		          {{ nextButtonLabel }}
+		        </button>
+		      }
+		    </div>
+		  }
+		
+		  @if (isFormValid) {
+		    <div
+		      class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+		      [ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
+		      >
+		      @if (isNextReviewStepperStepObserved) {
+		        <button
+		          mat-stroked-button
+		          color="primary"
+		          class="large button-small-caps mb-2"
+		          (click)="onReview()"
+		          >
+		          Next: Review
+		        </button>
+		      }
+		    </div>
+		  }
 		</div>
-	`,
+		`,
 	styles: [
 		`
 			.button-small-caps {

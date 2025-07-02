@@ -11,62 +11,65 @@ import { StepTeamDogServiceInfoComponent } from './step-team-dog-service-info.co
 	selector: 'app-steps-team-dog-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-team-dog-info [applicationTypeCode]="applicationTypeCode"></app-step-team-dog-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onStepNextDogInfo()"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showDogServiceStep">
-				<app-step-team-dog-service-info
-					[applicationTypeCode]="applicationTypeCode"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-				></app-step-team-dog-service-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_SERVICE_INFO)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNextDogServiceInfo()"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_SERVICE_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showDogMedicalStep">
-				<app-step-team-dog-inoculations></app-step-team-dog-inoculations>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_INOCULATIONS)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_DOG_INOCULATIONS)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_INOCULATIONS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showDogMedicalStep">
-				<app-step-team-dog-medical></app-step-team-dog-medical>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_MEDICAL)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOG_MEDICAL)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_MEDICAL)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-team-dog-info [applicationTypeCode]="applicationTypeCode"></app-step-team-dog-info>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onStepNextDogInfo()"
+		      (nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (showDogServiceStep) {
+		    <mat-step>
+		      <app-step-team-dog-service-info
+		        [applicationTypeCode]="applicationTypeCode"
+		        [isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+		      ></app-step-team-dog-service-info>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_DOG_SERVICE_INFO)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onStepNextDogServiceInfo()"
+		        (nextReviewStepperStep)="onNextReview(STEP_DOG_SERVICE_INFO)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (showDogMedicalStep) {
+		    <mat-step>
+		      <app-step-team-dog-inoculations></app-step-team-dog-inoculations>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_DOG_INOCULATIONS)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_DOG_INOCULATIONS)"
+		        (nextReviewStepperStep)="onNextReview(STEP_DOG_INOCULATIONS)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (showDogMedicalStep) {
+		    <mat-step>
+		      <app-step-team-dog-medical></app-step-team-dog-medical>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_DOG_MEDICAL)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onStepNext(STEP_DOG_MEDICAL)"
+		        (nextReviewStepperStep)="onNextReview(STEP_DOG_MEDICAL)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

@@ -12,67 +12,69 @@ import { StepDtPhotographOfYourselfComponent } from './step-dt-photograph-of-you
 	selector: 'app-steps-dt-personal-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-dt-dog-trainer-info [applicationTypeCode]="applicationTypeCode"></app-step-dt-dog-trainer-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_DOG_TRAINER_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_TRAINER_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-dt-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-dt-mailing-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew">
-				<app-step-dt-photograph-of-yourself></app-step-dt-photograph-of-yourself>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isNew">
-				<app-step-dt-photograph-of-yourself-renew></app-step-dt-photograph-of-yourself-renew>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-dt-government-id></app-step-dt-government-id>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_GOV_ID)"
-					(nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-dt-dog-trainer-info [applicationTypeCode]="applicationTypeCode"></app-step-dt-dog-trainer-info>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="false"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_DOG_TRAINER_INFO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_DOG_TRAINER_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-dt-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-dt-mailing-address>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="false"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (isNew) {
+		    <mat-step>
+		      <app-step-dt-photograph-of-yourself></app-step-dt-photograph-of-yourself>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="false"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (!isNew) {
+		    <mat-step>
+		      <app-step-dt-photograph-of-yourself-renew></app-step-dt-photograph-of-yourself-renew>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="false"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-dt-government-id></app-step-dt-government-id>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="false"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_GOV_ID)"
+		      (nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

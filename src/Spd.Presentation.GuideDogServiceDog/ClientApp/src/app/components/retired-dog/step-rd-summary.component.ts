@@ -6,196 +6,189 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-rd-summary',
 	template: `
-		<app-step-section
-			heading="Registration summary"
-			subheading="Review your information before submitting your application."
-			*ngIf="retiredDogModelData"
-		>
-			<div class="row">
-				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<mat-accordion multi="true">
-						<mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Personal Information</div>
-										<button
-											mat-flat-button
-											color="primary"
-											class="w-auto"
-											aria-label="Go to Step"
-											(click)="onEditStep($event, 1)"
-											(keydown.enter)="onEditStep($event, 1)"
-											(keydown.space)="onEditStep($event, 1)"
-										>
-											Edit
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="panel-body">
-								<div class="text-minor-heading-small mt-2">Applicant Information</div>
-								<div class="row mt-0">
-									<div class="col-lg-12 col-md-12">
-										<div class="text-label d-block text-muted">Applicant Name</div>
-										<div class="summary-text-data">{{ applicantName }}</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Date of Birth</div>
-										<div class="summary-text-data">
-											{{ dateOfBirth | formatDate | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Phone Number</div>
-										<div class="summary-text-data">
-											{{ phoneNumber | formatPhoneNumber | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Email Address</div>
-										<div class="summary-text-data">{{ emailAddress | default }}</div>
-									</div>
-								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<app-form-address-summary
-									[formData]="retiredDogModelData.mailingAddressData"
-									headingLabel="Mailing Address"
-									[isAddressTheSame]="false"
-								></app-form-address-summary>
-
-								<ng-container *ngIf="isNew">
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-
-									<div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
-									<div class="row mt-0">
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Certificate #</div>
-											<div class="summary-text-data">
-												{{ currentGDSDCertificateNumber | default }}
-											</div>
-										</div>
-										<div class="col-lg-8 col-md-12">
-											<div class="text-label d-block text-muted">Guide or Service Dog Certificate</div>
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of gdsdCertificateAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</ng-container>
-
-								<ng-container *ngIf="photoOfYourselfAttachments">
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-
-									<div class="text-minor-heading-small">Photo of Yourself</div>
-									<div class="row mt-0">
-										<div class="col-lg-6 col-md-12">
-											<div class="summary-text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-														<li>{{ doc.name }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</ng-container>
-
-								<mat-divider class="mt-3 mb-2"></mat-divider>
-
-								<div class="text-minor-heading-small">
-									{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-								</div>
-								<div class="row mt-0">
-									<div class="col-lg-6 col-md-12">
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-						</mat-expansion-panel>
-
-						<mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="review-panel-title">
-									<mat-toolbar class="d-flex justify-content-between">
-										<div class="panel-header">Dog Information</div>
-										<button
-											mat-flat-button
-											color="primary"
-											class="w-auto"
-											aria-label="Go to Step"
-											(click)="onEditStep($event, 2)"
-											(keydown.enter)="onEditStep($event, 2)"
-											(keydown.space)="onEditStep($event, 2)"
-										>
-											Edit
-										</button>
-									</mat-toolbar>
-								</mat-panel-title>
-							</mat-expansion-panel-header>
-
-							<div class="panel-body">
-								<div class="row mt-0">
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Dog Name</div>
-										<div class="summary-text-data">{{ dogName | default }}</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Date of Birth</div>
-										<div class="summary-text-data">
-											{{ dogDateOfBirth | formatDate | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Breed</div>
-										<div class="summary-text-data">
-											{{ dogBreed | default }}
-										</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Colour and Markings</div>
-										<div class="summary-text-data">{{ colourAndMarkings | default }}</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Gender</div>
-										<div class="summary-text-data">{{ genderCode | options: 'DogGenderTypes' | default }}</div>
-									</div>
-									<div class="col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Microchip Number</div>
-										<div class="summary-text-data">{{ microchipNumber | default }}</div>
-									</div>
-									<div class="col-lg-4 col-md-12" *ngIf="isNew">
-										<div class="text-label d-block text-muted">Date of Retirement</div>
-										<div class="summary-text-data">
-											{{ dogRetiredDate | formatDate | default }}
-										</div>
-									</div>
-									<div class="col-lg-8 col-md-12">
-										<div class="text-label d-block text-muted">Continue to live with dog in his/her retirement?</div>
-										<div class="summary-text-data">
-											{{ liveWithDog | default }}
-										</div>
-									</div>
-								</div>
-							</div>
-						</mat-expansion-panel>
-					</mat-accordion>
-				</div>
-			</div>
-		</app-step-section>
-	`,
+		@if (retiredDogModelData) {
+		  <app-step-section
+		    heading="Registration summary"
+		    subheading="Review your information before submitting your application."
+		    >
+		    <div class="row">
+		      <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		        <mat-accordion multi="true">
+		          <mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
+		            <mat-expansion-panel-header>
+		              <mat-panel-title class="review-panel-title">
+		                <mat-toolbar class="d-flex justify-content-between">
+		                  <div class="panel-header">Personal Information</div>
+		                  <button
+		                    mat-flat-button
+		                    color="primary"
+		                    class="w-auto"
+		                    aria-label="Go to Step"
+		                    (click)="onEditStep($event, 1)"
+		                    (keydown.enter)="onEditStep($event, 1)"
+		                    (keydown.space)="onEditStep($event, 1)"
+		                    >
+		                    Edit
+		                  </button>
+		                </mat-toolbar>
+		              </mat-panel-title>
+		            </mat-expansion-panel-header>
+		            <div class="panel-body">
+		              <div class="text-minor-heading-small mt-2">Applicant Information</div>
+		              <div class="row mt-0">
+		                <div class="col-lg-12 col-md-12">
+		                  <div class="text-label d-block text-muted">Applicant Name</div>
+		                  <div class="summary-text-data">{{ applicantName }}</div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Date of Birth</div>
+		                  <div class="summary-text-data">
+		                    {{ dateOfBirth | formatDate | default }}
+		                  </div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Phone Number</div>
+		                  <div class="summary-text-data">
+		                    {{ phoneNumber | formatPhoneNumber | default }}
+		                  </div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Email Address</div>
+		                  <div class="summary-text-data">{{ emailAddress | default }}</div>
+		                </div>
+		              </div>
+		              <mat-divider class="mt-3 mb-2"></mat-divider>
+		              <app-form-address-summary
+		                [formData]="retiredDogModelData.mailingAddressData"
+		                headingLabel="Mailing Address"
+		                [isAddressTheSame]="false"
+		              ></app-form-address-summary>
+		              @if (isNew) {
+		                <mat-divider class="mt-3 mb-2"></mat-divider>
+		                <div class="text-minor-heading-small">Guide or Service Dog Certificate</div>
+		                <div class="row mt-0">
+		                  <div class="col-lg-4 col-md-12">
+		                    <div class="text-label d-block text-muted">Certificate #</div>
+		                    <div class="summary-text-data">
+		                      {{ currentGDSDCertificateNumber | default }}
+		                    </div>
+		                  </div>
+		                  <div class="col-lg-8 col-md-12">
+		                    <div class="text-label d-block text-muted">Guide or Service Dog Certificate</div>
+		                    <div class="summary-text-data">
+		                      <ul class="m-0">
+		                        @for (doc of gdsdCertificateAttachments; track doc; let i = $index) {
+		                          <li>{{ doc.name }}</li>
+		                        }
+		                      </ul>
+		                    </div>
+		                  </div>
+		                </div>
+		              }
+		              @if (photoOfYourselfAttachments) {
+		                <mat-divider class="mt-3 mb-2"></mat-divider>
+		                <div class="text-minor-heading-small">Photo of Yourself</div>
+		                <div class="row mt-0">
+		                  <div class="col-lg-6 col-md-12">
+		                    <div class="summary-text-data">
+		                      <ul class="m-0">
+		                        @for (doc of photoOfYourselfAttachments; track doc; let i = $index) {
+		                          <li>{{ doc.name }}</li>
+		                        }
+		                      </ul>
+		                    </div>
+		                  </div>
+		                </div>
+		              }
+		              <mat-divider class="mt-3 mb-2"></mat-divider>
+		              <div class="text-minor-heading-small">
+		                {{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
+		              </div>
+		              <div class="row mt-0">
+		                <div class="col-lg-6 col-md-12">
+		                  <div class="summary-text-data">
+		                    <ul class="m-0">
+		                      @for (doc of governmentIssuedPhotoAttachments; track doc; let i = $index) {
+		                        <li>{{ doc.name }}</li>
+		                      }
+		                    </ul>
+		                  </div>
+		                </div>
+		              </div>
+		            </div>
+		          </mat-expansion-panel>
+		          <mat-expansion-panel class="mb-4" [hideToggle]="true" [expanded]="true">
+		            <mat-expansion-panel-header>
+		              <mat-panel-title class="review-panel-title">
+		                <mat-toolbar class="d-flex justify-content-between">
+		                  <div class="panel-header">Dog Information</div>
+		                  <button
+		                    mat-flat-button
+		                    color="primary"
+		                    class="w-auto"
+		                    aria-label="Go to Step"
+		                    (click)="onEditStep($event, 2)"
+		                    (keydown.enter)="onEditStep($event, 2)"
+		                    (keydown.space)="onEditStep($event, 2)"
+		                    >
+		                    Edit
+		                  </button>
+		                </mat-toolbar>
+		              </mat-panel-title>
+		            </mat-expansion-panel-header>
+		            <div class="panel-body">
+		              <div class="row mt-0">
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Dog Name</div>
+		                  <div class="summary-text-data">{{ dogName | default }}</div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Date of Birth</div>
+		                  <div class="summary-text-data">
+		                    {{ dogDateOfBirth | formatDate | default }}
+		                  </div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Breed</div>
+		                  <div class="summary-text-data">
+		                    {{ dogBreed | default }}
+		                  </div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Colour and Markings</div>
+		                  <div class="summary-text-data">{{ colourAndMarkings | default }}</div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Gender</div>
+		                  <div class="summary-text-data">{{ genderCode | options: 'DogGenderTypes' | default }}</div>
+		                </div>
+		                <div class="col-lg-4 col-md-12">
+		                  <div class="text-label d-block text-muted">Microchip Number</div>
+		                  <div class="summary-text-data">{{ microchipNumber | default }}</div>
+		                </div>
+		                @if (isNew) {
+		                  <div class="col-lg-4 col-md-12">
+		                    <div class="text-label d-block text-muted">Date of Retirement</div>
+		                    <div class="summary-text-data">
+		                      {{ dogRetiredDate | formatDate | default }}
+		                    </div>
+		                  </div>
+		                }
+		                <div class="col-lg-8 col-md-12">
+		                  <div class="text-label d-block text-muted">Continue to live with dog in his/her retirement?</div>
+		                  <div class="summary-text-data">
+		                    {{ liveWithDog | default }}
+		                  </div>
+		                </div>
+		              </div>
+		            </div>
+		          </mat-expansion-panel>
+		        </mat-accordion>
+		      </div>
+		    </div>
+		  </app-step-section>
+		}
+		`,
 	styles: [
 		`
 			.mat-expansion-panel {

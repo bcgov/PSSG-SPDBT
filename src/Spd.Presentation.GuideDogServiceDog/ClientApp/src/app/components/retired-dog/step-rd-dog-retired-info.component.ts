@@ -11,34 +11,44 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-rd-dog-retired-info',
 	template: `
 		<app-step-section heading="When was your dog retired from service?">
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xxl-5 col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<mat-form-field>
-							<mat-label>Date of Retirement</mat-label>
-							<input
-								matInput
-								formControlName="dogRetiredDate"
-								[mask]="dateMask"
-								[showMaskTyped]="true"
-								[errorStateMatcher]="matcher"
-								(blur)="onValidateDate()"
-								aria-label="Date in format YYYY-MM-DD"
-							/>
-							<!-- We always want the date format hint to display -->
-							<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
-							<mat-error *ngIf="showHintError">
-								<span class="hint-inline">Date format YYYY-MM-DD</span>
-							</mat-error>
-							<mat-error *ngIf="dogRetiredDate?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="dogRetiredDate?.hasError('invalidDate')">This date is invalid</mat-error>
-							<mat-error *ngIf="dogRetiredDate?.hasError('futureDate')">This date cannot be in the future</mat-error>
-						</mat-form-field>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xxl-5 col-xl-6 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		        <mat-form-field>
+		          <mat-label>Date of Retirement</mat-label>
+		          <input
+		            matInput
+		            formControlName="dogRetiredDate"
+		            [mask]="dateMask"
+		            [showMaskTyped]="true"
+		            [errorStateMatcher]="matcher"
+		            (blur)="onValidateDate()"
+		            aria-label="Date in format YYYY-MM-DD"
+		            />
+		            <!-- We always want the date format hint to display -->
+		            @if (!showHintError) {
+		              <mat-hint>Date format YYYY-MM-DD</mat-hint>
+		            }
+		            @if (showHintError) {
+		              <mat-error>
+		                <span class="hint-inline">Date format YYYY-MM-DD</span>
+		              </mat-error>
+		            }
+		            @if (dogRetiredDate?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		            @if (dogRetiredDate?.hasError('invalidDate')) {
+		              <mat-error>This date is invalid</mat-error>
+		            }
+		            @if (dogRetiredDate?.hasError('futureDate')) {
+		              <mat-error>This date cannot be in the future</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		      </div>
+		    </form>
+		  </app-step-section>
+		`,
 	styles: [
 		`
 			.hint-inline {

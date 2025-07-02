@@ -10,46 +10,47 @@ import { StepRdDogRetiredInfoComponent } from './step-rd-dog-retired-info.compon
 	selector: 'app-steps-rd-dog-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-rd-dog-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_DOG_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew">
-				<app-step-rd-dog-retired-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-retired-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_RETIRED_INFO)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_DOG_RETIRED_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_RETIRED_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-rd-dog-living-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-living-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_DOG_LIVING_INFO)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOG_LIVING_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_DOG_LIVING_INFO)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-rd-dog-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-info>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_DOG_INFO)"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_DOG_INFO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_DOG_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (isNew) {
+		    <mat-step>
+		      <app-step-rd-dog-retired-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-retired-info>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_DOG_RETIRED_INFO)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_DOG_RETIRED_INFO)"
+		        (nextReviewStepperStep)="onNextReview(STEP_DOG_RETIRED_INFO)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-rd-dog-living-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-dog-living-info>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_DOG_LIVING_INFO)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_DOG_LIVING_INFO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_DOG_LIVING_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,
