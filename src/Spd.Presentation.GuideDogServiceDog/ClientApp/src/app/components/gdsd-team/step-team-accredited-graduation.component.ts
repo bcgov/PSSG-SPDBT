@@ -10,46 +10,47 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-team-accredited-graduation',
 	template: `
 		<app-step-section
-			heading="Accredited graduation information"
-			subheading="Provide information about the accredited school your dog attended"
-		>
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-form-gdsd-accredited-school
-							[accreditedSchoolIdControl]="accreditedSchoolId"
-							[accreditedSchoolNameControl]="accreditedSchoolName"
-						></app-form-gdsd-accredited-school>
-
-						<div class="row">
-							<div class="text-minor-heading mt-3 mb-2">
-								Attached written confirmation from the accredited training school that my dog and I have successfully
-								completed the training program
-							</div>
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-								[previewImage]="true"
-								ariaFileUploadLabel="Upload accredited training school completion confirmation"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		  heading="Accredited graduation information"
+		  subheading="Provide information about the accredited school your dog attended"
+		  >
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		        <app-form-gdsd-accredited-school
+		          [accreditedSchoolIdControl]="accreditedSchoolId"
+		          [accreditedSchoolNameControl]="accreditedSchoolName"
+		        ></app-form-gdsd-accredited-school>
+		
+		        <div class="row">
+		          <div class="text-minor-heading mt-3 mb-2">
+		            Attached written confirmation from the accredited training school that my dog and I have successfully
+		            completed the training program
+		          </div>
+		          <app-file-upload
+		            (fileUploaded)="onFileUploaded($event)"
+		            (fileRemoved)="onFileRemoved()"
+		            [control]="attachments"
+		            [maxNumberOfFiles]="10"
+		            [files]="attachments.value"
+		            [previewImage]="true"
+		            ariaFileUploadLabel="Upload accredited training school completion confirmation"
+		          ></app-file-upload>
+		          @if (
+		            (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		            form.get('attachments')?.invalid &&
+		            form.get('attachments')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >This is required</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		      </div>
+		    </form>
+		  </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

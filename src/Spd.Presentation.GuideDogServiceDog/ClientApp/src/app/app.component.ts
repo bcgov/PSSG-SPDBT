@@ -8,18 +8,17 @@ import { ConfigService } from './core/services/config.service';
 	selector: 'app-root',
 	template: `
 		<body class="mat-typography d-flex flex-column h-100">
-			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
-			<app-spd-header></app-spd-header>
-
-			<ng-container *ngIf="configs$ | async">
-				<router-outlet></router-outlet>
-
-				<footer class="mt-auto">
-					<app-spd-footer></app-spd-footer>
-				</footer>
-			</ng-container>
+		  <ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
+		  <app-spd-header></app-spd-header>
+		
+		  @if (configs$ | async) {
+		    <router-outlet></router-outlet>
+		    <footer class="mt-auto">
+		      <app-spd-footer></app-spd-footer>
+		    </footer>
+		  }
 		</body>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

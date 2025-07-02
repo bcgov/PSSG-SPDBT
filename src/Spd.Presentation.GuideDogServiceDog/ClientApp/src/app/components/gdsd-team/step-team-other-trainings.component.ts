@@ -15,203 +15,222 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-team-other-trainings',
 	template: `
 		<app-step-section
-			heading="Other Training"
-			subheading="If you have not attended a training school or formal training program, please list any informal training you have received."
-		>
-			<div [formGroup]="form">
-				<div class="row my-2">
-					<div class="col-xxl-11 col-xl-12 mx-auto">
-						<section formArrayName="otherTrainings" *ngFor="let group of otherTrainingsArray.controls; let i = index">
-							<div class="other-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
-								<div class="row">
-									<div class="col-12">
-										<div class="text-minor-heading mb-2">Training Details</div>
-										<mat-form-field>
-											<textarea
-												matInput
-												aria-label="Training details"
-												formControlName="trainingDetail"
-												style="min-height: 80px"
-												[errorStateMatcher]="matcher"
-												maxlength="1000"
-											></textarea>
-											<mat-hint>Maximum 1000 characters</mat-hint>
-											<mat-error *ngIf="group.get('trainingDetail')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-12">
-										<div class="text-minor-heading mt-3 mb-2">Did you use a personal dog trainer?</div>
-										<mat-radio-group aria-label="Select an option" formControlName="usePersonalDogTrainer">
-											<div class="d-flex justify-content-start">
-												<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
-												<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes"
-													>Yes</mat-radio-button
-												>
-											</div>
-										</mat-radio-group>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(group.get('usePersonalDogTrainer')?.dirty || group.get('usePersonalDogTrainer')?.touched) &&
-												group.get('usePersonalDogTrainer')?.invalid &&
-												group.get('usePersonalDogTrainer')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
-									</div>
-								</div>
-								<div class="row mt-3" *ngIf="isUsePersonalDogTrainer(i)" @showHideTriggerSlideAnimation>
-									<div class="text-minor-heading mt-3 mb-2">Personal Trainer Information</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Trainer Credentials</mat-label>
-											<input
-												matInput
-												formControlName="dogTrainerCredential"
-												[errorStateMatcher]="matcher"
-												maxlength="100"
-											/>
-											<mat-error *ngIf="group.get('dogTrainerCredential')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Time Spent Training</mat-label>
-											<input matInput formControlName="trainingTime" [errorStateMatcher]="matcher" maxlength="15" />
-											<mat-error *ngIf="group.get('trainingTime')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Trainer Given Name</mat-label>
-											<input matInput formControlName="trainerGivenName" [errorStateMatcher]="matcher" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Trainer Surname</mat-label>
-											<input matInput formControlName="trainerSurname" [errorStateMatcher]="matcher" maxlength="40" />
-											<mat-error *ngIf="group.get('trainerSurname')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Trainer Phone Number</mat-label>
-											<input
-												matInput
-												formControlName="trainerPhoneNumber"
-												[mask]="phoneMask"
-												[showMaskTyped]="false"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-hint>A 10 digit phone number</mat-hint>
-											<mat-error *ngIf="group.get('trainerPhoneNumber')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Trainer Email Address <span class="optional-label">(optional)</span></mat-label>
-											<input
-												matInput
-												formControlName="trainerEmailAddress"
-												[errorStateMatcher]="matcher"
-												maxlength="75"
-											/>
-											<mat-error *ngIf="group.get('trainerEmailAddress')?.hasError('email')">
-												Must be a valid email address
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Hours spent practicing the skills learned</mat-label>
-											<input
-												matInput
-												formControlName="hoursPracticingSkill"
-												[errorStateMatcher]="matcher"
-												maxlength="100"
-											/>
-											<mat-hint>e.g. 20 hours/week for 8 weeks</mat-hint>
-											<mat-error *ngIf="group.get('hoursPracticingSkill')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-								</div>
-
-								<div class="d-flex justify-content-end">
-									<button
-										mat-flat-button
-										type="button"
-										color="primary"
-										class="large w-auto"
-										aria-label="Remove this training"
-										(click)="onRemoveOtherTrainingRow(i)"
-										*ngIf="isAllowDelete()"
-									>
-										Remove this Training
-									</button>
-								</div>
-							</div>
-						</section>
-
-						<div class="mb-4 d-flex justify-content-center">
-							<button
-								mat-flat-button
-								type="button"
-								color="primary"
-								class="large w-auto mt-2 mt-md-0"
-								(click)="onAddOtherTraining()"
-							>
-								Add Another Training
-							</button>
-						</div>
-
-						<div class="mb-4">
-							<div class="text-minor-heading">
-								Upload supporting documentation (e.g. curriculum document, certificate, etc.)
-								<span class="optional-label">(optional)</span>
-							</div>
-							<div class="mt-2">
-								<app-file-upload
-									(fileUploaded)="onFileUploaded($event)"
-									(fileRemoved)="onFileRemoved()"
-									[maxNumberOfFiles]="10"
-									[control]="attachments"
-									#attachmentsRef
-									[files]="attachments.value"
-									ariaFileUploadLabel="Upload supporting training documentation"
-								></app-file-upload>
-							</div>
-						</div>
-
-						<div class="text-minor-heading">
-							Upload logs of practice hours <span class="optional-label">(optional)</span>
-						</div>
-						<div class="mt-2">
-							<app-file-upload
-								(fileUploaded)="onFileUploadedPracticeLog($event)"
-								(fileRemoved)="onFileRemoved()"
-								[maxNumberOfFiles]="10"
-								[control]="practiceLogAttachments"
-								#practiceLogAttachmentsRef
-								[files]="practiceLogAttachments.value"
-								ariaFileUploadLabel="Upload logs of practice hours"
-							></app-file-upload>
-						</div>
-					</div>
-				</div>
-			</div>
-		</app-step-section>
-	`,
+		  heading="Other Training"
+		  subheading="If you have not attended a training school or formal training program, please list any informal training you have received."
+		  >
+		  <div [formGroup]="form">
+		    <div class="row my-2">
+		      <div class="col-xxl-11 col-xl-12 mx-auto">
+		        @for (group of otherTrainingsArray.controls; track group; let i = $index) {
+		          <section formArrayName="otherTrainings">
+		            <div class="other-entry" [formGroupName]="i" @showHideTriggerSlideAnimation>
+		              <div class="row">
+		                <div class="col-12">
+		                  <div class="text-minor-heading mb-2">Training Details</div>
+		                  <mat-form-field>
+		                    <textarea
+		                      matInput
+		                      aria-label="Training details"
+		                      formControlName="trainingDetail"
+		                      style="min-height: 80px"
+		                      [errorStateMatcher]="matcher"
+		                      maxlength="1000"
+		                    ></textarea>
+		                    <mat-hint>Maximum 1000 characters</mat-hint>
+		                    @if (group.get('trainingDetail')?.hasError('required')) {
+		                      <mat-error>
+		                        This is required
+		                      </mat-error>
+		                    }
+		                  </mat-form-field>
+		                </div>
+		                <div class="col-12">
+		                  <div class="text-minor-heading mt-3 mb-2">Did you use a personal dog trainer?</div>
+		                  <mat-radio-group aria-label="Select an option" formControlName="usePersonalDogTrainer">
+		                    <div class="d-flex justify-content-start">
+		                      <mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
+		                      <mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes"
+		                        >Yes</mat-radio-button
+		                        >
+		                      </div>
+		                    </mat-radio-group>
+		                    @if (
+		                      (group.get('usePersonalDogTrainer')?.dirty || group.get('usePersonalDogTrainer')?.touched) &&
+		                      group.get('usePersonalDogTrainer')?.invalid &&
+		                      group.get('usePersonalDogTrainer')?.hasError('required')
+		                      ) {
+		                      <mat-error
+		                        class="mat-option-error"
+		                        >This is required</mat-error
+		                        >
+		                      }
+		                    </div>
+		                  </div>
+		                  @if (isUsePersonalDogTrainer(i)) {
+		                    <div class="row mt-3" @showHideTriggerSlideAnimation>
+		                      <div class="text-minor-heading mt-3 mb-2">Personal Trainer Information</div>
+		                      <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                        <mat-form-field>
+		                          <mat-label>Trainer Credentials</mat-label>
+		                          <input
+		                            matInput
+		                            formControlName="dogTrainerCredential"
+		                            [errorStateMatcher]="matcher"
+		                            maxlength="100"
+		                            />
+		                            @if (group.get('dogTrainerCredential')?.hasError('required')) {
+		                              <mat-error>
+		                                This is required
+		                              </mat-error>
+		                            }
+		                          </mat-form-field>
+		                        </div>
+		                        <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                          <mat-form-field>
+		                            <mat-label>Time Spent Training</mat-label>
+		                            <input matInput formControlName="trainingTime" [errorStateMatcher]="matcher" maxlength="15" />
+		                            @if (group.get('trainingTime')?.hasError('required')) {
+		                              <mat-error> This is required </mat-error>
+		                            }
+		                          </mat-form-field>
+		                        </div>
+		                        <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                          <mat-form-field>
+		                            <mat-label>Trainer Given Name</mat-label>
+		                            <input matInput formControlName="trainerGivenName" [errorStateMatcher]="matcher" maxlength="40" />
+		                          </mat-form-field>
+		                        </div>
+		                        <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                          <mat-form-field>
+		                            <mat-label>Trainer Surname</mat-label>
+		                            <input matInput formControlName="trainerSurname" [errorStateMatcher]="matcher" maxlength="40" />
+		                            @if (group.get('trainerSurname')?.hasError('required')) {
+		                              <mat-error>
+		                                This is required
+		                              </mat-error>
+		                            }
+		                          </mat-form-field>
+		                        </div>
+		                        <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                          <mat-form-field>
+		                            <mat-label>Trainer Phone Number</mat-label>
+		                            <input
+		                              matInput
+		                              formControlName="trainerPhoneNumber"
+		                              [mask]="phoneMask"
+		                              [showMaskTyped]="false"
+		                              [errorStateMatcher]="matcher"
+		                              />
+		                              <mat-hint>A 10 digit phone number</mat-hint>
+		                              @if (group.get('trainerPhoneNumber')?.hasError('required')) {
+		                                <mat-error>
+		                                  This is required
+		                                </mat-error>
+		                              }
+		                            </mat-form-field>
+		                          </div>
+		                          <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                            <mat-form-field>
+		                              <mat-label>Trainer Email Address <span class="optional-label">(optional)</span></mat-label>
+		                              <input
+		                                matInput
+		                                formControlName="trainerEmailAddress"
+		                                [errorStateMatcher]="matcher"
+		                                maxlength="75"
+		                                />
+		                                @if (group.get('trainerEmailAddress')?.hasError('email')) {
+		                                  <mat-error>
+		                                    Must be a valid email address
+		                                  </mat-error>
+		                                }
+		                              </mat-form-field>
+		                            </div>
+		                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+		                              <mat-form-field>
+		                                <mat-label>Hours spent practicing the skills learned</mat-label>
+		                                <input
+		                                  matInput
+		                                  formControlName="hoursPracticingSkill"
+		                                  [errorStateMatcher]="matcher"
+		                                  maxlength="100"
+		                                  />
+		                                  <mat-hint>e.g. 20 hours/week for 8 weeks</mat-hint>
+		                                  @if (group.get('hoursPracticingSkill')?.hasError('required')) {
+		                                    <mat-error>
+		                                      This is required
+		                                    </mat-error>
+		                                  }
+		                                </mat-form-field>
+		                              </div>
+		                            </div>
+		                          }
+		                          <div class="d-flex justify-content-end">
+		                            @if (isAllowDelete()) {
+		                              <button
+		                                mat-flat-button
+		                                type="button"
+		                                color="primary"
+		                                class="large w-auto"
+		                                aria-label="Remove this training"
+		                                (click)="onRemoveOtherTrainingRow(i)"
+		                                >
+		                                Remove this Training
+		                              </button>
+		                            }
+		                          </div>
+		                        </div>
+		                      </section>
+		                    }
+		
+		                    <div class="mb-4 d-flex justify-content-center">
+		                      <button
+		                        mat-flat-button
+		                        type="button"
+		                        color="primary"
+		                        class="large w-auto mt-2 mt-md-0"
+		                        (click)="onAddOtherTraining()"
+		                        >
+		                        Add Another Training
+		                      </button>
+		                    </div>
+		
+		                    <div class="mb-4">
+		                      <div class="text-minor-heading">
+		                        Upload supporting documentation (e.g. curriculum document, certificate, etc.)
+		                        <span class="optional-label">(optional)</span>
+		                      </div>
+		                      <div class="mt-2">
+		                        <app-file-upload
+		                          (fileUploaded)="onFileUploaded($event)"
+		                          (fileRemoved)="onFileRemoved()"
+		                          [maxNumberOfFiles]="10"
+		                          [control]="attachments"
+		                          #attachmentsRef
+		                          [files]="attachments.value"
+		                          ariaFileUploadLabel="Upload supporting training documentation"
+		                        ></app-file-upload>
+		                      </div>
+		                    </div>
+		
+		                    <div class="text-minor-heading">
+		                      Upload logs of practice hours <span class="optional-label">(optional)</span>
+		                    </div>
+		                    <div class="mt-2">
+		                      <app-file-upload
+		                        (fileUploaded)="onFileUploadedPracticeLog($event)"
+		                        (fileRemoved)="onFileRemoved()"
+		                        [maxNumberOfFiles]="10"
+		                        [control]="practiceLogAttachments"
+		                        #practiceLogAttachmentsRef
+		                        [files]="practiceLogAttachments.value"
+		                        ariaFileUploadLabel="Upload logs of practice hours"
+		                      ></app-file-upload>
+		                    </div>
+		                  </div>
+		                </div>
+		              </div>
+		            </app-step-section>
+		`,
 	styles: [
 		`
 			.other-entry {

@@ -9,30 +9,31 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-rd-dog-living-info',
 	template: `
 		<app-step-section heading="Will your dog continue to live with you in his/her retirement?">
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group aria-label="Select an option" formControlName="confirmDogLiveWithYouAfterRetire">
-							<div class="d-flex justify-content-start">
-								<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</div>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('confirmDogLiveWithYouAfterRetire')?.dirty ||
-									form.get('confirmDogLiveWithYouAfterRetire')?.touched) &&
-								form.get('confirmDogLiveWithYouAfterRetire')?.invalid &&
-								form.get('confirmDogLiveWithYouAfterRetire')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+		        <mat-radio-group aria-label="Select an option" formControlName="confirmDogLiveWithYouAfterRetire">
+		          <div class="d-flex justify-content-start">
+		            <mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.No">No</mat-radio-button>
+		            <mat-radio-button class="radio-label w-auto" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+		          </div>
+		        </mat-radio-group>
+		        @if (
+		          (form.get('confirmDogLiveWithYouAfterRetire')?.dirty ||
+		          form.get('confirmDogLiveWithYouAfterRetire')?.touched) &&
+		          form.get('confirmDogLiveWithYouAfterRetire')?.invalid &&
+		          form.get('confirmDogLiveWithYouAfterRetire')?.hasError('required')
+		          ) {
+		          <mat-error
+		            class="mat-option-error"
+		            >This is required</mat-error
+		            >
+		          }
+		        </div>
+		      </div>
+		    </form>
+		  </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

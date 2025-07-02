@@ -28,7 +28,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-form-field>
 								<mat-label>Surname</mat-label>
 								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+								@if (form.get('surname')?.hasError('required')) {
+									<mat-error> This is required </mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -44,13 +46,23 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									aria-label="Date in format YYYY-MM-DD"
 								/>
 								<!-- We always want the date format hint to display -->
-								<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
-								<mat-error *ngIf="showHintError">
-									<span class="hint-inline">Date format YYYY-MM-DD</span>
-								</mat-error>
-								<mat-error *ngIf="dateOfBirth?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="dateOfBirth?.hasError('invalidDate')">This date is invalid</mat-error>
-								<mat-error *ngIf="dateOfBirth?.hasError('futureDate')">This date cannot be in the future</mat-error>
+								@if (!showHintError) {
+									<mat-hint>Date format YYYY-MM-DD</mat-hint>
+								}
+								@if (showHintError) {
+									<mat-error>
+										<span class="hint-inline">Date format YYYY-MM-DD</span>
+									</mat-error>
+								}
+								@if (dateOfBirth.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (dateOfBirth.hasError('invalidDate')) {
+									<mat-error>This date is invalid</mat-error>
+								}
+								@if (dateOfBirth.hasError('futureDate')) {
+									<mat-error>This date cannot be in the future</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -64,7 +76,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-hint>A 10 digit phone number</mat-hint>
-								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+								@if (form.get('phoneNumber')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -77,9 +91,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									placeholder="name@domain.com"
 									maxlength="75"
 								/>
-								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
-									Must be a valid email address
-								</mat-error>
+								@if (form.get('emailAddress')?.hasError('email')) {
+									<mat-error> Must be a valid email address </mat-error>
+								}
 							</mat-form-field>
 						</div>
 					</div>

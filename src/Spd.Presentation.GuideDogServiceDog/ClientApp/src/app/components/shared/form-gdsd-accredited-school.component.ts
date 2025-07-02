@@ -14,22 +14,32 @@ import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 			<mat-label>School Name</mat-label>
 			<input matInput [formControl]="accreditedSchoolIdControl" [matAutocomplete]="auto" (blur)="onSchoolIdBlur()" />
 			<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-				<mat-option *ngFor="let field of filteredOptions | async" [value]="field.schoolId">
-					<div class="school-name mt-2">{{ field.schoolName }}</div>
-					<div class="school-address mb-2">{{ field.schoolAddress }}</div>
-				</mat-option>
+				@for (field of filteredOptions | async; track field) {
+					<mat-option [value]="field.schoolId">
+						<div class="school-name mt-2">{{ field.schoolName }}</div>
+						<div class="school-address mb-2">{{ field.schoolAddress }}</div>
+					</mat-option>
+				}
 			</mat-autocomplete>
-			<mat-icon *ngIf="!isRenewal" style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
-			<mat-hint *ngIf="!isRenewal"> Start typing name of school or address </mat-hint>
-			<mat-error *ngIf="accreditedSchoolIdControl?.hasError('required')"> This is required </mat-error>
+			@if (!isRenewal) {
+				<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
+			}
+			@if (!isRenewal) {
+				<mat-hint> Start typing name of school or address </mat-hint>
+			}
+			@if (accreditedSchoolIdControl.hasError('required')) {
+				<mat-error> This is required </mat-error>
+			}
 		</mat-form-field>
 
-		<div class="mt-4" *ngIf="!isRenewal">
-			<app-alert type="info" icon="info">
-				If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
-				regular office hours.
-			</app-alert>
-		</div>
+		@if (!isRenewal) {
+			<div class="mt-4">
+				<app-alert type="info" icon="info">
+					If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
+					regular office hours.
+				</app-alert>
+			</div>
+		}
 	`,
 	styles: [
 		`

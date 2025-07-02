@@ -329,9 +329,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	 * Partial Save - Save the data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	partialSaveLicenceStepAuthenticated(
-		isSaveAndExit?: boolean
-	): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
+	partialSaveLicenceStepAuthenticated(): Observable<StrictHttpResponse<RetiredDogAppCommandResponse>> {
 		const rdModelFormValue = this.retiredDogModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBase(rdModelFormValue) as RetiredDogLicenceAppUpsertRequest;

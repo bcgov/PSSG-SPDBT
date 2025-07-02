@@ -74,22 +74,24 @@ import { StepsTeamTrainingInfoComponent } from './steps-team-training-info.compo
 				></app-steps-team-dog-info>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete" *ngIf="isNew">
-				<app-steps-team-training-info
-					[isLoggedIn]="isLoggedIn"
-					[showSaveAndExit]="showSaveAndExit"
-					[isFormValid]="isFormValid"
-					[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
-					[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
-					[isServiceDog]="isServiceDog"
-					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-team-training-info>
-			</mat-step>
+			@if (isNew) {
+				<mat-step [completed]="step4Complete">
+					<app-steps-team-training-info
+						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="showSaveAndExit"
+						[isFormValid]="isFormValid"
+						[isTrainedByAccreditedSchools]="isTrainedByAccreditedSchools"
+						[hasAttendedTrainingSchool]="hasAttendedTrainingSchool"
+						[isServiceDog]="isServiceDog"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(nextReview)="onGoToReview()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-team-training-info>
+				</mat-step>
+			}
 
 			<mat-step>
 				<app-steps-team-review-and-confirm
@@ -266,7 +268,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+		this.gdsdTeamApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.router.navigateByUrl(AppRoutes.pathGdsdMainApplications());
 			},
