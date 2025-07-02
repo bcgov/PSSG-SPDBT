@@ -206,6 +206,26 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get latest secure worker licences info by a list of licence numbers
+        /// Example: http://localhost:5114/api/licences/security-worker-licence-in-bulk
+        /// </summary>
+        [Route("api/licences/security-worker-licence-in-bulk")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicenceInBulk([FromBody] LicenceNumbersRequest request, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(request.LicenceNumbers) || string.IsNullOrWhiteSpace(request.Recaptcha?.RecaptchaCode))
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing data.");
+            await VerifyGoogleRecaptchaAsync(request.Recaptcha, ct);
+
+            var numbers = request.LicenceNumbers
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .ToList();
+            return await _mediator.Send(new LicenceBulkSearch(numbers, ServiceTypeCode.SecurityWorkerLicence), ct);
+        }
+
+        /// <summary>
         /// Get latest secure business licence by licence number or at least the first 3 letters of biz name (for either legal name or trade name)
         /// Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123
         /// </summary>
@@ -217,4 +237,11 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
         }
     }
+
+    public record LicenceNumbersRequest
+    {
+        public GoogleRecaptcha Recaptcha { get; set; } = null!;
+        public string LicenceNumbers { get; set; } = string.Empty;//contain the licence numbers seperated by comma
+    }
+
 }
