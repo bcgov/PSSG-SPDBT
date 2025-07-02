@@ -20,6 +20,7 @@ internal class LicenceManager :
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
         IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -205,6 +206,35 @@ internal class LicenceManager :
         //only return expired and active ones
         return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
 
+    }
+
+    public async Task<IEnumerable<LicenceBasicResponse?>> Handle(LicenceBulkSearch search, CancellationToken ct)
+    {
+        List<LicenceBasicResponse?> response = new List<LicenceBasicResponse?>();
+        if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+        {
+            foreach (string str in search.LicenceNumbers)
+            {
+                var results = await _licenceRepository.QueryAsync(
+                    new LicenceQry
+                    {
+                        LicenceNumber = str,
+                        Type = ServiceTypeEnum.SecurityWorkerLicence,
+                        IncludeInactive = true
+                    }, ct);
+                var result = results.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired)
+                    .GroupBy(r => r.LicenceNumber)
+                    .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
+                    .ToList();
+                if (result != null && result.Any())
+                    response.AddRange(_mapper.Map<IEnumerable<LicenceBasicResponse>>(result));
+                else
+                {
+                    response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                }
+            }
+        }
+        return response;
     }
 
     private async Task GetPhotoDocumentsInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
