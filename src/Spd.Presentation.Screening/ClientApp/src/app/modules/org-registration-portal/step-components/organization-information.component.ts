@@ -11,63 +11,72 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
     selector: 'app-organization-information',
     template: `
 		<section class="step-section p-4">
-			<div class="step">
-				<app-step-title
-					title="Your organization's shared or generic email account and central phone line"
-					subtitle="This is where criminal record check results will be returned to"
-				></app-step-title>
-				<form [formGroup]="form" novalidate>
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<div class="row mt-2">
-							<div class="col-lg-6 col-md-12 col-sm-12">
-								<mat-form-field>
-									<mat-label>Shared or Generic Email Account</mat-label>
-									<input
-										matInput
-										formControlName="genericEmail"
-										type="email"
-										placeholder="hiring@organization.ca"
-										[errorStateMatcher]="matcher"
-										maxlength="75"
-									/>
-									<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
-										Must be a valid email address
-									</mat-error>
-									<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-lg-6 col-md-12 col-sm-12">
-								<mat-form-field>
-									<mat-label>Central Phone Number</mat-label>
-									<input
-										matInput
-										formControlName="genericPhoneNumber"
-										[mask]="phoneMask"
-										[showMaskTyped]="false"
-										[errorStateMatcher]="matcher"
-									/>
-									<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')"> This is required </mat-error>
-									<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('mask')">
-										This must be 10 digits
-									</mat-error>
-								</mat-form-field>
-							</div>
-
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('genericEmail')?.dirty || form.get('genericEmail')?.touched) &&
-									form.invalid &&
-									form.hasError('atleastonerequired')
-								"
-								>An email account or phone number must be provided
-							</mat-error>
-						</div>
-					</div>
-				</form>
-			</div>
-		</section>
-	`,
+		  <div class="step">
+		    <app-step-title
+		      title="Your organization's shared or generic email account and central phone line"
+		      subtitle="This is where criminal record check results will be returned to"
+		    ></app-step-title>
+		    <form [formGroup]="form" novalidate>
+		      <div class="offset-md-2 col-md-8 col-sm-12">
+		        <div class="row mt-2">
+		          <div class="col-lg-6 col-md-12 col-sm-12">
+		            <mat-form-field>
+		              <mat-label>Shared or Generic Email Account</mat-label>
+		              <input
+		                matInput
+		                formControlName="genericEmail"
+		                type="email"
+		                placeholder="hiring@organization.ca"
+		                [errorStateMatcher]="matcher"
+		                maxlength="75"
+		                />
+		                @if (form.get('genericEmail')?.hasError('email')) {
+		                  <mat-error>
+		                    Must be a valid email address
+		                  </mat-error>
+		                }
+		                @if (form.get('genericEmail')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-lg-6 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Central Phone Number</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="genericPhoneNumber"
+		                  [mask]="phoneMask"
+		                  [showMaskTyped]="false"
+		                  [errorStateMatcher]="matcher"
+		                  />
+		                  @if (form.get('genericPhoneNumber')?.hasError('required')) {
+		                    <mat-error> This is required </mat-error>
+		                  }
+		                  @if (form.get('genericPhoneNumber')?.hasError('mask')) {
+		                    <mat-error>
+		                      This must be 10 digits
+		                    </mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		
+		              @if (
+		                (form.get('genericEmail')?.dirty || form.get('genericEmail')?.touched) &&
+		                form.invalid &&
+		                form.hasError('atleastonerequired')
+		                ) {
+		                <mat-error
+		                  class="mat-option-error"
+		                  >An email account or phone number must be provided
+		                </mat-error>
+		              }
+		            </div>
+		          </div>
+		        </form>
+		      </div>
+		    </section>
+		`,
     styles: [],
     standalone: false
 })

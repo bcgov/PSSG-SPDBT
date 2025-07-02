@@ -8,37 +8,38 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
     selector: 'app-screenings-question',
     template: `
 		<section class="step-section p-4">
-			<div class="step">
-				<app-step-title
-					title="How many criminal record checks do you anticipate your organization requesting per year?"
-				></app-step-title>
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
-							<mat-radio-group aria-label="Select an option" formControlName="screeningsCount">
-								<mat-radio-button [value]="screeningsCountTypeCodes.LessThanOneHundred"> 0 - 100 </mat-radio-button>
-								<mat-divider class="my-3"></mat-divider>
-								<mat-radio-button [value]="screeningsCountTypeCodes.OneToFiveHundred"> 100 - 500 </mat-radio-button>
-								<mat-divider class="my-3"></mat-divider>
-								<mat-radio-button [value]="screeningsCountTypeCodes.MoreThanFiveHundred">
-									More than 500
-								</mat-radio-button>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('screeningsCount')?.dirty || form.get('screeningsCount')?.touched) &&
-										form.get('screeningsCount')?.invalid &&
-										form.get('screeningsCount')?.hasError('required')
-									"
-									>An option must be selected</mat-error
-								>
-							</mat-radio-group>
-						</div>
-					</div>
-				</form>
-			</div>
-		</section>
-	`,
+		  <div class="step">
+		    <app-step-title
+		      title="How many criminal record checks do you anticipate your organization requesting per year?"
+		    ></app-step-title>
+		    <form [formGroup]="form" novalidate>
+		      <div class="row">
+		        <div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
+		          <mat-radio-group aria-label="Select an option" formControlName="screeningsCount">
+		            <mat-radio-button [value]="screeningsCountTypeCodes.LessThanOneHundred"> 0 - 100 </mat-radio-button>
+		            <mat-divider class="my-3"></mat-divider>
+		            <mat-radio-button [value]="screeningsCountTypeCodes.OneToFiveHundred"> 100 - 500 </mat-radio-button>
+		            <mat-divider class="my-3"></mat-divider>
+		            <mat-radio-button [value]="screeningsCountTypeCodes.MoreThanFiveHundred">
+		              More than 500
+		            </mat-radio-button>
+		            @if (
+		              (form.get('screeningsCount')?.dirty || form.get('screeningsCount')?.touched) &&
+		              form.get('screeningsCount')?.invalid &&
+		              form.get('screeningsCount')?.hasError('required')
+		              ) {
+		              <mat-error
+		                class="mat-option-error"
+		                >An option must be selected</mat-error
+		                >
+		              }
+		            </mat-radio-group>
+		          </div>
+		        </div>
+		      </form>
+		    </div>
+		  </section>
+		`,
     styles: [],
     standalone: false
 })

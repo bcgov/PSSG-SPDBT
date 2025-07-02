@@ -9,15 +9,17 @@ import { PssoaRoutes } from './pssoa-routes';
 @Component({
     selector: 'app-invitation-pssoa',
     template: `
-		<div class="container-fluid text-center mt-4" *ngIf="message">
-			<mat-icon>no_accounts</mat-icon>
-			<h1>Invite Denied</h1>
-			<h4 class="mt-4">
-				{{ message }}
-			</h4>
-			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
-		</div>
-	`,
+		@if (message) {
+		  <div class="container-fluid text-center mt-4">
+		    <mat-icon>no_accounts</mat-icon>
+		    <h1>Invite Denied</h1>
+		    <h4 class="mt-4">
+		      {{ message }}
+		    </h4>
+		    <p class="mt-4">Please contact your primary authorized user for assistance.</p>
+		  </div>
+		}
+		`,
     styles: [
         `
 			.mat-icon {

@@ -22,53 +22,57 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	selector: 'app-payment-filter',
 	template: `
 		<div class="filter-panel">
-			<form [formGroup]="formGroup" novalidate>
-				<mat-toolbar>
-					<span class="fw-bold">Filters</span>
-					<button mat-icon-button aria-label="close" (click)="emitFilterClose()">
-						<mat-icon>close</mat-icon>
-					</button>
-				</mat-toolbar>
-				<mat-card>
-					<mat-card-content class="mb-2 text-start">
-						<div class="row">
-							<div class="col-sm-12">
-								<strong>Date Range</strong>
-								<mat-form-field>
-									<mat-date-range-input [rangePicker]="picker" [max]="maxDate" [min]="minDate">
-										<input matStartDate formControlName="fromDate" placeholder="Start date" />
-										<input matEndDate formControlName="toDate" placeholder="End date" />
-									</mat-date-range-input>
-									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-									<mat-date-range-picker #picker></mat-date-range-picker>
-									<mat-error *ngIf="formGroup.get('fromDate')?.hasError('matDatepickerMin')">
-										This must be on or after {{ minDate | formatDate }}
-									</mat-error>
-									<mat-error *ngIf="formGroup.get('toDate')?.hasError('matDatepickerMax')">
-										This must be on or before {{ maxDate | formatDate }}
-									</mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-sm-12">
-								<strong>Status</strong>
-								<mat-radio-group aria-label="Select an option" formControlName="paid">
-									<div class="d-flex justify-content-start">
-										<mat-radio-button class="w-auto radio-label" [value]="true">Paid</mat-radio-button>
-										<mat-radio-button class="w-auto radio-label" [value]="false">Not Paid</mat-radio-button>
-									</div>
-								</mat-radio-group>
-							</div>
-						</div>
-					</mat-card-content>
-					<mat-divider class="my-3"></mat-divider>
-					<mat-card-actions>
-						<button mat-stroked-button class="w-auto" (click)="emitFilterClear()">Clear</button>
-						<button mat-flat-button class="w-auto" color="primary" (click)="emitFilterChange()">Search</button>
-					</mat-card-actions>
-				</mat-card>
-			</form>
+		  <form [formGroup]="formGroup" novalidate>
+		    <mat-toolbar>
+		      <span class="fw-bold">Filters</span>
+		      <button mat-icon-button aria-label="close" (click)="emitFilterClose()">
+		        <mat-icon>close</mat-icon>
+		      </button>
+		    </mat-toolbar>
+		    <mat-card>
+		      <mat-card-content class="mb-2 text-start">
+		        <div class="row">
+		          <div class="col-sm-12">
+		            <strong>Date Range</strong>
+		            <mat-form-field>
+		              <mat-date-range-input [rangePicker]="picker" [max]="maxDate" [min]="minDate">
+		                <input matStartDate formControlName="fromDate" placeholder="Start date" />
+		                <input matEndDate formControlName="toDate" placeholder="End date" />
+		              </mat-date-range-input>
+		              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+		              <mat-date-range-picker #picker></mat-date-range-picker>
+		              @if (formGroup.get('fromDate')?.hasError('matDatepickerMin')) {
+		                <mat-error>
+		                  This must be on or after {{ minDate | formatDate }}
+		                </mat-error>
+		              }
+		              @if (formGroup.get('toDate')?.hasError('matDatepickerMax')) {
+		                <mat-error>
+		                  This must be on or before {{ maxDate | formatDate }}
+		                </mat-error>
+		              }
+		            </mat-form-field>
+		          </div>
+		          <div class="col-sm-12">
+		            <strong>Status</strong>
+		            <mat-radio-group aria-label="Select an option" formControlName="paid">
+		              <div class="d-flex justify-content-start">
+		                <mat-radio-button class="w-auto radio-label" [value]="true">Paid</mat-radio-button>
+		                <mat-radio-button class="w-auto radio-label" [value]="false">Not Paid</mat-radio-button>
+		              </div>
+		            </mat-radio-group>
+		          </div>
+		        </div>
+		      </mat-card-content>
+		      <mat-divider class="my-3"></mat-divider>
+		      <mat-card-actions>
+		        <button mat-stroked-button class="w-auto" (click)="emitFilterClear()">Clear</button>
+		        <button mat-flat-button class="w-auto" color="primary" (click)="emitFilterChange()">Search</button>
+		      </mat-card-actions>
+		    </mat-card>
+		  </form>
 		</div>
-	`,
+		`,
 	styles: [
 		`
 			.filter-panel {

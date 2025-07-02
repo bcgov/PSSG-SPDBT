@@ -38,154 +38,157 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
     selector: 'app-identify-verification-common',
     template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2">Identity Verification</h2>
-					<ng-container *ngIf="applicationStatistics$ | async">
-						<app-alert type="warning" icon="warning" *ngIf="count > 0">
-							<ng-container *ngIf="count === 1; else notOne">
-								<div>There is 1 applicant which requires confirmation</div>
-							</ng-container>
-							<ng-template #notOne>
-								<div>There are {{ count }} applicants which require confirmation</div>
-							</ng-template>
-						</app-alert>
-					</ng-container>
-				</div>
-			</div>
-
-			<div class="row" [formGroup]="formFilter">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<mat-form-field>
-						<input
-							matInput
-							type="search"
-							formControlName="search"
-							placeholder="Search applicant's name or email or case ID"
-							(keydown.enter)="onSearchKeyDown($event)"
-						/>
-						<button
-							mat-button
-							matSuffix
-							mat-flat-button
-							aria-label="search"
-							(click)="onSearch()"
-							class="search-icon-button"
-						>
-							<mat-icon>search</mat-icon>
-						</button>
-					</mat-form-field>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Applicant Name:</span>
-								{{ application | fullname }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="dateOfBirth">
-							<mat-header-cell *matHeaderCellDef>Date of Birth</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Date of Birth:</span>
-								{{ application.dateOfBirth | formatDate | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="jobTitle">
-							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Job Title:</span>
-								{{ application.jobTitle | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell class="mat-cell-email" *matCellDef="let application">
-								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | formatDate }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="orgId">
-							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Ministry:</span>
-								{{ application.orgId | ministryoptions | async | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Case ID:</span>
-								{{ application.applicationNumber }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-green);"
-									aria-label="Confirm"
-									*ngIf="!application.hideActions"
-									(click)="onConfirm(application)"
-								>
-									<mat-icon>check_circle</mat-icon>Confirm
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-red);"
-									aria-label="Reject"
-									*ngIf="!application.hideActions"
-									(click)="onReject(application)"
-								>
-									<mat-icon>cancel</mat-icon>Reject
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<mat-paginator
-						[showFirstLastButtons]="true"
-						[hidePageSize]="true"
-						[pageIndex]="tablePaginator.pageIndex"
-						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
-						aria-label="Select page"
-					>
-					</mat-paginator>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="row">
+		    <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+		      <h2 class="mb-2">Identity Verification</h2>
+		      @if (applicationStatistics$ | async) {
+		        @if (count > 0) {
+		          <app-alert type="warning" icon="warning">
+		            @if (count === 1) {
+		              <div>There is 1 applicant which requires confirmation</div>
+		            } @else {
+		              <div>There are {{ count }} applicants which require confirmation</div>
+		            }
+		          </app-alert>
+		        }
+		      }
+		    </div>
+		  </div>
+		
+		  <div class="row" [formGroup]="formFilter">
+		    <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+		      <mat-form-field>
+		        <input
+		          matInput
+		          type="search"
+		          formControlName="search"
+		          placeholder="Search applicant's name or email or case ID"
+		          (keydown.enter)="onSearchKeyDown($event)"
+		          />
+		          <button
+		            mat-button
+		            matSuffix
+		            mat-flat-button
+		            aria-label="search"
+		            (click)="onSearch()"
+		            class="search-icon-button"
+		            >
+		            <mat-icon>search</mat-icon>
+		          </button>
+		        </mat-form-field>
+		      </div>
+		    </div>
+		
+		    <div class="row">
+		      <div class="col-12">
+		        <mat-table [dataSource]="dataSource">
+		          <ng-container matColumnDef="applicantName">
+		            <mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Applicant Name:</span>
+		              {{ application | fullname }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="dateOfBirth">
+		            <mat-header-cell *matHeaderCellDef>Date of Birth</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Date of Birth:</span>
+		              {{ application.dateOfBirth | formatDate | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="jobTitle">
+		            <mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Job Title:</span>
+		              {{ application.jobTitle | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="emailAddress">
+		            <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+		            <mat-cell class="mat-cell-email" *matCellDef="let application">
+		              <span class="mobile-label">Email:</span>
+		              {{ application.emailAddress | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="createdOn">
+		            <mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Submitted On:</span>
+		              {{ application.createdOn | formatDate }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="orgId">
+		            <mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Ministry:</span>
+		              {{ application.orgId | ministryoptions | async | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="applicationNumber">
+		            <mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Case ID:</span>
+		              {{ application.applicationNumber }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="action1">
+		            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              @if (!application.hideActions) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-green);"
+		                  aria-label="Confirm"
+		                  (click)="onConfirm(application)"
+		                  >
+		                  <mat-icon>check_circle</mat-icon>Confirm
+		                </button>
+		              }
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="action2">
+		            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              @if (!application.hideActions) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-red);"
+		                  aria-label="Reject"
+		                  (click)="onReject(application)"
+		                  >
+		                  <mat-icon>cancel</mat-icon>Reject
+		                </button>
+		              }
+		            </mat-cell>
+		          </ng-container>
+		
+		          <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		          <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		        </mat-table>
+		        <mat-paginator
+		          [showFirstLastButtons]="true"
+		          [hidePageSize]="true"
+		          [pageIndex]="tablePaginator.pageIndex"
+		          [pageSize]="tablePaginator.pageSize"
+		          [length]="tablePaginator.length"
+		          (page)="onPageChanged($event)"
+		          aria-label="Select page"
+		          >
+		        </mat-paginator>
+		      </div>
+		    </div>
+		  </section>
+		`,
     styles: [
         `
 			.mat-column-action1 {

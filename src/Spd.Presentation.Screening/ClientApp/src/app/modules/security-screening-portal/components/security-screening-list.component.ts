@@ -31,139 +31,149 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
     selector: 'app-security-screening-list',
     template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-xl-8 col-lg-6 col-md-12">
-					<h3 class="fw-normal">Criminal Record Check History</h3>
-					<h4 class="fw-light">{{ applicantName }}</h4>
-				</div>
-				<div class="col-xl-4 col-lg-6 col-md-12">
-					<div class="d-flex justify-content-end my-2">
-						<mat-button-toggle-group
-							formControlName="applicationFilter"
-							(change)="onFilterChange($event)"
-							class="w-100"
-							aria-label="Applications Filter"
-						>
-							<mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
-							<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
-						</mat-button-toggle-group>
-					</div>
-				</div>
-			</div>
+		  <div class="row">
+		    <div class="col-xl-8 col-lg-6 col-md-12">
+		      <h3 class="fw-normal">Criminal Record Check History</h3>
+		      <h4 class="fw-light">{{ applicantName }}</h4>
+		    </div>
+		    <div class="col-xl-4 col-lg-6 col-md-12">
+		      <div class="d-flex justify-content-end my-2">
+		        <mat-button-toggle-group
+		          formControlName="applicationFilter"
+		          (change)="onFilterChange($event)"
+		          class="w-100"
+		          aria-label="Applications Filter"
+		          >
+		          <mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
+		          <mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
+		        </mat-button-toggle-group>
+		      </div>
+		    </div>
+		  </div>
 		</form>
-
+		
 		<mat-divider class="mat-divider-main my-2 mb-lg-4"></mat-divider>
-
+		
 		<div class="row">
-			<div class="col-12">
-				<app-alert type="danger" *ngIf="opportunityToRespondAlert">
-					<div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
-				</app-alert>
-				<app-alert type="danger" *ngIf="requestForAdditionalInfoAlert">
-					<div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
-				</app-alert>
-				<app-alert type="danger" *ngIf="fingerprintsAlert">
-					<div class="fw-semibold">{{ fingerprintsAlert }}</div>
-				</app-alert>
-				<app-alert type="danger" *ngIf="selfDisclosureAlert">
-					<div class="fw-semibold">{{ selfDisclosureAlert }}</div>
-				</app-alert>
-			</div>
+		  <div class="col-12">
+		    @if (opportunityToRespondAlert) {
+		      <app-alert type="danger">
+		        <div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
+		      </app-alert>
+		    }
+		    @if (requestForAdditionalInfoAlert) {
+		      <app-alert type="danger">
+		        <div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
+		      </app-alert>
+		    }
+		    @if (fingerprintsAlert) {
+		      <app-alert type="danger">
+		        <div class="fw-semibold">{{ fingerprintsAlert }}</div>
+		      </app-alert>
+		    }
+		    @if (selfDisclosureAlert) {
+		      <app-alert type="danger">
+		        <div class="fw-semibold">{{ selfDisclosureAlert }}</div>
+		      </app-alert>
+		    }
+		  </div>
 		</div>
-
+		
 		<div class="row mb-2">
-			<div class="col-12">
-				<mat-table [dataSource]="dataSource">
-					<ng-container matColumnDef="orgName">
-						<mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Organization Name:</span>
-							{{ application.orgName }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="createdOn">
-						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Submitted On:</span>
-							{{ application.createdOn | formatDate }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="applicationNumber">
-						<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Case ID:</span>
-							{{ application.applicationNumber }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="payeeType">
-						<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Paid By:</span>
-							{{ application.payeeType }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="status">
-						<mat-header-cell *matHeaderCellDef>Application Status</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Application Status:</span>
-							<mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass" class="w-100">
-								{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
-							</mat-chip-row>
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="action1">
-						<mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Your Action Required:</span>
-							<ng-container *ngIf="application.actionAlert">
-								<div style="color: red;">
-									{{ application.actionAlert }}
-								</div>
-							</ng-container>
-							<button
-								mat-flat-button
-								(click)="onPayNow(application)"
-								class="table-button"
-								style="color: var(--color-green);"
-								aria-label="Pay now"
-								*ngIf="application.isPayNow"
-							>
-								<mat-icon>payment</mat-icon>Pay Now
-							</button>
-
-							<button
-								mat-flat-button
-								(click)="onPayManual(application)"
-								class="table-button"
-								style="color: var(--color-red);"
-								aria-label="Pay manually"
-								*ngIf="application.isPayManual"
-							>
-								<mat-icon>payment</mat-icon>Pay Manually
-							</button>
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="action2">
-						<mat-header-cell *matHeaderCellDef></mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
-								Detail
-							</button>
-						</mat-cell>
-					</ng-container>
-
-					<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: columns"></mat-row>
-				</mat-table>
-			</div>
+		  <div class="col-12">
+		    <mat-table [dataSource]="dataSource">
+		      <ng-container matColumnDef="orgName">
+		        <mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Organization Name:</span>
+		          {{ application.orgName }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="createdOn">
+		        <mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Submitted On:</span>
+		          {{ application.createdOn | formatDate }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="applicationNumber">
+		        <mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Case ID:</span>
+		          {{ application.applicationNumber }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="payeeType">
+		        <mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Paid By:</span>
+		          {{ application.payeeType }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="status">
+		        <mat-header-cell *matHeaderCellDef>Application Status</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Application Status:</span>
+		          <mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass" class="w-100">
+		            {{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
+		          </mat-chip-row>
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="action1">
+		        <mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Your Action Required:</span>
+		          @if (application.actionAlert) {
+		            <div style="color: red;">
+		              {{ application.actionAlert }}
+		            </div>
+		          }
+		          @if (application.isPayNow) {
+		            <button
+		              mat-flat-button
+		              (click)="onPayNow(application)"
+		              class="table-button"
+		              style="color: var(--color-green);"
+		              aria-label="Pay now"
+		              >
+		              <mat-icon>payment</mat-icon>Pay Now
+		            </button>
+		          }
+		
+		          @if (application.isPayManual) {
+		            <button
+		              mat-flat-button
+		              (click)="onPayManual(application)"
+		              class="table-button"
+		              style="color: var(--color-red);"
+		              aria-label="Pay manually"
+		              >
+		              <mat-icon>payment</mat-icon>Pay Manually
+		            </button>
+		          }
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="action2">
+		        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
+		            Detail
+		          </button>
+		        </mat-cell>
+		      </ng-container>
+		
+		      <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		      <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		    </mat-table>
+		  </div>
 		</div>
-	`,
+		`,
     styles: [
         `
 			.mat-column-status {

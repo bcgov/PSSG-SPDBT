@@ -12,82 +12,92 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	selector: 'app-sa-security-information',
 	template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title
-						title="Confirm the following information related to your criminal record check"
-					></app-step-title>
-					<div class="row">
-						<div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
-							<div class="row">
-								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-									<mat-form-field>
-										<mat-label>
-											<span *ngIf="orgData?.isCrrpa">Requesting Organization</span>
-											<span *ngIf="!orgData?.isCrrpa">Ministry</span>
-										</mat-label>
-										<input matInput formControlName="orgName" />
-									</mat-form-field>
-								</div>
-								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12" *ngIf="orgData?.isCrrpa">
-									<mat-form-field>
-										<mat-label>Organization Email</mat-label>
-										<input matInput formControlName="orgEmail" />
-									</mat-form-field>
-								</div>
-								<ng-container *ngIf="orgData?.isCrrpa">
-									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Organization Phone Number</mat-label>
-											<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Organization Address</mat-label>
-											<input matInput formControlName="orgAddress" />
-										</mat-form-field>
-									</div>
-								</ng-container>
-								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-									<mat-form-field>
-										<mat-label>Job Title</mat-label>
-										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<ng-container *ngIf="orgData?.notPssoOrPecrc">
-									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Vulnerable Sector Category</mat-label>
-											<input matInput formControlName="vulnerableSectorCategoryDesc" />
-										</mat-form-field>
-									</div>
-								</ng-container>
-								<ng-container *ngIf="facilityNameShow">
-									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>{{ companyFacilityLabel }}</mat-label>
-											<input
-												matInput
-												formControlName="contractedCompanyName"
-												[errorStateMatcher]="matcher"
-												maxlength="100"
-											/>
-											<mat-hint>{{ companyFacilityHint }}</mat-hint>
-											<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')"
-												>This is required</mat-error
-											>
-										</mat-form-field>
-									</div>
-								</ng-container>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title
+		        title="Confirm the following information related to your criminal record check"
+		      ></app-step-title>
+		      <div class="row">
+		        <div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
+		          <div class="row">
+		            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>
+		                  @if (orgData?.isCrrpa) {
+		                    <span>Requesting Organization</span>
+		                  }
+		                  @if (!orgData?.isCrrpa) {
+		                    <span>Ministry</span>
+		                  }
+		                </mat-label>
+		                <input matInput formControlName="orgName" />
+		              </mat-form-field>
+		            </div>
+		            @if (orgData?.isCrrpa) {
+		              <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Organization Email</mat-label>
+		                  <input matInput formControlName="orgEmail" />
+		                </mat-form-field>
+		              </div>
+		            }
+		            @if (orgData?.isCrrpa) {
+		              <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Organization Phone Number</mat-label>
+		                  <input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
+		                </mat-form-field>
+		              </div>
+		              <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Organization Address</mat-label>
+		                  <input matInput formControlName="orgAddress" />
+		                </mat-form-field>
+		              </div>
+		            }
+		            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Job Title</mat-label>
+		                <input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
+		                @if (form.get('jobTitle')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            @if (orgData?.notPssoOrPecrc) {
+		              <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Vulnerable Sector Category</mat-label>
+		                  <input matInput formControlName="vulnerableSectorCategoryDesc" />
+		                </mat-form-field>
+		              </div>
+		            }
+		            @if (facilityNameShow) {
+		              <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>{{ companyFacilityLabel }}</mat-label>
+		                  <input
+		                    matInput
+		                    formControlName="contractedCompanyName"
+		                    [errorStateMatcher]="matcher"
+		                    maxlength="100"
+		                    />
+		                    <mat-hint>{{ companyFacilityHint }}</mat-hint>
+		                    @if (form.get('contractedCompanyName')?.hasError('required')) {
+		                      <mat-error
+		                        >This is required</mat-error
+		                        >
+		                    }
+		                  </mat-form-field>
+		                </div>
+		              }
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </form>
+		  </section>
+		`,
     styles: [],
     standalone: false
 })
