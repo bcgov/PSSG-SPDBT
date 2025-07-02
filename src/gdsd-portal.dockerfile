@@ -12,7 +12,7 @@ WORKDIR /src
 COPY ["Spd.sln", "global.json", "Directory.Build.props", "Directory.Packages.props", ".editorconfig", "./"]
 COPY */*.csproj ./
 
-RUN cat Spd.sln \a
+RUN cat Spd.sln \
 | grep "\.*sproj" \
 | awk '{print $4}' \
 | sed -e 's/[",]//g' \
