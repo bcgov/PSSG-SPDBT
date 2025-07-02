@@ -28,113 +28,114 @@ export interface BranchResponse {
 	selector: 'app-business-bc-branches',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="py-2">Does your business have any branches in B.C.?</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-					<mat-radio-group aria-label="Select an option" formControlName="hasBranchesInBc">
-						<div class="d-flex justify-content-start">
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</div>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('hasBranchesInBc')?.dirty || form.get('hasBranchesInBc')?.touched) &&
-							form.get('hasBranchesInBc')?.invalid &&
-							form.get('hasBranchesInBc')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-
-			<div *ngIf="hasBranchesInBc.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div class="row my-2">
-					<div class="col-12">
-						<div class="mt-3 text-primary-color">The branches in B.C. where licenced employees work:</div>
-						<mat-table [dataSource]="dataSource">
-							<ng-container matColumnDef="addressLine1">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
-								<mat-cell *matCellDef="let branch">
-									<span class="mobile-label">Address Line 1:</span>
-									<mat-icon
-										*ngIf="!isBranchValid(branch)"
-										class="error-icon me-2"
-										color="warn"
-										matTooltip="Edit this branch and fix the incomplete data"
-										>error</mat-icon
-									>
-									{{ branch.addressLine1 | default }}
-								</mat-cell>
-							</ng-container>
-
-							<ng-container matColumnDef="city">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>City</mat-header-cell>
-								<mat-cell *matCellDef="let branch">
-									<span class="mobile-label">City:</span>
-									{{ branch.city | default }}
-								</mat-cell>
-							</ng-container>
-
-							<ng-container matColumnDef="branchManager">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager</mat-header-cell>
-								<mat-cell *matCellDef="let branch">
-									<span class="mobile-label">Manager:</span>
-									{{ branch.branchManager | default }}
-								</mat-cell>
-							</ng-container>
-
-							<ng-container matColumnDef="action1">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-								<mat-cell *matCellDef="let branch">
-									<button
-										mat-flat-button
-										class="table-button w-auto"
-										style="color: var(--color-green);"
-										aria-label="Edit branch"
-										(click)="onEditBranch(branch)"
-										*ngIf="!isReadonly"
-									>
-										<mat-icon>edit</mat-icon>Edit
-									</button>
-								</mat-cell>
-							</ng-container>
-
-							<ng-container matColumnDef="action2">
-								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-								<mat-cell *matCellDef="let branch; let i = index">
-									<button
-										mat-flat-button
-										class="table-button w-auto"
-										style="color: var(--color-red);"
-										aria-label="Remove branch"
-										(click)="onRemoveBranch(i)"
-										*ngIf="!isReadonly"
-									>
-										<mat-icon>delete_outline</mat-icon>Remove
-									</button>
-								</mat-cell>
-							</ng-container>
-
-							<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-							<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
-						</mat-table>
-
-						<button
-							mat-stroked-button
-							(click)="onAddBranch()"
-							class="large mt-3 w-auto"
-							aria-label="Add branch"
-							*ngIf="!isReadonly"
-						>
-							<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
-						</button>
-					</div>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="row">
+		    <div class="py-2">Does your business have any branches in B.C.?</div>
+		    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
+		      <mat-radio-group aria-label="Select an option" formControlName="hasBranchesInBc">
+		        <div class="d-flex justify-content-start">
+		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+		        </div>
+		      </mat-radio-group>
+		      @if (
+		        (form.get('hasBranchesInBc')?.dirty || form.get('hasBranchesInBc')?.touched) &&
+		        form.get('hasBranchesInBc')?.invalid &&
+		        form.get('hasBranchesInBc')?.hasError('required')
+		        ) {
+		        <mat-error
+		          class="mat-option-error"
+		          >This is required</mat-error
+		          >
+		        }
+		      </div>
+		    </div>
+		
+		    @if (hasBranchesInBc.value === booleanTypeCodes.Yes) {
+		      <div @showHideTriggerSlideAnimation>
+		        <div class="row my-2">
+		          <div class="col-12">
+		            <div class="mt-3 text-primary-color">The branches in B.C. where licenced employees work:</div>
+		            <mat-table [dataSource]="dataSource">
+		              <ng-container matColumnDef="addressLine1">
+		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
+		                <mat-cell *matCellDef="let branch">
+		                  <span class="mobile-label">Address Line 1:</span>
+		                  @if (!isBranchValid(branch)) {
+		                    <mat-icon
+		                      class="error-icon me-2"
+		                      color="warn"
+		                      matTooltip="Edit this branch and fix the incomplete data"
+		                      >error</mat-icon
+		                      >
+		                    }
+		                    {{ branch.addressLine1 | default }}
+		                  </mat-cell>
+		                </ng-container>
+		                <ng-container matColumnDef="city">
+		                  <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>City</mat-header-cell>
+		                  <mat-cell *matCellDef="let branch">
+		                    <span class="mobile-label">City:</span>
+		                    {{ branch.city | default }}
+		                  </mat-cell>
+		                </ng-container>
+		                <ng-container matColumnDef="branchManager">
+		                  <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager</mat-header-cell>
+		                  <mat-cell *matCellDef="let branch">
+		                    <span class="mobile-label">Manager:</span>
+		                    {{ branch.branchManager | default }}
+		                  </mat-cell>
+		                </ng-container>
+		                <ng-container matColumnDef="action1">
+		                  <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+		                  <mat-cell *matCellDef="let branch">
+		                    @if (!isReadonly) {
+		                      <button
+		                        mat-flat-button
+		                        class="table-button w-auto"
+		                        style="color: var(--color-green);"
+		                        aria-label="Edit branch"
+		                        (click)="onEditBranch(branch)"
+		                        >
+		                        <mat-icon>edit</mat-icon>Edit
+		                      </button>
+		                    }
+		                  </mat-cell>
+		                </ng-container>
+		                <ng-container matColumnDef="action2">
+		                  <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+		                  <mat-cell *matCellDef="let branch; let i = index">
+		                    @if (!isReadonly) {
+		                      <button
+		                        mat-flat-button
+		                        class="table-button w-auto"
+		                        style="color: var(--color-red);"
+		                        aria-label="Remove branch"
+		                        (click)="onRemoveBranch(i)"
+		                        >
+		                        <mat-icon>delete_outline</mat-icon>Remove
+		                      </button>
+		                    }
+		                  </mat-cell>
+		                </ng-container>
+		                <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		                <mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
+		              </mat-table>
+		              @if (!isReadonly) {
+		                <button
+		                  mat-stroked-button
+		                  (click)="onAddBranch()"
+		                  class="large mt-3 w-auto"
+		                  aria-label="Add branch"
+		                  >
+		                  <mat-icon class="add-icon">add_circle</mat-icon>Add Branch
+		                </button>
+		              }
+		            </div>
+		          </div>
+		        </div>
+		      }
+		    </form>
+		`,
 	styles: [
 		`
 			.mat-column-action1 {

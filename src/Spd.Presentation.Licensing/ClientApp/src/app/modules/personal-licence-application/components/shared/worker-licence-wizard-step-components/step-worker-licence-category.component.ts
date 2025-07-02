@@ -33,23 +33,31 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<mat-form-field>
 									<mat-label>Category</mat-label>
 									<mat-select formControlName="categoryCode">
-										<mat-option *ngFor="let item of validCategoryList; let i = index" [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
+										@for (item of validCategoryList; track item; let i = $index) {
+											<mat-option [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										}
 									</mat-select>
 								</mat-form-field>
-								<mat-error class="mat-option-error" *ngIf="isCategoryListEmpty">
-									At least one category must be added. Click 'Add Category' after selecting a category.
-								</mat-error>
+								@if (isCategoryListEmpty) {
+									<mat-error class="mat-option-error">
+										At least one category must be added. Click 'Add Category' after selecting a category.
+									</mat-error>
+								}
 							</div>
-							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
-								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
-									Add Category
-								</button>
-							</div>
-							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length >= 6">
-								<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
-							</div>
+							@if (categoryList.length < 6) {
+								<div class="col-md-4 col-sm-12">
+									<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+										Add Category
+									</button>
+								</div>
+							}
+							@if (categoryList.length >= 6) {
+								<div class="col-md-4 col-sm-12">
+									<app-alert type="warning" icon="warning"> The limit of 6 categories has been reached. </app-alert>
+								</div>
+							}
 						</div>
 					</div>
 				</div>
@@ -57,21 +65,20 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<mat-accordion multi="false">
-							<ng-container *ngIf="showArmouredCarGuard">
+							@if (showArmouredCarGuard) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandArmouredCarGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
-														"
-														>error</mat-icon
-													>
+													@if (categoryArmouredCarGuardFormGroup.touched && categoryArmouredCarGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
 													{{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
@@ -91,47 +98,46 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showBodyArmourSales">
+							@if (showBodyArmourSales) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
 									[expandCategory]="expandBodyArmourSales"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
+							@if (showClosedCircuitTelevisionInstaller) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
 									[expandCategory]="expandClosedCircuitTelevisionInstaller"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
+							@if (showElectronicLockingDeviceInstaller) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
 									[expandCategory]="expandElectronicLockingDeviceInstaller"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showFireInvestigator">
+							@if (showFireInvestigator) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandFireInvestigator">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categoryFireInvestigatorFormGroup?.touched && categoryFireInvestigatorFormGroup?.invalid
-														"
-														>error</mat-icon
-													>
+													@if (categoryFireInvestigatorFormGroup.touched && categoryFireInvestigatorFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
 													{{ workerCategoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
@@ -147,27 +153,26 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showLocksmith">
+							@if (showLocksmith) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandLocksmith">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="categoryLocksmithFormGroup?.touched && categoryLocksmithFormGroup?.invalid"
-														>error</mat-icon
-													>
-
+													@if (categoryLocksmithFormGroup.touched && categoryLocksmithFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
 													{{ workerCategoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
@@ -183,37 +188,37 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-locksmith></app-licence-category-locksmith>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showLocksmithUnderSupervision">
+							@if (showLocksmithUnderSupervision) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.LocksmithUnderSupervision"
 									[expandCategory]="expandLocksmithUnderSupervision"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showPrivateInvestigator">
+							@if (showPrivateInvestigator) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigator">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categoryPrivateInvestigatorFormGroup?.touched &&
-															categoryPrivateInvestigatorFormGroup?.invalid
-														"
-														>error</mat-icon
-													>{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
+													@if (
+														categoryPrivateInvestigatorFormGroup.touched && categoryPrivateInvestigatorFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -228,29 +233,29 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-private-investigator></app-licence-category-private-investigator>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showPrivateInvestigatorUnderSupervision">
+							@if (showPrivateInvestigatorUnderSupervision) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandPrivateInvestigatorUnderSupervision">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categoryPrivateInvestigatorSupFormGroup?.touched &&
-															categoryPrivateInvestigatorSupFormGroup?.invalid
-														"
-														>error</mat-icon
-													>
+													@if (
+														categoryPrivateInvestigatorSupFormGroup.touched &&
+														categoryPrivateInvestigatorSupFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
 													{{
 														workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes'
 													}}
@@ -268,30 +273,29 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityAlarmInstaller">
+							@if (showSecurityAlarmInstaller) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityAlarmInstaller">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categorySecurityAlarmInstallerFormGroup?.touched &&
-															categorySecurityAlarmInstallerFormGroup?.invalid
-														"
-														>error</mat-icon
-													>
-
+													@if (
+														categorySecurityAlarmInstallerFormGroup.touched &&
+														categorySecurityAlarmInstallerFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
 													{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
@@ -307,61 +311,61 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
+							@if (showSecurityAlarmInstallerUnderSupervision) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision"
 									[expandCategory]="expandSecurityAlarmInstallerUnderSupervision"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityAlarmMonitor">
+							@if (showSecurityAlarmMonitor) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
 									[expandCategory]="expandSecurityAlarmMonitor"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityAlarmResponse">
+							@if (showSecurityAlarmResponse) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
 									[expandCategory]="expandSecurityAlarmResponse"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityAlarmSales">
+							@if (showSecurityAlarmSales) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
 									[expandCategory]="expandSecurityAlarmSales"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityConsultant">
+							@if (showSecurityConsultant) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityConsultant">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categorySecurityConsultantFormGroup?.touched &&
-															categorySecurityConsultantFormGroup?.invalid
-														"
-														>error</mat-icon
-													>{{ workerCategoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }}
+													@if (
+														categorySecurityConsultantFormGroup.touched && categorySecurityConsultantFormGroup.invalid
+													) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -376,26 +380,27 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													</button>
 												</div>
 											</div>
-
 											<app-licence-category-security-consultant></app-licence-category-security-consultant>
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityGuard">
+							@if (showSecurityGuard) {
 								<div class="row">
 									<div class="col-12">
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
-														>error</mat-icon
-													>{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
+													@if (categorySecurityGuardFormGroup.touched && categorySecurityGuardFormGroup.invalid) {
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															>error</mat-icon
+														>
+													}
+													{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -414,15 +419,15 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										</mat-expansion-panel>
 									</div>
 								</div>
-							</ng-container>
+							}
 
-							<ng-container *ngIf="showSecurityGuardUnderSupervision">
+							@if (showSecurityGuardUnderSupervision) {
 								<app-form-licence-category-panel-simple
 									[categoryTypeCode]="workerCategoryTypeCodes.SecurityGuardUnderSupervision"
 									[expandCategory]="expandSecurityGuardUnderSupervision"
 									(removeCategory)="onRemove($event)"
 								></app-form-licence-category-panel-simple>
-							</ng-container>
+							}
 						</mat-accordion>
 					</div>
 				</div>

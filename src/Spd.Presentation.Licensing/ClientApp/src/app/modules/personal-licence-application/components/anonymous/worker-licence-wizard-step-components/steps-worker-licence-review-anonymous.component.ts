@@ -9,53 +9,53 @@ import { StepWorkerLicenceSummaryAnonymousComponent } from './step-worker-licenc
 	selector: 'app-steps-worker-licence-review-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-worker-licence-summary-anonymous
-					(editStep)="onGoToStep($event)"
-					[showCitizenshipStep]="showCitizenshipStep"
-				></app-step-worker-licence-summary-anonymous>
-
-				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-consent-and-declaration
-					[applicationTypeCode]="applicationTypeCode"
-					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[isAnonymous]="true"
-				></app-step-worker-licence-consent-and-declaration>
-
-				<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else IsNotSoleProprietor">
-					<app-wizard-footer
-						nextButtonLabel="Save & Continue to Business Licence Application"
-						[isWidestNext]="true"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onSaveSoleProprietor()"
-					></app-wizard-footer>
-				</ng-container>
-				<ng-template #IsNotSoleProprietor>
-					<app-wizard-footer
-						[nextButtonLabel]="submitButtonName"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onSubmitNow()"
-					></app-wizard-footer>
-				</ng-template>
-			</mat-step>
-
-			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
-				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
-
-				<app-wizard-footer
-					[showExit]="false"
-					nextButtonLabel="Pay Now"
-					(nextStepperStep)="onPayNow()"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-worker-licence-summary-anonymous
+		      (editStep)="onGoToStep($event)"
+		      [showCitizenshipStep]="showCitizenshipStep"
+		    ></app-step-worker-licence-summary-anonymous>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onGoToNextStep()"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-consent-and-declaration
+		      [applicationTypeCode]="applicationTypeCode"
+		      [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+		      [isAnonymous]="true"
+		    ></app-step-worker-licence-consent-and-declaration>
+		
+		    @if (isSoleProprietorSimultaneousFlow) {
+		      <app-wizard-footer
+		        nextButtonLabel="Save & Continue to Business Licence Application"
+		        [isWidestNext]="true"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onSaveSoleProprietor()"
+		      ></app-wizard-footer>
+		    } @else {
+		      <app-wizard-footer
+		        [nextButtonLabel]="submitButtonName"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onSubmitNow()"
+		      ></app-wizard-footer>
+		    }
+		  </mat-step>
+		
+		  @if (applicationTypeCode === applicationTypeCodes.Update) {
+		    <mat-step>
+		      <app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
+		      <app-wizard-footer
+		        [showExit]="false"
+		        nextButtonLabel="Pay Now"
+		        (nextStepperStep)="onPayNow()"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

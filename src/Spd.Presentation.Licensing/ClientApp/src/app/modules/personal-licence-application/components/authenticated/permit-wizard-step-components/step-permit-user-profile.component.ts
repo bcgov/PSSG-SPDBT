@@ -11,62 +11,65 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 	selector: 'app-step-permit-user-profile',
 	template: `
 		<div class="step-section">
-			<div class="step">
-				<div class="row">
-					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="row">
-							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
-								<h2 class="fs-3">Confirm your Profile</h2>
-							</div>
-						</div>
-
-						<mat-divider class="mat-divider-main mb-3"></mat-divider>
-						<div class="fs-6 fw-bold my-3">{{ alertText }}</div>
-
-						<section>
-							<app-common-user-profile
-								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactInformationFormGroup]="contactInformationFormGroup"
-								[aliasesFormGroup]="aliasesFormGroup"
-								[residentialAddressFormGroup]="residentialAddressFormGroup"
-								[mailingAddressFormGroup]="mailingAddressFormGroup"
-								[characteristicsFormGroup]="characteristicsFormGroup"
-								[isReadonlyPersonalInfo]="false"
-								[isReadonlyMailingAddress]="false"
-							></app-common-user-profile>
-						</section>
-
-						<section class="mb-3" *ngIf="showConfirmation">
-							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading mb-2">Confirmation</div>
-								<mat-checkbox formControlName="isProfileUpToDate">
-									I confirm that this information is up-to-date
-								</mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-										form.get('isProfileUpToDate')?.invalid &&
-										form.get('isProfileUpToDate')?.hasError('required')
-									"
-								>
-									This is required
-								</mat-error>
-							</form>
-						</section>
-
-						<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
-					</div>
-				</div>
-			</div>
+		  <div class="step">
+		    <div class="row">
+		      <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+		        <div class="row">
+		          <div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+		            <h2 class="fs-3">Confirm your Profile</h2>
+		          </div>
+		        </div>
+		
+		        <mat-divider class="mat-divider-main mb-3"></mat-divider>
+		        <div class="fs-6 fw-bold my-3">{{ alertText }}</div>
+		
+		        <section>
+		          <app-common-user-profile
+		            [personalInformationFormGroup]="personalInformationFormGroup"
+		            [contactInformationFormGroup]="contactInformationFormGroup"
+		            [aliasesFormGroup]="aliasesFormGroup"
+		            [residentialAddressFormGroup]="residentialAddressFormGroup"
+		            [mailingAddressFormGroup]="mailingAddressFormGroup"
+		            [characteristicsFormGroup]="characteristicsFormGroup"
+		            [isReadonlyPersonalInfo]="false"
+		            [isReadonlyMailingAddress]="false"
+		          ></app-common-user-profile>
+		        </section>
+		
+		        @if (showConfirmation) {
+		          <section class="mb-3">
+		            <form [formGroup]="form" novalidate>
+		              <div class="text-minor-heading mb-2">Confirmation</div>
+		              <mat-checkbox formControlName="isProfileUpToDate">
+		                I confirm that this information is up-to-date
+		              </mat-checkbox>
+		              @if (
+		                (form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+		                form.get('isProfileUpToDate')?.invalid &&
+		                form.get('isProfileUpToDate')?.hasError('required')
+		                ) {
+		                <mat-error
+		                  class="mat-option-error"
+		                  >
+		                  This is required
+		                </mat-error>
+		              }
+		            </form>
+		          </section>
+		        }
+		
+		        <app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
+		      </div>
+		    </div>
+		  </div>
 		</div>
-
+		
 		<app-wizard-footer
-			[nextButtonLabel]="saveAndContinueLabel"
-			[isWideNext]="true"
-			(nextStepperStep)="onContinue()"
+		  [nextButtonLabel]="saveAndContinueLabel"
+		  [isWideNext]="true"
+		  (nextStepperStep)="onContinue()"
 		></app-wizard-footer>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

@@ -5,134 +5,145 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
     selector: 'app-worker-summary-document-uploaded',
     template: `
-		<ng-container *ngIf="isAnyDocuments">
-			<mat-divider class="mt-3 mb-2"></mat-divider>
-			<div class="text-minor-heading-small">Documents Uploaded</div>
-			<div class="row mt-0">
-				<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-				<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-				<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-
-				<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigator">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
-						Documents
-					</div>
-					<div class="summary-text-data">
-						<div class="summary-text-data">
-							<ul class="m-0">
-								<ng-container *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
-									<li>{{ doc.name }}</li>
-								</ng-container>
-							</ul>
-							<ul class="m-0">
-								<ng-container *ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index">
-									<li>{{ doc.name }}</li>
-								</ng-container>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigatorUnderSupervision">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
-						Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categoryPrivateInvestigatorUnderSupervisionAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-
-				<div class="col-lg-6 col-md-12" *ngIf="showSecurityAlarmInstaller">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
-						Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-
-				<div class="col-lg-6 col-md-12" *ngIf="showSecurityConsultant">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-
-				<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-					<div class="text-label d-block text-muted">
-						{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-					</div>
-					<div class="summary-text-data">
-						<ul class="m-0">
-							<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-								<li>{{ doc.name }}</li>
-							</ng-container>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</ng-container>
-	`,
+		@if (isAnyDocuments) {
+		  <mat-divider class="mt-3 mb-2"></mat-divider>
+		  <div class="text-minor-heading-small">Documents Uploaded</div>
+		  <div class="row mt-0">
+		    @if (showArmouredCarGuard) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categoryArmouredCarGuardAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showFireInvestigator) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categoryFireInvestigatorCertificateAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		          <ul class="m-0">
+		            @for (doc of categoryFireInvestigatorLetterAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showLocksmith) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categoryLocksmithAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showPrivateInvestigator) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
+		          Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <div class="summary-text-data">
+		            <ul class="m-0">
+		              @for (doc of categoryPrivateInvestigatorAttachments; track doc; let i = $index) {
+		                <li>{{ doc.name }}</li>
+		              }
+		            </ul>
+		            <ul class="m-0">
+		              @for (doc of categoryPrivateInvestigatorTrainingAttachments; track doc; let i = $index) {
+		                <li>{{ doc.name }}</li>
+		              }
+		            </ul>
+		          </div>
+		        </div>
+		      </div>
+		    }
+		    @if (showPrivateInvestigatorUnderSupervision) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
+		          Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categoryPrivateInvestigatorUnderSupervisionAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showSecurityAlarmInstaller) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
+		          Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categorySecurityAlarmInstallerAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showSecurityConsultant) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categorySecurityConsultantAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		          <ul class="m-0">
+		            @for (doc of categorySecurityConsultantResumeAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		    @if (showSecurityGuard) {
+		      <div class="col-lg-6 col-md-12">
+		        <div class="text-label d-block text-muted">
+		          {{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
+		        </div>
+		        <div class="summary-text-data">
+		          <ul class="m-0">
+		            @for (doc of categorySecurityGuardAttachments; track doc; let i = $index) {
+		              <li>{{ doc.name }}</li>
+		            }
+		          </ul>
+		        </div>
+		      </div>
+		    }
+		  </div>
+		}
+		`,
     styles: [],
     standalone: false
 })

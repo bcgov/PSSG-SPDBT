@@ -6,18 +6,19 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 	template: `
 		<div class="text-minor-heading-small mb-2">Employees</div>
 		<div class="row summary-text-data mt-0">
-			<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
-				<ng-container *ngFor="let employee of employeesList; let i = index">
-					<div class="col-xl-6 col-lg-12">
-						<ul class="m-0">
-							<li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
-						</ul>
-					</div>
-				</ng-container>
-			</ng-container>
-			<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
+		  @if (employeesList.length > 0) {
+		    @for (employee of employeesList; track employee; let i = $index) {
+		      <div class="col-xl-6 col-lg-12">
+		        <ul class="m-0">
+		          <li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
+		        </ul>
+		      </div>
+		    }
+		  } @else {
+		    <div class="col-12">None</div>
+		  }
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })
