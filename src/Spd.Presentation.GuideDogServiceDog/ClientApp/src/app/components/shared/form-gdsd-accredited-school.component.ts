@@ -11,36 +11,36 @@ import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 	template: `
 		<div class="text-minor-heading lh-base my-2">{{ schoolLabel }}</div>
 		<mat-form-field>
-		  <mat-label>School Name</mat-label>
-		  <input matInput [formControl]="accreditedSchoolIdControl" [matAutocomplete]="auto" (blur)="onSchoolIdBlur()" />
-		  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-		    @for (field of filteredOptions | async; track field) {
-		      <mat-option [value]="field.schoolId">
-		        <div class="school-name mt-2">{{ field.schoolName }}</div>
-		        <div class="school-address mb-2">{{ field.schoolAddress }}</div>
-		      </mat-option>
-		    }
-		  </mat-autocomplete>
-		  @if (!isRenewal) {
-		    <mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
-		  }
-		  @if (!isRenewal) {
-		    <mat-hint> Start typing name of school or address </mat-hint>
-		  }
-		  @if (accreditedSchoolIdControl?.hasError('required')) {
-		    <mat-error> This is required </mat-error>
-		  }
+			<mat-label>School Name</mat-label>
+			<input matInput [formControl]="accreditedSchoolIdControl" [matAutocomplete]="auto" (blur)="onSchoolIdBlur()" />
+			<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+				@for (field of filteredOptions | async; track field) {
+					<mat-option [value]="field.schoolId">
+						<div class="school-name mt-2">{{ field.schoolName }}</div>
+						<div class="school-address mb-2">{{ field.schoolAddress }}</div>
+					</mat-option>
+				}
+			</mat-autocomplete>
+			@if (!isRenewal) {
+				<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
+			}
+			@if (!isRenewal) {
+				<mat-hint> Start typing name of school or address </mat-hint>
+			}
+			@if (accreditedSchoolIdControl.hasError('required')) {
+				<mat-error> This is required </mat-error>
+			}
 		</mat-form-field>
-		
+
 		@if (!isRenewal) {
-		  <div class="mt-4">
-		    <app-alert type="info" icon="info">
-		      If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
-		      regular office hours.
-		    </app-alert>
-		  </div>
+			<div class="mt-4">
+				<app-alert type="info" icon="info">
+					If your school is not in the list, please contact the Security Licencing Unit at {{ spdPhoneNumber }} during
+					regular office hours.
+				</app-alert>
+			</div>
 		}
-		`,
+	`,
 	styles: [
 		`
 			.school-name {
