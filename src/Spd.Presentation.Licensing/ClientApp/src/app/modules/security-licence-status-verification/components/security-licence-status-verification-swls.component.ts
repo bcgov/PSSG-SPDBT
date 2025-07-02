@@ -17,7 +17,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
-							<h2 class="fs-3">Verify Many Security Worker Licences</h2>
+							<h2 class="fs-3">Verify a Set of Security Worker Licence Numbers</h2>
 						</div>
 
 						<div class="col-xl-4 col-lg-4 col-md-12 no-print">
@@ -60,13 +60,25 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										[errorStateMatcher]="matcher"
 										maxlength="500"
 									></textarea>
-									@if (form.get('licenceNumbers')?.hasError('required')) {
+									@if (licenceNumbers.hasError('required')) {
 										<mat-error>This is required</mat-error>
+									}
+									@if (licenceNumbers.hasError('invalidCharsFormat')) {
+										<mat-error
+											>Security worker licence numbers can only include letters and numbers:
+											{{ licenceNumbersInvalidCharsItems.join(', ') }}</mat-error
+										>
+									}
+									@if (licenceNumbers.hasError('invalidStartWith')) {
+										<mat-error
+											>Security worker licence numbers must start with an "E":
+											{{ licenceNumbersInvalidStartWithItems.join(', ') }}</mat-error
+										>
 									}
 									<mat-hint>Maximum 500 characters</mat-hint>
 								</mat-form-field>
 							</div>
-							<div class="col-12 mt-3">
+							<div class="col-12 mt-4">
 								<div formGroupName="captchaFormGroup">
 									<app-captcha-v2
 										[captchaFormGroup]="captchaFormGroup"
@@ -108,7 +120,12 @@ export class SecurityLicenceStatusVerificationSwlsComponent {
 	resetRecaptchaControl: Subject<void> = new Subject<void>();
 
 	form = this.formBuilder.group({
-		licenceNumbers: new FormControl('', [FormControlValidators.required]),
+		licenceNumbers: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.commaSeparatedSwlValidator({
+				allowEmpty: true,
+			}),
+		]),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', [FormControlValidators.required]),
 		}),
@@ -179,5 +196,14 @@ export class SecurityLicenceStatusVerificationSwlsComponent {
 
 	get captchaFormGroup(): FormGroup {
 		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get licenceNumbers(): FormControl {
+		return this.form.get('licenceNumbers') as FormControl;
+	}
+	get licenceNumbersInvalidCharsItems(): [] {
+		return this.licenceNumbers.errors ? this.licenceNumbers.errors['invalidCharsItems'] : [];
+	}
+	get licenceNumbersInvalidStartWithItems(): [] {
+		return this.licenceNumbers.errors ? this.licenceNumbers.errors['invalidStartWithItems'] : [];
 	}
 }

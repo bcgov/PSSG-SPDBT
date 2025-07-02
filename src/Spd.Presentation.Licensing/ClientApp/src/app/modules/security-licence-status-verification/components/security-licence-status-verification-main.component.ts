@@ -32,7 +32,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					</div>
 
 					<mat-divider class="mt-3 mb-4"></mat-divider>
-					<div class="text-minor-heading my-3">Verify a set of Security Worker Licences</div>
+					<div class="text-minor-heading my-3">Verify a Set of Security Worker Licence Numbers</div>
 
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
@@ -43,7 +43,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<button mat-flat-button color="primary" class="large" (click)="onVerifySwls()">
-								Verify Many Security Worker Licences
+								Verify a Set of Security Worker Licences
 							</button>
 						</div>
 					</div>
