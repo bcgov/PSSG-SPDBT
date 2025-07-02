@@ -14,15 +14,14 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<div class="text-minor-heading my-3">Search results</div>
 					@for (licence of searchResults; track licence; let i = $index) {
 						<div class="summary-card-section summary-card-section__green mb-3 px-4 py-3">
-							<div class="row">
-								<div class="col-xl-2 col-lg-2">
-									<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-									<div class="text-minor-heading">
-										{{ licence.licenceNumber }}
+							@if (licence.licenceId) {
+								<div class="row">
+									<div class="col-xl-2 col-lg-2">
+										<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+										<div class="text-minor-heading">
+											{{ licence.licenceNumber }}
+										</div>
 									</div>
-								</div>
-
-								@if (licence.licenceId) {
 									<div class="col-xl-8 col-lg-8">
 										<div class="row">
 											<div class="col-xl-6 col-lg-6">
@@ -64,12 +63,14 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											</span>
 										</mat-chip-option>
 									</div>
-								} @else {
+								</div>
+							} @else {
+								<div class="row">
 									<div class="col-xl-8 col-lg-8 my-auto">
-										<div class="text-data fw-bold">Not a valid security worker licence</div>
+										<div class="text-minor-heading my-2">{{ licence.licenceNumber }} does not result in a match</div>
 									</div>
-								}
-							</div>
+								</div>
+							}
 						</div>
 					}
 				</div>
