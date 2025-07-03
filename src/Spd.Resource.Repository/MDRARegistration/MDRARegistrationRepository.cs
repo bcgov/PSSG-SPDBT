@@ -54,7 +54,7 @@ internal class MDRARegistrationRepository : IMDRARegistrationRepository
     {
         Guid teamGuid = Guid.Parse(teamGuidStr);
         team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
-        _context.SetLink(registration, nameof(spd_orgregistration.owningteam), serviceTeam);
+        _context.SetLink(registration, nameof(spd_orgregistration.ownerid), serviceTeam);
     }
 
     private void LinkType(spd_orgregistration registration)
