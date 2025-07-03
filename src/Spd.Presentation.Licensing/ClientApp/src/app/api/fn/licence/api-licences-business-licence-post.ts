@@ -8,20 +8,21 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { GoogleRecaptcha } from '../../models/google-recaptcha';
 import { LicenceBasicResponse } from '../../models/licence-basic-response';
 
-export interface ApiLicencesSecurityWorkerLicenceGet$Params {
+export interface ApiLicencesBusinessLicencePost$Params {
   licenceNumber?: string;
-  firstName?: string;
-  lastName?: string;
+  businessName?: string;
+      body?: GoogleRecaptcha
 }
 
-export function apiLicencesSecurityWorkerLicenceGet(http: HttpClient, rootUrl: string, params?: ApiLicencesSecurityWorkerLicenceGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
-  const rb = new RequestBuilder(rootUrl, apiLicencesSecurityWorkerLicenceGet.PATH, 'get');
+export function apiLicencesBusinessLicencePost(http: HttpClient, rootUrl: string, params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+  const rb = new RequestBuilder(rootUrl, apiLicencesBusinessLicencePost.PATH, 'post');
   if (params) {
     rb.query('licenceNumber', params.licenceNumber, {});
-    rb.query('firstName', params.firstName, {});
-    rb.query('lastName', params.lastName, {});
+    rb.query('businessName', params.businessName, {});
+    rb.body(params.body, 'application/*+json');
   }
 
   return http.request(
@@ -34,4 +35,4 @@ export function apiLicencesSecurityWorkerLicenceGet(http: HttpClient, rootUrl: s
   );
 }
 
-apiLicencesSecurityWorkerLicenceGet.PATH = '/api/licences/security-worker-licence';
+apiLicencesBusinessLicencePost.PATH = '/api/licences/business-licence';

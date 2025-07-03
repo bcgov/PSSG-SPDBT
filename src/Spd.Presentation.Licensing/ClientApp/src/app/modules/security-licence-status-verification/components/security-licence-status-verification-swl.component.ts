@@ -15,9 +15,9 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	selector: 'app-security-licence-status-verification-swl',
 	template: `
 		<section class="step-section">
-			<div class="row">
+			<div class="row no-print">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row no-print">
+					<div class="row">
 						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
 							<h2 class="fs-3">Verify a security worker licence</h2>
 						</div>
@@ -47,7 +47,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					</div>
 
-					<div class="row no-print mb-2">
+					<div class="row mb-2">
 						<form [formGroup]="form" novalidate>
 							<div class="col-12">
 								<mat-label>Search by</mat-label>
@@ -56,22 +56,23 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									formControlName="searchBy"
 									(change)="onSearchByChange($event)"
 								>
-									<div>
-										<mat-radio-button value="A">Worker Licence Number</mat-radio-button>
-										<mat-radio-button value="B">Worker Licence Name</mat-radio-button>
-										<mat-radio-button value="C">Bulk Worker Licence Numbers</mat-radio-button>
+									<div class="d-flex justify-content-start">
+										<mat-radio-button value="A">Worker licence number</mat-radio-button>
+										<mat-radio-button value="B">Worker licence name</mat-radio-button>
+										<mat-radio-button value="C">Bulk worker licence numbers</mat-radio-button>
 									</div>
 								</mat-radio-group>
 								@if ((searchBy.dirty || searchBy.touched) && searchBy.invalid && searchBy.hasError('required')) {
 									<mat-error class="mat-option-error">This is required</mat-error>
 								}
-								<mat-divider class="mt-3 mb-4"></mat-divider>
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 							</div>
 						</form>
 					</div>
 
 					@if (searchBy.value === 'A') {
-						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+						<div class="row mb-2" @showHideTriggerSlideAnimation>
+							<div class="text-minor-heading mb-3">Search by worker licence number</div>
 							<div class="col-xl-8 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>licence number</strong> as it appears on the licence, below. Press
 								'Submit' and the results will confirm if the licence number is valid and the name of the licensee.
@@ -115,7 +116,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					}
 
 					@if (searchBy.value === 'B') {
-						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+						<div class="row mb-2" @showHideTriggerSlideAnimation>
+							<div class="text-minor-heading mb-3">Search by worker licence name</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>full name</strong> as it appears on the licence, below. Press 'Submit'
 								and the results will confirm if the licence number is valid and the name of the licensee.
@@ -166,7 +168,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					}
 
 					@if (searchBy.value === 'C') {
-						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+						<div class="row mb-2" @showHideTriggerSlideAnimation>
+							<div class="text-minor-heading mb-3">Search by bulk worker licence numbers</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
 								Enter a comma-separated list of security worker <strong>licence numbers</strong> as they appears on the
 								licence, below. Press 'Submit' and the results will confirm if the licence numbers are valid and the
@@ -219,17 +222,17 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					}
 
-					<div class="col-12 my-2 text-end">
+					<div class="col-12 mt-3 mb-2 text-end">
 						<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
 					</div>
 				</div>
-
-				<app-security-licence-status-swl-search-results
-					[showSearchResults]="showSearchResults"
-					[searchResultsErrorName]="searchResultsErrorName"
-					[searchResults]="searchResults"
-				></app-security-licence-status-swl-search-results>
 			</div>
+
+			<app-security-licence-status-swl-search-results
+				[showSearchResults]="showSearchResults"
+				[searchResultsErrorName]="searchResultsErrorName"
+				[searchResults]="searchResults"
+			></app-security-licence-status-swl-search-results>
 		</section>
 	`,
 	styles: [],
@@ -251,7 +254,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	workerLicenceNumberForm = this.formBuilder.group({
 		workerLicenceNumber: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.swlLicenceNumberValidator(),
+			FormControlValidators.licenceNumberValidator(),
 		]),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', [FormControlValidators.required]),
@@ -344,14 +347,16 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		this.workerLicenceNumberForm.markAllAsTouched();
 		if (!this.workerLicenceNumberForm.valid) return;
 
-		const formValue = this.workerLicenceNumberForm.value;
+		const formValue = this.workerLicenceNumberForm.getRawValue();
+		const recaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
 		const licenceNumber = formValue.workerLicenceNumber?.trim();
 
 		this.licenceService
-			.apiLicencesSecurityWorkerLicenceGet({
+			.apiLicencesSecurityWorkerLicencePost({
 				licenceNumber,
 				firstName: undefined,
 				lastName: undefined,
+				body: recaptcha,
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				if (resps.length > 0) {
@@ -363,6 +368,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 				}
 
 				this.showSearchResults = true;
+				this.resetRecaptcha();
 			});
 	}
 
@@ -370,16 +376,18 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		this.workerLicenceNameForm.markAllAsTouched();
 		if (!this.workerLicenceNameForm.valid) return;
 
-		const formValue = this.workerLicenceNameForm.value;
+		const formValue = this.workerLicenceNameForm.getRawValue();
+		const recaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
 		const lastName = formValue.lastName?.trim();
 		const isOneNameOnly = formValue.isOneNameOnly ?? false;
 		const searchFirstName = isOneNameOnly ? '' : formValue.firstName?.trim();
 
 		this.licenceService
-			.apiLicencesSecurityWorkerLicenceGet({
+			.apiLicencesSecurityWorkerLicencePost({
 				licenceNumber: undefined,
 				firstName: searchFirstName,
 				lastName,
+				body: recaptcha,
 			})
 			.subscribe((resps: Array<LicenceBasicResponse>) => {
 				if (resps.length === 0) {
@@ -393,6 +401,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 				}
 
 				this.showSearchResults = true;
+				this.resetRecaptcha();
 			});
 	}
 
