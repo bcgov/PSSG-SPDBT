@@ -76,10 +76,18 @@ npm install --force
 
 #### upgrade to Angular 20
 
+start power shell with Administrator privilege
+run
+
+```
+choco upgrade nodejs
+```
+
+go to clientApp folder
+
 ```
 del node_modules
 del package-lock.json
-choco upgrade nodejs
 ```
 
 then run
