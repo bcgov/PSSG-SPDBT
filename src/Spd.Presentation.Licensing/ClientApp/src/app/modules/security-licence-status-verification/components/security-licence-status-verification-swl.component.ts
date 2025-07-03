@@ -113,9 +113,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-					}
 
-					@if (searchBy.value === 'B') {
+					} @else if (searchBy.value === 'B') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
 							<div class="text-minor-heading mb-3">Search by worker licence name</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
@@ -165,9 +164,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-					}
 
-					@if (searchBy.value === 'C') {
+					} @else if (searchBy.value === 'C') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
 							<div class="text-minor-heading mb-3">Search by bulk worker licence numbers</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
