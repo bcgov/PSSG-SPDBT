@@ -34,78 +34,75 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 @Component({
 	selector: 'app-crrpa',
 	template: `
-		<div class="container mt-4" *ngIf="orgData">
-			<mat-stepper
-				linear
-				labelPosition="bottom"
-				[orientation]="orientation"
-				(selectionChange)="onStepSelectionChange($event)"
-				#stepper
-			>
-				<mat-step completed="false">
-					<ng-template matStepLabel>Checklist</ng-template>
-					<app-sa-step-eligibility
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						[orgData]="orgData"
-					></app-sa-step-eligibility>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Organization Information</ng-template>
-					<app-sa-step-organization-info
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						[orgData]="orgData"
-					></app-sa-step-organization-info>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Log In</ng-template>
-					<app-sa-step-login-options
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
-						[portal]="portal.Crrp"
-					></app-sa-step-login-options>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Personal Information</ng-template>
-					<app-sa-step-personal-info
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						(reEditCrcData)="onReEditCrcData()"
-						(getCrcData)="onUpdateOrgData()"
-						[orgData]="orgData"
-					></app-sa-step-personal-info>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Terms and Conditions</ng-template>
-					<app-sa-step-terms-and-cond
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onSaveStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						[orgData]="orgData"
-					></app-sa-step-terms-and-cond>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Application Submitted</ng-template>
-					<app-sa-step-appl-submitted
-						[emailAddress]="sendToEmailAddress"
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						[orgData]="orgData"
-					></app-sa-step-appl-submitted>
-				</mat-step>
-			</mat-stepper>
-		</div>
-	`,
+		@if (orgData) {
+		  <div class="container mt-4">
+		    <mat-stepper
+		      linear
+		      labelPosition="bottom"
+		      [orientation]="orientation"
+		      (selectionChange)="onStepSelectionChange($event)"
+		      #stepper
+		      >
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Checklist</ng-template>
+		        <app-sa-step-eligibility
+		          (nextStepperStep)="onNextStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          [orgData]="orgData"
+		        ></app-sa-step-eligibility>
+		      </mat-step>
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Organization Information</ng-template>
+		        <app-sa-step-organization-info
+		          (previousStepperStep)="onPreviousStepperStep(stepper)"
+		          (nextStepperStep)="onNextStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          [orgData]="orgData"
+		        ></app-sa-step-organization-info>
+		      </mat-step>
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Log In</ng-template>
+		        <app-sa-step-login-options
+		          (previousStepperStep)="onPreviousStepperStep(stepper)"
+		          (nextStepperStep)="onNextStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          (registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
+		          [portal]="portal.Crrp"
+		        ></app-sa-step-login-options>
+		      </mat-step>
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Personal Information</ng-template>
+		        <app-sa-step-personal-info
+		          (previousStepperStep)="onPreviousStepperStep(stepper)"
+		          (nextStepperStep)="onNextStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          (reEditCrcData)="onReEditCrcData()"
+		          (getCrcData)="onUpdateOrgData()"
+		          [orgData]="orgData"
+		        ></app-sa-step-personal-info>
+		      </mat-step>
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Terms and Conditions</ng-template>
+		        <app-sa-step-terms-and-cond
+		          (previousStepperStep)="onPreviousStepperStep(stepper)"
+		          (nextStepperStep)="onSaveStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          [orgData]="orgData"
+		        ></app-sa-step-terms-and-cond>
+		      </mat-step>
+		      <mat-step completed="false">
+		        <ng-template matStepLabel>Application Submitted</ng-template>
+		        <app-sa-step-appl-submitted
+		          [emailAddress]="sendToEmailAddress"
+		          (previousStepperStep)="onPreviousStepperStep(stepper)"
+		          (scrollIntoView)="onScrollIntoView()"
+		          [orgData]="orgData"
+		        ></app-sa-step-appl-submitted>
+		      </mat-step>
+		    </mat-stepper>
+		  </div>
+		}
+		`,
     styles: [],
     standalone: false
 })

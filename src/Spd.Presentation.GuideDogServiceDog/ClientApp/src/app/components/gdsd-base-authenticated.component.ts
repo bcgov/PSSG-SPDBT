@@ -8,17 +8,19 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 @Component({
 	selector: 'app-gdsd-base-authenticated',
 	template: `
-		<div *ngIf="isAuthenticated$ | async">
-			<app-container>
-				<!-- hide padding/margin on smaller screens -->
-				<div class="row">
-					<div class="col-12">
-						<router-outlet></router-outlet>
-					</div>
-				</div>
-			</app-container>
-		</div>
-	`,
+		@if (isAuthenticated$ | async) {
+		  <div>
+		    <app-container>
+		      <!-- hide padding/margin on smaller screens -->
+		      <div class="row">
+		        <div class="col-12">
+		          <router-outlet></router-outlet>
+		        </div>
+		      </div>
+		    </app-container>
+		  </div>
+		}
+		`,
 	styles: ``,
 	standalone: false,
 })

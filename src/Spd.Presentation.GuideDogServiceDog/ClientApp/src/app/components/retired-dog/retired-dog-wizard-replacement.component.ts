@@ -19,54 +19,55 @@ import { StepRdPhotographOfYourselfRenewComponent } from './step-rd-photograph-o
 	selector: 'app-retired-dog-wizard-replacement',
 	template: `
 		<div class="row">
-			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
-				<mat-step>
-					<ng-template matStepLabel>Certificate Confirmation</ng-template>
-					<app-step-rd-licence-confirmation></app-step-rd-licence-confirmation>
-
-					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_SUMMARY)"></app-wizard-footer>
-				</mat-step>
-
-				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Mailing Address</ng-template>
-					<app-step-rd-mailing-address
-						[isLoggedIn]="isLoggedIn"
-						[applicationTypeCode]="applicationTypeReplacement"
-					></app-step-rd-mailing-address>
-
-					<app-wizard-footer
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-					></app-wizard-footer>
-				</mat-step>
-
-				<mat-step [completed]="step3Complete" *ngIf="updatePhoto">
-					<ng-template matStepLabel>Photograph of Yourself</ng-template>
-					<app-step-rd-photograph-of-yourself-renew></app-step-rd-photograph-of-yourself-renew>
-
-					<app-wizard-footer
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
-					></app-wizard-footer>
-				</mat-step>
-
-				<mat-step>
-					<ng-template matStepLabel>Acknowledgement</ng-template>
-					<app-step-rd-consent-replacement></app-step-rd-consent-replacement>
-
-					<app-wizard-footer
-						nextButtonLabel="Submit"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onSubmit()"
-					></app-wizard-footer>
-				</mat-step>
-
-				<mat-step completed="false">
-					<ng-template matStepLabel>Submit</ng-template>
-				</mat-step>
-			</mat-stepper>
+		  <mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
+		    <mat-step>
+		      <ng-template matStepLabel>Certificate Confirmation</ng-template>
+		      <app-step-rd-licence-confirmation></app-step-rd-licence-confirmation>
+		
+		      <app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_SUMMARY)"></app-wizard-footer>
+		    </mat-step>
+		
+		    <mat-step [completed]="step2Complete">
+		      <ng-template matStepLabel>Mailing Address</ng-template>
+		      <app-step-rd-mailing-address
+		        [isLoggedIn]="isLoggedIn"
+		        [applicationTypeCode]="applicationTypeReplacement"
+		      ></app-step-rd-mailing-address>
+		
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		
+		    @if (updatePhoto) {
+		      <mat-step [completed]="step3Complete">
+		        <ng-template matStepLabel>Photograph of Yourself</ng-template>
+		        <app-step-rd-photograph-of-yourself-renew></app-step-rd-photograph-of-yourself-renew>
+		        <app-wizard-footer
+		          (previousStepperStep)="onGoToPreviousStep()"
+		          (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+		        ></app-wizard-footer>
+		      </mat-step>
+		    }
+		
+		    <mat-step>
+		      <ng-template matStepLabel>Acknowledgement</ng-template>
+		      <app-step-rd-consent-replacement></app-step-rd-consent-replacement>
+		
+		      <app-wizard-footer
+		        nextButtonLabel="Submit"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onSubmit()"
+		      ></app-wizard-footer>
+		    </mat-step>
+		
+		    <mat-step completed="false">
+		      <ng-template matStepLabel>Submit</ng-template>
+		    </mat-step>
+		  </mat-stepper>
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

@@ -17,7 +17,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-form-field>
 								<mat-label>Dog Name</mat-label>
 								<input matInput formControlName="dogName" [errorStateMatcher]="matcher" maxlength="50" />
-								<mat-error *ngIf="form.get('dogName')?.hasError('required')">This is required</mat-error>
+								@if (form.get('dogName')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
@@ -33,38 +35,56 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									aria-label="Date in format YYYY-MM-DD"
 								/>
 								<!-- We always want the date format hint to display -->
-								<mat-hint *ngIf="!showHintError">Date format YYYY-MM-DD</mat-hint>
-								<mat-error *ngIf="showHintError">
-									<span class="hint-inline">Date format YYYY-MM-DD</span>
-								</mat-error>
-								<mat-error *ngIf="dogDateOfBirth?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="dogDateOfBirth?.hasError('invalidDate')">This date is invalid</mat-error>
-								<mat-error *ngIf="dogDateOfBirth?.hasError('futureDate')">This date cannot be in the future</mat-error>
+								@if (!showHintError) {
+									<mat-hint>Date format YYYY-MM-DD</mat-hint>
+								}
+								@if (showHintError) {
+									<mat-error>
+										<span class="hint-inline">Date format YYYY-MM-DD</span>
+									</mat-error>
+								}
+								@if (dogDateOfBirth.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (dogDateOfBirth.hasError('invalidDate')) {
+									<mat-error>This date is invalid</mat-error>
+								}
+								@if (dogDateOfBirth.hasError('futureDate')) {
+									<mat-error>This date cannot be in the future</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Breed</mat-label>
 								<input matInput formControlName="dogBreed" [errorStateMatcher]="matcher" maxlength="50" />
-								<mat-error *ngIf="form.get('dogBreed')?.hasError('required')">This is required</mat-error>
+								@if (form.get('dogBreed')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Colour and Markings</mat-label>
 								<input matInput formControlName="dogColorAndMarkings" [errorStateMatcher]="matcher" maxlength="50" />
-								<mat-error *ngIf="form.get('dogColorAndMarkings')?.hasError('required')">This is required</mat-error>
+								@if (form.get('dogColorAndMarkings')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Gender</mat-label>
 								<mat-select formControlName="dogGender" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let gdr of genderMfTypes; let i = index" [value]="gdr.code">
-										{{ gdr.desc }}
-									</mat-option>
+									@for (gdr of genderMfTypes; track gdr; let i = $index) {
+										<mat-option [value]="gdr.code">
+											{{ gdr.desc }}
+										</mat-option>
+									}
 								</mat-select>
-								<mat-error *ngIf="form.get('dogGender')?.hasError('required')">This is required</mat-error>
+								@if (form.get('dogGender')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">

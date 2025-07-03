@@ -15,108 +15,111 @@ import { StepTeamPhotographOfYourselfComponent } from './step-team-photograph-of
 	selector: 'app-steps-team-personal-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<ng-container *ngIf="isLoggedIn; else notLoggedIn">
-					<app-step-team-personal-info [applicationTypeCode]="applicationTypeCode"></app-step-team-personal-info>
-				</ng-container>
-				<ng-template #notLoggedIn>
-					<app-step-team-personal-info-anonymous
-						[applicationTypeCode]="applicationTypeCode"
-					></app-step-team-personal-info-anonymous>
-				</ng-template>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-team-mailing-address
-					[isLoggedIn]="isLoggedIn"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-team-mailing-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew && !isTrainedByAccreditedSchools">
-				<app-step-team-medical-info></app-step-team-medical-info>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_MEDICAL)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MEDICAL)"
-					(nextReviewStepperStep)="onNextReview(STEP_MEDICAL)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew">
-				<app-step-team-photograph-of-yourself></app-step-team-photograph-of-yourself>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isNew">
-				<app-step-team-photograph-of-yourself-renew></app-step-team-photograph-of-yourself-renew>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isNew && isTrainedByAccreditedSchools">
-				<app-step-team-accredited-school-id-card></app-step-team-accredited-school-id-card>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_ACCREDITED_SCHOOL_ID_CARD)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_ACCREDITED_SCHOOL_ID_CARD)"
-					(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED_SCHOOL_ID_CARD)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-team-government-id></app-step-team-government-id>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_GOV_ID)"
-					(nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    @if (isLoggedIn) {
+		      <app-step-team-personal-info [applicationTypeCode]="applicationTypeCode"></app-step-team-personal-info>
+		    } @else {
+		      <app-step-team-personal-info-anonymous
+		        [applicationTypeCode]="applicationTypeCode"
+		      ></app-step-team-personal-info-anonymous>
+		    }
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-team-mailing-address
+		      [isLoggedIn]="isLoggedIn"
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-team-mailing-address>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (isNew && !isTrainedByAccreditedSchools) {
+		    <mat-step>
+		      <app-step-team-medical-info></app-step-team-medical-info>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_MEDICAL)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_MEDICAL)"
+		        (nextReviewStepperStep)="onNextReview(STEP_MEDICAL)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (isNew) {
+		    <mat-step>
+		      <app-step-team-photograph-of-yourself></app-step-team-photograph-of-yourself>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (!isNew) {
+		    <mat-step>
+		      <app-step-team-photograph-of-yourself-renew></app-step-team-photograph-of-yourself-renew>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (!isNew && isTrainedByAccreditedSchools) {
+		    <mat-step>
+		      <app-step-team-accredited-school-id-card></app-step-team-accredited-school-id-card>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+		        (nextReviewStepperStep)="onNextReview(STEP_ACCREDITED_SCHOOL_ID_CARD)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-team-government-id></app-step-team-government-id>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_GOV_ID)"
+		      (nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

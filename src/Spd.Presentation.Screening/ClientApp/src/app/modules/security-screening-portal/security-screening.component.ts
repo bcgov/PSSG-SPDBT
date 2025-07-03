@@ -6,12 +6,14 @@ import { SecurityScreeningRoutes } from './security-screening-routes';
 @Component({
     selector: 'app-security-screening',
     template: `
-		<div class="container mt-4" *ngIf="isAuthenticated$ | async">
-			<section class="step-section p-0 p-lg-4 m-0 m-lg-4">
-				<router-outlet></router-outlet>
-			</section>
-		</div>
-	`,
+		@if (isAuthenticated$ | async) {
+		  <div class="container mt-4">
+		    <section class="step-section p-0 p-lg-4 m-0 m-lg-4">
+		      <router-outlet></router-outlet>
+		    </section>
+		  </div>
+		}
+		`,
     styles: [],
     standalone: false
 })

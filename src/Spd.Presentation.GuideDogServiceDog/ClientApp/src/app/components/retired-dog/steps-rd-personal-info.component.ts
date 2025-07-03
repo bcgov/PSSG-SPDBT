@@ -14,95 +14,97 @@ import { StepRdPhotographOfYourselfComponent } from './step-rd-photograph-of-you
 	selector: 'app-steps-rd-personal-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<ng-container *ngIf="isLoggedIn; else notLoggedIn">
-					<app-step-rd-personal-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-personal-info>
-				</ng-container>
-				<ng-template #notLoggedIn>
-					<app-step-rd-personal-info-anonymous
-						[applicationTypeCode]="applicationTypeCode"
-					></app-step-rd-personal-info-anonymous>
-				</ng-template>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
-					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-rd-mailing-address
-					[isLoggedIn]="isLoggedIn"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-rd-mailing-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew">
-				<app-step-rd-gdsd-certificate></app-step-rd-gdsd-certificate>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_GDSD_CERTIFICATE)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_GDSD_CERTIFICATE)"
-					(nextReviewStepperStep)="onNextReview(STEP_GDSD_CERTIFICATE)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="isNew">
-				<app-step-rd-photograph-of-yourself></app-step-rd-photograph-of-yourself>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isNew">
-				<app-step-rd-photograph-of-yourself-renew></app-step-rd-photograph-of-yourself-renew>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-rd-government-id></app-step-rd-government-id>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_GOV_ID)"
-					(nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    @if (isLoggedIn) {
+		      <app-step-rd-personal-info [applicationTypeCode]="applicationTypeCode"></app-step-rd-personal-info>
+		    } @else {
+		      <app-step-rd-personal-info-anonymous
+		        [applicationTypeCode]="applicationTypeCode"
+		      ></app-step-rd-personal-info-anonymous>
+		    }
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+		      (nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-rd-mailing-address
+		      [isLoggedIn]="isLoggedIn"
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-rd-mailing-address>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_MAILING_ADDRESS)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (isNew) {
+		    <mat-step>
+		      <app-step-rd-gdsd-certificate></app-step-rd-gdsd-certificate>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_GDSD_CERTIFICATE)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_GDSD_CERTIFICATE)"
+		        (nextReviewStepperStep)="onNextReview(STEP_GDSD_CERTIFICATE)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (isNew) {
+		    <mat-step>
+		      <app-step-rd-photograph-of-yourself></app-step-rd-photograph-of-yourself>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (!isNew) {
+		    <mat-step>
+		      <app-step-rd-photograph-of-yourself-renew></app-step-rd-photograph-of-yourself-renew>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO_OF_YOURSELF_RENEW)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-rd-government-id></app-step-rd-government-id>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      [showSaveAndExit]="showSaveAndExit"
+		      (saveAndExit)="onSaveAndExit(STEP_GOV_ID)"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_GOV_ID)"
+		      (nextReviewStepperStep)="onNextReview(STEP_GOV_ID)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

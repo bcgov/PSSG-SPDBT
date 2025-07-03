@@ -11,88 +11,87 @@ export class OrganizationOptionsModel {
     selector: 'app-organization-options',
     template: `
 		<section class="step-section p-4">
-			<div class="step">
-				<app-step-title title="How would you best describe your organization?"></app-step-title>
-				<div class="">
-					<div class="step-container row">
-						<div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
-							<div class="row">
-								<ng-container *ngFor="let option of options; let i = index">
-									<div
-										class="col-lg-4 col-md-4 col-sm-6 mb-3"
-										[ngClass]="registrationTypeCode === registrationTypeCodes.Employee ? 'col-lg-4' : 'col-lg-3'"
-									>
-										<div
-											tabindex="0"
-											class="step-container__box"
-											(click)="onDataChange(option.code)"
-											(keydown)="onKeyDown($event, option.code)"
-											[ngClass]="{ 'active-selection-border': currentOrganizationTypeCode === option.code }"
-										>
-											<ng-container *ngIf="option.showHelp; else noHelp">
-												<div class="step-container__box__info">
-													<mat-icon
-														class="larger-icon"
-														tabindex="0"
-														(click)="onViewHelp(option, $event)"
-														(keydown)="onKeyDownViewHelp(option, $event)"
-														>close</mat-icon
-													>
-												</div>
-												<div class="px-2 pb-3">
-													{{ option.helpText }}
-												</div>
-											</ng-container>
-											<ng-template #noHelp>
-												<div class="step-container__box__info" style="height: 38px">
-													<mat-icon
-														class="larger-icon"
-														*ngIf="option.helpText"
-														tabindex="0"
-														(click)="onViewHelp(option, $event)"
-														(keydown)="onKeyDownViewHelp(option, $event)"
-														>help_outline</mat-icon
-													>
-												</div>
-
-												<ng-container *ngIf="currentOrganizationTypeCode !== option.code; else selectedIcon">
-													<div class="card-icon-container d-none d-md-block">
-														<img class="card-icon-container__icon" [src]="option.icon" [alt]="option.text" />
-													</div>
-													<div class="px-2 pb-3">
-														{{ option.text }}
-													</div>
-												</ng-container>
-
-												<ng-template #selectedIcon>
-													<div class="card-icon-container d-none d-md-block">
-														<img class="card-icon-container__icon" [src]="option.selectedIcon" [alt]="option.text" />
-													</div>
-													<div class="px-2 pb-3">
-														{{ option.text }}
-													</div>
-												</ng-template>
-											</ng-template>
-										</div>
-									</div>
-								</ng-container>
-							</div>
-
-							<div class="none-apply">
-								<a tabindex="0" (click)="onNoneApply()" (keydown)="onKeyDownNoneApply($event)"
-									>None of these descriptions apply to my organization</a
-								>
-							</div>
-
-							<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
-								>An option must be selected</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="step">
+		    <app-step-title title="How would you best describe your organization?"></app-step-title>
+		    <div class="">
+		      <div class="step-container row">
+		        <div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
+		          <div class="row">
+		            @for (option of options; track option; let i = $index) {
+		              <div
+		                class="col-lg-4 col-md-4 col-sm-6 mb-3"
+		                [ngClass]="registrationTypeCode === registrationTypeCodes.Employee ? 'col-lg-4' : 'col-lg-3'"
+		                >
+		                <div
+		                  tabindex="0"
+		                  class="step-container__box"
+		                  (click)="onDataChange(option.code)"
+		                  (keydown)="onKeyDown($event, option.code)"
+		                  [ngClass]="{ 'active-selection-border': currentOrganizationTypeCode === option.code }"
+		                  >
+		                  @if (option.showHelp) {
+		                    <div class="step-container__box__info">
+		                      <mat-icon
+		                        class="larger-icon"
+		                        tabindex="0"
+		                        (click)="onViewHelp(option, $event)"
+		                        (keydown)="onKeyDownViewHelp(option, $event)"
+		                        >close</mat-icon
+		                        >
+		                      </div>
+		                      <div class="px-2 pb-3">
+		                        {{ option.helpText }}
+		                      </div>
+		                    } @else {
+		                      <div class="step-container__box__info" style="height: 38px">
+		                        @if (option.helpText) {
+		                          <mat-icon
+		                            class="larger-icon"
+		                            tabindex="0"
+		                            (click)="onViewHelp(option, $event)"
+		                            (keydown)="onKeyDownViewHelp(option, $event)"
+		                            >help_outline</mat-icon
+		                            >
+		                          }
+		                        </div>
+		                        @if (currentOrganizationTypeCode !== option.code) {
+		                          <div class="card-icon-container d-none d-md-block">
+		                            <img class="card-icon-container__icon" [src]="option.icon" [alt]="option.text" />
+		                          </div>
+		                          <div class="px-2 pb-3">
+		                            {{ option.text }}
+		                          </div>
+		                        } @else {
+		                          <div class="card-icon-container d-none d-md-block">
+		                            <img class="card-icon-container__icon" [src]="option.selectedIcon" [alt]="option.text" />
+		                          </div>
+		                          <div class="px-2 pb-3">
+		                            {{ option.text }}
+		                          </div>
+		                        }
+		                      }
+		                    </div>
+		                  </div>
+		                }
+		              </div>
+		
+		              <div class="none-apply">
+		                <a tabindex="0" (click)="onNoneApply()" (keydown)="onKeyDownNoneApply($event)"
+		                  >None of these descriptions apply to my organization</a
+		                  >
+		                </div>
+		
+		                @if (isDirtyAndInvalid) {
+		                  <mat-error class="mat-option-error" style="text-align: center;"
+		                    >An option must be selected</mat-error
+		                    >
+		                  }
+		                </div>
+		              </div>
+		            </div>
+		          </div>
+		        </section>
+		`,
     styles: [
         `
 			.none-apply {

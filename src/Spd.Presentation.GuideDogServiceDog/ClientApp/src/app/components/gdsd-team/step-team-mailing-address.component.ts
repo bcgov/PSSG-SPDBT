@@ -9,24 +9,26 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-mailing-address',
 	template: `
 		<app-step-section [heading]="title" [subheading]="subtitle">
-			<div class="row" *ngIf="isLoggedIn">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-alert type="info" icon="">
-						Have you moved?
-						<a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
-							>Update your address online</a
-						>. Any changes you make will automatically be updated here.
-					</app-alert>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<app-form-address [form]="form" [isReadonly]="false" [isWideView]="true"></app-form-address>
-				</div>
-			</div>
-		</app-step-section>
-	`,
+		  @if (isLoggedIn) {
+		    <div class="row">
+		      <div class="col-md-8 col-sm-12 mx-auto">
+		        <app-alert type="info" icon="">
+		          Have you moved?
+		          <a aria-label="Navigate to address change online site" [href]="addressChangeUrl" target="_blank"
+		            >Update your address online</a
+		            >. Any changes you make will automatically be updated here.
+		          </app-alert>
+		        </div>
+		      </div>
+		    }
+		
+		    <div class="row">
+		      <div class="col-md-8 col-sm-12 mx-auto">
+		        <app-form-address [form]="form" [isReadonly]="false" [isWideView]="true"></app-form-address>
+		      </div>
+		    </div>
+		  </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

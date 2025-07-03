@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SortDirection } from '@angular/material/sort';

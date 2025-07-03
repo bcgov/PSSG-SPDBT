@@ -11,93 +11,83 @@ import { StepTeamTrainingHistoryComponent } from './step-team-training-history.c
 	selector: 'app-steps-team-training-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<ng-container *ngIf="isTrainedByAccreditedSchools; else notTrainedByAccreditedSchools">
-				<mat-step>
-					<app-step-team-accredited-graduation></app-step-team-accredited-graduation>
-
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
-						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onStepNextServiceTasks()"
-						(nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
-					></app-wizard-footer>
-				</mat-step>
-
-				<mat-step *ngIf="isServiceDog">
-					<app-step-team-dog-tasks></app-step-team-dog-tasks>
-
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_TASKS)"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_TASKS)"
-						(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
-					></app-wizard-footer>
-				</mat-step>
-			</ng-container>
-
-			<ng-template #notTrainedByAccreditedSchools>
-				<mat-step>
-					<app-step-team-training-history></app-step-team-training-history>
-
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_TRAINING_HISTORY)"
-						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onFormValidNextStep(STEP_TRAINING_HISTORY)"
-						(nextReviewStepperStep)="onNextReview(STEP_TRAINING_HISTORY)"
-					></app-wizard-footer>
-				</mat-step>
-
-				<ng-container *ngIf="hasAttendedTrainingSchool; else notAttendedTrainingSchool">
-					<mat-step>
-						<app-step-team-school-trainings></app-step-team-school-trainings>
-
-						<app-wizard-footer
-							[isFormValid]="isFormValid"
-							[showSaveAndExit]="showSaveAndExit"
-							(saveAndExit)="onSaveAndExit(STEP_SCHOOL_TRAINING)"
-							(previousStepperStep)="onGoToPreviousStep()"
-							(nextStepperStep)="onFormValidNextStep(STEP_SCHOOL_TRAINING)"
-							(nextReviewStepperStep)="onNextReview(STEP_SCHOOL_TRAINING)"
-						></app-wizard-footer>
-					</mat-step>
-				</ng-container>
-
-				<ng-template #notAttendedTrainingSchool>
-					<mat-step>
-						<app-step-team-other-trainings></app-step-team-other-trainings>
-
-						<app-wizard-footer
-							[isFormValid]="isFormValid"
-							[showSaveAndExit]="showSaveAndExit"
-							(saveAndExit)="onSaveAndExit(STEP_OTHER_TRAINING)"
-							(previousStepperStep)="onGoToPreviousStep()"
-							(nextStepperStep)="onFormValidNextStep(STEP_OTHER_TRAINING)"
-							(nextReviewStepperStep)="onNextReview(STEP_OTHER_TRAINING)"
-						></app-wizard-footer>
-					</mat-step>
-				</ng-template>
-
-				<mat-step>
-					<app-step-team-dog-tasks></app-step-team-dog-tasks>
-
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						[showSaveAndExit]="showSaveAndExit"
-						(saveAndExit)="onSaveAndExit(STEP_TASKS)"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onStepNext(STEP_TASKS)"
-						(nextReviewStepperStep)="onNextReview(STEP_TASKS)"
-					></app-wizard-footer>
-				</mat-step>
-			</ng-template>
+		  @if (isTrainedByAccreditedSchools) {
+		    <mat-step>
+		      <app-step-team-accredited-graduation></app-step-team-accredited-graduation>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_ACCREDITED)"
+		        (previousStepperStep)="onStepPrevious()"
+		        (nextStepperStep)="onStepNextServiceTasks()"
+		        (nextReviewStepperStep)="onNextReview(STEP_ACCREDITED)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		    @if (isServiceDog) {
+		      <mat-step>
+		        <app-step-team-dog-tasks></app-step-team-dog-tasks>
+		        <app-wizard-footer
+		          [isFormValid]="isFormValid"
+		          [showSaveAndExit]="showSaveAndExit"
+		          (saveAndExit)="onSaveAndExit(STEP_TASKS)"
+		          (previousStepperStep)="onGoToPreviousStep()"
+		          (nextStepperStep)="onStepNext(STEP_TASKS)"
+		          (nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+		        ></app-wizard-footer>
+		      </mat-step>
+		    }
+		  } @else {
+		    <mat-step>
+		      <app-step-team-training-history></app-step-team-training-history>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_TRAINING_HISTORY)"
+		        (previousStepperStep)="onStepPrevious()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_TRAINING_HISTORY)"
+		        (nextReviewStepperStep)="onNextReview(STEP_TRAINING_HISTORY)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		    @if (hasAttendedTrainingSchool) {
+		      <mat-step>
+		        <app-step-team-school-trainings></app-step-team-school-trainings>
+		        <app-wizard-footer
+		          [isFormValid]="isFormValid"
+		          [showSaveAndExit]="showSaveAndExit"
+		          (saveAndExit)="onSaveAndExit(STEP_SCHOOL_TRAINING)"
+		          (previousStepperStep)="onGoToPreviousStep()"
+		          (nextStepperStep)="onFormValidNextStep(STEP_SCHOOL_TRAINING)"
+		          (nextReviewStepperStep)="onNextReview(STEP_SCHOOL_TRAINING)"
+		        ></app-wizard-footer>
+		      </mat-step>
+		    } @else {
+		      <mat-step>
+		        <app-step-team-other-trainings></app-step-team-other-trainings>
+		        <app-wizard-footer
+		          [isFormValid]="isFormValid"
+		          [showSaveAndExit]="showSaveAndExit"
+		          (saveAndExit)="onSaveAndExit(STEP_OTHER_TRAINING)"
+		          (previousStepperStep)="onGoToPreviousStep()"
+		          (nextStepperStep)="onFormValidNextStep(STEP_OTHER_TRAINING)"
+		          (nextReviewStepperStep)="onNextReview(STEP_OTHER_TRAINING)"
+		        ></app-wizard-footer>
+		      </mat-step>
+		    }
+		    <mat-step>
+		      <app-step-team-dog-tasks></app-step-team-dog-tasks>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        [showSaveAndExit]="showSaveAndExit"
+		        (saveAndExit)="onSaveAndExit(STEP_TASKS)"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onStepNext(STEP_TASKS)"
+		        (nextReviewStepperStep)="onNextReview(STEP_TASKS)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

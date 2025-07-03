@@ -9,155 +9,160 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
     selector: 'app-status-statistics-common',
     template: `
-		<ng-container *ngIf="applicationStatistics$ | async">
-			<div class="fw-semibold mb-4">
-				<div>Active applications <span class="fw-normal">(for the last 365 days)</span></div>
-				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
-						<div class=" fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.VerifyIdentity)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-green align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.InProgress)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingPayment)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div
-						class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2"
-						*ngIf="isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingThirdParty)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingApplicant)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div
-						class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
-						*ngIf="isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.UnderAssessment)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div
-						class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
-						*ngIf="!isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.Incomplete] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Incomplete) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Incomplete)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row fw-semibold mb-4">
-				<div class="col-10">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
-				<div class="d-flex flex-wrap justify-content-start">
-					<div
-						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
-						*ngIf="isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.RiskFound)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.ClosedNoResponse)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.ClosedNoConsent)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByApplicant)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div
-						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
-						*ngIf="!isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.CancelledByOrganization] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByOrganization) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByOrganization)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-					<div
-						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
-						*ngIf="!isCrrp"
-					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.Completed] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Completed) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Completed)">
-							<mat-icon>info_outline</mat-icon>
-						</div>
-					</div>
-				</div>
-			</div>
-		</ng-container>
-	`,
+		@if (applicationStatistics$ | async) {
+		  <div class="fw-semibold mb-4">
+		    <div>Active applications <span class="fw-normal">(for the last 365 days)</span></div>
+		    <div class="d-flex flex-wrap justify-content-start">
+		      <div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
+		        <div class=" fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.VerifyIdentity)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      <div class="d-flex flex-row statistic-card area-green align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.InProgress)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      <div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingPayment)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      @if (isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingThirdParty)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		      <div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.AwaitingApplicant)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      @if (isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.UnderAssessment)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		      @if (!isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.Incomplete] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Incomplete) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Incomplete)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		    </div>
+		  </div>
+		  <div class="row fw-semibold mb-4">
+		    <div class="col-10">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
+		    <div class="d-flex flex-wrap justify-content-start">
+		      @if (isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.RiskFound)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		      <div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.ClosedNoResponse)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      <div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.ClosedNoConsent)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      <div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+		        <div class="fs-4 m-2 ms-3">
+		          {{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
+		        </div>
+		        <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
+		        <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByApplicant)">
+		          <mat-icon>info_outline</mat-icon>
+		        </div>
+		      </div>
+		      @if (!isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.CancelledByOrganization] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByOrganization) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByOrganization)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		      @if (!isCrrp) {
+		        <div
+		          class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+		          >
+		          <div class="fs-4 m-2 ms-3">
+		            {{ applicationStatistics[statisticsCodes.Completed] ?? 0 }}
+		          </div>
+		          <div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Completed) }}</div>
+		          <div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Completed)">
+		            <mat-icon>info_outline</mat-icon>
+		          </div>
+		        </div>
+		      }
+		    </div>
+		  </div>
+		}
+		`,
     styles: [
         `
 			.statistic-card {

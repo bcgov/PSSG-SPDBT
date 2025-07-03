@@ -35,246 +35,252 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
     selector: 'app-screening-statuses-common',
     template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
-					<div class="d-flex justify-content-between mb-3">
-						<h2 class="m-0">{{ heading }}</h2>
-						<button mat-flat-button class="large w-auto" color="primary" (click)="onRefreshAll()">
-							<mat-icon>refresh</mat-icon>Refresh All
-						</button>
-					</div>
-
-					<app-applications-banner></app-applications-banner>
-				</div>
-			</div>
-
-			<div *ngIf="showStatusStatistics" @showHideTriggerAnimation>
-				<app-status-statistics-common [id]="idForStatistics" [portal]="portal"></app-status-statistics-common>
-			</div>
-
-			<div [formGroup]="formFilter">
-				<ng-container *ngIf="isPsaUser">
-					<div class="row">
-						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-							<mat-divider class="mb-2"></mat-divider>
-						</div>
-					</div>
-					<div class="row">
-						<div class="offset-xl-4 col-xl-4 col-lg-6 col-md-12 ">
-							<div class="d-flex justify-content-end my-2">
-								<mat-button-toggle-group
-									formControlName="applications"
-									(change)="onApplicationFilterChange($event)"
-									class="w-100"
-									aria-label="Applications Filter"
-								>
-									<mat-button-toggle class="button-toggle w-100" value="MY"> My Applications </mat-button-toggle>
-									<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
-								</mat-button-toggle-group>
-							</div>
-						</div>
-					</div>
-				</ng-container>
-
-				<div class="row">
-					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 col-12">
-						<mat-form-field>
-							<input
-								matInput
-								type="search"
-								formControlName="search"
-								placeholder="Search applicant's name or email or case ID"
-								(keydown.enter)="onSearchKeyDown($event)"
-							/>
-							<button
-								mat-button
-								matSuffix
-								mat-flat-button
-								aria-label="search"
-								(click)="onSearch()"
-								class="search-icon-button"
-							>
-								<mat-icon>search</mat-icon>
-							</button>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
-						<app-dropdown-overlay
-							[showDropdownOverlay]="showDropdownOverlay"
-							(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
-							[matBadgeShow]="filterCriteriaExists"
-						>
-							<app-screening-status-filter-common
-								[portal]="portal"
-								[formGroup]="formFilter"
-								(filterChange)="onFilterChange($event)"
-								(filterReset)="onFilterReset()"
-								(filterClear)="onFilterClear()"
-								(filterClose)="onFilterClose()"
-							></app-screening-status-filter-common>
-						</app-dropdown-overlay>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-						<mat-chip-row class="filter-chip me-2 mb-2" *ngFor="let status of currentStatuses">
-							{{ getStatusDesc(status) }}
-							<mat-icon
-								matChipRemove
-								tabIndex="0"
-								(click)="onStatusRemoved(status)"
-								(keydown)="onKeydownStatusRemoved($event, status)"
-								class="filter-chip__icon"
-								aria-label="remove status"
-								>cancel</mat-icon
-							>
-						</mat-chip-row>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12">
-					<mat-table
-						[dataSource]="dataSource"
-						matSort
-						(matSortChange)="onSortChange($event)"
-						matSortActive="createdOn"
-						matSortDirection="desc"
-					>
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Applicant Name:</span>
-								{{ application | fullname }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell class="mat-cell-email" *matCellDef="let application">
-								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | formatDate }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="whoPaid">
-							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Paid By:</span>
-								{{ application.payeeType | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="orgId">
-							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Ministry:</span>
-								{{ application.orgId | ministryoptions | async | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Case ID:</span>
-								{{ application.applicationNumber }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="contractedCompanyName">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Company / Facility Name:</span>
-								{{ application.contractedCompanyName | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Status:</span>
-								<ng-container *ngIf="application.status; else noStatus">
-									<mat-chip-row
-										aria-label="Status"
-										[ngClass]="application.applicationPortalStatusClass"
-										class="w-100"
-										*ngIf="application.status"
-									>
-										{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
-									</mat-chip-row>
-								</ng-container>
-								<ng-template #noStatus>
-									<mat-icon>schedule</mat-icon>
-								</ng-template>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									(click)="onPayNow(application)"
-									class="table-button mat-green-button"
-									aria-label="Pay now"
-									*ngIf="application.isPayNow"
-								>
-									<mat-icon>payment</mat-icon>Payment
-								</button>
-								<button
-									mat-flat-button
-									(click)="onVerifyApplicant(application)"
-									class="table-button"
-									color="primary"
-									aria-label="Verify Applicant"
-									*ngIf="application.isVerifyIdentity"
-								>
-									<mat-icon>done</mat-icon>Verify Applicant
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="delegates">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									(click)="onManageDelegates(application)"
-									class="table-button"
-									style="color: var(--color-primary-light);"
-									aria-label="Edit delegates"
-								>
-									<mat-icon>edit</mat-icon>Delegates
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<mat-paginator
-						[showFirstLastButtons]="true"
-						[hidePageSize]="true"
-						[pageIndex]="tablePaginator.pageIndex"
-						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
-						aria-label="Select page"
-					>
-					</mat-paginator>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="row">
+		    <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
+		      <div class="d-flex justify-content-between mb-3">
+		        <h2 class="m-0">{{ heading }}</h2>
+		        <button mat-flat-button class="large w-auto" color="primary" (click)="onRefreshAll()">
+		          <mat-icon>refresh</mat-icon>Refresh All
+		        </button>
+		      </div>
+		
+		      <app-applications-banner></app-applications-banner>
+		    </div>
+		  </div>
+		
+		  @if (showStatusStatistics) {
+		    <div @showHideTriggerAnimation>
+		      <app-status-statistics-common [id]="idForStatistics" [portal]="portal"></app-status-statistics-common>
+		    </div>
+		  }
+		
+		  <div [formGroup]="formFilter">
+		    @if (isPsaUser) {
+		      <div class="row">
+		        <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		          <mat-divider class="mb-2"></mat-divider>
+		        </div>
+		      </div>
+		      <div class="row">
+		        <div class="offset-xl-4 col-xl-4 col-lg-6 col-md-12 ">
+		          <div class="d-flex justify-content-end my-2">
+		            <mat-button-toggle-group
+		              formControlName="applications"
+		              (change)="onApplicationFilterChange($event)"
+		              class="w-100"
+		              aria-label="Applications Filter"
+		              >
+		              <mat-button-toggle class="button-toggle w-100" value="MY"> My Applications </mat-button-toggle>
+		              <mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
+		            </mat-button-toggle-group>
+		          </div>
+		        </div>
+		      </div>
+		    }
+		
+		    <div class="row">
+		      <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 col-12">
+		        <mat-form-field>
+		          <input
+		            matInput
+		            type="search"
+		            formControlName="search"
+		            placeholder="Search applicant's name or email or case ID"
+		            (keydown.enter)="onSearchKeyDown($event)"
+		            />
+		            <button
+		              mat-button
+		              matSuffix
+		              mat-flat-button
+		              aria-label="search"
+		              (click)="onSearch()"
+		              class="search-icon-button"
+		              >
+		              <mat-icon>search</mat-icon>
+		            </button>
+		          </mat-form-field>
+		        </div>
+		        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
+		          <app-dropdown-overlay
+		            [showDropdownOverlay]="showDropdownOverlay"
+		            (showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+		            [matBadgeShow]="filterCriteriaExists"
+		            >
+		            <app-screening-status-filter-common
+		              [portal]="portal"
+		              [formGroup]="formFilter"
+		              (filterChange)="onFilterChange($event)"
+		              (filterReset)="onFilterReset()"
+		              (filterClear)="onFilterClear()"
+		              (filterClose)="onFilterClose()"
+		            ></app-screening-status-filter-common>
+		          </app-dropdown-overlay>
+		        </div>
+		      </div>
+		      <div class="row">
+		        <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		          @for (status of currentStatuses; track status) {
+		            <mat-chip-row class="filter-chip me-2 mb-2">
+		              {{ getStatusDesc(status) }}
+		              <mat-icon
+		                matChipRemove
+		                tabIndex="0"
+		                (click)="onStatusRemoved(status)"
+		                (keydown)="onKeydownStatusRemoved($event, status)"
+		                class="filter-chip__icon"
+		                aria-label="remove status"
+		                >cancel</mat-icon
+		                >
+		              </mat-chip-row>
+		            }
+		          </div>
+		        </div>
+		      </div>
+		
+		      <div class="row">
+		        <div class="col-12">
+		          <mat-table
+		            [dataSource]="dataSource"
+		            matSort
+		            (matSortChange)="onSortChange($event)"
+		            matSortActive="createdOn"
+		            matSortDirection="desc"
+		            >
+		            <ng-container matColumnDef="applicantName">
+		              <mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Applicant Name:</span>
+		                {{ application | fullname }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="emailAddress">
+		              <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+		              <mat-cell class="mat-cell-email" *matCellDef="let application">
+		                <span class="mobile-label">Email:</span>
+		                {{ application.emailAddress | default }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="createdOn">
+		              <mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Submitted On:</span>
+		                {{ application.createdOn | formatDate }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="whoPaid">
+		              <mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Paid By:</span>
+		                {{ application.payeeType | default }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="orgId">
+		              <mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Ministry:</span>
+		                {{ application.orgId | ministryoptions | async | default }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="applicationNumber">
+		              <mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Case ID:</span>
+		                {{ application.applicationNumber }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="contractedCompanyName">
+		              <mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Company / Facility Name:</span>
+		                {{ application.contractedCompanyName | default }}
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="status">
+		              <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <span class="mobile-label">Status:</span>
+		                @if (application.status) {
+		                  @if (application.status) {
+		                    <mat-chip-row
+		                      aria-label="Status"
+		                      [ngClass]="application.applicationPortalStatusClass"
+		                      class="w-100"
+		                      >
+		                      {{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
+		                    </mat-chip-row>
+		                  }
+		                } @else {
+		                  <mat-icon>schedule</mat-icon>
+		                }
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="action1">
+		              <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                @if (application.isPayNow) {
+		                  <button
+		                    mat-flat-button
+		                    (click)="onPayNow(application)"
+		                    class="table-button mat-green-button"
+		                    aria-label="Pay now"
+		                    >
+		                    <mat-icon>payment</mat-icon>Payment
+		                  </button>
+		                }
+		                @if (application.isVerifyIdentity) {
+		                  <button
+		                    mat-flat-button
+		                    (click)="onVerifyApplicant(application)"
+		                    class="table-button"
+		                    color="primary"
+		                    aria-label="Verify Applicant"
+		                    >
+		                    <mat-icon>done</mat-icon>Verify Applicant
+		                  </button>
+		                }
+		              </mat-cell>
+		            </ng-container>
+		
+		            <ng-container matColumnDef="delegates">
+		              <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		              <mat-cell *matCellDef="let application">
+		                <button
+		                  mat-flat-button
+		                  (click)="onManageDelegates(application)"
+		                  class="table-button"
+		                  style="color: var(--color-primary-light);"
+		                  aria-label="Edit delegates"
+		                  >
+		                  <mat-icon>edit</mat-icon>Delegates
+		                </button>
+		              </mat-cell>
+		            </ng-container>
+		
+		            <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		            <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		          </mat-table>
+		          <mat-paginator
+		            [showFirstLastButtons]="true"
+		            [hidePageSize]="true"
+		            [pageIndex]="tablePaginator.pageIndex"
+		            [pageSize]="tablePaginator.pageSize"
+		            [length]="tablePaginator.length"
+		            (page)="onPageChanged($event)"
+		            aria-label="Select page"
+		            >
+		          </mat-paginator>
+		        </div>
+		      </div>
+		    </section>
+		`,
     styles: [
         `
 			.mat-column-status {

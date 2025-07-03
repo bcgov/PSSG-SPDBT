@@ -6,11 +6,13 @@ import { ConfigService } from '@app/core/services/config.service';
 	selector: 'app-spd-footer',
 	template: `
 		<mat-toolbar color="primary" class="no-print footer">
-			<span style="flex: 1 1 auto;"></span>
-
-			<span class="fs-7 p-2 text-env" *ngIf="env">{{ env }}</span>
+		  <span style="flex: 1 1 auto;"></span>
+		
+		  @if (env) {
+		    <span class="fs-7 p-2 text-env">{{ env }}</span>
+		  }
 		</mat-toolbar>
-	`,
+		`,
 	styles: [
 		`
 			.footer {

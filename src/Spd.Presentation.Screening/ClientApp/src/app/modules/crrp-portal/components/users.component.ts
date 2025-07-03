@@ -17,142 +17,147 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row mb-2">
-				<div class="col-xxl-10 col-xl-9 col-lg-9 col-md-8 col-sm-12">
-					<h2 class="mb-2">
-						User Management <mat-icon class="info-icon" (click)="onManageUsersInfo()">info</mat-icon>
-						<div class="mt-2 fs-5 fw-light">
-							<ul>
-								<li class="mb-1">
-									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
-									up to {{ maximumNumberOfContacts }} contacts in total
-								</li>
-								<li class="mb-1">Invitations will expire 7 days after being sent</li>
-							</ul>
-						</div>
-					</h2>
-				</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
-					<div class="text-end" *ngIf="isAllowedAddContact === true; else addNotAllowed">
-						<button mat-flat-button class="large w-auto mat-green-button mb-2" (click)="onAddUser()">Add User</button>
-					</div>
-					<ng-template #addNotAllowed>
-						<div class="alert alert-warning d-flex" role="alert">
-							<div>The maximum number of authorized users has been reached</div>
-						</div>
-					</ng-template>
-				</div>
-			</div>
-
-			<div class="row mb-2">
-				<div class="col-12">
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<span class="mobile-label">Status:</span>
-								<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="user.isActive; else notactive">
-									Active
-								</mat-chip-row>
-								<ng-template #notactive>
-									<mat-chip-row aria-label="Status" class="mat-chip-yellow"> Pending </mat-chip-row>
-								</ng-template>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="contactAuthorizationTypeCode">
-							<mat-header-cell *matHeaderCellDef>Authorization Type</mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<span class="mobile-label">Authorization Type:</span>
-								{{ user.contactAuthorizationTypeCode }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<span class="mobile-label">Applicant Name:</span>
-								{{ user | fullname | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="email">
-							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell class="mat-cell-email" *matCellDef="let user">
-								<span class="mobile-label">Email:</span>
-								{{ user.email | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="phoneNumber">
-							<mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<span class="mobile-label">Phone Number:</span>
-								{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="jobTitle">
-							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<span class="mobile-label">Job Title:</span>
-								{{ user.jobTitle | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-green);"
-									(click)="onMaintainUser(user)"
-									*ngIf="allowEditRow(user)"
-									aria-label="Edit user"
-								>
-									<mat-icon>edit</mat-icon>Edit
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let user">
-								<ng-container *ngIf="user.isActive; else notactiveactions">
-									<button
-										mat-flat-button
-										class="table-button"
-										style="color: var(--color-red);"
-										(click)="onDeleteUser(user)"
-										*ngIf="allowDeleteRow(user)"
-										aria-label="Remove user"
-									>
-										<mat-icon>delete_outline</mat-icon>Remove
-									</button>
-								</ng-container>
-								<ng-template #notactiveactions>
-									<button
-										mat-flat-button
-										class="table-button"
-										style="color: var(--color-primary-light);"
-										(click)="onCancelInvitation(user)"
-										aria-label="Cancel invitation"
-									>
-										<mat-icon>cancel</mat-icon>Cancel
-									</button>
-								</ng-template>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-				</div>
-			</div>
+		  <div class="row mb-2">
+		    <div class="col-xxl-10 col-xl-9 col-lg-9 col-md-8 col-sm-12">
+		      <h2 class="mb-2">
+		        User Management <mat-icon class="info-icon" (click)="onManageUsersInfo()">info</mat-icon>
+		        <div class="mt-2 fs-5 fw-light">
+		          <ul>
+		            <li class="mb-1">
+		              Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
+		              up to {{ maximumNumberOfContacts }} contacts in total
+		            </li>
+		            <li class="mb-1">Invitations will expire 7 days after being sent</li>
+		          </ul>
+		        </div>
+		      </h2>
+		    </div>
+		    @if (showAddArea) {
+		      <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto">
+		        @if (isAllowedAddContact === true) {
+		          <div class="text-end">
+		            <button mat-flat-button class="large w-auto mat-green-button mb-2" (click)="onAddUser()">Add User</button>
+		          </div>
+		        } @else {
+		          <div class="alert alert-warning d-flex" role="alert">
+		            <div>The maximum number of authorized users has been reached</div>
+		          </div>
+		        }
+		      </div>
+		    }
+		  </div>
+		
+		  <div class="row mb-2">
+		    <div class="col-12">
+		      <mat-divider class="mat-divider-main mb-3"></mat-divider>
+		      <mat-table [dataSource]="dataSource">
+		        <ng-container matColumnDef="status">
+		          <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            <span class="mobile-label">Status:</span>
+		            @if (user.isActive) {
+		              <mat-chip-row aria-label="Status" class="mat-chip-green">
+		                Active
+		              </mat-chip-row>
+		            } @else {
+		              <mat-chip-row aria-label="Status" class="mat-chip-yellow"> Pending </mat-chip-row>
+		            }
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="contactAuthorizationTypeCode">
+		          <mat-header-cell *matHeaderCellDef>Authorization Type</mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            <span class="mobile-label">Authorization Type:</span>
+		            {{ user.contactAuthorizationTypeCode }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="applicantName">
+		          <mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            <span class="mobile-label">Applicant Name:</span>
+		            {{ user | fullname | default }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="email">
+		          <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+		          <mat-cell class="mat-cell-email" *matCellDef="let user">
+		            <span class="mobile-label">Email:</span>
+		            {{ user.email | default }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="phoneNumber">
+		          <mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            <span class="mobile-label">Phone Number:</span>
+		            {{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="jobTitle">
+		          <mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            <span class="mobile-label">Job Title:</span>
+		            {{ user.jobTitle | default }}
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="action1">
+		          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            @if (allowEditRow(user)) {
+		              <button
+		                mat-flat-button
+		                class="table-button"
+		                style="color: var(--color-green);"
+		                (click)="onMaintainUser(user)"
+		                aria-label="Edit user"
+		                >
+		                <mat-icon>edit</mat-icon>Edit
+		              </button>
+		            }
+		          </mat-cell>
+		        </ng-container>
+		
+		        <ng-container matColumnDef="action2">
+		          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		          <mat-cell *matCellDef="let user">
+		            @if (user.isActive) {
+		              @if (allowDeleteRow(user)) {
+		                <button
+		                  mat-flat-button
+		                  class="table-button"
+		                  style="color: var(--color-red);"
+		                  (click)="onDeleteUser(user)"
+		                  aria-label="Remove user"
+		                  >
+		                  <mat-icon>delete_outline</mat-icon>Remove
+		                </button>
+		              }
+		            } @else {
+		              <button
+		                mat-flat-button
+		                class="table-button"
+		                style="color: var(--color-primary-light);"
+		                (click)="onCancelInvitation(user)"
+		                aria-label="Cancel invitation"
+		                >
+		                <mat-icon>cancel</mat-icon>Cancel
+		              </button>
+		            }
+		          </mat-cell>
+		        </ng-container>
+		
+		        <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		        <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		      </mat-table>
+		    </div>
+		  </div>
 		</section>
-	`,
+		`,
 	styles: [
 		`
 			.info-icon {

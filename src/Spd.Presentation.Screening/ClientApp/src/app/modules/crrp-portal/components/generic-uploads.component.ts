@@ -25,95 +25,101 @@ import { CrrpRoutes } from '../crrp-routes';
     template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
-				<h2 class="mb-2">Generic Uploads</h2>
-				<div class="col-lg-8 col-md-12 col-sm-12 my-4">
-					<app-file-upload
-						accept=".tsv,.txt"
-						[maxNumberOfFiles]="1"
-						[control]="attachments"
-						[files]="attachments.value"
-						(fileUploaded)="onUploadFile($event)"
-						(fileRemoved)="onRemoveFile($event)"
-						message="Text files ending in '.TSV' or '.TXT' only"
-					></app-file-upload>
-				</div>
-			</div>
-			<ng-container *ngIf="showUploadMessages">
-				<div class="row" *ngIf="validationErrs.length > 0">
-					<div class="col-lg-8 col-md-12 col-sm-12">
-						<app-alert type="danger" icon="error"
-							><div class="mt-2 ms-2">
-								File upload failed
-								<ul class="mb-0 me-2">
-									<li *ngFor="let err of validationErrs; let i = index" class="my-2">
-										Error on line {{ err.lineNumber }}: {{ err.error }}
-									</li>
-								</ul>
-							</div>
-						</app-alert>
-					</div>
-				</div>
-				<div class="row" *ngIf="validationErrs.length === 0">
-					<div class="col-lg-8 col-md-12 col-sm-12">
-						<app-alert type="success" icon="check_circle"> File upload succeeded </app-alert>
-					</div>
-				</div>
-			</ng-container>
-
-			<div class="row mt-4">
-				<div class="col-md-12 col-sm-12">
-					<h3 class="fw-normal">Previous Uploads</h3>
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="uploadedDateTime">
-							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Uploaded On:</span>
-								{{ application.uploadedDateTime | formatDate: constants.date.dateTimeFormat }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="uploadedByUserFullName">
-							<mat-header-cell *matHeaderCellDef>Uploaded By</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Uploaded By:</span>
-								{{ application.uploadedByUserFullName }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="fileName">
-							<mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">File Name:</span>
-								{{ application.fileName }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="batchNumber">
-							<mat-header-cell *matHeaderCellDef>Batch Number</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Batch Number:</span>
-								{{ application.batchNumber }}
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<mat-paginator
-						[showFirstLastButtons]="true"
-						[hidePageSize]="true"
-						[pageIndex]="tablePaginator.pageIndex"
-						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
-						aria-label="Select page"
-					>
-					</mat-paginator>
-				</div>
-			</div>
+		  <div class="row">
+		    <h2 class="mb-2">Generic Uploads</h2>
+		    <div class="col-lg-8 col-md-12 col-sm-12 my-4">
+		      <app-file-upload
+		        accept=".tsv,.txt"
+		        [maxNumberOfFiles]="1"
+		        [control]="attachments"
+		        [files]="attachments.value"
+		        (fileUploaded)="onUploadFile($event)"
+		        (fileRemoved)="onRemoveFile($event)"
+		        message="Text files ending in '.TSV' or '.TXT' only"
+		      ></app-file-upload>
+		    </div>
+		  </div>
+		  @if (showUploadMessages) {
+		    @if (validationErrs.length > 0) {
+		      <div class="row">
+		        <div class="col-lg-8 col-md-12 col-sm-12">
+		          <app-alert type="danger" icon="error"
+		            ><div class="mt-2 ms-2">
+		            File upload failed
+		            <ul class="mb-0 me-2">
+		              @for (err of validationErrs; track err; let i = $index) {
+		                <li class="my-2">
+		                  Error on line {{ err.lineNumber }}: {{ err.error }}
+		                </li>
+		              }
+		            </ul>
+		          </div>
+		        </app-alert>
+		      </div>
+		    </div>
+		  }
+		  @if (validationErrs.length === 0) {
+		    <div class="row">
+		      <div class="col-lg-8 col-md-12 col-sm-12">
+		        <app-alert type="success" icon="check_circle"> File upload succeeded </app-alert>
+		      </div>
+		    </div>
+		  }
+		}
+		
+		<div class="row mt-4">
+		  <div class="col-md-12 col-sm-12">
+		    <h3 class="fw-normal">Previous Uploads</h3>
+		    <mat-table [dataSource]="dataSource">
+		      <ng-container matColumnDef="uploadedDateTime">
+		        <mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Uploaded On:</span>
+		          {{ application.uploadedDateTime | formatDate: constants.date.dateTimeFormat }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="uploadedByUserFullName">
+		        <mat-header-cell *matHeaderCellDef>Uploaded By</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Uploaded By:</span>
+		          {{ application.uploadedByUserFullName }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="fileName">
+		        <mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">File Name:</span>
+		          {{ application.fileName }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <ng-container matColumnDef="batchNumber">
+		        <mat-header-cell *matHeaderCellDef>Batch Number</mat-header-cell>
+		        <mat-cell *matCellDef="let application">
+		          <span class="mobile-label">Batch Number:</span>
+		          {{ application.batchNumber }}
+		        </mat-cell>
+		      </ng-container>
+		
+		      <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		      <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		    </mat-table>
+		    <mat-paginator
+		      [showFirstLastButtons]="true"
+		      [hidePageSize]="true"
+		      [pageIndex]="tablePaginator.pageIndex"
+		      [pageSize]="tablePaginator.pageSize"
+		      [length]="tablePaginator.length"
+		      (page)="onPageChanged($event)"
+		      aria-label="Select page"
+		      >
+		    </mat-paginator>
+		  </div>
+		</div>
 		</section>
-	`,
+		`,
     styles: [
         `
 			.mat-icon {
