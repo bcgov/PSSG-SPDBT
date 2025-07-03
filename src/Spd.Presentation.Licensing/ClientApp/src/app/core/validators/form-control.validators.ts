@@ -227,4 +227,31 @@ export class FormControlValidators {
 			return null;
 		};
 	}
+
+	public static swlLicenceNumberValidator(): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			const value: string = control.value;
+
+			if (!value) {
+				return null; // don't validate empty values here (use Validators.required separately)
+			}
+
+			const itemPattern: RegExp = /^[a-zA-Z0-9]+$/;
+			if (!itemPattern!.test(value)) {
+				return {
+					invalidCharsFormat: true,
+				};
+			}
+
+			// Test that the licence numbers start with 'e'
+			const startItemPattern: RegExp = /^e/i;
+			if (!startItemPattern!.test(value)) {
+				return {
+					invalidStartWith: true,
+				};
+			}
+
+			return null;
+		};
+	}
 }

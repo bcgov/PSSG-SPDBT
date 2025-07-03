@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LicenceBasicResponse, LicenceStatusCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
 import { UtilService } from '@app/core/services/util.service';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { Subject } from 'rxjs';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
@@ -69,6 +71,20 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									<mat-label>Business Name</mat-label>
 									<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
 								</mat-form-field>
+							</div>
+
+							<div formGroupName="captchaFormGroup" class="col-12 mt-4">
+								<app-captcha-v2
+									[captchaFormGroup]="captchaFormGroup"
+									[resetControl]="resetRecaptchaControl"
+								></app-captcha-v2>
+								@if (
+									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+									captchaFormGroup.get('token')?.invalid &&
+									captchaFormGroup.get('token')?.hasError('required')
+								) {
+									<mat-error class="mat-option-error">This is required </mat-error>
+								}
 							</div>
 						</div>
 
@@ -160,12 +176,15 @@ export class SecurityLicenceStatusVerificationSblComponent {
 	searchDataError = '';
 
 	showSearchResults = false;
-
-	searchResults: Array<any> = [{ licenceNumber: 'B1073' }, { licenceNumber: 'B1043' }, { licenceNumber: 'B9833' }];
+	searchResults: Array<any> = [];
+	resetRecaptchaControl: Subject<void> = new Subject<void>();
 
 	form = this.formBuilder.group({
 		businessLicenceNumber: new FormControl(''),
 		businessName: new FormControl(''),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', [FormControlValidators.required]),
+		}),
 	});
 
 	matcher = new FormErrorStateMatcher();
@@ -207,6 +226,9 @@ export class SecurityLicenceStatusVerificationSblComponent {
 			return;
 		}
 
+		// check the recaptcha is valid
+		if (!this.form.valid) return;
+
 		this.performSearch(businessLicenceNumber, businessName);
 	}
 
@@ -227,6 +249,11 @@ export class SecurityLicenceStatusVerificationSblComponent {
 		this.showSearchResults = false;
 	}
 
+	private resetRecaptcha(): void {
+		this.resetRecaptchaControl.next(); // reset the recaptcha
+		this.captchaFormGroup.reset();
+	}
+
 	private performSearch(licenceNumber: string | undefined, businessName: string | undefined): void {
 		console.debug('licenceNumber', licenceNumber);
 		console.debug('businessName', businessName);
@@ -244,6 +271,11 @@ export class SecurityLicenceStatusVerificationSblComponent {
 				this.searchResults = sortedResps;
 
 				this.showSearchResults = true;
+				this.resetRecaptcha();
 			});
+	}
+
+	get captchaFormGroup(): FormGroup {
+		return this.form.get('captchaFormGroup') as FormGroup;
 	}
 }

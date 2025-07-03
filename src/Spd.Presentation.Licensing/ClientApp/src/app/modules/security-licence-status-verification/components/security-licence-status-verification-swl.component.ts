@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { Router } from '@angular/router';
-import { LicenceBasicResponse } from '@app/api/models';
+import { LicenceBasicResponse, LicenceNumbersRequest } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { UtilService } from '@app/core/services/util.service';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { Subject } from 'rxjs';
 import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-status-verification-routes';
 
 @Component({
@@ -14,12 +17,12 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="row">
+					<div class="row no-print">
 						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
 							<h2 class="fs-3">Verify a security worker licence</h2>
 						</div>
 
-						<div class="col-xl-4 col-lg-4 col-md-12 no-print">
+						<div class="col-xl-4 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
 								<button
 									mat-stroked-button
@@ -37,16 +40,43 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 
 						<div class="col-12 mb-3">
 							<app-alert type="info" icon="">
-								Enter a security worker <strong>licence number</strong>, or the <strong>full name</strong> as it appears
-								on the licence, below. Press 'Submit' and the results will confirm if the licence number is valid and
-								the name of the licensee.
+								Search by a single security worker <strong>licence number</strong>, or the <strong>full name</strong>,
+								or multiple security worker <strong>licence numbers</strong>. Select your 'Search by' option to
+								continue.
 							</app-alert>
 						</div>
 					</div>
 
-					<form [formGroup]="form" novalidate>
-						<div class="row mb-2">
-							<div class="col-xl-4 col-lg-5 col-md-12">
+					<div class="row no-print mb-2">
+						<form [formGroup]="form" novalidate>
+							<div class="col-12">
+								<mat-label>Search by</mat-label>
+								<mat-radio-group
+									aria-label="Select an option"
+									formControlName="searchBy"
+									(change)="onSearchByChange($event)"
+								>
+									<div>
+										<mat-radio-button value="A">Worker Licence Number</mat-radio-button>
+										<mat-radio-button value="B">Worker Licence Name</mat-radio-button>
+										<mat-radio-button value="C">Bulk Worker Licence Numbers</mat-radio-button>
+									</div>
+								</mat-radio-group>
+								@if ((searchBy.dirty || searchBy.touched) && searchBy.invalid && searchBy.hasError('required')) {
+									<mat-error class="mat-option-error">This is required</mat-error>
+								}
+								<mat-divider class="mt-3 mb-4"></mat-divider>
+							</div>
+						</form>
+					</div>
+
+					@if (searchBy.value === 'A') {
+						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+							<div class="col-xl-8 col-lg-12 col-md-12 mb-3">
+								Enter a security worker <strong>licence number</strong> as it appears on the licence, below. Press
+								'Submit' and the results will confirm if the licence number is valid and the name of the licensee.
+							</div>
+							<div class="col-xl-4 col-lg-5 col-md-12" [formGroup]="workerLicenceNumberForm">
 								<mat-form-field>
 									<mat-label>Security Worker Licence Number</mat-label>
 									<input
@@ -57,15 +87,41 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										[errorStateMatcher]="matcher"
 										maxlength="20"
 									/>
+									@if (workerLicenceNumberForm.get('workerLicenceNumber')?.hasError('required')) {
+										<mat-error> This is required </mat-error>
+									}
+									@if (workerLicenceNumberForm.get('workerLicenceNumber')?.hasError('invalidCharsFormat')) {
+										<mat-error>Security worker licence numbers can only include letters and numbers</mat-error>
+									}
+									@if (workerLicenceNumberForm.get('workerLicenceNumber')?.hasError('invalidStartWith')) {
+										<mat-error>Security worker licence numbers must start with an "E"</mat-error>
+									}
 								</mat-form-field>
+								<div formGroupName="captchaFormGroup" class="mt-4">
+									<app-captcha-v2
+										[captchaFormGroup]="captchaFormGroupA"
+										[resetControl]="resetRecaptchaControl"
+									></app-captcha-v2>
+									@if (
+										(captchaFormGroupA.get('token')?.dirty || captchaFormGroupA.get('token')?.touched) &&
+										captchaFormGroupA.get('token')?.invalid &&
+										captchaFormGroupA.get('token')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required </mat-error>
+									}
+								</div>
 							</div>
+						</div>
+					}
 
-							<div class="col-xl-1 col-lg-1 col-md-12 text-center">
-								<div class="text-minor-heading text-red my-3">OR</div>
+					@if (searchBy.value === 'B') {
+						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
+								Enter a security worker <strong>full name</strong> as it appears on the licence, below. Press 'Submit'
+								and the results will confirm if the licence number is valid and the name of the licensee.
 							</div>
-
 							<div class="col-xl-7 col-lg-6 col-md-12">
-								<div class="row">
+								<div class="row" [formGroup]="workerLicenceNameForm">
 									@if (!isOneNameOnly.value) {
 										<div class="col-xl-6 col-lg-12 col-md-12">
 											<mat-form-field>
@@ -79,6 +135,9 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										<mat-form-field>
 											<mat-label>{{ lastNameLabel }}</mat-label>
 											<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
+											@if (workerLicenceNameForm.get('lastName')?.hasError('required')) {
+												<mat-error> This is required </mat-error>
+											}
 										</mat-form-field>
 									</div>
 
@@ -87,48 +146,137 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 											>Licence holder has surname only</mat-checkbox
 										>
 									</div>
+
+									<div class="col-12 mt-4" formGroupName="captchaFormGroup">
+										<app-captcha-v2
+											[captchaFormGroup]="captchaFormGroupB"
+											[resetControl]="resetRecaptchaControl"
+										></app-captcha-v2>
+										@if (
+											(captchaFormGroupB.get('token')?.dirty || captchaFormGroupB.get('token')?.touched) &&
+											captchaFormGroupB.get('token')?.invalid &&
+											captchaFormGroupB.get('token')?.hasError('required')
+										) {
+											<mat-error class="mat-option-error">This is required </mat-error>
+										}
+									</div>
 								</div>
 							</div>
 						</div>
+					}
 
-						@if (showSearchDataError) {
-							<app-alert type="danger" icon="dangerous"> {{ searchDataError }} </app-alert>
-						}
-
-						<div class="row no-print my-2">
-							<div class="col-12 text-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
+					@if (searchBy.value === 'C') {
+						<div class="row no-print mb-2" @showHideTriggerSlideAnimation>
+							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
+								Enter a comma-separated list of security worker <strong>licence numbers</strong> as they appears on the
+								licence, below. Press 'Submit' and the results will confirm if the licence numbers are valid and the
+								name of the licensee.
+								<br />
+								<br />
+								For example: E123456,E234567,E345678
+							</div>
+							<div class="col-xl-7 col-lg-6 col-md-12" [formGroup]="bulkWorkerLicenceNumbersForm">
+								<mat-form-field>
+									<mat-label>Security Worker Licence Numbers</mat-label>
+									<textarea
+										matInput
+										formControlName="licenceNumbers"
+										style="min-height: 120px"
+										[errorStateMatcher]="matcher"
+										maxlength="500"
+									></textarea>
+									@if (licenceNumbers.hasError('required')) {
+										<mat-error>This is required</mat-error>
+									}
+									@if (licenceNumbers.hasError('invalidCharsFormat')) {
+										<mat-error
+											>Security worker licence numbers can only include letters and numbers:
+											{{ licenceNumbersInvalidCharsItems.join(', ') }}</mat-error
+										>
+									}
+									@if (licenceNumbers.hasError('invalidStartWith')) {
+										<mat-error
+											>Security worker licence numbers must start with an "E":
+											{{ licenceNumbersInvalidStartWithItems.join(', ') }}</mat-error
+										>
+									}
+									<mat-hint>Maximum 500 characters</mat-hint>
+								</mat-form-field>
+								<div formGroupName="captchaFormGroup" class="mt-4">
+									<app-captcha-v2
+										[captchaFormGroup]="captchaFormGroupC"
+										[resetControl]="resetRecaptchaControl"
+									></app-captcha-v2>
+									@if (
+										(captchaFormGroupC.get('token')?.dirty || captchaFormGroupC.get('token')?.touched) &&
+										captchaFormGroupC.get('token')?.invalid &&
+										captchaFormGroupC.get('token')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required </mat-error>
+									}
+								</div>
 							</div>
 						</div>
-					</form>
+					}
 
-					<app-security-licence-status-swl-search-results
-						[showSearchResults]="showSearchResults"
-						[searchResultsErrorName]="searchResultsErrorName"
-						[searchResults]="searchResults"
-					></app-security-licence-status-swl-search-results>
+					<div class="col-12 my-2 text-end">
+						<button mat-flat-button color="primary" class="large w-auto" (click)="onSubmit()">Submit</button>
+					</div>
 				</div>
+
+				<app-security-licence-status-swl-search-results
+					[showSearchResults]="showSearchResults"
+					[searchResultsErrorName]="searchResultsErrorName"
+					[searchResults]="searchResults"
+				></app-security-licence-status-swl-search-results>
 			</div>
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class SecurityLicenceStatusVerificationSwlComponent {
-	showSearchDataError = false;
-	searchDataError = '';
-
 	showSearchResults = false;
 	searchResultsErrorName = '';
 	lastNameLabel = 'Last Name';
 
 	searchResults: Array<any> = [];
+	resetRecaptchaControl: Subject<void> = new Subject<void>();
 
 	form = this.formBuilder.group({
-		workerLicenceNumber: new FormControl(''),
+		searchBy: new FormControl('', [FormControlValidators.required]),
+	});
+
+	workerLicenceNumberForm = this.formBuilder.group({
+		workerLicenceNumber: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.swlLicenceNumberValidator(),
+		]),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', [FormControlValidators.required]),
+		}),
+	});
+
+	workerLicenceNameForm = this.formBuilder.group({
 		firstName: new FormControl(''),
-		lastName: new FormControl(''),
+		lastName: new FormControl('', [FormControlValidators.required]),
 		isOneNameOnly: new FormControl(false),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', [FormControlValidators.required]),
+		}),
+	});
+
+	bulkWorkerLicenceNumbersForm = this.formBuilder.group({
+		licenceNumbers: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.commaSeparatedSwlValidator({
+				allowEmpty: true,
+			}),
+		]),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', [FormControlValidators.required]),
+		}),
 	});
 
 	matcher = new FormErrorStateMatcher();
@@ -137,7 +285,6 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		private router: Router,
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
 		private licenceService: LicenceService
 	) {}
 
@@ -149,83 +296,88 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 		this.reset();
 
 		this.form.markAllAsTouched();
+		if (!this.form.valid) return;
 
-		const formValue = this.form.value;
-
-		const workerLicenceNumber = formValue.workerLicenceNumber?.trim();
-		const firstName = formValue.firstName?.trim();
-		const lastName = formValue.lastName?.trim();
-		const isOneNameOnly = formValue.isOneNameOnly ?? false;
-
-		let performSearch = true;
-		if ((workerLicenceNumber && (firstName || lastName)) || (!workerLicenceNumber && !firstName && !lastName)) {
-			performSearch = false;
-		} else if (workerLicenceNumber && !workerLicenceNumber.startsWith('E')) {
-			this.searchDataError = 'The security worker licence number must start with an "E".';
-			performSearch = false;
-		} else if (!workerLicenceNumber) {
-			// must have both names
-			if (!isOneNameOnly && (!firstName || !lastName)) {
-				performSearch = false;
-			}
-			// must have last name
-			if (isOneNameOnly && !lastName) {
-				performSearch = false;
-			}
+		if (this.searchBy.value === 'A') {
+			this.performNumberSearch();
+		} else if (this.searchBy.value === 'B') {
+			this.performNameSearch();
+		} else if (this.searchBy.value === 'C') {
+			this.performBulkSearch();
 		}
-		if (!performSearch) {
-			this.showSearchDataError = true;
-			return;
-		}
+	}
 
-		this.performSearch(workerLicenceNumber, firstName, lastName, isOneNameOnly);
+	onSearchByChange(_event: MatRadioChange) {
+		this.resetRecaptcha();
+		this.reset();
+
+		this.workerLicenceNameForm.reset();
+		this.workerLicenceNumberForm.reset();
+		this.bulkWorkerLicenceNumbersForm.reset();
 	}
 
 	onCheckboxChange(): void {
-		const data = this.form.value;
+		const data = this.workerLicenceNameForm.value;
 		if (data.isOneNameOnly) {
-			this.form.controls['firstName'].setValue('');
+			this.workerLicenceNameForm.controls['firstName'].setValue('');
 			this.lastNameLabel = 'Name';
 		} else {
 			this.lastNameLabel = 'Last Name';
 		}
 	}
 
-	get firstName(): FormControl {
-		return this.form.get('firstName') as FormControl;
-	}
-
-	get isOneNameOnly(): FormControl {
-		return this.form.get('isOneNameOnly') as FormControl;
-	}
-
 	private reset(): void {
 		this.searchResults = [];
-
-		this.showSearchDataError = false;
-		this.searchDataError =
-			'Enter either a security worker licence number, OR the full name as it appears on the licence.';
 
 		this.showSearchResults = false;
 		this.searchResultsErrorName = '';
 	}
 
-	private performSearch(
-		licenceNumber: string | undefined,
-		firstName: string | undefined,
-		lastName: string | undefined,
-		isOneNameOnly: boolean
-	): void {
-		console.debug('licenceNumber', licenceNumber);
-		console.debug('firstName', firstName);
-		console.debug('lastName', lastName);
-		console.debug('isOneNameOnly', isOneNameOnly);
+	private resetRecaptcha(): void {
+		this.resetRecaptchaControl.next(); // reset the recaptcha
+		this.captchaFormGroupA.reset();
+		this.captchaFormGroupB.reset();
+		this.captchaFormGroupC.reset();
+	}
 
-		const searchFirstName = isOneNameOnly ? '' : firstName;
+	private performNumberSearch(): void {
+		this.workerLicenceNumberForm.markAllAsTouched();
+		if (!this.workerLicenceNumberForm.valid) return;
+
+		const formValue = this.workerLicenceNumberForm.value;
+		const licenceNumber = formValue.workerLicenceNumber?.trim();
 
 		this.licenceService
 			.apiLicencesSecurityWorkerLicenceGet({
 				licenceNumber,
+				firstName: undefined,
+				lastName: undefined,
+			})
+			.subscribe((resps: Array<LicenceBasicResponse>) => {
+				if (resps.length > 0) {
+					const sortedResps = resps.sort((a, b) => {
+						return this.utilService.sortByDirection(a.licenceNumber, b.licenceNumber);
+					});
+
+					this.searchResults = sortedResps;
+				}
+
+				this.showSearchResults = true;
+			});
+	}
+
+	private performNameSearch(): void {
+		this.workerLicenceNameForm.markAllAsTouched();
+		if (!this.workerLicenceNameForm.valid) return;
+
+		const formValue = this.workerLicenceNameForm.value;
+		const lastName = formValue.lastName?.trim();
+		const isOneNameOnly = formValue.isOneNameOnly ?? false;
+		const searchFirstName = isOneNameOnly ? '' : formValue.firstName?.trim();
+
+		this.licenceService
+			.apiLicencesSecurityWorkerLicenceGet({
+				licenceNumber: undefined,
 				firstName: searchFirstName,
 				lastName,
 			})
@@ -242,5 +394,65 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 
 				this.showSearchResults = true;
 			});
+	}
+
+	private performBulkSearch(): void {
+		this.bulkWorkerLicenceNumbersForm.markAllAsTouched();
+		if (!this.bulkWorkerLicenceNumbersForm.valid) return;
+
+		const formValue = this.bulkWorkerLicenceNumbersForm.getRawValue();
+		const licenceNumbers = formValue.licenceNumbers?.trim();
+
+		if (!licenceNumbers) return;
+
+		const recaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
+
+		const body: LicenceNumbersRequest = {
+			licenceNumbers,
+			recaptcha,
+		};
+
+		this.licenceService
+			.apiLicencesSecurityWorkerLicenceInBulkPost({ body })
+			.subscribe((resps: Array<LicenceBasicResponse>) => {
+				if (resps.length > 0) {
+					const sortedResps = resps.sort((a, b) => {
+						return this.utilService.sortByDirection(a.licenceNumber, b.licenceNumber);
+					});
+
+					this.searchResults = sortedResps;
+				}
+
+				this.showSearchResults = true;
+				this.resetRecaptcha();
+			});
+	}
+
+	get searchBy(): FormControl {
+		return this.form.get('searchBy') as FormControl;
+	}
+	get firstName(): FormControl {
+		return this.workerLicenceNameForm.get('firstName') as FormControl;
+	}
+	get isOneNameOnly(): FormControl {
+		return this.workerLicenceNameForm.get('isOneNameOnly') as FormControl;
+	}
+	get captchaFormGroupA(): FormGroup {
+		return this.workerLicenceNumberForm.get('captchaFormGroup') as FormGroup;
+	}
+	get captchaFormGroupB(): FormGroup {
+		return this.workerLicenceNameForm.get('captchaFormGroup') as FormGroup;
+	}
+	get captchaFormGroupC(): FormGroup {
+		return this.bulkWorkerLicenceNumbersForm.get('captchaFormGroup') as FormGroup;
+	}
+	get licenceNumbers(): FormControl {
+		return this.bulkWorkerLicenceNumbersForm.get('licenceNumbers') as FormControl;
+	}
+	get licenceNumbersInvalidCharsItems(): [] {
+		return this.licenceNumbers.errors ? this.licenceNumbers.errors['invalidCharsItems'] : [];
+	}
+	get licenceNumbersInvalidStartWithItems(): [] {
+		return this.licenceNumbers.errors ? this.licenceNumbers.errors['invalidStartWithItems'] : [];
 	}
 }

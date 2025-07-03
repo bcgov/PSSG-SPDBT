@@ -20,30 +20,13 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 							<app-alert type="info" icon="">
-								Select this option if you have one security worker licence number to check. It will return either VALID
-								or INVALID for each licence number entered.
+								Select this option if you have one or a few security worker licence number to check. It will return
+								either VALID or INVALID for each licence number entered.
 							</app-alert>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<button mat-flat-button color="primary" class="large" (click)="onVerifySwl()">
 								Verify a security worker licence
-							</button>
-						</div>
-					</div>
-
-					<mat-divider class="mt-3 mb-4"></mat-divider>
-					<div class="text-minor-heading my-3">Verify a set of security worker licence numbers</div>
-
-					<div class="row">
-						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-							<app-alert type="info" icon="">
-								Select this option if you have many security worker licence numbers to check. It will return either
-								VALID or INVALID for each licence number entered.
-							</app-alert>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<button mat-flat-button color="primary" class="large" (click)="onVerifySwls()">
-								Verify a set of security worker licences
 							</button>
 						</div>
 					</div>
@@ -80,14 +63,6 @@ export class SecurityLicenceStatusVerificationMainComponent {
 		this.router.navigateByUrl(
 			SecurityLicenceStatusVerificationRoutes.path(
 				SecurityLicenceStatusVerificationRoutes.SECURITY_LICENCE_STATUS_VERIFICATION_SWL
-			)
-		);
-	}
-
-	onVerifySwls(): void {
-		this.router.navigateByUrl(
-			SecurityLicenceStatusVerificationRoutes.path(
-				SecurityLicenceStatusVerificationRoutes.SECURITY_LICENCE_STATUS_VERIFICATION_SWLS
 			)
 		);
 	}
