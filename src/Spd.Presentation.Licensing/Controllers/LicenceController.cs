@@ -216,10 +216,16 @@ namespace Spd.Presentation.Licensing.Controllers
         /// http://localhost:5114/api/licences/security-worker-licence?firstName=XXX&lastName=yyy
         /// </summary>
         [Route("api/licences/security-worker-licence")]
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence([FromQuery] string? licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence(
+            [FromBody] GoogleRecaptcha recaptcha,
+            [FromQuery] string? licenceNumber,
+            [FromQuery] string? firstName,
+            [FromQuery] string? lastName,
+            CancellationToken ct)
         {
+            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber?.Trim(), firstName?.Trim(), lastName?.Trim(), null, ServiceTypeCode.SecurityWorkerLicence));
         }
 
@@ -248,10 +254,11 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123
         /// </summary>
         [Route("api/licences/business-licence")]
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromQuery] string? licenceNumber, [FromQuery] string? businessName = null)
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromBody] GoogleRecaptcha recaptcha, [FromQuery] string? licenceNumber, [FromQuery] string? businessName, CancellationToken ct)
         {
+            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
         }
     }
