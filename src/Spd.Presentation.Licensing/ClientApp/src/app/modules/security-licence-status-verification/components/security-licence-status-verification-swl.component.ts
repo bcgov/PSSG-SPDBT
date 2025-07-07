@@ -37,14 +37,6 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 
 						<mat-divider class="mat-divider-main mb-4"></mat-divider>
-
-						<div class="col-12 mb-3">
-							<app-alert type="info" icon="">
-								Search by a single security worker <strong>licence number</strong>, or the <strong>full name</strong>,
-								or multiple security worker <strong>licence numbers</strong>. Select your 'Search by' option to
-								continue.
-							</app-alert>
-						</div>
 					</div>
 
 					<div class="row mb-2">
@@ -57,22 +49,22 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									(change)="onSearchByChange($event)"
 								>
 									<div class="d-flex justify-content-start">
-										<mat-radio-button value="A">Worker licence number</mat-radio-button>
-										<mat-radio-button value="B">Worker licence name</mat-radio-button>
-										<mat-radio-button value="C">Bulk worker licence numbers</mat-radio-button>
+										<mat-radio-button value="A">Licence number</mat-radio-button>
+										<mat-radio-button value="B">Full name</mat-radio-button>
+										<mat-radio-button value="C">Multiple licence numbers</mat-radio-button>
 									</div>
 								</mat-radio-group>
 								@if ((searchBy.dirty || searchBy.touched) && searchBy.invalid && searchBy.hasError('required')) {
 									<mat-error class="mat-option-error">This is required</mat-error>
 								}
-								<mat-divider class="mt-3 mb-2"></mat-divider>
 							</div>
 						</form>
 					</div>
 
 					@if (searchBy.value === 'A') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<div class="text-minor-heading mb-3">Search by worker licence number</div>
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading mb-3">Search by licence number</div>
 							<div class="col-xl-8 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>licence number</strong> as it appears on the licence, below. Press
 								'Submit' and the results will confirm if the licence number is valid and the name of the licensee.
@@ -115,7 +107,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					} @else if (searchBy.value === 'B') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<div class="text-minor-heading mb-3">Search by worker licence name</div>
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading mb-3">Search by full name</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>full name</strong> as it appears on the licence, below. Press 'Submit'
 								and the results will confirm if the licence number is valid and the name of the licensee.
@@ -165,10 +158,11 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					} @else if (searchBy.value === 'C') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<div class="text-minor-heading mb-3">Search by bulk worker licence numbers</div>
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading mb-3">Search by multiple licence numbers</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
-								Enter a list of security worker <strong>licence numbers</strong> as they appears on the licence. Press
-								'Submit' and the results will confirm if the licence numbers are valid and the name of the licensee.
+								Enter the security worker <strong>licence numbers</strong> exactly as they appear on the licences. Then
+								click 'Submit' to check if each one is valid and see the name of the licence holder.
 							</div>
 							<div class="col-xl-7 col-lg-6 col-md-12" [formGroup]="bulkWorkerLicenceNumbersForm">
 								<mat-form-field>
