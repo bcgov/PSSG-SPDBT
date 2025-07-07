@@ -190,46 +190,6 @@ export class FormControlValidators {
 		return valid ? null : { trim: true };
 	}
 
-	public static commaSeparatedSwlValidator(options?: { allowEmpty?: boolean }): ValidatorFn {
-		return (control: AbstractControl): ValidationErrors | null => {
-			const value: string = control.value;
-			const regExp: RegExp = /^[a-zA-Z0-9]+$/;
-
-			if (!value) {
-				return null; // don't validate empty values here (use Validators.required separately)
-			}
-
-			const rawItems = value.split(',').map((item) => item.trim());
-
-			if (!options?.allowEmpty && rawItems.some((item) => item === '')) {
-				return { emptyItems: true };
-			}
-
-			// remove empty items
-			const items = rawItems.filter((item) => item !== '');
-
-			const invalidCharsItems = items.filter((item) => !regExp.test(item));
-			if (invalidCharsItems.length > 0) {
-				return {
-					invalidCharsFormat: true,
-					invalidCharsItems,
-				};
-			}
-
-			// Test that the licence numbers start with 'e'
-			const regExpStartWithE: RegExp = /^e/i;
-			const invalidStartWithItems = items.filter((item) => !regExpStartWithE.test(item));
-			if (invalidStartWithItems.length > 0) {
-				return {
-					invalidStartWith: true,
-					invalidStartWithItems,
-				};
-			}
-
-			return null;
-		};
-	}
-
 	public static licenceNumberValidator(
 		serviceTypeCode: ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence
 	): ValidatorFn {

@@ -113,7 +113,6 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-
 					} @else if (searchBy.value === 'B') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
 							<div class="text-minor-heading mb-3">Search by worker licence name</div>
@@ -164,17 +163,12 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								</div>
 							</div>
 						</div>
-
 					} @else if (searchBy.value === 'C') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
 							<div class="text-minor-heading mb-3">Search by bulk worker licence numbers</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
-								Enter a comma-separated list of security worker <strong>licence numbers</strong> as they appears on the
-								licence, below. Press 'Submit' and the results will confirm if the licence numbers are valid and the
-								name of the licensee.
-								<br />
-								<br />
-								For example: E123456,E234567,E345678
+								Enter a list of security worker <strong>licence numbers</strong> as they appears on the licence. Press
+								'Submit' and the results will confirm if the licence numbers are valid and the name of the licensee.
 							</div>
 							<div class="col-xl-7 col-lg-6 col-md-12" [formGroup]="bulkWorkerLicenceNumbersForm">
 								<mat-form-field>
@@ -184,22 +178,11 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										formControlName="licenceNumbers"
 										style="min-height: 120px"
 										[errorStateMatcher]="matcher"
+										placeholder="E123456 E234567 E345678"
 										maxlength="500"
 									></textarea>
 									@if (licenceNumbers.hasError('required')) {
 										<mat-error>This is required</mat-error>
-									}
-									@if (licenceNumbers.hasError('invalidCharsFormat')) {
-										<mat-error
-											>Security worker licence numbers can only include letters and numbers:
-											{{ licenceNumbersInvalidCharsItems.join(', ') }}</mat-error
-										>
-									}
-									@if (licenceNumbers.hasError('invalidStartWith')) {
-										<mat-error
-											>Security worker licence numbers must start with an "E":
-											{{ licenceNumbersInvalidStartWithItems.join(', ') }}</mat-error
-										>
 									}
 									<mat-hint>Maximum 500 characters</mat-hint>
 								</mat-form-field>
@@ -269,12 +252,7 @@ export class SecurityLicenceStatusVerificationSwlComponent {
 	});
 
 	bulkWorkerLicenceNumbersForm = this.formBuilder.group({
-		licenceNumbers: new FormControl('', [
-			FormControlValidators.required,
-			FormControlValidators.commaSeparatedSwlValidator({
-				allowEmpty: true,
-			}),
-		]),
+		licenceNumbers: new FormControl('', [FormControlValidators.required]),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', [FormControlValidators.required]),
 		}),
