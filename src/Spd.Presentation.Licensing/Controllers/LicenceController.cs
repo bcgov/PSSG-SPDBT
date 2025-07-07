@@ -9,6 +9,7 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -224,10 +225,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing data.");
             await VerifyGoogleRecaptchaAsync(request.Recaptcha, ct);
 
-            var numbers = request.LicenceNumbers
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .ToList();
+            var numbers = FindMatchingSWLNumer(request.LicenceNumbers);
             return await _mediator.Send(new LicenceBulkSearch(numbers, ServiceTypeCode.SecurityWorkerLicence), ct);
         }
 
@@ -242,6 +240,17 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
+        }
+
+        private static List<string> FindMatchingSWLNumer(string input)
+        {
+            var matches = new List<string>();
+            var pattern = @"E\d{6}";
+            foreach (Match match in Regex.Matches(input, pattern))
+            {
+                matches.Add(match.Value);
+            }
+            return matches;
         }
     }
 
