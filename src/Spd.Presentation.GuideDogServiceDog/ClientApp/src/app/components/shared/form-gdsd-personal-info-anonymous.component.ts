@@ -29,7 +29,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Surname</mat-label>
 								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
 								@if (form.get('surname')?.hasError('required')) {
-									<mat-error> This is required </mat-error>
+									<mat-error>This is required</mat-error>
 								}
 							</mat-form-field>
 						</div>
@@ -92,7 +92,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									maxlength="75"
 								/>
 								@if (form.get('emailAddress')?.hasError('email')) {
-									<mat-error> Must be a valid email address </mat-error>
+									<mat-error>Must be a valid email address</mat-error>
 								}
 							</mat-form-field>
 						</div>

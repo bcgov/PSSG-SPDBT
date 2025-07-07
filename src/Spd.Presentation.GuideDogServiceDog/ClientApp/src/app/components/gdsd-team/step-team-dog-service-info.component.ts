@@ -10,63 +10,57 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-dog-service-info',
 	template: `
 		<app-step-section [heading]="title">
-		  <div class="row">
-		    <div class="col-xxl-6 col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		      @if (showDogServiceStep) {
-		        <form [formGroup]="dogGdsdForm" novalidate>
-		          <div class="row">
-		            <div class="col-xxl-10 col-xl-12 mx-auto">
-		              <mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
-		                <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
-		                  {{ guideDogLabel }}
-		                </mat-radio-button>
-		                <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
-		                  {{ serviceDogLabel }}
-		                </mat-radio-button>
-		              </mat-radio-group>
-		              @if (
-		                (dogGdsdForm.get('isGuideDog')?.dirty || dogGdsdForm.get('isGuideDog')?.touched) &&
-		                dogGdsdForm.get('isGuideDog')?.invalid &&
-		                dogGdsdForm.get('isGuideDog')?.hasError('required')
-		                ) {
-		                <mat-error
-		                  class="mat-option-error"
-		                  >This is required</mat-error
-		                  >
-		                }
-		              </div>
-		            </div>
-		          </form>
-		        }
-		        @if (showRenewStep) {
-		          <form [formGroup]="dogRenewForm" novalidate>
-		            <div class="row">
-		              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mx-auto">
-		                <mat-radio-group aria-label="Select an option" formControlName="isAssistanceStillRequired">
-		                  <div class="d-flex justify-content-start">
-		                    <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-		                    <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-		                  </div>
-		                </mat-radio-group>
-		                @if (
-		                  (dogRenewForm.get('isAssistanceStillRequired')?.dirty ||
-		                  dogRenewForm.get('isAssistanceStillRequired')?.touched) &&
-		                  dogRenewForm.get('isAssistanceStillRequired')?.invalid &&
-		                  dogRenewForm.get('isAssistanceStillRequired')?.hasError('required')
-		                  ) {
-		                  <mat-error
-		                    class="mat-option-error"
-		                    >This is required</mat-error
-		                    >
-		                  }
-		                </div>
-		              </div>
-		            </form>
-		          }
-		        </div>
-		      </div>
-		    </app-step-section>
-		`,
+			<div class="row">
+				<div class="col-xxl-6 col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					@if (showDogServiceStep) {
+						<form [formGroup]="dogGdsdForm" novalidate>
+							<div class="row">
+								<div class="col-xxl-10 col-xl-12 mx-auto">
+									<mat-radio-group aria-label="Select an option" formControlName="isGuideDog">
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">
+											{{ guideDogLabel }}
+										</mat-radio-button>
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">
+											{{ serviceDogLabel }}
+										</mat-radio-button>
+									</mat-radio-group>
+									@if (
+										(dogGdsdForm.get('isGuideDog')?.dirty || dogGdsdForm.get('isGuideDog')?.touched) &&
+										dogGdsdForm.get('isGuideDog')?.invalid &&
+										dogGdsdForm.get('isGuideDog')?.hasError('required')
+									) {
+										<mat-error>This is required</mat-error>
+									}
+								</div>
+							</div>
+						</form>
+					}
+					@if (showRenewStep) {
+						<form [formGroup]="dogRenewForm" novalidate>
+							<div class="row">
+								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mx-auto">
+									<mat-radio-group aria-label="Select an option" formControlName="isAssistanceStillRequired">
+										<div class="d-flex justify-content-start">
+											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+											<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+										</div>
+									</mat-radio-group>
+									@if (
+										(dogRenewForm.get('isAssistanceStillRequired')?.dirty ||
+											dogRenewForm.get('isAssistanceStillRequired')?.touched) &&
+										dogRenewForm.get('isAssistanceStillRequired')?.invalid &&
+										dogRenewForm.get('isAssistanceStillRequired')?.hasError('required')
+									) {
+										<mat-error>This is required</mat-error>
+									}
+								</div>
+							</div>
+						</form>
+					}
+				</div>
+			</div>
+		</app-step-section>
+	`,
 	styles: [],
 	standalone: false,
 })

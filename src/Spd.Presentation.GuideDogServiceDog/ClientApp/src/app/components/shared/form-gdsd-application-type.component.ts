@@ -6,54 +6,51 @@ import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 	selector: 'app-form-gdsd-application-type',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
-		    <div class="row">
-		      <div class="col-lg-4">
-		        <mat-radio-button class="radio-label" [value]="applicationTypeCodes.New">New</mat-radio-button>
-		      </div>
-		      <div class="col-lg-8">
-		        <app-alert type="info" icon="">
-		          {{ newInfoText }}
-		        </app-alert>
-		      </div>
-		    </div>
-		    <mat-divider class="mb-3"></mat-divider>
-		    <div class="row">
-		      <div class="col-lg-4">
-		        <mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal">Renewal</mat-radio-button>
-		      </div>
-		      <div class="col-lg-8">
-		        <app-alert type="info" icon="">
-		          {{ renewalInfoText }}
-		        </app-alert>
-		      </div>
-		    </div>
-		    <mat-divider class="mb-3"></mat-divider>
-		    <div class="row">
-		      <div class="col-lg-4">
-		        <mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
-		          Replacement
-		        </mat-radio-button>
-		      </div>
-		      <div class="col-lg-8">
-		        <app-alert type="info" icon="">
-		          {{ replacementInfoText }}
-		        </app-alert>
-		      </div>
-		    </div>
-		  </mat-radio-group>
+			<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
+				<div class="row">
+					<div class="col-lg-4">
+						<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New">New</mat-radio-button>
+					</div>
+					<div class="col-lg-8">
+						<app-alert type="info" icon="">
+							{{ newInfoText }}
+						</app-alert>
+					</div>
+				</div>
+				<mat-divider class="mb-3"></mat-divider>
+				<div class="row">
+					<div class="col-lg-4">
+						<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal">Renewal</mat-radio-button>
+					</div>
+					<div class="col-lg-8">
+						<app-alert type="info" icon="">
+							{{ renewalInfoText }}
+						</app-alert>
+					</div>
+				</div>
+				<mat-divider class="mb-3"></mat-divider>
+				<div class="row">
+					<div class="col-lg-4">
+						<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
+							Replacement
+						</mat-radio-button>
+					</div>
+					<div class="col-lg-8">
+						<app-alert type="info" icon="">
+							{{ replacementInfoText }}
+						</app-alert>
+					</div>
+				</div>
+			</mat-radio-group>
 		</form>
 		@if (
-		  (form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
-		  form.get('applicationTypeCode')?.invalid &&
-		  form.get('applicationTypeCode')?.hasError('required')
-		  ) {
-		  <mat-error
-		    class="mat-option-error"
-		    >An option must be selected</mat-error
-		    >
-		  }
-		`,
+			(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
+			form.get('applicationTypeCode')?.invalid &&
+			form.get('applicationTypeCode')?.hasError('required')
+		) {
+			<mat-error class="mat-option-error">An option must be selected</mat-error>
+		}
+	`,
 	styles: [],
 	standalone: false,
 })

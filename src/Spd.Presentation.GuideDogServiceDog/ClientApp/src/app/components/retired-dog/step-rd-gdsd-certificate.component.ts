@@ -11,52 +11,47 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-step-rd-gdsd-certificate',
 	template: `
 		<app-step-section heading="Guide dog or service dog certification">
-		  <form [formGroup]="form" novalidate>
-		    <div class="row">
-		      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <div class="text-minor-heading mb-2">Current Certificate #</div>
-		        <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Certificate #</mat-label>
-		            <input
-		              matInput
-		              formControlName="currentGDSDCertificateNumber"
-		              [errorStateMatcher]="matcher"
-		              maxlength="40"
-		              />
-		              @if (form.get('currentGDSDCertificateNumber')?.hasError('required')) {
-		                <mat-error
-		                  >This is required</mat-error
-		                  >
-		              }
-		            </mat-form-field>
-		          </div>
-		
-		          <div class="text-minor-heading my-2">Attach your current Guide or Service Dog Certificate</div>
-		          <app-file-upload
-		            (fileUploaded)="onFileUploaded($event)"
-		            (fileRemoved)="onFileRemoved()"
-		            [control]="attachments"
-		            [maxNumberOfFiles]="10"
-		            [files]="attachments.value"
-		            [previewImage]="true"
-		            ariaFileUploadLabel="Upload your current Guide or Service Dog Certificate"
-		          ></app-file-upload>
-		          @if (
-		            (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		            form.get('attachments')?.invalid &&
-		            form.get('attachments')?.hasError('required')
-		            ) {
-		            <mat-error
-		              class="mat-option-error"
-		              >This is required</mat-error
-		              >
-		            }
-		          </div>
-		        </div>
-		      </form>
-		    </app-step-section>
-		`,
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="text-minor-heading mb-2">Current Certificate #</div>
+						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Certificate #</mat-label>
+								<input
+									matInput
+									formControlName="currentGDSDCertificateNumber"
+									[errorStateMatcher]="matcher"
+									maxlength="40"
+								/>
+								@if (form.get('currentGDSDCertificateNumber')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+
+						<div class="text-minor-heading my-2">Attach your current Guide or Service Dog Certificate</div>
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+							[previewImage]="true"
+							ariaFileUploadLabel="Upload your current Guide or Service Dog Certificate"
+						></app-file-upload>
+						@if (
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						) {
+							<mat-error>This is required</mat-error>
+						}
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [],
 	standalone: false,
 })

@@ -28,7 +28,7 @@ import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 				<mat-hint> Start typing name of school or address </mat-hint>
 			}
 			@if (accreditedSchoolIdControl.hasError('required')) {
-				<mat-error> This is required </mat-error>
+				<mat-error>This is required</mat-error>
 			}
 		</mat-form-field>
 
