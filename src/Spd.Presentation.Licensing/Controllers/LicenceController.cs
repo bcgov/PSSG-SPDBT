@@ -246,7 +246,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             var matches = new List<string>();
             var pattern = @"E\d{6}";
-            foreach (Match match in Regex.Matches(input, pattern))
+            foreach (Match match in Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromSeconds(10)))
             {
                 matches.Add(match.Value);
             }
