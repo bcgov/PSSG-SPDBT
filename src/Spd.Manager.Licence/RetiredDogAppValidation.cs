@@ -36,7 +36,7 @@ public class RetiredDogLicenceAppBaseValidator<T> : AbstractValidator<T> where T
         RuleFor(r => r.MiddleName).MaximumLength(40);
         RuleFor(r => r.DateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.PhoneNumber).MaximumLength(30).NotEmpty();
-        RuleFor(r => r.EmailAddress).EmailAddress().MaximumLength(75).When(r => r.EmailAddress != null);
+        RuleFor(r => r.EmailAddress).EmailAddress().MaximumLength(75).When(r => !string.IsNullOrWhiteSpace(r.EmailAddress));
         RuleFor(r => r.ApplicantOrLegalGuardianName).MaximumLength(80).NotEmpty()
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New || r.ApplicationTypeCode == ApplicationTypeCode.Renewal);
         RuleFor(r => r.MailingAddress).SetValidator(new MailingAddressValidator())

@@ -55,7 +55,7 @@
 								}
 							],
 							"outputHashing": "all",
-							"baseHref": "/guide-dog-service-dog/"
+							"baseHref": "/gdsd/"
 						},
 						"development": {
 							"optimization": false,
