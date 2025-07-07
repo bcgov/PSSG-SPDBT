@@ -71,6 +71,7 @@ export type { LicenceBasicResponse } from './models/licence-basic-response';
 export { LicenceDocumentTypeCode } from './models/licence-document-type-code';
 export type { LicenceFeeListResponse } from './models/licence-fee-list-response';
 export type { LicenceFeeResponse } from './models/licence-fee-response';
+export type { LicenceNumbersRequest } from './models/licence-numbers-request';
 export type { LicenceResponse } from './models/licence-response';
 export { LicenceStatusCode } from './models/licence-status-code';
 export { LicenceTermCode } from './models/licence-term-code';
