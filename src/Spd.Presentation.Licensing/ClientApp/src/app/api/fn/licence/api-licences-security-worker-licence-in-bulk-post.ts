@@ -9,19 +9,16 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { LicenceBasicResponse } from '../../models/licence-basic-response';
+import { LicenceNumbersRequest } from '../../models/licence-numbers-request';
 
-export interface ApiLicencesSecurityWorkerLicenceGet$Params {
-  licenceNumber?: string;
-  firstName?: string;
-  lastName?: string;
+export interface ApiLicencesSecurityWorkerLicenceInBulkPost$Params {
+      body?: LicenceNumbersRequest
 }
 
-export function apiLicencesSecurityWorkerLicenceGet(http: HttpClient, rootUrl: string, params?: ApiLicencesSecurityWorkerLicenceGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
-  const rb = new RequestBuilder(rootUrl, apiLicencesSecurityWorkerLicenceGet.PATH, 'get');
+export function apiLicencesSecurityWorkerLicenceInBulkPost(http: HttpClient, rootUrl: string, params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+  const rb = new RequestBuilder(rootUrl, apiLicencesSecurityWorkerLicenceInBulkPost.PATH, 'post');
   if (params) {
-    rb.query('licenceNumber', params.licenceNumber, {});
-    rb.query('firstName', params.firstName, {});
-    rb.query('lastName', params.lastName, {});
+    rb.body(params.body, 'application/*+json');
   }
 
   return http.request(
@@ -34,4 +31,4 @@ export function apiLicencesSecurityWorkerLicenceGet(http: HttpClient, rootUrl: s
   );
 }
 
-apiLicencesSecurityWorkerLicenceGet.PATH = '/api/licences/security-worker-licence';
+apiLicencesSecurityWorkerLicenceInBulkPost.PATH = '/api/licences/security-worker-licence-in-bulk';

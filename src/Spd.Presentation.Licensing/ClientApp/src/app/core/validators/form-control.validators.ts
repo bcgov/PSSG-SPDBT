@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ServiceTypeCode } from '@app/api/models';
 
 export class FormControlValidators {
 	/**
@@ -187,5 +188,89 @@ export class FormControlValidators {
 		const length = value.length;
 		const valid = control.valid && length && length === value.trim().length;
 		return valid ? null : { trim: true };
+	}
+
+	public static commaSeparatedSwlValidator(options?: { allowEmpty?: boolean }): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			const value: string = control.value;
+			const regExp: RegExp = /^[a-zA-Z0-9]+$/;
+
+			if (!value) {
+				return null; // don't validate empty values here (use Validators.required separately)
+			}
+
+			const rawItems = value.split(',').map((item) => item.trim());
+
+			if (!options?.allowEmpty && rawItems.some((item) => item === '')) {
+				return { emptyItems: true };
+			}
+
+			// remove empty items
+			const items = rawItems.filter((item) => item !== '');
+
+			const invalidCharsItems = items.filter((item) => !regExp.test(item));
+			if (invalidCharsItems.length > 0) {
+				return {
+					invalidCharsFormat: true,
+					invalidCharsItems,
+				};
+			}
+
+			// Test that the licence numbers start with 'e'
+			const regExpStartWithE: RegExp = /^e/i;
+			const invalidStartWithItems = items.filter((item) => !regExpStartWithE.test(item));
+			if (invalidStartWithItems.length > 0) {
+				return {
+					invalidStartWith: true,
+					invalidStartWithItems,
+				};
+			}
+
+			return null;
+		};
+	}
+
+	public static licenceNumberValidator(
+		serviceTypeCode: ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence
+	): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			const value: string = control.value;
+
+			if (!value) {
+				return null; // don't validate empty values here (use Validators.required separately)
+			}
+
+			const regExp: RegExp = /^[a-zA-Z0-9]+$/;
+			if (!regExp.test(value)) {
+				return {
+					invalidCharsFormat: true,
+				};
+			}
+
+			// Test that the licence numbers start with 'e'
+			let regExpStartWith: RegExp = /^e/i;
+			if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
+				regExpStartWith = /^b/i;
+			}
+
+			if (!regExpStartWith.test(value)) {
+				return {
+					invalidStartWith: true,
+				};
+			}
+
+			return null;
+		};
+	}
+
+	public static requiredMinLengthValidator(minLength: number = 3): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			if (!control.value) {
+				return null;
+			}
+			const currentLength = control.value.length;
+			const valid = control.valid && currentLength >= minLength;
+			return valid ? null : { minLength: true };
+		};
 	}
 }

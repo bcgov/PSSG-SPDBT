@@ -74,6 +74,37 @@ or
 npm install --force
 ```
 
+#### upgrade to Angular 20
+
+start power shell with Administrator privilege
+run
+
+```
+choco upgrade nodejs
+```
+
+go to clientApp folder
+
+```
+del node_modules
+del package-lock.json
+```
+
+then run
+
+```
+npm install
+```
+
+if you get "File C:\Program Files\nodejs\npm.ps1 cannot be loaded. The file C:\Program Files\nodejs\npm.ps1 is not digitally signed."
+run
+
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+then run npm install again.
+
 ## Commit/branching
 
 Each developer should create a feature branch for work on their forked repo that relates to the associated JIRA issue. (example: `username/SPDBT-1121`
