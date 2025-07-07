@@ -27,19 +27,6 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 			@if (isPreviousStepperStepObserved) {
 				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-					@if (isNextStepperStepObserved) {
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onNext()"
-							aria-label="Go to the next step in the application"
-						>
-							{{ nextButtonLabel }}
-						</button>
-					}
-				</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 					@if (isPreviousStepperStepObserved) {
 						<button
 							mat-stroked-button
@@ -49,6 +36,19 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 							aria-label="Go to the previous step in the application"
 						>
 							Previous
+						</button>
+					}
+				</div>
+				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					@if (isNextStepperStepObserved) {
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNext()"
+							aria-label="Go to the next step in the application"
+						>
+							{{ nextButtonLabel }}
 						</button>
 					}
 				</div>
