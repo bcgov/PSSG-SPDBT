@@ -12,81 +12,75 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-team-medical-info',
 	template: `
 		<app-step-section
-		  heading="Medical Information"
-		  subheading="Confirm your need for a guide or service dog by submitting a completed medical form."
-		  >
-		  <form [formGroup]="form" novalidate>
-		    <div class="row my-2">
-		      <div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <app-alert type="info" icon="info">
-		          Download the
-		          <a class="large" [href]="medicalFormUrl" target="_blank"
-		            >Medical Form Confirming Requirement for Guide Dog or Service Dog</a
-		            >.
-		          </app-alert>
-		
-		          <div class="col-xxl-6 col-xl-7 col-lg-7 col-md-10 col-sm-12 mx-auto">
-		            <div class="text-minor-heading lh-base mb-2">Is your doctor sending the medical form?</div>
-		          </div>
-		
-		          <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
-		            <mat-radio-group aria-label="Select an option" formControlName="doctorIsProvidingNeedDogMedicalForm">
-		              <div class="d-flex justify-content-start">
-		                <mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-		                <mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-		              </div>
-		            </mat-radio-group>
-		            @if (
-		              (form.get('doctorIsProvidingNeedDogMedicalForm')?.dirty ||
-		              form.get('doctorIsProvidingNeedDogMedicalForm')?.touched) &&
-		              form.get('doctorIsProvidingNeedDogMedicalForm')?.invalid &&
-		              form.get('doctorIsProvidingNeedDogMedicalForm')?.hasError('required')
-		              ) {
-		              <mat-error
-		                class="mat-option-error"
-		                >This is required</mat-error
-		                >
-		              }
-		            </div>
-		
-		            @if (doctorIsProvidingNeedDogMedicalForm.value === booleanTypeCodes.No) {
-		              <div
-		                @showHideTriggerSlideAnimation
-		                >
-		                <mat-divider class="mt-3 mat-divider-primary"></mat-divider>
-		                <div class="text-minor-heading lh-base mt-3 mb-2">
-		                  Upload the “Medical Form Confirming Requirement for Guide Dog or Service Dog.” The exam date must be
-		                  within the past 6 months.
-		                </div>
-		                <app-file-upload
-		                  (fileUploaded)="onFileUploaded($event)"
-		                  (fileRemoved)="onFileRemoved()"
-		                  [control]="attachments"
-		                  [maxNumberOfFiles]="10"
-		                  [files]="attachments.value"
-		                  [previewImage]="true"
-		                  ariaFileUploadLabel="Upload Medical Form Confirming Requirement for Guide Dog or Service Dog"
-		                ></app-file-upload>
-		                @if (
-		                  (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		                  form.get('attachments')?.invalid &&
-		                  form.get('attachments')?.hasError('required')
-		                  ) {
-		                  <mat-error
-		                    class="mt-3 mat-option-error"
-		                    >
-		                    <app-alert type="danger" icon="dangerous">
-		                      This is required. You must have a Medical Form confirming requirement for Guide Dog or Service Dog.
-		                    </app-alert>
-		                  </mat-error>
-		                }
-		              </div>
-		            }
-		          </div>
-		        </div>
-		      </form>
-		    </app-step-section>
-		`,
+			heading="Medical Information"
+			subheading="Confirm your need for a guide or service dog by submitting a completed medical form."
+		>
+			<form [formGroup]="form" novalidate>
+				<div class="row my-2">
+					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<app-alert type="info" icon="info">
+							Download the
+							<a class="large" [href]="medicalFormUrl" target="_blank"
+								>Medical Form Confirming Requirement for Guide Dog or Service Dog</a
+							>.
+						</app-alert>
+
+						<div class="col-xxl-6 col-xl-7 col-lg-7 col-md-10 col-sm-12 mx-auto">
+							<div class="text-minor-heading lh-base mb-2">Is your doctor sending the medical form?</div>
+						</div>
+
+						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="doctorIsProvidingNeedDogMedicalForm">
+								<div class="d-flex justify-content-start">
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+									<mat-radio-button class="w-auto radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								</div>
+							</mat-radio-group>
+							@if (
+								(form.get('doctorIsProvidingNeedDogMedicalForm')?.dirty ||
+									form.get('doctorIsProvidingNeedDogMedicalForm')?.touched) &&
+								form.get('doctorIsProvidingNeedDogMedicalForm')?.invalid &&
+								form.get('doctorIsProvidingNeedDogMedicalForm')?.hasError('required')
+							) {
+								<mat-error>This is required</mat-error>
+							}
+						</div>
+
+						@if (doctorIsProvidingNeedDogMedicalForm.value === booleanTypeCodes.No) {
+							<div @showHideTriggerSlideAnimation>
+								<mat-divider class="mt-3 mat-divider-primary"></mat-divider>
+								<div class="text-minor-heading lh-base mt-3 mb-2">
+									Upload the “Medical Form Confirming Requirement for Guide Dog or Service Dog.” The exam date must be
+									within the past 6 months.
+								</div>
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="10"
+									[files]="attachments.value"
+									[previewImage]="true"
+									ariaFileUploadLabel="Upload Medical Form Confirming Requirement for Guide Dog or Service Dog"
+								></app-file-upload>
+								@if (
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								) {
+									<mat-error class="mt-3 mat-option-error">
+										<app-alert type="danger" icon="dangerous">
+											This is required. You must have a Medical Form confirming requirement for Guide Dog or Service
+											Dog.
+										</app-alert>
+									</mat-error>
+								}
+							</div>
+						}
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

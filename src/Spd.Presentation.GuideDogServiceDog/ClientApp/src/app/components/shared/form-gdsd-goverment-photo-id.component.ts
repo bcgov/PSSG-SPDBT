@@ -31,7 +31,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								</mat-select>
 								<mat-hint>This ID can be from another country</mat-hint>
 								@if (form.get('photoTypeCode')?.hasError('required')) {
-									<mat-error> This is required </mat-error>
+									<mat-error>This is required</mat-error>
 								}
 							</mat-form-field>
 						</div>
@@ -84,7 +84,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									form.get('attachments')?.invalid &&
 									form.get('attachments')?.hasError('required')
 								) {
-									<mat-error class="mat-option-error">This is required</mat-error>
+									<mat-error>This is required</mat-error>
 								}
 							</div>
 						}

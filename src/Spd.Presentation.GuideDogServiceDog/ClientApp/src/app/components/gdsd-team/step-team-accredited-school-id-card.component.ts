@@ -8,37 +8,34 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-team-accredited-school-id-card',
 	template: `
 		<app-step-section heading="Accredited School Identification Card">
-		  <form [formGroup]="form" novalidate>
-		    <div class="row my-2">
-		      <div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <div class="text-minor-heading mb-2">
-		          Upload a copy of your valid identification card from the accredited school or a letter from the accredited
-		          school identifying the individual and dog as an active working team
-		        </div>
-		        <app-file-upload
-		          (fileUploaded)="onFileUploaded($event)"
-		          (fileRemoved)="onFileRemoved()"
-		          [control]="attachments"
-		          [maxNumberOfFiles]="10"
-		          [files]="attachments.value"
-		          [previewImage]="true"
-		          ariaFileUploadLabel="Upload valid identification card from the accredited school"
-		        ></app-file-upload>
-		        @if (
-		          (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		          form.get('attachments')?.invalid &&
-		          form.get('attachments')?.hasError('required')
-		          ) {
-		          <mat-error
-		            class="mat-option-error"
-		            >This is required</mat-error
-		            >
-		          }
-		        </div>
-		      </div>
-		    </form>
-		  </app-step-section>
-		`,
+			<form [formGroup]="form" novalidate>
+				<div class="row my-2">
+					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="text-minor-heading mb-2">
+							Upload a copy of your valid identification card from the accredited school or a letter from the accredited
+							school identifying the individual and dog as an active working team
+						</div>
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+							[previewImage]="true"
+							ariaFileUploadLabel="Upload valid identification card from the accredited school"
+						></app-file-upload>
+						@if (
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						) {
+							<mat-error>This is required</mat-error>
+						}
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [],
 	standalone: false,
 })

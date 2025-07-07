@@ -9,50 +9,47 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-team-dog-certification-selection',
 	template: `
 		<app-step-section heading="Dog certification selection">
-		  <form [formGroup]="form" novalidate>
-		    <div class="row">
-		      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <div class="row">
-		          <app-alert type="info" icon="info">
-		            Not sure if your dog was trained by an accredited school? Visit the
-		            <a href="https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank"
-		              >Guide Dog and Service Dog Certification</a
-		              >
-		              webpage. It has links to help you look up accredited schools.
-		            </app-alert>
-		
-		            <div class="text-minor-heading lh-base mb-3">
-		              Is your dog trained by Assistance Dogs International or International Guide Dog Federation accredited
-		              schools?
-		            </div>
-		
-		            <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-		              <mat-radio-group
-		                aria-label="Select an option"
-		                formControlName="isDogTrainedByAccreditedSchool"
-		                (change)="onChangeDocumentType($event)"
-		                >
-		                <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-		                <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-		              </mat-radio-group>
-		              @if (
-		                (form.get('isDogTrainedByAccreditedSchool')?.dirty ||
-		                form.get('isDogTrainedByAccreditedSchool')?.touched) &&
-		                form.get('isDogTrainedByAccreditedSchool')?.invalid &&
-		                form.get('isDogTrainedByAccreditedSchool')?.hasError('required')
-		                ) {
-		                <mat-error
-		                  class="mat-option-error"
-		                  >This is required</mat-error
-		                  >
-		                }
-		              </div>
-		            </div>
-		          </div>
-		        </div>
-		      </form>
-		    </app-step-section>
-		`,
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="row">
+							<app-alert type="info" icon="info">
+								Not sure if your dog was trained by an accredited school? Visit the
+								<a href="https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog" target="_blank"
+									>Guide Dog and Service Dog Certification</a
+								>
+								webpage. It has links to help you look up accredited schools.
+							</app-alert>
+
+							<div class="text-minor-heading lh-base mb-3">
+								Is your dog trained by Assistance Dogs International or International Guide Dog Federation accredited
+								schools?
+							</div>
+
+							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+								<mat-radio-group
+									aria-label="Select an option"
+									formControlName="isDogTrainedByAccreditedSchool"
+									(change)="onChangeDocumentType($event)"
+								>
+									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								</mat-radio-group>
+								@if (
+									(form.get('isDogTrainedByAccreditedSchool')?.dirty ||
+										form.get('isDogTrainedByAccreditedSchool')?.touched) &&
+									form.get('isDogTrainedByAccreditedSchool')?.invalid &&
+									form.get('isDogTrainedByAccreditedSchool')?.hasError('required')
+								) {
+									<mat-error>This is required</mat-error>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</app-step-section>
+	`,
 	styles: [],
 	standalone: false,
 })

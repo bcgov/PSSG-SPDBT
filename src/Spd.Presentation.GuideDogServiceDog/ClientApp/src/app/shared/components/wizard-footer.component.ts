@@ -10,7 +10,69 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	template: `
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-				@if (showExit) {
+				@if (isFormValid) {
+					@if (isNextReviewStepperStepObserved) {
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large button-small-caps mb-2"
+							(click)="onReview()"
+							aria-label="Go to the review step in the application"
+						>
+							Next: Review
+						</button>
+					}
+				}
+			</div>
+
+			@if (isPreviousStepperStepObserved) {
+				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					@if (isNextStepperStepObserved) {
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNext()"
+							aria-label="Go to the next step in the application"
+						>
+							{{ nextButtonLabel }}
+						</button>
+					}
+				</div>
+				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					@if (isPreviousStepperStepObserved) {
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large mb-2"
+							(click)="onPrevious()"
+							aria-label="Go to the previous step in the application"
+						>
+							Previous
+						</button>
+					}
+				</div>
+			} @else {
+				<div class="offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					@if (isNextStepperStepObserved) {
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNext()"
+							aria-label="Go to the next step in the application"
+						>
+							{{ nextButtonLabel }}
+						</button>
+					}
+				</div>
+			}
+
+			@if (showExit) {
+				<div
+					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
+				>
 					@if (showSaveAndExit) {
 						@if (isSaveAndExitObserved) {
 							<button
@@ -30,82 +92,6 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 							aria-label="Exit the application and discard data"
 						>
 							{{ cancelLabel }}
-						</button>
-					}
-				}
-			</div>
-
-			@if (isPreviousStepperStepObserved) {
-				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-					@if (isPreviousStepperStepObserved) {
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large mb-2"
-							(click)="onPrevious()"
-							aria-label="Go to the previous step in the application"
-						>
-							Previous
-						</button>
-					}
-				</div>
-				<div
-					class="col-md-12"
-					[ngClass]="
-						isWidestNext
-							? 'col-xxl-6 col-xl-6 col-lg-6'
-							: isWideNext
-								? 'col-xxl-3 col-xl-3 col-lg-4'
-								: 'col-xxl-2 col-xl-3 col-lg-3'
-					"
-				>
-					@if (isNextStepperStepObserved) {
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onNext()"
-							aria-label="Go to the next step in the application"
-						>
-							{{ nextButtonLabel }}
-						</button>
-					}
-				</div>
-			} @else {
-				<div
-					class="col-md-12"
-					[ngClass]="
-						isWideNext ? 'offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
-					"
-				>
-					@if (isNextStepperStepObserved) {
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onNext()"
-							aria-label="Go to the next step in the application"
-						>
-							{{ nextButtonLabel }}
-						</button>
-					}
-				</div>
-			}
-
-			@if (isFormValid) {
-				<div
-					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
-					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
-				>
-					@if (isNextReviewStepperStepObserved) {
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large button-small-caps mb-2"
-							(click)="onReview()"
-							aria-label="Go to the review step in the application"
-						>
-							Next: Review
 						</button>
 					}
 				</div>
@@ -134,8 +120,6 @@ export class WizardFooterComponent implements OnInit {
 	@Input() cancelLabel = 'Exit';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
-	@Input() isWideNext = false;
-	@Input() isWidestNext = false;
 	@Input() showExit = true;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
