@@ -120,12 +120,8 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	private getApplEmptyAnonymous(): Observable<any> {
 		this.reset();
 		this.metalDealersModelFormGroup.patchValue(
-			{
-				serviceTypeData: { serviceTypeCode: ServiceTypeCode.Mdra },
-			},
-			{
-				emitEvent: false,
-			}
+			{ serviceTypeData: { serviceTypeCode: ServiceTypeCode.Mdra } },
+			{ emitEvent: false }
 		);
 		return of(this.metalDealersModelFormGroup.value);
 	}
@@ -205,6 +201,15 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		associatedLicence: LicenceResponse;
 		mdraLicenceAppl: MdraRegistrationResponse;
 	}): Observable<any> {
+		// converted data might be missing original registration
+		if (!mdraLicenceAppl) {
+			this.metalDealersModelFormGroup.patchValue(
+				{ originalLicenceId: associatedLicence ? associatedLicence.licenceId : null },
+				{ emitEvent: false }
+			);
+			return of(this.metalDealersModelFormGroup.value);
+		}
+
 		const businessOwnerData = {
 			bizLegalName: mdraLicenceAppl.bizLegalName,
 			bizTradeName: mdraLicenceAppl.bizTradeName,
@@ -246,10 +251,9 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 				businessAddressData,
 				businessMailingAddressData,
 			},
-			{
-				emitEvent: false,
-			}
+			{ emitEvent: false }
 		);
+
 		if (mdraLicenceAppl.branches && mdraLicenceAppl.branches.length > 0) {
 			const branchList = [...mdraLicenceAppl.branches].sort((a, b) =>
 				this.utilService.sortByDirection(a.branchAddress?.city?.toUpperCase(), b.branchAddress?.city?.toUpperCase())
@@ -278,27 +282,13 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 
 	private applyRenewalSpecificDataToModel(_resp: MdraRegistrationResponse): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-		this.metalDealersModelFormGroup.patchValue(
-			{
-				applicationTypeData,
-			},
-			{
-				emitEvent: false,
-			}
-		);
+		this.metalDealersModelFormGroup.patchValue({ applicationTypeData }, { emitEvent: false });
 		return of(this.metalDealersModelFormGroup.value);
 	}
 
 	private applyUpdateSpecificDataToModel(_resp: MdraRegistrationResponse): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-		this.metalDealersModelFormGroup.patchValue(
-			{
-				applicationTypeData,
-			},
-			{
-				emitEvent: false,
-			}
-		);
+		this.metalDealersModelFormGroup.patchValue({ applicationTypeData }, { emitEvent: false });
 		return of(this.metalDealersModelFormGroup.value);
 	}
 
