@@ -10,7 +10,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 @Component({
 	selector: 'app-step-worker-licence-application-type-anonymous',
 	template: `
-		<app-step-section heading="What type of Security Worker Licence are you applying for?">
+		<app-step-section title="What type of Security Worker Licence are you applying for?">
 			<div class="row">
 				<div class="col-xxl-7 col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
