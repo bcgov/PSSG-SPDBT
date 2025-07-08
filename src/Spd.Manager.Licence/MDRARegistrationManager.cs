@@ -82,10 +82,10 @@ internal class MDRARegistrationManager :
         return org.OrgResult.OrgRegistrationId;
     }
 
-    public async Task<MDRARegistrationResponse> Handle(GetMDRARegistrationQuery query, CancellationToken ct)
+    public async Task<MDRARegistrationResponse?> Handle(GetMDRARegistrationQuery query, CancellationToken ct)
     {
-        MDRARegistrationResp registration = await _repository.GetMDRARegistrationAsync(query.BizRegistrationId, ct);
-        return _mapper.Map<MDRARegistrationResponse>(registration);
+        MDRARegistrationResp? registration = await _repository.GetMDRARegistrationAsync(query.BizRegistrationId, ct);
+        return _mapper.Map<MDRARegistrationResponse?>(registration);
     }
     #endregion
 

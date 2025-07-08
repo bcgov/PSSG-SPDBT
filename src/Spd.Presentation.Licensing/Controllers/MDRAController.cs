@@ -34,7 +34,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         [Route("api/mdra-registration")]
         [HttpGet]
-        public async Task<MDRARegistrationResponse> GetMDRARegistrationAnonymous()
+        public async Task<MDRARegistrationResponse?> GetMDRARegistrationAnonymous()
         {
             string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
             string? registrationId;

@@ -62,7 +62,7 @@ jobs:
         uses: zaproxy/action-full-scan@v0.12.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: "https://spd-train.justice.gov.bc.ca/guide-dog-service-dog/"
+          target: "https://spd-train.justice.gov.bc.ca/gdsd/"
           artifact_name: "gdsd_portal_ui_zap_scan"
           issue_title: "gdsd_portal_ui_zap_scan"
 
@@ -73,6 +73,6 @@ jobs:
         uses: zaproxy/action-api-scan@v0.9.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: "https://spd-train.justice.gov.bc.ca/guide-dog-service-dog/swagger/v1/swagger.json"
+          target: "https://spd-train.justice.gov.bc.ca/gdsd/swagger/v1/swagger.json"
           artifact_name: "gdsd_portal_api_zap_scan"
           issue_title: "gdsd_portal_api_zap_scan"
