@@ -55,7 +55,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										matInput
 										formControlName="businessLicenceNumber"
 										oninput="this.value = this.value.toUpperCase()"
-										placeholder="B123456"
+										placeholder="B1234"
 										[errorStateMatcher]="matcher"
 										maxlength="20"
 									/>

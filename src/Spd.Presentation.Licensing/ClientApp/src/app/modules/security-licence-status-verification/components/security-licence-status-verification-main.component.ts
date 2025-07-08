@@ -20,8 +20,8 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 					<div class="row">
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 							<app-alert type="info" icon="">
-								Select this option if you have one or a few security worker licence number to check. It will return
-								either VALID or INVALID for each licence number entered.
+								Choose this option to check one or more security worker licence numbers. The system will show either
+								VALID or INVALID for each number entered.
 							</app-alert>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
