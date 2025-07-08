@@ -97,6 +97,7 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
 		rcmpUrl: 'https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
+		securityServicesRegulationUrl: 'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008',
 		safetyCertificateChecklistUrl:
 			'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008#section4',
 		securityIndustryLicensingUrl:

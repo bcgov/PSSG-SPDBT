@@ -10,9 +10,9 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 @Component({
 	selector: 'app-step-worker-licence-application-type-anonymous',
 	template: `
-		<app-step-section title="What type of Security Worker Licence are you applying for?">
+		<app-step-section heading="What type of Security Worker Licence are you applying for?">
 			<div class="row">
-				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xxl-7 col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
 						<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
 							<div class="row">
@@ -35,7 +35,11 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Renew your current licence within 90 days of the expiry date.
+										<div>Renew your current licence within 90 days of the expiry date.</div>
+										<div class="mt-2">
+											Fingerprints are required for all Security Worker applicants on their renewal application when
+											they <strong>do not</strong> use their BC Services Card account.
+										</div>
 									</app-alert>
 								</div>
 							</div>
@@ -64,15 +68,13 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 							</div>
 						</mat-radio-group>
 					</form>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
-							form.get('applicationTypeCode')?.invalid &&
-							form.get('applicationTypeCode')?.hasError('required')
-						"
-						>An option must be selected</mat-error
-					>
+					@if (
+						(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
+						form.get('applicationTypeCode')?.invalid &&
+						form.get('applicationTypeCode')?.hasError('required')
+					) {
+						<mat-error class="mat-option-error">An option must be selected</mat-error>
+					}
 				</div>
 			</div>
 		</app-step-section>

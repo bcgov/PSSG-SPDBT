@@ -12,8 +12,12 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<app-alert type="warning" icon="warning">
 					<div>
-						All applicants must include proof they have completed their fingerprinting. Once your fingerprints have been
-						taken and the
+						Under the <a [href]="securityServicesRegulationUrl" target="_blank"> Security Services Regulation</a>,
+						applicants are required to complete prescribed checks, including identity verification and fingerprinting.
+					</div>
+					<div class="mt-2">
+						<strong>All applicants</strong> must include proof they have completed the fingerprinting requirement for
+						their application. Once your fingerprints have been taken and the
 						<a
 							aria-label="Download Request for Fingerprinting form"
 							download="Request For Fingerprinting Form"
@@ -48,28 +52,27 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
 					></app-file-upload>
-					<mat-error
-						class="mat-option-error mt-3"
-						*ngIf="
-							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-							form.get('attachments')?.invalid &&
-							form.get('attachments')?.hasError('required')
-						"
-					>
-						<app-alert type="danger" icon="dangerous">
-							<p>Your fingerprints must be taken to continue to verify your identity.</p>
-							<p class="mb-0">
-								Download the
-								<a
-									aria-label="Download the Request for Fingerprinting form"
-									download="Request For Fingerprinting Form"
-									[href]="downloadFilePath"
-									>Request for Fingerprinting form</a
-								>, take it to a fingerprinting agency (such as your local police department), and complete this
-								application when you have documentation.
-							</p>
-						</app-alert>
-					</mat-error>
+					@if (
+						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+						form.get('attachments')?.invalid &&
+						form.get('attachments')?.hasError('required')
+					) {
+						<mat-error class="mat-option-error mt-3">
+							<app-alert type="danger" icon="dangerous">
+								<p>Your fingerprints must be taken to continue to verify your identity.</p>
+								<p class="mb-0">
+									Download the
+									<a
+										aria-label="Download the Request for Fingerprinting form"
+										download="Request For Fingerprinting Form"
+										[href]="downloadFilePath"
+										>Request for Fingerprinting form</a
+									>, take it to a fingerprinting agency (such as your local police department), and complete this
+									application when you have documentation.
+								</p>
+							</app-alert>
+						</mat-error>
+					}
 				</form>
 			</div>
 		</div>
@@ -79,6 +82,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 })
 export class FormFingerprintsComponent {
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+	securityServicesRegulationUrl = SPD_CONSTANTS.urls.securityServicesRegulationUrl;
 
 	@Input() form!: FormGroup;
 
