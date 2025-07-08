@@ -5,7 +5,7 @@ namespace Spd.Resource.Repository.MDRARegistration;
 public interface IMDRARegistrationRepository
 {
     public Task<MDRARegistrationCmdResp> CreateMDRARegistrationAsync(CreateMDRARegistrationCmd cmd, CancellationToken ct);
-    public Task<MDRARegistrationResp> GetMDRARegistrationAsync(Guid registrationId, CancellationToken ct);
+    public Task<MDRARegistrationResp?> GetMDRARegistrationAsync(Guid registrationId, CancellationToken ct);
 }
 
 public record MDRARegistrationCmdResp(Guid RegistrationId);

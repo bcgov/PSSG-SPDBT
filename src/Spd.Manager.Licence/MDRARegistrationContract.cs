@@ -8,7 +8,7 @@ public interface IMDRARegistrationManager
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationNewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationRenewCommand command, CancellationToken ct);
     public Task<MDRARegistrationCommandResponse> Handle(MDRARegistrationUpdateCommand command, CancellationToken ct);
-    public Task<MDRARegistrationResponse> Handle(GetMDRARegistrationQuery query, CancellationToken ct);
+    public Task<MDRARegistrationResponse?> Handle(GetMDRARegistrationQuery query, CancellationToken ct);
     public Task<Guid?> Handle(GetMDRARegistrationIdQuery query, CancellationToken ct);
 
 }

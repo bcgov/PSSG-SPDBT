@@ -38,11 +38,11 @@ internal class MDRARegistrationRepository : IMDRARegistrationRepository
         return new MDRARegistrationCmdResp(registration.spd_orgregistrationid.Value);
     }
 
-    public async Task<MDRARegistrationResp> GetMDRARegistrationAsync(Guid registrationId, CancellationToken ct)
+    public async Task<MDRARegistrationResp?> GetMDRARegistrationAsync(Guid registrationId, CancellationToken ct)
     {
         spd_orgregistration? registration = await _context.GetOrgRegistrationById(registrationId, ct);
         if (registration == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"No registration found for id = {registrationId}");
+            return null;
         var resp = _mapper.Map<MDRARegistrationResp>(registration);
         var addrs = _context.spd_addresses.Where(a => a._spd_orgregistrationid_value == registrationId && a.statecode == DynamicsConstants.StateCode_Active)
             .ToList();
