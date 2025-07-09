@@ -80,5 +80,22 @@ namespace Spd.Presentation.Screening.Controllers
             }
             throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Cannot get idir info from token.");
         }
+
+        /// <summary>
+        /// Idir user whoami, for PSSO portal
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/idir-users/{userId}/login")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyIdir")]
+        public async Task<IdirUserProfileResponse> IdirUserLogin(Guid userId)
+        {
+            string? identityProvider = _currentUser.GetIdentityProvider();
+            if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                await _mediator.Send(new OrgUserUpdateLoginCommand(userId));
+            }
+            throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Cannot get idir info from token.");
+        }
     }
 }
