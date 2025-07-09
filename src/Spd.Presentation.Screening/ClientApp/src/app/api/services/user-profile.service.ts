@@ -13,6 +13,8 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { apiApplicantsWhoamiGet } from '../fn/user-profile/api-applicants-whoami-get';
 import { ApiApplicantsWhoamiGet$Params } from '../fn/user-profile/api-applicants-whoami-get';
+import { apiIdirUsersUserIdLoginGet } from '../fn/user-profile/api-idir-users-user-id-login-get';
+import { ApiIdirUsersUserIdLoginGet$Params } from '../fn/user-profile/api-idir-users-user-id-login-get';
 import { apiIdirUsersWhoamiGet } from '../fn/user-profile/api-idir-users-whoami-get';
 import { ApiIdirUsersWhoamiGet$Params } from '../fn/user-profile/api-idir-users-whoami-get';
 import { apiUsersWhoamiGet } from '../fn/user-profile/api-users-whoami-get';
@@ -122,6 +124,39 @@ export class UserProfileService extends BaseService {
    */
   apiIdirUsersWhoamiGet(params?: ApiIdirUsersWhoamiGet$Params, context?: HttpContext): Observable<IdirUserProfileResponse> {
     return this.apiIdirUsersWhoamiGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<IdirUserProfileResponse>): IdirUserProfileResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiIdirUsersUserIdLoginGet()` */
+  static readonly ApiIdirUsersUserIdLoginGetPath = '/api/idir-users/{userId}/login';
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiIdirUsersUserIdLoginGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersUserIdLoginGet$Response(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
+    return apiIdirUsersUserIdLoginGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiIdirUsersUserIdLoginGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersUserIdLoginGet(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<IdirUserProfileResponse> {
+    return this.apiIdirUsersUserIdLoginGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<IdirUserProfileResponse>): IdirUserProfileResponse => r.body)
     );
   }

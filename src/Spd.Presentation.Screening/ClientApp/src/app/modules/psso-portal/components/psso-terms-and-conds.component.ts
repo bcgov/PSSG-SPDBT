@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IdirUserProfileResponse } from 'src/app/api/models';
+import { UserProfileService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { PssoRoutes } from './psso-routes';
+import { PssoRoutes } from '../psso-routes';
 
 @Component({
 	selector: 'app-psso-terms-and-conds',
@@ -86,13 +88,7 @@ import { PssoRoutes } from './psso-routes';
 			</div>
 		}
 	`,
-	styles: [
-		`
-			.subheading {
-				color: grey;
-			}
-		`,
-	],
+	styles: [],
 	standalone: false,
 })
 export class PssoTermsAndCondsComponent implements OnInit {
@@ -112,6 +108,7 @@ export class PssoTermsAndCondsComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		protected authUserService: AuthUserIdirService,
 		private authProcessService: AuthProcessService,
+		private userProfileService: UserProfileService,
 		private utilService: UtilService,
 		private router: Router,
 	) {}
@@ -143,8 +140,16 @@ export class PssoTermsAndCondsComponent implements OnInit {
 		this.displayValidationErrors = !this.hasScrolledToBottom;
 		const isValid = this.form.valid && this.hasScrolledToBottom;
 
-		if (isValid) {
-			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
-		}
+		if (!isValid) return;
+
+		// Sets the isFirstTimeLogin to false
+		this.userProfileService
+			.apiIdirUsersUserIdLoginGet({
+				userId: this.authUserService.idirUserWhoamiProfile?.userId!,
+			})
+			.pipe()
+			.subscribe((_resp: IdirUserProfileResponse) => {
+				this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
+			});
 	}
 }
