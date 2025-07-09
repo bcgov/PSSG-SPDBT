@@ -8,13 +8,13 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { IdirUserProfileResponse } from '../../models/idir-user-profile-response';
+import { ActionResult } from '../../models/action-result';
 
 export interface ApiIdirUsersUserIdLoginGet$Params {
   userId: string;
 }
 
-export function apiIdirUsersUserIdLoginGet(http: HttpClient, rootUrl: string, params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
+export function apiIdirUsersUserIdLoginGet(http: HttpClient, rootUrl: string, params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
   const rb = new RequestBuilder(rootUrl, apiIdirUsersUserIdLoginGet.PATH, 'get');
   if (params) {
     rb.path('userId', params.userId, {});
@@ -25,7 +25,7 @@ export function apiIdirUsersUserIdLoginGet(http: HttpClient, rootUrl: string, pa
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<IdirUserProfileResponse>;
+      return r as StrictHttpResponse<ActionResult>;
     })
   );
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IdirUserProfileResponse } from 'src/app/api/models';
+import { ActionResult } from 'src/app/api/models';
 import { UserProfileService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -148,7 +148,7 @@ export class PssoTermsAndCondsComponent implements OnInit {
 				userId: this.authUserService.idirUserWhoamiProfile?.userId!,
 			})
 			.pipe()
-			.subscribe((_resp: IdirUserProfileResponse) => {
+			.subscribe((_resp: ActionResult) => {
 				this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 			});
 	}

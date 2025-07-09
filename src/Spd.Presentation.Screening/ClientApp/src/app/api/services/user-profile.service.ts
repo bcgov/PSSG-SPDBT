@@ -11,6 +11,7 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { ActionResult } from '../models/action-result';
 import { apiApplicantsWhoamiGet } from '../fn/user-profile/api-applicants-whoami-get';
 import { ApiApplicantsWhoamiGet$Params } from '../fn/user-profile/api-applicants-whoami-get';
 import { apiIdirUsersUserIdLoginGet } from '../fn/user-profile/api-idir-users-user-id-login-get';
@@ -141,7 +142,7 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiIdirUsersUserIdLoginGet$Response(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
+  apiIdirUsersUserIdLoginGet$Response(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
     return apiIdirUsersUserIdLoginGet(this.http, this.rootUrl, params, context);
   }
 
@@ -155,9 +156,9 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiIdirUsersUserIdLoginGet(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<IdirUserProfileResponse> {
+  apiIdirUsersUserIdLoginGet(params: ApiIdirUsersUserIdLoginGet$Params, context?: HttpContext): Observable<ActionResult> {
     return this.apiIdirUsersUserIdLoginGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<IdirUserProfileResponse>): IdirUserProfileResponse => r.body)
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
