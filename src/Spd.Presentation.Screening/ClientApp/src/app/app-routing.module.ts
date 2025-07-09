@@ -14,7 +14,7 @@ const routes: Routes = [
 		path: AppRoutes.ORG_REGISTRATION,
 		loadChildren: () =>
 			import('./modules/org-registration-portal/org-registration-portal.module').then(
-				(m) => m.OrgRegistrationPortalModule
+				(m) => m.OrgRegistrationPortalModule,
 			),
 		data: { title: 'Organization Registration' },
 	},
@@ -42,7 +42,7 @@ const routes: Routes = [
 		path: AppRoutes.SECURITY_SCREENING_APPLICATION,
 		loadChildren: () =>
 			import('./modules/security-screening-portal/security-screening-portal.module').then(
-				(m) => m.SecurityScreeningPortalModule
+				(m) => m.SecurityScreeningPortalModule,
 			),
 		data: { title: 'Security Screening' },
 	},
@@ -56,7 +56,8 @@ const routes: Routes = [
 	},
 	{
 		path: '**',
-		component: LandingComponent,
+		redirectTo: AppRoutes.path(AppRoutes.LANDING),
+		pathMatch: 'full',
 	},
 ];
 

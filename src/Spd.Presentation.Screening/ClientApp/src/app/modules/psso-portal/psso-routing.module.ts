@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { IdentityVerificationComponent } from './components/identity-verification.component';
 import { ManualSubmissionComponent } from './components/manual-submission.component';
+import { PssoTermsAndCondsComponent } from './components/psso-terms-and-conds.component';
 import { ScreeningChecksComponent } from './components/screening-checks.component';
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { PssoRoutes } from './psso-routes';
-import { PssoTermsAndCondsComponent } from './psso-terms-and-conds.component';
 import { PssoComponent } from './psso.component';
 
 const routes: Routes = [
@@ -20,10 +20,7 @@ const routes: Routes = [
 			{ path: '', redirectTo: PssoRoutes.path(PssoRoutes.SCREENING_STATUSES), pathMatch: 'full' },
 		],
 	},
-	{
-		path: PssoRoutes.ORG_TERMS_AND_CONDITIONS,
-		component: PssoTermsAndCondsComponent,
-	},
+	{ path: PssoRoutes.ORG_TERMS_AND_CONDITIONS, component: PssoTermsAndCondsComponent },
 ];
 
 @NgModule({
