@@ -36,6 +36,16 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 				<div class="text-center my-4">
 					Your application is submitted, but it won't be processed until payment is received.
 				</div>
+				<div class="text-center my-4">
+					You can download the
+					<a
+						tabindex="0"
+						aria-label="Download the Manual Payment form"
+						(click)="onDownloadManualPaymentForm()"
+						(keydown)="onKeydownDownloadManualPaymentForm($event)"
+						>Manual Payment Form</a
+					>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
+				</div>
 
 				<div class="d-flex justify-content-end">
 					<button

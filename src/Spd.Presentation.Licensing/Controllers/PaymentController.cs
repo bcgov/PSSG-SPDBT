@@ -301,7 +301,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 if (!paybcPaymentResult.Success && String.Equals(paybcPaymentResult.MessageText, "Payment Canceled", StringComparison.InvariantCultureIgnoreCase))
                 {
                     _logger.LogInformation("Payment is being cancelled.");
-                    return Redirect($"{hostUrl}{cancelPath}?bizId={bizId}");
+                    return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}?bizId={bizId}");
                 }
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));

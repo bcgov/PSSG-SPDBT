@@ -102,41 +102,39 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
-					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
+					@if (isSoleProprietorSimultaneousFlow) {
 						<mat-step completed="false">
 							<ng-template matStepLabel
 								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
 							>
 						</mat-step>
-
 						<mat-step completed="false">
 							<ng-template matStepLabel
 								>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 							>
 						</mat-step>
-
 						<mat-step completed="false">
 							<ng-template matStepLabel
 								>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business Licence</ng-template
 							>
 						</mat-step>
-					</ng-container>
-
-					<ng-template #isNotSoleProprietor>
+					} @else {
 						<mat-step completed="false">
 							<ng-template matStepLabel>Pay</ng-template>
 						</mat-step>
-					</ng-template>
+					}
 				</mat-stepper>
 			</div>
 		</div>
 
 		<ng-template #StepNameSpace>
 			<!-- wrap label in large view -->
-			<ng-container *ngIf="isSoleProprietorSimultaneousFlow">
+			@if (isSoleProprietorSimultaneousFlow) {
 				<span class="d-xxl-none">&nbsp;</span><span class="d-none d-xxl-inline"><br /></span>
-			</ng-container>
-			<ng-container *ngIf="!isSoleProprietorSimultaneousFlow">&nbsp;</ng-container>
+			}
+			@if (!isSoleProprietorSimultaneousFlow) {
+				<span>&nbsp;</span>
+			}
 		</ng-template>
 	`,
 	styles: [],

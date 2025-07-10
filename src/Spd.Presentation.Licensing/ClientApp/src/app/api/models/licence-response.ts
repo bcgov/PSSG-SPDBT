@@ -26,6 +26,7 @@ export interface LicenceResponse {
   employerPrimaryAddress?: Address;
   expiryDate?: string;
   gdsdTeamId?: string | null;
+  isDogTrainedByAccreditedSchool?: boolean | null;
   isDogsPurposeDetectionDrugs?: boolean;
   isDogsPurposeDetectionExplosives?: boolean;
   isDogsPurposeProtection?: boolean;

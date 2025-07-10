@@ -28,7 +28,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Licence Selection</ng-template>
+				<ng-template matStepLabel
+					>Licence<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
+				>
 				<app-steps-worker-licence-selection
 					[isLoggedIn]="false"
 					[showSaveAndExit]="false"
@@ -91,19 +93,17 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
-			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
+			@if (isSoleProprietorSimultaneousFlow) {
 				<mat-step completed="false">
 					<ng-template matStepLabel
 						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Information</ng-template
 					>
 				</mat-step>
-
 				<mat-step completed="false">
 					<ng-template matStepLabel
 						>Business<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Selection</ng-template
 					>
 				</mat-step>
-
 				<mat-step completed="false">
 					<ng-template matStepLabel
 						>Review<ng-container *ngTemplateOutlet="StepNameSpace"></ng-container>Business<ng-container
@@ -112,13 +112,11 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 						>Licence</ng-template
 					>
 				</mat-step>
-			</ng-container>
-
-			<ng-template #isNotSoleProprietor>
+			} @else {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Pay</ng-template>
 				</mat-step>
-			</ng-template>
+			}
 		</mat-stepper>
 
 		<ng-template #StepNameSpace>

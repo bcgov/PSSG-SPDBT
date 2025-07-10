@@ -9,6 +9,7 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -216,11 +217,34 @@ namespace Spd.Presentation.Licensing.Controllers
         /// http://localhost:5114/api/licences/security-worker-licence?firstName=XXX&lastName=yyy
         /// </summary>
         [Route("api/licences/security-worker-licence")]
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence([FromQuery] string? licenceNumber, [FromQuery] string? firstName = null, [FromQuery] string? lastName = null)
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence(
+            [FromBody] GoogleRecaptcha recaptcha,
+            [FromQuery] string? licenceNumber,
+            [FromQuery] string? firstName,
+            [FromQuery] string? lastName,
+            CancellationToken ct)
         {
+            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber?.Trim(), firstName?.Trim(), lastName?.Trim(), null, ServiceTypeCode.SecurityWorkerLicence));
+        }
+
+        /// <summary>
+        /// Get latest secure worker licences info by a list of licence numbers
+        /// Example: http://localhost:5114/api/licences/security-worker-licence-in-bulk
+        /// </summary>
+        [Route("api/licences/security-worker-licence-in-bulk")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicenceInBulk([FromBody] LicenceNumbersRequest request, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(request.LicenceNumbers) || string.IsNullOrWhiteSpace(request.Recaptcha?.RecaptchaCode))
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing data.");
+            await VerifyGoogleRecaptchaAsync(request.Recaptcha, ct);
+
+            var numbers = FindMatchingSWLNumber(request.LicenceNumbers);
+            return await _mediator.Send(new LicenceBulkSearch(numbers, ServiceTypeCode.SecurityWorkerLicence), ct);
         }
 
         /// <summary>
@@ -228,11 +252,30 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Example: http://localhost:5114/api/licences/business-licence?licenceNumber=B123
         /// </summary>
         [Route("api/licences/business-licence")]
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromQuery] string? licenceNumber, [FromQuery] string? businessName = null)
+        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromBody] GoogleRecaptcha recaptcha, [FromQuery] string? licenceNumber, [FromQuery] string? businessName, CancellationToken ct)
         {
+            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
         }
+
+        private static List<string> FindMatchingSWLNumber(string input)
+        {
+            var matches = new List<string>();
+            var pattern = @"E\d{6}";
+            foreach (Match match in Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromSeconds(10)))
+            {
+                matches.Add(match.Value);
+            }
+            return matches;
+        }
     }
+
+    public record LicenceNumbersRequest
+    {
+        public GoogleRecaptcha Recaptcha { get; set; } = null!;
+        public string LicenceNumbers { get; set; } = string.Empty;//contain the licence numbers seperated by comma
+    }
+
 }
