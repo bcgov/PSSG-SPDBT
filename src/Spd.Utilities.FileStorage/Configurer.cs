@@ -24,7 +24,6 @@ public class Configurer : IConfigureComponents
             {
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
-                SignatureVersion = "2",
                 SignatureMethod = SigningAlgorithm.HmacSHA1,
                 UseHttp = false,
             };
@@ -38,7 +37,6 @@ public class Configurer : IConfigureComponents
             {
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
-                SignatureVersion = "2",
                 SignatureMethod = SigningAlgorithm.HmacSHA1,
                 UseHttp = false,
             };
