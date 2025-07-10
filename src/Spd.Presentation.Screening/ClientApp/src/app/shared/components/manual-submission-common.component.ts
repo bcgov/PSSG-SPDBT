@@ -54,572 +54,564 @@ export interface ManualSubmissionBody {
 	selector: 'app-manual-submission-common',
 	template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-		  <div class="row mb-2">
-		    <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
-		      <h2>
-		        Manual Submissions
-		        <div class="mt-2 fs-5 fw-light">
-		          @if (portal === portalTypeCodes.Psso) {
-		            Enter the applicant's information and submit their application
-		          } @else {
-		            @if (isNotVolunteerOrg) {
-		              <div>
-		                Enter the applicant's information, upload their consent form, and then pay the criminal record check
-		                fee
-		              </div>
-		            } @else {
-		              Enter the applicant's information and then upload their consent form
-		            }
-		          }
-		        </div>
-		      </h2>
-		    </div>
-		  </div>
-		
-		  <form [formGroup]="form" novalidate>
-		    <div class="row">
-		      <div class="col-xxl-10 col-xl-12 col-lg-12">
-		        <mat-divider class="mat-divider-main mb-3"></mat-divider>
-		        <section>
-		          <div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
-		          <mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
-		            Applicant has only a given name OR a surname
-		          </mat-checkbox>
-		          <div class="row">
-		            <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		              <mat-form-field>
-		                <mat-label
-		                  >Legal Given Name
-		                  @if (isGivenNameOptional) {
-		                    <span class="optional-label">(optional)</span>
-		                    }</mat-label
-		                    >
-		                    <input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-		                    @if (form.get('givenName')?.hasError('required')) {
-		                      <mat-error> This is required </mat-error>
-		                    }
-		                  </mat-form-field>
-		                </div>
-		                <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                  <mat-form-field>
-		                    <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-		                    <input matInput formControlName="middleName1" maxlength="40" />
-		                  </mat-form-field>
-		                </div>
-		                <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                  <mat-form-field>
-		                    <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-		                    <input matInput formControlName="middleName2" maxlength="40" />
-		                  </mat-form-field>
-		                </div>
-		                <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                  <mat-form-field>
-		                    <mat-label>Legal Surname</mat-label>
-		                    <input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-		                    @if (!isGivenNameOptional && form.get('surname')?.hasError('required')) {
-		                      <mat-error>
-		                        This is required
-		                      </mat-error>
-		                    }
-		                    @if (isGivenNameOptional && form.get('surname')?.hasError('required')) {
-		                      <mat-error>
-		                        Use this field if applicant has only one name
-		                      </mat-error>
-		                    }
-		                  </mat-form-field>
-		                </div>
-		
-		                <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                  <mat-form-field>
-		                    <mat-label>Email</mat-label>
-		                    <input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
-		                    @if (form.get('emailAddress')?.hasError('required')) {
-		                      <mat-error> This is required </mat-error>
-		                    }
-		                    @if (form.get('emailAddress')?.hasError('email')) {
-		                      <mat-error>
-		                        Must be a valid email address
-		                      </mat-error>
-		                    }
-		                  </mat-form-field>
-		                </div>
-		                <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                  <mat-form-field>
-		                    <mat-label>Phone Number</mat-label>
-		                    <input
-		                      matInput
-		                      formControlName="phoneNumber"
-		                      [mask]="phoneMask"
-		                      [showMaskTyped]="false"
-		                      [errorStateMatcher]="matcher"
-		                      />
-		                      @if (form.get('phoneNumber')?.hasError('required')) {
-		                        <mat-error> This is required </mat-error>
-		                      }
-		                      @if (form.get('phoneNumber')?.hasError('mask')) {
-		                        <mat-error>This must be 10 digits</mat-error>
-		                      }
-		                    </mat-form-field>
-		                  </div>
-		                  <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                    <mat-form-field>
-		                      <mat-label>Date of Birth</mat-label>
-		                      <input
-		                        matInput
-		                        [matDatepicker]="picker"
-		                        formControlName="dateOfBirth"
-		                        [max]="maxBirthDate"
-		                        [min]="minDate"
-		                        [errorStateMatcher]="matcher"
-		                        />
-		                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-		                        <mat-datepicker #picker startView="multi-year"></mat-datepicker>
-		                        @if (form.get('dateOfBirth')?.hasError('required')) {
-		                          <mat-error>This is required</mat-error>
-		                        }
-		                        @if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
-		                          <mat-error>
-		                            This must be on or before {{ maxBirthDate | formatDate }}
-		                          </mat-error>
-		                        }
-		                        @if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
-		                          <mat-error>
-		                            Invalid date of birth
-		                          </mat-error>
-		                        }
-		                      </mat-form-field>
-		                    </div>
-		                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                      <mat-form-field>
-		                        <mat-label>Birthplace</mat-label>
-		                        <input
-		                          matInput
-		                          formControlName="birthPlace"
-		                          placeholder="City, Country"
-		                          [errorStateMatcher]="matcher"
-		                          maxlength="100"
-		                          />
-		                          @if (form.get('birthPlace')?.hasError('required')) {
-		                            <mat-error> This is required </mat-error>
-		                          }
-		                        </mat-form-field>
-		                      </div>
-		                      <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                        <mat-form-field>
-		                          <mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
-		                          <input matInput formControlName="driversLicense" mask="00000009" />
-		                          @if (form.get('driversLicense')?.hasError('mask')) {
-		                            <mat-error>
-		                              This must be 7 or 8 digits
-		                            </mat-error>
-		                          }
-		                        </mat-form-field>
-		                      </div>
-		                      <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                        <mat-form-field>
-		                          <mat-label>Sex</mat-label>
-		                          <mat-select formControlName="genderCode">
-		                            @for (gdr of genderTypes; track gdr) {
-		                              <mat-option [value]="gdr.code">
-		                                {{ gdr.desc }}
-		                              </mat-option>
-		                            }
-		                          </mat-select>
-		                          @if (form.get('genderCode')?.hasError('required')) {
-		                            <mat-error> This is required </mat-error>
-		                          }
-		                        </mat-form-field>
-		                      </div>
-		                      <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                        <mat-form-field>
-		                          <mat-label>Job Title</mat-label>
-		                          <input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-		                          @if (form.get('jobTitle')?.hasError('required')) {
-		                            <mat-error>This is required</mat-error>
-		                          }
-		                        </mat-form-field>
-		                      </div>
-		                      @if (showScreeningType) {
-		                        <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                          <mat-form-field>
-		                            <mat-label>Application Type</mat-label>
-		                            <mat-select formControlName="screeningType">
-		                              @for (scr of screeningTypes; track scr) {
-		                                <mat-option [value]="scr.code">
-		                                  {{ scr.desc }}
-		                                </mat-option>
-		                              }
-		                            </mat-select>
-		                            @if (form.get('screeningType')?.hasError('required')) {
-		                              <mat-error>This is required</mat-error>
-		                            }
-		                          </mat-form-field>
-		                        </div>
-		                      }
-		                      @if (isDisplayFacilityName) {
-		                        <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                          <mat-form-field>
-		                            <mat-label>Company / Facility Name</mat-label>
-		                            <input
-		                              matInput
-		                              formControlName="contractedCompanyName"
-		                              [errorStateMatcher]="matcher"
-		                              maxlength="100"
-		                              />
-		                              @if (form.get('contractedCompanyName')?.hasError('required')) {
-		                                <mat-error
-		                                  >This is required</mat-error
-		                                  >
-		                              }
-		                            </mat-form-field>
-		                          </div>
-		                        }
-		                        @if (portal === portalTypeCodes.Psso) {
-		                          <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                            <mat-form-field>
-		                              <mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
-		                              <input matInput formControlName="employeeId" mask="000000" />
-		                              @if (form.get('employeeId')?.hasError('mask')) {
-		                                <mat-error> This must be 6 digits </mat-error>
-		                              }
-		                            </mat-form-field>
-		                          </div>
-		                        }
-		                        @if (showMinistries) {
-		                          <div class="col-xl-6 col-lg-12 col-md-12">
-		                            <mat-form-field>
-		                              <mat-label>Ministry</mat-label>
-		                              <mat-select formControlName="orgId" (selectionChange)="onChangeMinistry($event)">
-		                                @for (ministry of ministries; track ministry) {
-		                                  <mat-option [value]="ministry.id">
-		                                    {{ ministry.name }}
-		                                  </mat-option>
-		                                }
-		                              </mat-select>
-		                              @if (form.get('orgId')?.hasError('required')) {
-		                                <mat-error>This is required</mat-error>
-		                              }
-		                            </mat-form-field>
-		                          </div>
-		                        }
-		                        @if (showServiceType) {
-		                          <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                            <mat-form-field>
-		                              <mat-label>Service Type</mat-label>
-		                              <mat-select
-		                                formControlName="serviceType"
-		                                (selectionChange)="onChangeServiceType($event)"
-		                                [errorStateMatcher]="matcher"
-		                                >
-		                                @for (srv of serviceTypes; track srv) {
-		                                  <mat-option [value]="srv.code">
-		                                    {{ srv.desc }}
-		                                  </mat-option>
-		                                }
-		                              </mat-select>
-		                              @if (form.get('serviceType')?.hasError('required')) {
-		                                <mat-error>This is required</mat-error>
-		                              }
-		                            </mat-form-field>
-		                          </div>
-		                        }
-		
-		                        @if (showPaidBy) {
-		                          <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
-		                            <mat-form-field>
-		                              <mat-label>Paid by</mat-label>
-		                              <mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
-		                                @for (payer of payerPreferenceTypes; track payer) {
-		                                  <mat-option [value]="payer.code">
-		                                    {{ payer.desc }}
-		                                  </mat-option>
-		                                }
-		                              </mat-select>
-		                              @if (form.get('payeeType')?.hasError('required')) {
-		                                <mat-error>This is required</mat-error>
-		                              }
-		                            </mat-form-field>
-		                          </div>
-		                        }
-		                      </div>
-		                      @if (serviceTypeIsPssoVs) {
-		                        <app-alert type="warning">{{ pssoVsWarning }}</app-alert>
-		                      }
-		                    </section>
-		
-		                    <mat-divider class="my-3"></mat-divider>
-		                    <section>
-		                      <div class="text-minor-heading fw-semibold mb-2">Does the applicant have a previous name?</div>
-		                      <div class="row">
-		                        <div class="col-xxl-3 col-xl-4 col-lg-12">
-		                          <mat-radio-group
-		                            aria-label="Select an option"
-		                            formControlName="previousNameFlag"
-		                            class="d-flex flex-row"
-		                            >
-		                            <mat-radio-button class="me-4" style="width: initial;" [value]="booleanTypeCodes.No"
-		                              >No</mat-radio-button
-		                              >
-		                              <mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-		                            </mat-radio-group>
-		                            @if (
-		                              (form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-		                              form.get('previousNameFlag')?.invalid &&
-		                              form.get('previousNameFlag')?.hasError('required')
-		                              ) {
-		                              <mat-error
-		                                class="mat-option-error"
-		                                >This is required</mat-error
-		                                >
-		                              }
-		                            </div>
-		                          </div>
-		
-		                          @if (previousNameFlag.value === booleanTypeCodes.Yes) {
-		                            <div>
-		                              <div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-		                              @for (group of getFormControls.controls; track group; let i = $index) {
-		                                <ng-container formArrayName="aliases">
-		                                  <div class="row" [formGroupName]="i">
-		                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-		                                        <input matInput type="text" formControlName="givenName" maxlength="40" />
-		                                      </mat-form-field>
-		                                    </div>
-		                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-		                                        <input matInput type="text" formControlName="middleName1" maxlength="40" />
-		                                      </mat-form-field>
-		                                    </div>
-		                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-		                                        <input matInput type="text" formControlName="middleName2" maxlength="40" />
-		                                      </mat-form-field>
-		                                    </div>
-		                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Surname</mat-label>
-		                                        <input
-		                                          matInput
-		                                          type="text"
-		                                          formControlName="surname"
-		                                          required
-		                                          [errorStateMatcher]="matcher"
-		                                          maxlength="40"
-		                                          />
-		                                          @if (group.get('surname')?.hasError('required')) {
-		                                            <mat-error> This is required </mat-error>
-		                                          }
-		                                        </mat-form-field>
-		                                      </div>
-		                                      <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
-		                                        @if (moreThanOneRowExists) {
-		                                          <button
-		                                            mat-mini-fab
-		                                            class="delete-row-button mb-3"
-		                                            matTooltip="Remove previous name"
-		                                            (click)="onDeleteRow(i)"
-		                                            aria-label="Remove row"
-		                                            >
-		                                            <mat-icon>delete_outline</mat-icon>
-		                                          </button>
-		                                        }
-		                                      </div>
-		                                    </div>
-		                                  </ng-container>
-		                                }
-		                                @if (isAllowAliasAdd) {
-		                                  <div class="row">
-		                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-		                                      <button mat-stroked-button (click)="onAddRow()">
-		                                        <mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
-		                                      </button>
-		                                    </div>
-		                                  </div>
-		                                }
-		                              </div>
-		                            }
-		                          </section>
-		
-		                          <mat-divider class="my-3"></mat-divider>
-		                          <section>
-		                            <div class="text-minor-heading fw-semibold mb-2">Mailing Address</div>
-		                            <div class="row mt-3">
-		                              <div class="col-xxl-8 col-xl-10 col-lg-12">
-		                                <app-address-form-autocomplete
-		                                  (autocompleteAddress)="onAddressAutocomplete($event)"
-		                                  (enterAddressManually)="onEnterAddressManually()"
-		                                  >
-		                                </app-address-form-autocomplete>
-		                                @if (
-		                                  (form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-		                                  form.get('addressSelected')?.invalid &&
-		                                  form.get('addressSelected')?.hasError('required')
-		                                  ) {
-		                                  <mat-error
-		                                    class="mat-option-error"
-		                                    >
-		                                    This is required
-		                                  </mat-error>
-		                                }
-		
-		                                @if (form.get('addressSelected')?.value) {
-		                                  <div class="row">
-		                                    <div class="col-12">
-		                                      <div class="text-minor-heading fw-semibold mb-2">Address Information</div>
-		                                      <mat-form-field>
-		                                        <mat-label>Street Address 1</mat-label>
-		                                        <input matInput formControlName="addressLine1" maxlength="100" />
-		                                        @if (form.get('addressLine1')?.hasError('required')) {
-		                                          <mat-error>This is required</mat-error>
-		                                        }
-		                                      </mat-form-field>
-		                                    </div>
-		                                  </div>
-		                                  <div class="row">
-		                                    <div class="col-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-		                                        <input matInput formControlName="addressLine2" maxlength="100" />
-		                                      </mat-form-field>
-		                                    </div>
-		                                  </div>
-		                                  <div class="row">
-		                                    <div class="col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>City</mat-label>
-		                                        <input matInput formControlName="city" maxlength="100" />
-		                                        @if (form.get('city')?.hasError('required')) {
-		                                          <mat-error>This is required</mat-error>
-		                                        }
-		                                      </mat-form-field>
-		                                    </div>
-		                                    <div class="col-md-6 col-sm-12">
-		                                      <mat-form-field>
-		                                        <mat-label>Postal/Zip Code</mat-label>
-		                                        <input
-		                                          matInput
-		                                          formControlName="postalCode"
-		                                          oninput="this.value = this.value.toUpperCase()"
-		                                          maxlength="20"
-		                                          />
-		                                          @if (form.get('postalCode')?.hasError('required')) {
-		                                            <mat-error>This is required</mat-error>
-		                                          }
-		                                        </mat-form-field>
-		                                      </div>
-		                                    </div>
-		                                    <div class="row">
-		                                      <div class="col-md-6 col-sm-12">
-		                                        <mat-form-field>
-		                                          <mat-label>Province/State</mat-label>
-		                                          <input matInput formControlName="province" maxlength="100" />
-		                                          @if (form.get('province')?.hasError('required')) {
-		                                            <mat-error>This is required</mat-error>
-		                                          }
-		                                        </mat-form-field>
-		                                      </div>
-		                                      <div class="col-md-6 col-sm-12">
-		                                        <mat-form-field>
-		                                          <mat-label>Country</mat-label>
-		                                          <input matInput formControlName="country" maxlength="100" />
-		                                          @if (form.get('country')?.hasError('required')) {
-		                                            <mat-error>This is required</mat-error>
-		                                          }
-		                                        </mat-form-field>
-		                                      </div>
-		                                    </div>
-		                                  }
-		                                </div>
-		                              </div>
-		                            </section>
-		
-		                            <mat-divider class="my-3"></mat-divider>
-		                            <section>
-		                              <div class="text-minor-heading fw-semibold mb-2">Declaration</div>
-		                              <div class="row">
-		                                <div class="col-md-12 col-sm-12">
-		                                  <mat-checkbox formControlName="agreeToCompleteAndAccurate">
-		                                    I certify that, to the best of my knowledge, the information I have provided and will provide as
-		                                    necessary is complete and accurate
-		                                  </mat-checkbox>
-		                                  @if (
-		                                    (form.get('agreeToCompleteAndAccurate')?.dirty ||
-		                                    form.get('agreeToCompleteAndAccurate')?.touched) &&
-		                                    form.get('agreeToCompleteAndAccurate')?.invalid &&
-		                                    form.get('agreeToCompleteAndAccurate')?.hasError('required')
-		                                    ) {
-		                                    <mat-error
-		                                      class="mat-option-error"
-		                                      >This is required</mat-error
-		                                      >
-		                                  }
-		                                </div>
-		                                <div class="col-md-12 col-sm-12">
-		                                  <mat-checkbox formControlName="haveVerifiedIdentity">
-		                                    @if (portal === portalTypeCodes.Psso) {
-		                                      I have verified the identity of the applicant for this criminal record check
-		                                    } @else {
-		                                      I confirm that I have verified the identity of the applicant for this criminal record check
-		                                    }
-		                                  </mat-checkbox>
-		                                  @if (
-		                                    (form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
-		                                    form.get('haveVerifiedIdentity')?.invalid &&
-		                                    form.get('haveVerifiedIdentity')?.hasError('required')
-		                                    ) {
-		                                    <mat-error
-		                                      class="mat-option-error"
-		                                      >This is required</mat-error
-		                                      >
-		                                    }
-		                                  </div>
-		                                </div>
-		
-		                                @if (portal === portalTypeCodes.Crrp) {
-		                                  <mat-divider class="my-3"></mat-divider>
-		                                  <div class="text-minor-heading fw-semibold mb-2">
-		                                    Upload the copy of signed consent form sent by the applicant
-		                                  </div>
-		                                  <div class="row my-4">
-		                                    <div class="col-xxl-8 col-xl-10 col-lg-12">
-		                                      <app-file-upload
-		                                        [maxNumberOfFiles]="1"
-		                                        [control]="attachments"
-		                                        [files]="attachments.value"
-		                                      ></app-file-upload>
-		                                      @if (
-		                                        (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		                                        form.get('attachments')?.invalid &&
-		                                        form.get('attachments')?.hasError('required')
-		                                        ) {
-		                                        <mat-error
-		                                          class="mat-option-error"
-		                                          >This is required</mat-error
-		                                          >
-		                                        }
-		                                      </div>
-		                                    </div>
-		                                  }
-		                                </section>
-		                              </div>
-		                            </div>
-		                          </form>
-		                          <div class="row">
-		                            <div class="offset-xxl-6 offset-xl-8 offset-lg-6 col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-		                              <button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-		                                <i class="fa fa-times mr-2"></i>Cancel
-		                              </button>
-		                            </div>
-		                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-		                              <button mat-flat-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
-		                            </div>
-		                          </div>
-		                        </section>
-		`,
+			<div class="row mb-2">
+				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
+					<h2>
+						Manual Submissions
+						<div class="mt-2 fs-5 fw-light">
+							@if (portal === portalTypeCodes.Psso) {
+								Enter the applicant's information and submit their application
+							} @else {
+								@if (isNotVolunteerOrg) {
+									<div>
+										Enter the applicant's information, upload their consent form, and then pay the criminal record check
+										fee
+									</div>
+								} @else {
+									Enter the applicant's information and then upload their consent form
+								}
+							}
+						</div>
+					</h2>
+				</div>
+			</div>
+
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xxl-10 col-xl-12 col-lg-12">
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						<section>
+							<div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
+							<mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
+								Applicant has only a given name OR a surname
+							</mat-checkbox>
+							<div class="row">
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label
+											>Legal Given Name
+											@if (isGivenNameOptional) {
+												<span class="optional-label">(optional)</span>
+											}
+										</mat-label>
+										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+										@if (form.get('givenName')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="middleName1" maxlength="40" />
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="middleName2" maxlength="40" />
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Legal Surname</mat-label>
+										<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+										@if (!isGivenNameOptional && form.get('surname')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (isGivenNameOptional && form.get('surname')?.hasError('required')) {
+											<mat-error> Use this field if applicant has only one name </mat-error>
+										}
+									</mat-form-field>
+								</div>
+
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Email</mat-label>
+										<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
+										@if (form.get('emailAddress')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (form.get('emailAddress')?.hasError('email')) {
+											<mat-error> Must be a valid email address </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Phone Number</mat-label>
+										<input
+											matInput
+											formControlName="phoneNumber"
+											[mask]="phoneMask"
+											[showMaskTyped]="false"
+											[errorStateMatcher]="matcher"
+										/>
+										@if (form.get('phoneNumber')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (form.get('phoneNumber')?.hasError('mask')) {
+											<mat-error>This must be 10 digits</mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Date of Birth</mat-label>
+										<input
+											matInput
+											[matDatepicker]="picker"
+											formControlName="dateOfBirth"
+											[max]="maxBirthDate"
+											[min]="minDate"
+											[errorStateMatcher]="matcher"
+										/>
+										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+										@if (form.get('dateOfBirth')?.hasError('required')) {
+											<mat-error>This is required</mat-error>
+										}
+										@if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
+											<mat-error> This must be on or before {{ maxBirthDate | formatDate }} </mat-error>
+										}
+										@if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
+											<mat-error> Invalid date of birth </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Birthplace</mat-label>
+										<input
+											matInput
+											formControlName="birthPlace"
+											placeholder="City, Country"
+											[errorStateMatcher]="matcher"
+											maxlength="100"
+										/>
+										@if (form.get('birthPlace')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="driversLicense" mask="00000009" />
+										@if (form.get('driversLicense')?.hasError('mask')) {
+											<mat-error> This must be 7 or 8 digits </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Sex</mat-label>
+										<mat-select formControlName="genderCode">
+											@for (gdr of genderTypes; track gdr) {
+												<mat-option [value]="gdr.code">
+													{{ gdr.desc }}
+												</mat-option>
+											}
+										</mat-select>
+										@if (form.get('genderCode')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Job Title</mat-label>
+										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
+										@if (form.get('jobTitle')?.hasError('required')) {
+											<mat-error>This is required</mat-error>
+										}
+									</mat-form-field>
+								</div>
+								@if (showScreeningType) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Application Type</mat-label>
+											<mat-select formControlName="screeningType">
+												@for (scr of screeningTypes; track scr) {
+													<mat-option [value]="scr.code">
+														{{ scr.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('screeningType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (isDisplayFacilityName) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Company / Facility Name</mat-label>
+											<input
+												matInput
+												formControlName="contractedCompanyName"
+												[errorStateMatcher]="matcher"
+												maxlength="100"
+											/>
+											@if (form.get('contractedCompanyName')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (portal === portalTypeCodes.Psso) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
+											<input matInput formControlName="employeeId" mask="000000" />
+											@if (form.get('employeeId')?.hasError('mask')) {
+												<mat-error> This must be 6 digits </mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (showMinistries) {
+									<div class="col-xl-6 col-lg-12 col-md-12">
+										<mat-form-field>
+											<mat-label>Ministry</mat-label>
+											<mat-select formControlName="orgId" (selectionChange)="onChangeMinistry($event)">
+												@for (ministry of ministries; track ministry) {
+													<mat-option [value]="ministry.id">
+														{{ ministry.name }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('orgId')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (showServiceType) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Service Type</mat-label>
+											<mat-select
+												formControlName="serviceType"
+												(selectionChange)="onChangeServiceType($event)"
+												[errorStateMatcher]="matcher"
+											>
+												@for (srv of serviceTypes; track srv) {
+													<mat-option [value]="srv.code">
+														{{ srv.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('serviceType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+
+								@if (showPaidBy) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Paid by</mat-label>
+											<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
+												@for (payer of payerPreferenceTypes; track payer) {
+													<mat-option [value]="payer.code">
+														{{ payer.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('payeeType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+							</div>
+							@if (serviceTypeIsPssoVs) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
+									</div>
+								</div>
+							}
+							@if (serviceTypeIsPssoPeCrc) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">
+											<div [innerHtml]="pssoPeCrcWarning"></div>
+										</app-alert>
+									</div>
+								</div>
+							}
+							@if (serviceTypeIsPssoPeCrcVs) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">
+											<div [innerHtml]="pssoPeCrcVsWarning"></div>
+										</app-alert>
+									</div>
+								</div>
+							}
+						</section>
+
+						<mat-divider class="my-3"></mat-divider>
+						<section>
+							<div class="text-minor-heading fw-semibold mb-2">Does the applicant have a previous name?</div>
+							<div class="row">
+								<div class="col-xxl-3 col-xl-4 col-lg-12">
+									<mat-radio-group
+										aria-label="Select an option"
+										formControlName="previousNameFlag"
+										class="d-flex flex-row"
+									>
+										<mat-radio-button class="me-4" style="width: initial;" [value]="booleanTypeCodes.No"
+											>No</mat-radio-button
+										>
+										<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+									</mat-radio-group>
+									@if (
+										(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+										form.get('previousNameFlag')?.invalid &&
+										form.get('previousNameFlag')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
+								</div>
+							</div>
+
+							@if (previousNameFlag.value === booleanTypeCodes.Yes) {
+								<div>
+									<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+									@for (group of getFormControls.controls; track group; let i = $index) {
+										<ng-container formArrayName="aliases">
+											<div class="row" [formGroupName]="i">
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="givenName" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="middleName1" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="middleName2" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Surname</mat-label>
+														<input
+															matInput
+															type="text"
+															formControlName="surname"
+															required
+															[errorStateMatcher]="matcher"
+															maxlength="40"
+														/>
+														@if (group.get('surname')?.hasError('required')) {
+															<mat-error> This is required </mat-error>
+														}
+													</mat-form-field>
+												</div>
+												<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
+													@if (moreThanOneRowExists) {
+														<button
+															mat-mini-fab
+															class="delete-row-button mb-3"
+															matTooltip="Remove previous name"
+															(click)="onDeleteRow(i)"
+															aria-label="Remove row"
+														>
+															<mat-icon>delete_outline</mat-icon>
+														</button>
+													}
+												</div>
+											</div>
+										</ng-container>
+									}
+									@if (isAllowAliasAdd) {
+										<div class="row">
+											<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+												<button mat-stroked-button (click)="onAddRow()">
+													<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+												</button>
+											</div>
+										</div>
+									}
+								</div>
+							}
+						</section>
+
+						<mat-divider class="my-3"></mat-divider>
+						<section>
+							<div class="text-minor-heading fw-semibold mb-2">Mailing Address</div>
+							<div class="row mt-3">
+								<div class="col-xxl-8 col-xl-10 col-lg-12">
+									<app-address-form-autocomplete
+										(autocompleteAddress)="onAddressAutocomplete($event)"
+										(enterAddressManually)="onEnterAddressManually()"
+									>
+									</app-address-form-autocomplete>
+									@if (
+										(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+										form.get('addressSelected')?.invalid &&
+										form.get('addressSelected')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error"> This is required </mat-error>
+									}
+
+									@if (form.get('addressSelected')?.value) {
+										<div class="row">
+											<div class="col-12">
+												<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+												<mat-form-field>
+													<mat-label>Street Address 1</mat-label>
+													<input matInput formControlName="addressLine1" maxlength="100" />
+													@if (form.get('addressLine1')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
+												</mat-form-field>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12">
+												<mat-form-field>
+													<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+													<input matInput formControlName="addressLine2" maxlength="100" />
+												</mat-form-field>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-6 col-sm-12">
+												<mat-form-field>
+													<mat-label>City</mat-label>
+													<input matInput formControlName="city" maxlength="100" />
+													@if (form.get('city')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
+												</mat-form-field>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<mat-form-field>
+													<mat-label>Postal/Zip Code</mat-label>
+													<input
+														matInput
+														formControlName="postalCode"
+														oninput="this.value = this.value.toUpperCase()"
+														maxlength="20"
+													/>
+													@if (form.get('postalCode')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
+												</mat-form-field>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-6 col-sm-12">
+												<mat-form-field>
+													<mat-label>Province/State</mat-label>
+													<input matInput formControlName="province" maxlength="100" />
+													@if (form.get('province')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
+												</mat-form-field>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<mat-form-field>
+													<mat-label>Country</mat-label>
+													<input matInput formControlName="country" maxlength="100" />
+													@if (form.get('country')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
+												</mat-form-field>
+											</div>
+										</div>
+									}
+								</div>
+							</div>
+						</section>
+
+						<mat-divider class="my-3"></mat-divider>
+						<section>
+							<div class="text-minor-heading fw-semibold mb-2">Declaration</div>
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									<mat-checkbox formControlName="agreeToCompleteAndAccurate">
+										I certify that, to the best of my knowledge, the information I have provided and will provide as
+										necessary is complete and accurate
+									</mat-checkbox>
+									@if (
+										(form.get('agreeToCompleteAndAccurate')?.dirty ||
+											form.get('agreeToCompleteAndAccurate')?.touched) &&
+										form.get('agreeToCompleteAndAccurate')?.invalid &&
+										form.get('agreeToCompleteAndAccurate')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
+								</div>
+								<div class="col-md-12 col-sm-12">
+									<mat-checkbox formControlName="haveVerifiedIdentity">
+										@if (portal === portalTypeCodes.Psso) {
+											I have verified the identity of the applicant for this criminal record check
+										} @else {
+											I confirm that I have verified the identity of the applicant for this criminal record check
+										}
+									</mat-checkbox>
+									@if (
+										(form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
+										form.get('haveVerifiedIdentity')?.invalid &&
+										form.get('haveVerifiedIdentity')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
+								</div>
+							</div>
+
+							@if (portal === portalTypeCodes.Crrp) {
+								<mat-divider class="my-3"></mat-divider>
+								<div class="text-minor-heading fw-semibold mb-2">
+									Upload the copy of signed consent form sent by the applicant
+								</div>
+								<div class="row my-4">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-file-upload
+											[maxNumberOfFiles]="1"
+											[control]="attachments"
+											[files]="attachments.value"
+										></app-file-upload>
+										@if (
+											(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+											form.get('attachments')?.invalid &&
+											form.get('attachments')?.hasError('required')
+										) {
+											<mat-error class="mat-option-error">This is required</mat-error>
+										}
+									</div>
+								</div>
+							}
+						</section>
+					</div>
+				</div>
+			</form>
+			<div class="row">
+				<div class="offset-xxl-6 offset-xl-8 offset-lg-6 col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+						<i class="fa fa-times mr-2"></i>Cancel
+					</button>
+				</div>
+				<div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
+				</div>
+			</div>
+		</section>
+	`,
 	styles: [
 		`
 			.text-minor-heading {
@@ -631,6 +623,8 @@ export interface ManualSubmissionBody {
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;
+	pssoPeCrcWarning = SPD_CONSTANTS.message.pssoPeCrcWarning;
+	pssoPeCrcVsWarning = SPD_CONSTANTS.message.pssoPeCrcVsWarning;
 
 	ministries: Array<MinistryResponse> = [];
 	isNotVolunteerOrg = false;
@@ -840,9 +834,15 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		if (
 			this.portal == PortalTypeCode.Psso &&
 			createRequest.serviceType != ServiceTypeCode.PssoVs &&
+			createRequest.serviceType != ServiceTypeCode.PeCrc &&
 			createRequest.serviceType != ServiceTypeCode.PeCrcVs
 		) {
 			this.saveAndCheckDuplicates(body);
+		} else if (
+			this.portal == PortalTypeCode.Psso &&
+			(createRequest.serviceType === ServiceTypeCode.PeCrc || createRequest.serviceType === ServiceTypeCode.PeCrcVs)
+		) {
+			this.promptPolicyEnabledCheck(body);
 		} else {
 			this.promptVulnerableSector(body);
 		}
@@ -1061,17 +1061,46 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		});
 	}
 
-	private promptVulnerableSector(body: ManualSubmissionBody): void {
+	private promptPolicyEnabledCheck(body: ManualSubmissionBody): void {
 		const data: DialogOptions = {
 			icon: 'info_outline',
-			title: 'Vulnerable sector',
+			title: '',
 			message: '',
 			actionText: 'Yes',
 			cancelText: 'No',
 		};
 
-		data.message =
-			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+		if (this.serviceTypeIsPssoPeCrcVs) {
+			data.title = 'Enhanced policy enabled check';
+			data.message = SPD_CONSTANTS.message.pssoPeCrcVsPrompt;
+		} else {
+			// serviceTypeIsPssoPeCrc
+			data.title = 'Standard policy enabled check';
+			data.message = SPD_CONSTANTS.message.pssoPeCrcPrompt;
+		}
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					if (this.serviceTypeIsPssoPeCrc) {
+						this.saveAndCheckDuplicates(body);
+					} else {
+						this.promptVulnerableSector(body);
+					}
+				}
+			});
+	}
+
+	private promptVulnerableSector(body: ManualSubmissionBody): void {
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Vulnerable sector',
+			message: SPD_CONSTANTS.message.pssoVsPrompt,
+			actionText: 'Yes',
+			cancelText: 'No',
+		};
 
 		this.dialog
 			.open(DialogComponent, { data })
@@ -1089,12 +1118,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Criminal record check',
-			message: '',
+			message: SPD_CONSTANTS.message.pssoVsNoWarning,
 			actionText: 'Cancel request',
 			cancelText: 'Previous',
 		};
-
-		data.message = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
 
 		this.dialog
 			.open(DialogComponent, { data })
@@ -1123,6 +1150,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 	get serviceTypeIsPssoVs(): boolean {
 		return this.form.get('serviceType')?.value === ServiceTypeCode.PssoVs;
+	}
+	get serviceTypeIsPssoPeCrc(): boolean {
+		return this.form.get('serviceType')?.value === ServiceTypeCode.PeCrc;
+	}
+	get serviceTypeIsPssoPeCrcVs(): boolean {
+		return this.form.get('serviceType')?.value === ServiceTypeCode.PeCrcVs;
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
