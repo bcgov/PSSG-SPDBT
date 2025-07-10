@@ -36,7 +36,7 @@ namespace Spd.Manager.Licence.UnitTest
             var mapperConfig = new MapperConfiguration(x =>
             {
                 x.AddProfile<Mappings>();
-            });
+            }, null);
             var mapper = mapperConfig.CreateMapper();
 
             sut = new BizProfileManager(mockIdRepo.Object,

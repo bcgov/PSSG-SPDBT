@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
@@ -112,7 +111,7 @@ namespace Spd.Resource.Repository.Org
             }
             DynamicsContextLookupHelpers.OrganizationTypeGuidDictionary.TryGetValue(key, out Guid typeGuid);
 
-            if (searchQry.GenericEmail.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(searchQry.GenericEmail))
             {
                 var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
                     a.name == searchQry.OrganizationName &&

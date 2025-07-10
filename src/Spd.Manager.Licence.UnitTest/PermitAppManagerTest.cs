@@ -41,7 +41,7 @@ public class PermitAppManagerTest
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
-        });
+        }, null);
         var mapper = mapperConfig.CreateMapper();
 
         sut = new PermitAppManager(

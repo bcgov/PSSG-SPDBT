@@ -1,6 +1,5 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -210,7 +209,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
             o.statecode != DynamicsConstants.StateCode_Inactive);
 
-        if (createApplicationCmd.DriversLicense == null || createApplicationCmd.DriversLicense.IsNullOrEmpty())
+        if (createApplicationCmd.DriversLicense == null || string.IsNullOrEmpty(createApplicationCmd.DriversLicense))
         {
             return contacts.FirstOrDefault();
         }

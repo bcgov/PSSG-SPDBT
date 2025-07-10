@@ -42,7 +42,15 @@ try
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);
     builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
-    builder.Services.AddAutoMapper(assemblies);
+
+    // Fix for CS1503: Argument 2: cannot convert from 'System.Reflection.Assembly[]' to 'System.Action<AutoMapper.IMapperConfigurationExpression>'
+    builder.Services.AddAutoMapper(cfg =>
+    {
+        foreach (var assembly in assemblies)
+        {
+            cfg.AddMaps(assembly);
+        }
+    });
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
     var redisConnection = builder.Configuration.GetValue<string>("RedisConnection");

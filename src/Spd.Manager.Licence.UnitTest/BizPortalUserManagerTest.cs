@@ -26,7 +26,7 @@ public class BizPortalUserManagerTest
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<BizPortalUserMapping>();
-        });
+        }, null);
         var mapper = mapperConfig.CreateMapper();
 
         sut = new BizPortalUserManager(mapper, mockPortalUserRepo.Object, mockBizRepo.Object);

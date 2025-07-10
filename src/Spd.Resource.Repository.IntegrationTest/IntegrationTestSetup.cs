@@ -43,7 +43,13 @@ public class IntegrationTestSetup
         var loggerFactory = LoggerFactory.Create(builder => { });
 
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddAutoMapper(assemblies);
+        serviceCollection.AddAutoMapper(cfg =>
+        {
+            foreach (var assembly in assemblies)
+            {
+                cfg.AddMaps(assembly);
+            }
+        });
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddDataProtection();
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();

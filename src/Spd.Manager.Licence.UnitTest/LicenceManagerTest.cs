@@ -34,7 +34,7 @@ public class LicenceManagerTest
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
-        });
+        }, null);
         var mapper = mapperConfig.CreateMapper();
 
         sut = new LicenceManager(mockLicRepo.Object,

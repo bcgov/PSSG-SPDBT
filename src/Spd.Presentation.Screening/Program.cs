@@ -43,7 +43,7 @@ try
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);
     builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
-    builder.Services.AddAutoMapper(assemblies);
+    builder.Services.AddAutoMapper(cfg => { foreach (var assembly in assemblies) { cfg.AddMaps(assembly); } });
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
     var redisConnection = builder.Configuration.GetValue<string>("RedisConnection");

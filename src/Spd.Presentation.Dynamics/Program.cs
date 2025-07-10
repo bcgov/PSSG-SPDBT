@@ -34,7 +34,7 @@ try
         });
 
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-    builder.Services.AddAutoMapper(assemblies);
+    builder.Services.AddAutoMapper(cfg => { foreach (var assembly in assemblies) { cfg.AddMaps(assembly); } });
 
     var redisConnection = builder.Configuration.GetValue<string>("RedisConnection");
     if (!string.IsNullOrWhiteSpace(redisConnection))

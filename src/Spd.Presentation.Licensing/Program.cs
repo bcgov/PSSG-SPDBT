@@ -54,8 +54,14 @@ try
         logger.Warning("Redis distributed cache is not configure correctly");
         builder.Services.AddDistributedMemoryCache();
     }
-
-    builder.Services.AddAutoMapper(assemblies);
+    // Fix for CS1503: Argument 2: cannot convert from 'System.Reflection.Assembly[]' to 'System.Action<AutoMapper.IMapperConfigurationExpression>'
+    builder.Services.AddAutoMapper(cfg =>
+    {
+        foreach (var assembly in assemblies)
+        {
+            cfg.AddMaps(assembly);
+        }
+    });
     builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();
     builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 

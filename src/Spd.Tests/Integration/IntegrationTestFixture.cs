@@ -45,7 +45,7 @@ public class IntegrationTestFixture : IAsyncLifetime, ITestOutputHelperAccessor
 
         builder.Logging.AddXUnit(this);
         builder.Services.AddDistributedMemoryCache();
-        builder.Services.AddAutoMapper(assemblies);
+        builder.Services.AddAutoMapper(cfg => { foreach (var assembly in assemblies) { cfg.AddMaps(assembly); } });
         builder.Services.ConfigureComponents(builder.Configuration, builder.Environment, assemblies, loggerFactory);
 
         webApp = builder.Build();

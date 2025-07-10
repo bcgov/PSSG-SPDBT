@@ -40,10 +40,11 @@ public class BizLicenceAppManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        var mapperConfig = new MapperConfiguration(x =>
+        var mapperConfig = new MapperConfiguration(cfg =>
         {
-            x.AddProfile<Mappings>();
-        });
+            cfg.AddProfile(new Mappings());
+        }, null);
+        mapperConfig.AssertConfigurationIsValid(); // Ensure the configuration is valid
         var mapper = mapperConfig.CreateMapper();
 
         sut = new BizLicAppManager(

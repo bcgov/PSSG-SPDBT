@@ -29,7 +29,7 @@ public class OrgUserManagerTest
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<OrgUserMappings>();
-        });
+        }, null);
         var mapper = mapperConfig.CreateMapper();
 
         sut = new OrgUserManager(mockOrgUserRepo.Object,
@@ -101,7 +101,7 @@ public class OrgUserManagerTest
                 It.IsAny<UserCreateCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrgUserManageResult(fixture.Create<UserResult>()));
-        
+
         var bceid = fixture.Build<BceidIdentityInfo>()
             .With(b => b.UserGuid, userGuid)
             .With(b => b.BizGuid, orgGuid)

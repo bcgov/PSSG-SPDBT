@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
 using Moq;
-using Spd.Manager.Licence;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.BizContact;
-using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
@@ -16,7 +12,6 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
-using Mappings = Spd.Manager.Licence.Mappings;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class ControllingMemberCrcAppManagerTests
@@ -53,7 +48,7 @@ public class ControllingMemberCrcAppManagerTests
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
-        });
+        }, null);
         var mapper = mapperConfig.CreateMapper();
 
         sut = new ControllingMemberCrcAppManager(mapper, _documentRepositoryMock.Object,
@@ -61,7 +56,7 @@ public class ControllingMemberCrcAppManagerTests
         _licenceRepositoryMock.Object,
         _mainFileServiceMock.Object,
         _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, _bizLicRepositoryMock.Object,
-        _cmInviteRepositoryMock.Object,_contactRepositroyMock.Object, _taskRepositoryMock.Object, _licAppRepositoryMock.Object);
+        _cmInviteRepositoryMock.Object, _contactRepositroyMock.Object, _taskRepositoryMock.Object, _licAppRepositoryMock.Object);
     }
 
     [Fact]
@@ -72,7 +67,7 @@ public class ControllingMemberCrcAppManagerTests
         Guid inviteId = Guid.NewGuid();
         ContactResp contact = new()
         {
-           Id = applicantId
+            Id = applicantId
         };
         SetupMockRepositories(applicantId, controllingMemberAppId, contact, inviteId);
 
@@ -174,7 +169,7 @@ public class ControllingMemberCrcAppManagerTests
             });
         _contactRepositroyMock.Setup(c => c.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contact);
-        
+
         _contactRepositroyMock.Setup(c => c.ManageAsync(It.IsAny<CreateContactCmd>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contact);
         _cmInviteRepositoryMock.Setup(i => i.QueryAsync(It.IsAny<ControllingMemberInviteQuery>(), It.IsAny<CancellationToken>()))
