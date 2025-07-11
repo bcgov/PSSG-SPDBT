@@ -38,7 +38,6 @@ public static class ServiceExtensionsHealthChecks
                 {
                     ServiceURL = s3url,
                     ForcePathStyle = true,
-                    SignatureVersion = "2",
                     SignatureMethod = SigningAlgorithm.HmacSHA1,
                     UseHttp = false,
                 };

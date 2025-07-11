@@ -167,7 +167,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
     /// <returns>The resized image.</returns>
     private static SKImage ResizeImage(SKImage image, int width, int height)
     {
-        using (var surface = SKSurface.Create(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul))
+        using (var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul)))
         using (var paint = new SKPaint())
         {
             // high quality with antialiasing

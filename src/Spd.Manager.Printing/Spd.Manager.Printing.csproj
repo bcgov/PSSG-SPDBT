@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
+    <PackageReference Include="KGySoft.Drawing.SkiaSharp" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
