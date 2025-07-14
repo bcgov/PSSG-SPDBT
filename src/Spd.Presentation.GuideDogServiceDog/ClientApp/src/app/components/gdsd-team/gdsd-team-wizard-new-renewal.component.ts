@@ -219,7 +219,7 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 
 		this.gdsdTeamApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<GdsdTeamAppCommandResponse>) => {
-				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
+				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_TEAM_APPLICATION_RECEIVED));
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

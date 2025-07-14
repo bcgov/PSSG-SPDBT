@@ -57,21 +57,18 @@ export const SPD_CONSTANTS = {
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
 		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
 		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
-		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',
-		bcGovCopyrightUrl: 'https://www2.gov.bc.ca/gov/content/home/copyright',
-		bcGovContactUrl: 'https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services',
 		bcServicesCardUrl: 'https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card',
 		canadianPassportPhotoUrl:
 			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
 		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
-		contactSpdUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		medicalFormUrl:
 			'https://www2.gov.bc.ca/assets/gov/law-crime-and-justice/human-rights/guide-animals/spd0803-medical-form.pdf',
 		oudtUrl: 'https://obedienceunleashed.com/',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
-		securityIndustryLicensingUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing',
+		serviceDogTeamCertificationUrl:
+			'https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog/service-dog-team-certification',
+		serviceDogDtRdCertificationUrl:
+			'https://www2.gov.bc.ca/gov/content/justice/human-rights/guide-and-service-dog/certification',
 	},
 	files: {
 		guideDogServiceDogTerms: './assets/files/Guide Dog Service Dog Applicant Terms of Use.pdf',

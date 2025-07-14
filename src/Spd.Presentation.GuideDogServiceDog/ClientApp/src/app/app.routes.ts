@@ -15,7 +15,9 @@ export class AppRoutes {
 
 	// ANONYMOUS
 	public static readonly GDSD_ANONYMOUS_BASE = 'gdsd-application-anonymous';
-	public static readonly GDSD_APPLICATION_RECEIVED = 'gdsd-application-received';
+	public static readonly GDSD_TEAM_APPLICATION_RECEIVED = 'gdsd-team-application-received';
+	public static readonly DOG_TRAINER_APPLICATION_RECEIVED = 'dog-trainer-application-received';
+	public static readonly RETIRED_DOG_APPLICATION_RECEIVED = 'retired-dog-application-received';
 
 	public static readonly GDSD_TEAM_APPLICATION_TYPE_ANONYMOUS = 'gdsd-team-application-type';
 	public static readonly GDSD_TEAM_ACCESS_CODE_ANONYMOUS = 'gdsd-team-access-code';
