@@ -74,11 +74,11 @@ export const SPD_CONSTANTS = {
 		pssoPeCrcPluralPrompt:
 			'In their roles with your organization, will these persons fall under the position type for a Standard Policy Enabled Criminal Record Check as per section 1.3 of your LOA?',
 		pssoPeCrcVsWarning:
-			'I confirm I am submitting a <strong>“<u>enhanced</u>” policy enabled check</strong> on behalf of my organization in accordance with the letter of agreement with the Security Programs Division. This check is NOT for a BC Government Employee. I confirm that I have selected the correct screening.',
+			'I confirm I am submitting an <strong>“<u>enhanced</u>” policy enabled check</strong> on behalf of my organization in accordance with the letter of agreement with the Security Programs Division. This check is NOT for a BC Government Employee. I confirm that I have selected the correct screening.',
 		pssoPeCrcVsPrompt:
-			'In their role with your organization, will this person fall under the position type for a Enhanced Policy Enabled Criminal Record Check as per section 1.3 of your LOA?',
+			'In their role with your organization, will this person fall under the position type for an Enhanced Policy Enabled Criminal Record Check as per section 1.3 of your LOA?',
 		pssoPeCrcVsPluralPrompt:
-			'In their roles with your organization, will these persons fall under the position type for a Enhanced Policy Enabled Criminal Record Check as per section 1.3 of your LOA?',
+			'In their roles with your organization, will these persons fall under the position type for an Enhanced Policy Enabled Criminal Record Check as per section 1.3 of your LOA?',
 		pssoPeCrcAndVsPrompt:
 			'In their roles with your organization, will these persons fall under the position types for Policy Enabled Criminal Record Checks as per section 1.3 of your LOA?',
 	},
