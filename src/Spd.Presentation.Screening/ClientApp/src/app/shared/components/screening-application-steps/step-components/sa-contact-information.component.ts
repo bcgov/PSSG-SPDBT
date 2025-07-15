@@ -11,89 +11,107 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	selector: 'app-sa-contact-information',
 	template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title
-						title="Confirm your information"
-						subtitle="Legal name must match your government-issued identification"
-					></app-step-title>
-					<div class="row">
-						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label
-									>Legal Given Name
-									<span class="optional-label" *ngIf="isGivenNameOptional">(optional)</span></mat-label
-								>
-								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('givenName')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="middleName1" [errorStateMatcher]="matcher" maxlength="40" />
-							</mat-form-field>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="middleName2" [errorStateMatcher]="matcher" maxlength="40" />
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Legal Surname</mat-label>
-								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="!isGivenNameOptional && form.get('surname')?.hasError('required')">
-									This is required
-								</mat-error>
-								<mat-error *ngIf="isGivenNameOptional && form.get('surname')?.hasError('required')">
-									Use this field if you have only one name
-								</mat-error>
-							</mat-form-field>
-							<div class="w-100 mb-4" *ngIf="!orgData?.readonlyTombstone">
-								<mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
-									I have only a given name OR a surname
-								</mat-checkbox>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Email</mat-label>
-								<input
-									matInput
-									formControlName="emailAddress"
-									placeholder="name@domain.com"
-									[errorStateMatcher]="matcher"
-									maxlength="75"
-								/>
-								<mat-error *ngIf="form.get('emailAddress')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
-									Must be a valid email address
-								</mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Phone Number</mat-label>
-								<input
-									matInput
-									formControlName="phoneNumber"
-									[errorStateMatcher]="matcher"
-									[mask]="phoneMask"
-									[showMaskTyped]="false"
-								/>
-								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title
+		        title="Confirm your information"
+		        subtitle="Legal name must match your government-issued identification"
+		      ></app-step-title>
+		      <div class="row">
+		        <div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
+		          <mat-form-field>
+		            <mat-label
+		              >Legal Given Name
+		              @if (isGivenNameOptional) {
+		                <span class="optional-label">(optional)</span>
+		                }</mat-label
+		                >
+		                <input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+		                @if (form.get('givenName')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-lg-3 col-md-6 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+		                <input matInput formControlName="middleName1" [errorStateMatcher]="matcher" maxlength="40" />
+		              </mat-form-field>
+		            </div>
+		            <div class="col-lg-3 col-md-6 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+		                <input matInput formControlName="middleName2" [errorStateMatcher]="matcher" maxlength="40" />
+		              </mat-form-field>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Legal Surname</mat-label>
+		                <input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+		                @if (!isGivenNameOptional && form.get('surname')?.hasError('required')) {
+		                  <mat-error>
+		                    This is required
+		                  </mat-error>
+		                }
+		                @if (isGivenNameOptional && form.get('surname')?.hasError('required')) {
+		                  <mat-error>
+		                    Use this field if you have only one name
+		                  </mat-error>
+		                }
+		              </mat-form-field>
+		              @if (!orgData?.readonlyTombstone) {
+		                <div class="w-100 mb-4">
+		                  <mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
+		                    I have only a given name OR a surname
+		                  </mat-checkbox>
+		                </div>
+		              }
+		            </div>
+		            <div class="col-lg-3 col-md-6 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Email</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="emailAddress"
+		                  placeholder="name@domain.com"
+		                  [errorStateMatcher]="matcher"
+		                  maxlength="75"
+		                  />
+		                  @if (form.get('emailAddress')?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                  @if (form.get('emailAddress')?.hasError('email')) {
+		                    <mat-error>
+		                      Must be a valid email address
+		                    </mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		              <div class="col-lg-3 col-md-6 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Phone Number</mat-label>
+		                  <input
+		                    matInput
+		                    formControlName="phoneNumber"
+		                    [errorStateMatcher]="matcher"
+		                    [mask]="phoneMask"
+		                    [showMaskTyped]="false"
+		                    />
+		                    @if (form.get('phoneNumber')?.hasError('required')) {
+		                      <mat-error>This is required</mat-error>
+		                    }
+		                    @if (form.get('phoneNumber')?.hasError('mask')) {
+		                      <mat-error>This must be 10 digits</mat-error>
+		                    }
+		                  </mat-form-field>
+		                </div>
+		              </div>
+		            </div>
+		          </form>
+		        </section>
+		`,
     styles: [],
     standalone: false
 })

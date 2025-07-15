@@ -33,144 +33,145 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
     selector: 'app-screening-requests-common',
     template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
-				<div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
-					<h2 class="mb-2">
-						{{ heading }}
-						<div class="mt-2 fs-5 fw-light">{{ subtitle }}</div>
-					</h2>
-				</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 text-end">
-					<button mat-flat-button type="button" class="large w-auto mat-green-button mb-2" (click)="onAddRequest()">
-						Add Request
-					</button>
-				</div>
-			</div>
-
-			<div class="row mt-2" [formGroup]="formFilter">
-				<mat-divider class="mat-divider-main mb-4"></mat-divider>
-				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-					<mat-form-field>
-						<input
-							matInput
-							type="search"
-							formControlName="search"
-							placeholder="Search applicant's name or email"
-							(keydown.enter)="onSearchKeyDown($event)"
-						/>
-						<button
-							mat-button
-							matSuffix
-							mat-flat-button
-							aria-label="search"
-							(click)="onSearch()"
-							class="search-icon-button"
-						>
-							<mat-icon>search</mat-icon>
-						</button>
-					</mat-form-field>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Applicant Name:</span>
-								<mat-icon
-									class="error-icon"
-									[matTooltip]="application.errorMsg"
-									matTooltipClass="error-tooltip"
-									*ngIf="application.status === applicationInviteStatusCodes.Failed"
-								>
-									error
-								</mat-icon>
-								{{ application | fullname }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell class="mat-cell-email" *matCellDef="let application">
-								<span class="mobile-label">Email:</span>
-								{{ application.email | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="jobTitle">
-							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Job Title:</span>
-								{{ application.jobTitle | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="payeeType">
-							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">To Be Paid By:</span>
-								{{ application.payeeType | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Request Sent:</span>
-								{{ application.createdOn | formatDate }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="orgId">
-							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Ministry:</span>
-								{{ application.orgId | ministryoptions | async | default }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="viewed">
-							<mat-header-cell *matHeaderCellDef>Viewed</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Viewed:</span>
-								{{ application.viewed | yesNo }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-red);"
-									aria-label="Cancel Request"
-									(click)="OnCancelRequest(application)"
-								>
-									<mat-icon>cancel</mat-icon>Cancel
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<mat-paginator
-						[showFirstLastButtons]="true"
-						[hidePageSize]="true"
-						[pageIndex]="tablePaginator.pageIndex"
-						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
-						aria-label="Select page"
-					>
-					</mat-paginator>
-				</div>
-			</div>
-		</section>
-	`,
+		  <div class="row">
+		    <div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
+		      <h2 class="mb-2">
+		        {{ heading }}
+		        <div class="mt-2 fs-5 fw-light">{{ subtitle }}</div>
+		      </h2>
+		    </div>
+		    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 text-end">
+		      <button mat-flat-button type="button" class="large w-auto mat-green-button mb-2" (click)="onAddRequest()">
+		        Add Request
+		      </button>
+		    </div>
+		  </div>
+		
+		  <div class="row mt-2" [formGroup]="formFilter">
+		    <mat-divider class="mat-divider-main mb-4"></mat-divider>
+		    <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		      <mat-form-field>
+		        <input
+		          matInput
+		          type="search"
+		          formControlName="search"
+		          placeholder="Search applicant's name or email"
+		          (keydown.enter)="onSearchKeyDown($event)"
+		          />
+		          <button
+		            mat-button
+		            matSuffix
+		            mat-flat-button
+		            aria-label="search"
+		            (click)="onSearch()"
+		            class="search-icon-button"
+		            >
+		            <mat-icon>search</mat-icon>
+		          </button>
+		        </mat-form-field>
+		      </div>
+		    </div>
+		
+		    <div class="row">
+		      <div class="col-12">
+		        <mat-table [dataSource]="dataSource">
+		          <ng-container matColumnDef="applicantName">
+		            <mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Applicant Name:</span>
+		              @if (application.status === applicationInviteStatusCodes.Failed) {
+		                <mat-icon
+		                  class="error-icon"
+		                  [matTooltip]="application.errorMsg"
+		                  matTooltipClass="error-tooltip"
+		                  >
+		                  error
+		                </mat-icon>
+		              }
+		              {{ application | fullname }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="emailAddress">
+		            <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+		            <mat-cell class="mat-cell-email" *matCellDef="let application">
+		              <span class="mobile-label">Email:</span>
+		              {{ application.email | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="jobTitle">
+		            <mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Job Title:</span>
+		              {{ application.jobTitle | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="payeeType">
+		            <mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">To Be Paid By:</span>
+		              {{ application.payeeType | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="createdOn">
+		            <mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Request Sent:</span>
+		              {{ application.createdOn | formatDate }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="orgId">
+		            <mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Ministry:</span>
+		              {{ application.orgId | ministryoptions | async | default }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="viewed">
+		            <mat-header-cell *matHeaderCellDef>Viewed</mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <span class="mobile-label">Viewed:</span>
+		              {{ application.viewed | yesNo }}
+		            </mat-cell>
+		          </ng-container>
+		
+		          <ng-container matColumnDef="action1">
+		            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+		            <mat-cell *matCellDef="let application">
+		              <button
+		                mat-flat-button
+		                class="table-button"
+		                style="color: var(--color-red);"
+		                aria-label="Cancel Request"
+		                (click)="OnCancelRequest(application)"
+		                >
+		                <mat-icon>cancel</mat-icon>Cancel
+		              </button>
+		            </mat-cell>
+		          </ng-container>
+		
+		          <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		          <mat-row *matRowDef="let row; columns: columns"></mat-row>
+		        </mat-table>
+		        <mat-paginator
+		          [showFirstLastButtons]="true"
+		          [hidePageSize]="true"
+		          [pageIndex]="tablePaginator.pageIndex"
+		          [pageSize]="tablePaginator.pageSize"
+		          [length]="tablePaginator.length"
+		          (page)="onPageChanged($event)"
+		          aria-label="Select page"
+		          >
+		        </mat-paginator>
+		      </div>
+		    </div>
+		  </section>
+		`,
     styles: [
         `
 			@media (min-width: 1200px) {

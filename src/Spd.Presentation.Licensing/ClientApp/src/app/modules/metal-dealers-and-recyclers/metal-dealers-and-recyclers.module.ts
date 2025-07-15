@@ -5,20 +5,27 @@ import { FormMdraBranchesComponent } from './components/form-mdra-branches.compo
 import { FormMdraLicenceAccessCodeComponent } from './components/form-mdra-licence-access-code.component';
 import { MdraBaseComponent } from './components/mdra-base.component';
 import { MdraWizardNewRenewalComponent } from './components/mdra-wizard-new-renewal.component';
-import { MetalDealersMainComponent } from './components/metal-dealers-main.component';
+import { MdraWizardUpdateComponent } from './components/mdra-wizard-update.component';
+import { MetalDealersLandingComponent } from './components/metal-dealers-landing.component';
 import { MetalDealersRegistrationReceivedComponent } from './components/metal-dealers-registration-received.component';
 import { ModalMdraBranchComponent } from './components/modal-mdra-branch.component';
+import { ModalMdraDuplicateComponent } from './components/modal-mdra-duplicate.component';
 import { StepMdraLicenceAccessCodeComponent } from './components/step-mdra-access-code.component';
 import { StepMdraApplicationTypeComponent } from './components/step-mdra-application-type.component';
 import { StepMdraBranchesComponent } from './components/step-mdra-branches.component';
+import { StepMdraBusinessAddressUpdateComponent } from './components/step-mdra-business-address-update.component';
 import { StepMdraBusinessAddressComponent } from './components/step-mdra-business-address.component';
 import { StepMdraBusinessManagerComponent } from './components/step-mdra-business-manager.component';
+import { StepMdraBusinessOwnerUpdateComponent } from './components/step-mdra-business-owner-update.component';
 import { StepMdraBusinessOwnerComponent } from './components/step-mdra-business-owner.component';
 import { StepMdraChecklistNewComponent } from './components/step-mdra-checklist-new.component';
+import { StepMdraChecklistUpdateComponent } from './components/step-mdra-checklist-update.component';
 import { StepMdraConsentComponent } from './components/step-mdra-consent.component';
+import { StepMdraLicenceExpiredComponent } from './components/step-mdra-licence-expired.component';
 import { StepMdraSummaryComponent } from './components/step-mdra-summary.component';
 import { StepMdraTermsOfUseComponent } from './components/step-mdra-terms-of-use.component';
 import { StepsMdraBranchesComponent } from './components/steps-mdra-branches.component';
+import { StepsMdraBusinessInfoUpdateComponent } from './components/steps-mdra-business-info-update.component';
 import { StepsMdraBusinessInfoComponent } from './components/steps-mdra-business-info.component';
 import { StepsMdraDetailsComponent } from './components/steps-mdra-details.component';
 import { StepsMdraReviewAndConfirmComponent } from './components/steps-mdra-review-and-confirm.component';
@@ -26,27 +33,34 @@ import { MetalDealersAndRecyclersRoutingModule } from './metal-dealers-and-recyc
 
 @NgModule({
 	declarations: [
+		FormMdraBranchesComponent,
+		FormMdraLicenceAccessCodeComponent,
 		MdraBaseComponent,
-		MetalDealersMainComponent,
+		MetalDealersLandingComponent,
 		MdraWizardNewRenewalComponent,
+		MdraWizardUpdateComponent,
+		ModalMdraDuplicateComponent,
+		ModalMdraBranchComponent,
+		MetalDealersRegistrationReceivedComponent,
 		StepMdraTermsOfUseComponent,
 		StepMdraLicenceAccessCodeComponent,
 		StepMdraChecklistNewComponent,
+		StepMdraChecklistUpdateComponent,
 		StepMdraApplicationTypeComponent,
 		StepMdraBusinessOwnerComponent,
+		StepMdraBusinessOwnerUpdateComponent,
 		StepMdraBusinessManagerComponent,
 		StepMdraBusinessAddressComponent,
+		StepMdraBusinessAddressUpdateComponent,
 		StepMdraBranchesComponent,
 		StepMdraSummaryComponent,
 		StepMdraConsentComponent,
+		StepMdraLicenceExpiredComponent,
 		StepsMdraBusinessInfoComponent,
+		StepsMdraBusinessInfoUpdateComponent,
 		StepsMdraDetailsComponent,
 		StepsMdraBranchesComponent,
 		StepsMdraReviewAndConfirmComponent,
-		ModalMdraBranchComponent,
-		MetalDealersRegistrationReceivedComponent,
-		FormMdraBranchesComponent,
-		FormMdraLicenceAccessCodeComponent,
 	],
 	imports: [SharedModule, MetalDealersAndRecyclersRoutingModule],
 })

@@ -12,124 +12,130 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-licence-category-security-consultant',
 	template: `
 		<div class="text-minor-heading mb-2">Proof of experience required</div>
-
+		
 		<form [formGroup]="form" novalidate>
-			<div class="alert alert-category d-flex" role="alert">
-				<div>
-					To qualify for a security consultant security worker licence, you must be able to provide advice and expertise
-					in a number of specialized areas, including but not limited to:
-					<ul>
-						<li>Security alarms</li>
-						<li>Closed circuit television</li>
-						<li>Access controls</li>
-						<li>Loss prevention surveys</li>
-						<li>Physical security design</li>
-						<li>Lighting and building design installation</li>
-						<li>Insurance</li>
-						<li>Electronic counter measures</li>
-						<li>Tool marks</li>
-						<li>Fingerprinting</li>
-					</ul>
-
-					You must provide proof of two years experience within the past five years in full-time employment providing
-					any of the above-mentioned services.
-				</div>
-			</div>
-
-			<div class="text-minor-heading mb-2">Upload your resume</div>
-
-			<div class="mt-2 mb-3">
-				<app-file-upload
-					(fileUploaded)="onFileResumeAdded($event)"
-					(fileRemoved)="onFileRemoved()"
-					[control]="resumeAttachments"
-					[maxNumberOfFiles]="10"
-					#resumeAttachmentsRef
-					[files]="resumeAttachments.value"
-				></app-file-upload>
-				<mat-error
-					class="mat-option-error"
-					*ngIf="
-						(form.get('resumeAttachments')?.dirty || form.get('resumeAttachments')?.touched) &&
-						form.get('resumeAttachments')?.invalid &&
-						form.get('resumeAttachments')?.hasError('required')
-					"
-					>This is required</mat-error
-				>
-			</div>
-
-			<div class="alert alert-category d-flex" role="alert">
-				<div>
-					You must meet the following experience requirements:
-					<mat-radio-group
-						class="category-radio-group"
-						aria-label="Select an option"
-						formControlName="requirementCode"
-						(change)="onChangeDocumentType($event)"
-					>
-						<mat-radio-button
-							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
-						>
-							Written reference letters from previous employers (must be on company letterhead, dated and signed)
-						</mat-radio-button>
-						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters">
-							Clients verifying your experience
-						</mat-radio-button>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
-							form.get('requirementCode')?.invalid &&
-							form.get('requirementCode')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-
-			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
-					<span
-						*ngIf="
-							requirementCode.value === securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
-						"
-					>
-						Upload reference letters:
-					</span>
-					<span
-						*ngIf="
-							requirementCode.value ===
-							securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters
-						"
-					>
-						Upload recommendation letters
-					</span>
-				</div>
-
-				<div class="my-2">
-					<app-file-upload
-						(fileUploaded)="onFileUploaded($event)"
-						(fileRemoved)="onFileRemoved()"
-						[control]="attachments"
-						[maxNumberOfFiles]="10"
-						#attachmentsRef
-						[files]="attachments.value"
-					></app-file-upload>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-							form.get('attachments')?.invalid &&
-							form.get('attachments')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</div>
-			</div>
-		</form>
-	`,
+		  <div class="alert alert-category d-flex" role="alert">
+		    <div>
+		      To qualify for a security consultant security worker licence, you must be able to provide advice and expertise
+		      in a number of specialized areas, including but not limited to:
+		      <ul>
+		        <li>Security alarms</li>
+		        <li>Closed circuit television</li>
+		        <li>Access controls</li>
+		        <li>Loss prevention surveys</li>
+		        <li>Physical security design</li>
+		        <li>Lighting and building design installation</li>
+		        <li>Insurance</li>
+		        <li>Electronic counter measures</li>
+		        <li>Tool marks</li>
+		        <li>Fingerprinting</li>
+		      </ul>
+		
+		      You must provide proof of two years experience within the past five years in full-time employment providing
+		      any of the above-mentioned services.
+		    </div>
+		  </div>
+		
+		  <div class="text-minor-heading mb-2">Upload your resume</div>
+		
+		  <div class="mt-2 mb-3">
+		    <app-file-upload
+		      (fileUploaded)="onFileResumeAdded($event)"
+		      (fileRemoved)="onFileRemoved()"
+		      [control]="resumeAttachments"
+		      [maxNumberOfFiles]="10"
+		      #resumeAttachmentsRef
+		      [files]="resumeAttachments.value"
+		    ></app-file-upload>
+		    @if (
+		      (form.get('resumeAttachments')?.dirty || form.get('resumeAttachments')?.touched) &&
+		      form.get('resumeAttachments')?.invalid &&
+		      form.get('resumeAttachments')?.hasError('required')
+		      ) {
+		      <mat-error
+		        class="mat-option-error"
+		        >This is required</mat-error
+		        >
+		      }
+		    </div>
+		
+		    <div class="alert alert-category d-flex" role="alert">
+		      <div>
+		        You must meet the following experience requirements:
+		        <mat-radio-group
+		          class="category-radio-group"
+		          aria-label="Select an option"
+		          formControlName="requirementCode"
+		          (change)="onChangeDocumentType($event)"
+		          >
+		          <mat-radio-button
+		            [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
+		            >
+		            Written reference letters from previous employers (must be on company letterhead, dated and signed)
+		          </mat-radio-button>
+		          <mat-divider class="my-2"></mat-divider>
+		          <mat-radio-button [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters">
+		            Clients verifying your experience
+		          </mat-radio-button>
+		        </mat-radio-group>
+		        @if (
+		          (form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+		          form.get('requirementCode')?.invalid &&
+		          form.get('requirementCode')?.hasError('required')
+		          ) {
+		          <mat-error
+		            class="mat-option-error"
+		            >This is required</mat-error
+		            >
+		          }
+		        </div>
+		      </div>
+		
+		      @if (requirementCode.value) {
+		        <div @showHideTriggerSlideAnimation>
+		          <div class="text-minor-heading mb-2">
+		            @if (
+		              requirementCode.value === securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
+		              ) {
+		              <span
+		                >
+		                Upload reference letters:
+		              </span>
+		            }
+		            @if (
+		              requirementCode.value ===
+		              securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters
+		              ) {
+		              <span
+		                >
+		                Upload recommendation letters
+		              </span>
+		            }
+		          </div>
+		          <div class="my-2">
+		            <app-file-upload
+		              (fileUploaded)="onFileUploaded($event)"
+		              (fileRemoved)="onFileRemoved()"
+		              [control]="attachments"
+		              [maxNumberOfFiles]="10"
+		              #attachmentsRef
+		              [files]="attachments.value"
+		            ></app-file-upload>
+		            @if (
+		              (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		              form.get('attachments')?.invalid &&
+		              form.get('attachments')?.hasError('required')
+		              ) {
+		              <mat-error
+		                class="mat-option-error"
+		                >This is required</mat-error
+		                >
+		              }
+		            </div>
+		          </div>
+		        }
+		      </form>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

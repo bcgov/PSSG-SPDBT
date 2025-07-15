@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-using System.Net;
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
@@ -8,6 +6,7 @@ using Microsoft.OData.Client;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.Org
 {
@@ -99,7 +98,11 @@ namespace Spd.Resource.Repository.Org
         public async Task<bool> CheckDuplicateAsync(SearchOrgQry searchQry, CancellationToken cancellationToken)
         {
             string key;
-            if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
+            if (searchQry.RegistrationTypeCode == RegistrationTypeCode.MDRA)
+            {
+                key = "MetalDealerRecycler";
+            }
+            else if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
             {
                 key = $"{searchQry.RegistrationTypeCode}-{searchQry.EmployeeOrganizationTypeCode}";
             }
@@ -144,6 +147,8 @@ namespace Spd.Resource.Repository.Org
                 accounts = accounts.Where(a => a._parentaccountid_value == query.ParentOrgId);
             if (query.OrgCode != null)
                 accounts = accounts.Where(a => a.spd_orgcode == query.OrgCode);
+            if (query.IsAccreditSchool != null)
+                accounts = accounts.Where(a => a.spd_accreditedschool == (int)(query.IsAccreditSchool.Value ? YesNoOptionSet.Yes : YesNoOptionSet.No));
             if (query.ServiceTypes != null && query.ServiceTypes.Any())
             {
                 IEnumerable<Guid> stIds = query.ServiceTypes.Select(t => DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.GetValueOrDefault(t.ToString()));

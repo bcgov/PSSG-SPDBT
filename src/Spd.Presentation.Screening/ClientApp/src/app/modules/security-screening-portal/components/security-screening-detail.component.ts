@@ -29,180 +29,188 @@ import {
     selector: 'app-security-screening-detail',
     template: `
 		<div class="row">
-			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal">Application Information</h3>
-				<h4 class="fw-light">{{ applicantName }}</h4>
-			</div>
-			<div class="col-xl-6 col-lg-8 col-md-12">
-				<div class="d-flex justify-content-end">
-					<button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
-						<mat-icon>arrow_back</mat-icon>Back
-					</button>
-					<button
-						mat-flat-button
-						color="primary"
-						class="large w-auto m-2"
-						aria-label="Download Receipt"
-						(click)="onDownloadReceipt()"
-						*ngIf="showDownloadReceipt"
-					>
-						<mat-icon>file_download</mat-icon>Download Receipt
-					</button>
-				</div>
-			</div>
+		  <div class="col-xl-6 col-lg-4 col-md-12">
+		    <h3 class="fw-normal">Application Information</h3>
+		    <h4 class="fw-light">{{ applicantName }}</h4>
+		  </div>
+		  <div class="col-xl-6 col-lg-8 col-md-12">
+		    <div class="d-flex justify-content-end">
+		      <button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
+		        <mat-icon>arrow_back</mat-icon>Back
+		      </button>
+		      @if (showDownloadReceipt) {
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large w-auto m-2"
+		          aria-label="Download Receipt"
+		          (click)="onDownloadReceipt()"
+		          >
+		          <mat-icon>file_download</mat-icon>Download Receipt
+		        </button>
+		      }
+		    </div>
+		  </div>
 		</div>
-
+		
 		<mat-divider class="mat-divider-main my-2"></mat-divider>
-
+		
 		<p class="warning-text fw-semibold my-2">
-			This page cannot be used as substitute for a clearance letter from the Criminal Records Review Program.
+		  This page cannot be used as substitute for a clearance letter from the Criminal Records Review Program.
 		</p>
-
-		<ng-container *ngIf="application">
-			<div class="row">
-				<div class="col-12">
-					<app-alert type="danger" *ngIf="opportunityToRespondAlert">
-						<div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
-					</app-alert>
-					<app-alert type="danger" *ngIf="requestForAdditionalInfoAlert">
-						<div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
-					</app-alert>
-					<app-alert type="danger" *ngIf="fingerprintsAlert">
-						<div class="fw-semibold">{{ fingerprintsAlert }}</div>
-					</app-alert>
-					<app-alert type="danger" *ngIf="selfDisclosureAlert">
-						<div class="fw-semibold">{{ selfDisclosureAlert }}</div>
-					</app-alert>
-				</div>
-			</div>
-
-			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
-				{{ application.orgName }}
-				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 275px;">
-					{{ application.status | options: 'ApplicationPortalStatusTypes' : application.status }}
-				</mat-chip-row>
-			</h3>
-
-			<section class="detail-table px-4 py-3 my-4 ">
-				<div class="row">
-					<div class="col-lg-3 col-md-3">
-						<div class="d-block text-label">Case ID</div>
-						<strong> {{ application.applicationNumber }} </strong>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
-						<strong> {{ application.createdOn! | formatDate }} </strong>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
-						<strong> {{ application.serviceType | options: 'ServiceTypes' }}</strong>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
-						<strong> {{ application.payeeType }}</strong>
-					</div>
-				</div>
-			</section>
-		</ng-container>
-
-		<ng-container *ngIf="fingerprintsAlert || selfDisclosureAlert">
-			<h4 class="subheading fw-normal mb-2">Downloadable Documents</h4>
-			<div class="row">
-				<div class="col-12" *ngIf="fingerprintsAlert">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto mb-4"
-						(click)="onDownloadFile(fileTemplateTypeCodes.FingerprintsPkg)"
-						aria-label="Download Fingerprint Package"
-					>
-						<mat-icon>file_download</mat-icon>Download Fingerprint Package
-					</button>
-				</div>
-				<div class="col-12" *ngIf="selfDisclosureAlert">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto mb-4"
-						(click)="onDownloadFile(fileTemplateTypeCodes.SelfDisclosurePkg)"
-						aria-label="Download Self Disclosure"
-					>
-						<mat-icon>file_download</mat-icon>Download Self Disclosure
-					</button>
-				</div>
-			</div>
-		</ng-container>
-
-		<ng-container *ngIf="selfDisclosureAlert">
-			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
-			<div class="row">
-				<div class="col-12">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto mb-4"
-						aria-label="Upload a Word or PDF document providing more information"
-						(click)="onUploadFile()"
-					>
-						<mat-icon>file_upload</mat-icon>Upload Completed Self Disclosure Form
-					</button>
-				</div>
-			</div>
-		</ng-container>
-
-		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-			<h4 class="subheading fw-normal mb-3">Upload Document</h4>
-			<div class="row">
-				<div class="col-12">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto mb-4"
-						aria-label="Upload a Word or PDF document providing more information"
-						(click)="onUploadFile()"
-					>
-						<mat-icon>file_upload</mat-icon>Upload a Word or PDF Document
-					</button>
-				</div>
-			</div>
-		</ng-container>
-
-		<ng-container *ngIf="documentHistoryExists">
-			<h4 class="subheading fw-normal mb-2">Document Upload History</h4>
-			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSourceHistory">
-						<ng-container matColumnDef="fileName">
-							<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
-							<mat-cell *matCellDef="let document">
-								<span class="mobile-label">Document Name:</span>
-								{{ document.fileName }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="fileTypeCode">
-							<mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
-							<mat-cell *matCellDef="let document">
-								<span class="mobile-label">File Type:</span>
-								{{ document.fileTypeCode | options : 'FileTypes' }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="uploadedDateTime">
-							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
-							<mat-cell *matCellDef="let document">
-								<span class="mobile-label">Uploaded On:</span>
-								{{ document.uploadedDateTime | formatDate }}
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columnsHistory; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columnsHistory"></mat-row>
-					</mat-table>
-				</div>
-			</div>
-		</ng-container>
-	`,
+		
+		@if (application) {
+		  <div class="row">
+		    <div class="col-12">
+		      @if (opportunityToRespondAlert) {
+		        <app-alert type="danger">
+		          <div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
+		        </app-alert>
+		      }
+		      @if (requestForAdditionalInfoAlert) {
+		        <app-alert type="danger">
+		          <div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
+		        </app-alert>
+		      }
+		      @if (fingerprintsAlert) {
+		        <app-alert type="danger">
+		          <div class="fw-semibold">{{ fingerprintsAlert }}</div>
+		        </app-alert>
+		      }
+		      @if (selfDisclosureAlert) {
+		        <app-alert type="danger">
+		          <div class="fw-semibold">{{ selfDisclosureAlert }}</div>
+		        </app-alert>
+		      }
+		    </div>
+		  </div>
+		  <h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
+		    {{ application.orgName }}
+		    <mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 275px;">
+		      {{ application.status | options: 'ApplicationPortalStatusTypes' : application.status }}
+		    </mat-chip-row>
+		  </h3>
+		  <section class="detail-table px-4 py-3 my-4 ">
+		    <div class="row">
+		      <div class="col-lg-3 col-md-3">
+		        <div class="d-block text-label">Case ID</div>
+		        <strong> {{ application.applicationNumber }} </strong>
+		      </div>
+		      <div class="col-lg-3 col-md-3">
+		        <div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
+		        <strong> {{ application.createdOn! | formatDate }} </strong>
+		      </div>
+		      <div class="col-lg-3 col-md-3">
+		        <div class="d-block text-label mt-2 mt-md-0">Service Type</div>
+		        <strong> {{ application.serviceType | options: 'ServiceTypes' }}</strong>
+		      </div>
+		      <div class="col-lg-3 col-md-3">
+		        <div class="d-block text-label mt-2 mt-md-0">Paid By</div>
+		        <strong> {{ application.payeeType }}</strong>
+		      </div>
+		    </div>
+		  </section>
+		}
+		
+		@if (fingerprintsAlert || selfDisclosureAlert) {
+		  <h4 class="subheading fw-normal mb-2">Downloadable Documents</h4>
+		  <div class="row">
+		    @if (fingerprintsAlert) {
+		      <div class="col-12">
+		        <button
+		          mat-stroked-button
+		          color="primary"
+		          class="large w-auto mb-4"
+		          (click)="onDownloadFile(fileTemplateTypeCodes.FingerprintsPkg)"
+		          aria-label="Download Fingerprint Package"
+		          >
+		          <mat-icon>file_download</mat-icon>Download Fingerprint Package
+		        </button>
+		      </div>
+		    }
+		    @if (selfDisclosureAlert) {
+		      <div class="col-12">
+		        <button
+		          mat-stroked-button
+		          color="primary"
+		          class="large w-auto mb-4"
+		          (click)="onDownloadFile(fileTemplateTypeCodes.SelfDisclosurePkg)"
+		          aria-label="Download Self Disclosure"
+		          >
+		          <mat-icon>file_download</mat-icon>Download Self Disclosure
+		        </button>
+		      </div>
+		    }
+		  </div>
+		}
+		
+		@if (selfDisclosureAlert) {
+		  <h4 class="subheading fw-normal mb-2">Upload Document</h4>
+		  <div class="row">
+		    <div class="col-12">
+		      <button
+		        mat-stroked-button
+		        color="primary"
+		        class="large w-auto mb-4"
+		        aria-label="Upload a Word or PDF document providing more information"
+		        (click)="onUploadFile()"
+		        >
+		        <mat-icon>file_upload</mat-icon>Upload Completed Self Disclosure Form
+		      </button>
+		    </div>
+		  </div>
+		}
+		
+		@if (opportunityToRespondAlert || requestForAdditionalInfoAlert) {
+		  <h4 class="subheading fw-normal mb-3">Upload Document</h4>
+		  <div class="row">
+		    <div class="col-12">
+		      <button
+		        mat-stroked-button
+		        color="primary"
+		        class="large w-auto mb-4"
+		        aria-label="Upload a Word or PDF document providing more information"
+		        (click)="onUploadFile()"
+		        >
+		        <mat-icon>file_upload</mat-icon>Upload a Word or PDF Document
+		      </button>
+		    </div>
+		  </div>
+		}
+		
+		@if (documentHistoryExists) {
+		  <h4 class="subheading fw-normal mb-2">Document Upload History</h4>
+		  <div class="row">
+		    <div class="col-12">
+		      <mat-table [dataSource]="dataSourceHistory">
+		        <ng-container matColumnDef="fileName">
+		          <mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
+		          <mat-cell *matCellDef="let document">
+		            <span class="mobile-label">Document Name:</span>
+		            {{ document.fileName }}
+		          </mat-cell>
+		        </ng-container>
+		        <ng-container matColumnDef="fileTypeCode">
+		          <mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
+		          <mat-cell *matCellDef="let document">
+		            <span class="mobile-label">File Type:</span>
+		            {{ document.fileTypeCode | options : 'FileTypes' }}
+		          </mat-cell>
+		        </ng-container>
+		        <ng-container matColumnDef="uploadedDateTime">
+		          <mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
+		          <mat-cell *matCellDef="let document">
+		            <span class="mobile-label">Uploaded On:</span>
+		            {{ document.uploadedDateTime | formatDate }}
+		          </mat-cell>
+		        </ng-container>
+		        <mat-header-row *matHeaderRowDef="columnsHistory; sticky: true"></mat-header-row>
+		        <mat-row *matRowDef="let row; columns: columnsHistory"></mat-row>
+		      </mat-table>
+		    </div>
+		  </div>
+		}
+		`,
     styles: [
         `
 			.warning-text {

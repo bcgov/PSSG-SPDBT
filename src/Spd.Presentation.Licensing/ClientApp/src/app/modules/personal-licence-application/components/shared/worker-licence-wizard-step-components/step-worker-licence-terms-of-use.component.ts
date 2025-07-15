@@ -6,19 +6,21 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 import { CommonSwlPermitTermsUpdateReplaceComponent } from '../common-step-components/common-swl-permit-terms-update-replace.component';
 
 @Component({
-    selector: 'app-step-worker-licence-terms-of-use',
-    template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
-			<ng-container *ngIf="isNewOrRenewal; else isUpdate">
-				<app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
-			</ng-container>
-			<ng-template #isUpdate>
-				<app-common-swl-permit-terms-update-replace [form]="form"></app-common-swl-permit-terms-update-replace>
-			</ng-template>
+	selector: 'app-step-worker-licence-terms-of-use',
+	template: `
+		<app-step-section
+		  heading="Terms and Conditions"
+		  subheading="Read, download, and accept the Terms of Use to continue"
+		  >
+		  @if (isNewOrRenewal) {
+		    <app-common-swl-permit-terms [form]="form"></app-common-swl-permit-terms>
+		  } @else {
+		    <app-common-swl-permit-terms-update-replace [form]="form"></app-common-swl-permit-terms-update-replace>
+		  }
 		</app-step-section>
-	`,
-    styles: [],
-    standalone: false
+		`,
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceTermsOfUseComponent implements LicenceChildStepperStepComponent {
 	form = this.workerApplicationService.termsAndConditionsFormGroup;

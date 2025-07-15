@@ -17,8 +17,11 @@ using Spd.Resource.Repository.GDSDApp;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.MDRARegistration;
+using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.RetiredDogApp;
 using System.Collections.Immutable;
 using System.Text.Json;
@@ -508,6 +511,20 @@ internal class Mappings : Profile
         CreateMap<RetiredDogLicenceAppChangeRequest, CreateRetiredDogAppCmd>();
         CreateMap<RetiredDogAppCmdResp, RetiredDogAppCommandResponse>();
         CreateMap<RetiredDogAppResp, RetiredDogLicenceAppResponse>();
+        CreateMap<MDRARegistrationRequest, CreateMDRARegistrationCmd>()
+           .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+        CreateMap<MDRARegistrationRequest, SearchRegistrationQry>()
+            .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
+            .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
+            .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
+        CreateMap<MDRARegistrationRequest, SearchOrgQry>()
+            .ForMember(d => d.GenericEmail, opt => opt.MapFrom(s => s.BizEmailAddress))
+            .ForMember(d => d.MailingPostalCode, opt => opt.MapFrom(s => s.BizMailingAddress == null ? null : s.BizMailingAddress.PostalCode))
+            .ForMember(d => d.RegistrationTypeCode, opt => opt.MapFrom(s => RegistrationTypeCode.MDRA))
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.BizTradeName));
+        CreateMap<MDRARegistrationResp, MDRARegistrationResponse>()
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.Branches)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -793,7 +810,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
-        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -861,7 +879,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.VeterinarianConfirmationForSpayedNeuteredDog, DocumentTypeEnum.VeterinarianConfirmationForSpayedNeuteredDog },
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
-        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate }
+        {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

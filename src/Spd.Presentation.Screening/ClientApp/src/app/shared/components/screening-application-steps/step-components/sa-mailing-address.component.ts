@@ -12,92 +12,105 @@ import { CrcFormStepComponent } from '../screening-application.model';
     selector: 'app-sa-mailing-address',
     template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title title="What is your mailing address?"></app-step-title>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<app-address-form-autocomplete
-								(autocompleteAddress)="onAddressAutocomplete($event)"
-								(enterAddressManually)="onEnterAddressManually()"
-							>
-							</app-address-form-autocomplete>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-									form.get('addressSelected')?.invalid &&
-									form.get('addressSelected')?.hasError('required')
-								"
-							>
-								This is required
-							</mat-error>
-						</div>
-					</div>
-
-					<section *ngIf="form.get('addressSelected')?.value">
-						<div class="row">
-							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-								<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
-								<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
-								<mat-form-field>
-									<mat-label>Street Address 1</mat-label>
-									<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
-									<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row">
-							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-								<mat-form-field>
-									<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="addressLine2" maxlength="100" />
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row">
-							<div class="offset-lg-2 col-lg-5 col-md-7 col-sm-12">
-								<mat-form-field>
-									<mat-label>City</mat-label>
-									<input matInput formControlName="city" [errorStateMatcher]="matcher" maxlength="100" />
-									<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-lg-3 col-md-5 col-sm-12">
-								<mat-form-field>
-									<mat-label>Postal/Zip Code</mat-label>
-									<input
-										matInput
-										formControlName="postalCode"
-										[errorStateMatcher]="matcher"
-										oninput="this.value = this.value.toUpperCase()"
-										maxlength="20"
-									/>
-									<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row">
-							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Province/State</mat-label>
-									<input matInput formControlName="province" [errorStateMatcher]="matcher" maxlength="100" />
-									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-lg-4 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Country</mat-label>
-									<input matInput formControlName="country" [errorStateMatcher]="matcher" maxlength="100" />
-									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-						</div>
-					</section>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title title="What is your mailing address?"></app-step-title>
+		      <div class="row">
+		        <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+		          <app-address-form-autocomplete
+		            (autocompleteAddress)="onAddressAutocomplete($event)"
+		            (enterAddressManually)="onEnterAddressManually()"
+		            >
+		          </app-address-form-autocomplete>
+		          @if (
+		            (form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+		            form.get('addressSelected')?.invalid &&
+		            form.get('addressSelected')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >
+		              This is required
+		            </mat-error>
+		          }
+		        </div>
+		      </div>
+		
+		      @if (form.get('addressSelected')?.value) {
+		        <section>
+		          <div class="row">
+		            <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+		              <mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+		              <div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+		              <mat-form-field>
+		                <mat-label>Street Address 1</mat-label>
+		                <input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+		                @if (form.get('addressLine1')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+		                <input matInput formControlName="addressLine2" maxlength="100" />
+		              </mat-form-field>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="offset-lg-2 col-lg-5 col-md-7 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>City</mat-label>
+		                <input matInput formControlName="city" [errorStateMatcher]="matcher" maxlength="100" />
+		                @if (form.get('city')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-lg-3 col-md-5 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Postal/Zip Code</mat-label>
+		                <input
+		                  matInput
+		                  formControlName="postalCode"
+		                  [errorStateMatcher]="matcher"
+		                  oninput="this.value = this.value.toUpperCase()"
+		                  maxlength="20"
+		                  />
+		                  @if (form.get('postalCode')?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		            </div>
+		            <div class="row">
+		              <div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Province/State</mat-label>
+		                  <input matInput formControlName="province" [errorStateMatcher]="matcher" maxlength="100" />
+		                  @if (form.get('province')?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		              <div class="col-lg-4 col-md-6 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>Country</mat-label>
+		                  <input matInput formControlName="country" [errorStateMatcher]="matcher" maxlength="100" />
+		                  @if (form.get('country')?.hasError('required')) {
+		                    <mat-error>This is required</mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		            </div>
+		          </section>
+		        }
+		      </div>
+		    </form>
+		  </section>
+		`,
     styles: [
         `
 			.text-minor-heading {

@@ -14,108 +14,110 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
     selector: 'app-step-one',
     template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-registration-path-selection (clearData)="onClearStepData()"></app-registration-path-selection>
-
-				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_REGISTRATION_PATH)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-organization-options
-					[registrationTypeCode]="registrationPathSelectionData.registrationTypeCode"
-					(noneApply)="onNoneApplyToOrganization()"
-				></app-organization-options>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_ORGANIZATION_OPTION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showStepOrganizationProblem">
-				<app-organization-problem></app-organization-problem>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="isVolunteerPath">
-				<app-compensation-question></app-compensation-question>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_COMPENSATION_OPTION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-vulnerable-sector-question [isVolunteer]="isVolunteerPath"></app-vulnerable-sector-question>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onVulnerableSectorQuestionNext()">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-eligibility-problem></app-eligibility-problem>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
-					</div>
-				</div>
-			</mat-step>
+		  <mat-step>
+		    <app-registration-path-selection (clearData)="onClearStepData()"></app-registration-path-selection>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_REGISTRATION_PATH)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-organization-options
+		      [registrationTypeCode]="registrationPathSelectionData.registrationTypeCode"
+		      (noneApply)="onNoneApplyToOrganization()"
+		    ></app-organization-options>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button
+		          mat-flat-button
+		          color="primary"
+		          class="large mb-2"
+		          (click)="onFormValidNextStep(STEP_ORGANIZATION_OPTION)"
+		          >
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  @if (showStepOrganizationProblem) {
+		    <mat-step>
+		      <app-organization-problem></app-organization-problem>
+		      <div class="row mt-4">
+		        <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		          <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		        </div>
+		        <div class="col-lg-3 col-md-4 col-sm-6">
+		          <button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+		        </div>
+		      </div>
+		    </mat-step>
+		  }
+		
+		  @if (isVolunteerPath) {
+		    <mat-step>
+		      <app-compensation-question></app-compensation-question>
+		      <div class="row mt-4">
+		        <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		          <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		        </div>
+		        <div class="col-lg-3 col-md-4 col-sm-6">
+		          <button
+		            mat-flat-button
+		            color="primary"
+		            class="large mb-2"
+		            (click)="onFormValidNextStep(STEP_COMPENSATION_OPTION)"
+		            >
+		            Next
+		          </button>
+		        </div>
+		      </div>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-vulnerable-sector-question [isVolunteer]="isVolunteerPath"></app-vulnerable-sector-question>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button mat-flat-button color="primary" class="large mb-2" (click)="onVulnerableSectorQuestionNext()">
+		          Next
+		        </button>
+		      </div>
+		    </div>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-eligibility-problem></app-eligibility-problem>
+		
+		    <div class="row mt-4">
+		      <div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+		        <button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		      </div>
+		      <div class="col-lg-3 col-md-4 col-sm-6">
+		        <button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+		      </div>
+		    </div>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
     styles: [],
     encapsulation: ViewEncapsulation.None,
     standalone: false

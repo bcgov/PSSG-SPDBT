@@ -10,82 +10,100 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	selector: 'app-sa-personal-information',
 	template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title
-						title="Your personal information"
-						subtitle="Date of birth must match your government-issued identification"
-					></app-step-title>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Date of Birth</mat-label>
-								<input
-									matInput
-									[matDatepicker]="picker"
-									formControlName="dateOfBirth"
-									[max]="maxBirthDate"
-									[min]="minDate"
-									[errorStateMatcher]="matcher"
-								/>
-								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
-									This must be on or before {{ maxBirthDate | formatDate }}
-								</mat-error>
-								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMin')">
-									Invalid date of birth
-								</mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-4 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Birthplace</mat-label>
-								<input
-									matInput
-									formControlName="birthPlace"
-									placeholder="City, Country"
-									[errorStateMatcher]="matcher"
-									maxlength="100"
-								/>
-								<mat-error *ngIf="form.get('birthPlace')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>BC Drivers Licence # <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="driversLicense" mask="00000009" />
-								<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-4 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Sex</mat-label>
-								<mat-select formControlName="genderCode">
-									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-										{{ gdr.desc }}
-									</mat-option>
-								</mat-select>
-								<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row" *ngIf="orgData?.bcGovEmployeeIdShow">
-						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>BC Government Employee ID <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="employeeId" mask="000000" />
-								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 6 digits </mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title
+		        title="Your personal information"
+		        subtitle="Date of birth must match your government-issued identification"
+		      ></app-step-title>
+		      <div class="row">
+		        <div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
+		          <mat-form-field>
+		            <mat-label>Date of Birth</mat-label>
+		            <input
+		              matInput
+		              [matDatepicker]="picker"
+		              formControlName="dateOfBirth"
+		              [max]="maxBirthDate"
+		              [min]="minDate"
+		              [errorStateMatcher]="matcher"
+		              />
+		              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+		              <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+		              @if (form.get('dateOfBirth')?.hasError('required')) {
+		                <mat-error>This is required</mat-error>
+		              }
+		              @if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
+		                <mat-error>
+		                  This must be on or before {{ maxBirthDate | formatDate }}
+		                </mat-error>
+		              }
+		              @if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
+		                <mat-error>
+		                  Invalid date of birth
+		                </mat-error>
+		              }
+		            </mat-form-field>
+		          </div>
+		          <div class="col-lg-4 col-md-12 col-sm-12">
+		            <mat-form-field>
+		              <mat-label>Birthplace</mat-label>
+		              <input
+		                matInput
+		                formControlName="birthPlace"
+		                placeholder="City, Country"
+		                [errorStateMatcher]="matcher"
+		                maxlength="100"
+		                />
+		                @if (form.get('birthPlace')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>BC Drivers Licence # <span class="optional-label">(optional)</span></mat-label>
+		                <input matInput formControlName="driversLicense" mask="00000009" />
+		                @if (form.get('driversLicense')?.hasError('mask')) {
+		                  <mat-error> This must be 7 or 8 digits </mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-lg-4 col-md-12 col-sm-12">
+		              <mat-form-field>
+		                <mat-label>Sex</mat-label>
+		                <mat-select formControlName="genderCode">
+		                  @for (gdr of genderTypes; track gdr) {
+		                    <mat-option [value]="gdr.code">
+		                      {{ gdr.desc }}
+		                    </mat-option>
+		                  }
+		                </mat-select>
+		                @if (form.get('genderCode')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		          </div>
+		          @if (orgData?.bcGovEmployeeIdShow) {
+		            <div class="row">
+		              <div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
+		                <mat-form-field>
+		                  <mat-label>BC Government Employee ID <span class="optional-label">(optional)</span></mat-label>
+		                  <input matInput formControlName="employeeId" mask="000000" />
+		                  @if (form.get('employeeId')?.hasError('mask')) {
+		                    <mat-error> This must be 6 digits </mat-error>
+		                  }
+		                </mat-form-field>
+		              </div>
+		            </div>
+		          }
+		        </div>
+		      </form>
+		    </section>
+		`,
     styles: [],
     standalone: false
 })

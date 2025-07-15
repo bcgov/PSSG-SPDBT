@@ -1,13 +1,20 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, MdraRegistrationCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers-routes';
 import { distinctUntilChanged, Subscription } from 'rxjs';
+import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
+import {
+	ModalMdraDuplicateComponent,
+	ModalMdraDuplicateDialogData,
+	ModalMdraDuplicateDialogResponse,
+} from './modal-mdra-duplicate.component';
 import { StepsMdraBranchesComponent } from './steps-mdra-branches.component';
 import { StepsMdraBusinessInfoComponent } from './steps-mdra-business-info.component';
 import { StepsMdraDetailsComponent } from './steps-mdra-details.component';
@@ -105,6 +112,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private dialog: MatDialog,
 		private router: Router,
 		private metalDealersApplicationService: MetalDealersApplicationService
 	) {
@@ -112,11 +120,6 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	ngOnInit(): void {
-		if (!this.metalDealersApplicationService.initialized) {
-			this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path());
-			return;
-		}
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -139,7 +142,67 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	onSubmit(): void {
-		// TODO mdra submit
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
+			this.metalDealersApplicationService.submitLicenceAnonymous(true).subscribe({
+				next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+					this.displayDataValidationMessage(dupres.body);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+			return;
+		}
+
+		this.metalDealersApplicationService.submitLicenceAnonymous(false).subscribe({
+			next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+				this.handleSaveSuccess();
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	private displayDataValidationMessage(dupres: MdraRegistrationCommandResponse): void {
+		if (dupres.registrationId) {
+			this.handleSaveSuccess();
+			return;
+		}
+
+		if (dupres.hasPotentialDuplicate) {
+			const data: ModalMdraDuplicateDialogData = {
+				title: 'Potential duplicate detected',
+				message: 'A potential duplicate has been found. Are you sure this is a new registration request?',
+				actionText: 'Yes, create registration',
+				cancelText: 'Cancel',
+			};
+			this.dialog
+				.open(ModalMdraDuplicateComponent, { data })
+				.afterClosed()
+				.subscribe((response: ModalMdraDuplicateDialogResponse) => {
+					if (response.success) {
+						this.resubmitLicenceAnonymous(true, response.captchaResponse?.resolved!);
+					}
+				});
+		}
+	}
+
+	private resubmitLicenceAnonymous(hasPotentialDuplicate: boolean, recaptchaCode: string) {
+		this.metalDealersApplicationService.resubmitLicenceAnonymous(hasPotentialDuplicate, recaptchaCode).subscribe({
+			next: (dupres: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
+				this.displayDataValidationMessage(dupres.body);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	private handleSaveSuccess(): void {
+		this.router.navigateByUrl(
+			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
+		);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
@@ -177,10 +240,6 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	onChildNextStep() {
 		const component = this.getSelectedIndexComponent(this.stepper.selectedIndex);
 		component?.onGoToNextStep();
-	}
-
-	get isNew(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
 	private getSelectedIndexComponent(index: number): any {

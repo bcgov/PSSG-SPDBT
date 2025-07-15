@@ -9,15 +9,17 @@ import { takeWhile } from 'rxjs';
 @Component({
 	selector: 'app-portal-administrator-invitation',
 	template: `
-		<div class="container-fluid text-center mt-4" *ngIf="message">
-			<mat-icon class="my-4">error</mat-icon>
-			<h1>Portal Administrator Invitation</h1>
-			<h4 class="mt-4">
-				{{ message }}
-			</h4>
-			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
-		</div>
-	`,
+		@if (message) {
+		  <div class="container-fluid text-center mt-4">
+		    <mat-icon class="my-4">error</mat-icon>
+		    <h1>Portal Administrator Invitation</h1>
+		    <h4 class="mt-4">
+		      {{ message }}
+		    </h4>
+		    <p class="mt-4">Please contact your primary authorized user for assistance.</p>
+		  </div>
+		}
+		`,
 	styles: [
 		`
 			.mat-icon {

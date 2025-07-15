@@ -59,18 +59,18 @@ export interface ManualSubmissionBody {
 					<h2>
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							<ng-container *ngIf="portal === portalTypeCodes.Psso; else crrpSubtitle">
+							@if (portal === portalTypeCodes.Psso) {
 								Enter the applicant's information and submit their application
-							</ng-container>
-							<ng-template #crrpSubtitle>
-								<div *ngIf="isNotVolunteerOrg; else isVolunteer">
-									Enter the applicant's information, upload their consent form, and then pay the criminal record check
-									fee
-								</div>
-								<ng-template #isVolunteer>
+							} @else {
+								@if (isNotVolunteerOrg) {
+									<div>
+										Enter the applicant's information, upload their consent form, and then pay the criminal record check
+										fee
+									</div>
+								} @else {
 									Enter the applicant's information and then upload their consent form
-								</ng-template>
-							</ng-template>
+								}
+							}
 						</div>
 					</h2>
 				</div>
@@ -90,10 +90,14 @@ export interface ManualSubmissionBody {
 									<mat-form-field>
 										<mat-label
 											>Legal Given Name
-											<span class="optional-label" *ngIf="isGivenNameOptional">(optional)</span></mat-label
-										>
+											@if (isGivenNameOptional) {
+												<span class="optional-label">(optional)</span>
+											}
+										</mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
+										@if (form.get('givenName')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
@@ -112,12 +116,12 @@ export interface ManualSubmissionBody {
 									<mat-form-field>
 										<mat-label>Legal Surname</mat-label>
 										<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="!isGivenNameOptional && form.get('surname')?.hasError('required')">
-											This is required
-										</mat-error>
-										<mat-error *ngIf="isGivenNameOptional && form.get('surname')?.hasError('required')">
-											Use this field if applicant has only one name
-										</mat-error>
+										@if (!isGivenNameOptional && form.get('surname')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (isGivenNameOptional && form.get('surname')?.hasError('required')) {
+											<mat-error> Use this field if applicant has only one name </mat-error>
+										}
 									</mat-form-field>
 								</div>
 
@@ -125,10 +129,12 @@ export interface ManualSubmissionBody {
 									<mat-form-field>
 										<mat-label>Email</mat-label>
 										<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
-										<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-										<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
-											Must be a valid email address
-										</mat-error>
+										@if (form.get('emailAddress')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (form.get('emailAddress')?.hasError('email')) {
+											<mat-error> Must be a valid email address </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
@@ -141,8 +147,12 @@ export interface ManualSubmissionBody {
 											[showMaskTyped]="false"
 											[errorStateMatcher]="matcher"
 										/>
-										<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>
-										<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+										@if (form.get('phoneNumber')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
+										@if (form.get('phoneNumber')?.hasError('mask')) {
+											<mat-error>This must be 10 digits</mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
@@ -158,13 +168,15 @@ export interface ManualSubmissionBody {
 										/>
 										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
-											This must be on or before {{ maxBirthDate | formatDate }}
-										</mat-error>
-										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMin')">
-											Invalid date of birth
-										</mat-error>
+										@if (form.get('dateOfBirth')?.hasError('required')) {
+											<mat-error>This is required</mat-error>
+										}
+										@if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
+											<mat-error> This must be on or before {{ maxBirthDate | formatDate }} </mat-error>
+										}
+										@if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
+											<mat-error> Invalid date of birth </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
@@ -177,110 +189,170 @@ export interface ManualSubmissionBody {
 											[errorStateMatcher]="matcher"
 											maxlength="100"
 										/>
-										<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
+										@if (form.get('birthPlace')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
 										<input matInput formControlName="driversLicense" mask="00000009" />
-										<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')">
-											This must be 7 or 8 digits
-										</mat-error>
+										@if (form.get('driversLicense')?.hasError('mask')) {
+											<mat-error> This must be 7 or 8 digits </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Sex</mat-label>
 										<mat-select formControlName="genderCode">
-											<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-												{{ gdr.desc }}
-											</mat-option>
+											@for (gdr of genderTypes; track gdr) {
+												<mat-option [value]="gdr.code">
+													{{ gdr.desc }}
+												</mat-option>
+											}
 										</mat-select>
-										<mat-error *ngIf="form.get('genderCode')?.hasError('required')"> This is required </mat-error>
+										@if (form.get('genderCode')?.hasError('required')) {
+											<mat-error> This is required </mat-error>
+										}
 									</mat-form-field>
 								</div>
 								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Job Title</mat-label>
 										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+										@if (form.get('jobTitle')?.hasError('required')) {
+											<mat-error>This is required</mat-error>
+										}
 									</mat-form-field>
 								</div>
-								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12" *ngIf="showScreeningType">
-									<mat-form-field>
-										<mat-label>Application Type</mat-label>
-										<mat-select formControlName="screeningType">
-											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
-												{{ scr.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('screeningType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12" *ngIf="isDisplayFacilityName">
-									<mat-form-field>
-										<mat-label>Company / Facility Name</mat-label>
-										<input
-											matInput
-											formControlName="contractedCompanyName"
-											[errorStateMatcher]="matcher"
-											maxlength="100"
-										/>
-										<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')"
-											>This is required</mat-error
-										>
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12" *ngIf="portal === portalTypeCodes.Psso">
-									<mat-form-field>
-										<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="employeeId" mask="000000" />
-										<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 6 digits </mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xl-6 col-lg-12 col-md-12" *ngIf="showMinistries">
-									<mat-form-field>
-										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="orgId" (selectionChange)="onChangeMinistry($event)">
-											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
-												{{ ministry.name }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('orgId')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12" *ngIf="showServiceType">
-									<mat-form-field>
-										<mat-label>Service Type</mat-label>
-										<mat-select
-											formControlName="serviceType"
-											(selectionChange)="onChangeServiceType($event)"
-											[errorStateMatcher]="matcher"
-										>
-											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
-												{{ srv.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('serviceType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
+								@if (showScreeningType) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Application Type</mat-label>
+											<mat-select formControlName="screeningType">
+												@for (scr of screeningTypes; track scr) {
+													<mat-option [value]="scr.code">
+														{{ scr.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('screeningType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (isDisplayFacilityName) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Company / Facility Name</mat-label>
+											<input
+												matInput
+												formControlName="contractedCompanyName"
+												[errorStateMatcher]="matcher"
+												maxlength="100"
+											/>
+											@if (form.get('contractedCompanyName')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (portal === portalTypeCodes.Psso) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
+											<input matInput formControlName="employeeId" mask="000000" />
+											@if (form.get('employeeId')?.hasError('mask')) {
+												<mat-error> This must be 6 digits </mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (showMinistries) {
+									<div class="col-xl-6 col-lg-12 col-md-12">
+										<mat-form-field>
+											<mat-label>Ministry</mat-label>
+											<mat-select formControlName="orgId" (selectionChange)="onChangeMinistry($event)">
+												@for (ministry of ministries; track ministry) {
+													<mat-option [value]="ministry.id">
+														{{ ministry.name }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('orgId')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
+								@if (showServiceType) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Service Type</mat-label>
+											<mat-select
+												formControlName="serviceType"
+												(selectionChange)="onChangeServiceType($event)"
+												[errorStateMatcher]="matcher"
+											>
+												@for (srv of serviceTypes; track srv) {
+													<mat-option [value]="srv.code">
+														{{ srv.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('serviceType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
 
-								<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12" *ngIf="showPaidBy">
-									<mat-form-field>
-										<mat-label>Paid by</mat-label>
-										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
-												{{ payer.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('payeeType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
+								@if (showPaidBy) {
+									<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
+										<mat-form-field>
+											<mat-label>Paid by</mat-label>
+											<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
+												@for (payer of payerPreferenceTypes; track payer) {
+													<mat-option [value]="payer.code">
+														{{ payer.desc }}
+													</mat-option>
+												}
+											</mat-select>
+											@if (form.get('payeeType')?.hasError('required')) {
+												<mat-error>This is required</mat-error>
+											}
+										</mat-form-field>
+									</div>
+								}
 							</div>
-							<ng-container *ngIf="serviceTypeIsPssoVs">
-								<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
-							</ng-container>
+							@if (serviceTypeIsPssoVs) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
+									</div>
+								</div>
+							}
+							@if (serviceTypeIsPssoPeCrc) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">
+											<div [innerHtml]="pssoPeCrcWarning"></div>
+										</app-alert>
+									</div>
+								</div>
+							}
+							@if (serviceTypeIsPssoPeCrcVs) {
+								<div class="row my-2">
+									<div class="col-xxl-8 col-xl-10 col-lg-12">
+										<app-alert type="warning">
+											<div [innerHtml]="pssoPeCrcVsWarning"></div>
+										</app-alert>
+									</div>
+								</div>
+							}
 						</section>
 
 						<mat-divider class="my-3"></mat-divider>
@@ -298,76 +370,83 @@ export interface ManualSubmissionBody {
 										>
 										<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 									</mat-radio-group>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-											form.get('previousNameFlag')?.invalid &&
-											form.get('previousNameFlag')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
+									@if (
+										(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+										form.get('previousNameFlag')?.invalid &&
+										form.get('previousNameFlag')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
 								</div>
 							</div>
 
-							<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
-								<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-								<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
-									<div class="row" [formGroupName]="i">
-										<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-											<mat-form-field>
-												<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-												<input matInput type="text" formControlName="givenName" maxlength="40" />
-											</mat-form-field>
+							@if (previousNameFlag.value === booleanTypeCodes.Yes) {
+								<div>
+									<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+									@for (group of getFormControls.controls; track group; let i = $index) {
+										<ng-container formArrayName="aliases">
+											<div class="row" [formGroupName]="i">
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="givenName" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="middleName1" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+														<input matInput type="text" formControlName="middleName2" maxlength="40" />
+													</mat-form-field>
+												</div>
+												<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+													<mat-form-field>
+														<mat-label>Surname</mat-label>
+														<input
+															matInput
+															type="text"
+															formControlName="surname"
+															required
+															[errorStateMatcher]="matcher"
+															maxlength="40"
+														/>
+														@if (group.get('surname')?.hasError('required')) {
+															<mat-error> This is required </mat-error>
+														}
+													</mat-form-field>
+												</div>
+												<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
+													@if (moreThanOneRowExists) {
+														<button
+															mat-mini-fab
+															class="delete-row-button mb-3"
+															matTooltip="Remove previous name"
+															(click)="onDeleteRow(i)"
+															aria-label="Remove row"
+														>
+															<mat-icon>delete_outline</mat-icon>
+														</button>
+													}
+												</div>
+											</div>
+										</ng-container>
+									}
+									@if (isAllowAliasAdd) {
+										<div class="row">
+											<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+												<button mat-stroked-button (click)="onAddRow()">
+													<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+												</button>
+											</div>
 										</div>
-										<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-											<mat-form-field>
-												<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-												<input matInput type="text" formControlName="middleName1" maxlength="40" />
-											</mat-form-field>
-										</div>
-										<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
-											<mat-form-field>
-												<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-												<input matInput type="text" formControlName="middleName2" maxlength="40" />
-											</mat-form-field>
-										</div>
-										<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-											<mat-form-field>
-												<mat-label>Surname</mat-label>
-												<input
-													matInput
-													type="text"
-													formControlName="surname"
-													required
-													[errorStateMatcher]="matcher"
-													maxlength="40"
-												/>
-												<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
-											</mat-form-field>
-										</div>
-										<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
-											<button
-												mat-mini-fab
-												class="delete-row-button mb-3"
-												matTooltip="Remove previous name"
-												(click)="onDeleteRow(i)"
-												*ngIf="moreThanOneRowExists"
-												aria-label="Remove row"
-											>
-												<mat-icon>delete_outline</mat-icon>
-											</button>
-										</div>
-									</div>
-								</ng-container>
-								<div class="row" *ngIf="isAllowAliasAdd">
-									<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-										<button mat-stroked-button (click)="onAddRow()">
-											<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
-										</button>
-									</div>
+									}
 								</div>
-							</div>
+							}
 						</section>
 
 						<mat-divider class="my-3"></mat-divider>
@@ -380,25 +459,24 @@ export interface ManualSubmissionBody {
 										(enterAddressManually)="onEnterAddressManually()"
 									>
 									</app-address-form-autocomplete>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-											form.get('addressSelected')?.invalid &&
-											form.get('addressSelected')?.hasError('required')
-										"
-									>
-										This is required
-									</mat-error>
+									@if (
+										(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+										form.get('addressSelected')?.invalid &&
+										form.get('addressSelected')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error"> This is required </mat-error>
+									}
 
-									<ng-container *ngIf="form.get('addressSelected')?.value">
+									@if (form.get('addressSelected')?.value) {
 										<div class="row">
 											<div class="col-12">
 												<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 												<mat-form-field>
 													<mat-label>Street Address 1</mat-label>
 													<input matInput formControlName="addressLine1" maxlength="100" />
-													<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
+													@if (form.get('addressLine1')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
 												</mat-form-field>
 											</div>
 										</div>
@@ -415,7 +493,9 @@ export interface ManualSubmissionBody {
 												<mat-form-field>
 													<mat-label>City</mat-label>
 													<input matInput formControlName="city" maxlength="100" />
-													<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
+													@if (form.get('city')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
 												</mat-form-field>
 											</div>
 											<div class="col-md-6 col-sm-12">
@@ -427,7 +507,9 @@ export interface ManualSubmissionBody {
 														oninput="this.value = this.value.toUpperCase()"
 														maxlength="20"
 													/>
-													<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
+													@if (form.get('postalCode')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
 												</mat-form-field>
 											</div>
 										</div>
@@ -436,18 +518,22 @@ export interface ManualSubmissionBody {
 												<mat-form-field>
 													<mat-label>Province/State</mat-label>
 													<input matInput formControlName="province" maxlength="100" />
-													<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+													@if (form.get('province')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
 												</mat-form-field>
 											</div>
 											<div class="col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Country</mat-label>
 													<input matInput formControlName="country" maxlength="100" />
-													<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+													@if (form.get('country')?.hasError('required')) {
+														<mat-error>This is required</mat-error>
+													}
 												</mat-form-field>
 											</div>
 										</div>
-									</ng-container>
+									}
 								</div>
 							</div>
 						</section>
@@ -461,39 +547,34 @@ export interface ManualSubmissionBody {
 										I certify that, to the best of my knowledge, the information I have provided and will provide as
 										necessary is complete and accurate
 									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('agreeToCompleteAndAccurate')?.dirty ||
-												form.get('agreeToCompleteAndAccurate')?.touched) &&
-											form.get('agreeToCompleteAndAccurate')?.invalid &&
-											form.get('agreeToCompleteAndAccurate')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
+									@if (
+										(form.get('agreeToCompleteAndAccurate')?.dirty ||
+											form.get('agreeToCompleteAndAccurate')?.touched) &&
+										form.get('agreeToCompleteAndAccurate')?.invalid &&
+										form.get('agreeToCompleteAndAccurate')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
 								</div>
 								<div class="col-md-12 col-sm-12">
 									<mat-checkbox formControlName="haveVerifiedIdentity">
-										<ng-container *ngIf="portal === portalTypeCodes.Psso; else haveVerifiedIdentityCrrpLabel">
+										@if (portal === portalTypeCodes.Psso) {
 											I have verified the identity of the applicant for this criminal record check
-										</ng-container>
-										<ng-template #haveVerifiedIdentityCrrpLabel>
+										} @else {
 											I confirm that I have verified the identity of the applicant for this criminal record check
-										</ng-template>
+										}
 									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
-											form.get('haveVerifiedIdentity')?.invalid &&
-											form.get('haveVerifiedIdentity')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
+									@if (
+										(form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
+										form.get('haveVerifiedIdentity')?.invalid &&
+										form.get('haveVerifiedIdentity')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
 								</div>
 							</div>
 
-							<ng-container *ngIf="portal === portalTypeCodes.Crrp">
+							@if (portal === portalTypeCodes.Crrp) {
 								<mat-divider class="my-3"></mat-divider>
 								<div class="text-minor-heading fw-semibold mb-2">
 									Upload the copy of signed consent form sent by the applicant
@@ -505,18 +586,16 @@ export interface ManualSubmissionBody {
 											[control]="attachments"
 											[files]="attachments.value"
 										></app-file-upload>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-												form.get('attachments')?.invalid &&
-												form.get('attachments')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
+										@if (
+											(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+											form.get('attachments')?.invalid &&
+											form.get('attachments')?.hasError('required')
+										) {
+											<mat-error class="mat-option-error">This is required</mat-error>
+										}
 									</div>
 								</div>
-							</ng-container>
+							}
 						</section>
 					</div>
 				</div>
@@ -544,6 +623,8 @@ export interface ManualSubmissionBody {
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;
+	pssoPeCrcWarning = SPD_CONSTANTS.message.pssoPeCrcWarning;
+	pssoPeCrcVsWarning = SPD_CONSTANTS.message.pssoPeCrcVsWarning;
 
 	ministries: Array<MinistryResponse> = [];
 	isNotVolunteerOrg = false;
@@ -753,9 +834,15 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		if (
 			this.portal == PortalTypeCode.Psso &&
 			createRequest.serviceType != ServiceTypeCode.PssoVs &&
+			createRequest.serviceType != ServiceTypeCode.PeCrc &&
 			createRequest.serviceType != ServiceTypeCode.PeCrcVs
 		) {
 			this.saveAndCheckDuplicates(body);
+		} else if (
+			this.portal == PortalTypeCode.Psso &&
+			(createRequest.serviceType === ServiceTypeCode.PeCrc || createRequest.serviceType === ServiceTypeCode.PeCrcVs)
+		) {
+			this.promptPolicyEnabledCheck(body);
 		} else {
 			this.promptVulnerableSector(body);
 		}
@@ -974,17 +1061,46 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		});
 	}
 
-	private promptVulnerableSector(body: ManualSubmissionBody): void {
+	private promptPolicyEnabledCheck(body: ManualSubmissionBody): void {
 		const data: DialogOptions = {
 			icon: 'info_outline',
-			title: 'Vulnerable sector',
+			title: '',
 			message: '',
 			actionText: 'Yes',
 			cancelText: 'No',
 		};
 
-		data.message =
-			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+		if (this.serviceTypeIsPssoPeCrcVs) {
+			data.title = 'Enhanced policy enabled check';
+			data.message = SPD_CONSTANTS.message.pssoPeCrcVsPrompt;
+		} else {
+			// serviceTypeIsPssoPeCrc
+			data.title = 'Standard policy enabled check';
+			data.message = SPD_CONSTANTS.message.pssoPeCrcPrompt;
+		}
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					if (this.serviceTypeIsPssoPeCrc) {
+						this.saveAndCheckDuplicates(body);
+					} else {
+						this.promptVulnerableSector(body);
+					}
+				}
+			});
+	}
+
+	private promptVulnerableSector(body: ManualSubmissionBody): void {
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Vulnerable sector',
+			message: SPD_CONSTANTS.message.pssoVsPrompt,
+			actionText: 'Yes',
+			cancelText: 'No',
+		};
 
 		this.dialog
 			.open(DialogComponent, { data })
@@ -1002,12 +1118,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Criminal record check',
-			message: '',
+			message: SPD_CONSTANTS.message.pssoVsNoWarning,
 			actionText: 'Cancel request',
 			cancelText: 'Previous',
 		};
-
-		data.message = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
 
 		this.dialog
 			.open(DialogComponent, { data })
@@ -1036,6 +1150,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 	get serviceTypeIsPssoVs(): boolean {
 		return this.form.get('serviceType')?.value === ServiceTypeCode.PssoVs;
+	}
+	get serviceTypeIsPssoPeCrc(): boolean {
+		return this.form.get('serviceType')?.value === ServiceTypeCode.PeCrc;
+	}
+	get serviceTypeIsPssoPeCrcVs(): boolean {
+		return this.form.get('serviceType')?.value === ServiceTypeCode.PeCrcVs;
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using FluentValidation;
 using Serilog;
+//using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using Spd.Presentation.GuideDogServiceDog.Swagger;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.JsonConverts;
@@ -27,7 +25,7 @@ try
     var assemblyName = $"{typeof(Program).GetTypeInfo().Assembly.GetName().Name}";
 
     builder.Services.ConfigureDataProtection(builder.Configuration, "ProtectionShareKeyApp");
-    //builder.Services.ConfigureSwagger(assemblyName);
+    builder.Services.ConfigureSwagger(assemblyName);
     builder.Services
         .AddEndpointsApiExplorer()
         .AddControllers()
@@ -37,12 +35,14 @@ try
             x.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
         });
 
+    builder.Services.AddValidatorsFromAssemblies(assemblies);
+    //builder.Services.AddFluentValidationAutoValidation();
     builder.Services.ConfigureAuthentication(builder.Configuration);
     builder.Services.ConfigureAuthorization();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);
-    //builder.Services.AddValidatorsFromAssemblies(assemblies);
     builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+    builder.Services.AddAutoMapper(assemblies);
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
     var redisConnection = builder.Configuration.GetValue<string>("RedisConnection");
@@ -56,8 +56,7 @@ try
         builder.Services.AddDistributedMemoryCache();
     }
 
-    builder.Services.AddAutoMapper(assemblies);
-    builder.Services.AddHealthChecks();
+    builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 
     builder.ConfigureComponents(assemblies, logger);
 
@@ -81,7 +80,7 @@ try
         var isMaintenance = builder.Configuration.GetValue<bool>("MaintenanceMode"); // Get the value from appsettings.json
         if (isMaintenance && !context.Request.Path.Value.Contains("maintenance"))
         {
-            context.Response.Redirect("/licensing/maintenance/offline.html");
+            context.Response.Redirect($"{context.Request.PathBase}/maintenance/offline.html");
             return;
         }
         await next();

@@ -11,8 +11,6 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { apiApplicantsApplicantIdGdsdCertificationsGet } from '../fn/licence/api-applicants-applicant-id-gdsd-certifications-get';
-import { ApiApplicantsApplicantIdGdsdCertificationsGet$Params } from '../fn/licence/api-applicants-applicant-id-gdsd-certifications-get';
 import { apiApplicantsApplicantIdLicencesGet } from '../fn/licence/api-applicants-applicant-id-licences-get';
 import { ApiApplicantsApplicantIdLicencesGet$Params } from '../fn/licence/api-applicants-applicant-id-licences-get';
 import { apiBizsBizIdLicencesGet } from '../fn/licence/api-bizs-biz-id-licences-get';
@@ -112,41 +110,6 @@ export class LicenceService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiApplicantsApplicantIdGdsdCertificationsGet()` */
-  static readonly ApiApplicantsApplicantIdGdsdCertificationsGetPath = '/api/applicants/{applicantId}/gdsd-certifications';
-
-  /**
-   * Get gdsd licences (such as gdsd team, retired dog, dog trainer ) for login user , only return active and Expired ones. 
-   * Example: http://localhost:5114/api/applicants/xxxx/gdsd-certifications.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsApplicantIdGdsdCertificationsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdGdsdCertificationsGet$Response(params: ApiApplicantsApplicantIdGdsdCertificationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
-    return apiApplicantsApplicantIdGdsdCertificationsGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get gdsd licences (such as gdsd team, retired dog, dog trainer ) for login user , only return active and Expired ones. 
-   * Example: http://localhost:5114/api/applicants/xxxx/gdsd-certifications.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsApplicantIdGdsdCertificationsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdGdsdCertificationsGet(params: ApiApplicantsApplicantIdGdsdCertificationsGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
-    return this.apiApplicantsApplicantIdGdsdCertificationsGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
-    );
-  }
-
   /** Path part for operation `apiLicenceLookupLicenceNumberGet()` */
   static readonly ApiLicenceLookupLicenceNumberGetPath = '/api/licence-lookup/{licenceNumber}';
 
@@ -189,7 +152,7 @@ export class LicenceService extends BaseService {
 
   /**
    * Get latest licence by licence number with google recaptcha for anonymous
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   * Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST.
    *
    *
    *
@@ -204,7 +167,7 @@ export class LicenceService extends BaseService {
 
   /**
    * Get latest licence by licence number with google recaptcha for anonymous
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   * Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST.
    *
    *
    *

@@ -19,8 +19,6 @@ import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get'
 import { ApiApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-id-get';
 import { apiApplicantMergeOldApplicantIdNewApplicantIdGet } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
 import { ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
-import { apiApplicantsAnonymousDogCertificationApplicationsGet } from '../fn/applicant-profile/api-applicants-anonymous-dog-certification-applications-get';
-import { ApiApplicantsAnonymousDogCertificationApplicationsGet$Params } from '../fn/applicant-profile/api-applicants-anonymous-dog-certification-applications-get';
 import { apiApplicantsAnonymousLicenceApplicationsGet } from '../fn/applicant-profile/api-applicants-anonymous-licence-applications-get';
 import { ApiApplicantsAnonymousLicenceApplicationsGet$Params } from '../fn/applicant-profile/api-applicants-anonymous-licence-applications-get';
 import { apiApplicantSearchGet } from '../fn/applicant-profile/api-applicant-search-get';
@@ -232,39 +230,6 @@ export class ApplicantProfileService extends BaseService {
    */
   apiApplicantsAnonymousLicenceApplicationsGet(params?: ApiApplicantsAnonymousLicenceApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
     return this.apiApplicantsAnonymousLicenceApplicationsGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
-    );
-  }
-
-  /** Path part for operation `apiApplicantsAnonymousDogCertificationApplicationsGet()` */
-  static readonly ApiApplicantsAnonymousDogCertificationApplicationsGetPath = '/api/applicants-anonymous/dog-certification-applications';
-
-  /**
-   * Get List of draft or InProgress GDSD Team, trainer and retired dog Applications.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsAnonymousDogCertificationApplicationsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsAnonymousDogCertificationApplicationsGet$Response(params?: ApiApplicantsAnonymousDogCertificationApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
-    return apiApplicantsAnonymousDogCertificationApplicationsGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get List of draft or InProgress GDSD Team, trainer and retired dog Applications.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsAnonymousDogCertificationApplicationsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsAnonymousDogCertificationApplicationsGet(params?: ApiApplicantsAnonymousDogCertificationApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
-    return this.apiApplicantsAnonymousDogCertificationApplicationsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
     );
   }

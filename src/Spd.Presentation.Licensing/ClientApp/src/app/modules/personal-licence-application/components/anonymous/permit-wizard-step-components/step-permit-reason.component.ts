@@ -9,76 +9,86 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
 	selector: 'app-step-permit-reason',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
-			<form [formGroup]="form" novalidate>
-				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
-					<div class="col-xxl-5 col-xl-5 col-lg-8 col-md-12 mx-auto">
-						<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
-							<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
-							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-							<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
-							<mat-checkbox formControlName="isTravelForConflict">
-								Travel in response to international conflict
-							</mat-checkbox>
-							<mat-checkbox formControlName="isOther">Other</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('bodyArmourRequirementFormGroup')?.dirty ||
-										form.get('bodyArmourRequirementFormGroup')?.touched) &&
-									form.get('bodyArmourRequirementFormGroup')?.invalid &&
-									form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckbox')
-								"
-								>At least one option must be selected</mat-error
-							>
-						</div>
-					</div>
-				</div>
-				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.ArmouredVehiclePermit">
-					<div class="col-xxl-4 col-xl-5 col-lg-8 col-md-12 mx-auto">
-						<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
-							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-							<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
-							<mat-checkbox formControlName="isProtectionOfAnotherPerson"> Protection of another person </mat-checkbox>
-							<mat-checkbox formControlName="isProtectionOfPersonalProperty">
-								Protection of personal property
-							</mat-checkbox>
-							<mat-checkbox formControlName="isProtectionOfOthersProperty">
-								Protection of other's property
-							</mat-checkbox>
-							<mat-checkbox formControlName="isOther"> Other </mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('armouredVehicleRequirementFormGroup')?.dirty ||
-										form.get('armouredVehicleRequirementFormGroup')?.touched) &&
-									form.get('armouredVehicleRequirementFormGroup')?.invalid &&
-									form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckbox')
-								"
-								>At least one option must be selected</mat-error
-							>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-3" *ngIf="isOther === true">
-					<div class="col-xl-8 col-lg-12 mx-auto">
-						<mat-form-field>
-							<mat-label>Describe Requirement</mat-label>
-							<textarea
-								matInput
-								formControlName="otherReason"
-								style="min-height: 150px"
-								maxlength="500"
-								[errorStateMatcher]="matcher"
-							></textarea>
-							<mat-hint>Maximum 500 characters</mat-hint>
-							<mat-error *ngIf="form.get('otherReason')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		<app-step-section [heading]="title" [subheading]="subtitle">
+		  <form [formGroup]="form" novalidate>
+		    @if (serviceTypeCode === serviceTypeCodes.BodyArmourPermit) {
+		      <div class="row">
+		        <div class="col-xxl-5 col-xl-5 col-lg-8 col-md-12 mx-auto">
+		          <div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
+		            <mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
+		            <mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
+		            <mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
+		            <mat-checkbox formControlName="isTravelForConflict">
+		              Travel in response to international conflict
+		            </mat-checkbox>
+		            <mat-checkbox formControlName="isOther">Other</mat-checkbox>
+		            @if (
+		              (form.get('bodyArmourRequirementFormGroup')?.dirty ||
+		              form.get('bodyArmourRequirementFormGroup')?.touched) &&
+		              form.get('bodyArmourRequirementFormGroup')?.invalid &&
+		              form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckbox')
+		              ) {
+		              <mat-error
+		                class="mat-option-error"
+		                >At least one option must be selected</mat-error
+		                >
+		              }
+		            </div>
+		          </div>
+		        </div>
+		      }
+		      @if (serviceTypeCode === serviceTypeCodes.ArmouredVehiclePermit) {
+		        <div class="row">
+		          <div class="col-xxl-4 col-xl-5 col-lg-8 col-md-12 mx-auto">
+		            <div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
+		              <mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
+		              <mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
+		              <mat-checkbox formControlName="isProtectionOfAnotherPerson"> Protection of another person </mat-checkbox>
+		              <mat-checkbox formControlName="isProtectionOfPersonalProperty">
+		                Protection of personal property
+		              </mat-checkbox>
+		              <mat-checkbox formControlName="isProtectionOfOthersProperty">
+		                Protection of other's property
+		              </mat-checkbox>
+		              <mat-checkbox formControlName="isOther"> Other </mat-checkbox>
+		              @if (
+		                (form.get('armouredVehicleRequirementFormGroup')?.dirty ||
+		                form.get('armouredVehicleRequirementFormGroup')?.touched) &&
+		                form.get('armouredVehicleRequirementFormGroup')?.invalid &&
+		                form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckbox')
+		                ) {
+		                <mat-error
+		                  class="mat-option-error"
+		                  >At least one option must be selected</mat-error
+		                  >
+		                }
+		              </div>
+		            </div>
+		          </div>
+		        }
+		        @if (isOther === true) {
+		          <div class="row mt-3">
+		            <div class="col-xl-8 col-lg-12 mx-auto">
+		              <mat-form-field>
+		                <mat-label>Describe Requirement</mat-label>
+		                <textarea
+		                  matInput
+		                  formControlName="otherReason"
+		                  style="min-height: 150px"
+		                  maxlength="500"
+		                  [errorStateMatcher]="matcher"
+		                ></textarea>
+		                <mat-hint>Maximum 500 characters</mat-hint>
+		                @if (form.get('otherReason')?.hasError('required')) {
+		                  <mat-error>This is required</mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		          </div>
+		        }
+		      </form>
+		    </app-step-section>
+		`,
 	styles: [],
 	standalone: false,
 })

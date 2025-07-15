@@ -59,6 +59,7 @@ internal class Mappings : Profile
         .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName)))
         .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
+        .ForMember(d => d.middlename, opt => opt.Ignore())
         .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
         .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
         .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))

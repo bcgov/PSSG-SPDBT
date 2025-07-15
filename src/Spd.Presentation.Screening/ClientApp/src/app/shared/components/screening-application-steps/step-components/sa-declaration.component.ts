@@ -13,60 +13,64 @@ export class DeclarationModel {
 	selector: 'app-sa-declaration',
 	template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step mb-4">
-					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
-					<div class="row">
-						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
-							<p class="fs-5">Declaration</p>
-							<mat-checkbox formControlName="agreeToCompleteAndAccurate">
-								I certify that, to the best of my knowledge, the information I have provided and will provide as
-								necessary is complete and accurate.
-							</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
-									form.get('agreeToCompleteAndAccurate')?.invalid &&
-									form.get('agreeToCompleteAndAccurate')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-					<div class="row" *ngIf="orgData?.shareableCrcExists">
-						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
-							<mat-divider class="my-3"></mat-divider>
-							<p class="fs-5">Share your existing criminal record check</p>
-							<div>
-								You have an existing criminal record check for working with
-								{{ shareCrcWorksWith | options: 'EmployeeInteractionTypes' }}, issued on
-								{{ shareCrcGrantedDate | formatDate: appConstants.date.formalDateFormat }}. Do you want to share the
-								results of this criminal record check at no cost?
-							</div>
-							<mat-radio-group aria-label="Select an option" formControlName="agreeToShareCrc">
-								<mat-radio-button [value]="true"> Yes, share my existing criminal record check </mat-radio-button>
-								<mat-radio-button [value]="false"> No, I'll submit a new criminal record check </mat-radio-button>
-							</mat-radio-group>
-							<div>
-								NOTE: An organization can decide whether or not they will accept a shared criminal record check result
-								and may ask you to consent to a new criminal record check.
-							</div>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('agreeToShareCrc')?.dirty || form.get('agreeToShareCrc')?.touched) &&
-									form.get('agreeToShareCrc')?.invalid &&
-									form.get('agreeToShareCrc')?.hasError('required')
-								"
-								>An option must be selected</mat-error
-							>
-						</div>
-					</div>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step mb-4">
+		      <app-step-title title="Consent to a Criminal Record Check"></app-step-title>
+		      <div class="row">
+		        <div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
+		          <p class="fs-5">Declaration</p>
+		          <mat-checkbox formControlName="agreeToCompleteAndAccurate">
+		            I certify that, to the best of my knowledge, the information I have provided and will provide as
+		            necessary is complete and accurate.
+		          </mat-checkbox>
+		          @if (
+		            (form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
+		            form.get('agreeToCompleteAndAccurate')?.invalid &&
+		            form.get('agreeToCompleteAndAccurate')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >This is required</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		        @if (orgData?.shareableCrcExists) {
+		          <div class="row">
+		            <div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
+		              <mat-divider class="my-3"></mat-divider>
+		              <p class="fs-5">Share your existing criminal record check</p>
+		              <div>
+		                You have an existing criminal record check for working with
+		                {{ shareCrcWorksWith | options: 'EmployeeInteractionTypes' }}, issued on
+		                {{ shareCrcGrantedDate | formatDate: appConstants.date.formalDateFormat }}. Do you want to share the
+		                results of this criminal record check at no cost?
+		              </div>
+		              <mat-radio-group aria-label="Select an option" formControlName="agreeToShareCrc">
+		                <mat-radio-button [value]="true"> Yes, share my existing criminal record check </mat-radio-button>
+		                <mat-radio-button [value]="false"> No, I'll submit a new criminal record check </mat-radio-button>
+		              </mat-radio-group>
+		              <div>
+		                NOTE: An organization can decide whether or not they will accept a shared criminal record check result
+		                and may ask you to consent to a new criminal record check.
+		              </div>
+		              @if (
+		                (form.get('agreeToShareCrc')?.dirty || form.get('agreeToShareCrc')?.touched) &&
+		                form.get('agreeToShareCrc')?.invalid &&
+		                form.get('agreeToShareCrc')?.hasError('required')
+		                ) {
+		                <mat-error
+		                  class="mat-option-error"
+		                  >An option must be selected</mat-error
+		                  >
+		                }
+		              </div>
+		            </div>
+		          }
+		        </div>
+		      </form>
+		    </section>
+		`,
     styles: [],
     standalone: false
 })

@@ -5,14 +5,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-aliases',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-worker-licence-aliases',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicenceAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

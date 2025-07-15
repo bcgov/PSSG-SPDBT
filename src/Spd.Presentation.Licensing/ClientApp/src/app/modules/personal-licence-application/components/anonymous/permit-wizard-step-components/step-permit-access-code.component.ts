@@ -13,7 +13,7 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 	selector: 'app-step-permit-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+			heading="Provide your access code"
 			info="	
 					<p>
 						You need both your permit number as it appears on your current permit, 

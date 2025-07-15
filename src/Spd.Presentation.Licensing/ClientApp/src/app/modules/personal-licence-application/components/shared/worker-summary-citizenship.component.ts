@@ -6,41 +6,47 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	template: `
 		<div class="text-minor-heading-small">Citizenship</div>
 		<div class="row mt-0">
-			<div class="col-lg-6 col-md-12">
-				<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
-				<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-			</div>
-			<div class="col-lg-6 col-md-12">
-				<div class="text-label d-block text-muted">
-					<span *ngIf="canadianCitizenProofTypeCode">
-						{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
-					</span>
-					<span *ngIf="notCanadianCitizenProofTypeCode">
-						{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
-					</span>
-				</div>
-				<div class="summary-text-data">
-					<ul class="m-0">
-						<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
-							<li>{{ doc.name }}</li>
-						</ng-container>
-					</ul>
-				</div>
-			</div>
-			<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-				<div class="text-label d-block text-muted">
-					{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
-				</div>
-				<div class="summary-text-data">
-					<ul class="m-0">
-						<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-							<li>{{ doc.name }}</li>
-						</ng-container>
-					</ul>
-				</div>
-			</div>
+		  <div class="col-lg-6 col-md-12">
+		    <div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
+		    <div class="summary-text-data">{{ isCanadianCitizen }}</div>
+		  </div>
+		  <div class="col-lg-6 col-md-12">
+		    <div class="text-label d-block text-muted">
+		      @if (canadianCitizenProofTypeCode) {
+		        <span>
+		          {{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
+		        </span>
+		      }
+		      @if (notCanadianCitizenProofTypeCode) {
+		        <span>
+		          {{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
+		        </span>
+		      }
+		    </div>
+		    <div class="summary-text-data">
+		      <ul class="m-0">
+		        @for (doc of citizenshipAttachments; track doc; let i = $index) {
+		          <li>{{ doc.name }}</li>
+		        }
+		      </ul>
+		    </div>
+		  </div>
+		  @if (governmentIssuedPhotoTypeCode) {
+		    <div class="col-lg-6 col-md-12">
+		      <div class="text-label d-block text-muted">
+		        {{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
+		      </div>
+		      <div class="summary-text-data">
+		        <ul class="m-0">
+		          @for (doc of governmentIssuedPhotoAttachments; track doc; let i = $index) {
+		            <li>{{ doc.name }}</li>
+		          }
+		        </ul>
+		      </div>
+		    </div>
+		  }
 		</div>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

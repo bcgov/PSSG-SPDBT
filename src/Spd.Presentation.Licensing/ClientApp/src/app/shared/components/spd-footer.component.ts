@@ -8,20 +8,22 @@ import { ConfigService } from '@app/core/services/config.service';
 	selector: 'app-spd-footer',
 	template: `
 		<mat-toolbar color="primary" class="no-print footer">
-			<a aria-label="Navigate to home page" tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)">
-				Home
-			</a>
-			<a aria-label="Navigate to disclaimer page" [href]="bcGovDisclaimerUrl">Disclaimer</a>
-			<a aria-label="Navigate to privacy page" [href]="bcGovPrivacyUrl">Privacy</a>
-			<a aria-label="Navigate to accessibility page" [href]="bcGovAccessibilityUrl">Accessibility</a>
-			<a aria-label="Navigate to copyright page" [href]="bcGovCopyrightUrl">Copyright</a>
-			<a aria-label="Navigate to contact us page" [href]="bcGovContactUrl">Contact Us</a>
-
-			<span style="flex: 1 1 auto;"></span>
-
-			<span class="fs-7 p-2 text-env" *ngIf="env">{{ env }}</span>
+		  <a aria-label="Navigate to home page" tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)">
+		    Home
+		  </a>
+		  <a aria-label="Navigate to disclaimer page" [href]="bcGovDisclaimerUrl">Disclaimer</a>
+		  <a aria-label="Navigate to privacy page" [href]="bcGovPrivacyUrl">Privacy</a>
+		  <a aria-label="Navigate to accessibility page" [href]="bcGovAccessibilityUrl">Accessibility</a>
+		  <a aria-label="Navigate to copyright page" [href]="bcGovCopyrightUrl">Copyright</a>
+		  <a aria-label="Navigate to contact us page" [href]="bcGovContactUrl">Contact Us</a>
+		
+		  <span style="flex: 1 1 auto;"></span>
+		
+		  @if (env) {
+		    <span class="fs-7 p-2 text-env">{{ env }}</span>
+		  }
 		</mat-toolbar>
-	`,
+		`,
 	styles: [
 		`
 			.footer {

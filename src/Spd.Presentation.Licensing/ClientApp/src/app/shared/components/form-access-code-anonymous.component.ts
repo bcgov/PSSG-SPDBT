@@ -22,74 +22,83 @@ import { Subject, take, tap } from 'rxjs';
 	selector: 'app-form-access-code-anonymous',
 	template: `
 		<div class="row">
-			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
-				<form [formGroup]="form" novalidate>
-					<div class="row mt-4">
-						<div class="col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Current {{ titleLabel }} Number</mat-label>
-								<input
-									matInput
-									type="search"
-									formControlName="licenceNumber"
-									oninput="this.value = this.value.toUpperCase()"
-									[errorStateMatcher]="matcher"
-									maxlength="10"
-								/>
-								<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Access Code</mat-label>
-								<input
-									matInput
-									type="search"
-									formControlName="accessCode"
-									oninput="this.value = this.value.toUpperCase()"
-									[errorStateMatcher]="matcher"
-									maxlength="10"
-								/>
-								<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-12">
-							<div class="mt-2" formGroupName="captchaFormGroup">
-								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-										captchaFormGroup.get('token')?.invalid &&
-										captchaFormGroup.get('token')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
-						</div>
-					</div>
-
-					<div class="mt-3" *ngIf="errorMessage">
-						<app-alert type="danger" icon="dangerous">
-							{{ errorMessage }}
-						</app-alert>
-					</div>
-
-					<div class="mt-3" *ngIf="isExpired">
-						<a
-							class="w-auto"
-							tabindex="0"
-							aria-label="Apply for a new licence"
-							(click)="onCreateNewLicence()"
-							(keydown)="onKeydownCreateNewLicence($event)"
-						>
-							Apply for a New Licence
-						</a>
-					</div>
-				</form>
-			</div>
-		</div>
-	`,
+		  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
+		    <form [formGroup]="form" novalidate>
+		      <div class="row mt-4">
+		        <div class="col-lg-6 col-md-12">
+		          <mat-form-field>
+		            <mat-label>Current {{ titleLabel }} Number</mat-label>
+		            <input
+		              matInput
+		              type="search"
+		              formControlName="licenceNumber"
+		              oninput="this.value = this.value.toUpperCase()"
+		              [errorStateMatcher]="matcher"
+		              maxlength="10"
+		              />
+		              @if (form.get('licenceNumber')?.hasError('required')) {
+		                <mat-error> This is required </mat-error>
+		              }
+		            </mat-form-field>
+		          </div>
+		          <div class="col-lg-6 col-md-12">
+		            <mat-form-field>
+		              <mat-label>Access Code</mat-label>
+		              <input
+		                matInput
+		                type="search"
+		                formControlName="accessCode"
+		                oninput="this.value = this.value.toUpperCase()"
+		                [errorStateMatcher]="matcher"
+		                maxlength="10"
+		                />
+		                @if (form.get('accessCode')?.hasError('required')) {
+		                  <mat-error> This is required </mat-error>
+		                }
+		              </mat-form-field>
+		            </div>
+		            <div class="col-12">
+		              <div class="mt-2" formGroupName="captchaFormGroup">
+		                <app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
+		                @if (
+		                  (captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+		                  captchaFormGroup.get('token')?.invalid &&
+		                  captchaFormGroup.get('token')?.hasError('required')
+		                  ) {
+		                  <mat-error
+		                    class="mat-option-error"
+		                    >This is required</mat-error
+		                    >
+		                }
+		              </div>
+		            </div>
+		          </div>
+		
+		          @if (errorMessage) {
+		            <div class="mt-3">
+		              <app-alert type="danger" icon="dangerous">
+		                {{ errorMessage }}
+		              </app-alert>
+		            </div>
+		          }
+		
+		          @if (isExpired) {
+		            <div class="mt-3">
+		              <a
+		                class="w-auto"
+		                tabindex="0"
+		                aria-label="Apply for a new licence"
+		                (click)="onCreateNewLicence()"
+		                (keydown)="onKeydownCreateNewLicence($event)"
+		                >
+		                Apply for a New Licence
+		              </a>
+		            </div>
+		          }
+		        </form>
+		      </div>
+		    </div>
+		`,
 	styles: [],
 	standalone: false,
 })
@@ -118,11 +127,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel =
-			this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit ||
-			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-				? 'Permit'
-				: 'Licence';
+		this.titleLabel = this.commonApplicationService.getLicenceTypeName(this.serviceTypeCode);
 		this.label = this.titleLabel.toLowerCase();
 	}
 
@@ -159,20 +164,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case ServiceTypeCode.GdsdTeamCertification:
-			case ServiceTypeCode.DogTrainerCertification:
-			case ServiceTypeCode.RetiredServiceDogCertification: {
-				this.commonApplicationService
-					.getGDSDLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponseExt) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
 			// SPDBT-3425 - Remove anonymous permit flows
 			// case ServiceTypeCode.ArmouredVehiclePermit:
 			// case ServiceTypeCode.BodyArmourPermit: {
@@ -187,6 +178,18 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			// 		.subscribe();
 			// 	break;
 			// }
+			case ServiceTypeCode.Mdra: {
+				this.commonApplicationService
+					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+					.pipe(
+						tap((resp: LicenceResponseExt | null) => {
+							this.handleLookupResponse(resp);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
 		}
 	}
 
@@ -226,7 +229,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		if (resp.serviceTypeCode !== this.serviceTypeCode) {
 			//  access code matches licence, but the ServiceTypeCode does not match
 			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
-			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
+			this.errorMessage = `This ${this.label} number is not a ${selServiceTypeCodeDesc}.`;
 		} else if (!this.utilService.isLicenceActive(resp.licenceStatusCode)) {
 			if (resp.licenceStatusCode === LicenceStatusCode.Expired) {
 				// access code matches licence, but the licence is expired

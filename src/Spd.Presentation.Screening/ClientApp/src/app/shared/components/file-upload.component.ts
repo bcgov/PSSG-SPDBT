@@ -12,48 +12,57 @@ import { DocumentTypeCode, FileUploadHelper, IconType } from './file-upload-help
 	selector: 'app-file-upload',
 	template: `
 		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
-			<div class="row my-2" *ngIf="files && files.length > 0">
-				<ng-container *ngFor="let file of files; let i = index">
-					<div class="col-lg-6 col-md-12 col-sm-12">
-						<div class="file-preview" (removed)="onRemoveFile(file)">
-							<div style="text-align: center;z-index: 10;margin: 10px auto;">
-								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-								<span>{{ file.name }} </span>
-
-								<div class="image-preview-container" *ngIf="getPreviewImage(i)">
-									<img class="image-preview-container__image" [src]="getPreviewImage(i)" alt="Image preview" />
-								</div>
-							</div>
-							<div style="position: absolute; top: 5px; right: 5px; cursor: pointer;">
-								<mat-icon (click)="onRemoveFile(file)">cancel</mat-icon>
-							</div>
-						</div>
-					</div>
-				</ng-container>
-			</div>
-
-			<label class="dropzone-area" [for]="id">
-				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
-				<div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
-				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
-
-				<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
-				<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
-				<div class="mat-option-hint pb-2">Maximum number of files: {{ maxNumberOfFiles }}</div>
-
-				<input
-					type="file"
-					#fileInput
-					[id]="id"
-					(change)="onFileAddChange($event)"
-					(click)="fileInput.value = ''"
-					[multiple]="false"
-					[hidden]="true"
-					[accept]="accept"
-				/>
-			</label>
-		</div>
-	`,
+		  @if (files && files.length > 0) {
+		    <div class="row my-2">
+		      @for (file of files; track file; let i = $index) {
+		        <div class="col-lg-6 col-md-12 col-sm-12">
+		          <div class="file-preview" (removed)="onRemoveFile(file)">
+		            <div style="text-align: center;z-index: 10;margin: 10px auto;">
+		              <mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+		              <span>{{ file.name }} </span>
+		              @if (getPreviewImage(i)) {
+		                <div class="image-preview-container">
+		                  <img class="image-preview-container__image" [src]="getPreviewImage(i)" alt="Image preview" />
+		                </div>
+		              }
+		            </div>
+		            <div style="position: absolute; top: 5px; right: 5px; cursor: pointer;">
+		              <mat-icon (click)="onRemoveFile(file)">cancel</mat-icon>
+		            </div>
+		          </div>
+		        </div>
+		      }
+		    </div>
+		  }
+		
+		  <label class="dropzone-area" [for]="id">
+		    <div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
+		    <div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
+		    @if (message) {
+		      <div class="fine-print mb-2">{{ message }}</div>
+		    }
+		
+		    @if (accept) {
+		      <div class="mat-option-hint mx-2">Accepted file formats: {{ accept }}</div>
+		    }
+		    @if (maxFileSizeMb) {
+		      <div class="mat-option-hint">File size maximum: {{ maxFileSizeMb }} Mb</div>
+		    }
+		    <div class="mat-option-hint pb-2">Maximum number of files: {{ maxNumberOfFiles }}</div>
+		
+		    <input
+		      type="file"
+		      #fileInput
+		      [id]="id"
+		      (change)="onFileAddChange($event)"
+		      (click)="fileInput.value = ''"
+		      [multiple]="false"
+		      [hidden]="true"
+		      [accept]="accept"
+		      />
+		    </label>
+		  </div>
+		`,
 	styles: [
 		`
 			.file-preview {

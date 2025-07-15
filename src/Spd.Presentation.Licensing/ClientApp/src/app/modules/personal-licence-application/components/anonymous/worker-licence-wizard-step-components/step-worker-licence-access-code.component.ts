@@ -13,7 +13,7 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 	selector: 'app-step-worker-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+		  heading="Provide your access code"
 			info="<p>
 						You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 						provided following your initial security worker application or in your renewal letter from the Registrar,
@@ -26,25 +26,27 @@ import { FormAccessCodeAnonymousComponent } from '@app/shared/components/form-ac
 		>
 			<app-form-access-code-anonymous
 				(linkSuccess)="onLinkSuccess($event)"
-				[form]="form"
-				[serviceTypeCode]="serviceTypeCode"
-				[applicationTypeCode]="applicationTypeCode"
-			></app-form-access-code-anonymous>
-
-			<div class="row">
-				<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
-					<div class="mt-4" *ngIf="originalPhotoOfYourselfExpired">
-						<app-alert type="danger" icon="dangerous">
-							A replacement for this record is not available at this time. Use update to provide missing information and
-							receive a replacement.
-						</app-alert>
-					</div>
-				</div>
-			</div>
+		  [form]="form"
+		  [serviceTypeCode]="serviceTypeCode"
+		  [applicationTypeCode]="applicationTypeCode"
+		></app-form-access-code-anonymous>
+		
+		<div class="row">
+		  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
+		    @if (originalPhotoOfYourselfExpired) {
+		      <div class="mt-4">
+		        <app-alert type="danger" icon="dangerous">
+		          A replacement for this record is not available at this time. Use update to provide missing information and
+		          receive a replacement.
+		        </app-alert>
+		      </div>
+		    }
+		  </div>
+		</div>
 		</app-step-section>
-
+		
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

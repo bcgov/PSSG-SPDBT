@@ -15,97 +15,101 @@ import { StepWorkerLicencePoliceBackgroundComponent } from '../../shared/worker-
 	selector: 'app-steps-worker-licence-updates-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-worker-licence-police-background
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-police-background>
-
-				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
-					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-mental-health-conditions
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-mental-health-conditions>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-criminal-history
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-criminal-history>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="hasBcscNameChanged">
-				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showPhotographOfYourselfStep">
-				<app-step-worker-licence-photograph-of-yourself
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-photograph-of-yourself>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-category
-					[applicationTypeCode]="applicationTypeUpdate"
-					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-				></app-step-worker-licence-category>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidCategoryNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-step-worker-licence-restraints
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-restraints>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-step-worker-licence-dogs-authorization
-					[applicationTypeCode]="applicationTypeUpdate"
-				></app-step-worker-licence-dogs-authorization>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOGS)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-worker-licence-police-background
+		      [applicationTypeCode]="applicationTypeUpdate"
+		    ></app-step-worker-licence-police-background>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+		      (nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-mental-health-conditions
+		      [applicationTypeCode]="applicationTypeUpdate"
+		    ></app-step-worker-licence-mental-health-conditions>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-criminal-history
+		      [applicationTypeCode]="applicationTypeUpdate"
+		    ></app-step-worker-licence-criminal-history>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+		      (nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (hasBcscNameChanged) {
+		    <mat-step>
+		      <app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (showPhotographOfYourselfStep) {
+		    <mat-step>
+		      <app-step-worker-licence-photograph-of-yourself
+		        [applicationTypeCode]="applicationTypeUpdate"
+		      ></app-step-worker-licence-photograph-of-yourself>
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-worker-licence-category
+		      [applicationTypeCode]="applicationTypeUpdate"
+		      [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+		    ></app-step-worker-licence-category>
+		
+		    <app-wizard-footer
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidCategoryNextStep()"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (showStepDogsAndRestraints) {
+		    <mat-step>
+		      <app-step-worker-licence-restraints
+		        [applicationTypeCode]="applicationTypeUpdate"
+		      ></app-step-worker-licence-restraints>
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (showStepDogsAndRestraints) {
+		    <mat-step>
+		      <app-step-worker-licence-dogs-authorization
+		        [applicationTypeCode]="applicationTypeUpdate"
+		      ></app-step-worker-licence-dogs-authorization>
+		      <app-wizard-footer
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onStepNext(STEP_DOGS)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

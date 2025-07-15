@@ -1,29 +1,41 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+	Address,
+	ApplicationOriginTypeCode,
+	ApplicationTypeCode,
+	BranchInfo,
+	Document,
+	LicenceDocumentTypeCode,
+} from '@app/api/models';
 import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { NgxMaskPipe } from 'ngx-mask';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 export abstract class MetalDealersApplicationHelper extends CommonApplicationHelper {
+	updateAgreementFormGroup: FormGroup = this.formBuilder.group({
+		agreeToUpdate: new FormControl('', [Validators.requiredTrue]),
+	});
+
 	businessOwnerFormGroup: FormGroup = this.formBuilder.group({
-		legalBusinessName: new FormControl('', [FormControlValidators.required]),
-		tradeName: new FormControl('', [FormControlValidators.required]),
-		givenName: new FormControl(''),
-		middleName: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		bizLegalName: new FormControl('', [FormControlValidators.required]),
+		bizTradeName: new FormControl('', [FormControlValidators.required]),
+		bizOwnerGivenNames: new FormControl(''),
+		bizOwnerSurname: new FormControl('', [FormControlValidators.required]),
+		bizEmailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		bizPhoneNumber: new FormControl(''),
 		attachments: new FormControl([], [Validators.required]),
 	});
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.email]),
+		bizManagerFullName: new FormControl('', [FormControlValidators.required]),
+		bizManagerPhoneNumber: new FormControl(''),
+		bizManagerEmailAddress: new FormControl('', [FormControlValidators.email]),
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -77,16 +89,12 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		}
 	);
 
-	branchesFormGroup: FormGroup = this.formBuilder.group(
-		{
-			branches: this.formBuilder.array([]),
-		},
-		{
-			validators: [FormGroupValidators.branchrequiredValidator('branches')],
-		}
-	);
+	branchesFormGroup: FormGroup = this.formBuilder.group({
+		branches: this.formBuilder.array([]),
+	});
 
 	branchFormGroup: FormGroup = this.formBuilder.group({
+		branchId: new FormControl(''),
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
 		addressLine2: new FormControl(''),
@@ -97,11 +105,9 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 			FormControlValidators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
-		givenName: new FormControl(''),
-		middleName: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.email]),
+		branchManager: new FormControl('', [FormControlValidators.required]),
+		branchPhoneNumber: new FormControl('', [FormControlValidators.required]),
+		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
@@ -117,59 +123,192 @@ export abstract class MetalDealersApplicationHelper extends CommonApplicationHel
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected utilService: UtilService,
-		protected fileUtilService: FileUtilService
+		protected fileUtilService: FileUtilService,
+		protected maskPipe: NgxMaskPipe
 	) {
 		super(formBuilder);
 	}
 
-	getFullNameWithMiddle(
-		givenName: string | null | undefined,
-		middleName: string | null | undefined,
-		surname: string | null | undefined
-	): string {
-		const userNameArray: string[] = [];
-		if (givenName) {
-			userNameArray.push(givenName);
+	getDocsToSaveBlobs(mdraModelFormValue: any): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const businessOwnerData = mdraModelFormValue.businessOwnerData;
+		if (businessOwnerData.attachments) {
+			const docs: Array<Blob> = [];
+			businessOwnerData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.BusinessLicenceDocuments, documents: docs });
 		}
-		if (middleName) {
-			userNameArray.push(middleName);
-		}
-		if (surname) {
-			userNameArray.push(surname);
-		}
-		return userNameArray.join(' ');
+
+		return documents;
 	}
 
+	/**
+	 * Get the form group data into the correct structure
+	 * @returns
+	 */
+	getSaveBodyBase(mdraModelFormValue: any): any {
+		const originalLicenceId = mdraModelFormValue.originalLicenceId;
+		const applicationTypeData = mdraModelFormValue.applicationTypeData;
+		const expiredLicenceData = mdraModelFormValue.expiredLicenceData;
+		const businessOwnerData = mdraModelFormValue.businessOwnerData;
+		const businessManagerData = mdraModelFormValue.businessManagerData;
+		const businessAddressData = mdraModelFormValue.businessAddressData;
+		const businessMailingAddressData = mdraModelFormValue.businessMailingAddressData;
+		const branchesData = mdraModelFormValue.branchesData;
+
+		const bizAddress: Address = {
+			addressLine1: businessAddressData.addressLine1,
+			addressLine2: businessAddressData.addressLine2,
+			city: businessAddressData.city,
+			postalCode: businessAddressData.postalCode,
+			province: businessAddressData.province,
+			country: businessAddressData.country,
+		};
+
+		let bizMailingAddress: Address = bizAddress;
+
+		if (!businessMailingAddressData.isAddressTheSame) {
+			bizMailingAddress = {
+				addressLine1: businessMailingAddressData.addressLine1,
+				addressLine2: businessMailingAddressData.addressLine2,
+				city: businessMailingAddressData.city,
+				postalCode: businessMailingAddressData.postalCode,
+				province: businessMailingAddressData.province,
+				country: businessMailingAddressData.country,
+			};
+		}
+
+		const branches: Array<BranchInfo> = [];
+		branchesData.branches.forEach((item: any) => {
+			if (item.branchPhoneNumber) {
+				item.branchPhoneNumber = this.maskPipe.transform(item.branchPhoneNumber, SPD_CONSTANTS.phone.backendMask);
+			}
+
+			const branchAddress: Address = {
+				addressLine1: item.addressLine1,
+				addressLine2: item.addressLine2,
+				city: item.city,
+				country: item.country,
+				postalCode: item.postalCode,
+				province: item.province,
+			};
+			const branch: BranchInfo = {
+				branchId: item.branchId,
+				branchEmailAddr: item.branchEmailAddr,
+				branchManager: item.branchManager,
+				branchPhoneNumber: item.branchPhoneNumber,
+				branchAddress,
+			};
+			branches.push(branch);
+		});
+
+		const documentInfos: Array<Document> = [];
+
+		businessOwnerData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BusinessLicenceDocuments,
+			});
+		});
+
+		let hasExpiredLicence = null;
+		let expiredLicenceId = null;
+
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New) {
+			hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+			expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+			if (!hasExpiredLicence) {
+				this.clearExpiredLicenceModelData();
+			}
+		} else {
+			// For Renewals and Updates, pass the original Licence Id
+			expiredLicenceId = originalLicenceId;
+		}
+
+		if (businessOwnerData.bizPhoneNumber) {
+			businessOwnerData.bizPhoneNumber = this.maskPipe.transform(
+				businessOwnerData.bizPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		if (businessManagerData.bizManagerPhoneNumber) {
+			businessManagerData.bizManagerPhoneNumber = this.maskPipe.transform(
+				businessManagerData.bizManagerPhoneNumber,
+				SPD_CONSTANTS.phone.backendMask
+			);
+		}
+
+		const body = {
+			applicationOriginTypeCode: ApplicationOriginTypeCode.Portal,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			bizOwnerGivenNames: businessOwnerData.bizOwnerGivenNames,
+			bizOwnerSurname: businessOwnerData.bizOwnerSurname,
+			bizEmailAddress: businessOwnerData.bizEmailAddress,
+			bizPhoneNumber: businessOwnerData.bizPhoneNumber,
+			bizLegalName: businessOwnerData.bizLegalName,
+			bizTradeName: businessOwnerData.bizTradeName,
+			bizManagerFullName: businessManagerData.bizManagerFullName,
+			bizManagerPhoneNumber: businessManagerData.bizManagerPhoneNumber,
+			bizManagerEmailAddress: businessManagerData.bizManagerEmailAddress,
+			bizAddress,
+			bizMailingAddress,
+			branches,
+			//-----------------------------------
+			hasExpiredLicence,
+			expiredLicenceId,
+			//-----------------------------------
+			documentInfos,
+		};
+		console.debug('[getSaveBodyBase] body returned', body);
+		return body;
+	}
+
+	getSummaryhasExpiredLicence(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	getSummaryexpiredLicenceNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	getSummaryexpiredLicenceExpiryDate(metalDealersModelData: any): string {
+		return metalDealersModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+	}
 	getSummarybusinessOwnerDataname(metalDealersModelData: any): string {
-		return this.getFullNameWithMiddle(
-			metalDealersModelData.businessOwnerData.givenName,
-			metalDealersModelData.businessOwnerData.middleName,
-			metalDealersModelData.businessOwnerData.surname
+		return (
+			this.utilService.getFullName(
+				metalDealersModelData.businessOwnerData.bizOwnerGivenNames,
+				metalDealersModelData.businessOwnerData.bizOwnerSurname
+			) ?? ''
 		);
 	}
-	getSummarybusinessOwnerDatalegalBusinessName(metalDealersModelData: any): string {
-		return metalDealersModelData.businessOwnerData.legalBusinessName ?? '';
+	getSummarybusinessOwnerDatabizLegalName(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizLegalName ?? '';
 	}
-	getSummarybusinessOwnerDatatradeName(metalDealersModelData: any): string {
-		return metalDealersModelData.businessOwnerData.tradeName ?? '';
+	getSummarybusinessOwnerDatabizTradeName(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizTradeName ?? '';
+	}
+	getSummarybusinessOwnerDatabizEmailAddress(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizEmailAddress ?? '';
+	}
+	getSummarybusinessOwnerDatabizPhoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessOwnerData.bizPhoneNumber ?? '';
 	}
 	getSummarybusinessOwnerDataattachments(metalDealersModelData: any): File[] {
 		return metalDealersModelData.businessOwnerData.attachments ?? [];
 	}
 
 	getSummarybusinessManagerDataname(metalDealersModelData: any): string {
-		return this.getFullNameWithMiddle(
-			metalDealersModelData.businessManagerData.givenName,
-			metalDealersModelData.businessManagerData.middleName,
-			metalDealersModelData.businessManagerData.surname
-		);
+		return metalDealersModelData.businessManagerData.bizManagerFullName;
 	}
-	getSummarybusinessManagerDataphoneNumber(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.phoneNumber ?? '';
+	getSummarybusinessManagerDatabizManagerEmailAddress(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.bizManagerEmailAddress ?? '';
 	}
-	getSummarybusinessManagerDataemailAddress(metalDealersModelData: any): string {
-		return metalDealersModelData.businessManagerData.emailAddress ?? '';
+	getSummarybusinessManagerDatabizManagerPhoneNumber(metalDealersModelData: any): string {
+		return metalDealersModelData.businessManagerData.bizManagerPhoneNumber ?? '';
 	}
+
 	getSummarybranchesDatabranches(metalDealersModelData: any): Array<any> {
 		return metalDealersModelData.branchesData.branches ?? [];
 	}

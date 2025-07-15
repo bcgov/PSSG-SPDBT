@@ -15,6 +15,7 @@ public record DogTrainerApp
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
     public ApplicationOriginTypeEnum ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.WebForm;
+    public bool? AgreeToCompleteAndAccurate { get; set; } = true;
     public Guid AccreditedSchoolId { get; set; }
     public string? AccreditedSchoolName { get; set; }
     public string? SchoolDirectorSurname { get; set; }
@@ -38,13 +39,13 @@ public record CreateDogTrainerAppCmd() : DogTrainerApp
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
-    public Guid? ContactId { get; set; }
+    public Guid? ApplicantId { get; set; }
 };
 
 public record DogTrainerAppResp : DogTrainerApp
 {
     public Guid LicenceAppId { get; set; }
-    public Guid? ContactId { get; set; }
+    public Guid? ApplicantId { get; set; }
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
 }

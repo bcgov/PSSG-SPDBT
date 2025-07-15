@@ -131,7 +131,13 @@ internal class DocumentRepository : IDocumentRepository
     private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)
     {
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
-        documenturl.bcgov_url = cmd.ApplicationId == null ? $"contact/{cmd.ApplicantId}" : $"spd_application/{cmd.ApplicationId}";
+        if (cmd.ApplicationId != null)
+            documenturl.bcgov_url = $"spd_application/{cmd.ApplicationId}";
+        else if (cmd.ApplicantId != null)
+            documenturl.bcgov_url = $"contact/{cmd.ApplicantId}";
+        else if (cmd.OrgRegistrationId != null)
+            documenturl.bcgov_url = $"spd_orgregistration/{cmd.OrgRegistrationId}";
+
         if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
             throw new ArgumentException("Invalid Document Expiry Date");
         if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
@@ -150,6 +156,13 @@ internal class DocumentRepository : IDocumentRepository
             if (contact == null)
                 throw new ArgumentException("invalid contact id");
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_contact), contact);
+        }
+        if (cmd.OrgRegistrationId != null)
+        {
+            spd_orgregistration? registration = await _context.GetOrgRegistrationById((Guid)cmd.OrgRegistrationId, ct);
+            if (registration == null)
+                throw new ArgumentException("invalid org registration id");
+            _context.SetLink(documenturl, nameof(documenturl.spd_OrgRegistrationId), registration);
         }
         if (cmd.TaskId != null)
         {

@@ -5,21 +5,21 @@ import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
-import { FormGdsdLicenceAccessCodeComponent } from '@app/modules/guide-dog-service-dog/components/shared/form-gdsd-licence-access-code.component';
 import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-routes';
+import { FormMdraLicenceAccessCodeComponent } from './form-mdra-licence-access-code.component';
 
 @Component({
 	selector: 'app-step-mdra-licence-access-code',
 	template: `
 		<app-step-section
-			title="Provide your access code"
+			heading="Provide your access code"
 			info="<p>
-						You need both <strong>your licence number</strong> as it appears on your current certification, plus the <strong>access code number</strong>
+						You need both your <strong>registration number</strong> as it appears on your current registration, plus the <strong>access code</strong>
 						provided following your initial application or in your renewal letter from the Registrar, Security Services. Enter the two numbers below then click 'Next' to continue.
 					</p>
 					<p>
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
+						hours and answer identifying questions to get your access code: {{ mdraPhoneNumber }}.
 					</p>"
 		>
 			<app-form-mdra-licence-access-code
@@ -36,14 +36,14 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 	standalone: false,
 })
 export class StepMdraLicenceAccessCodeComponent implements OnInit {
-	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	mdraPhoneNumber = SPD_CONSTANTS.phone.mdraPhoneNumber;
 
 	form: FormGroup = this.mdraDealersApplicationService.accessCodeFormGroup;
 
 	readonly serviceTypeMdraTeam = ServiceTypeCode.Mdra;
 	applicationTypeCode!: ApplicationTypeCode;
 
-	@ViewChild(FormGdsdLicenceAccessCodeComponent) accessCodeComponent!: FormGdsdLicenceAccessCodeComponent;
+	@ViewChild(FormMdraLicenceAccessCodeComponent) accessCodeComponent!: FormMdraLicenceAccessCodeComponent;
 
 	constructor(
 		private router: Router,
@@ -69,30 +69,20 @@ export class StepMdraLicenceAccessCodeComponent implements OnInit {
 		this.accessCodeComponent.searchByAccessCode();
 	}
 
-	onLinkSuccess(_linkLicence: LicenceResponse): void {
-		// this.mdraDealersApplicationService
-		// 	.getLicenceWithAccessCodeAnonymous(linkLicence, this.applicationTypeCode!)
-		// 	.subscribe((_resp: any) => {
-		// 		switch (this.applicationTypeCode) {
-		// 			case ApplicationTypeCode.Renewal: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_RENEWAL)
-		// 				);
-		// 				break;
-		// 			}
-		// 			case ApplicationTypeCode.Replacement: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_REPLACEMENT)
-		// 				);
-		// 				break;
-		// 			}
-		// 			case ApplicationTypeCode.Update: {
-		// 				this.router.navigateByUrl(
-		// 					MetalDealersAndRecyclersRoutes.pathMdra(MetalDealersAndRecyclersRoutes.MDRA_UPDATE)
-		// 				);
-		// 				break;
-		// 			}
-		// 		}
-		// 	});
+	onLinkSuccess(associatedLicence: LicenceResponse): void {
+		this.mdraDealersApplicationService
+			.getMdraWithAccessCodeData(associatedLicence, this.applicationTypeCode)
+			.subscribe((_resp: any) => {
+				switch (this.applicationTypeCode) {
+					case ApplicationTypeCode.Update: {
+						this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_UPDATE));
+						break;
+					}
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_RENEWAL));
+						break;
+					}
+				}
+			});
 	}
 }

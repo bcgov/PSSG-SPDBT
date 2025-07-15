@@ -7,7 +7,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-permit-bc-driver-licence',
 	template: `
-		<app-step-section title="Do you have a BC Driver's Licence?" [subtitle]="subtitle">
+		<app-step-section heading="Do you have a BC Driver's Licence?" [subheading]="subtitle">
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<app-alert type="info" icon="info">

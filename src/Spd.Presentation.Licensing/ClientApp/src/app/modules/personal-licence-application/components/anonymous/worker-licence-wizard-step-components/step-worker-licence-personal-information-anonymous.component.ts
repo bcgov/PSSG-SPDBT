@@ -5,25 +5,25 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-personal-information-anonymous',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
-			<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-				<app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
-			</ng-container>
-
-			<ng-container *ngIf="isRenewalOrUpdate">
-				<app-form-personal-information-renew-update-anonymous
-					[form]="form"
-					[applicationTypeCode]="applicationTypeCode"
-					(fileUploaded)="onFileUploaded()"
-					(fileRemoved)="onFileRemoved()"
-				></app-form-personal-information-renew-update-anonymous>
-			</ng-container>
+	selector: 'app-step-worker-licence-personal-information-anonymous',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
+		  @if (applicationTypeCode === applicationTypeCodes.New) {
+		    <app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
+		  }
+		
+		  @if (isRenewalOrUpdate) {
+		    <app-form-personal-information-renew-update-anonymous
+		      [form]="form"
+		      [applicationTypeCode]="applicationTypeCode"
+		      (fileUploaded)="onFileUploaded()"
+		      (fileRemoved)="onFileRemoved()"
+		    ></app-form-personal-information-renew-update-anonymous>
+		  }
 		</app-step-section>
-	`,
-    styles: [],
-    standalone: false
+		`,
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicencePersonalInformationAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent

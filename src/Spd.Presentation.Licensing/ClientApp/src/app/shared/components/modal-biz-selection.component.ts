@@ -11,19 +11,19 @@ export interface BizSelectionDialogData {
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content class="mat-dialog-content">
-			<ng-container *ngFor="let bizItem of bizsList; let i = index">
-				<button
-					mat-stroked-button
-					color="primary"
-					class="large my-2"
-					aria-label="Click on a business to select it and close the popup"
-					(click)="onSelectBiz(bizItem)"
-				>
-					{{ bizItem.bizName ?? bizItem.bizLegalName }}
-				</button>
-			</ng-container>
+		  @for (bizItem of bizsList; track bizItem; let i = $index) {
+		    <button
+		      mat-stroked-button
+		      color="primary"
+		      class="large my-2"
+		      aria-label="Click on a business to select it and close the popup"
+		      (click)="onSelectBiz(bizItem)"
+		      >
+		      {{ bizItem.bizName ?? bizItem.bizLegalName }}
+		    </button>
+		  }
 		</mat-dialog-content>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

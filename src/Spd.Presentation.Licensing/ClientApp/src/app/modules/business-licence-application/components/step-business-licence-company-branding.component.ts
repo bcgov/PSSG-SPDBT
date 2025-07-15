@@ -9,48 +9,52 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 @Component({
 	selector: 'app-step-business-licence-company-branding',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-						<app-alert type="warning" icon="warning">
-							{{ info }}
-						</app-alert>
-
-						<div *ngIf="!isNoLogoOrBranding" @showHideTriggerSlideAnimation>
-							<div class="text-minor-heading mb-2">Upload examples</div>
-
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-								[accept]="accept"
-								[previewImage]="true"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-						<mat-divider class="my-4"></mat-divider>
-
-						<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
-
-						<div class="mt-3" *ngIf="isNoLogoOrBranding">
-							<app-alert type="info" icon="info">SPD will follow-up.</app-alert>
-						</div>
-					</div>
-				</div>
-			</form>
-		</app-step-section>
-	`,
+		<app-step-section [heading]="title" [subheading]="subtitle">
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+		        <app-alert type="warning" icon="warning">
+		          {{ info }}
+		        </app-alert>
+		
+		        @if (!isNoLogoOrBranding) {
+		          <div @showHideTriggerSlideAnimation>
+		            <div class="text-minor-heading mb-2">Upload examples</div>
+		            <app-file-upload
+		              (fileUploaded)="onFileUploaded($event)"
+		              (fileRemoved)="onFileRemoved()"
+		              [control]="attachments"
+		              [maxNumberOfFiles]="10"
+		              [files]="attachments.value"
+		              [accept]="accept"
+		              [previewImage]="true"
+		            ></app-file-upload>
+		            @if (
+		              (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+		              form.get('attachments')?.invalid &&
+		              form.get('attachments')?.hasError('required')
+		              ) {
+		              <mat-error
+		                class="mat-option-error"
+		                >This is required</mat-error
+		                >
+		              }
+		            </div>
+		          }
+		          <mat-divider class="my-4"></mat-divider>
+		
+		          <mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
+		
+		          @if (isNoLogoOrBranding) {
+		            <div class="mt-3">
+		              <app-alert type="info" icon="info">SPD will follow-up.</app-alert>
+		            </div>
+		          }
+		        </div>
+		      </div>
+		    </form>
+		  </app-step-section>
+		`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

@@ -327,6 +327,7 @@ internal class LicenceManager :
             {
                 var team = await _dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, cancellationToken);
                 lic.DogInfo = _mapper.Map<DogInfo>(team);
+                lic.IsDogTrainedByAccreditedSchool = team.IsDogTrainedByAccreditedSchool;
                 lic.DogId = team.DogId;
             }
         }
