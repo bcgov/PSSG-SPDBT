@@ -150,7 +150,7 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 	onSubmit(): void {
 		this.dogTrainerApplicationService.submitLicenceAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<DogTrainerAppCommandResponse>) => {
-				this.router.navigateByUrl(AppRoutes.path(AppRoutes.GDSD_APPLICATION_RECEIVED));
+				this.router.navigateByUrl(AppRoutes.path(AppRoutes.DOG_TRAINER_APPLICATION_RECEIVED));
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

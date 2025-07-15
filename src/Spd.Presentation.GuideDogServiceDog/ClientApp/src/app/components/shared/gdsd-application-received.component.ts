@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
@@ -32,9 +34,9 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 						<a
 							mat-flat-button
 							color="primary"
-							aria-label="Close and navigate to SPD contact site"
+							aria-label="Close and navigate to GDSD Certification site"
 							class="large w-100"
-							[href]="contactSpdUrl"
+							[href]="certificationUrl"
 							>Close</a
 						>
 					</div>
@@ -46,10 +48,13 @@ import { RetiredDogApplicationService } from '@app/core/services/retired-dog-app
 	standalone: false,
 })
 export class GdsdApplicationReceivedComponent implements OnInit {
-	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
+	certificationUrl!: string;
 	message = SPD_CONSTANTS.message.submissionSuccess;
 
+	serviceTypeCode!: ServiceTypeCode;
+
 	constructor(
+		private route: ActivatedRoute,
 		private commonApplicationService: CommonApplicationService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService,
 		private dogTrainerApplicationService: DogTrainerApplicationService,
@@ -57,6 +62,16 @@ export class GdsdApplicationReceivedComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.route.data.subscribe((data) => {
+			this.serviceTypeCode = data['serviceTypeCode'];
+
+			if (this.serviceTypeCode === ServiceTypeCode.GdsdTeamCertification) {
+				this.certificationUrl = SPD_CONSTANTS.urls.serviceDogTeamCertificationUrl;
+			} else {
+				this.certificationUrl = SPD_CONSTANTS.urls.serviceDogDtRdCertificationUrl;
+			}
+		});
+
 		if (this.gdsdTeamApplicationService.initialized) {
 			this.gdsdTeamApplicationService.reset();
 		} else if (this.dogTrainerApplicationService.initialized) {

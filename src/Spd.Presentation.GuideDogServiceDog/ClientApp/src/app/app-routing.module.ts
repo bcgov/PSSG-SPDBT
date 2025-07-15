@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ServiceTypeCode } from './api/models';
 import { AppRoutes } from './app.routes';
 import { GdsdLicenceMainComponent } from './components/authenticated/gdsd-licence-main.component';
 import { DogTrainerWizardNewRenewalComponent } from './components/dog-trainer/dog-trainer-wizard-new-renewal.component';
@@ -137,8 +138,25 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: AppRoutes.GDSD_APPLICATION_RECEIVED,
+		path: AppRoutes.GDSD_TEAM_APPLICATION_RECEIVED,
 		component: GdsdApplicationReceivedComponent,
+		data: {
+			serviceTypeCode: ServiceTypeCode.GdsdTeamCertification,
+		},
+	},
+	{
+		path: AppRoutes.DOG_TRAINER_APPLICATION_RECEIVED,
+		component: GdsdApplicationReceivedComponent,
+		data: {
+			serviceTypeCode: ServiceTypeCode.DogTrainerCertification,
+		},
+	},
+	{
+		path: AppRoutes.RETIRED_DOG_APPLICATION_RECEIVED,
+		component: GdsdApplicationReceivedComponent,
+		data: {
+			serviceTypeCode: ServiceTypeCode.RetiredServiceDogCertification,
+		},
 	},
 	{
 		path: AppRoutes.ACCESS_DENIED,
