@@ -3,7 +3,6 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
@@ -266,7 +265,6 @@ export class StepTeamSchoolTrainingsComponent implements LicenceChildStepperStep
 
 	invalidDateRange = false;
 
-	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 	dateMask = SPD_CONSTANTS.date.dateMask;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;

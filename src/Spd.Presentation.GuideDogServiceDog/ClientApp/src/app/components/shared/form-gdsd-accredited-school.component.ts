@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 
 @Component({
@@ -56,7 +55,6 @@ import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 })
 export class FormGdsdAccreditedSchoolComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
-	matcher = new FormErrorStateMatcher();
 
 	@Input() schoolLabel = 'Your Assistance Dogs International or International Guide Dog Federation Accredited School';
 	@Input() accreditedSchoolIdControl!: FormControl;

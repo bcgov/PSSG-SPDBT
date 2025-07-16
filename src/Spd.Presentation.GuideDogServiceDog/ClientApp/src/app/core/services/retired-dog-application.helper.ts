@@ -6,11 +6,25 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
+import { FormGroupValidators } from '../validators/form-group.validators';
 import { GdsdCommonApplicationHelper } from './gdsd-common-application.helper';
 
 export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationHelper {
-	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
+	dogGdsdCertificateNumberFormGroup: FormGroup = this.formBuilder.group({
 		currentGDSDCertificateNumber: new FormControl('', [FormControlValidators.required]),
+		verifiedLicenceNumber: new FormControl(''),
+	});
+
+	captchaFormGroup: FormGroup = this.formBuilder.group(
+		{ displayCaptcha: new FormControl(false), token: new FormControl('') },
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('token', (form) => form.get('displayCaptcha')?.value == true),
+			],
+		}
+	);
+
+	dogGdsdCertificateFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.GdsdCertificate
 	});
 
@@ -73,6 +87,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 		const serviceTypeData = retiredDogModelFormValue.serviceTypeData;
 		const applicationTypeData = retiredDogModelFormValue.applicationTypeData;
 		const personalInformationData = retiredDogModelFormValue.personalInformationData;
+		const dogGdsdCertificateNumberData = retiredDogModelFormValue.dogGdsdCertificateNumberData;
 		const dogGdsdCertificateData = retiredDogModelFormValue.dogGdsdCertificateData;
 		const photographOfYourselfData = retiredDogModelFormValue.photographOfYourselfData;
 		const governmentPhotoIdData = retiredDogModelFormValue.governmentPhotoIdData;
@@ -154,7 +169,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 			confirmDogLiveWithYouAfterRetire: this.utilService.booleanTypeToBoolean(
 				dogLivingData.confirmDogLiveWithYouAfterRetire
 			),
-			currentGDSDCertificateNumber: dogGdsdCertificateData.currentGDSDCertificateNumber,
+			currentGDSDCertificateNumber: dogGdsdCertificateNumberData.currentGDSDCertificateNumber,
 			documentKeyCodes: [],
 			documentInfos,
 			documentRelatedInfos,
@@ -268,7 +283,7 @@ export abstract class RetiredDogApplicationHelper extends GdsdCommonApplicationH
 	}
 
 	getSummarycurrentGDSDCertificateNumber(retiredDogModelData: any): string {
-		return retiredDogModelData.dogGdsdCertificateData.currentGDSDCertificateNumber ?? '';
+		return retiredDogModelData.dogGdsdCertificateNumberData.currentGDSDCertificateNumber ?? '';
 	}
 	getSummarygdsdCertificateAttachments(retiredDogModelData: any): File[] | null {
 		return retiredDogModelData.dogGdsdCertificateData.attachments ?? [];

@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
@@ -60,8 +59,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class StepRdDogRetiredInfoComponent implements LicenceChildStepperStepComponent {
-	booleanTypeCodes = BooleanTypeCode;
-
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.retiredDogApplicationService.dogRetiredForm;
