@@ -105,7 +105,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	standalone: false,
 })
 export class FormGdsdPersonalInfoAnonymousComponent {
-	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
