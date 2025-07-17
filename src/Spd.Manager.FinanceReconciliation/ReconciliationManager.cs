@@ -6,7 +6,7 @@ using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Manager.FinanceReconciliation
 {
-    internal class FinanceReconciliationManager :
+    internal class ReconciliationManager :
         IRequestHandler<GetDuplicatedApplicationNumberCommand, SuccessPaymentResultProcessResponse>,
         IRequestHandler<CardPrintAddressReconcilationCommand, IEnumerable<CardPrintAddressReconcilationResponse>>,
         IFinanceReconciliationManager
@@ -16,7 +16,7 @@ namespace Spd.Manager.FinanceReconciliation
         private readonly IPersonLicApplicationRepository personLicAppRepository;
         private readonly IEventRepository eventRepository;
 
-        public FinanceReconciliationManager(IApplicationRepository appRepo,
+        public ReconciliationManager(IApplicationRepository appRepo,
             ILicenceRepository licRepository,
             IPersonLicApplicationRepository personLicAppRepository,
             IEventRepository eventRepository)
