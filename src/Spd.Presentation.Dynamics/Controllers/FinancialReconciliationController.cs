@@ -22,4 +22,11 @@ public class FinancialReconciliationController : ControllerBase
     {
         return await _mediator.Send(new GetDuplicatedApplicationNumberCommand(paymentResults), ct);
     }
+
+    [HttpGet]
+    [Route("api/printing-reconciliation/addresses")]
+    public async Task<IEnumerable<CardPrintAddressReconcilationResponse>> CardPrintAddressReconcilation(CancellationToken ct)
+    {
+        return await _mediator.Send(new CardPrintAddressReconcilationCommand(), ct);
+    }
 }

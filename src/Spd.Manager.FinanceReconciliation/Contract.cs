@@ -6,9 +6,11 @@ namespace Spd.Manager.FinanceReconciliation
     {
         public Task<SuccessPaymentResultProcessResponse> Handle(SuccessPaymentResultProcessCommand command, CancellationToken ct);
         public Task<SuccessPaymentResultProcessResponse> Handle(GetDuplicatedApplicationNumberCommand command, CancellationToken ct);
+        public Task<IEnumerable<CardPrintAddressReconcilationResponse>> Handle(CardPrintAddressReconcilationCommand command, CancellationToken ct);
     }
 
     public record SuccessPaymentResultProcessCommand(List<SuccessPaymentResult> successPaymentResults) : IRequest<SuccessPaymentResultProcessResponse>;
+    public record CardPrintAddressReconcilationCommand() : IRequest<IEnumerable<CardPrintAddressReconcilationResponse>>;
     public record SuccessPaymentResult()
     {
         public string AppId { get; set; }
@@ -20,6 +22,18 @@ namespace Spd.Manager.FinanceReconciliation
         public string TransTime { get; set; }
     }
     public record SuccessPaymentResultProcessResponse(List<DuplicatedPaymentApplicationInfo> duplicatedPaymentApplicationInfos);
+
+    public record CardPrintAddressReconcilationResponse()
+    {
+        public string JobId { get; set; }
+        public string LicenceNumber { get; set; }
+        public string? MailingAddress1 { get; set; }
+        public string? MailingAddress2 { get; set; }
+        public string? City { get; set; }
+        public string? ProvinceState { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Country { get; set; }
+    }
 
     public class DuplicatedPaymentApplicationInfo
     {
