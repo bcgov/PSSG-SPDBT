@@ -11,66 +11,66 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 	selector: 'app-steps-worker-licence-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  <mat-step>
-		    <app-step-worker-licence-police-background
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-worker-licence-police-background>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
-		      (previousStepperStep)="onStepPrevious()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
-		      (nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-worker-licence-mental-health-conditions
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-worker-licence-mental-health-conditions>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
-		      (nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-worker-licence-criminal-history
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-worker-licence-criminal-history>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-		      (nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (showFingerprintsStep) {
-		    <mat-step>
-		      <app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onStepNext(STEP_FINGERPRINTS)"
-		        (nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
+			<mat-step>
+				<app-step-worker-licence-police-background
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-police-background>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-worker-licence-mental-health-conditions
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-mental-health-conditions>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-worker-licence-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-criminal-history>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (showFingerprintsStep) {
+				<mat-step>
+					<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_FINGERPRINTS)"
+						(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
+					></app-wizard-footer>
+				</mat-step>
+			}
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

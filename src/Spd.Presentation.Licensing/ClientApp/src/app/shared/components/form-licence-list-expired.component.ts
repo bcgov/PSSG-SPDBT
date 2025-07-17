@@ -8,48 +8,46 @@ import { MainLicenceResponse } from '@app/core/services/common-application.servi
 	selector: 'app-form-licence-list-expired',
 	template: `
 		@if (expiredLicences.length > 0) {
-		  <div class="mb-3">
-		    <div class="text-minor-heading py-3">Expired {{ serviceLabelTitle }}</div>
-		    @for (licence of expiredLicences; track licence; let i = $index) {
-		      <div
-		        class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
-		        >
-		        <div class="row">
-		          <div class="col-lg-3">
-		            <div class="text-minor-heading">
-		              {{ licence.serviceTypeCode | options: 'ServiceTypes' }}
-		            </div>
-		          </div>
-		          <div class="col-lg-9">
-		            <div class="row">
-		              <div class="col-lg-3">
-		                <div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Number</div>
-		                <div class="text-data">{{ licence.licenceNumber }}</div>
-		              </div>
-		              <div class="col-lg-3">
-		                <div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Term</div>
-		                <div class="text-data">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
-		              </div>
-		              <div class="col-lg-3">
-		                <div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-		                <div class="text-data">
-		                  {{ licence.expiryDate | formatDate: formalDateFormat }}
-		                </div>
-		              </div>
-		              <div class="col-lg-3 text-end">
-		                <mat-chip-option [selectable]="false" class="licence-chip-option mat-chip-red">
-		                  <mat-icon class="licence-chip-option-item">cancel</mat-icon>
-		                  <span class="licence-chip-option-item ms-2 fs-5">Expired</span>
-		                </mat-chip-option>
-		              </div>
-		            </div>
-		          </div>
-		        </div>
-		      </div>
-		    }
-		  </div>
+			<div class="mb-3">
+				<div class="text-minor-heading py-3">Expired {{ serviceLabelTitle }}</div>
+				@for (licence of expiredLicences; track licence; let i = $index) {
+					<div class="summary-card-section summary-card-section__red mb-2 px-4 py-3">
+						<div class="row">
+							<div class="col-lg-3">
+								<div class="text-minor-heading">
+									{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
+								</div>
+							</div>
+							<div class="col-lg-9">
+								<div class="row">
+									<div class="col-lg-3">
+										<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Number</div>
+										<div class="text-data">{{ licence.licenceNumber }}</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="d-block text-muted mt-2 mt-lg-0">{{ serviceLabel }} Term</div>
+										<div class="text-data">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
+										<div class="text-data">
+											{{ licence.expiryDate | formatDate: formalDateFormat }}
+										</div>
+									</div>
+									<div class="col-lg-3 text-end">
+										<mat-chip-option [selectable]="false" class="licence-chip-option mat-chip-red">
+											<mat-icon class="licence-chip-option-item">cancel</mat-icon>
+											<span class="licence-chip-option-item ms-2 fs-5">Expired</span>
+										</mat-chip-option>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
 		}
-		`,
+	`,
 	styles: [
 		`
 			.licence-chip-option {

@@ -36,246 +36,246 @@ import {
 	selector: 'app-common-controlling-or-business-members',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <mat-accordion multi="true">
-		    <mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
-		      <mat-expansion-panel-header>
-		        <mat-panel-title>{{ memberLabel }}s with a Security Worker Licence</mat-panel-title>
-		      </mat-expansion-panel-header>
-		
-		      @if (controllingMembersWithSwlExist) {
-		        <div class="row mt-2">
-		          <div class="col-12">
-		            <mat-table [dataSource]="dataSourceWithSWL">
-		              <ng-container matColumnDef="licenceHolderName">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  <span class="mobile-label">Full Name:</span>
-		                  {{ member.licenceHolderName | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="licenceNumber">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
-		                  Security Worker Licence Number
-		                </mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  <span class="mobile-label">Security Worker Licence Number:</span>
-		                  {{ member.licenceNumber | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="licenceStatusCode">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  <span class="mobile-label">Status:</span>
-		                  {{ member.licenceStatusCode | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="expiryDate">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  <span class="mobile-label">Expiry Date:</span>
-		                  {{ member.expiryDate | formatDate | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="action1">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		                <mat-cell class="mat-column-action1" *matCellDef="let member; let i = index">
-		                  <button
-		                    mat-flat-button
-		                    class="table-button w-auto"
-		                    style="color: var(--color-red);"
-		                    aria-label="Remove member"
-		                    (click)="onRemoveMember(member.bizContactId, true, i)"
-		                    >
-		                    <mat-icon>delete_outline</mat-icon>Remove
-		                  </button>
-		                </mat-cell>
-		              </ng-container>
-		              <mat-header-row *matHeaderRowDef="columnsWithSWL; sticky: true"></mat-header-row>
-		              <mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithSWL"></mat-row>
-		            </mat-table>
-		          </div>
-		        </div>
-		      } @else {
-		        @if (isReadonly) {
-		          <div class="text-minor-heading mt-4 mb-2">
-		            No {{ memberLabel }}s with a Security Worker Licence
-		          </div>
-		        }
-		      }
-		
-		      @if (isMaxNumberOfControllingMembers) {
-		        <div class="row">
-		          <div class="col-12 mt-4">
-		            <app-alert type="warning" icon="warning">
-		              <div>The maximum number of {{ memberLabel }}s has been reached.</div>
-		            </app-alert>
-		          </div>
-		        </div>
-		      } @else {
-		        @if (!isReadonly) {
-		          <div class="row mt-4 mb-2">
-		            <div class="col-12'">
-		              <a
-		                class="large"
-		                tabindex="0"
-		                (click)="onAddMemberWithSWL()"
-		                (keydown)="onKeydownAddMemberWithSWL($event)"
-		                >
-		                Add {{ memberLabel }} with a Security Worker Licence
-		              </a>
-		            </div>
-		          </div>
-		        }
-		      }
-		    </mat-expansion-panel>
-		
-		    <mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
-		      <mat-expansion-panel-header>
-		        <mat-panel-title>{{ memberLabel }}s without a Security Worker Licence</mat-panel-title>
-		      </mat-expansion-panel-header>
-		
-		      @if (controllingMembersWithoutSwlExist) {
-		        <div class="row mt-2">
-		          <div class="col-12 mb-3">
-		            <mat-table [dataSource]="dataSourceWithoutSWL">
-		              <ng-container matColumnDef="licenceHolderName">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  <span class="mobile-label">Full Name:</span>
-		                  {{ member.licenceHolderName | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="email">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
-		                <mat-cell class="mat-cell-email" *matCellDef="let member">
-		                  <span class="mobile-label">Email:</span>
-		                  {{ member.emailAddress | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="inviteStatusCode">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Invitation Status</mat-header-cell>
-		                <mat-cell class="mat-column-inviteStatusCode" *matCellDef="let member">
-		                  <span class="mobile-label">Invitation Status:</span>
-		                  {{ member.inviteStatusCode | default }}
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="action1">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		                <mat-cell class="mat-column-action1" *matCellDef="let member">
-		                  <button
-		                    mat-flat-button
-		                    class="table-button"
-		                    style="color: var(--color-green);"
-		                    aria-label="Edit member"
-		                    (click)="onEditMemberWithoutSWL(member)"
-		                    >
-		                    <mat-icon>edit</mat-icon>Edit
-		                  </button>
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="action2">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		                <mat-cell *matCellDef="let member; let i = index">
-		                  <button
-		                    mat-flat-button
-		                    class="table-button w-auto"
-		                    style="color: var(--color-red);"
-		                    aria-label="Remove member"
-		                    (click)="onRemoveMember(member.bizContactId, false, i)"
-		                    >
-		                    <mat-icon>delete_outline</mat-icon>Remove
-		                  </button>
-		                </mat-cell>
-		              </ng-container>
-		              <ng-container matColumnDef="action3">
-		                <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		                <mat-cell *matCellDef="let member">
-		                  @if (member.emailAddress) {
-		                    @if (isAllowUpdateInvitation(member.inviteStatusCode)) {
-		                      <a
-		                        tabindex="0"
-		                        class="w-100 invitation-button"
-		                        aria-label="Send update invitation"
-		                        (click)="onSendUpdateInvitation(member)"
-		                        (keydown)="onKeydownSendUpdateInvitation($event, member)"
-		                        >
-		                        Send Update Invitation
-		                      </a>
-		                    }
-		                  } @else {
-		                    @if (allowNewInvitationsToBeSent) {
-		                      <a
-		                        class="w-100 invitation-button"
-		                        aria-label="Download Consent to Criminal Record Check document"
-		                        download="Business Member Authorization Consent"
-		                        matTooltip="Download Consent to Criminal Record Check document"
-		                        [href]="downloadFilePath"
-		                        >
-		                        Download Manual Form
-		                      </a>
-		                    }
-		                  }
-		                </mat-cell>
-		              </ng-container>
-		              <mat-header-row *matHeaderRowDef="columnsWithoutSWL; sticky: true"></mat-header-row>
-		              <mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
-		            </mat-table>
-		          </div>
-		          @if (canSendUpdateInvitations) {
-		            <app-alert type="info" icon="info">
-		              When an update invitation is issued, the {{ memberLabel }} will receive a link to an online application
-		              form via email. They can update personal information and consent to a criminal record check.
-		            </app-alert>
-		          }
-		          @if (isApplDraftOrWaitingForPayment) {
-		            <app-alert type="warning" icon="warning">
-		              We must receive criminal record check consent forms from each individual listed here before the business
-		              licence application will be reviewed.
-		            </app-alert>
-		          }
-		        </div>
-		      } @else {
-		        @if (isReadonly) {
-		          <div class="text-minor-heading mt-4 mb-2">
-		            No {{ memberLabel }}s without a Security Worker Licence
-		          </div>
-		        }
-		      }
-		
-		      @if (isMaxNumberOfControllingMembers) {
-		        <div class="row">
-		          <div class="col-12 mt-4">
-		            <app-alert type="warning" icon="warning">
-		              <div>The maximum number of {{ memberLabel }}s has been reached.</div>
-		            </app-alert>
-		          </div>
-		        </div>
-		      } @else {
-		        @if (!isReadonly) {
-		          <div class="row mt-4 mb-2">
-		            <div class="col-12'">
-		              <a
-		                class="large"
-		                tabindex="0"
-		                (click)="onAddMemberWithoutSWL()"
-		                (keydown)="onKeydownAddMemberWithoutSWL($event)"
-		                >
-		                Add {{ memberLabel }} without a Security Worker Licence
-		              </a>
-		            </div>
-		          </div>
-		        }
-		      }
-		    </mat-expansion-panel>
-		  </mat-accordion>
-		
-		  @if ((form.dirty || form.touched) && form.invalid && form.hasError('controllingmembersmin')) {
-		    <div class="mt-3">
-		      <mat-error class="mat-option-error">At least one {{ memberLabel }} is required</mat-error>
-		    </div>
-		  }
+			<mat-accordion multi="true">
+				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
+					<mat-expansion-panel-header>
+						<mat-panel-title>{{ memberLabel }}s with a Security Worker Licence</mat-panel-title>
+					</mat-expansion-panel-header>
+
+					@if (controllingMembersWithSwlExist) {
+						<div class="row mt-2">
+							<div class="col-12">
+								<mat-table [dataSource]="dataSourceWithSWL">
+									<ng-container matColumnDef="licenceHolderName">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											<span class="mobile-label">Full Name:</span>
+											{{ member.licenceHolderName | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="licenceNumber">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
+											Security Worker Licence Number
+										</mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											<span class="mobile-label">Security Worker Licence Number:</span>
+											{{ member.licenceNumber | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="licenceStatusCode">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											<span class="mobile-label">Status:</span>
+											{{ member.licenceStatusCode | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="expiryDate">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											<span class="mobile-label">Expiry Date:</span>
+											{{ member.expiryDate | formatDate | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="action1">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+										<mat-cell class="mat-column-action1" *matCellDef="let member; let i = index">
+											<button
+												mat-flat-button
+												class="table-button w-auto"
+												style="color: var(--color-red);"
+												aria-label="Remove member"
+												(click)="onRemoveMember(member.bizContactId, true, i)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove
+											</button>
+										</mat-cell>
+									</ng-container>
+									<mat-header-row *matHeaderRowDef="columnsWithSWL; sticky: true"></mat-header-row>
+									<mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithSWL"></mat-row>
+								</mat-table>
+							</div>
+						</div>
+					} @else {
+						@if (isReadonly) {
+							<div class="text-minor-heading mt-4 mb-2">No {{ memberLabel }}s with a Security Worker Licence</div>
+						}
+					}
+
+					@if (isMaxNumberOfControllingMembers) {
+						<div class="row">
+							<div class="col-12 mt-4">
+								<app-alert type="warning" icon="warning">
+									<div>The maximum number of {{ memberLabel }}s has been reached.</div>
+								</app-alert>
+							</div>
+						</div>
+					} @else {
+						@if (!isReadonly) {
+							<div class="row mt-4 mb-2">
+								<div class="col-12'">
+									<a
+										class="large"
+										tabindex="0"
+										(click)="onAddMemberWithSWL()"
+										(keydown)="onKeydownAddMemberWithSWL($event)"
+									>
+										Add {{ memberLabel }} with a Security Worker Licence
+									</a>
+								</div>
+							</div>
+						}
+					}
+				</mat-expansion-panel>
+
+				<mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
+					<mat-expansion-panel-header>
+						<mat-panel-title>{{ memberLabel }}s without a Security Worker Licence</mat-panel-title>
+					</mat-expansion-panel-header>
+
+					@if (controllingMembersWithoutSwlExist) {
+						<div class="row mt-2">
+							<div class="col-12 mb-3">
+								<mat-table [dataSource]="dataSourceWithoutSWL">
+									<ng-container matColumnDef="licenceHolderName">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											<span class="mobile-label">Full Name:</span>
+											{{ member.licenceHolderName | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="email">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
+										<mat-cell class="mat-cell-email" *matCellDef="let member">
+											<span class="mobile-label">Email:</span>
+											{{ member.emailAddress | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="inviteStatusCode">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Invitation Status</mat-header-cell>
+										<mat-cell class="mat-column-inviteStatusCode" *matCellDef="let member">
+											<span class="mobile-label">Invitation Status:</span>
+											{{ member.inviteStatusCode | default }}
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="action1">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+										<mat-cell class="mat-column-action1" *matCellDef="let member">
+											<button
+												mat-flat-button
+												class="table-button"
+												style="color: var(--color-green);"
+												aria-label="Edit member"
+												(click)="onEditMemberWithoutSWL(member)"
+											>
+												<mat-icon>edit</mat-icon>Edit
+											</button>
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="action2">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+										<mat-cell *matCellDef="let member; let i = index">
+											<button
+												mat-flat-button
+												class="table-button w-auto"
+												style="color: var(--color-red);"
+												aria-label="Remove member"
+												(click)="onRemoveMember(member.bizContactId, false, i)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove
+											</button>
+										</mat-cell>
+									</ng-container>
+									<ng-container matColumnDef="action3">
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+										<mat-cell *matCellDef="let member">
+											@if (member.emailAddress) {
+												@if (isAllowUpdateInvitation(member.inviteStatusCode)) {
+													<a
+														tabindex="0"
+														class="w-100 invitation-button"
+														aria-label="Send update invitation"
+														(click)="onSendUpdateInvitation(member)"
+														(keydown)="onKeydownSendUpdateInvitation($event, member)"
+													>
+														Send Update Invitation
+													</a>
+												}
+											} @else {
+												@if (allowNewInvitationsToBeSent) {
+													<a
+														class="w-100 invitation-button"
+														aria-label="Download Consent to Criminal Record Check document"
+														download="Business Member Authorization Consent"
+														matTooltip="Download Consent to Criminal Record Check document"
+														[href]="downloadFilePath"
+													>
+														Download Manual Form
+													</a>
+												}
+											}
+										</mat-cell>
+									</ng-container>
+									<mat-header-row *matHeaderRowDef="columnsWithoutSWL; sticky: true"></mat-header-row>
+									<mat-row
+										class="mat-data-row invitation-row"
+										*matRowDef="let row; columns: columnsWithoutSWL"
+									></mat-row>
+								</mat-table>
+							</div>
+							@if (canSendUpdateInvitations) {
+								<app-alert type="info" icon="info">
+									When an update invitation is issued, the {{ memberLabel }} will receive a link to an online
+									application form via email. They can update personal information and consent to a criminal record
+									check.
+								</app-alert>
+							}
+							@if (isApplDraftOrWaitingForPayment) {
+								<app-alert type="warning" icon="warning">
+									We must receive criminal record check consent forms from each individual listed here before the
+									business licence application will be reviewed.
+								</app-alert>
+							}
+						</div>
+					} @else {
+						@if (isReadonly) {
+							<div class="text-minor-heading mt-4 mb-2">No {{ memberLabel }}s without a Security Worker Licence</div>
+						}
+					}
+
+					@if (isMaxNumberOfControllingMembers) {
+						<div class="row">
+							<div class="col-12 mt-4">
+								<app-alert type="warning" icon="warning">
+									<div>The maximum number of {{ memberLabel }}s has been reached.</div>
+								</app-alert>
+							</div>
+						</div>
+					} @else {
+						@if (!isReadonly) {
+							<div class="row mt-4 mb-2">
+								<div class="col-12'">
+									<a
+										class="large"
+										tabindex="0"
+										(click)="onAddMemberWithoutSWL()"
+										(keydown)="onKeydownAddMemberWithoutSWL($event)"
+									>
+										Add {{ memberLabel }} without a Security Worker Licence
+									</a>
+								</div>
+							</div>
+						}
+					}
+				</mat-expansion-panel>
+			</mat-accordion>
+
+			@if ((form.dirty || form.touched) && form.invalid && form.hasError('controllingmembersmin')) {
+				<div class="mt-3">
+					<mat-error class="mat-option-error">At least one {{ memberLabel }} is required</mat-error>
+				</div>
+			}
 		</form>
-		`,
+	`,
 	styles: [
 		`
 			.invitation-row {

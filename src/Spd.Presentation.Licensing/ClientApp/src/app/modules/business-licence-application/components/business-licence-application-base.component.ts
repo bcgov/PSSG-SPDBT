@@ -11,16 +11,16 @@ import { lastValueFrom, take, tap } from 'rxjs';
 	selector: 'app-business-licence-application-base',
 	template: `
 		@if (isAuthenticated$ | async) {
-		  <div class="container px-0 my-0 px-md-2 my-md-3">
-		    <!-- hide padding/margin on smaller screens -->
-		    <div class="row">
-		      <div class="col-12">
-		        <router-outlet></router-outlet>
-		      </div>
-		    </div>
-		  </div>
+			<div class="container px-0 my-0 px-md-2 my-md-3">
+				<!-- hide padding/margin on smaller screens -->
+				<div class="row">
+					<div class="col-12">
+						<router-outlet></router-outlet>
+					</div>
+				</div>
+			</div>
 		}
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

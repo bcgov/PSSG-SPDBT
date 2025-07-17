@@ -7,21 +7,21 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-licence-application-base-authenticated',
-    template: `
+	selector: 'app-licence-application-base-authenticated',
+	template: `
 		@if (isAuthenticated$ | async) {
-		  <div class="container px-0 my-0 px-md-2 my-md-3">
-		    <!-- hide padding/margin on smaller screens -->
-		    <div class="row">
-		      <div class="col-12">
-		        <router-outlet></router-outlet>
-		      </div>
-		    </div>
-		  </div>
+			<div class="container px-0 my-0 px-md-2 my-md-3">
+				<!-- hide padding/margin on smaller screens -->
+				<div class="row">
+					<div class="col-12">
+						<router-outlet></router-outlet>
+					</div>
+				</div>
+			</div>
 		}
-		`,
-    styles: [],
-    standalone: false
+	`,
+	styles: [],
+	standalone: false,
 })
 export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;

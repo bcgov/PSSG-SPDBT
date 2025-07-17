@@ -50,9 +50,9 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;

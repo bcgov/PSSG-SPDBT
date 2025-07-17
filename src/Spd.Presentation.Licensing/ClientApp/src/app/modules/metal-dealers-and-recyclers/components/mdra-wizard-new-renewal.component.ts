@@ -87,7 +87,7 @@ import { StepsMdraReviewAndConfirmComponent } from './steps-mdra-review-and-conf
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: ``,
+	styles: [],
 	standalone: false,
 })
 export class MdraWizardNewRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {

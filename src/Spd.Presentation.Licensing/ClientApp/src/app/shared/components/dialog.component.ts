@@ -19,47 +19,47 @@ export enum DialogCloseCode {
 }
 
 @Component({
-    selector: 'app-spd-dialog',
-    template: `
+	selector: 'app-spd-dialog',
+	template: `
 		@if (data.icon || data.title) {
-		  <h2 mat-dialog-title class="mat-dialog-title" class="mt-4">
-		    @if (data.icon) {
-		      <mat-icon [color]="data.type">{{ data.icon }}</mat-icon>
-		    }
-		    @if (data.title) {
-		      <strong style="position: relative; top: -7px;">
-		        {{ data.title }}
-		      </strong>
-		    }
-		  </h2>
+			<h2 mat-dialog-title class="mat-dialog-title" class="mt-4">
+				@if (data.icon) {
+					<mat-icon [color]="data.type">{{ data.icon }}</mat-icon>
+				}
+				@if (data.title) {
+					<strong style="position: relative; top: -7px;">
+						{{ data.title }}
+					</strong>
+				}
+			</h2>
 		}
-		
+
 		<mat-dialog-content class="mat-dialog-content">
-		  <p [ngStyle]="{ 'word-break': 'break-word' }" [innerHTML]="data.message"></p>
-		  <ng-template appDialogContent></ng-template>
+			<p [ngStyle]="{ 'word-break': 'break-word' }" [innerHTML]="data.message"></p>
+			<ng-template appDialogContent></ng-template>
 		</mat-dialog-content>
-		
+
 		<mat-dialog-actions>
-		  <div class="row m-0 p-0 w-100 mt-2">
-		    <div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'col-md-4'">
-		      @if (data.cancelText) {
-		        <button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">
-		          {{ data.cancelText }}
-		        </button>
-		      }
-		    </div>
-		    <div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'offset-md-4 col-md-4'">
-		      @if (data.actionText) {
-		        <button mat-flat-button color="primary" class="large" (click)="onConfirm()">
-		          {{ data.actionText }}
-		        </button>
-		      }
-		    </div>
-		  </div>
+			<div class="row m-0 p-0 w-100 mt-2">
+				<div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'col-md-4'">
+					@if (data.cancelText) {
+						<button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">
+							{{ data.cancelText }}
+						</button>
+					}
+				</div>
+				<div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'offset-md-4 col-md-4'">
+					@if (data.actionText) {
+						<button mat-flat-button color="primary" class="large" (click)="onConfirm()">
+							{{ data.actionText }}
+						</button>
+					}
+				</div>
+			</div>
 		</mat-dialog-actions>
-		`,
-    styles: [
-        `
+	`,
+	styles: [
+		`
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -82,11 +82,14 @@ export enum DialogCloseCode {
 				text-decoration: underline;
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class DialogComponent {
-	constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogOptions) {}
+	constructor(
+		public dialogRef: MatDialogRef<DialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: DialogOptions
+	) {}
 
 	public onConfirm(): void {
 		this.dialogRef.close(true);

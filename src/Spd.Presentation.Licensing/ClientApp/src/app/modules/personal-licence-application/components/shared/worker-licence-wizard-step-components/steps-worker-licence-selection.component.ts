@@ -15,154 +15,154 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 	selector: 'app-steps-worker-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  @if (showTermsOfUse) {
-		    <mat-step>
-		      <app-step-worker-licence-terms-of-use
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-worker-licence-terms-of-use>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
-		        (nextReviewStepperStep)="onNextReview(STEP_TERMS)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    @if (applicationTypeCode === applicationTypeCodes.New) {
-		      <app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
-		    }
-		
-		    @if (applicationTypeCode === applicationTypeCodes.Renewal) {
-		      <app-step-worker-licence-checklist-renewal></app-step-worker-licence-checklist-renewal>
-		    }
-		
-		    @if (applicationTypeCode === applicationTypeCodes.Update) {
-		      <app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
-		    }
-		
-		    @if (showTermsOfUse) {
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onGoToNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-		      ></app-wizard-footer>
-		    } @else {
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGotoUserProfile()"
-		        (nextStepperStep)="onGoToNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-		      ></app-wizard-footer>
-		    }
-		  </mat-step>
-		
-		  @if (isRenewalOrUpdate) {
-		    <mat-step>
-		      <app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
-		        (nextReviewStepperStep)="onNextReview(STEP_LICENCE_CONFIRMATION)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  @if (showWorkerLicenceSoleProprietorStep) {
-		    <mat-step>
-		      <app-step-worker-licence-sole-proprietor
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-worker-licence-sole-proprietor>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_SOLE_PROPRIETOR)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
-		        (nextReviewStepperStep)="onNextReview(STEP_SOLE_PROPRIETOR)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  @if (applicationTypeCode === applicationTypeCodes.New) {
-		    <mat-step>
-		      <app-step-worker-licence-expired [isLoggedIn]="isLoggedIn"></app-step-worker-licence-expired>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
-		        (nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-step-worker-licence-category
-		      [applicationTypeCode]="applicationTypeCode"
-		      [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-		    ></app-step-worker-licence-category>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormCategoryValidNextStep()"
-		      (nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (showStepDogsAndRestraints) {
-		    <mat-step>
-		      <app-step-worker-licence-restraints
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-worker-licence-restraints>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_RESTRAINTS)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
-		        (nextReviewStepperStep)="onNextReview(STEP_RESTRAINTS)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  @if (showStepDogsAndRestraints) {
-		    <mat-step>
-		      <app-step-worker-licence-dogs-authorization
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-worker-licence-dogs-authorization>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_DOGS)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormDogsValidNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_DOGS)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  @if (applicationTypeCode !== applicationTypeCodes.Update) {
-		    <mat-step>
-		      <app-step-worker-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-term>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
-		        (nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
+			@if (showTermsOfUse) {
+				<mat-step>
+					<app-step-worker-licence-terms-of-use
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-worker-licence-terms-of-use>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+						(nextReviewStepperStep)="onNextReview(STEP_TERMS)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				@if (applicationTypeCode === applicationTypeCodes.New) {
+					<app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
+				}
+
+				@if (applicationTypeCode === applicationTypeCodes.Renewal) {
+					<app-step-worker-licence-checklist-renewal></app-step-worker-licence-checklist-renewal>
+				}
+
+				@if (applicationTypeCode === applicationTypeCodes.Update) {
+					<app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
+				}
+
+				@if (showTermsOfUse) {
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				} @else {
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				}
+			</mat-step>
+
+			@if (isRenewalOrUpdate) {
+				<mat-step>
+					<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+						(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CONFIRMATION)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			@if (showWorkerLicenceSoleProprietorStep) {
+				<mat-step>
+					<app-step-worker-licence-sole-proprietor
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-worker-licence-sole-proprietor>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_SOLE_PROPRIETOR)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
+						(nextReviewStepperStep)="onNextReview(STEP_SOLE_PROPRIETOR)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			@if (applicationTypeCode === applicationTypeCodes.New) {
+				<mat-step>
+					<app-step-worker-licence-expired [isLoggedIn]="isLoggedIn"></app-step-worker-licence-expired>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+						(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-step-worker-licence-category
+					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+				></app-step-worker-licence-category>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormCategoryValidNextStep()"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (showStepDogsAndRestraints) {
+				<mat-step>
+					<app-step-worker-licence-restraints
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-worker-licence-restraints>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_RESTRAINTS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
+						(nextReviewStepperStep)="onNextReview(STEP_RESTRAINTS)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			@if (showStepDogsAndRestraints) {
+				<mat-step>
+					<app-step-worker-licence-dogs-authorization
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-worker-licence-dogs-authorization>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_DOGS)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormDogsValidNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_DOGS)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			@if (applicationTypeCode !== applicationTypeCodes.Update) {
+				<mat-step>
+					<app-step-worker-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-term>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
+						(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
+					></app-wizard-footer>
+				</mat-step>
+			}
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

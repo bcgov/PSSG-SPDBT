@@ -14,80 +14,80 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	selector: 'app-steps-business-licence-controlling-members',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  <mat-step>
-		    <app-step-business-licence-controlling-members
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-business-licence-controlling-members>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS)"
-		      (previousStepperStep)="onStepPrevious()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS)"
-		      (nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-business-licence-business-members
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-business-licence-business-members>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_BUSINESS_MEMBERS)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_MEMBERS)"
-		      (nextReviewStepperStep)="onNextReview(STEP_BUSINESS_MEMBERS)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-business-licence-corporate-registry-document></app-step-business-licence-corporate-registry-document>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_CORP_REGISTRY_DOCUMENT)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_CORP_REGISTRY_DOCUMENT)"
-		      (nextReviewStepperStep)="onNextReview(STEP_CORP_REGISTRY_DOCUMENT)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (isBusinessStakeholdersWithoutSwlExist) {
-		    <mat-step>
-		      <app-step-business-licence-controlling-member-invites></app-step-business-licence-controlling-member-invites>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_INVITES)"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_INVITES)"
-		        (nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_INVITES)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-step-business-licence-employees
-		      [isBusinessLicenceSoleProprietor]="false"
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-business-licence-employees>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_EMPLOYEES)"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
-		      (nextReviewStepperStep)="onNextReview(STEP_EMPLOYEES)"
-		    ></app-wizard-footer>
-		  </mat-step>
+			<mat-step>
+				<app-step-business-licence-controlling-members
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-controlling-members>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS)"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS)"
+					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-business-licence-business-members
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-business-members>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_BUSINESS_MEMBERS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_BUSINESS_MEMBERS)"
+					(nextReviewStepperStep)="onNextReview(STEP_BUSINESS_MEMBERS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-business-licence-corporate-registry-document></app-step-business-licence-corporate-registry-document>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CORP_REGISTRY_DOCUMENT)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CORP_REGISTRY_DOCUMENT)"
+					(nextReviewStepperStep)="onNextReview(STEP_CORP_REGISTRY_DOCUMENT)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (isBusinessStakeholdersWithoutSwlExist) {
+				<mat-step>
+					<app-step-business-licence-controlling-member-invites></app-step-business-licence-controlling-member-invites>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_INVITES)"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_INVITES)"
+						(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_INVITES)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-step-business-licence-employees
+					[isBusinessLicenceSoleProprietor]="false"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-employees>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_EMPLOYEES)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
+					(nextReviewStepperStep)="onNextReview(STEP_EMPLOYEES)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

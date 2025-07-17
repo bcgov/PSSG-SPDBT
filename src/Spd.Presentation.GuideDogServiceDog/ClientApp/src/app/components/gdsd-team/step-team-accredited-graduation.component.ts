@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -52,8 +51,6 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	standalone: false,
 })
 export class StepTeamAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
-
 	form: FormGroup = this.gdsdTeamApplicationService.graduationInfoFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;

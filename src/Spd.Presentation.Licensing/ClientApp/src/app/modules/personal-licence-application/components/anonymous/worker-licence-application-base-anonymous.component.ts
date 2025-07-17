@@ -7,8 +7,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { take, tap } from 'rxjs';
 
 @Component({
-    selector: 'app-worker-licence-application-base-anonymous',
-    template: `
+	selector: 'app-worker-licence-application-base-anonymous',
+	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<!-- hide padding/margin on smaller screens -->
 			<div class="row">
@@ -18,8 +18,8 @@ import { take, tap } from 'rxjs';
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 	constructor(

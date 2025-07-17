@@ -24,180 +24,177 @@ export interface LookupByLicenceNumberDialogData {
 	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-dialog-content class="mat-dialog-content" class="pb-0">
-		  @if (subtitle) {
-		    <div class="fs-6 fw-normal pb-3">{{ subtitle }}</div>
-		  }
-		  <form [formGroup]="form" novalidate>
-		    @if (isLoggedIn) {
-		      <app-alert type="info" icon="info"> Enter the {{ typeLabel }} Number and click the search button. </app-alert>
-		    } @else {
-		      <app-alert type="info" icon="info">
-		        Enter the {{ typeLabel }} Number, perform the reCaptcha and then click the search button.
-		      </app-alert>
-		    }
-		
-		    <div class="row">
-		      <div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
-		        <mat-form-field>
-		          <mat-label>{{ typeLabel }} Number</mat-label>
-		          <input
-		            matInput
-		            type="search"
-		            formControlName="licenceNumberLookup"
-		            oninput="this.value = this.value.toUpperCase()"
-		            maxlength="10"
-		            (keydown.enter)="onSearchKeyDown()"
-		            />
-		            <button
-		              mat-button
-		              matSuffix
-		              mat-flat-button
-		              aria-label="Perform the search"
-		              matTooltip="Perform the search"
-		              (click)="onSearch()"
-		              class="search-icon-button"
-		              >
-		              <mat-icon>search</mat-icon>
-		            </button>
-		            @if (form.get('licenceNumberLookup')?.hasError('required')) {
-		              <mat-error> This is required </mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		
-		        @if (!isLoggedIn) {
-		          <div class="col-xl-6 col-lg-12">
-		            <div [formGroup]="captchaFormGroup" class="mb-3">
-		              <app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
-		              @if (
-		                (captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-		                captchaFormGroup.get('token')?.invalid &&
-		                captchaFormGroup.get('token')?.hasError('required')
-		                ) {
-		                <mat-error
-		                  class="mat-option-error-small"
-		                  >This is required</mat-error
-		                  >
-		              }
-		            </div>
-		          </div>
-		        }
-		      </div>
-		
-		      @if (isSearchPerformed) {
-		        @if (isFound) {
-		          @if (isFoundValid) {
-		            <div @showHideTriggerSlideAnimation>
-		              <div class="my-3">
-		                <app-alert type="success" icon="">
-		                  <div class="row">
-		                    <div class="col-md-6 col-sm-12">
-		                      <div class="d-block text-muted mt-2">Name</div>
-		                      <div class="text-data">{{ searchResultDisplay?.licenceHolderName }}</div>
-		                    </div>
-		                    <div class="col-md-6 col-sm-12">
-		                      <div class="d-block text-muted mt-2">
-		                        {{ lookupServiceTypeCode | options: 'ServiceTypes' }} Number
-		                      </div>
-		                      <div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
-		                    </div>
-		                    <div class="col-md-6 col-sm-12">
-		                      <div class="d-block text-muted mt-2">Expiry Date</div>
-		                      <div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
-		                    </div>
-		                    <div class="col-md-6 col-sm-12">
-		                      <div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
-		                      <div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
-		                    </div>
-		                  </div>
-		                </app-alert>
-		              </div>
-		            </div>
-		          }
-		          @if (!isFoundValid) {
-		            <div>
-		              @if (isExpiredLicenceSearch) {
-		                <div class="mt-3">
-		                  @if (messageWarn) {
-		                    <app-alert type="warning">
-		                      <div [innerHTML]="messageWarn"></div>
-		                    </app-alert>
-		                  }
-		                  @if (messageError) {
-		                    <app-alert type="danger" icon="dangerous">
-		                      {{ messageError }}
-		                    </app-alert>
-		                  }
-		                </div>
-		              } @else {
-		                <div class="mt-3">
-		                  <app-alert type="danger" icon="">
-		                    <div class="fs-5 mb-2">
-		                      This {{ typeLabel }} is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
-		                    </div>
-		                    <div class="row">
-		                      <div class="col-md-5 col-sm-12">
-		                        <div class="d-block text-muted mt-2">
-		                          {{ searchResultDisplay?.serviceTypeCode | options: 'ServiceTypes' }} Number
-		                        </div>
-		                        <div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
-		                      </div>
-		                      <div class="col-md-3 col-sm-12">
-		                        <div class="d-block text-muted mt-2">Expiry Date</div>
-		                        <div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
-		                      </div>
-		                      <div class="col-md-4 col-sm-12">
-		                        <div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
-		                        <div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
-		                      </div>
-		                    </div>
-		                    @if (notValidSwlMessage) {
-		                      <div class="mt-2">
-		                        {{ notValidSwlMessage }}
-		                      </div>
-		                    }
-		                  </app-alert>
-		                </div>
-		              }
-		            </div>
-		          }
-		        } @else {
-		          <app-alert type="danger" icon="dangerous">
-		            {{ messageError }}
-		          </app-alert>
-		        }
-		      }
-		    </form>
-		  </mat-dialog-content>
-		  <mat-dialog-actions>
-		    <div class="row m-0 w-100">
-		      <div class="col-md-4 col-sm-12 mb-2">
-		        <button
-		          mat-stroked-button
-		          mat-dialog-close
-		          class="large"
-		          color="primary"
-		          aria-label="Cancel and close the popup"
-		          >
-		          Cancel
-		        </button>
-		      </div>
-		      @if (isFoundValid) {
-		        <div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-		          <button
-		            mat-flat-button
-		            color="primary"
-		            class="large"
-		            aria-label="Save and close the popup"
-		            (click)="onSave()"
-		            >
-		            {{ selectButtonLabel }}
-		          </button>
-		        </div>
-		      }
-		    </div>
-		  </mat-dialog-actions>
-		`,
+			@if (subtitle) {
+				<div class="fs-6 fw-normal pb-3">{{ subtitle }}</div>
+			}
+			<form [formGroup]="form" novalidate>
+				@if (isLoggedIn) {
+					<app-alert type="info" icon="info"> Enter the {{ typeLabel }} Number and click the search button. </app-alert>
+				} @else {
+					<app-alert type="info" icon="info">
+						Enter the {{ typeLabel }} Number, perform the reCaptcha and then click the search button.
+					</app-alert>
+				}
+
+				<div class="row">
+					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
+						<mat-form-field>
+							<mat-label>{{ typeLabel }} Number</mat-label>
+							<input
+								matInput
+								type="search"
+								formControlName="licenceNumberLookup"
+								oninput="this.value = this.value.toUpperCase()"
+								maxlength="10"
+								(keydown.enter)="onSearchKeyDown()"
+							/>
+							<button
+								mat-button
+								matSuffix
+								mat-flat-button
+								aria-label="Perform the search"
+								matTooltip="Perform the search"
+								(click)="onSearch()"
+								class="search-icon-button"
+							>
+								<mat-icon>search</mat-icon>
+							</button>
+							@if (form.get('licenceNumberLookup')?.hasError('required')) {
+								<mat-error>This is required</mat-error>
+							}
+						</mat-form-field>
+					</div>
+
+					@if (!isLoggedIn) {
+						<div class="col-xl-6 col-lg-12">
+							<div [formGroup]="captchaFormGroup" class="mb-3">
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
+								@if (
+									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+									captchaFormGroup.get('token')?.invalid &&
+									captchaFormGroup.get('token')?.hasError('required')
+								) {
+									<mat-error class="mat-option-error-small">This is required</mat-error>
+								}
+							</div>
+						</div>
+					}
+				</div>
+
+				@if (isSearchPerformed) {
+					@if (isFound) {
+						@if (isFoundValid) {
+							<div @showHideTriggerSlideAnimation>
+								<div class="my-3">
+									<app-alert type="success" icon="">
+										<div class="row">
+											<div class="col-md-6 col-sm-12">
+												<div class="d-block text-muted mt-2">Name</div>
+												<div class="text-data">{{ searchResultDisplay?.licenceHolderName }}</div>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<div class="d-block text-muted mt-2">
+													{{ lookupServiceTypeCode | options: 'ServiceTypes' }} Number
+												</div>
+												<div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<div class="d-block text-muted mt-2">Expiry Date</div>
+												<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
+												<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
+											</div>
+										</div>
+									</app-alert>
+								</div>
+							</div>
+						}
+						@if (!isFoundValid) {
+							<div>
+								@if (isExpiredLicenceSearch) {
+									<div class="mt-3">
+										@if (messageWarn) {
+											<app-alert type="warning">
+												<div [innerHTML]="messageWarn"></div>
+											</app-alert>
+										}
+										@if (messageError) {
+											<app-alert type="danger" icon="dangerous">
+												{{ messageError }}
+											</app-alert>
+										}
+									</div>
+								} @else {
+									<div class="mt-3">
+										<app-alert type="danger" icon="">
+											<div class="fs-5 mb-2">
+												This {{ typeLabel }} is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
+											</div>
+											<div class="row">
+												<div class="col-md-5 col-sm-12">
+													<div class="d-block text-muted mt-2">
+														{{ searchResultDisplay?.serviceTypeCode | options: 'ServiceTypes' }} Number
+													</div>
+													<div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
+												</div>
+												<div class="col-md-3 col-sm-12">
+													<div class="d-block text-muted mt-2">Expiry Date</div>
+													<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
+												</div>
+												<div class="col-md-4 col-sm-12">
+													<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
+													<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
+												</div>
+											</div>
+											@if (notValidSwlMessage) {
+												<div class="mt-2">
+													{{ notValidSwlMessage }}
+												</div>
+											}
+										</app-alert>
+									</div>
+								}
+							</div>
+						}
+					} @else {
+						<app-alert type="danger" icon="dangerous">
+							{{ messageError }}
+						</app-alert>
+					}
+				}
+			</form>
+		</mat-dialog-content>
+		<mat-dialog-actions>
+			<div class="row m-0 w-100">
+				<div class="col-md-4 col-sm-12 mb-2">
+					<button
+						mat-stroked-button
+						mat-dialog-close
+						class="large"
+						color="primary"
+						aria-label="Cancel and close the popup"
+					>
+						Cancel
+					</button>
+				</div>
+				@if (isFoundValid) {
+					<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large"
+							aria-label="Save and close the popup"
+							(click)="onSave()"
+						>
+							{{ selectButtonLabel }}
+						</button>
+					</div>
+				}
+			</div>
+		</mat-dialog-actions>
+	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

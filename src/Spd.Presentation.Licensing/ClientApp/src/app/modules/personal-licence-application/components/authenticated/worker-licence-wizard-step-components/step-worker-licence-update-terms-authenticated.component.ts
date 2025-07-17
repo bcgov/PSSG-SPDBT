@@ -5,17 +5,17 @@ import { StepWorkerLicenceTermsOfUseComponent } from '@app/modules/personal-lice
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-step-worker-licence-update-terms-authenticated',
-    template: `
+	selector: 'app-step-worker-licence-update-terms-authenticated',
+	template: `
 		<app-step-worker-licence-terms-of-use
 			[applicationTypeCode]="applicationTypeCodeUpdate"
 		></app-step-worker-licence-terms-of-use>
 
 		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepWorkerLicenceUpdateTermsAuthenticatedComponent {
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
