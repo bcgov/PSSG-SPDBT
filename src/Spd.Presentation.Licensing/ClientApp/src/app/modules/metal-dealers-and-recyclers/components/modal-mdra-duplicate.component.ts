@@ -19,30 +19,28 @@ export interface ModalMdraDuplicateDialogResponse {
 	template: `
 		<div mat-dialog-title>{{ dialogData.title }}</div>
 		<mat-dialog-content>
-		  <p>{{ dialogData.message }}</p>
-		
-		  <app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-		  @if (displayValidationErrors && !captchaPassed) {
-		    <mat-error class="mat-option-error">
-		      This is required
-		    </mat-error>
-		  }
+			<p>{{ dialogData.message }}</p>
+
+			<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+			@if (displayValidationErrors && !captchaPassed) {
+				<mat-error class="mat-option-error">This is required</mat-error>
+			}
 		</mat-dialog-content>
 		<mat-dialog-actions>
-		  <div class="row m-0 p-0 w-100">
-		    <div class="col-md-5 col-sm-12 mb-2">
-		      <button mat-stroked-button color="primary" [mat-dialog-close]="false">
-		        {{ dialogData.cancelText }}
-		      </button>
-		    </div>
-		    <div class="offset-md-2 col-md-5 col-sm-12 mb-2">
-		      <button mat-flat-button color="primary" (click)="onConfirm()">
-		        {{ dialogData.actionText }}
-		      </button>
-		    </div>
-		  </div>
+			<div class="row m-0 p-0 w-100">
+				<div class="col-md-5 col-sm-12 mb-2">
+					<button mat-stroked-button color="primary" [mat-dialog-close]="false">
+						{{ dialogData.cancelText }}
+					</button>
+				</div>
+				<div class="offset-md-2 col-md-5 col-sm-12 mb-2">
+					<button mat-flat-button color="primary" (click)="onConfirm()">
+						{{ dialogData.actionText }}
+					</button>
+				</div>
+			</div>
 		</mat-dialog-actions>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

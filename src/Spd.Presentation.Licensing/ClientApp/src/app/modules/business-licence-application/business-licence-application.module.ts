@@ -33,8 +33,8 @@ import { BusinessLicenceWizardRenewalComponent } from './components/business-lic
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
-import { CommonBusinessInformationComponent } from './components/common-business-information.component';
 import { CommonBusinessEmployeesSummaryComponent } from './components/common-business-employees-summary.component';
+import { CommonBusinessInformationComponent } from './components/common-business-information.component';
 import { CommonBusinessMembersComponent } from './components/common-business-members.component';
 import { CommonControllingOrBusinessMembersComponent } from './components/common-controlling-or-business-members.component';
 import { ModalBcBranchEditComponent } from './components/modal-bc-branch-edit.component';

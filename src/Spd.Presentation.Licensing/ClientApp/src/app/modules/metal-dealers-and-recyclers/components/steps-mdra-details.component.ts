@@ -9,44 +9,44 @@ import { StepMdraTermsOfUseComponent } from './step-mdra-terms-of-use.component'
 	selector: 'app-steps-mdra-details',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  <mat-step>
-		    <app-step-mdra-terms-of-use></app-step-mdra-terms-of-use>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
-		      (nextReviewStepperStep)="onNextReview(STEP_TERMS)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    @if (isUpdate) {
-		      <app-step-mdra-checklist-update></app-step-mdra-checklist-update>
-		    } @else {
-		      <app-step-mdra-checklist-new></app-step-mdra-checklist-new>
-		    }
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onChecklistNextStep(STEP_CHECKLIST)"
-		      (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (isNew) {
-		    <mat-step>
-		      <app-step-mdra-licence-expired></app-step-mdra-licence-expired>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onStepNext(STEP_LICENCE_EXPIRED)"
-		        (nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
+			<mat-step>
+				<app-step-mdra-terms-of-use></app-step-mdra-terms-of-use>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+					(nextReviewStepperStep)="onNextReview(STEP_TERMS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				@if (isUpdate) {
+					<app-step-mdra-checklist-update></app-step-mdra-checklist-update>
+				} @else {
+					<app-step-mdra-checklist-new></app-step-mdra-checklist-new>
+				}
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onChecklistNextStep(STEP_CHECKLIST)"
+					(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (isNew) {
+				<mat-step>
+					<app-step-mdra-licence-expired></app-step-mdra-licence-expired>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_LICENCE_EXPIRED)"
+						(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
+					></app-wizard-footer>
+				</mat-step>
+			}
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

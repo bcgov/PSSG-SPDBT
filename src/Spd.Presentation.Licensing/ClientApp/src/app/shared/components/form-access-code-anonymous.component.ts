@@ -22,83 +22,80 @@ import { Subject, take, tap } from 'rxjs';
 	selector: 'app-form-access-code-anonymous',
 	template: `
 		<div class="row">
-		  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
-		    <form [formGroup]="form" novalidate>
-		      <div class="row mt-4">
-		        <div class="col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Current {{ titleLabel }} Number</mat-label>
-		            <input
-		              matInput
-		              type="search"
-		              formControlName="licenceNumber"
-		              oninput="this.value = this.value.toUpperCase()"
-		              [errorStateMatcher]="matcher"
-		              maxlength="10"
-		              />
-		              @if (form.get('licenceNumber')?.hasError('required')) {
-		                <mat-error> This is required </mat-error>
-		              }
-		            </mat-form-field>
-		          </div>
-		          <div class="col-lg-6 col-md-12">
-		            <mat-form-field>
-		              <mat-label>Access Code</mat-label>
-		              <input
-		                matInput
-		                type="search"
-		                formControlName="accessCode"
-		                oninput="this.value = this.value.toUpperCase()"
-		                [errorStateMatcher]="matcher"
-		                maxlength="10"
-		                />
-		                @if (form.get('accessCode')?.hasError('required')) {
-		                  <mat-error> This is required </mat-error>
-		                }
-		              </mat-form-field>
-		            </div>
-		            <div class="col-12">
-		              <div class="mt-2" formGroupName="captchaFormGroup">
-		                <app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
-		                @if (
-		                  (captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-		                  captchaFormGroup.get('token')?.invalid &&
-		                  captchaFormGroup.get('token')?.hasError('required')
-		                  ) {
-		                  <mat-error
-		                    class="mat-option-error"
-		                    >This is required</mat-error
-		                    >
-		                }
-		              </div>
-		            </div>
-		          </div>
-		
-		          @if (errorMessage) {
-		            <div class="mt-3">
-		              <app-alert type="danger" icon="dangerous">
-		                {{ errorMessage }}
-		              </app-alert>
-		            </div>
-		          }
-		
-		          @if (isExpired) {
-		            <div class="mt-3">
-		              <a
-		                class="w-auto"
-		                tabindex="0"
-		                aria-label="Apply for a new licence"
-		                (click)="onCreateNewLicence()"
-		                (keydown)="onKeydownCreateNewLicence($event)"
-		                >
-		                Apply for a New Licence
-		              </a>
-		            </div>
-		          }
-		        </form>
-		      </div>
-		    </div>
-		`,
+			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
+				<form [formGroup]="form" novalidate>
+					<div class="row mt-4">
+						<div class="col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Current {{ titleLabel }} Number</mat-label>
+								<input
+									matInput
+									type="search"
+									formControlName="licenceNumber"
+									oninput="this.value = this.value.toUpperCase()"
+									[errorStateMatcher]="matcher"
+									maxlength="10"
+								/>
+								@if (form.get('licenceNumber')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Access Code</mat-label>
+								<input
+									matInput
+									type="search"
+									formControlName="accessCode"
+									oninput="this.value = this.value.toUpperCase()"
+									[errorStateMatcher]="matcher"
+									maxlength="10"
+								/>
+								@if (form.get('accessCode')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-12">
+							<div class="mt-2" formGroupName="captchaFormGroup">
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
+								@if (
+									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+									captchaFormGroup.get('token')?.invalid &&
+									captchaFormGroup.get('token')?.hasError('required')
+								) {
+									<mat-error class="mat-option-error">This is required</mat-error>
+								}
+							</div>
+						</div>
+					</div>
+
+					@if (errorMessage) {
+						<div class="mt-3">
+							<app-alert type="danger" icon="dangerous">
+								{{ errorMessage }}
+							</app-alert>
+						</div>
+					}
+
+					@if (isExpired) {
+						<div class="mt-3">
+							<a
+								class="w-auto"
+								tabindex="0"
+								aria-label="Apply for a new licence"
+								(click)="onCreateNewLicence()"
+								(keydown)="onKeydownCreateNewLicence($event)"
+							>
+								Apply for a New Licence
+							</a>
+						</div>
+					}
+				</form>
+			</div>
+		</div>
+	`,
 	styles: [],
 	standalone: false,
 })

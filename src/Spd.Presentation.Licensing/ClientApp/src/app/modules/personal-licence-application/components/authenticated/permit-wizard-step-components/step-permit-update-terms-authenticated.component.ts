@@ -6,15 +6,15 @@ import { StepPermitTermsOfUseComponent } from '@app/modules/personal-licence-app
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
-    selector: 'app-step-permit-update-terms-authenticated',
-    template: `
+	selector: 'app-step-permit-update-terms-authenticated',
+	template: `
 		<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCodeUpdate"></app-step-permit-terms-of-use>
 
 		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepPermitUpdateTermsAuthenticatedComponent {
 	serviceTypeCode: ServiceTypeCode | null = null;

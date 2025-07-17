@@ -10,48 +10,48 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	selector: 'app-steps-permit-details-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  @if (showTermsOfUse) {
-		    <mat-step>
-		      <app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
-		      <app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-step-permit-checklist-new [isBodyArmourPermit]="isBodyArmourPermit"></app-step-permit-checklist-new>
-		
-		    @if (showTermsOfUse) {
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onGoToNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-		      ></app-wizard-footer>
-		    } @else {
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGotoUserProfile()"
-		        (nextStepperStep)="onGoToNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
-		      ></app-wizard-footer>
-		    }
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-permit-expired
-		      [isLoggedIn]="isLoggedIn"
-		      [serviceTypeCode]="serviceTypeCode"
-		    ></app-step-permit-expired>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onStepNext(STEP_PERMIT_EXPIRED)"
-		      (nextReviewStepperStep)="onNextReview(STEP_PERMIT_EXPIRED)"
-		    ></app-wizard-footer>
-		  </mat-step>
+			@if (showTermsOfUse) {
+				<mat-step>
+					<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
+					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-step-permit-checklist-new [isBodyArmourPermit]="isBodyArmourPermit"></app-step-permit-checklist-new>
+
+				@if (showTermsOfUse) {
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				} @else {
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
+				}
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-expired
+					[isLoggedIn]="isLoggedIn"
+					[serviceTypeCode]="serviceTypeCode"
+				></app-step-permit-expired>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PERMIT_EXPIRED)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_EXPIRED)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

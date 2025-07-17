@@ -18,192 +18,187 @@ import {
 	selector: 'app-portal-administrators',
 	template: `
 		<section class="step-section">
-		  <div class="row">
-		    <div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		      <div class="row">
-		        <div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
-		          <h2 class="fs-3">Portal Administrators</h2>
-		        </div>
-		
-		        <div class="col-xl-6 col-lg-4 col-md-12">
-		          <div class="d-flex justify-content-end">
-		            <button
-		              mat-stroked-button
-		              color="primary"
-		              class="large w-auto mb-3"
-		              aria-label="Back to main page"
-		              (click)="onCancel()"
-		              >
-		              <mat-icon>arrow_back</mat-icon>Back
-		            </button>
-		          </div>
-		        </div>
-		        <div class="col-12">
-		          Provide the contact information for your company’s portal administrator(s) responsible for overseeing the
-		          management of the business portal and Security Business License.
-		        </div>
-		      </div>
-		
-		      <mat-divider class="mat-divider-main my-3"></mat-divider>
-		
-		      <div class="row mb-3">
-		        <div class="col-xl-9 col-lg-9 col-md-12 my-auto">
-		          <div class="mt-2">
-		            <ul>
-		              <li class="mb-1">
-		                Your organization may have up to {{ maximumNumberOfPrimaryContacts }}
-		                primary portal administrators
-		                <mat-icon
-		                  matTooltip="Primary portal administrators can manage and update portal administrators for the security business account."
-		                  >
-		                  info
-		                </mat-icon>
-		                and up to {{ maximumNumberOfContacts }} portal administrators.
-		                <mat-icon
-		                  matTooltip="Portal administrators have basic privileges such as access to online services."
-		                  >
-		                  info
-		                </mat-icon>
-		              </li>
-		              <li class="mb-1">Invitations will expire 7 days after being sent.</li>
-		            </ul>
-		          </div>
-		        </div>
-		        @if (showAdd) {
-		          <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-		            @if (isAllowedAddAdministrator === true) {
-		              <div class="d-flex justify-content-end">
-		                @if (showAdd) {
-		                  <button
-		                    mat-flat-button
-		                    type="button"
-		                    color="primary"
-		                    class="large mb-2"
-		                    aria-label="Add portal administrator"
-		                    (click)="onAddUser()"
-		                    >
-		                    Add Administrator
-		                  </button>
-		                }
-		              </div>
-		            } @else {
-		              <div class="alert alert-warning d-flex" role="alert">
-		                <div>The maximum number of portal administrators has been reached</div>
-		              </div>
-		            }
-		          </div>
-		        }
-		      </div>
-		
-		      <div class="row mb-4">
-		        <div class="col-12">
-		          <mat-table [dataSource]="dataSource">
-		            <ng-container matColumnDef="status">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                <span class="mobile-label">Status:</span>
-		                @if (user.isActive) {
-		                  <mat-chip-row
-		                    aria-label="Status is active"
-		                    class="mat-chip-green"
-		                    >
-		                    Active
-		                  </mat-chip-row>
-		                } @else {
-		                  <mat-chip-row aria-label="Status is pending" class="mat-chip-yellow"> Pending </mat-chip-row>
-		                }
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="contactAuthorizationTypeCode">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Authorization Type</mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                <span class="mobile-label">Authorization Type:</span>
-		                {{ user.contactAuthorizationTypeCode | options: 'ContactAuthorizationTypes' }}
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="branchManager">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Administrator Name</mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                <span class="mobile-label">Administrator Name:</span>
-		                {{ user | fullname | default }}
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="email">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
-		              <mat-cell class="mat-cell-email" *matCellDef="let user">
-		                <span class="mobile-label">Email:</span>
-		                {{ user.email | default }}
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="phoneNumber">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                <span class="mobile-label">Phone Number:</span>
-		                {{ user.phoneNumber | formatPhoneNumber | default }}
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="action1">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                @if (allowEditRow(user)) {
-		                  <button
-		                    mat-flat-button
-		                    class="table-button"
-		                    style="color: var(--color-green);"
-		                    aria-label="Edit portal administrator"
-		                    (click)="onMaintainUser(user)"
-		                    >
-		                    <mat-icon>edit</mat-icon>Edit
-		                  </button>
-		                }
-		              </mat-cell>
-		            </ng-container>
-		
-		            <ng-container matColumnDef="action2">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		              <mat-cell *matCellDef="let user">
-		                @if (isCurrentPrimaryAdministrator) {
-		                  @if (user.isActive) {
-		                    @if (allowDeleteRow(user)) {
-		                      <button
-		                        mat-flat-button
-		                        class="table-button"
-		                        style="color: var(--color-red);"
-		                        aria-label="Remove portal administrator"
-		                        (click)="onDeleteUser(user)"
-		                        >
-		                        <mat-icon>delete_outline</mat-icon>Remove
-		                      </button>
-		                    }
-		                  } @else {
-		                    <button
-		                      mat-flat-button
-		                      class="table-button"
-		                      style="color: var(--color-primary-light);"
-		                      aria-label="Remove invitation"
-		                      (click)="onDeleteInvitation(user)"
-		                      >
-		                      <mat-icon>cancel</mat-icon>Cancel
-		                    </button>
-		                  }
-		                }
-		              </mat-cell>
-		            </ng-container>
-		
-		            <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-		            <mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
-		          </mat-table>
-		        </div>
-		      </div>
-		    </div>
-		  </div>
+			<div class="row">
+				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="row">
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">Portal Administrators</h2>
+						</div>
+
+						<div class="col-xl-6 col-lg-4 col-md-12">
+							<div class="d-flex justify-content-end">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large w-auto mb-3"
+									aria-label="Back to main page"
+									(click)="onCancel()"
+								>
+									<mat-icon>arrow_back</mat-icon>Back
+								</button>
+							</div>
+						</div>
+						<div class="col-12">
+							Provide the contact information for your company’s portal administrator(s) responsible for overseeing the
+							management of the business portal and Security Business License.
+						</div>
+					</div>
+
+					<mat-divider class="mat-divider-main my-3"></mat-divider>
+
+					<div class="row mb-3">
+						<div class="col-xl-9 col-lg-9 col-md-12 my-auto">
+							<div class="mt-2">
+								<ul>
+									<li class="mb-1">
+										Your organization may have up to {{ maximumNumberOfPrimaryContacts }}
+										primary portal administrators
+										<mat-icon
+											matTooltip="Primary portal administrators can manage and update portal administrators for the security business account."
+										>
+											info
+										</mat-icon>
+										and up to {{ maximumNumberOfContacts }} portal administrators.
+										<mat-icon
+											matTooltip="Portal administrators have basic privileges such as access to online services."
+										>
+											info
+										</mat-icon>
+									</li>
+									<li class="mb-1">Invitations will expire 7 days after being sent.</li>
+								</ul>
+							</div>
+						</div>
+						@if (showAdd) {
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+								@if (isAllowedAddAdministrator === true) {
+									<div class="d-flex justify-content-end">
+										@if (showAdd) {
+											<button
+												mat-flat-button
+												type="button"
+												color="primary"
+												class="large mb-2"
+												aria-label="Add portal administrator"
+												(click)="onAddUser()"
+											>
+												Add Administrator
+											</button>
+										}
+									</div>
+								} @else {
+									<div class="alert alert-warning d-flex" role="alert">
+										<div>The maximum number of portal administrators has been reached</div>
+									</div>
+								}
+							</div>
+						}
+					</div>
+
+					<div class="row mb-4">
+						<div class="col-12">
+							<mat-table [dataSource]="dataSource">
+								<ng-container matColumnDef="status">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										<span class="mobile-label">Status:</span>
+										@if (user.isActive) {
+											<mat-chip-row aria-label="Status is active" class="mat-chip-green"> Active </mat-chip-row>
+										} @else {
+											<mat-chip-row aria-label="Status is pending" class="mat-chip-yellow"> Pending </mat-chip-row>
+										}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="contactAuthorizationTypeCode">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Authorization Type</mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										<span class="mobile-label">Authorization Type:</span>
+										{{ user.contactAuthorizationTypeCode | options: 'ContactAuthorizationTypes' }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="branchManager">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Administrator Name</mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										<span class="mobile-label">Administrator Name:</span>
+										{{ user | fullname | default }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="email">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
+									<mat-cell class="mat-cell-email" *matCellDef="let user">
+										<span class="mobile-label">Email:</span>
+										{{ user.email | default }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="phoneNumber">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										<span class="mobile-label">Phone Number:</span>
+										{{ user.phoneNumber | formatPhoneNumber | default }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="action1">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										@if (allowEditRow(user)) {
+											<button
+												mat-flat-button
+												class="table-button"
+												style="color: var(--color-green);"
+												aria-label="Edit portal administrator"
+												(click)="onMaintainUser(user)"
+											>
+												<mat-icon>edit</mat-icon>Edit
+											</button>
+										}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="action2">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										@if (isCurrentPrimaryAdministrator) {
+											@if (user.isActive) {
+												@if (allowDeleteRow(user)) {
+													<button
+														mat-flat-button
+														class="table-button"
+														style="color: var(--color-red);"
+														aria-label="Remove portal administrator"
+														(click)="onDeleteUser(user)"
+													>
+														<mat-icon>delete_outline</mat-icon>Remove
+													</button>
+												}
+											} @else {
+												<button
+													mat-flat-button
+													class="table-button"
+													style="color: var(--color-primary-light);"
+													aria-label="Remove invitation"
+													(click)="onDeleteInvitation(user)"
+												>
+													<mat-icon>cancel</mat-icon>Cancel
+												</button>
+											}
+										}
+									</mat-cell>
+								</ng-container>
+
+								<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+								<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
+							</mat-table>
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
-		`,
+	`,
 	styles: [
 		`
 			@media (min-width: 1200px) {

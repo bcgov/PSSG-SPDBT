@@ -7,75 +7,75 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-business-manager',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <div class="row">
-		    <div class="col-xl-6 col-lg-6 col-md-12">
-		      <mat-form-field>
-		        <mat-label>Given Name</mat-label>
-		        <input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-		      </mat-form-field>
-		    </div>
-		
-		    <div class="col-xl-6 col-lg-6 col-md-12">
-		      <mat-form-field>
-		        <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-		        <input matInput formControlName="middleName1" maxlength="40" />
-		      </mat-form-field>
-		    </div>
-		
-		    <div class="col-xl-6 col-lg-6 col-md-12">
-		      <mat-form-field>
-		        <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-		        <input matInput formControlName="middleName2" maxlength="40" />
-		      </mat-form-field>
-		    </div>
-		
-		    <div class="col-xl-6 col-lg-6 col-md-12">
-		      <mat-form-field>
-		        <mat-label>Surname</mat-label>
-		        <input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-		        @if (form.get('surname')?.hasError('required')) {
-		          <mat-error> This is required </mat-error>
-		        }
-		      </mat-form-field>
-		    </div>
-		
-		    <div class="col-xl-6 col-lg-6 col-md-12">
-		      <mat-form-field>
-		        <mat-label>Email Address</mat-label>
-		        <input
-		          matInput
-		          formControlName="emailAddress"
-		          [errorStateMatcher]="matcher"
-		          placeholder="name@domain.com"
-		          maxlength="75"
-		          />
-		          @if (form.get('emailAddress')?.hasError('required')) {
-		            <mat-error> This is required </mat-error>
-		          }
-		          @if (form.get('emailAddress')?.hasError('email')) {
-		            <mat-error> Must be a valid email address </mat-error>
-		          }
-		        </mat-form-field>
-		      </div>
-		
-		      <div class="col-xl-6 col-lg-6 col-md-12">
-		        <mat-form-field>
-		          <mat-label>Phone Number</mat-label>
-		          <input
-		            matInput
-		            formControlName="phoneNumber"
-		            [errorStateMatcher]="matcher"
-		            maxlength="30"
-		            appPhoneNumberTransform
-		            />
-		            @if (form.get('phoneNumber')?.hasError('required')) {
-		              <mat-error>This is required</mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		      </div>
-		    </form>
-		`,
+			<div class="row">
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Given Name</mat-label>
+						<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+						<input matInput formControlName="middleName1" maxlength="40" />
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+						<input matInput formControlName="middleName2" maxlength="40" />
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Surname</mat-label>
+						<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+						@if (form.get('surname')?.hasError('required')) {
+							<mat-error>This is required</mat-error>
+						}
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Email Address</mat-label>
+						<input
+							matInput
+							formControlName="emailAddress"
+							[errorStateMatcher]="matcher"
+							placeholder="name@domain.com"
+							maxlength="75"
+						/>
+						@if (form.get('emailAddress')?.hasError('required')) {
+							<mat-error>This is required</mat-error>
+						}
+						@if (form.get('emailAddress')?.hasError('email')) {
+							<mat-error>Must be a valid email address</mat-error>
+						}
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-6 col-lg-6 col-md-12">
+					<mat-form-field>
+						<mat-label>Phone Number</mat-label>
+						<input
+							matInput
+							formControlName="phoneNumber"
+							[errorStateMatcher]="matcher"
+							maxlength="30"
+							appPhoneNumberTransform
+						/>
+						@if (form.get('phoneNumber')?.hasError('required')) {
+							<mat-error>This is required</mat-error>
+						}
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	`,
 	styles: [],
 	standalone: false,
 })

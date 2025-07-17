@@ -4,8 +4,8 @@ import { AppRoutes } from '@app/app-routes';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
-    selector: 'app-licence-payment-cancel',
-    template: `
+	selector: 'app-licence-payment-cancel',
+	template: `
 		<section class="step-section">
 			<app-payment-cancel
 				(payNow)="onPayNow()"
@@ -13,8 +13,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 			></app-payment-cancel>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicencePaymentCancelComponent implements OnInit {
 	licenceAppId: string | null = null;

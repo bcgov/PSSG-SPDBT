@@ -8,103 +8,95 @@ import { Address } from './form-address-autocomplete.component';
 	selector: 'app-form-address',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  @if (!isReadonly) {
-		    <app-form-address-autocomplete
-		      (autocompleteAddress)="onAddressAutocomplete($event)"
-		      (enterAddressManually)="onEnterAddressManually()"
-		      [isWideView]="isWideView"
-		      >
-		    </app-form-address-autocomplete>
-		    @if (
-		      (form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-		      form.get('addressSelected')?.invalid &&
-		      form.get('addressSelected')?.hasError('required')
-		      ) {
-		      <mat-error
-		        class="mat-option-error"
-		        >
-		        This is required
-		      </mat-error>
-		    }
-		  }
-		
-		  @if (form.get('addressSelected')?.value) {
-		    <section>
-		      <div class="row">
-		        @if (!isReadonly) {
-		          <mat-divider class="mat-divider-primary my-3"></mat-divider>
-		        }
-		        <div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
-		          <mat-form-field>
-		            <mat-label>Street Address 1</mat-label>
-		            <input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
-		            @if (form.get('addressLine1')?.hasError('required')) {
-		              <mat-error>This is required</mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		        <div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
-		          <mat-form-field>
-		            <mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-		            <input matInput formControlName="addressLine2" maxlength="100" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-md-6 col-sm-12">
-		          <mat-form-field>
-		            <mat-label>City</mat-label>
-		            <input matInput formControlName="city" maxlength="100" />
-		            @if (form.get('city')?.hasError('required')) {
-		              <mat-error>This is required</mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		        <div class="col-md-6 col-sm-12">
-		          <mat-form-field>
-		            <mat-label>Postal/Zip Code</mat-label>
-		            <input
-		              matInput
-		              formControlName="postalCode"
-		              oninput="this.value = this.value.toUpperCase()"
-		              maxlength="20"
-		              />
-		              @if (form.get('postalCode')?.hasError('required')) {
-		                <mat-error>This is required</mat-error>
-		              }
-		            </mat-form-field>
-		          </div>
-		          <div class="col-md-6 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Province/State</mat-label>
-		              <input matInput formControlName="province" maxlength="100" />
-		              @if (form.get('province')?.hasError('required')) {
-		                <mat-error>This is required</mat-error>
-		              }
-		              @if (form.get('province')?.hasError('requiredValue')) {
-		                <mat-error
-		                  >This must be '{{ provinceOfBC }}' or '{{ provinceBritishColumbia }}'</mat-error
-		                  >
-		              }
-		            </mat-form-field>
-		          </div>
-		          <div class="col-md-6 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Country</mat-label>
-		              <input matInput formControlName="country" maxlength="100" />
-		              @if (form.get('country')?.hasError('required')) {
-		                <mat-error>This is required</mat-error>
-		              }
-		              @if (form.get('country')?.hasError('requiredValue')) {
-		                <mat-error
-		                  >This must be '{{ countryCA }}' or '{{ countryCanada }}'</mat-error
-		                  >
-		                }
-		              </mat-form-field>
-		            </div>
-		          </div>
-		        </section>
-		      }
-		    </form>
-		`,
+			@if (!isReadonly) {
+				<app-form-address-autocomplete
+					(autocompleteAddress)="onAddressAutocomplete($event)"
+					(enterAddressManually)="onEnterAddressManually()"
+					[isWideView]="isWideView"
+				>
+				</app-form-address-autocomplete>
+				@if (
+					(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+					form.get('addressSelected')?.invalid &&
+					form.get('addressSelected')?.hasError('required')
+				) {
+					<mat-error class="mat-option-error">This is required</mat-error>
+				}
+			}
+
+			@if (form.get('addressSelected')?.value) {
+				<section>
+					<div class="row">
+						@if (!isReadonly) {
+							<mat-divider class="mat-divider-primary my-3"></mat-divider>
+						}
+						<div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
+							<mat-form-field>
+								<mat-label>Street Address 1</mat-label>
+								<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+								@if (form.get('addressLine1')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div [ngClass]="isWideView ? 'col-md-6 col-sm-12' : 'col-12'">
+							<mat-form-field>
+								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="addressLine2" maxlength="100" />
+							</mat-form-field>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>City</mat-label>
+								<input matInput formControlName="city" maxlength="100" />
+								@if (form.get('city')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Postal/Zip Code</mat-label>
+								<input
+									matInput
+									formControlName="postalCode"
+									oninput="this.value = this.value.toUpperCase()"
+									maxlength="20"
+								/>
+								@if (form.get('postalCode')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Province/State</mat-label>
+								<input matInput formControlName="province" maxlength="100" />
+								@if (form.get('province')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (form.get('province')?.hasError('requiredValue')) {
+									<mat-error>This must be '{{ provinceOfBC }}' or '{{ provinceBritishColumbia }}'</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Country</mat-label>
+								<input matInput formControlName="country" maxlength="100" />
+								@if (form.get('country')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (form.get('country')?.hasError('requiredValue')) {
+									<mat-error>This must be '{{ countryCA }}' or '{{ countryCanada }}'</mat-error>
+								}
+							</mat-form-field>
+						</div>
+					</div>
+				</section>
+			}
+		</form>
+	`,
 	styles: [],
 	standalone: false,
 })

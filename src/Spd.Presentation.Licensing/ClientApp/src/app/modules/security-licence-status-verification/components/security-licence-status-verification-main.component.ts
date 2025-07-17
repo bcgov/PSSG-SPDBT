@@ -53,7 +53,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [],
 	standalone: false,
 })
 export class SecurityLicenceStatusVerificationMainComponent {

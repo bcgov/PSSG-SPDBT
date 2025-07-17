@@ -10,79 +10,80 @@ import { MetalDealersAndRecyclersBranchResponse, ModalMdraBranchComponent } from
 	selector: 'app-form-mdra-branches',
 	template: `
 		<div class="row">
-		  @if (!isReadonly) {
-		    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		      <ng-container>
-		        <app-alert type="info" icon="info"> Click on the 'Add Branch' button to add your branch offices. </app-alert>
-		      </ng-container>
-		    </div>
-		  }
-		
-		  <div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
-		    @if (branchesExist) {
-		      <mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
-		        <ng-container matColumnDef="branchManager">
-		          <mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Branch Manager</mat-header-cell>
-		          <mat-cell *matCellDef="let branch">
-		            <span class="mobile-label">Manager:</span>
-		            {{ branch.branchManager | default }}
-		          </mat-cell>
-		        </ng-container>
-		        <ng-container matColumnDef="branchAddress">
-		          <mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Address</mat-header-cell>
-		          <mat-cell *matCellDef="let branch">
-		            <span class="mobile-label">Address:</span>
-		            {{ getAddressString(branch) | default }}
-		          </mat-cell>
-		        </ng-container>
-		        <ng-container matColumnDef="action1">
-		          <mat-header-cell class="text-minor-heading-small" *matHeaderCellDef></mat-header-cell>
-		          <mat-cell *matCellDef="let branch">
-		            <button
-		              mat-flat-button
-		              class="table-button w-auto"
-		              style="color: var(--color-green);"
-		              aria-label="Edit branch"
-		              (click)="onEditBranch(branch)"
-		              >
-		              <mat-icon>edit</mat-icon>Edit
-		            </button>
-		          </mat-cell>
-		        </ng-container>
-		        <ng-container matColumnDef="action2">
-		          <mat-header-cell class="text-minor-heading-small" *matHeaderCellDef></mat-header-cell>
-		          <mat-cell *matCellDef="let branch; let i = index">
-		            <button
-		              mat-flat-button
-		              class="table-button w-auto"
-		              style="color: var(--color-red);"
-		              aria-label="Remove branch"
-		              (click)="onRemoveBranch(i)"
-		              >
-		              <mat-icon>delete_outline</mat-icon>Remove
-		            </button>
-		          </mat-cell>
-		        </ng-container>
-		        <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-		        <mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
-		      </mat-table>
-		    } @else {
-		      @if (isReadonly) {
-		        <div class="text-minor-heading-small mt-3">No branches have been entered</div>
-		      }
-		    }
-		
-		
-		    @if (!isReadonly) {
-		      <div class="text-center">
-		        <button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
-		          <mat-icon class="add-icon">add_circle</mat-icon>Add Branch
-		        </button>
-		      </div>
-		    }
-		  </div>
+			@if (!isReadonly) {
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<ng-container>
+						<app-alert type="info" icon="info">
+							Click on the 'Add Branch' button to add your branch offices.
+						</app-alert>
+					</ng-container>
+				</div>
+			}
+
+			<div class="col-lg-12 col-md-12 col-sm-12 mx-auto" [ngClass]="isReadonly ? 'col-xl-12' : 'col-xl-11'">
+				@if (branchesExist) {
+					<mat-table [dataSource]="dataSource" [ngClass]="isReadonly ? '' : 'detail-table'">
+						<ng-container matColumnDef="branchManager">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Branch Manager</mat-header-cell>
+							<mat-cell *matCellDef="let branch">
+								<span class="mobile-label">Manager:</span>
+								{{ branch.branchManager | default }}
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="branchAddress">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef>Address</mat-header-cell>
+							<mat-cell *matCellDef="let branch">
+								<span class="mobile-label">Address:</span>
+								{{ getAddressString(branch) | default }}
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="action1">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let branch">
+								<button
+									mat-flat-button
+									class="table-button w-auto"
+									style="color: var(--color-green);"
+									aria-label="Edit branch"
+									(click)="onEditBranch(branch)"
+								>
+									<mat-icon>edit</mat-icon>Edit
+								</button>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="action2">
+							<mat-header-cell class="text-minor-heading-small" *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let branch; let i = index">
+								<button
+									mat-flat-button
+									class="table-button w-auto"
+									style="color: var(--color-red);"
+									aria-label="Remove branch"
+									(click)="onRemoveBranch(i)"
+								>
+									<mat-icon>delete_outline</mat-icon>Remove
+								</button>
+							</mat-cell>
+						</ng-container>
+						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
+					</mat-table>
+				} @else {
+					@if (isReadonly) {
+						<div class="text-minor-heading-small mt-3">No branches have been entered</div>
+					}
+				}
+
+				@if (!isReadonly) {
+					<div class="text-center">
+						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
+							<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
+						</button>
+					</div>
+				}
+			</div>
 		</div>
-		`,
+	`,
 	styles: [
 		`
 			.detail-table {

@@ -8,18 +8,17 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-permit-photograph-of-yourself-anonymous',
 	template: `
 		@if (applicationTypeCode === applicationTypeCodes.New) {
-		  <app-step-permit-photograph-of-yourself-new
-		    [form]="form"
-		    [serviceTypeCode]="serviceTypeCode"
-		  ></app-step-permit-photograph-of-yourself-new>
+			<app-step-permit-photograph-of-yourself-new
+				[form]="form"
+				[serviceTypeCode]="serviceTypeCode"
+			></app-step-permit-photograph-of-yourself-new>
 		} @else {
-		  <app-step-permit-photograph-of-yourself-renew-and-update
-		    [form]="form"
-		    [serviceTypeCode]="serviceTypeCode"
-		  ></app-step-permit-photograph-of-yourself-renew-and-update>
+			<app-step-permit-photograph-of-yourself-renew-and-update
+				[form]="form"
+				[serviceTypeCode]="serviceTypeCode"
+			></app-step-permit-photograph-of-yourself-renew-and-update>
 		}
-		
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

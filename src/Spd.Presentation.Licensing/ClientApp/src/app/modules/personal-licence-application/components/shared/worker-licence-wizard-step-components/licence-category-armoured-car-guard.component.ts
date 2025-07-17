@@ -12,60 +12,57 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<div class="text-minor-heading mb-2">Authorization to Carry Certificate required</div>
 		<div class="alert alert-category d-flex" role="alert">
-		  <div>
-		    Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
-		    certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
-		    information is available from the
-		    <a aria-label="Navigate to RCMP site" [href]="rcmpUrl" target="_blank">RCMP</a>.
-		  </div>
+			<div>
+				Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
+				certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
+				information is available from the
+				<a aria-label="Navigate to RCMP site" [href]="rcmpUrl" target="_blank">RCMP</a>.
+			</div>
 		</div>
-		
+
 		<form [formGroup]="form" novalidate>
-		  <div class="text-minor-heading">Upload your valid Authorization to Carry certificate</div>
-		  <div class="my-2">
-		    <app-file-upload
-		      (fileUploaded)="onFileUploaded($event)"
-		      (fileRemoved)="onFileRemoved()"
-		      [maxNumberOfFiles]="10"
-		      [control]="attachments"
-		      [files]="attachments.value"
-		    ></app-file-upload>
-		    @if (
-		      (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		      form.get('attachments')?.invalid &&
-		      form.get('attachments')?.hasError('required')
-		      ) {
-		      <mat-error
-		        class="mat-option-error"
-		        >This is required</mat-error
-		        >
-		      }
-		    </div>
-		
-		    <div class="row">
-		      <div class="col-lg-4 col-md-12 col-sm-12">
-		        <mat-form-field>
-		          <mat-label>Document Expiry Date</mat-label>
-		          <input
-		            matInput
-		            [matDatepicker]="picker"
-		            formControlName="expiryDate"
-		            [min]="minDate"
-		            [errorStateMatcher]="matcher"
-		            />
-		            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-		            <mat-datepicker #picker startView="multi-year"></mat-datepicker>
-		            @if (form.get('expiryDate')?.hasError('required')) {
-		              <mat-error>This is required</mat-error>
-		            }
-		            @if (form.get('expiryDate')?.hasError('matDatepickerMin')) {
-		              <mat-error>Invalid expiry date</mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		      </div>
-		    </form>
-		`,
+			<div class="text-minor-heading">Upload your valid Authorization to Carry certificate</div>
+			<div class="my-2">
+				<app-file-upload
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
+					[maxNumberOfFiles]="10"
+					[control]="attachments"
+					[files]="attachments.value"
+				></app-file-upload>
+				@if (
+					(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+					form.get('attachments')?.invalid &&
+					form.get('attachments')?.hasError('required')
+				) {
+					<mat-error class="mat-option-error">This is required</mat-error>
+				}
+			</div>
+
+			<div class="row">
+				<div class="col-lg-4 col-md-12 col-sm-12">
+					<mat-form-field>
+						<mat-label>Document Expiry Date</mat-label>
+						<input
+							matInput
+							[matDatepicker]="picker"
+							formControlName="expiryDate"
+							[min]="minDate"
+							[errorStateMatcher]="matcher"
+						/>
+						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+						@if (form.get('expiryDate')?.hasError('required')) {
+							<mat-error>This is required</mat-error>
+						}
+						@if (form.get('expiryDate')?.hasError('matDatepickerMin')) {
+							<mat-error>Invalid expiry date</mat-error>
+						}
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	`,
 	styles: [],
 	standalone: false,
 })
