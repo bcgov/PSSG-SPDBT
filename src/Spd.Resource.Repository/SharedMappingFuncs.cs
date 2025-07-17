@@ -444,6 +444,19 @@ internal static class SharedMappingFuncs
         mailingAddress.PostalCode = c.address2_postalcode;
         return mailingAddress;
     }
+
+    internal static ResidentialAddr? GetResidentialAddressData(spd_application app)
+    {
+        ResidentialAddr addr = new();
+        addr.AddressLine1 = app.spd_residentialaddress1;
+        addr.AddressLine2 = app.spd_residentialaddress2;
+        addr.City = app.spd_residentialcity;
+        addr.Province = app.spd_residentialprovince;
+        addr.Country = app.spd_residentialcountry;
+        addr.PostalCode = app.spd_residentialpostalcode;
+        return addr;
+    }
+
     internal static bool? IsMailingResidentialSame(contact c)
     {
         if (c.address1_line1 == null
