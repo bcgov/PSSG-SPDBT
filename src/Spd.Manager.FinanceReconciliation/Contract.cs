@@ -13,20 +13,20 @@ namespace Spd.Manager.FinanceReconciliation
     public record CardPrintAddressReconcilationCommand() : IRequest<IEnumerable<CardPrintAddressReconcilationResponse>>;
     public record SuccessPaymentResult()
     {
-        public string AppId { get; set; }
-        public string PaymentId { get; set; }
-        public string OrderId { get; set; }
-        public string Amount { get; set; }
-        public string PaymentMethod { get; set; }
-        public string TransNumber { get; set; }
-        public string TransTime { get; set; }
+        public string AppId { get; set; } = null!;
+        public string PaymentId { get; set; } = null!;
+        public string OrderId { get; set; } = null!;
+        public string Amount { get; set; } = null!;
+        public string PaymentMethod { get; set; } = null!;
+        public string TransNumber { get; set; } = null!;
+        public string TransTime { get; set; } = null!;
     }
     public record SuccessPaymentResultProcessResponse(List<DuplicatedPaymentApplicationInfo> duplicatedPaymentApplicationInfos);
 
     public record CardPrintAddressReconcilationResponse()
     {
-        public string JobId { get; set; }
-        public string LicenceNumber { get; set; }
+        public string JobId { get; set; } = null!;
+        public string LicenceNumber { get; set; } = null!;
         public string? MailingAddress1 { get; set; }
         public string? MailingAddress2 { get; set; }
         public string? City { get; set; }

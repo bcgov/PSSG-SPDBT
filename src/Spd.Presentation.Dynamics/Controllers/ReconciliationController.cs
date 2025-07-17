@@ -7,11 +7,11 @@ namespace Spd.Presentation.Dynamics.Controllers;
 
 [ApiController]
 [Authorize]
-public class FinancialReconciliationController : ControllerBase
+public class ReconciliationController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public FinancialReconciliationController(IMediator mediator) : base()
+    public ReconciliationController(IMediator mediator) : base()
     {
         _mediator = mediator;
     }
