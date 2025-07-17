@@ -65,7 +65,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										maxlength="10"
 									/>
 									@if (form.get('licenceNumber')?.hasError('required')) {
-										<mat-error> This is required </mat-error>
+										<mat-error>This is required</mat-error>
 									}
 								</mat-form-field>
 							</div>
@@ -80,7 +80,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										maxlength="10"
 									/>
 									@if (form.get('accessCode')?.hasError('required')) {
-										<mat-error> This is required </mat-error>
+										<mat-error>This is required</mat-error>
 									}
 								</mat-form-field>
 							</div>

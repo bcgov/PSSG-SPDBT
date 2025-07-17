@@ -66,7 +66,7 @@ import {
 						form.get('managerLicenceId')?.invalid &&
 						form.get('managerLicenceId')?.hasError('required')
 					) {
-						<mat-error class="mat-option-error mb-4"> A valid security worker licence must be selected</mat-error>
+						<mat-error class="mat-option-error mb-4">A valid security worker licence must be selected</mat-error>
 					}
 				</div>
 			</div>
