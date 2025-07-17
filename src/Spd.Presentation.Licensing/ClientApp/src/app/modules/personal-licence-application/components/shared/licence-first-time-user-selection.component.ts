@@ -11,60 +11,60 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 	selector: 'app-licence-first-time-user-selection',
 	template: `
 		@if (options) {
-		  <section class="step-section">
-		    <div class="step">
-		      <app-step-title heading="Getting Started"></app-step-title>
-		      <div class="row">
-		        <div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		          <div class="fs-5 lh-base">We found {{ infoLine1 }} in our system with your name and date of birth.</div>
-		          <div class="mt-3 lh-base">{{ infoLine2 }}:</div>
-		          <div class="row">
-		            @for (option of options; track option; let i = $index) {
-		              <div class="col-lg-4 col-md-6 col-sm-12 my-3">
-		                <div
-		                  tabindex="0"
-		                  class="user-option px-3 pb-3"
-		                  (click)="onDataChange(option.licenceNumber!)"
-		                  (keydown)="onKeyDown($event, option.licenceNumber!)"
-		                  [ngClass]="{ 'active-selection-border': selectedLicenceNumber === option.licenceNumber }"
-		                  >
-		                  <div class="text-label d-block text-muted mt-0">Name</div>
-		                  <div class="summary-text-data">{{ getFullName(option) }}</div>
-		                  <div class="text-label d-block text-muted">Date of Birth</div>
-		                  <div class="summary-text-data">
-		                    {{ option.birthDate | formatDate: formalDateFormat }}
-		                  </div>
-		                  <div class="text-label d-block text-muted">Licence Number</div>
-		                  <div class="summary-text-data">{{ option.licenceNumber }}</div>
-		                  <div class="text-label d-block text-muted">Expiry Date</div>
-		                  <div class="summary-text-data">
-		                    {{ option.licenceExpiryDate | formatDate: formalDateFormat }}
-		                  </div>
-		                </div>
-		              </div>
-		            }
-		            @if (showValidationError) {
-		              <mat-error class="mat-option-error"> A profile must be selected </mat-error>
-		            }
-		          </div>
-		          <div class="row mt-4">
-		            <div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mb-2">
-		              <button mat-stroked-button color="primary" class="large" (click)="onContinue()">
-		                {{ noneButtonLabel }}
-		              </button>
-		            </div>
-		            <div class="offset-xxl-4 col-xxl-4 offset-xl-4 col-xl-4 offset-lg-2 col-lg-5 col-md-6 col-sm-12 mb-2">
-		              <button mat-flat-button color="primary" class="large" (click)="onLinkAndContinue()">
-		                Link and Continue
-		              </button>
-		            </div>
-		          </div>
-		        </div>
-		      </div>
-		    </div>
-		  </section>
+			<section class="step-section">
+				<div class="step">
+					<app-step-title heading="Getting Started"></app-step-title>
+					<div class="row">
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+							<div class="fs-5 lh-base">We found {{ infoLine1 }} in our system with your name and date of birth.</div>
+							<div class="mt-3 lh-base">{{ infoLine2 }}:</div>
+							<div class="row">
+								@for (option of options; track option; let i = $index) {
+									<div class="col-lg-4 col-md-6 col-sm-12 my-3">
+										<div
+											tabindex="0"
+											class="user-option px-3 pb-3"
+											(click)="onDataChange(option.licenceNumber!)"
+											(keydown)="onKeyDown($event, option.licenceNumber!)"
+											[ngClass]="{ 'active-selection-border': selectedLicenceNumber === option.licenceNumber }"
+										>
+											<div class="text-label d-block text-muted mt-0">Name</div>
+											<div class="summary-text-data">{{ getFullName(option) }}</div>
+											<div class="text-label d-block text-muted">Date of Birth</div>
+											<div class="summary-text-data">
+												{{ option.birthDate | formatDate: formalDateFormat }}
+											</div>
+											<div class="text-label d-block text-muted">Licence Number</div>
+											<div class="summary-text-data">{{ option.licenceNumber }}</div>
+											<div class="text-label d-block text-muted">Expiry Date</div>
+											<div class="summary-text-data">
+												{{ option.licenceExpiryDate | formatDate: formalDateFormat }}
+											</div>
+										</div>
+									</div>
+								}
+								@if (showValidationError) {
+									<mat-error class="mat-option-error">A profile must be selected</mat-error>
+								}
+							</div>
+							<div class="row mt-4">
+								<div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mb-2">
+									<button mat-stroked-button color="primary" class="large" (click)="onContinue()">
+										{{ noneButtonLabel }}
+									</button>
+								</div>
+								<div class="offset-xxl-4 col-xxl-4 offset-xl-4 col-xl-4 offset-lg-2 col-lg-5 col-md-6 col-sm-12 mb-2">
+									<button mat-flat-button color="primary" class="large" (click)="onLinkAndContinue()">
+										Link and Continue
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		}
-		`,
+	`,
 	styles: [
 		`
 			.user-option {

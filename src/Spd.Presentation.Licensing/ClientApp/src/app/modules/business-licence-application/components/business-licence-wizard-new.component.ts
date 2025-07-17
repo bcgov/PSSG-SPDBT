@@ -22,120 +22,120 @@ import { StepsBusinessLicenceSpEmployeesComponent } from './steps-business-licen
 	selector: 'app-business-licence-wizard-new',
 	template: `
 		<mat-stepper
-		  linear
-		  labelPosition="bottom"
-		  [orientation]="orientation"
-		  (selectionChange)="onStepSelectionChange($event)"
-		  #stepper
-		  >
-		  <mat-step [completed]="step1Complete">
-		    <ng-template matStepLabel>Business Information</ng-template>
-		    <app-steps-business-licence-information
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      [applicationTypeCode]="applicationTypeCode"
-		      [isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-		      [isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-		      (childNextStep)="onChildNextStep()"
-		      (saveAndExit)="onSaveAndExit()"
-		      (nextReview)="onGoToReview()"
-		      (nextStepperStep)="onNextStepperStep(stepper)"
-		      (scrollIntoView)="onScrollIntoView()"
-		    ></app-steps-business-licence-information>
-		  </mat-step>
-		
-		  <mat-step [completed]="step2Complete">
-		    <ng-template matStepLabel>Licence Selection</ng-template>
-		    <app-steps-business-licence-selection
-		      [serviceTypeCode]="serviceTypeCode"
-		      [applicationTypeCode]="applicationTypeCode"
-		      [bizTypeCode]="bizTypeCode"
-		      [isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (childNextStep)="onChildNextStep()"
-		      (saveAndExit)="onSaveAndExit()"
-		      (nextReview)="onGoToReview()"
-		      (previousStepperStep)="onPreviousStepperStep(stepper)"
-		      (nextStepperStep)="onNextStepperStep(stepper)"
-		      (scrollIntoView)="onScrollIntoView()"
-		    ></app-steps-business-licence-selection>
-		  </mat-step>
-		
-		  @if (!isBusinessLicenceSoleProprietor) {
-		    <mat-step [completed]="step3Complete">
-		      <ng-template matStepLabel>Contact Information</ng-template>
-		      <app-steps-business-licence-contact-information
-		        [applicationTypeCode]="applicationTypeCode"
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (childNextStep)="onChildNextStep()"
-		        (saveAndExit)="onSaveAndExit()"
-		        (nextReview)="onGoToReview()"
-		        (previousStepperStep)="onPreviousStepperStep(stepper)"
-		        (nextStepperStep)="onNextStepperStep(stepper)"
-		        (scrollIntoView)="onScrollIntoView()"
-		      ></app-steps-business-licence-contact-information>
-		    </mat-step>
-		  }
-		
-		  @if (isBusinessLicenceSoleProprietor) {
-		    <mat-step [completed]="step4Complete">
-		      <ng-template matStepLabel>Employees</ng-template>
-		      <app-steps-business-licence-sp-employees
-		        [applicationTypeCode]="applicationTypeCode"
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (childNextStep)="onChildNextStep()"
-		        (saveAndExit)="onSaveAndExit()"
-		        (nextReview)="onGoToReview()"
-		        (previousStepperStep)="onPreviousStepperStep(stepper)"
-		        (nextStepperStep)="onNextStepperStep(stepper)"
-		        (scrollIntoView)="onScrollIntoView()"
-		      ></app-steps-business-licence-sp-employees>
-		    </mat-step>
-		  }
-		
-		  @if (!isBusinessLicenceSoleProprietor) {
-		    <mat-step [completed]="step4Complete">
-		      <ng-template matStepLabel>Controlling Members, Business Managers & Employees</ng-template>
-		      <app-steps-business-licence-controlling-members
-		        [applicationTypeCode]="applicationTypeCode"
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        [isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
-		        (childNextStep)="onChildNextStep()"
-		        (saveAndExit)="onSaveAndExit()"
-		        (nextReview)="onGoToReview()"
-		        (previousStepperStep)="onPreviousStepperStep(stepper)"
-		        (nextStepperStep)="onNextStepperStep(stepper)"
-		        (scrollIntoView)="onScrollIntoView()"
-		      ></app-steps-business-licence-controlling-members>
-		    </mat-step>
-		  }
-		
-		  <mat-step completed="false">
-		    <ng-template matStepLabel>Business Licence Review</ng-template>
-		    <app-steps-business-licence-review
-		      [applicationTypeCode]="applicationTypeCode"
-		      [showSaveAndExit]="showSaveAndExit"
-		      [isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-		      [isSoleProprietorSimultaneousFlow]="false"
-		      [isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
-		      (saveAndExit)="onSaveAndExit()"
-		      (previousStepperStep)="onPreviousStepperStep(stepper)"
-		      (nextPayStep)="onNextSubmit()"
-		      (nextSubmitStep)="onNextSubmit()"
-		      (scrollIntoView)="onScrollIntoView()"
-		      (goToStep)="onGoToStep($event)"
-		    ></app-steps-business-licence-review>
-		  </mat-step>
-		
-		  <mat-step completed="false">
-		    <ng-template matStepLabel>Pay</ng-template>
-		  </mat-step>
+			linear
+			labelPosition="bottom"
+			[orientation]="orientation"
+			(selectionChange)="onStepSelectionChange($event)"
+			#stepper
+		>
+			<mat-step [completed]="step1Complete">
+				<ng-template matStepLabel>Business Information</ng-template>
+				<app-steps-business-licence-information
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					[applicationTypeCode]="applicationTypeCode"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-business-licence-information>
+			</mat-step>
+
+			<mat-step [completed]="step2Complete">
+				<ng-template matStepLabel>Licence Selection</ng-template>
+				<app-steps-business-licence-selection
+					[serviceTypeCode]="serviceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
+					[bizTypeCode]="bizTypeCode"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(childNextStep)="onChildNextStep()"
+					(saveAndExit)="onSaveAndExit()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-business-licence-selection>
+			</mat-step>
+
+			@if (!isBusinessLicenceSoleProprietor) {
+				<mat-step [completed]="step3Complete">
+					<ng-template matStepLabel>Contact Information</ng-template>
+					<app-steps-business-licence-contact-information
+						[applicationTypeCode]="applicationTypeCode"
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(nextReview)="onGoToReview()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-business-licence-contact-information>
+				</mat-step>
+			}
+
+			@if (isBusinessLicenceSoleProprietor) {
+				<mat-step [completed]="step4Complete">
+					<ng-template matStepLabel>Employees</ng-template>
+					<app-steps-business-licence-sp-employees
+						[applicationTypeCode]="applicationTypeCode"
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(nextReview)="onGoToReview()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-business-licence-sp-employees>
+				</mat-step>
+			}
+
+			@if (!isBusinessLicenceSoleProprietor) {
+				<mat-step [completed]="step4Complete">
+					<ng-template matStepLabel>Controlling Members, Business Managers & Employees</ng-template>
+					<app-steps-business-licence-controlling-members
+						[applicationTypeCode]="applicationTypeCode"
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(nextReview)="onGoToReview()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-business-licence-controlling-members>
+				</mat-step>
+			}
+
+			<mat-step completed="false">
+				<ng-template matStepLabel>Business Licence Review</ng-template>
+				<app-steps-business-licence-review
+					[applicationTypeCode]="applicationTypeCode"
+					[showSaveAndExit]="showSaveAndExit"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="false"
+					[isBusinessStakeholdersWithoutSwlExist]="isBusinessStakeholdersWithoutSwlExist"
+					(saveAndExit)="onSaveAndExit()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextPayStep)="onNextSubmit()"
+					(nextSubmitStep)="onNextSubmit()"
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+				></app-steps-business-licence-review>
+			</mat-step>
+
+			<mat-step completed="false">
+				<ng-template matStepLabel>Pay</ng-template>
+			</mat-step>
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

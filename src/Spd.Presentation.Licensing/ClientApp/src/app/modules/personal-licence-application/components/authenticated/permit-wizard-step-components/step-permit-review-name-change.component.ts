@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
@@ -31,8 +30,6 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 })
 export class StepPermitReviewNameChangeComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.personalInformationFormGroup;
-
-	booleanTypeCodes = BooleanTypeCode;
 
 	constructor(
 		private utilService: UtilService,

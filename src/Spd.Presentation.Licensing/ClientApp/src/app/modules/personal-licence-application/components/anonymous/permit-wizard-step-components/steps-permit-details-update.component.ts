@@ -9,41 +9,41 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	selector: 'app-steps-permit-details-update',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  @if (showTermsOfUse) {
-		    <mat-step>
-		      <app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
-		      <app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-step-permit-checklist-update></app-step-permit-checklist-update>
-		
-		    <app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
-		
-		    <app-wizard-footer
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_PERMIT_CONFIRMATION)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
-		
-		    <app-wizard-footer
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onStepNext(STEP_PRINT)"
-		    ></app-wizard-footer>
-		  </mat-step>
+			@if (showTermsOfUse) {
+				<mat-step>
+					<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
+					<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-step-permit-checklist-update></app-step-permit-checklist-update>
+
+				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERMIT_CONFIRMATION)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PRINT)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
-		`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	`,
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;

@@ -5,21 +5,20 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-step-worker-licence-photograph-of-yourself',
-    template: `
+	selector: 'app-step-worker-licence-photograph-of-yourself',
+	template: `
 		@if (applicationTypeCode === applicationTypeCodes.New) {
-		  <app-step-worker-licence-photograph-of-yourself-new
-		    [form]="form"
-		  ></app-step-worker-licence-photograph-of-yourself-new>
+			<app-step-worker-licence-photograph-of-yourself-new
+				[form]="form"
+			></app-step-worker-licence-photograph-of-yourself-new>
 		} @else {
-		  <app-step-worker-licence-photograph-of-yourself-renew-and-update
-		    [form]="form"
-		  ></app-step-worker-licence-photograph-of-yourself-renew-and-update>
+			<app-step-worker-licence-photograph-of-yourself-renew-and-update
+				[form]="form"
+			></app-step-worker-licence-photograph-of-yourself-renew-and-update>
 		}
-		
-		`,
-    styles: [],
-    standalone: false
+	`,
+	styles: [],
+	standalone: false,
 })
 export class StepWorkerLicencePhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

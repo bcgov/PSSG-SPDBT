@@ -9,8 +9,8 @@ import { distinctUntilChanged } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
-    selector: 'app-business-licence-wizard-replacement',
-    template: `
+	selector: 'app-business-licence-wizard-replacement',
+	template: `
 		<div class="row">
 			<div class="col-12">
 				<mat-stepper
@@ -40,8 +40,8 @@ import { BusinessLicenceApplicationRoutes } from '../business-license-applicatio
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicenceWizardReplacementComponent extends BaseWizardComponent implements OnInit {
 	applicationTypeReplace = ApplicationTypeCode.Replacement;

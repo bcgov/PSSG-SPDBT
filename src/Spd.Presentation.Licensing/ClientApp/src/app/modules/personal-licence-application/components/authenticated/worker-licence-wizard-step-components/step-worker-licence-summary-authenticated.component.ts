@@ -13,174 +13,174 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	selector: 'app-step-worker-licence-summary-authenticated',
 	template: `
 		<app-step-section
-		  heading="Application summary"
-		  subheading="Review your information before submitting your application"
-		  >
-		  <div class="row">
-		    <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
-		      <mat-accordion multi="true">
-		        <mat-expansion-panel class="mb-2" [expanded]="true">
-		          <mat-expansion-panel-header>
-		            <mat-panel-title class="review-panel-title">
-		              <mat-toolbar class="d-flex justify-content-between">
-		                <div class="panel-header">Licence Selection</div>
-		                <button
-		                  mat-mini-fab
-		                  color="primary"
-		                  class="go-to-step-button"
-		                  matTooltip="Go to Step 1"
-		                  aria-label="Go to Step 1"
-		                  (click)="$event.stopPropagation(); onEditStep(0)"
-		                  >
-		                  <mat-icon>edit</mat-icon>
-		                </button>
-		              </mat-toolbar>
-		            </mat-panel-title>
-		          </mat-expansion-panel-header>
-		          <div class="panel-body">
-		            <div class="text-minor-heading-small mt-4">Licence Information</div>
-		            <div class="row mt-0">
-		              <div class="col-lg-4 col-md-12">
-		                <div class="text-label d-block text-muted">Licence Type</div>
-		                <div class="summary-text-data">
-		                  {{ serviceTypeCode | options: 'ServiceTypes' }}
-		                </div>
-		              </div>
-		              <div class="col-lg-4 col-md-12">
-		                <div class="text-label d-block text-muted">Application Type</div>
-		                <div class="summary-text-data">
-		                  {{ applicationTypeCode | options: 'ApplicationTypes' }}
-		                </div>
-		              </div>
-		              @if (soleProprietorBizTypeCode) {
-		                <div class="col-lg-4 col-md-12">
-		                  <div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
-		                  <div class="summary-text-data">
-		                    {{ soleProprietorBizTypeCode | options: 'BizTypes' }}
-		                  </div>
-		                </div>
-		              }
-		              <div class="col-lg-4 col-md-12">
-		                <div class="text-label d-block text-muted">Licence Term</div>
-		                <div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
-		              </div>
-		              <div class="col-lg-4 col-md-12">
-		                <div class="text-label d-block text-muted">Fee</div>
-		                <div class="summary-text-data">
-		                  {{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
-		                </div>
-		              </div>
-		            </div>
-		
-		            <app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
-		
-		            <app-worker-summary-document-uploaded
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-document-uploaded>
-		
-		            <app-worker-summary-dogs-restraints
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-dogs-restraints>
-		
-		            <app-worker-summary-expired-licence
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-expired-licence>
-		          </div>
-		        </mat-expansion-panel>
-		
-		        <mat-expansion-panel class="mb-2" [expanded]="true">
-		          <mat-expansion-panel-header>
-		            <mat-panel-title class="review-panel-title">
-		              <mat-toolbar class="d-flex justify-content-between">
-		                <div class="panel-header">Background</div>
-		                <button
-		                  mat-mini-fab
-		                  color="primary"
-		                  class="go-to-step-button"
-		                  matTooltip="Go to Step 2"
-		                  aria-label="Go to Step 2"
-		                  (click)="$event.stopPropagation(); onEditStep(1)"
-		                  >
-		                  <mat-icon>edit</mat-icon>
-		                </button>
-		              </mat-toolbar>
-		            </mat-panel-title>
-		          </mat-expansion-panel-header>
-		          <div class="panel-body">
-		            <app-worker-summary-police-background
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-police-background>
-		
-		            <mat-divider class="mt-3 mb-2"></mat-divider>
-		            <app-worker-summary-mental-health-conditions
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-mental-health-conditions>
-		
-		            <mat-divider class="mt-3 mb-2"></mat-divider>
-		            <app-worker-summary-criminal-history
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-criminal-history>
-		
-		            @if (isNotRenewal) {
-		              <mat-divider class="mt-3 mb-2"></mat-divider>
-		              <div class="text-minor-heading-small">Fingerprints</div>
-		              <div class="row mt-0">
-		                <div class="col-12">
-		                  <div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
-		                  <div class="summary-text-data">
-		                    <ul class="m-0">
-		                      @for (doc of proofOfFingerprintAttachments; track doc; let i = $index) {
-		                        <li>{{ doc.name }}</li>
-		                      }
-		                    </ul>
-		                  </div>
-		                </div>
-		              </div>
-		            }
-		          </div>
-		        </mat-expansion-panel>
-		
-		        <mat-expansion-panel class="mb-2" [expanded]="true">
-		          <mat-expansion-panel-header>
-		            <mat-panel-title class="review-panel-title">
-		              <mat-toolbar class="d-flex justify-content-between">
-		                <div class="panel-header">Identification</div>
-		                <button
-		                  mat-mini-fab
-		                  color="primary"
-		                  class="go-to-step-button"
-		                  matTooltip="Go to Step 3"
-		                  aria-label="Go to Step 3"
-		                  (click)="$event.stopPropagation(); onEditStep(2)"
-		                  >
-		                  <mat-icon>edit</mat-icon>
-		                </button>
-		              </mat-toolbar>
-		            </mat-panel-title>
-		          </mat-expansion-panel-header>
-		          <div class="panel-body">
-		            @if (showCitizenshipStep) {
-		              <app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
-		              <mat-divider class="mt-3 mb-2"></mat-divider>
-		            }
-		
-		            @if (photoOfYourselfAttachments) {
-		              <app-worker-summary-photo-of-yourself
-		                [workerModelData]="licenceModelData"
-		              ></app-worker-summary-photo-of-yourself>
-		              <mat-divider class="mt-3 mb-2"></mat-divider>
-		            }
-		
-		            <app-worker-summary-bc-drivers-licence
-		              [workerModelData]="licenceModelData"
-		            ></app-worker-summary-bc-drivers-licence>
-		          </div>
-		        </mat-expansion-panel>
-		      </mat-accordion>
-		    </div>
-		  </div>
+			heading="Application summary"
+			subheading="Review your information before submitting your application"
+		>
+			<div class="row">
+				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mb-3 mx-auto">
+					<mat-accordion multi="true">
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Licence Selection</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 1"
+											aria-label="Go to Step 1"
+											(click)="$event.stopPropagation(); onEditStep(0)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								<div class="text-minor-heading-small mt-4">Licence Information</div>
+								<div class="row mt-0">
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Licence Type</div>
+										<div class="summary-text-data">
+											{{ serviceTypeCode | options: 'ServiceTypes' }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Application Type</div>
+										<div class="summary-text-data">
+											{{ applicationTypeCode | options: 'ApplicationTypes' }}
+										</div>
+									</div>
+									@if (soleProprietorBizTypeCode) {
+										<div class="col-lg-4 col-md-12">
+											<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
+											<div class="summary-text-data">
+												{{ soleProprietorBizTypeCode | options: 'BizTypes' }}
+											</div>
+										</div>
+									}
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Licence Term</div>
+										<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
+									</div>
+									<div class="col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Fee</div>
+										<div class="summary-text-data">
+											{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
+										</div>
+									</div>
+								</div>
+
+								<app-form-licence-category-summary [categoryList]="categoryList"></app-form-licence-category-summary>
+
+								<app-worker-summary-document-uploaded
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-document-uploaded>
+
+								<app-worker-summary-dogs-restraints
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-dogs-restraints>
+
+								<app-worker-summary-expired-licence
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-expired-licence>
+							</div>
+						</mat-expansion-panel>
+
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Background</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 2"
+											aria-label="Go to Step 2"
+											(click)="$event.stopPropagation(); onEditStep(1)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								<app-worker-summary-police-background
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-police-background>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-mental-health-conditions
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-mental-health-conditions>
+
+								<mat-divider class="mt-3 mb-2"></mat-divider>
+								<app-worker-summary-criminal-history
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-criminal-history>
+
+								@if (isNotRenewal) {
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+									<div class="text-minor-heading-small">Fingerprints</div>
+									<div class="row mt-0">
+										<div class="col-12">
+											<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													@for (doc of proofOfFingerprintAttachments; track doc; let i = $index) {
+														<li>{{ doc.name }}</li>
+													}
+												</ul>
+											</div>
+										</div>
+									</div>
+								}
+							</div>
+						</mat-expansion-panel>
+
+						<mat-expansion-panel class="mb-2" [expanded]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="review-panel-title">
+									<mat-toolbar class="d-flex justify-content-between">
+										<div class="panel-header">Identification</div>
+										<button
+											mat-mini-fab
+											color="primary"
+											class="go-to-step-button"
+											matTooltip="Go to Step 3"
+											aria-label="Go to Step 3"
+											(click)="$event.stopPropagation(); onEditStep(2)"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+									</mat-toolbar>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							<div class="panel-body">
+								@if (showCitizenshipStep) {
+									<app-worker-summary-citizenship [workerModelData]="licenceModelData"></app-worker-summary-citizenship>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								}
+
+								@if (photoOfYourselfAttachments) {
+									<app-worker-summary-photo-of-yourself
+										[workerModelData]="licenceModelData"
+									></app-worker-summary-photo-of-yourself>
+									<mat-divider class="mt-3 mb-2"></mat-divider>
+								}
+
+								<app-worker-summary-bc-drivers-licence
+									[workerModelData]="licenceModelData"
+								></app-worker-summary-bc-drivers-licence>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</div>
+			</div>
 		</app-step-section>
-		`,
+	`,
 	styles: [
 		`
 			.mat-expansion-panel {

@@ -39,9 +39,9 @@ import { StepControllingMemberSummaryComponent } from './step-controlling-member
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsControllingMemberReviewComponent extends BaseWizardStepComponent {
 	readonly STEP_REVIEW = 0;

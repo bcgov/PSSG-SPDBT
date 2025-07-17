@@ -12,73 +12,73 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-alias-list',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  @if (aliasesArray.length === 0) {
-		    <div class="py-2">No past aliases or previous names</div>
-		  }
-		
-		  @for (group of aliasesArray.controls; track group; let i = $index) {
-		    <ng-container formArrayName="aliases">
-		      <div class="row" [formGroupName]="i">
-		        <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-		          <mat-form-field>
-		            <mat-label>Given Name</mat-label>
-		            <input matInput type="text" formControlName="givenName" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-		          <mat-form-field>
-		            <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-		            <input matInput type="text" formControlName="middleName1" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-		          <mat-form-field>
-		            <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-		            <input matInput type="text" formControlName="middleName2" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-		          <mat-form-field [ngClass]="isReadonly ? '' : 'remove-row-space'">
-		            <mat-label>Surname</mat-label>
-		            <input
-		              matInput
-		              type="text"
-		              formControlName="surname"
-		              required
-		              [errorStateMatcher]="matcher"
-		              maxlength="40"
-		              />
-		              @if (group.get('surname')?.hasError('required')) {
-		                <mat-error> This is required </mat-error>
-		              }
-		            </mat-form-field>
-		            @if (!isReadonly) {
-		              <button
-		                mat-mini-fab
-		                class="delete-row-button ms-1 mb-3"
-		                matTooltip="Remove previous name"
-		                (click)="onDeleteRow(i)"
-		                aria-label="Remove this previous name"
-		                >
-		                <mat-icon>delete_outline</mat-icon>
-		              </button>
-		            }
-		          </div>
-		        </div>
-		      </ng-container>
-		    }
-		
-		    @if (isAllowAliasAdd) {
-		      <div class="row mb-2">
-		        <div class="col-12">
-		          <button mat-stroked-button (click)="onAddRow()" class="w-auto" aria-label="Add an alias">
-		            <mat-icon class="add-icon">add_circle</mat-icon>Add Name
-		          </button>
-		        </div>
-		      </div>
-		    }
-		  </form>
-		`,
+			@if (aliasesArray.length === 0) {
+				<div class="py-2">No past aliases or previous names</div>
+			}
+
+			@for (group of aliasesArray.controls; track group; let i = $index) {
+				<ng-container formArrayName="aliases">
+					<div class="row" [formGroupName]="i">
+						<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Given Name</mat-label>
+								<input matInput type="text" formControlName="givenName" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput type="text" formControlName="middleName1" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput type="text" formControlName="middleName2" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+							<mat-form-field [ngClass]="isReadonly ? '' : 'remove-row-space'">
+								<mat-label>Surname</mat-label>
+								<input
+									matInput
+									type="text"
+									formControlName="surname"
+									required
+									[errorStateMatcher]="matcher"
+									maxlength="40"
+								/>
+								@if (group.get('surname')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+							@if (!isReadonly) {
+								<button
+									mat-mini-fab
+									class="delete-row-button ms-1 mb-3"
+									matTooltip="Remove previous name"
+									(click)="onDeleteRow(i)"
+									aria-label="Remove this previous name"
+								>
+									<mat-icon>delete_outline</mat-icon>
+								</button>
+							}
+						</div>
+					</div>
+				</ng-container>
+			}
+
+			@if (isAllowAliasAdd) {
+				<div class="row mb-2">
+					<div class="col-12">
+						<button mat-stroked-button (click)="onAddRow()" class="w-auto" aria-label="Add an alias">
+							<mat-icon class="add-icon">add_circle</mat-icon>Add Name
+						</button>
+					</div>
+				</div>
+			}
+		</form>
+	`,
 	styles: [
 		`
 			.mat-mdc-mini-fab {

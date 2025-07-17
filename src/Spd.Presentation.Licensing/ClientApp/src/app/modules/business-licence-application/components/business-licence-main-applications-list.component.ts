@@ -9,116 +9,116 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 	selector: 'app-business-licence-main-applications-list',
 	template: `
 		@if (applicationsDataSource.data.length > 0) {
-		  <div class="mb-3">
-		    <div class="text-minor-heading py-3">Applications</div>
-		    <div class="row summary-card-section summary-card-section__orange m-0 pt-2">
-		      <div class="col-12">
-		        <mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
-		          <ng-container matColumnDef="serviceTypeCode">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
-		            <mat-cell *matCellDef="let application">
-		              <span class="mobile-label">Licence Type:</span>
-		              {{ application.serviceTypeCode | options: 'ServiceTypes' }}
-		            </mat-cell>
-		          </ng-container>
-		          <ng-container matColumnDef="createdOn">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Started</mat-header-cell>
-		            <mat-cell *matCellDef="let application">
-		              <span class="mobile-label">Date Started:</span>
-		              {{ application.createdOn | formatDate | default }}
-		            </mat-cell>
-		          </ng-container>
-		          <ng-container matColumnDef="submittedOn">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Submitted</mat-header-cell>
-		            <mat-cell *matCellDef="let application">
-		              <span class="mobile-label">Date Submitted:</span>
-		              {{ application.submittedOn | formatDate | default }}
-		            </mat-cell>
-		          </ng-container>
-		          <ng-container matColumnDef="applicationTypeCode">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Type</mat-header-cell>
-		            <mat-cell *matCellDef="let application">
-		              <span class="mobile-label">Type:</span>
-		              {{ application.applicationTypeCode | options: 'ApplicationTypes' }}
-		            </mat-cell>
-		          </ng-container>
-		          <ng-container matColumnDef="caseNumber">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Case Number</mat-header-cell>
-		            <mat-cell *matCellDef="let application">
-		              <span class="mobile-label">Case Number:</span>
-		              {{ application.caseNumber }}
-		            </mat-cell>
-		          </ng-container>
-		          <ng-container matColumnDef="applicationPortalStatusCode">
-		            <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-		            <mat-cell *matCellDef="let application" [ngClass]="showStatusButton ? 'col-status-button' : ''">
-		              <span class="mobile-label">Status:</span>
-		              @if (isNewDraft(application)) {
-		                <button
-		                  mat-flat-button
-		                  color="primary"
-		                  class="large w-auto"
-		                  aria-label="Resume application"
-		                  (click)="onResume(application)"
-		                  [disabled]="isDraftAndNotResumable(application)"
-		                  >
-		                  <mat-icon>play_arrow</mat-icon>Resume
-		                </button>
-		              } @else {
-		                @if (isPaymentPending(application)) {
-		                  <button
-		                    mat-flat-button
-		                    color="primary"
-		                    class="large w-auto"
-		                    aria-label="Pay for application now"
-		                    (click)="onPayNow(application)"
-		                    >
-		                    <mat-icon>payment</mat-icon>Pay Now
-		                  </button>
-		                } @else {
-		                  @if (isDraftCancelable(application)) {
-		                    <a
-		                      tabindex="0"
-		                      class="text-start me-2"
-		                      aria-label="Remove the draft application"
-		                      matTooltip="Remove the draft application"
-		                      (click)="onCancel(application)"
-		                      (keydown)="onKeydownCancel($event, application)"
-		                      ><mat-icon>delete_outline</mat-icon></a
-		                      >
-		                    }
-		                    <span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
-		                      {{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
-		                    </span>
-		                  }
-		                }
-		              </mat-cell>
-		            </ng-container>
-		            <ng-container matColumnDef="action1">
-		              <mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-		              <mat-cell *matCellDef="let application">
-		                @if (showManageBusinessStakeholders) {
-		                  <a
-		                    tabindex="0"
-		                    class="text-start my-2"
-		                    (click)="onManageBusinessStakeholders()"
-		                    (keydown)="onKeydownManageBusinessStakeholders($event)"
-		                    >Controlling Members, Business Managers & Employees</a
-		                    >
-		                  }
-		                </mat-cell>
-		              </ng-container>
-		              <mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-		              <mat-row
-		                class="mat-data-row spd-table-tall-row"
-		                *matRowDef="let row; columns: applicationColumns"
-		              ></mat-row>
-		            </mat-table>
-		          </div>
-		        </div>
-		      </div>
-		    }
-		`,
+			<div class="mb-3">
+				<div class="text-minor-heading py-3">Applications</div>
+				<div class="row summary-card-section summary-card-section__orange m-0 pt-2">
+					<div class="col-12">
+						<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
+							<ng-container matColumnDef="serviceTypeCode">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									<span class="mobile-label">Licence Type:</span>
+									{{ application.serviceTypeCode | options: 'ServiceTypes' }}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="createdOn">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Started</mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									<span class="mobile-label">Date Started:</span>
+									{{ application.createdOn | formatDate | default }}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="submittedOn">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Submitted</mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									<span class="mobile-label">Date Submitted:</span>
+									{{ application.submittedOn | formatDate | default }}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="applicationTypeCode">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Type</mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									<span class="mobile-label">Type:</span>
+									{{ application.applicationTypeCode | options: 'ApplicationTypes' }}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="caseNumber">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Case Number</mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									<span class="mobile-label">Case Number:</span>
+									{{ application.caseNumber }}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="applicationPortalStatusCode">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
+								<mat-cell *matCellDef="let application" [ngClass]="showStatusButton ? 'col-status-button' : ''">
+									<span class="mobile-label">Status:</span>
+									@if (isNewDraft(application)) {
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto"
+											aria-label="Resume application"
+											(click)="onResume(application)"
+											[disabled]="isDraftAndNotResumable(application)"
+										>
+											<mat-icon>play_arrow</mat-icon>Resume
+										</button>
+									} @else {
+										@if (isPaymentPending(application)) {
+											<button
+												mat-flat-button
+												color="primary"
+												class="large w-auto"
+												aria-label="Pay for application now"
+												(click)="onPayNow(application)"
+											>
+												<mat-icon>payment</mat-icon>Pay Now
+											</button>
+										} @else {
+											@if (isDraftCancelable(application)) {
+												<a
+													tabindex="0"
+													class="text-start me-2"
+													aria-label="Remove the draft application"
+													matTooltip="Remove the draft application"
+													(click)="onCancel(application)"
+													(keydown)="onKeydownCancel($event, application)"
+													><mat-icon>delete_outline</mat-icon></a
+												>
+											}
+											<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
+												{{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
+											</span>
+										}
+									}
+								</mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="action1">
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+								<mat-cell *matCellDef="let application">
+									@if (showManageBusinessStakeholders) {
+										<a
+											tabindex="0"
+											class="text-start my-2"
+											(click)="onManageBusinessStakeholders()"
+											(keydown)="onKeydownManageBusinessStakeholders($event)"
+											>Controlling Members, Business Managers & Employees</a
+										>
+									}
+								</mat-cell>
+							</ng-container>
+							<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
+							<mat-row
+								class="mat-data-row spd-table-tall-row"
+								*matRowDef="let row; columns: applicationColumns"
+							></mat-row>
+						</mat-table>
+					</div>
+				</div>
+			</div>
+		}
+	`,
 	styles: [
 		`
 			.mat-column-applicationPortalStatusCode {

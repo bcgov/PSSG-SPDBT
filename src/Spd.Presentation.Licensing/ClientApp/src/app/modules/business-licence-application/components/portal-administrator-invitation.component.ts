@@ -10,16 +10,16 @@ import { takeWhile } from 'rxjs';
 	selector: 'app-portal-administrator-invitation',
 	template: `
 		@if (message) {
-		  <div class="container-fluid text-center mt-4">
-		    <mat-icon class="my-4">error</mat-icon>
-		    <h1>Portal Administrator Invitation</h1>
-		    <h4 class="mt-4">
-		      {{ message }}
-		    </h4>
-		    <p class="mt-4">Please contact your primary authorized user for assistance.</p>
-		  </div>
+			<div class="container-fluid text-center mt-4">
+				<mat-icon class="my-4">error</mat-icon>
+				<h1>Portal Administrator Invitation</h1>
+				<h4 class="mt-4">
+					{{ message }}
+				</h4>
+				<p class="mt-4">Please contact your primary authorized user for assistance.</p>
+			</div>
 		}
-		`,
+	`,
 	styles: [
 		`
 			.mat-icon {

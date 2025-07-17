@@ -10,103 +10,95 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-form-personal-information',
 	template: `
 		<div [formGroup]="personalInformationFormGroup">
-		  <div class="row">
-		    <div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
-		      @if (hasBcscNameChanged.value) {
-		        <app-alert type="warning" icon="warning">
-		          We noticed you changed your name recently on your BC Services Card.
-		        </app-alert>
-		      } @else {
-		        <div class="fs-6 fw-bold mb-4">
-		          Have you changed your name?
-		          <a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
-		            >Visit ICBC</a
-		            >
-		            to update your information. Any changes you make will automatically be updated here.
-		          </div>
-		        }
-		
-		        <div class="row mb-3">
-		          <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
-		            <div class="fs-6 text-muted">Full Name</div>
-		            <div class="text-minor-heading">{{ fullname }}</div>
-		          </div>
-		
-		          <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
-		            <div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
-		            <div class="text-minor-heading">
-		              {{ dateOfBirth.value | formatDate: formalDateFormat }}
-		            </div>
-		          </div>
-		        </div>
-		
-		        <div class="row mt-3">
-		          <div [formGroup]="personalInformationFormGroup" class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Sex</mat-label>
-		              <mat-select
-		                formControlName="genderCode"
-		                (selectionChange)="onChangeGender($event)"
-		                [errorStateMatcher]="matcher"
-		                >
-		                @for (gdr of genderTypes; track gdr; let i = $index) {
-		                  <mat-option [value]="gdr.code">
-		                    {{ gdr.desc }}
-		                  </mat-option>
-		                }
-		              </mat-select>
-		              @if (personalInformationFormGroup.get('genderCode')?.hasError('required')) {
-		                <mat-error>
-		                  This is required
-		                </mat-error>
-		              }
-		            </mat-form-field>
-		          </div>
-		
-		          <div [formGroup]="contactInformationFormGroup" class="col-xl-5 col-lg-5 col-md-12 col-sm-12">
-		            <mat-form-field>
-		              <mat-label>Email Address</mat-label>
-		              <input
-		                matInput
-		                formControlName="emailAddress"
-		                [errorStateMatcher]="matcher"
-		                placeholder="name@domain.com"
-		                maxlength="75"
-		                />
-		                @if (contactInformationFormGroup.get('emailAddress')?.hasError('required')) {
-		                  <mat-error>
-		                    This is required
-		                  </mat-error>
-		                }
-		                @if (contactInformationFormGroup.get('emailAddress')?.hasError('email')) {
-		                  <mat-error>
-		                    Must be a valid email address
-		                  </mat-error>
-		                }
-		              </mat-form-field>
-		            </div>
-		            <div [formGroup]="contactInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
-		              <mat-form-field>
-		                <mat-label>Phone Number</mat-label>
-		                <input
-		                  matInput
-		                  formControlName="phoneNumber"
-		                  [errorStateMatcher]="matcher"
-		                  maxlength="30"
-		                  appPhoneNumberTransform
-		                  />
-		                  @if (contactInformationFormGroup.get('phoneNumber')?.hasError('required')) {
-		                    <mat-error
-		                      >This is required</mat-error
-		                      >
-		                  }
-		                </mat-form-field>
-		              </div>
-		            </div>
-		          </div>
-		        </div>
-		      </div>
-		`,
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xxl-10 col-xl-10 mx-auto' : ''">
+					@if (hasBcscNameChanged.value) {
+						<app-alert type="warning" icon="warning">
+							We noticed you changed your name recently on your BC Services Card.
+						</app-alert>
+					} @else {
+						<div class="fs-6 fw-bold mb-4">
+							Have you changed your name?
+							<a aria-label="Navigate to change of name or address site" [href]="changeNameOrAddressUrl" target="_blank"
+								>Visit ICBC</a
+							>
+							to update your information. Any changes you make will automatically be updated here.
+						</div>
+					}
+
+					<div class="row mb-3">
+						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
+							<div class="fs-6 text-muted">Full Name</div>
+							<div class="text-minor-heading">{{ fullname }}</div>
+						</div>
+
+						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
+							<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
+							<div class="text-minor-heading">
+								{{ dateOfBirth.value | formatDate: formalDateFormat }}
+							</div>
+						</div>
+					</div>
+
+					<div class="row mt-3">
+						<div [formGroup]="personalInformationFormGroup" class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
+							<mat-form-field>
+								<mat-label>Sex</mat-label>
+								<mat-select
+									formControlName="genderCode"
+									(selectionChange)="onChangeGender($event)"
+									[errorStateMatcher]="matcher"
+								>
+									@for (gdr of genderTypes; track gdr; let i = $index) {
+										<mat-option [value]="gdr.code">
+											{{ gdr.desc }}
+										</mat-option>
+									}
+								</mat-select>
+								@if (personalInformationFormGroup.get('genderCode')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+
+						<div [formGroup]="contactInformationFormGroup" class="col-xl-5 col-lg-5 col-md-12 col-sm-12">
+							<mat-form-field>
+								<mat-label>Email Address</mat-label>
+								<input
+									matInput
+									formControlName="emailAddress"
+									[errorStateMatcher]="matcher"
+									placeholder="name@domain.com"
+									maxlength="75"
+								/>
+								@if (contactInformationFormGroup.get('emailAddress')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (contactInformationFormGroup.get('emailAddress')?.hasError('email')) {
+									<mat-error>Must be a valid email address</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div [formGroup]="contactInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<mat-form-field>
+								<mat-label>Phone Number</mat-label>
+								<input
+									matInput
+									formControlName="phoneNumber"
+									[errorStateMatcher]="matcher"
+									maxlength="30"
+									appPhoneNumberTransform
+								/>
+								@if (contactInformationFormGroup.get('phoneNumber')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	`,
 	styles: [],
 	standalone: false,
 })

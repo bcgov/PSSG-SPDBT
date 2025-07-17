@@ -3,149 +3,149 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-worker-summary-document-uploaded',
-    template: `
+	selector: 'app-worker-summary-document-uploaded',
+	template: `
 		@if (isAnyDocuments) {
-		  <mat-divider class="mt-3 mb-2"></mat-divider>
-		  <div class="text-minor-heading-small">Documents Uploaded</div>
-		  <div class="row mt-0">
-		    @if (showArmouredCarGuard) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categoryArmouredCarGuardAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showFireInvestigator) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categoryFireInvestigatorCertificateAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		          <ul class="m-0">
-		            @for (doc of categoryFireInvestigatorLetterAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showLocksmith) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categoryLocksmithAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showPrivateInvestigator) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
-		          Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <div class="summary-text-data">
-		            <ul class="m-0">
-		              @for (doc of categoryPrivateInvestigatorAttachments; track doc; let i = $index) {
-		                <li>{{ doc.name }}</li>
-		              }
-		            </ul>
-		            <ul class="m-0">
-		              @for (doc of categoryPrivateInvestigatorTrainingAttachments; track doc; let i = $index) {
-		                <li>{{ doc.name }}</li>
-		              }
-		            </ul>
-		          </div>
-		        </div>
-		      </div>
-		    }
-		    @if (showPrivateInvestigatorUnderSupervision) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
-		          Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categoryPrivateInvestigatorUnderSupervisionAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showSecurityAlarmInstaller) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
-		          Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categorySecurityAlarmInstallerAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showSecurityConsultant) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categorySecurityConsultantAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		          <ul class="m-0">
-		            @for (doc of categorySecurityConsultantResumeAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		    @if (showSecurityGuard) {
-		      <div class="col-lg-6 col-md-12">
-		        <div class="text-label d-block text-muted">
-		          {{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
-		        </div>
-		        <div class="summary-text-data">
-		          <ul class="m-0">
-		            @for (doc of categorySecurityGuardAttachments; track doc; let i = $index) {
-		              <li>{{ doc.name }}</li>
-		            }
-		          </ul>
-		        </div>
-		      </div>
-		    }
-		  </div>
+			<mat-divider class="mt-3 mb-2"></mat-divider>
+			<div class="text-minor-heading-small">Documents Uploaded</div>
+			<div class="row mt-0">
+				@if (showArmouredCarGuard) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categoryArmouredCarGuardAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showFireInvestigator) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categoryFireInvestigatorCertificateAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+							<ul class="m-0">
+								@for (doc of categoryFireInvestigatorLetterAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showLocksmith) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categoryLocksmithAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showPrivateInvestigator) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
+							Documents
+						</div>
+						<div class="summary-text-data">
+							<div class="summary-text-data">
+								<ul class="m-0">
+									@for (doc of categoryPrivateInvestigatorAttachments; track doc; let i = $index) {
+										<li>{{ doc.name }}</li>
+									}
+								</ul>
+								<ul class="m-0">
+									@for (doc of categoryPrivateInvestigatorTrainingAttachments; track doc; let i = $index) {
+										<li>{{ doc.name }}</li>
+									}
+								</ul>
+							</div>
+						</div>
+					</div>
+				}
+				@if (showPrivateInvestigatorUnderSupervision) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
+							Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categoryPrivateInvestigatorUnderSupervisionAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showSecurityAlarmInstaller) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
+							Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categorySecurityAlarmInstallerAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showSecurityConsultant) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categorySecurityConsultantAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+							<ul class="m-0">
+								@for (doc of categorySecurityConsultantResumeAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+				@if (showSecurityGuard) {
+					<div class="col-lg-6 col-md-12">
+						<div class="text-label d-block text-muted">
+							{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
+						</div>
+						<div class="summary-text-data">
+							<ul class="m-0">
+								@for (doc of categorySecurityGuardAttachments; track doc; let i = $index) {
+									<li>{{ doc.name }}</li>
+								}
+							</ul>
+						</div>
+					</div>
+				}
+			</div>
 		}
-		`,
-    styles: [],
-    standalone: false
+	`,
+	styles: [],
+	standalone: false,
 })
 export class WorkerSummaryDocumentsUploadedComponent {
 	categoryTypeCodes = WorkerCategoryTypeCode;

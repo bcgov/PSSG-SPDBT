@@ -81,7 +81,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										maxlength="20"
 									/>
 									@if (workerLicenceNumberForm.get('workerLicenceNumber')?.hasError('required')) {
-										<mat-error> This is required </mat-error>
+										<mat-error>This is required</mat-error>
 									}
 									@if (workerLicenceNumberForm.get('workerLicenceNumber')?.hasError('invalidCharsFormat')) {
 										<mat-error>Security worker licence numbers can only include letters and numbers</mat-error>
@@ -100,7 +100,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										captchaFormGroupA.get('token')?.invalid &&
 										captchaFormGroupA.get('token')?.hasError('required')
 									) {
-										<mat-error class="mat-option-error">This is required </mat-error>
+										<mat-error class="mat-option-error">This is required</mat-error>
 									}
 								</div>
 							</div>
@@ -129,7 +129,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 											<mat-label>{{ lastNameLabel }}</mat-label>
 											<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
 											@if (workerLicenceNameForm.get('lastName')?.hasError('required')) {
-												<mat-error> This is required </mat-error>
+												<mat-error>This is required</mat-error>
 											}
 										</mat-form-field>
 									</div>
@@ -150,7 +150,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 											captchaFormGroupB.get('token')?.invalid &&
 											captchaFormGroupB.get('token')?.hasError('required')
 										) {
-											<mat-error class="mat-option-error">This is required </mat-error>
+											<mat-error class="mat-option-error">This is required</mat-error>
 										}
 									</div>
 								</div>
@@ -190,7 +190,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 										captchaFormGroupC.get('token')?.invalid &&
 										captchaFormGroupC.get('token')?.hasError('required')
 									) {
-										<mat-error class="mat-option-error">This is required </mat-error>
+										<mat-error class="mat-option-error">This is required</mat-error>
 									}
 								</div>
 							</div>

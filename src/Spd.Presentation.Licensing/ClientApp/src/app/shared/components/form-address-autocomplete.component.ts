@@ -44,56 +44,52 @@ export class Address {
 	selector: 'app-form-address-autocomplete',
 	template: `
 		<form [formGroup]="form">
-		  <div class="row">
-		    <div [ngClass]="isWideView ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
-		      <mat-form-field>
-		        <mat-label>Address by Canada Post</mat-label>
-		        <input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
-		        <mat-autocomplete #auto="matAutocomplete">
-		          @for (field of addressAutocompleteFields; track field; let i = $index) {
-		            <mat-option
-		              class="address-option"
-		              [value]="field.text"
-		              (click)="onAutocomplete(field)"
-		              >
-		              {{ field.text }} {{ field.description }}
-		            </mat-option>
-		          }
-		        </mat-autocomplete>
-		        <mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
-		        <mat-hint> Start typing a street address or postal code </mat-hint>
-		      </mat-form-field>
-		
-		      <button
-		        mat-button
-		        type="button"
-		        color="primary"
-		        class="w-auto mt-2 mt-md-0"
-		        [disabled]="showAddressFields"
-		        (click)="onShowManualAddress()"
-		        >
-		        <mat-icon>add</mat-icon>
-		        Add address manually
-		      </button>
-		    </div>
-		
-		    <div [ngClass]="isWideView ? 'col-xl-5 col-lg-5 col-md-12' : 'col-12'">
-		      <mat-form-field>
-		        <mat-label>Country</mat-label>
-		        <mat-select formControlName="country">
-		          @for (ctry of countryList; track ctry; let i = $index) {
-		            <mat-option [value]="ctry.code">
-		              <span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
-		                ctry.desc
-		              }}</span>
-		            </mat-option>
-		          }
-		        </mat-select>
-		      </mat-form-field>
-		    </div>
-		  </div>
+			<div class="row">
+				<div [ngClass]="isWideView ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
+					<mat-form-field>
+						<mat-label>Address by Canada Post</mat-label>
+						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
+						<mat-autocomplete #auto="matAutocomplete">
+							@for (field of addressAutocompleteFields; track field; let i = $index) {
+								<mat-option class="address-option" [value]="field.text" (click)="onAutocomplete(field)">
+									{{ field.text }} {{ field.description }}
+								</mat-option>
+							}
+						</mat-autocomplete>
+						<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
+						<mat-hint> Start typing a street address or postal code </mat-hint>
+					</mat-form-field>
+
+					<button
+						mat-button
+						type="button"
+						color="primary"
+						class="w-auto mt-2 mt-md-0"
+						[disabled]="showAddressFields"
+						(click)="onShowManualAddress()"
+					>
+						<mat-icon>add</mat-icon>
+						Add address manually
+					</button>
+				</div>
+
+				<div [ngClass]="isWideView ? 'col-xl-5 col-lg-5 col-md-12' : 'col-12'">
+					<mat-form-field>
+						<mat-label>Country</mat-label>
+						<mat-select formControlName="country">
+							@for (ctry of countryList; track ctry; let i = $index) {
+								<mat-option [value]="ctry.code">
+									<span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
+										ctry.desc
+									}}</span>
+								</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
 		</form>
-		`,
+	`,
 	styles: [
 		`
 			.text-option {

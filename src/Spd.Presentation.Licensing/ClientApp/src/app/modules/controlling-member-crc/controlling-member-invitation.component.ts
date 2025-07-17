@@ -10,16 +10,16 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 	selector: 'app-stakeholder-invitation',
 	template: `
 		@if (message) {
-		  <div class="container-fluid text-center mt-4">
-		    <mat-icon class="my-4">error</mat-icon>
-		    <h1>CRC Invitation</h1>
-		    <h2 class="mt-4">
-		      {{ message }}
-		    </h2>
-		    <p class="mt-4">Please contact your business manager for assistance.</p>
-		  </div>
+			<div class="container-fluid text-center mt-4">
+				<mat-icon class="my-4">error</mat-icon>
+				<h1>CRC Invitation</h1>
+				<h2 class="mt-4">
+					{{ message }}
+				</h2>
+				<p class="mt-4">Please contact your business manager for assistance.</p>
+			</div>
 		}
-		`,
+	`,
 	styles: [
 		`
 			.mat-icon {

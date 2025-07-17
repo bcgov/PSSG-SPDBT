@@ -14,91 +14,91 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 	selector: 'app-steps-permit-identification-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  <mat-step>
-		    <app-step-permit-personal-information
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-permit-personal-information>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      (previousStepperStep)="onStepPrevious()"
-		      (nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-		      (nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFORMATION)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  <mat-step>
-		    <app-step-permit-criminal-history
-		      [applicationTypeCode]="applicationTypeCode"
-		    ></app-step-permit-criminal-history>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      (previousStepperStep)="onGoToPreviousStep()"
-		      (nextStepperStep)="onCriminalHistoryNextStep()"
-		      (nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (applicationTypeCode !== applicationTypeCodes.Update) {
-		    <mat-step>
-		      <app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
-		        (nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		    <mat-step>
-		      <app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
-		        (nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		    <mat-step>
-		      <app-step-permit-bc-driver-licence
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-permit-bc-driver-licence>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-		        (nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		    <mat-step>
-		      <app-step-permit-physical-characteristics
-		        [applicationTypeCode]="applicationTypeCode"
-		      ></app-step-permit-physical-characteristics>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onPhysicalCharacteristicsNextStep()"
-		        (nextReviewStepperStep)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  @if (showPhotographOfYourselfStep) {
-		    <mat-step>
-		      <app-step-permit-photograph-of-yourself-anonymous
-		        [applicationTypeCode]="applicationTypeCode"
-		        [serviceTypeCode]="serviceTypeCode"
-		      ></app-step-permit-photograph-of-yourself-anonymous>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
-		        (nextReviewStepperStep)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
+			<mat-step>
+				<app-step-permit-personal-information
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-personal-information>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFORMATION)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-criminal-history>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onCriminalHistoryNextStep()"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (applicationTypeCode !== applicationTypeCodes.Update) {
+				<mat-step>
+					<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
+						(nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
+					></app-wizard-footer>
+				</mat-step>
+				<mat-step>
+					<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+						(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+					></app-wizard-footer>
+				</mat-step>
+				<mat-step>
+					<app-step-permit-bc-driver-licence
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-permit-bc-driver-licence>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+						(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+					></app-wizard-footer>
+				</mat-step>
+				<mat-step>
+					<app-step-permit-physical-characteristics
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-permit-physical-characteristics>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPhysicalCharacteristicsNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			@if (showPhotographOfYourselfStep) {
+				<mat-step>
+					<app-step-permit-photograph-of-yourself-anonymous
+						[applicationTypeCode]="applicationTypeCode"
+						[serviceTypeCode]="serviceTypeCode"
+					></app-step-permit-photograph-of-yourself-anonymous>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						(nextReviewStepperStep)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					></app-wizard-footer>
+				</mat-step>
+			}
 		</mat-stepper>
-		`,
+	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,
