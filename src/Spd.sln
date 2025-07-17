@@ -91,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.FileScanning"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.LogonUser.UnitTest", "Spd.Utilities.LogonUser.UnitTest\Spd.Utilities.LogonUser.UnitTest.csproj", "{54C141E8-B756-49BB-AF06-602FCDB9B25F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.FinanceReconciliation", "Spd.Manager.FinanceReconciliation\Spd.Manager.FinanceReconciliation.csproj", "{E23B9DB4-03B7-4AD3-B9FE-427DA2CF1EF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Reconciliation", "Spd.Manager.FinanceReconciliation\Spd.Manager.Reconciliation.csproj", "{E23B9DB4-03B7-4AD3-B9FE-427DA2CF1EF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.ScheduleJob", "Spd.Manager.ScheduleJob\Spd.Manager.ScheduleJob.csproj", "{12DE5451-67A5-4917-A4CE-FE37BCDED688}"
 EndProject
