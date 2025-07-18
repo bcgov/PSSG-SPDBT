@@ -208,28 +208,12 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
-export const DogGenderTypes: SelectOptions[] = [
-	{ desc: 'Female', code: GenderCode.F },
-	{ desc: 'Male', code: GenderCode.M },
-];
-
 export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
 	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
 	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
-];
-
-export const DogDocumentTypes: SelectOptions[] = [
-	{
-		desc: 'Security Dog Validation Certificate',
-		code: LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate,
-	},
-	{
-		desc: 'Security Dog Validation Certificate',
-		code: LicenceDocumentTypeCode.BizSecurityDogCertificate,
-	},
 ];
 
 export const RestraintDocumentTypes: SelectOptions[] = [
@@ -309,7 +293,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Dog Trainer Certification', code: ServiceTypeCode.DogTrainerCertification },
 	{ desc: 'GDSD Team Certification', code: ServiceTypeCode.GdsdTeamCertification },
 	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
-	{ desc: 'Metal Dealers & Recyclers', code: ServiceTypeCode.Mdra },
+	{ desc: 'Metal Dealers & Recyclers Registration', code: ServiceTypeCode.Mdra },
 	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Psso', code: ServiceTypeCode.Psso },

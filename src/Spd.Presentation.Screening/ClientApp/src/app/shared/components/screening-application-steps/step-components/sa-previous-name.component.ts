@@ -11,87 +11,97 @@ import { CrcFormStepComponent } from '../screening-application.model';
     selector: 'app-sa-previous-name',
     template: `
 		<section class="step-section p-3">
-			<form [formGroup]="form" novalidate>
-				<div class="step">
-					<app-step-title title="Have you ever had a previous name?"></app-step-title>
-					<div class="row">
-						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag">
-								<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-divider class="my-3"></mat-divider>
-								<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</mat-radio-group>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-									form.get('previousNameFlag')?.invalid &&
-									form.get('previousNameFlag')?.hasError('required')
-								"
-								>An option must be selected</mat-error
-							>
-						</div>
-					</div>
-
-					<div class="row mt-4" *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
-							<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-							<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
-								<div class="row" [formGroupName]="i">
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-											<input matInput type="text" formControlName="givenName" [errorStateMatcher]="matcher" />
-										</mat-form-field>
-									</div>
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput type="text" formControlName="middleName1" />
-										</mat-form-field>
-									</div>
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput type="text" formControlName="middleName2" />
-										</mat-form-field>
-									</div>
-									<div class="col-md-6 col-sm-12" [ngClass]="moreThanOneRowExists ? 'col-lg-5' : 'col-lg-6'">
-										<mat-form-field>
-											<mat-label>Surname</mat-label>
-											<input matInput type="text" formControlName="surname" [errorStateMatcher]="matcher" required />
-											<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-lg-1 col-md-6 col-sm-12">
-										<button
-											mat-mini-fab
-											class="delete-row-button mb-3"
-											matTooltip="Remove previous name"
-											(click)="deleteRow(i)"
-											*ngIf="moreThanOneRowExists"
-											aria-label="Remove row"
-										>
-											<mat-icon>delete_outline</mat-icon>
-										</button>
-									</div>
-									<mat-divider class="my-3" *ngIf="moreThanOneRowExists"></mat-divider>
-								</div>
-							</ng-container>
-						</div>
-						<div class="row">
-							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-								<button mat-stroked-button (click)="onAddRow()">
-									<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form>
-		</section>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="step">
+		      <app-step-title title="Have you ever had a previous name?"></app-step-title>
+		      <div class="row">
+		        <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+		          <mat-radio-group aria-label="Select an option" formControlName="previousNameFlag">
+		            <mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
+		            <mat-divider class="my-3"></mat-divider>
+		            <mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+		          </mat-radio-group>
+		          @if (
+		            (form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+		            form.get('previousNameFlag')?.invalid &&
+		            form.get('previousNameFlag')?.hasError('required')
+		            ) {
+		            <mat-error
+		              class="mat-option-error"
+		              >An option must be selected</mat-error
+		              >
+		            }
+		          </div>
+		        </div>
+		
+		        @if (previousNameFlag.value === booleanTypeCodes.Yes) {
+		          <div class="row mt-4">
+		            <div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+		              <mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+		              <div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+		              @for (group of getFormControls.controls; track group; let i = $index) {
+		                <ng-container formArrayName="aliases">
+		                  <div class="row" [formGroupName]="i">
+		                    <div class="col-lg-6 col-md-6 col-sm-12">
+		                      <mat-form-field>
+		                        <mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+		                        <input matInput type="text" formControlName="givenName" [errorStateMatcher]="matcher" />
+		                      </mat-form-field>
+		                    </div>
+		                    <div class="col-lg-6 col-md-6 col-sm-12">
+		                      <mat-form-field>
+		                        <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+		                        <input matInput type="text" formControlName="middleName1" />
+		                      </mat-form-field>
+		                    </div>
+		                    <div class="col-lg-6 col-md-6 col-sm-12">
+		                      <mat-form-field>
+		                        <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+		                        <input matInput type="text" formControlName="middleName2" />
+		                      </mat-form-field>
+		                    </div>
+		                    <div class="col-md-6 col-sm-12" [ngClass]="moreThanOneRowExists ? 'col-lg-5' : 'col-lg-6'">
+		                      <mat-form-field>
+		                        <mat-label>Surname</mat-label>
+		                        <input matInput type="text" formControlName="surname" [errorStateMatcher]="matcher" required />
+		                        @if (group.get('surname')?.hasError('required')) {
+		                          <mat-error> This is required </mat-error>
+		                        }
+		                      </mat-form-field>
+		                    </div>
+		                    <div class="col-lg-1 col-md-6 col-sm-12">
+		                      @if (moreThanOneRowExists) {
+		                        <button
+		                          mat-mini-fab
+		                          class="delete-row-button mb-3"
+		                          matTooltip="Remove previous name"
+		                          (click)="deleteRow(i)"
+		                          aria-label="Remove row"
+		                          >
+		                          <mat-icon>delete_outline</mat-icon>
+		                        </button>
+		                      }
+		                    </div>
+		                    @if (moreThanOneRowExists) {
+		                      <mat-divider class="my-3"></mat-divider>
+		                    }
+		                  </div>
+		                </ng-container>
+		              }
+		            </div>
+		            <div class="row">
+		              <div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+		                <button mat-stroked-button (click)="onAddRow()">
+		                  <mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+		                </button>
+		              </div>
+		            </div>
+		          </div>
+		        }
+		      </div>
+		    </form>
+		  </section>
+		`,
     styles: [
         `
 			.mat-mdc-mini-fab {

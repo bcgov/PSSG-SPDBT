@@ -7,18 +7,17 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
     selector: 'app-step-worker-licence-photograph-of-yourself',
     template: `
-		<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else isRenewOrUpdate">
-			<app-step-worker-licence-photograph-of-yourself-new
-				[form]="form"
-			></app-step-worker-licence-photograph-of-yourself-new>
-		</ng-container>
-
-		<ng-template #isRenewOrUpdate>
-			<app-step-worker-licence-photograph-of-yourself-renew-and-update
-				[form]="form"
-			></app-step-worker-licence-photograph-of-yourself-renew-and-update>
-		</ng-template>
-	`,
+		@if (applicationTypeCode === applicationTypeCodes.New) {
+		  <app-step-worker-licence-photograph-of-yourself-new
+		    [form]="form"
+		  ></app-step-worker-licence-photograph-of-yourself-new>
+		} @else {
+		  <app-step-worker-licence-photograph-of-yourself-renew-and-update
+		    [form]="form"
+		  ></app-step-worker-licence-photograph-of-yourself-renew-and-update>
+		}
+		
+		`,
     styles: [],
     standalone: false
 })

@@ -1,6 +1,6 @@
-import { DOCUMENT } from '@angular/common';
+
 import { HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';

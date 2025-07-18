@@ -9,18 +9,17 @@ import { ConfigService } from './core/services/config.service';
 	selector: 'app-root',
 	template: `
 		<body class="d-flex flex-column h-100">
-			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
-			<app-header [title]="title"></app-header>
-
-			<ng-container *ngIf="configs$ | async">
-				<router-outlet></router-outlet>
-
-				<footer class="mt-auto">
-					<app-footer></app-footer>
-				</footer>
-			</ng-container>
+		  <ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
+		  <app-header [title]="title"></app-header>
+		
+		  @if (configs$ | async) {
+		    <router-outlet></router-outlet>
+		    <footer class="mt-auto">
+		      <app-footer></app-footer>
+		    </footer>
+		  }
 		</body>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Data protection keys
 key-*.xml
+
+# Possible file contains secrets
+Spd.Utilities.Dynamics/Connected Services/OData Service/ConnectedService.json

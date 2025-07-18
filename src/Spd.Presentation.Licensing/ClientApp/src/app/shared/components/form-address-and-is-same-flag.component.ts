@@ -5,18 +5,18 @@ import { FormControl, FormGroup } from '@angular/forms';
     selector: 'app-form-address-and-is-same-flag',
     template: `
 		<form [formGroup]="form" novalidate>
-			<mat-checkbox formControlName="isAddressTheSame">
-				{{ isAddressTheSameLabel }}
-			</mat-checkbox>
-			<ng-container *ngIf="!isAddressTheSame.value">
-				<mat-divider class="mt-2 mb-3 mat-divider-primary"></mat-divider>
-			</ng-container>
+		  <mat-checkbox formControlName="isAddressTheSame">
+		    {{ isAddressTheSameLabel }}
+		  </mat-checkbox>
+		  @if (!isAddressTheSame.value) {
+		    <mat-divider class="mt-2 mb-3 mat-divider-primary"></mat-divider>
+		  }
 		</form>
-
-		<ng-container *ngIf="!isAddressTheSame.value">
-			<app-form-address [form]="form" [isReadonly]="isReadonly" [isWideView]="isWideView"></app-form-address>
-		</ng-container>
-	`,
+		
+		@if (!isAddressTheSame.value) {
+		  <app-form-address [form]="form" [isReadonly]="isReadonly" [isWideView]="isWideView"></app-form-address>
+		}
+		`,
     styles: [],
     standalone: false
 })

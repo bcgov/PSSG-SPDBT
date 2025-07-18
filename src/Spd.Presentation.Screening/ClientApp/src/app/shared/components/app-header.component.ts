@@ -11,20 +11,22 @@ import { UtilService } from 'src/app/core/services/util.service';
     selector: 'app-header',
     template: `
 		<mat-toolbar color="primary" class="app-header">
-			<span>
-				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
-			</span>
-			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
-			<div class="app-header-text pl-3">{{ title }}</div>
-
-			<span style="flex: 1 1 auto;"></span>
-
-			<div *ngIf="loggedInUserDisplay">
-				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
-				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
-			</div>
+		  <span>
+		    <img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
+		  </span>
+		  <mat-divider vertical class="app-header-divider mx-3"></mat-divider>
+		  <div class="app-header-text pl-3">{{ title }}</div>
+		
+		  <span style="flex: 1 1 auto;"></span>
+		
+		  @if (loggedInUserDisplay) {
+		    <div>
+		      <mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
+		      <span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
+		    </div>
+		  }
 		</mat-toolbar>
-	`,
+		`,
     styles: [
         `
 			.mat-toolbar-row,

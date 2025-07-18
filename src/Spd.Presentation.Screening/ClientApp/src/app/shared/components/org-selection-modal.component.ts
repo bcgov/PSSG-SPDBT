@@ -11,13 +11,13 @@ export interface OrgSelectionDialogData {
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content>
-			<ng-container *ngFor="let userinfo of userInfos; let i = index">
-				<button mat-stroked-button color="primary" class="large my-2" (click)="onSelectOrg(userinfo)">
-					{{ userinfo.orgName }}
-				</button>
-			</ng-container>
+		  @for (userinfo of userInfos; track userinfo; let i = $index) {
+		    <button mat-stroked-button color="primary" class="large my-2" (click)="onSelectOrg(userinfo)">
+		      {{ userinfo.orgName }}
+		    </button>
+		  }
 		</mat-dialog-content>
-	`,
+		`,
     styles: [],
     standalone: false
 })

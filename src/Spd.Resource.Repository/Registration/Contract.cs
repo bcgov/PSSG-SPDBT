@@ -67,7 +67,8 @@ namespace Spd.Resource.Repository.Registration
     public enum RegistrationTypeCode
     {
         Employee,
-        Volunteer
+        Volunteer,
+        MDRA
     }
 
     public enum ScreeningsCountTypeCode

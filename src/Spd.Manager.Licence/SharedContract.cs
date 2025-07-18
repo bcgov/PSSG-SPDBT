@@ -1,5 +1,4 @@
 namespace Spd.Manager.Licence;
-
 public class UploadFileRequest
 {
     public LicenceDocumentTypeCode FileTypeCode { get; set; }
@@ -75,7 +74,8 @@ public enum LicenceDocumentTypeCode
     VeterinarianConfirmationForSpayedNeuteredDog,
     DogTrainingCurriculumCertificateSupportingDocument,
     GDSDPracticeHoursLog,
-    GDSDCertificate
+    GDSDCertificate,
+    BusinessLicenceDocuments
 }
 
 public enum PoliceOfficerRoleCode
@@ -199,4 +199,13 @@ public record ContactInfo
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
+}
+
+public record BranchInfo
+{
+    public Guid? BranchId { get; set; }
+    public Address? BranchAddress { get; set; }
+    public string? BranchManager { get; set; }
+    public string? BranchPhoneNumber { get; set; }
+    public string? BranchEmailAddr { get; set; }
 }

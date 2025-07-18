@@ -6,24 +6,26 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
     template: `
 		<div class="text-minor-heading-small">Rationale</div>
 		<div class="row mt-0">
-			<div class="col-12">
-				<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
-				<div class="summary-text-data">
-					{{ rationale }}
-				</div>
-			</div>
-			<div class="col-12" *ngIf="isRationaleAttachments">
-				<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
-				<div class="summary-text-data">
-					<ul class="m-0">
-						<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
-							<li>{{ doc.name }}</li>
-						</ng-container>
-					</ul>
-				</div>
-			</div>
+		  <div class="col-12">
+		    <div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
+		    <div class="summary-text-data">
+		      {{ rationale }}
+		    </div>
+		  </div>
+		  @if (isRationaleAttachments) {
+		    <div class="col-12">
+		      <div class="text-label d-block text-muted">Rationale Supporting Documents</div>
+		      <div class="summary-text-data">
+		        <ul class="m-0">
+		          @for (doc of rationaleAttachments; track doc; let i = $index) {
+		            <li>{{ doc.name }}</li>
+		          }
+		        </ul>
+		      </div>
+		    </div>
+		  }
 		</div>
-	`,
+		`,
     styles: [],
     standalone: false
 })

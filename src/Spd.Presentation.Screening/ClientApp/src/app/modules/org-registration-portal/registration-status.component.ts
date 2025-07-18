@@ -9,60 +9,66 @@ import { OrgRegistrationRoutes } from './org-registration-routes';
 @Component({
     selector: 'app-registration-status',
     template: `
-		<div class="container mt-4" *ngIf="status">
-			<h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
-			<div class="row">
-				<div class="offset-lg-4 col-lg-4 offset-md-2 col-md-8 col-sm-12">
-					<table class="mt-4">
-						<tr
+		@if (status) {
+		  <div class="container mt-4">
+		    <h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
+		    <div class="row">
+		      <div class="offset-lg-4 col-lg-4 offset-md-2 col-md-8 col-sm-12">
+		        <table class="mt-4">
+		          <tr
 							[ngClass]="
 								status === orgRegistrationStatusCodes.ApplicationSubmitted ? 'point__active' : 'point__inactive'
 							"
-						>
-							<td>
-								<mat-icon>find_in_page</mat-icon>
-							</td>
-							<td class="px-4">
-								<div class="fs-4 mb-2">Application submitted</div>
-								<p class="fw-normal" *ngIf="status === orgRegistrationStatusCodes.ApplicationSubmitted">
-									If we need any more information, we’ll contact you.
-								</p>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<mat-divider vertical class="divider"></mat-divider>
-							</td>
-						</tr>
-						<tr [ngClass]="status === orgRegistrationStatusCodes.InProgress ? 'point__active' : 'point__inactive'">
-							<td>
-								<mat-icon>task_alt</mat-icon>
-							</td>
-							<td class="px-4">
-								<div class="fs-4 mb-2">In progress</div>
-								<p class="fw-normal" *ngIf="status === orgRegistrationStatusCodes.InProgress">
-									If we need any more information, we’ll contact you.
-								</p>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<mat-divider vertical class="divider"></mat-divider>
-							</td>
-						</tr>
-						<tr class="point__inactive">
-							<td>
-								<mat-icon>connect_without_contact</mat-icon>
-							</td>
-							<td class="px-4">
-								<div class="fs-4 mb-2">Complete</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-	`,
+		            >
+		            <td>
+		              <mat-icon>find_in_page</mat-icon>
+		            </td>
+		            <td class="px-4">
+		              <div class="fs-4 mb-2">Application submitted</div>
+		              @if (status === orgRegistrationStatusCodes.ApplicationSubmitted) {
+		                <p class="fw-normal">
+		                  If we need any more information, we’ll contact you.
+		                </p>
+		              }
+		            </td>
+		          </tr>
+		          <tr>
+		            <td colspan="2">
+		              <mat-divider vertical class="divider"></mat-divider>
+		            </td>
+		          </tr>
+		          <tr [ngClass]="status === orgRegistrationStatusCodes.InProgress ? 'point__active' : 'point__inactive'">
+		            <td>
+		              <mat-icon>task_alt</mat-icon>
+		            </td>
+		            <td class="px-4">
+		              <div class="fs-4 mb-2">In progress</div>
+		              @if (status === orgRegistrationStatusCodes.InProgress) {
+		                <p class="fw-normal">
+		                  If we need any more information, we’ll contact you.
+		                </p>
+		              }
+		            </td>
+		          </tr>
+		          <tr>
+		            <td colspan="2">
+		              <mat-divider vertical class="divider"></mat-divider>
+		            </td>
+		          </tr>
+		          <tr class="point__inactive">
+		            <td>
+		              <mat-icon>connect_without_contact</mat-icon>
+		            </td>
+		            <td class="px-4">
+		              <div class="fs-4 mb-2">Complete</div>
+		            </td>
+		          </tr>
+		        </table>
+		      </div>
+		    </div>
+		  </div>
+		}
+		`,
     styles: [
         `
 			.point {

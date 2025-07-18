@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { MetalDealersApplicationService } from '@app/core/services/metal-dealers-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-mdra-business-address',
 	template: `
-		<app-step-section title="Business addresses">
+		<app-step-section heading="Business addresses" [subheading]="subtitle">
 			<div class="row">
 				<div class="col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
@@ -58,11 +59,19 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 	standalone: false,
 })
-export class StepMdraBusinessAddressComponent implements LicenceChildStepperStepComponent {
+export class StepMdraBusinessAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	businessAddressForm = this.metalDealersApplicationService.businessAddressFormGroup;
 	businessMailingAddressForm = this.metalDealersApplicationService.businessMailingAddressFormGroup;
+	subtitle = '';
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private metalDealersApplicationService: MetalDealersApplicationService) {}
+
+	ngOnInit(): void {
+		const isRenewalOrUpdate = this.metalDealersApplicationService.isRenewalOrUpdate();
+		this.subtitle = isRenewalOrUpdate ? 'Confirm your business addresses' : 'Provide the business addresses';
+	}
 
 	isFormValid(): boolean {
 		this.businessAddressForm.markAllAsTouched();

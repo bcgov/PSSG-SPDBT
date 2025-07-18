@@ -6,51 +6,56 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-term',
-    template: `
+	selector: 'app-step-business-licence-term',
+	template: `
 		<app-step-section
-			title="Select your licence term"
-			subtitle="The licence term will apply to all licence categories"
-			[isRenewalOrUpdate]="applicationTypeCode === applicationTypeRenewal"
-			[serviceTypeCode]="securityBusinessLicenceCode"
-		>
-			<div class="row" *ngIf="infoText">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
-					<app-alert type="info" icon="info">
-						{{ infoText }}
-					</app-alert>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-					<form [formGroup]="form" novalidate>
-						<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
-							<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
-								<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
-									{{ term.licenceTermCode | options: 'LicenceTermTypes' }} ({{
-										term.amount | currency: 'CAD' : 'symbol-narrow' : '1.0'
-									}})
-								</mat-radio-button>
-								<mat-divider *ngIf="!last" class="my-2"></mat-divider>
-							</ng-container>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('licenceTermCode')?.dirty || form.get('licenceTermCode')?.touched) &&
-								form.get('licenceTermCode')?.invalid &&
-								form.get('licenceTermCode')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</form>
-				</div>
-			</div>
-		</app-step-section>
-	`,
-    styles: [],
-    standalone: false
+		  heading="Select your licence term"
+		  subheading="The licence term will apply to all licence categories"
+		  [isRenewalOrUpdate]="applicationTypeCode === applicationTypeRenewal"
+		  [serviceTypeCode]="securityBusinessLicenceCode"
+		  >
+		  @if (infoText) {
+		    <div class="row">
+		      <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
+		        <app-alert type="info" icon="info">
+		          {{ infoText }}
+		        </app-alert>
+		      </div>
+		    </div>
+		  }
+		
+		  <div class="row">
+		    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+		      <form [formGroup]="form" novalidate>
+		        <mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
+		          @for (term of termCodes; track term; let i = $index; let last = $last) {
+		            <mat-radio-button class="radio-label" [value]="term.licenceTermCode">
+		              {{ term.licenceTermCode | options: 'LicenceTermTypes' }} ({{
+		              term.amount | currency: 'CAD' : 'symbol-narrow' : '1.0'
+		              }})
+		            </mat-radio-button>
+		            @if (!last) {
+		              <mat-divider class="my-2"></mat-divider>
+		            }
+		          }
+		        </mat-radio-group>
+		        @if (
+		          (form.get('licenceTermCode')?.dirty || form.get('licenceTermCode')?.touched) &&
+		          form.get('licenceTermCode')?.invalid &&
+		          form.get('licenceTermCode')?.hasError('required')
+		          ) {
+		          <mat-error
+		            class="mat-option-error"
+		            >This is required</mat-error
+		            >
+		          }
+		        </form>
+		      </div>
+		    </div>
+		  </app-step-section>
+		`,
+	styles: [],
+	standalone: false,
 })
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;

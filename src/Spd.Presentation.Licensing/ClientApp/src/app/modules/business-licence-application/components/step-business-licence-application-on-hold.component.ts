@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-business-licence-application-on-hold',
-    template: `
-		<app-step-section title="Application on hold">
+	selector: 'app-step-business-licence-application-on-hold',
+	template: `
+		<app-step-section heading="Application on hold">
 			<div class="hold-icon mx-auto">
 				<mat-icon>schedule</mat-icon>
 			</div>
@@ -25,8 +25,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			</div>
 		</app-step-section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			.hold-icon {
 				width: 80px !important;
 
@@ -38,8 +38,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				}
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class StepBusinessLicenceApplicationOnHoldComponent implements LicenceChildStepperStepComponent {
 	isFormValid(): boolean {

@@ -211,7 +211,7 @@ namespace Spd.Manager.Screening
 
             if (cmd.IdirUserIdentity.Email != null)
             {
-                var existingUser = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
 
@@ -248,7 +248,8 @@ namespace Spd.Manager.Screening
                 response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
-                response.IsFirstTimeLogin = isFirstTimeLogin;
+                if (isFirstTimeLogin)
+                    response.IsFirstTimeLogin = isFirstTimeLogin;
                 response.OrgId = orgId;
                 response.OrgCodeFromIdir = idirDetail.MinistryCode;
                 return response;
@@ -266,7 +267,7 @@ namespace Spd.Manager.Screening
             Guid? identityId = identity?.Id;
             if (identity != null)
             {
-                var existingUser = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
                 var result = existingUser.Items.FirstOrDefault();

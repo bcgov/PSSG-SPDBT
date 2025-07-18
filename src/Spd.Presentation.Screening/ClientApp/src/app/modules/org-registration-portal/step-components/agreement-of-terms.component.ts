@@ -12,8 +12,8 @@ export class AgreementOfTermsModel {
 }
 
 @Component({
-    selector: 'app-agreement-of-terms',
-    template: `
+	selector: 'app-agreement-of-terms',
+	template: `
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Review and agree to the following terms of agreement"></app-step-title>
@@ -77,11 +77,13 @@ export class AgreementOfTermsModel {
 						</div>
 					</div>
 
-					<div class="row" *ngIf="displayValidationErrors && !hasScrolledToBottom">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
+					@if (displayValidationErrors && !hasScrolledToBottom) {
+						<div class="row">
+							<div class="offset-md-2 col-md-8 col-sm-12">
+								<app-alert type="danger">Please scroll to the bottom</app-alert>
+							</div>
 						</div>
-					</div>
+					}
 
 					<div class="row mt-2">
 						<div class="offset-md-2 col-md-8 col-sm-12">
@@ -91,35 +93,35 @@ export class AgreementOfTermsModel {
 								students (working with children and/or vulnerable adults), including specifically these terms and
 								conditions for enrolment in the CRRP online service, as applicable (Terms and Conditions).
 							</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('agreeToTermsAndConditions')?.dirty || form.get('agreeToTermsAndConditions')?.touched) &&
-									form.get('agreeToTermsAndConditions')?.invalid &&
-									form.get('agreeToTermsAndConditions')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
+							@if (
+								(form.get('agreeToTermsAndConditions')?.dirty || form.get('agreeToTermsAndConditions')?.touched) &&
+								form.get('agreeToTermsAndConditions')?.invalid &&
+								form.get('agreeToTermsAndConditions')?.hasError('required')
+							) {
+								<mat-error class="mat-option-error">This is required</mat-error>
+							}
 						</div>
 					</div>
 
-					<div class="row mb-4" *ngIf="displayCaptcha">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<app-captcha-v2
-								(captchaResponse)="onTokenResponse($event)"
-								[resetControl]="resetRecaptcha"
-							></app-captcha-v2>
-							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
-								This is required
-							</mat-error>
+					@if (displayCaptcha) {
+						<div class="row mb-4">
+							<div class="offset-md-2 col-md-8 col-sm-12">
+								<app-captcha-v2
+									(captchaResponse)="onTokenResponse($event)"
+									[resetControl]="resetRecaptcha"
+								></app-captcha-v2>
+								@if (displayValidationErrors && !captchaPassed) {
+									<mat-error class="mat-option-error"> This is required </mat-error>
+								}
+							</div>
 						</div>
-					</div>
+					}
 				</form>
 			</div>
 		</section>
 	`,
-    styles: [
-        `
+	styles: [
+		`
 			li:not(:last-child) {
 				margin-bottom: 1em;
 			}
@@ -131,8 +133,8 @@ export class AgreementOfTermsModel {
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false,
 })
 export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
@@ -148,7 +150,7 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	constructor(
 		private formBuilder: FormBuilder,
 		private utilService: UtilService,
-		private authProcessService: AuthProcessService
+		private authProcessService: AuthProcessService,
 	) {}
 
 	ngOnInit(): void {

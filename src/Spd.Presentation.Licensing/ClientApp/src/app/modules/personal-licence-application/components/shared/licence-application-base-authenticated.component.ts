@@ -9,15 +9,17 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 @Component({
     selector: 'app-licence-application-base-authenticated',
     template: `
-		<div class="container px-0 my-0 px-md-2 my-md-3" *ngIf="isAuthenticated$ | async">
-			<!-- hide padding/margin on smaller screens -->
-			<div class="row">
-				<div class="col-12">
-					<router-outlet></router-outlet>
-				</div>
-			</div>
-		</div>
-	`,
+		@if (isAuthenticated$ | async) {
+		  <div class="container px-0 my-0 px-md-2 my-md-3">
+		    <!-- hide padding/margin on smaller screens -->
+		    <div class="row">
+		      <div class="col-12">
+		        <router-outlet></router-outlet>
+		      </div>
+		    </div>
+		  </div>
+		}
+		`,
     styles: [],
     standalone: false
 })

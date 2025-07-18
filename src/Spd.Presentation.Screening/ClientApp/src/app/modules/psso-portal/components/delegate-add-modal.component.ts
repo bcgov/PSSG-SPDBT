@@ -16,46 +16,54 @@ export interface DelegateDialogData {
 	template: `
 		<div mat-dialog-title>Add Delegate</div>
 		<mat-dialog-content>
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-6">
-						<mat-form-field>
-							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="firstName" maxlength="40" />
-							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-6">
-						<mat-form-field>
-							<mat-label>Surname</mat-label>
-							<input matInput formControlName="lastName" maxlength="40" />
-							<mat-error *ngIf="form.get('lastName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-12">
-						<mat-form-field>
-							<mat-label>Email</mat-label>
-							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
-							<mat-error *ngIf="form.get('emailaddress')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('emailaddress')?.hasError('email')"> Must be a valid email address </mat-error>
-						</mat-form-field>
-					</div>
-				</div>
-			</form>
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-6">
+		        <mat-form-field>
+		          <mat-label>Given Name</mat-label>
+		          <input matInput formControlName="firstName" maxlength="40" />
+		          @if (form.get('firstName')?.hasError('required')) {
+		            <mat-error>This is required</mat-error>
+		          }
+		        </mat-form-field>
+		      </div>
+		      <div class="col-6">
+		        <mat-form-field>
+		          <mat-label>Surname</mat-label>
+		          <input matInput formControlName="lastName" maxlength="40" />
+		          @if (form.get('lastName')?.hasError('required')) {
+		            <mat-error>This is required</mat-error>
+		          }
+		        </mat-form-field>
+		      </div>
+		    </div>
+		    <div class="row">
+		      <div class="col-12">
+		        <mat-form-field>
+		          <mat-label>Email</mat-label>
+		          <input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
+		          @if (form.get('emailaddress')?.hasError('required')) {
+		            <mat-error>This is required</mat-error>
+		          }
+		          @if (form.get('emailaddress')?.hasError('email')) {
+		            <mat-error> Must be a valid email address </mat-error>
+		          }
+		        </mat-form-field>
+		      </div>
+		    </div>
+		  </form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
-			<div class="row m-0 w-100">
-				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
-				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
-				</div>
-			</div>
+		  <div class="row m-0 w-100">
+		    <div class="col-md-4 col-sm-12 mb-2">
+		      <button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+		    </div>
+		    <div class="offset-md-4 col-md-4 col-sm-12 mb-2">
+		      <button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
+		    </div>
+		  </div>
 		</mat-dialog-actions>
-	`,
+		`,
 	styles: [],
 	standalone: false,
 })

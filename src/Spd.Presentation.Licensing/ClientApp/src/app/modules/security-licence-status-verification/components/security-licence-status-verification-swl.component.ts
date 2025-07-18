@@ -63,7 +63,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 
 					@if (searchBy.value === 'A') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<mat-divider class="mt-2 mb-3"></mat-divider>
 							<div class="text-minor-heading mb-3">Search by licence number</div>
 							<div class="col-xl-8 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>licence number</strong> as it appears on the licence, below. Press
@@ -107,7 +107,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					} @else if (searchBy.value === 'B') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<mat-divider class="mt-2 mb-3"></mat-divider>
 							<div class="text-minor-heading mb-3">Search by full name</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
 								Enter a security worker <strong>full name</strong> as it appears on the licence, below. Press 'Submit'
@@ -158,7 +158,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					} @else if (searchBy.value === 'C') {
 						<div class="row mb-2" @showHideTriggerSlideAnimation>
-							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<mat-divider class="mt-2 mb-3"></mat-divider>
 							<div class="text-minor-heading mb-3">Search by multiple licence numbers</div>
 							<div class="col-xl-5 col-lg-12 col-md-12 mb-3">
 								Enter the security worker <strong>licence numbers</strong> exactly as they appear on the licences. Then

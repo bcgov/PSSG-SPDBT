@@ -21,73 +21,93 @@ export interface UserDialogData {
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
-			<form [formGroup]="form" novalidate>
-				<div class="row">
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Authorization Type</mat-label>
-							<mat-select formControlName="contactAuthorizationTypeCode">
-								<mat-option *ngFor="let auth of authorizationTypes" [value]="auth.code">
-									{{ auth.desc }}
-								</mat-option>
-							</mat-select>
-							<mat-error *ngIf="form.get('contactAuthorizationTypeCode')?.hasError('required')"
-								>This is required</mat-error
-							>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="firstName" maxlength="40" />
-							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Surname</mat-label>
-							<input matInput formControlName="lastName" maxlength="40" />
-							<mat-error *ngIf="form.get('lastName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Email</mat-label>
-							<input matInput formControlName="email" placeholder="name@domain.com" maxlength="75" />
-							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
-							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="jobTitle" maxlength="100" />
-							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<mat-error class="mb-2" *ngIf="emailNotUnique">The email has been used by another manager</mat-error>
-				</div>
-			</form>
-		</mat-dialog-content>
-		<mat-dialog-actions>
-			<div class="row m-0 w-100">
-				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
-				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
-				</div>
-			</div>
-		</mat-dialog-actions>
-	`,
+		  <form [formGroup]="form" novalidate>
+		    <div class="row">
+		      <div class="col-md-6">
+		        <mat-form-field>
+		          <mat-label>Authorization Type</mat-label>
+		          <mat-select formControlName="contactAuthorizationTypeCode">
+		            @for (auth of authorizationTypes; track auth) {
+		              <mat-option [value]="auth.code">
+		                {{ auth.desc }}
+		              </mat-option>
+		            }
+		          </mat-select>
+		          @if (form.get('contactAuthorizationTypeCode')?.hasError('required')) {
+		            <mat-error
+		              >This is required</mat-error
+		              >
+		            }
+		          </mat-form-field>
+		        </div>
+		        <div class="col-md-6">
+		          <mat-form-field>
+		            <mat-label>Given Name</mat-label>
+		            <input matInput formControlName="firstName" maxlength="40" />
+		            @if (form.get('firstName')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        <div class="col-md-6">
+		          <mat-form-field>
+		            <mat-label>Surname</mat-label>
+		            <input matInput formControlName="lastName" maxlength="40" />
+		            @if (form.get('lastName')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        <div class="col-md-6">
+		          <mat-form-field>
+		            <mat-label>Email</mat-label>
+		            <input matInput formControlName="email" placeholder="name@domain.com" maxlength="75" />
+		            @if (form.get('email')?.hasError('email')) {
+		              <mat-error> Must be a valid email address </mat-error>
+		            }
+		            @if (form.get('email')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        <div class="col-md-6">
+		          <mat-form-field>
+		            <mat-label>Phone Number</mat-label>
+		            <input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
+		            @if (form.get('phoneNumber')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		            @if (form.get('phoneNumber')?.hasError('mask')) {
+		              <mat-error>This must be 10 digits</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        <div class="col-md-6">
+		          <mat-form-field>
+		            <mat-label>Job Title</mat-label>
+		            <input matInput formControlName="jobTitle" maxlength="100" />
+		            @if (form.get('jobTitle')?.hasError('required')) {
+		              <mat-error>This is required</mat-error>
+		            }
+		          </mat-form-field>
+		        </div>
+		        @if (emailNotUnique) {
+		          <mat-error class="mb-2">The email has been used by another manager</mat-error>
+		        }
+		      </div>
+		    </form>
+		  </mat-dialog-content>
+		  <mat-dialog-actions>
+		    <div class="row m-0 w-100">
+		      <div class="col-md-4 col-sm-12 mb-2">
+		        <button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+		      </div>
+		      <div class="offset-md-4 col-md-4 col-sm-12 mb-2">
+		        <button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
+		      </div>
+		    </div>
+		  </mat-dialog-actions>
+		`,
 	styles: [],
 	standalone: false,
 })

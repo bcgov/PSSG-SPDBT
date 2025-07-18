@@ -16,124 +16,128 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 	selector: 'app-steps-worker-licence-identification-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-worker-licence-personal-information-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-personal-information-anonymous>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFORMATION)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-aliases [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-aliases>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
-					(nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion">
-				<app-step-worker-licence-citizenship
-					[applicationTypeCode]="applicationTypeCode"
-					[showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
-					[showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
-				></app-step-worker-licence-citizenship>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
-					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-bc-driver-licence>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-					(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-physical-characteristics
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-physical-characteristics>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_HEIGHT_AND_WEIGHT)"
-					(nextReviewStepperStep)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showPhotographOfYourselfStep">
-				<app-step-worker-licence-photograph-of-yourself-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-photograph-of-yourself-anonymous>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTO)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHOTO)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-residential-address
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-residential-address>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_RESIDENTIAL_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_RESIDENTIAL_ADDRESS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-mailing-address-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-mailing-address-anonymous>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
-					(nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-worker-licence-contact-information
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-contact-information>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CONTACT_INFORMATION)"
-					(nextReviewStepperStep)="onNextReview(STEP_CONTACT_INFORMATION)"
-				></app-wizard-footer>
-			</mat-step>
+		  <mat-step>
+		    <app-step-worker-licence-personal-information-anonymous
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-personal-information-anonymous>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onStepPrevious()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
+		      (nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFORMATION)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (applicationTypeCode !== applicationTypeCodes.Update) {
+		    <mat-step>
+		      <app-step-worker-licence-aliases [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-aliases>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
+		        (nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (showFullCitizenshipQuestion || showNonCanadianCitizenshipQuestion) {
+		    <mat-step>
+		      <app-step-worker-licence-citizenship
+		        [applicationTypeCode]="applicationTypeCode"
+		        [showFullCitizenshipQuestion]="showFullCitizenshipQuestion"
+		        [showNonCanadianCitizenshipQuestion]="showNonCanadianCitizenshipQuestion"
+		      ></app-step-worker-licence-citizenship>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+		        (nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  @if (applicationTypeCode !== applicationTypeCodes.Update) {
+		    <mat-step>
+		      <app-step-worker-licence-bc-driver-licence
+		        [applicationTypeCode]="applicationTypeCode"
+		      ></app-step-worker-licence-bc-driver-licence>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+		        (nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-worker-licence-physical-characteristics
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-physical-characteristics>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_HEIGHT_AND_WEIGHT)"
+		      (nextReviewStepperStep)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  @if (showPhotographOfYourselfStep) {
+		    <mat-step>
+		      <app-step-worker-licence-photograph-of-yourself-anonymous
+		        [applicationTypeCode]="applicationTypeCode"
+		      ></app-step-worker-licence-photograph-of-yourself-anonymous>
+		      <app-wizard-footer
+		        [isFormValid]="isFormValid"
+		        (previousStepperStep)="onGoToPreviousStep()"
+		        (nextStepperStep)="onFormValidNextStep(STEP_PHOTO)"
+		        (nextReviewStepperStep)="onNextReview(STEP_PHOTO)"
+		      ></app-wizard-footer>
+		    </mat-step>
+		  }
+		
+		  <mat-step>
+		    <app-step-worker-licence-residential-address
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-residential-address>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_RESIDENTIAL_ADDRESS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_RESIDENTIAL_ADDRESS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-mailing-address-anonymous
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-mailing-address-anonymous>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+		      (nextReviewStepperStep)="onNextReview(STEP_MAILING_ADDRESS)"
+		    ></app-wizard-footer>
+		  </mat-step>
+		
+		  <mat-step>
+		    <app-step-worker-licence-contact-information
+		      [applicationTypeCode]="applicationTypeCode"
+		    ></app-step-worker-licence-contact-information>
+		
+		    <app-wizard-footer
+		      [isFormValid]="isFormValid"
+		      (previousStepperStep)="onGoToPreviousStep()"
+		      (nextStepperStep)="onStepNext(STEP_CONTACT_INFORMATION)"
+		      (nextReviewStepperStep)="onNextReview(STEP_CONTACT_INFORMATION)"
+		    ></app-wizard-footer>
+		  </mat-step>
 		</mat-stepper>
-	`,
+		`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 	standalone: false,

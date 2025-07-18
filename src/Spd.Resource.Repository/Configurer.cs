@@ -23,6 +23,7 @@ using Spd.Resource.Repository.Invoice;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.MDRARegistration;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Payment;
@@ -80,5 +81,6 @@ public class Configurer : IConfigureComponents
         configurationServices.Services.AddTransient<IDogTeamRepository, DogTeamRepository>();
         configurationServices.Services.AddTransient<IDogTrainerAppRepository, DogTrainerAppRepository>();
         configurationServices.Services.AddTransient<IRetiredDogAppRepository, RetiredDogAppRepository>();
+        configurationServices.Services.AddTransient<IMDRARegistrationRepository, MDRARegistrationRepository>();
     }
 }

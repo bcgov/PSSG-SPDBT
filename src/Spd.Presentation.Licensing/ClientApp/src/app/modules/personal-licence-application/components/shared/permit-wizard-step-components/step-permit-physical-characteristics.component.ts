@@ -5,14 +5,14 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-    selector: 'app-step-permit-physical-characteristics',
-    template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+	selector: 'app-step-permit-physical-characteristics',
+	template: `
+		<app-step-section [heading]="title" [subheading]="subtitle">
 			<app-form-physical-characteristics [form]="form"></app-form-physical-characteristics>
 		</app-step-section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class StepPermitPhysicalCharacteristicsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

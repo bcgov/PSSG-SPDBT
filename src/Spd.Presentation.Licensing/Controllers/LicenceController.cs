@@ -18,8 +18,6 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly IMediator _mediator;
         private static List<ServiceTypeCode> PersonalSecurityLicences = new() { ServiceTypeCode.BodyArmourPermit, ServiceTypeCode.ArmouredVehiclePermit, ServiceTypeCode.SecurityWorkerLicence };
-        private static List<ServiceTypeCode> GdsdCertifications = new() { ServiceTypeCode.GDSDTeamCertification, ServiceTypeCode.RetiredServiceDogCertification, ServiceTypeCode.DogTrainerCertification };
-
         public LicenceController(
             IMediator mediator,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -59,20 +57,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return resps.Where(r => r.ServiceTypeCode != null && PersonalSecurityLicences.Contains(r.ServiceTypeCode.Value)).ToList();
         }
 
-        /// <summary> 
-        /// Get gdsd licences (such as gdsd team, retired dog, dog trainer ) for login user , only return active and Expired ones. 
-        /// Example: http://localhost:5114/api/applicants/xxxx/gdsd-certifications 
-        /// </summary> 
-        /// <param name="applicantId"></param> 
-        /// <returns></returns> 
-        [Route("api/applicants/{applicantId}/gdsd-certifications")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantGdsdCertifications([FromRoute][Required] Guid applicantId)
-        {
-            IEnumerable<LicenceBasicResponse> resps = await _mediator.Send(new LicenceListQuery(applicantId, null));
-            return resps.Where(r => r.ServiceTypeCode != null && GdsdCertifications.Contains(r.ServiceTypeCode.Value)).ToList();
-        }
         /// <summary>
         /// Get latest licence by licence number.
         /// There should be only one active licence for each licenceNumber.
@@ -91,7 +75,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Get latest licence by licence number with google recaptcha for anonymous
-        /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
+        /// Example: http://localhost:5114/api/licence-lookup/anonymous/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
         /// <param name="recaptcha"></param>
@@ -106,30 +90,28 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
-            Guid latestAppId = Guid.Empty;
-            if (response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+            if (response == null) return null;
+
+            Guid latestAppId;
+            if (response.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+            else if (response.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 return response;
-            else if (response?.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response?.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
-                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
-            else if (response?.ServiceTypeCode == ServiceTypeCode.GDSDTeamCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.DogTrainerCertification
-                || response?.ServiceTypeCode == ServiceTypeCode.RetiredServiceDogCertification)
+            else if (response.ServiceTypeCode == ServiceTypeCode.MDRA)
             {
-                //gdsd, dog
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
-                string str = $"{response.LicenceId}*{response.LicenceAppId}";
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
-                return response;
+                latestAppId = await _mediator.Send(new GetMDRARegistrationIdQuery((Guid)response.LicenceHolderId)) ?? Guid.Empty;
+            }
+            else if (response.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit || response.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
+                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
+            else
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid licence type.");
             }
 
-            if (response != null)
-            {
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
-                string str = $"{response.LicenceId}*{latestAppId}";
-                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
-            }
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.LicenceHolderId.Value.ToString());
+            string str = $"{response.LicenceId}*{latestAppId}";
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
+
             return response;
         }
 

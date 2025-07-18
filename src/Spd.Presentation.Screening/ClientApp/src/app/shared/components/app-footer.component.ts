@@ -6,18 +6,20 @@ import { ConfigService } from 'src/app/core/services/config.service';
     selector: 'app-footer',
     template: `
 		<mat-toolbar color="primary" class="footer">
-			<a href="/">Home</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
-
-			<span style="flex: 1 1 auto;"></span>
-
-			<span class="fs-7 p-2 text-muted" *ngIf="env">{{ env }}</span>
+		  <a href="/">Home</a>
+		  <a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
+		  <a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
+		  <a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
+		  <a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
+		  <a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
+		
+		  <span style="flex: 1 1 auto;"></span>
+		
+		  @if (env) {
+		    <span class="fs-7 p-2 text-muted">{{ env }}</span>
+		  }
 		</mat-toolbar>
-	`,
+		`,
     styles: [
         `
 			.footer {

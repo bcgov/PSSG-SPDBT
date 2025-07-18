@@ -169,8 +169,9 @@ internal class PrintingManager
         EventResp? eventResp = await _eventRepo.GetAsync(request.EventId, ct);
         if (eventResp == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.");
-        if (eventResp.EventTypeEnum != EventTypeEnum.BCMPBusinessLicencePrinting)
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only support Business Licence document download.");
+        if (eventResp.EventTypeEnum != EventTypeEnum.BCMPBusinessLicencePrinting
+            && eventResp.EventTypeEnum != EventTypeEnum.BCMPMetalDealersPermitPrinting)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only support Business Licence/mdra licence download.");
         if (eventResp.JobId == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "the printing event is not executed successfully yet.");
         AssetResponse response = await _printer.Asset(new BCMailPlusPrintImageRequest(eventResp.JobId), ct);
@@ -186,10 +187,14 @@ internal class PrintingManager
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBusinessLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBusinessLicencePrinting");
 
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPMetalDealersPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPMetalDealersPermitPrinting");
+
         return eventResp.EventTypeEnum switch
         {
             EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest(eventResp.RegardingObjectId.Value),
-            EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest(eventResp.RegardingObjectId.Value),
+            EventTypeEnum.BCMPMetalDealersPermitPrinting => new MDRALicencePrintingTransformRequest(eventResp.RegardingObjectId.Value),
             _ => throw new NotImplementedException()
         };
     }
@@ -205,9 +210,9 @@ internal class PrintingManager
                     EventTypeEnum.BCMPSecurityWorkerLicencePrinting,
                     EventTypeEnum.BCMPArmouredVehiclePermitPrinting,
                     EventTypeEnum.BCMPBodyArmourPermitPrinting,
-                    //EventTypeEnum.BCMPRetiredServiceDogPrinting,
-                    //EventTypeEnum.BCMPDogTrainerPrinting,
-                    //EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
+                    EventTypeEnum.BCMPRetiredServiceDogPrinting,
+                    EventTypeEnum.BCMPDogTrainerPrinting,
+                    EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
                 },
                 CutOffDateTime = DateTimeOffset.UtcNow,
             }, ct);

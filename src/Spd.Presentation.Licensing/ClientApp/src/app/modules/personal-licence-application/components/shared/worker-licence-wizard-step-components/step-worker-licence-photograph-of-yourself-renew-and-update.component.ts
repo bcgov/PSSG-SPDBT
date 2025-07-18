@@ -7,7 +7,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-renew-and-update',
 	template: `
-		<app-step-section [title]="title">
+		<app-step-section [heading]="title">
 			<app-form-photograph-of-yourself-update
 				[form]="form"
 				[serviceTypeCode]="securityWorkerLicenceCode"
