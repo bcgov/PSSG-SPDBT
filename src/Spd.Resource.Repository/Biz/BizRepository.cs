@@ -84,6 +84,7 @@ namespace Spd.Resource.Repository.Biz
             {
                 UpdateBizCmd c => await UpdateBizAsync(c, ct),
                 CreateBizCmd c => await CreateBizAsync(c, ct),
+                MergeBizsCmd c => await MergeBizAsync(c, ct),
                 AddBizServiceTypeCmd c => await AddBizServiceTypeAsync(c, ct),
                 UpdateBizServiceTypeCmd c => await UpdateBizServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
@@ -155,6 +156,26 @@ namespace Spd.Resource.Repository.Biz
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
+        }
+
+        private async Task<BizResult?> MergeBizAsync(MergeBizsCmd mergeBizCmd, CancellationToken ct)
+        {
+            account? oldBiz = await _context.GetOrgById(mergeBizCmd.OldBizId, ct);
+            account? newBiz = await _context.GetOrgById(mergeBizCmd.NewBizId, ct);
+            if (oldBiz == null || newBiz == null)
+            {
+                _logger.LogError($"Merge bizs cannot find at least one of the bizs");
+                throw new ArgumentException("cannot find business for merging");
+            }
+
+            //var result = await _context.spd_MergeContacts(oldBiz, newBiz).GetValueAsync(ct);
+            //await _context.SaveChangesAsync(ct);
+            //if (result.IsSuccess == null || !(result.IsSuccess.Value))
+            //{
+            //    _logger.LogError($"Merge bizs failed for merging oldBiz {mergeBizCmd.OldBizId} to newContact {mergeBizCmd.NewBizId}");
+            //    throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
+            //}
+            return null;
         }
 
         private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd addBizServiceTypeCmd, CancellationToken ct)
