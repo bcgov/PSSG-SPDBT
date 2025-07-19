@@ -37,13 +37,13 @@ const routes: Routes = [
 				(m) => m.SecurityLicenceStatusVerificationModule
 			),
 	},
-	{
-		path: AppRoutes.METAL_DEALERS_AND_RECYCLERS,
-		loadChildren: () =>
-			import('./modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers.module').then(
-				(m) => m.MetalDealersAndRecyclersModule
-			),
-	},
+	// {
+	// 	path: AppRoutes.METAL_DEALERS_AND_RECYCLERS,
+	// 	loadChildren: () =>
+	// 		import('./modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers.module').then(
+	// 			(m) => m.MetalDealersAndRecyclersModule
+	// 		),
+	// },
 	{
 		path: AppRoutes.ACCESS_DENIED,
 		component: AccessDeniedComponent,
