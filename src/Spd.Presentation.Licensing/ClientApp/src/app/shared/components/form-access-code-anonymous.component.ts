@@ -148,46 +148,15 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			return;
 		}
 
-		switch (this.serviceTypeCode) {
-			case ServiceTypeCode.SecurityWorkerLicence: {
-				this.commonApplicationService
-					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponseExt | null) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
-			// SPDBT-3425 - Remove anonymous permit flows
-			// case ServiceTypeCode.ArmouredVehiclePermit:
-			// case ServiceTypeCode.BodyArmourPermit: {
-			// 	this.commonApplicationService
-			// 		.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-			// 		.pipe(
-			// 			tap((resp: LicenceResponse) => {
-			// 				this.handleLookupResponse(resp);
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
-			// 	break;
-			// }
-			case ServiceTypeCode.Mdra: {
-				this.commonApplicationService
-					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
-					.pipe(
-						tap((resp: LicenceResponseExt | null) => {
-							this.handleLookupResponse(resp);
-						}),
-						take(1)
-					)
-					.subscribe();
-				break;
-			}
-		}
+		this.commonApplicationService
+			.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+			.pipe(
+				tap((resp: LicenceResponseExt | null) => {
+					this.handleLookupResponse(resp);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onCreateNewLicence(): void {

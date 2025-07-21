@@ -81,10 +81,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
-	swlLookupLicenceFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
-	});
-
 	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});

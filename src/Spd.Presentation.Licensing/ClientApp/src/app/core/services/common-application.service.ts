@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
@@ -43,6 +44,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -97,7 +99,20 @@ export class CommonApplicationService {
 		'Security Services Application',
 	]);
 
+	swlLookupLicenceFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
+	});
+
+	swlLookupLicenceAnonymousFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', FormControlValidators.required),
+		}),
+	});
+
 	constructor(
+		private formBuilder: FormBuilder,
 		private router: Router,
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
@@ -722,6 +737,21 @@ export class CommonApplicationService {
 			);
 	}
 
+	getLicenceNumberAccessCodeLookupAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceLookupResult> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					const lookupResp = this.getLicenceSearchFlags(resp);
+					return of(lookupResp);
+				})
+			);
+	}
+
 	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
 		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
 			switchMap((resp: LicenceResponse) => {
@@ -735,7 +765,8 @@ export class CommonApplicationService {
 		licence: LicenceResponse | null,
 		serviceTypeCode: ServiceTypeCode,
 		isExpired: boolean,
-		isInRenewalPeriod: boolean
+		isInRenewalPeriod: boolean,
+		useAccessCode: boolean = false
 	): [string | null, string | null] {
 		let messageWarn = null;
 		let messageError = null;
@@ -755,13 +786,17 @@ export class CommonApplicationService {
 				}
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, useAccessCode);
 		}
 
 		return [messageWarn, messageError];
 	}
 
-	setLicenceLookupMessage(licence: LicenceResponse | null, serviceTypeCode: ServiceTypeCode): string | null {
+	setLicenceLookupMessage(
+		licence: LicenceResponse | null,
+		serviceTypeCode: ServiceTypeCode,
+		useAccessCode: boolean = false
+	): string | null {
 		let messageError = null;
 
 		if (licence) {
@@ -769,7 +804,7 @@ export class CommonApplicationService {
 				messageError = this.getLicenceLookupServiceTypeCodeMismatchErrorMessage(serviceTypeCode);
 			}
 		} else {
-			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode);
+			messageError = this.getLicenceLookupNoMatchErrorMessage(serviceTypeCode, useAccessCode);
 		}
 
 		return messageError;
@@ -1004,8 +1039,15 @@ export class CommonApplicationService {
 		return `The ${typeLabel} number you entered is not a ${serviceTypeCodeDesc}.`;
 	}
 
-	private getLicenceLookupNoMatchErrorMessage(serviceTypeCode: ServiceTypeCode): string {
+	private getLicenceLookupNoMatchErrorMessage(
+		serviceTypeCode: ServiceTypeCode,
+		useAccessCode: boolean = false
+	): string {
 		const typeLabel = this.getLicenceTypeName(serviceTypeCode);
+
+		if (useAccessCode) {
+			return `This ${typeLabel} number and access code are not a valid combination.`;
+		}
 
 		if (serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
 			return `The ${typeLabel} number you entered does not match any existing records in our system for your business in BC.`;

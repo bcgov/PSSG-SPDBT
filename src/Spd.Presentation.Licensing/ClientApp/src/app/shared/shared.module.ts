@@ -42,6 +42,7 @@ import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.c
 import { ModalAddressComponent } from './components/modal-address.component';
 import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
+import { ModalLookupByLicenceNumberAccessCodeComponent } from './components/modal-lookup-by-licence-number-access-code.component';
 import { ModalLookupByLicenceNumberComponent } from './components/modal-lookup-by-licence-number.component';
 import { PaymentCancelComponent } from './components/payment-cancel.component';
 import { PaymentErrorComponent } from './components/payment-error.component';
@@ -94,6 +95,7 @@ const SHARED_COMPONENTS = [
 	PhoneNumberTransformDirective,
 	CollectionNoticeComponent,
 	ModalLookupByLicenceNumberComponent,
+	ModalLookupByLicenceNumberAccessCodeComponent,
 	FormLicenceListExpiredComponent,
 	FormAlertUpdateOrRenewalComponent,
 	FormLicenceReprintComponent,
