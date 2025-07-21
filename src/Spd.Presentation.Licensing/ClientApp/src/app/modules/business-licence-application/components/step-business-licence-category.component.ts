@@ -34,16 +34,14 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									<mat-label>Category</mat-label>
 									<mat-select formControlName="categoryCode">
 										@for (item of validCategoryList; track item; let i = $index) {
-											<mat-option [value]="item.code">
-												{{ item.desc }}
-											</mat-option>
+											<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 										}
 									</mat-select>
 								</mat-form-field>
 								@if (isDirtyAndInvalid) {
-									<mat-error class="mat-option-error">
-										At least one category must be added. Click 'Add Category' after selecting a category.
-									</mat-error>
+									<mat-error class="mat-option-error"
+										>At least one category must be added. Click 'Add Category' after selecting a category.</mat-error
+									>
 								}
 							</div>
 							@if (categoryList.length < 6) {

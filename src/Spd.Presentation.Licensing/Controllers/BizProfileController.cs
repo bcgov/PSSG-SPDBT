@@ -61,4 +61,17 @@ public class BizProfileController : SpdControllerBase
 
         return bizGuidId;
     }
+
+    /// <summary>
+    /// Merge the old business to the new business, old business/org will be marked as inactive. All the entities reference to old business will be changed to refer to new business.
+    /// </summary>
+    /// <returns></returns>
+    [Route("api/biz/merge/{oldBizId}/{newBizId}")]
+    [HttpGet]
+    [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+    public async Task<IActionResult> MergeBizs([FromRoute] Guid oldBizId, [FromRoute] Guid newBizId)
+    {
+        await _mediator.Send(new BizMergeCommand(oldBizId, newBizId));
+        return Ok();
+    }
 }

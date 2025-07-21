@@ -4,6 +4,7 @@ export class BusinessLicenceApplicationRoutes {
 	public static readonly MODULE_PATH = AppRoutes.BUSINESS_LICENCE_APPLICATION;
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static readonly LICENCE_LINK = 'licence-link';
 
 	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId
 	public static readonly BUSINESS_RENEWAL_SOLE_PROPRIETOR = 'business-licence-renewal-sp'; // should contain url parameters for licenceAppId

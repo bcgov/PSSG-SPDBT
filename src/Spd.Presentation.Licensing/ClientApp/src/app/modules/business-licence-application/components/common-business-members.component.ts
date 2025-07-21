@@ -26,9 +26,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 		}
 		@if (!maxCountValid) {
 			<div class="mt-3">
-				<mat-error class="mat-option-error">
-					At most {{ maxCount }} Controlling Members and Business Managers can be entered
-				</mat-error>
+				<mat-error class="mat-option-error"
+					>At most {{ maxCount }} Controlling Members and Business Managers can be entered</mat-error
+				>
 			</div>
 		}
 	`,

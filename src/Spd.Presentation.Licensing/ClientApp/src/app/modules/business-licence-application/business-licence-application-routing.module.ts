@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ServiceTypeCode } from '@app/api/models';
+import { LicenceAccessCodeLinkComponent } from '@app/shared/components/licence-access-code-link.component';
 import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
@@ -73,6 +75,13 @@ const routes: Routes = [
 			{
 				path: '',
 				component: BusinessLicenceMainComponent,
+			},
+			{
+				path: BusinessLicenceApplicationRoutes.LICENCE_LINK,
+				component: LicenceAccessCodeLinkComponent,
+				data: {
+					serviceTypeCode: ServiceTypeCode.SecurityBusinessLicence,
+				},
 			},
 			{
 				path: `${BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`,

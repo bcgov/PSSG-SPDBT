@@ -39,6 +39,7 @@ import { FormPhotographOfYourselfComponent } from './components/form-photograph-
 import { FormPhysicalCharacteristicsComponent } from './components/form-physical-characteristics.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
+import { LicenceAccessCodeLinkComponent } from './components/licence-access-code-link.component';
 import { ModalAddressComponent } from './components/modal-address.component';
 import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
@@ -123,6 +124,7 @@ const SHARED_COMPONENTS = [
 	FormPhysicalCharacteristicsComponent,
 	FormLicenceCategoryPanelSimpleComponent,
 	FormAccessCodeAnonymousComponent,
+	LicenceAccessCodeLinkComponent,
 ];
 
 @NgModule({

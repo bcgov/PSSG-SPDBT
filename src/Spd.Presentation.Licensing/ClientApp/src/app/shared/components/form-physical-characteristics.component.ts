@@ -21,9 +21,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Hair Colour</mat-label>
 								<mat-select formControlName="hairColourCode" [errorStateMatcher]="matcher">
 									@for (item of hairColourTypes; track item; let i = $index) {
-										<mat-option [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
+										<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 									}
 								</mat-select>
 								@if (form.get('hairColourCode')?.hasError('required')) {
@@ -36,9 +34,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Eye Colour</mat-label>
 								<mat-select formControlName="eyeColourCode" [errorStateMatcher]="matcher">
 									@for (item of eyeColourTypes; track item; let i = $index) {
-										<mat-option [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
+										<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 									}
 								</mat-select>
 								@if (form.get('eyeColourCode')?.hasError('required')) {
@@ -93,9 +89,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Units</mat-label>
 								<mat-select formControlName="heightUnitCode" [errorStateMatcher]="matcher">
 									@for (item of heightUnitTypes; track item; let i = $index) {
-										<mat-option [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
+										<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 									}
 								</mat-select>
 								@if (form.get('heightUnitCode')?.hasError('required')) {
@@ -130,9 +124,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Units</mat-label>
 								<mat-select formControlName="weightUnitCode" [errorStateMatcher]="matcher">
 									@for (item of weightUnitTypes; track item; let i = $index) {
-										<mat-option [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
+										<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 									}
 								</mat-select>
 								@if (form.get('weightUnitCode')?.hasError('required')) {

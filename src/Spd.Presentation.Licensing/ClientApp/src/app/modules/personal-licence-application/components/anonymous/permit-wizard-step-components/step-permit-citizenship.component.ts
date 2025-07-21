@@ -62,7 +62,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												}
 											</mat-select>
 											@if (form.get('canadianCitizenProofTypeCode')?.hasError('required')) {
-												<mat-error> This is required</mat-error>
+												<mat-error>This is required</mat-error>
 											}
 										</mat-form-field>
 									</div>
@@ -83,7 +83,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													<mat-error>This is required</mat-error>
 												}
 												@if (form.get('expiryDate')?.hasError('matDatepickerMin')) {
-													<mat-error> Invalid expiry date</mat-error>
+													<mat-error>Invalid expiry date</mat-error>
 												}
 											</mat-form-field>
 										</div>
@@ -130,7 +130,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													}
 												</mat-select>
 												@if (form.get('proofOfResidentStatusCode')?.hasError('required')) {
-													<mat-error> This is required</mat-error>
+													<mat-error>This is required</mat-error>
 												}
 											</mat-form-field>
 										} @else {
@@ -148,7 +148,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													}
 												</mat-select>
 												@if (form.get('proofOfCitizenshipCode')?.hasError('required')) {
-													<mat-error> This is required</mat-error>
+													<mat-error>This is required</mat-error>
 												}
 											</mat-form-field>
 										}
@@ -169,7 +169,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-error>This is required</mat-error>
 											}
 											@if (form.get('expiryDate')?.hasError('matDatepickerMin')) {
-												<mat-error> Invalid expiry date</mat-error>
+												<mat-error>Invalid expiry date</mat-error>
 											}
 										</mat-form-field>
 									</div>
