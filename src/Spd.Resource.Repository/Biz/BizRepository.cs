@@ -168,13 +168,13 @@ namespace Spd.Resource.Repository.Biz
                 throw new ArgumentException("cannot find business for merging");
             }
 
-            //var result = await _context.spd_MergeContacts(oldBiz, newBiz).GetValueAsync(ct);
-            //await _context.SaveChangesAsync(ct);
-            //if (result.IsSuccess == null || !(result.IsSuccess.Value))
-            //{
-            //    _logger.LogError($"Merge bizs failed for merging oldBiz {mergeBizCmd.OldBizId} to newContact {mergeBizCmd.NewBizId}");
-            //    throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
-            //}
+            var result = await _context.spd_MergeOrgs(oldBiz, newBiz).GetValueAsync(ct);
+            await _context.SaveChangesAsync(ct);
+            if (result.IsSuccess == null || !(result.IsSuccess.Value))
+            {
+                _logger.LogError($"Merge bizs failed for merging oldBiz {mergeBizCmd.OldBizId} to newContact {mergeBizCmd.NewBizId}");
+                throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge accounts failed.");
+            }
             return null;
         }
 
