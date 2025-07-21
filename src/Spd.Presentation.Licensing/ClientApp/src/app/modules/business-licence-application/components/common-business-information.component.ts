@@ -74,9 +74,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 						<mat-label>Business Type</mat-label>
 						<mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher">
 							@for (item of businessTypes; track item; let i = $index) {
-								<mat-option [value]="item.code">
-									{{ item.desc }}
-								</mat-option>
+								<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 							}
 						</mat-select>
 						@if (form.get('bizTypeCode')?.hasError('required')) {
@@ -142,9 +140,10 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								form.get('soleProprietorLicenceId')?.invalid &&
 								form.get('soleProprietorLicenceId')?.hasError('required')
 							) {
-								<mat-error class="mat-option-error mb-4">
-									You must have a valid security worker licence to apply for a sole proprietor business licence.
-								</mat-error>
+								<mat-error class="mat-option-error mb-4"
+									>You must have a valid security worker licence to apply for a sole proprietor business
+									licence.</mat-error
+								>
 							}
 							@if (
 								(form.dirty || form.touched) &&

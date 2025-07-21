@@ -46,7 +46,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 										form.get('isProfileUpToDate')?.invalid &&
 										form.get('isProfileUpToDate')?.hasError('required')
 									) {
-										<mat-error class="mat-option-error"> This is required</mat-error>
+										<mat-error class="mat-option-error">This is required</mat-error>
 									}
 								</form>
 							</section>

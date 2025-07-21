@@ -56,9 +56,7 @@ import { FileUploadComponent } from './file-upload.component';
 									<mat-label>Your Current Role</mat-label>
 									<mat-select formControlName="policeOfficerRoleCode" [errorStateMatcher]="matcher">
 										@for (item of policeOfficerRoleTypes; track item; let i = $index) {
-											<mat-option [value]="item.code">
-												{{ item.desc }}
-											</mat-option>
+											<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 										}
 									</mat-select>
 									@if (form.get('policeOfficerRoleCode')?.hasError('required')) {

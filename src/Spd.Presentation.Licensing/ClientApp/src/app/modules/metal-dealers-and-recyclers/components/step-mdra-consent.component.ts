@@ -46,7 +46,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									form.get('agreeToCompleteAndAccurate')?.invalid &&
 									form.get('agreeToCompleteAndAccurate')?.hasError('required')
 								) {
-									<mat-error class="mat-option-error"> This is required</mat-error>
+									<mat-error class="mat-option-error">This is required</mat-error>
 								}
 							</div>
 						</div>

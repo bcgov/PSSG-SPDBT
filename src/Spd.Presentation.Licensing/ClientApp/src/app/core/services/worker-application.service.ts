@@ -406,8 +406,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<any>> {
-		const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
-
 		return this.licenceService.apiLicenceLookupLicenceNumberGet$Response({ licenceNumber, accessCode }).pipe(
 			switchMap((resp: StrictHttpResponse<LicenceResponse>) => {
 				if (resp.status != 200) {
@@ -416,6 +414,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 				// Licence status does not matter for the merge
 
+				const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
 					oldApplicantId: resp.body.licenceHolderId!,
 					newApplicantId,
