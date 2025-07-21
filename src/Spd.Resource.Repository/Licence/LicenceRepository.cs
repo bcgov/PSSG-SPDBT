@@ -119,9 +119,9 @@ internal class LicenceRepository : ILicenceRepository
             Guid? mdraServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.MDRA.ToString());
             Guid? bizServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SecurityBusinessLicence.ToString());
             result = result.Where(r =>
-                (r._spd_licencetype_value == mdraServiceTypeId && r.spd_LicenceHolder_account.spd_accesscode == qry.AccessCode)
-                || (r._spd_licencetype_value == bizServiceTypeId && r.spd_LicenceHolder_account.spd_accesscode == qry.AccessCode)
-                || r.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode).ToList();
+                (r._spd_licencetype_value == mdraServiceTypeId && r.spd_LicenceHolder_account?.spd_accesscode == qry.AccessCode)
+                || (r._spd_licencetype_value == bizServiceTypeId && r.spd_LicenceHolder_account?.spd_accesscode == qry.AccessCode)
+                || r.spd_LicenceHolder_contact?.spd_accesscode == qry.AccessCode).ToList();
         }
         return new LicenceListResp()
         {
