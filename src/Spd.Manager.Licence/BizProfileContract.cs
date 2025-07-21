@@ -12,12 +12,14 @@ public interface IBizProfileManager
     public Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct); //used for biz lic portal
     public Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct);
     public Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct);
+    public Task<Unit> Handle(BizMergeCommand cmd, CancellationToken ct);
 }
 
 public record GetBizProfileQuery(Guid BizId) : IRequest<BizProfileResponse>;
 public record GetBizsQuery(Guid BizGuid, bool OneOrgGuidOneBizPortal = false) : IRequest<IEnumerable<BizListResponse>>;
 public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo, Guid? BizId) : IRequest<BizUserLoginResponse>;
 public record BizTermAgreeCommand(Guid BizId, Guid BizUserId) : IRequest<Unit>;
+public record BizMergeCommand(Guid OldBizId, Guid NewBizId) : IRequest<Unit>;
 public record BizProfileUpdateCommand(
     Guid BizId,
     BizProfileUpdateRequest BizProfileUpdateRequest)

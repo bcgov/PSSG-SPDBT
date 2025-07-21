@@ -18,6 +18,7 @@ public class BizProfileManager :
         IRequestHandler<BizTermAgreeCommand, Unit>,
         IRequestHandler<BizProfileUpdateCommand, Unit>,
         IRequestHandler<GetBizsQuery, IEnumerable<BizListResponse>>,
+        IRequestHandler<BizMergeCommand, Unit>,
         IBizProfileManager
 {
     private readonly IIdentityRepository _idRepository;
@@ -156,6 +157,13 @@ public class BizProfileManager :
         IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
         await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
 
+        return default;
+    }
+
+    public async Task<Unit> Handle(BizMergeCommand cmd, CancellationToken ct)
+    {
+        MergeBizsCmd mergeBizCmd = new(cmd.OldBizId, cmd.NewBizId);
+        await _bizRepository.ManageBizAsync(mergeBizCmd, ct);
         return default;
     }
 
