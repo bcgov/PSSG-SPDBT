@@ -7,6 +7,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { ModalLookupByLicenceNumberAccessCodeComponent } from './modal-lookup-by-licence-number-access-code.component';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -100,6 +101,7 @@ export class FormExpiredLicenceComponent implements OnInit {
 	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;
 	@Input() serviceTypeCode!: ServiceTypeCode;
+	@Input() useAccessCode = false;
 
 	constructor(
 		private dialog: MatDialog,
@@ -120,6 +122,32 @@ export class FormExpiredLicenceComponent implements OnInit {
 			typeLabel: this.typeLabel,
 			isLoggedIn: this.isLoggedIn,
 		};
+
+		if (this.useAccessCode) {
+			this.dialog
+				.open(ModalLookupByLicenceNumberAccessCodeComponent, {
+					width: '800px',
+					data: dialogOptions,
+					autoFocus: true,
+				})
+				.afterClosed()
+				.subscribe((resp: any) => {
+					if (resp?.data) {
+						this.form.patchValue(
+							{
+								expiredLicenceId: resp.data.licenceId,
+								expiredLicenceHolderName: resp.data.licenceHolderName,
+								expiredLicenceNumber: resp.data.licenceNumber,
+								expiredLicenceExpiryDate: resp.data.expiryDate,
+								expiredLicenceStatusCode: resp.data.licenceStatusCode,
+							},
+							{ emitEvent: false }
+						);
+					}
+				});
+			return;
+		}
+
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
