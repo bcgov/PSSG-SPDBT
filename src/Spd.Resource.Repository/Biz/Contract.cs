@@ -12,6 +12,7 @@
     public record UpdateBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
     public record CreateBizCmd() : BizCmd;
     public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
+    public record MergeBizsCmd(Guid OldBizId, Guid NewBizId) : BizCmd;
 
     //query
     public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null);
