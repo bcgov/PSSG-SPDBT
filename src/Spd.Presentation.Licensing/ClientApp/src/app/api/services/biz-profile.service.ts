@@ -15,7 +15,10 @@ import { apiBizBizIdPut } from '../fn/biz-profile/api-biz-biz-id-put';
 import { ApiBizBizIdPut$Params } from '../fn/biz-profile/api-biz-biz-id-put';
 import { apiBizIdGet } from '../fn/biz-profile/api-biz-id-get';
 import { ApiBizIdGet$Params } from '../fn/biz-profile/api-biz-id-get';
+import { apiBizMergeOldBizIdNewBizIdGet } from '../fn/biz-profile/api-biz-merge-old-biz-id-new-biz-id-get';
+import { ApiBizMergeOldBizIdNewBizIdGet$Params } from '../fn/biz-profile/api-biz-merge-old-biz-id-new-biz-id-get';
 import { BizProfileResponse } from '../models/biz-profile-response';
+import { IActionResult } from '../models/i-action-result';
 
 @Injectable({ providedIn: 'root' })
 export class BizProfileService extends BaseService {
@@ -86,6 +89,39 @@ export class BizProfileService extends BaseService {
   apiBizBizIdPut(params: ApiBizBizIdPut$Params, context?: HttpContext): Observable<string> {
     return this.apiBizBizIdPut$Response(params, context).pipe(
       map((r: StrictHttpResponse<string>): string => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBizMergeOldBizIdNewBizIdGet()` */
+  static readonly ApiBizMergeOldBizIdNewBizIdGetPath = '/api/biz/merge/{oldBizId}/{newBizId}';
+
+  /**
+   * Merge the old business to the new business, old business/org will be marked as inactive. All the entities reference to old business will be changed to refer to new business.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBizMergeOldBizIdNewBizIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBizMergeOldBizIdNewBizIdGet$Response(params: ApiBizMergeOldBizIdNewBizIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IActionResult>> {
+    return apiBizMergeOldBizIdNewBizIdGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Merge the old business to the new business, old business/org will be marked as inactive. All the entities reference to old business will be changed to refer to new business.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBizMergeOldBizIdNewBizIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBizMergeOldBizIdNewBizIdGet(params: ApiBizMergeOldBizIdNewBizIdGet$Params, context?: HttpContext): Observable<IActionResult> {
+    return this.apiBizMergeOldBizIdNewBizIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<IActionResult>): IActionResult => r.body)
     );
   }
 
