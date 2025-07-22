@@ -17,7 +17,7 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 			}
 
 			<app-alert type="info" icon="info">
-				Enter the {{ typeLabel }} Number, access code, perform the reCaptcha and then click the search button.
+				Enter the {{ typeLabel }} Number, Access Code, perform the reCaptcha and then click the search button.
 			</app-alert>
 
 			<form [formGroup]="form" novalidate>
