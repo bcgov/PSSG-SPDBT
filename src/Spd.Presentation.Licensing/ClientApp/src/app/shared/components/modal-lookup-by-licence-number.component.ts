@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService, LicenceLookupResult } from '@app/core/services/common-application.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { Subject } from 'rxjs';
@@ -200,7 +199,7 @@ export interface LookupByLicenceNumberDialogData {
 	standalone: false,
 })
 export class ModalLookupByLicenceNumberComponent implements OnInit {
-	form = this.businessApplicationService.swlLookupLicenceFormGroup;
+	form = this.commonApplicationService.swlLookupLicenceFormGroup;
 
 	captchaFormGroup = new FormGroup({
 		token: new FormControl('', FormControlValidators.required),
@@ -229,7 +228,6 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 
 	constructor(
 		private dialogRef: MatDialogRef<ModalLookupByLicenceNumberComponent>,
-		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: LookupByLicenceNumberDialogData
 	) {}

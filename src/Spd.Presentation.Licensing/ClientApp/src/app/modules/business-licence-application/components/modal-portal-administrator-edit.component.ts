@@ -24,9 +24,7 @@ export interface BizPortalUserDialogData {
 							<mat-label>Authorization Type</mat-label>
 							<mat-select formControlName="contactAuthorizationTypeCode">
 								@for (auth of authorizationTypes; track auth) {
-									<mat-option [value]="auth.code">
-										{{ auth.desc }}
-									</mat-option>
+									<mat-option [value]="auth.code">{{ auth.desc }}</mat-option>
 								}
 							</mat-select>
 							@if (form.get('contactAuthorizationTypeCode')?.hasError('required')) {

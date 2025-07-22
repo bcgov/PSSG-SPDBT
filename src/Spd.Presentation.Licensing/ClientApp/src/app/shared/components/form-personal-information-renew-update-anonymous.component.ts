@@ -75,9 +75,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[errorStateMatcher]="matcher"
 								>
 									@for (gdr of genderTypes; track gdr; let i = $index) {
-										<mat-option [value]="gdr.code">
-											{{ gdr.desc }}
-										</mat-option>
+										<mat-option [value]="gdr.code">{{ gdr.desc }}</mat-option>
 									}
 								</mat-select>
 								@if (form.get('genderCode')?.hasError('required')) {

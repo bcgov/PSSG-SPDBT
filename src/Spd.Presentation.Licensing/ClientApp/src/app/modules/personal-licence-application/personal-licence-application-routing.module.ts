@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ServiceTypeCode } from '@app/api/models';
+import { LicenceAccessCodeLinkComponent } from '@app/shared/components/licence-access-code-link.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
@@ -19,7 +21,6 @@ import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/a
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
 import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/step-worker-licence-update-terms-authenticated.component';
-import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/shared/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/shared/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/shared/licence-first-time-user-terms-of-use.component';
@@ -32,8 +33,8 @@ import { LicencePaymentFailComponent } from './components/shared/licence-payment
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
-import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
+import { PersonalLicenceMainComponent } from './components/shared/personal-licence-main.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-user-profile.component';
 import { PersonalLicenceApplicationRoutes } from './personal-licence-application-routes';
 
@@ -136,7 +137,10 @@ const routes: Routes = [
 			},
 			{
 				path: PersonalLicenceApplicationRoutes.LICENCE_LINK,
-				component: LicenceAccessCodeAuthorizedComponent,
+				component: LicenceAccessCodeLinkComponent,
+				data: {
+					serviceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
+				},
 			},
 			{
 				path: PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR,

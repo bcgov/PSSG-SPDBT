@@ -58,9 +58,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											[errorStateMatcher]="matcher"
 										>
 											@for (item of proofOfCanadianCitizenshipTypes; track item; let i = $index) {
-												<mat-option class="proof-option" [value]="item.code">
-													{{ item.desc }}
-												</mat-option>
+												<mat-option class="proof-option" [value]="item.code">{{ item.desc }}</mat-option>
 											}
 										</mat-select>
 										@if (form.get('canadianCitizenProofTypeCode')?.hasError('required')) {
@@ -76,9 +74,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											[errorStateMatcher]="matcher"
 										>
 											@for (item of proofOfAbilityToWorkInCanadaTypes; track item; let i = $index) {
-												<mat-option class="proof-option" [value]="item.code">
-													{{ item.desc }}
-												</mat-option>
+												<mat-option class="proof-option" [value]="item.code">{{ item.desc }}</mat-option>
 											}
 										</mat-select>
 										@if (form.get('notCanadianCitizenProofTypeCode')?.hasError('required')) {
@@ -173,9 +169,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													[errorStateMatcher]="matcher"
 												>
 													@for (item of governmentIssuedPhotoIdTypes; track item; let i = $index) {
-														<mat-option [value]="item.code">
-															{{ item.desc }}
-														</mat-option>
+														<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 													}
 												</mat-select>
 												<mat-hint>This ID can be from another country</mat-hint>

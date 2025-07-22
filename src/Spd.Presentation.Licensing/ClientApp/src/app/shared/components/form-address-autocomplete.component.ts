@@ -78,11 +78,11 @@ export class Address {
 						<mat-label>Country</mat-label>
 						<mat-select formControlName="country">
 							@for (ctry of countryList; track ctry; let i = $index) {
-								<mat-option [value]="ctry.code">
-									<span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
+								<mat-option [value]="ctry.code"
+									><span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
 										ctry.desc
-									}}</span>
-								</mat-option>
+									}}</span></mat-option
+								>
 							}
 						</mat-select>
 					</mat-form-field>
