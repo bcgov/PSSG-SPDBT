@@ -27,15 +27,29 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         _context.AddTospd_applications(app);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         contact? contact = _mapper.Map<contact>(cmd);
-        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New) //spdbt-4370
         {
-            //spdbt-3402: for unauth, always create new contact
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-                SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
-            else
+            if (cmd.ExpiredLicenceId == null)
+            {
+                contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
                 _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-
+            }
+            else
+            {
+                var licence = _context.spd_licences.Where(l => l.spd_licenceid == cmd.ExpiredLicenceId).FirstOrDefault();
+                if (licence != null)
+                {
+                    _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
+                }
+                else
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "cannot find the expired licence. ");
+                }
+                contact? existingContact = await _context.GetContactById((Guid)licence._spd_licenceholder_value, ct);
+                if (contact.spd_mentalhealthcondition == (int)YesNoOptionSet.No)
+                    contact.spd_mentalhealthcondition = null;
+                contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            }
         }
         else
         {

@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ServiceTypeCode } from '@app/api/models';
+import { LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { ModalLookupByLicenceNumberAccessCodeComponent } from './modal-lookup-by-licence-number-access-code.component';
 import {
@@ -101,12 +102,13 @@ export class FormExpiredLicenceComponent implements OnInit {
 	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;
 	@Input() serviceTypeCode!: ServiceTypeCode;
-	@Input() useAccessCode = false;
+	@Input() useSwlAnonymousNewAccessCode = false;
 
 	constructor(
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: CommonApplicationService,
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -123,7 +125,7 @@ export class FormExpiredLicenceComponent implements OnInit {
 			isLoggedIn: this.isLoggedIn,
 		};
 
-		if (this.useAccessCode) {
+		if (this.useSwlAnonymousNewAccessCode) {
 			this.dialog
 				.open(ModalLookupByLicenceNumberAccessCodeComponent, {
 					width: '800px',
@@ -132,17 +134,23 @@ export class FormExpiredLicenceComponent implements OnInit {
 				})
 				.afterClosed()
 				.subscribe((resp: any) => {
-					if (resp?.data) {
-						this.form.patchValue(
-							{
-								expiredLicenceId: resp.data.licenceId,
-								expiredLicenceHolderName: resp.data.licenceHolderName,
-								expiredLicenceNumber: resp.data.licenceNumber,
-								expiredLicenceExpiryDate: resp.data.expiryDate,
-								expiredLicenceStatusCode: resp.data.licenceStatusCode,
-							},
-							{ emitEvent: false }
-						);
+					const licenceResponse: LicenceResponse | null = resp?.data;
+					if (licenceResponse) {
+						this.workerApplicationService
+							.populateNewLicenceApplAccessCodeAnonymous(licenceResponse)
+							.pipe()
+							.subscribe((_resp: any) => {
+								this.form.patchValue(
+									{
+										expiredLicenceId: licenceResponse.licenceId,
+										expiredLicenceHolderName: licenceResponse.licenceHolderName,
+										expiredLicenceNumber: licenceResponse.licenceNumber,
+										expiredLicenceExpiryDate: licenceResponse.expiryDate,
+										expiredLicenceStatusCode: licenceResponse.licenceStatusCode,
+									},
+									{ emitEvent: false }
+								);
+							});
 					}
 				});
 			return;
@@ -156,14 +164,15 @@ export class FormExpiredLicenceComponent implements OnInit {
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp?.data) {
+				const licenceResponse: LicenceResponse | null = resp?.data;
+				if (licenceResponse) {
 					this.form.patchValue(
 						{
-							expiredLicenceId: resp.data.licenceId,
-							expiredLicenceHolderName: resp.data.licenceHolderName,
-							expiredLicenceNumber: resp.data.licenceNumber,
-							expiredLicenceExpiryDate: resp.data.expiryDate,
-							expiredLicenceStatusCode: resp.data.licenceStatusCode,
+							expiredLicenceId: licenceResponse.licenceId,
+							expiredLicenceHolderName: licenceResponse.licenceHolderName,
+							expiredLicenceNumber: licenceResponse.licenceNumber,
+							expiredLicenceExpiryDate: licenceResponse.expiryDate,
+							expiredLicenceStatusCode: licenceResponse.licenceStatusCode,
 						},
 						{ emitEvent: false }
 					);
