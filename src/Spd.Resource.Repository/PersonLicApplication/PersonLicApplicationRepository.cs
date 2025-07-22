@@ -41,6 +41,10 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 {
                     _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
                 }
+                else
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "cannot find the expired licence. ");
+                }
                 contact? existingContact = await _context.GetContactById((Guid)licence._spd_licenceholder_value, ct);
                 if (contact.spd_mentalhealthcondition == (int)YesNoOptionSet.No)
                     contact.spd_mentalhealthcondition = null;
