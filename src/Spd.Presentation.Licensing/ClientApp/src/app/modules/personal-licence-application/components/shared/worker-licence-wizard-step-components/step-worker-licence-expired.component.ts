@@ -25,7 +25,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
 				[serviceTypeCode]="securityWorkerLicenceCode"
-				[useAccessCode]="useAccessCode"
+				[useSwlAnonymousNewAccessCode]="useSwlAnonymousNewAccessCode"
 			></app-form-expired-licence>
 		</app-step-section>
 	`,
@@ -34,7 +34,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 })
 export class StepWorkerLicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
-	useAccessCode!: boolean;
+	useSwlAnonymousNewAccessCode!: boolean;
 
 	form: FormGroup = this.workerApplicationService.expiredLicenceFormGroup;
 	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
@@ -44,7 +44,7 @@ export class StepWorkerLicenceExpiredComponent implements OnInit, LicenceChildSt
 	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.useAccessCode = !this.isLoggedIn;
+		this.useSwlAnonymousNewAccessCode = !this.isLoggedIn;
 	}
 
 	isFormValid(): boolean {

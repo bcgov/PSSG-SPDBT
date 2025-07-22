@@ -90,21 +90,21 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 									<div class="row">
 										<div class="col-xl-6 col-lg-12">
 											<div class="d-block text-muted mt-2">Name</div>
-											<div class="text-data">{{ searchResultDisplay?.licenceHolderName }}</div>
+											<div class="text-data">{{ searchLicenceResponse?.licenceHolderName }}</div>
 										</div>
 										<div class="col-xl-6 col-lg-12">
 											<div class="d-block text-muted mt-2">
 												{{ lookupServiceTypeCode | options: 'ServiceTypes' }} Number
 											</div>
-											<div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
+											<div class="text-data">{{ searchLicenceResponse?.licenceNumber }}</div>
 										</div>
 										<div class="col-xl-6 col-lg-12">
 											<div class="d-block text-muted mt-2">Expiry Date</div>
-											<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
+											<div class="text-data">{{ searchLicenceResponse?.expiryDate }}</div>
 										</div>
 										<div class="col-xl-6 col-lg-12">
 											<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
-											<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
+											<div class="text-data fw-bold">{{ searchLicenceResponse?.licenceStatusCode }}</div>
 										</div>
 									</div>
 								</app-alert>
@@ -135,17 +135,17 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 										<div class="row">
 											<div class="col-md-5 col-sm-12">
 												<div class="d-block text-muted mt-2">
-													{{ searchResultDisplay?.serviceTypeCode | options: 'ServiceTypes' }} Number
+													{{ searchLicenceResponse?.serviceTypeCode | options: 'ServiceTypes' }} Number
 												</div>
-												<div class="text-data">{{ searchResultDisplay?.licenceNumber }}</div>
+												<div class="text-data">{{ searchLicenceResponse?.licenceNumber }}</div>
 											</div>
 											<div class="col-md-3 col-sm-12">
 												<div class="d-block text-muted mt-2">Expiry Date</div>
-												<div class="text-data">{{ searchResultDisplay?.expiryDate }}</div>
+												<div class="text-data">{{ searchLicenceResponse?.expiryDate }}</div>
 											</div>
 											<div class="col-md-4 col-sm-12">
 												<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
-												<div class="text-data fw-bold">{{ searchResultDisplay?.licenceStatusCode }}</div>
+												<div class="text-data fw-bold">{{ searchLicenceResponse?.licenceStatusCode }}</div>
 											</div>
 										</div>
 										@if (notValidSwlMessage) {
@@ -210,7 +210,7 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 	selectButtonLabel = 'Select';
 	typeLabel = 'Licence';
 
-	searchResultDisplay: LicenceResponse | null = null;
+	searchLicenceResponse: LicenceResponse | null = null;
 
 	isSearchPerformed = false;
 	isFoundValid = false;
@@ -267,7 +267,7 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 				this.resetCaptcha();
 
 				if (this.isExpiredLicenceSearch) {
-					this.handlexpiredLicenceSearchResults(resp);
+					this.handleExpiredLicenceSearchResults(resp);
 				} else {
 					this.handleSearchResults(resp);
 				}
@@ -290,12 +290,12 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 		this.isFound = resp.isFound;
 		this.messageWarn = null;
 
-		this.searchResultDisplay = resp.searchResult;
+		this.searchLicenceResponse = resp.searchResult;
 
-		this.isFoundValid = !!this.searchResultDisplay && !resp.isExpired && !this.messageError;
+		this.isFoundValid = !!this.searchLicenceResponse && !resp.isExpired && !this.messageError;
 	}
 
-	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
+	private handleExpiredLicenceSearchResults(resp: LicenceLookupResult) {
 		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
 			resp.searchResult,
 			this.lookupServiceTypeCode,
@@ -307,21 +307,21 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 		this.isSearchPerformed = true;
 		this.isFound = resp.isFound;
 
-		this.searchResultDisplay = resp.searchResult;
+		this.searchLicenceResponse = resp.searchResult;
 
-		this.isFoundValid = !!this.searchResultDisplay && resp.isExpired && !this.messageWarn && !this.messageError;
+		this.isFoundValid = !!this.searchLicenceResponse && resp.isExpired && !this.messageWarn && !this.messageError;
 	}
 
 	onSave(): void {
 		if (!this.isFoundValid) return;
 
 		this.dialogRef.close({
-			data: this.searchResultDisplay,
+			data: this.searchLicenceResponse,
 		});
 	}
 
 	resetFlags(): void {
-		this.searchResultDisplay = null;
+		this.searchLicenceResponse = null;
 
 		this.isSearchPerformed = false;
 		this.isFound = false;
