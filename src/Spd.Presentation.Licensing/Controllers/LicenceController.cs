@@ -245,8 +245,14 @@ namespace Spd.Presentation.Licensing.Controllers
         private static List<string> FindMatchingSWLNumber(string input)
         {
             var matches = new List<string>();
-            var pattern = @"E\d{6}";
-            foreach (Match match in Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromSeconds(10)))
+            //spdbt-4396
+            //The pattern matches strings that:
+            //Start with E
+            //Are followed by 4–6 digits
+            //And may optionally end with ST or st(case -insensitive)
+            //The string may have any characters as separators, and the matching should be case-insensitive for the suffix.
+            var pattern = @"E\d{4,6}(?:st)?";
+            foreach (Match match in Regex.Matches(input, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10)))
             {
                 matches.Add(match.Value);
             }
