@@ -176,8 +176,6 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				this.isExpired = true;
 				if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
 					this.errorMessage = `This certificate has expired so you can no longer renew it. Please apply for a new ${this.label}.`;
-				} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-					this.errorMessage = `This certificate has expired so you cannot update it. Please apply for a new ${this.label}.`;
 				} else {
 					this.errorMessage = `This certificate has expired so you cannot replace it. Please apply for a new ${this.label}.`;
 				}
@@ -198,7 +196,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			//  access code matches licence, but the licence has application in progress
 			if (resp.inProgressApplications) {
 				const selServiceTypeCodeDesc = this.optionsPipe.transform(resp.serviceTypeCode, 'ServiceTypes');
-				this.errorMessage = `This ${selServiceTypeCodeDesc} cannot be renewed, updated or replaced while an application is in progress.`;
+				this.errorMessage = `This ${selServiceTypeCodeDesc} cannot be renewed or replaced while an application is in progress.`;
 				this.resetCaptcha();
 				return;
 			}
