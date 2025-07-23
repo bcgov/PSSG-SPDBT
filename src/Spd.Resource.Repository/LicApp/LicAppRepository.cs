@@ -83,7 +83,7 @@ internal class LicAppRepository : ILicAppRepository
         if (qry.ValidPortalStatus != null && qry.ValidPortalStatus.Any())
         {
             List<int> portalStatusInt = qry.ValidPortalStatus.Select(s => (int)Enum.Parse<ApplicationPortalStatus>(s.ToString())).ToList();
-            applist = applist.Where(a => portalStatusInt.Contains((int)a.spd_portalstatus)).ToList();
+            applist = applist.Where(a => a.spd_portalstatus != null && portalStatusInt.Contains((int)a.spd_portalstatus)).ToList();
         }
         return _mapper.Map<IList<LicenceAppListResp>>(applist.OrderByDescending(o => o.createdon));
 
