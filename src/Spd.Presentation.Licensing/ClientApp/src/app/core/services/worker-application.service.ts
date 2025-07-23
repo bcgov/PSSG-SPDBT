@@ -736,9 +736,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-						body,
-					});
+					return this.securityWorkerLicensingService
+						.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+							body,
+						})
+						.pipe(
+							tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+								this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+							})
+						);
 				})
 			);
 		} else {
@@ -746,9 +752,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-				body,
-			});
+			return this.securityWorkerLicensingService
+				.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+					body,
+				})
+				.pipe(
+					tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+						this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+					})
+				);
 		}
 	}
 
@@ -1317,9 +1329,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-							body,
-						});
+						return this.securityWorkerLicensingService
+							.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+								body,
+							})
+							.pipe(
+								tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+									this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+								})
+							);
 					})
 				)
 				.pipe(take(1));
@@ -1332,9 +1350,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-							body,
-						});
+						return this.securityWorkerLicensingService
+							.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+								body,
+							})
+							.pipe(
+								tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+									this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+								})
+							);
 					})
 				)
 				.pipe(take(1));

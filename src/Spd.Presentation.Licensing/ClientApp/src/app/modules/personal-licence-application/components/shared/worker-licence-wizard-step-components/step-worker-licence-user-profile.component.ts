@@ -123,7 +123,13 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	}
 
 	ngOnInit(): void {
-		if (!this.workerApplicationService.initialized) {
+		// licenceAppId should be empty - if not, the appl has already been submitted - user must have pressed back button
+		const licenceAppIdWithNotNew =
+			this.applicationTypeCode != ApplicationTypeCode.New
+				? !!this.workerApplicationService.workerModelFormGroup.get('licenceAppId')?.value
+				: false;
+
+		if (!this.workerApplicationService.initialized || licenceAppIdWithNotNew) {
 			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 			return;
 		}

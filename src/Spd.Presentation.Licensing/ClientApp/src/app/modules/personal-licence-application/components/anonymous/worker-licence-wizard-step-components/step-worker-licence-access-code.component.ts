@@ -69,6 +69,12 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 	) {}
 
 	ngOnInit(): void {
+		const licenceAppId = this.workerApplicationService.workerModelFormGroup.get('licenceAppId')?.value;
+		if (licenceAppId) {
+			// application has already been submitted - user must have pressed back button
+			this.commonApplicationService.onGoToHome();
+		}
+
 		this.serviceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 			'serviceTypeData.serviceTypeCode'
 		)?.value;
