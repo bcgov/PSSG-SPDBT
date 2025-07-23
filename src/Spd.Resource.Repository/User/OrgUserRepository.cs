@@ -108,6 +108,8 @@ namespace Spd.Resource.Repository.User
 
             //set invite views
             invite.spd_views = (invite.spd_views ?? 0) + 1;
+            invite.statecode = DynamicsConstants.StateCode_Inactive;
+            invite.statuscode = (int)Enum.Parse<InvitationStatus>(ApplicationInviteStatusEnum.Completed.ToString());
             _dynaContext.UpdateObject(invite);
 
             await _dynaContext.SaveChangesAsync(ct);
