@@ -9,7 +9,7 @@ import {
 	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { CommonApplicationService, LicenceLookupResult } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceResponseExt } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
@@ -148,8 +148,21 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 			return;
 		}
 
+		if (this.serviceTypeCode === ServiceTypeCode.Mdra) {
+			this.commonApplicationService
+				.getLicenceNumberAccessCodeLookupAnonymous(licenceNumber, accessCode, recaptchaCode)
+				.pipe(
+					tap((resp: LicenceLookupResult) => {
+						this.handleLookupResponse(resp.searchResult as LicenceResponseExt);
+					}),
+					take(1)
+				)
+				.subscribe();
+			return;
+		}
+
 		this.commonApplicationService
-			.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
+			.getLicenceNumberAccessCodeInProgressApplAnonymous(licenceNumber, accessCode, recaptchaCode)
 			.pipe(
 				tap((resp: LicenceResponseExt | null) => {
 					this.handleLookupResponse(resp);
