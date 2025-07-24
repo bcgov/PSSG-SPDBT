@@ -154,7 +154,7 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				.pipe(
 					tap((resp: LicenceLookupResult) => {
 						let result: LicenceResponseExt | null = null;
-						if (resp && resp.searchResult) {
+						if (resp?.searchResult) {
 							result = resp.searchResult as LicenceResponseExt;
 							result.inProgressApplications = false;
 						}
