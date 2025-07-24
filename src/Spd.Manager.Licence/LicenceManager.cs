@@ -11,6 +11,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 
@@ -213,21 +214,35 @@ internal class LicenceManager :
         List<LicenceBasicResponse?> response = new List<LicenceBasicResponse?>();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
+            //spdbt-4396
+            //The pattern matches strings that:
+            //Start with E or e
+            //Are followed by 4-6 digits
+            //And may optionally end with ST or st(case -insensitive)
+            //The string may have any characters as separators, and the matching should be case-insensitive for the suffix.
+            Regex pattern = new Regex(@"^[Ee]\d{4,6}(st)?$", RegexOptions.IgnoreCase);
             foreach (string str in search.LicenceNumbers)
             {
-                var results = await _licenceRepository.QueryAsync(
-                    new LicenceQry
+                if (!string.IsNullOrEmpty(str) && pattern.IsMatch(str))
+                {
+                    var results = await _licenceRepository.QueryAsync(
+                        new LicenceQry
+                        {
+                            LicenceNumber = str,
+                            Type = ServiceTypeEnum.SecurityWorkerLicence,
+                            IncludeInactive = true
+                        }, ct);
+                    var result = results.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired)
+                        .GroupBy(r => r.LicenceNumber)
+                        .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
+                        .ToList();
+                    if (result != null && result.Any())
+                        response.AddRange(_mapper.Map<IEnumerable<LicenceBasicResponse>>(result));
+                    else
                     {
-                        LicenceNumber = str,
-                        Type = ServiceTypeEnum.SecurityWorkerLicence,
-                        IncludeInactive = true
-                    }, ct);
-                var result = results.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired)
-                    .GroupBy(r => r.LicenceNumber)
-                    .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
-                    .ToList();
-                if (result != null && result.Any())
-                    response.AddRange(_mapper.Map<IEnumerable<LicenceBasicResponse>>(result));
+                        response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                    }
+                }
                 else
                 {
                     response.Add(new LicenceBasicResponse { LicenceNumber = str });
