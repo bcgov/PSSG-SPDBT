@@ -220,7 +220,7 @@ internal class LicenceManager :
             //Are followed by 4-6 digits
             //And may optionally end with ST or st(case -insensitive)
             //The string may have any characters as separators, and the matching should be case-insensitive for the suffix.
-            Regex pattern = new Regex(@"^[Ee]\d{4,6}(st)?$", RegexOptions.IgnoreCase);
+            Regex pattern = new Regex(@"^[Ee]\d{4,6}(st)?$", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
             foreach (string str in search.LicenceNumbers)
             {
                 if (!string.IsNullOrEmpty(str) && pattern.IsMatch(str))
