@@ -106,6 +106,8 @@ internal class PortalUserRepository : IPortalUserRepository
 
         //set invite views
         invite.spd_views = (invite.spd_views ?? 0) + 1;
+        invite.statecode = DynamicsConstants.StateCode_Inactive;
+        invite.statuscode = (int)Enum.Parse<InvitationStatus>(ApplicationInviteStatusEnum.Completed.ToString());
         _context.UpdateObject(invite);
 
         await _context.SaveChangesAsync(ct);
