@@ -3,4 +3,4 @@
 .vscode
 tmp/
 .env
-src/Spd.Utilities.Dynamics/Connected Services/OData Service/ConnectedService.json
+
