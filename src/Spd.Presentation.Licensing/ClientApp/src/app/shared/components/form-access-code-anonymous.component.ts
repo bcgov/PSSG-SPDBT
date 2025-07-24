@@ -153,7 +153,12 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 				.getLicenceNumberAccessCodeLookupAnonymous(licenceNumber, accessCode, recaptchaCode)
 				.pipe(
 					tap((resp: LicenceLookupResult) => {
-						this.handleLookupResponse(resp.searchResult as LicenceResponseExt);
+						let result: LicenceResponseExt | null = null;
+						if (resp && resp.searchResult) {
+							result = resp.searchResult as LicenceResponseExt;
+							result.inProgressApplications = false;
+						}
+						this.handleLookupResponse(result);
 					}),
 					take(1)
 				)
