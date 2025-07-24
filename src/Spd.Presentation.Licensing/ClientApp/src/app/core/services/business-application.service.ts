@@ -1016,7 +1016,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.consentAndDeclarationFormGroup.reset();
 		this.businessModelFormGroup.reset();
 
-		// clear the alias data - this does not seem to get reset during a formgroup reset
+		// clear the array data - this does not seem to get reset during a formgroup reset
 		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
 		while (bcBranchesArray.length) {
 			bcBranchesArray.removeAt(0);
