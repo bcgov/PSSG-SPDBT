@@ -811,7 +811,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog},
         {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
-        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments },
+        {LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification, DocumentTypeEnum.DogTrainerAccreditedSchoolVerification }
     }.ToImmutableDictionary();
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -880,7 +881,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.DogTrainingCurriculumCertificateSupportingDocument, DocumentTypeEnum.DogTrainingCurriculumCertificateSupportingDocument },
         {LicenceDocumentTypeCode.GDSDPracticeHoursLog, DocumentTypeEnum.GDSDPracticeHoursLog },
         {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
-        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments }
+        {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments },
+        {LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification, DocumentTypeEnum.DogTrainerAccreditedSchoolVerification }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)

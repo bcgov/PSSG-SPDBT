@@ -166,6 +166,7 @@ namespace Spd.Resource.Repository.Document
         DogTrainingCurriculumCertificateSupportingDocument,
         GDSDPracticeHoursLog,
         GDSDCertificate,
-        BusinessLicenceDocuments
+        BusinessLicenceDocuments,
+        DogTrainerAccreditedSchoolVerification
     }
 }
