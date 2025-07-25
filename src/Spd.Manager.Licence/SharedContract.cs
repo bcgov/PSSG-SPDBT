@@ -75,7 +75,8 @@ public enum LicenceDocumentTypeCode
     DogTrainingCurriculumCertificateSupportingDocument,
     GDSDPracticeHoursLog,
     GDSDCertificate,
-    BusinessLicenceDocuments
+    BusinessLicenceDocuments,
+    DogTrainerAccreditedSchoolVerification
 }
 
 public enum PoliceOfficerRoleCode
