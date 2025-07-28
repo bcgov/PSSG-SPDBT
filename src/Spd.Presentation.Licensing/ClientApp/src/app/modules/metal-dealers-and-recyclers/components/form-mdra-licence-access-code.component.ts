@@ -25,8 +25,6 @@ export class FormMdraLicenceAccessCodeComponent {
 
 	@ViewChild(FormAccessCodeAnonymousComponent) formAccessCodeComponent!: FormAccessCodeAnonymousComponent;
 
-	// TODO MDRA inProgressApplications
-
 	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.linkSuccess.emit(linkLicence);
 	}

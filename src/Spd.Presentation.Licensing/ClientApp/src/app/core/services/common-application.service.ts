@@ -919,7 +919,7 @@ export class CommonApplicationService {
 	 * @param recaptchaCode
 	 * @returns
 	 */
-	getLicenceWithAccessCodeAnonymous(
+	getLicenceNumberAccessCodeInProgressApplAnonymous(
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
