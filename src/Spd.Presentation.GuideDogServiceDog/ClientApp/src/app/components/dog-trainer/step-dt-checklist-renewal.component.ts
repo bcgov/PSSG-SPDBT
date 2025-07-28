@@ -33,6 +33,17 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								A clear photo of the dog trainer’s face, looking straight at the camera, with a plain, white background.
 							</p>
 						</li>
+						<li>
+							<div class="checklist-label">Written confirmation from the accredited school</div>
+							<p class="checklist-info">
+								Confirming that the dog trainer trains dogs on behalf of the accredited or recognized school for the
+								purpose of the dogs becoming guide or service dogs.
+							</p>
+							<p class="checklist-info">
+								This may include a letter or email from the Chief Executive Officer/Executive Director or equivalent
+								confirming this.
+							</p>
+						</li>
 					</ul>
 				</div>
 			</div>

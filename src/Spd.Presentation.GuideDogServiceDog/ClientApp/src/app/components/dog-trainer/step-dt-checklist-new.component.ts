@@ -28,6 +28,17 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 								authority.
 							</p>
 						</li>
+						<li>
+							<div class="checklist-label">Written confirmation from the accredited school</div>
+							<p class="checklist-info">
+								Confirming that the dog trainer trains dogs on behalf of the accredited or recognized school for the
+								purpose of the dogs becoming guide or service dogs.
+							</p>
+							<p class="checklist-info">
+								This may include a letter or email from the Chief Executive Officer/Executive Director or equivalent
+								confirming this.
+							</p>
+						</li>
 					</ul>
 				</div>
 			</div>
