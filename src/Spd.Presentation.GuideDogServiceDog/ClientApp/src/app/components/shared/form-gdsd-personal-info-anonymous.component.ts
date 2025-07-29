@@ -44,6 +44,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[showMaskTyped]="true"
 									[errorStateMatcher]="matcher"
 									(blur)="onValidateDate()"
+									placeholder="YYYY-MM-DD"
 									aria-describedby="dateFormatHelp"
 								/>
 								<!-- We always want the date format hint to display -->
