@@ -27,7 +27,9 @@ import { StepDtPhotographOfYourselfRenewComponent } from './components/dog-train
 import { StepDtPhotographOfYourselfComponent } from './components/dog-trainer/step-dt-photograph-of-yourself.component';
 import { StepDtSummaryComponent } from './components/dog-trainer/step-dt-summary.component';
 import { StepDtTermsOfUseComponent } from './components/dog-trainer/step-dt-terms-of-use.component';
+import { StepDtTrainingSchoolCeoComponent } from './components/dog-trainer/step-dt-training-school-ceo.component';
 import { StepDtTrainingSchoolInfoComponent } from './components/dog-trainer/step-dt-training-school-info.component';
+import { StepDtTrainingSchoolVerificationComponent } from './components/dog-trainer/step-dt-training-school-verification.component';
 import { StepsDtDetailsComponent } from './components/dog-trainer/steps-dt-details.component';
 import { StepsDtPersonalInfoComponent } from './components/dog-trainer/steps-dt-personal-info.component';
 import { StepsDtReviewAndConfirmComponent } from './components/dog-trainer/steps-dt-review-and-confirm.component';
@@ -182,6 +184,8 @@ import { SharedModule } from './shared/shared.module';
 		StepsDtDetailsComponent,
 		StepsDtPersonalInfoComponent,
 		StepsDtTrainingSchoolInfoComponent,
+		StepDtTrainingSchoolCeoComponent,
+		StepDtTrainingSchoolVerificationComponent,
 		StepsDtReviewAndConfirmComponent,
 		StepDtChecklistNewComponent,
 		StepDtChecklistRenewalComponent,
