@@ -8,85 +8,79 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-form-personal-information-new-anonymous',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <div class="row">
-		    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		      <div class="row">
-		        <div class="col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Given Name</mat-label>
-		            <input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-		            <input matInput formControlName="middleName1" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-		            <input matInput formControlName="middleName2" maxlength="40" />
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Surname</mat-label>
-		            <input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-		            @if (form.get('surname')?.hasError('required')) {
-		              <mat-error> This is required </mat-error>
-		            }
-		          </mat-form-field>
-		        </div>
-		        <div class="col-xl-6 col-lg-6 col-md-12">
-		          <mat-form-field>
-		            <mat-label>Date of Birth</mat-label>
-		            <input
-		              matInput
-		              [matDatepicker]="picker"
-		              formControlName="dateOfBirth"
-		              [max]="maxBirthDate"
-		              [min]="minDate"
-		              [errorStateMatcher]="matcher"
-		              />
-		              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-		              <mat-datepicker #picker startView="multi-year"></mat-datepicker>
-		              @if (form.get('dateOfBirth')?.hasError('required')) {
-		                <mat-error>This is required</mat-error>
-		              }
-		              @if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
-		                <mat-error>
-		                  Invalid date of birth
-		                </mat-error>
-		              }
-		              @if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
-		                <mat-error>
-		                  This must be on or before {{ maxBirthDate | formatDate }}
-		                </mat-error>
-		              }
-		            </mat-form-field>
-		          </div>
-		
-		          <div class="col-xl-6 col-lg-6 col-md-12">
-		            <mat-form-field>
-		              <mat-label>Sex</mat-label>
-		              <mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
-		                @for (gdr of genderTypes; track gdr; let i = $index) {
-		                  <mat-option [value]="gdr.code">
-		                    {{ gdr.desc }}
-		                  </mat-option>
-		                }
-		              </mat-select>
-		              @if (form.get('genderCode')?.hasError('required')) {
-		                <mat-error>This is required</mat-error>
-		              }
-		            </mat-form-field>
-		          </div>
-		        </div>
-		      </div>
-		    </div>
-		  </form>
-		`,
+			<div class="row">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="row">
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Given Name</mat-label>
+								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName1" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName2" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Surname</mat-label>
+								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+								@if (form.get('surname')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Date of Birth</mat-label>
+								<input
+									matInput
+									[matDatepicker]="picker"
+									formControlName="dateOfBirth"
+									[max]="maxBirthDate"
+									[min]="minDate"
+									[errorStateMatcher]="matcher"
+								/>
+								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+								@if (form.get('dateOfBirth')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+								@if (form.get('dateOfBirth')?.hasError('matDatepickerMin')) {
+									<mat-error>Invalid date of birth</mat-error>
+								}
+								@if (form.get('dateOfBirth')?.hasError('matDatepickerMax')) {
+									<mat-error>This must be on or before {{ maxBirthDate | formatDate }}</mat-error>
+								}
+							</mat-form-field>
+						</div>
+
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Sex</mat-label>
+								<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
+									@for (gdr of genderTypes; track gdr; let i = $index) {
+										<mat-option [value]="gdr.code">{{ gdr.desc }}</mat-option>
+									}
+								</mat-select>
+								@if (form.get('genderCode')?.hasError('required')) {
+									<mat-error>This is required</mat-error>
+								}
+							</mat-form-field>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	`,
 	styles: [],
 	standalone: false,
 })

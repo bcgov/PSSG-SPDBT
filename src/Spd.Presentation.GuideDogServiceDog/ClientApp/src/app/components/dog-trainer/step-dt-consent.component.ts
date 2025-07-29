@@ -56,7 +56,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 										captchaFormGroup.get('token')?.invalid &&
 										captchaFormGroup.get('token')?.hasError('required')
 									) {
-										<mat-error>This is required</mat-error>
+										<mat-error>Click this button to verify that you are not a robot</mat-error>
 									}
 								</div>
 							</div>

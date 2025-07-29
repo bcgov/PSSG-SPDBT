@@ -225,7 +225,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing data.");
             await VerifyGoogleRecaptchaAsync(request.Recaptcha, ct);
 
-            var numbers = FindMatchingSWLNumber(request.LicenceNumbers);
+            var numbers = FindInputSWLNumber(request.LicenceNumbers);
             return await _mediator.Send(new LicenceBulkSearch(numbers, ServiceTypeCode.SecurityWorkerLicence), ct);
         }
 
@@ -242,15 +242,15 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));
         }
 
-        private static List<string> FindMatchingSWLNumber(string input)
+        private static List<string> FindInputSWLNumber(string input)
         {
-            var matches = new List<string>();
-            var pattern = @"E\d{6}";
-            foreach (Match match in Regex.Matches(input, pattern, RegexOptions.None, TimeSpan.FromSeconds(10)))
-            {
-                matches.Add(match.Value);
-            }
-            return matches;
+            // Split by any character that is not a letter or digit
+            string[] licNumbers = Regex.Split(input, @"[^a-zA-Z0-9]+", RegexOptions.None, TimeSpan.FromSeconds(10));
+
+            // Optional: Remove empty entries
+            List<string> result = new List<string>(licNumbers);
+            result.RemoveAll(string.IsNullOrEmpty);
+            return result;
         }
     }
 

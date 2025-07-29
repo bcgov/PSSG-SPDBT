@@ -35,9 +35,9 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 			</mat-step>
 		</mat-stepper>
 	`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';

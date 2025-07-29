@@ -7,33 +7,33 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-controlling-member-personal-info',
 	template: `
 		<app-step-section [heading]="title" [subheading]="subtitle">
-		  @if (isLoggedIn) {
-		    <app-form-personal-information
-		      [personalInformationFormGroup]="personalInformationFormGroup"
-		      [contactInformationFormGroup]="contactInformationFormGroup"
-		    ></app-form-personal-information>
-		  } @else {
-		    @if (isUpdate) {
-		      <app-form-personal-information-renew-update-anonymous
-		        [form]="personalInformationFormGroup"
-		        [applicationTypeCode]="applicationTypeCode"
-		        (fileUploaded)="onFileUploaded()"
-		        (fileRemoved)="onFileRemoved()"
-		      ></app-form-personal-information-renew-update-anonymous>
-		    } @else {
-		      <app-form-personal-information-new-anonymous
-		        [form]="personalInformationFormGroup"
-		      ></app-form-personal-information-new-anonymous>
-		    }
-		    <div class="row my-2">
-		      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <div class="text-primary-color fs-6">Contact Information</div>
-		      </div>
-		    </div>
-		    <app-form-contact-information [form]="contactInformationFormGroup"></app-form-contact-information>
-		  }
+			@if (isLoggedIn) {
+				<app-form-personal-information
+					[personalInformationFormGroup]="personalInformationFormGroup"
+					[contactInformationFormGroup]="contactInformationFormGroup"
+				></app-form-personal-information>
+			} @else {
+				@if (isUpdate) {
+					<app-form-personal-information-renew-update-anonymous
+						[form]="personalInformationFormGroup"
+						[applicationTypeCode]="applicationTypeCode"
+						(fileUploaded)="onFileUploaded()"
+						(fileRemoved)="onFileRemoved()"
+					></app-form-personal-information-renew-update-anonymous>
+				} @else {
+					<app-form-personal-information-new-anonymous
+						[form]="personalInformationFormGroup"
+					></app-form-personal-information-new-anonymous>
+				}
+				<div class="row my-2">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="text-primary-color fs-6">Contact Information</div>
+					</div>
+				</div>
+				<app-form-contact-information [form]="contactInformationFormGroup"></app-form-contact-information>
+			}
 		</app-step-section>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

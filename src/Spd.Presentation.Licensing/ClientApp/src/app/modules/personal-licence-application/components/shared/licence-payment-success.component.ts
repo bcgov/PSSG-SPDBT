@@ -7,14 +7,14 @@ import { AppRoutes } from '@app/app-routes';
 import { FileUtilService } from '@app/core/services/file-util.service';
 
 @Component({
-    selector: 'app-licence-payment-success',
-    template: `
+	selector: 'app-licence-payment-success',
+	template: `
 		<section class="step-section">
 			<app-payment-success [payment]="payment" (downloadReceipt)="onDownloadReceipt()"></app-payment-success>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicencePaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;

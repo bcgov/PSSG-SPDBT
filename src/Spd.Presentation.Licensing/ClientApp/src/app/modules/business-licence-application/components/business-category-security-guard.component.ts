@@ -11,80 +11,71 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-business-category-security-guard',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <div class="row">
-		    <div class="text-minor-heading lh-base mt-3 mb-2">
-		      Do you want to request authorization to use dogs for the purpose of security work?
-		    </div>
-		    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-		      <mat-radio-group aria-label="Select an option" formControlName="useDogs">
-		        <div class="d-flex justify-content-start">
-		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-		          <mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-		        </div>
-		      </mat-radio-group>
-		      @if (
-		        (form.get('useDogs')?.dirty || form.get('useDogs')?.touched) &&
-		        form.get('useDogs')?.invalid &&
-		        form.get('useDogs')?.hasError('required')
-		        ) {
-		        <mat-error
-		          class="mat-option-error"
-		          >This is required</mat-error
-		          >
-		        }
-		      </div>
-		    </div>
-		
-		    @if (useDogs.value === booleanTypeCodes.Yes) {
-		      <div class="row" @showHideTriggerSlideAnimation>
-		        <mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
-		        <div class="row mt-2 mb-4">
-		          <div class="col-12">
-		            <div class="form-group" formGroupName="dogsPurposeFormGroup">
-		              <div class="text-minor-heading mb-2">Purpose of using dogs</div>
-		              <mat-checkbox formControlName="isDogsPurposeProtection"> Protection </mat-checkbox>
-		              <mat-checkbox formControlName="isDogsPurposeDetectionDrugs"> Detection - Drugs </mat-checkbox>
-		              <mat-checkbox formControlName="isDogsPurposeDetectionExplosives"> Detection - Explosives </mat-checkbox>
-		            </div>
-		            @if (
-		              (form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
-		              form.hasError('atLeastOneCheckboxWhenReqd')
-		              ) {
-		              <mat-error
-		                class="mat-option-error"
-		                >At least one option must be selected</mat-error
-		                >
-		              }
-		            </div>
-		          </div>
-		          <div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate</div>
-		          <div class="mb-2">
-		            <mat-icon style="vertical-align: bottom;">emergency</mat-icon> If you have more than one dog, you must submit
-		            a certificate for each dog
-		          </div>
-		          <div class="my-2">
-		            <app-file-upload
-		              (fileUploaded)="onFileUploaded($event)"
-		              (fileRemoved)="onFileRemoved()"
-		              [control]="attachments"
-		              [maxNumberOfFiles]="10"
-		              [files]="attachments.value"
-		            ></app-file-upload>
-		            @if (
-		              (form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-		              form.get('attachments')?.invalid &&
-		              form.get('attachments')?.hasError('required')
-		              ) {
-		              <mat-error
-		                class="mat-option-error"
-		                >This is required</mat-error
-		                >
-		              }
-		            </div>
-		          </div>
-		        }
-		      </form>
-		`,
+			<div class="row">
+				<div class="text-minor-heading lh-base mt-3 mb-2">
+					Do you want to request authorization to use dogs for the purpose of security work?
+				</div>
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
+					<mat-radio-group aria-label="Select an option" formControlName="useDogs">
+						<div class="d-flex justify-content-start">
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+						</div>
+					</mat-radio-group>
+					@if (
+						(form.get('useDogs')?.dirty || form.get('useDogs')?.touched) &&
+						form.get('useDogs')?.invalid &&
+						form.get('useDogs')?.hasError('required')
+					) {
+						<mat-error class="mat-option-error">This is required</mat-error>
+					}
+				</div>
+			</div>
+
+			@if (useDogs.value === booleanTypeCodes.Yes) {
+				<div class="row" @showHideTriggerSlideAnimation>
+					<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
+					<div class="row mt-2 mb-4">
+						<div class="col-12">
+							<div class="form-group" formGroupName="dogsPurposeFormGroup">
+								<div class="text-minor-heading mb-2">Purpose of using dogs</div>
+								<mat-checkbox formControlName="isDogsPurposeProtection"> Protection </mat-checkbox>
+								<mat-checkbox formControlName="isDogsPurposeDetectionDrugs"> Detection - Drugs </mat-checkbox>
+								<mat-checkbox formControlName="isDogsPurposeDetectionExplosives"> Detection - Explosives </mat-checkbox>
+							</div>
+							@if (
+								(form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
+								form.hasError('atLeastOneCheckboxWhenReqd')
+							) {
+								<mat-error class="mat-option-error">At least one option must be selected</mat-error>
+							}
+						</div>
+					</div>
+					<div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate</div>
+					<div class="mb-2">
+						<mat-icon style="vertical-align: bottom;">emergency</mat-icon> If you have more than one dog, you must
+						submit a certificate for each dog
+					</div>
+					<div class="my-2">
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+						></app-file-upload>
+						@if (
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						) {
+							<mat-error class="mat-option-error">This is required</mat-error>
+						}
+					</div>
+				</div>
+			}
+		</form>
+	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,

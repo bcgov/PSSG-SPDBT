@@ -77,7 +77,6 @@ import { CommonCriminalHistoryComponent } from './components/shared/common-step-
 import { CommonSwlPermitTermsUpdateReplaceComponent } from './components/shared/common-step-components/common-swl-permit-terms-update-replace.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
 import { StepWorkerLicenceConfirmationComponent } from './components/shared/common-step-components/step-worker-licence-confirmation.component';
-import { LicenceAccessCodeAuthorizedComponent } from './components/shared/licence-access-code-authorized.component';
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/shared/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/shared/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/shared/licence-first-time-user-terms-of-use.component';
@@ -238,7 +237,6 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepPermitTermsOfUseComponent,
 		StepPermitUpdateTermsAuthenticatedComponent,
 		StepPermitTypeAnonymousComponent,
-		LicenceAccessCodeAuthorizedComponent,
 		StepWorkerLicenceAccessCodeComponent,
 		StepWorkerLicenceAliasesComponent,
 		StepWorkerLicenceApplicationTypeAnonymousComponent,

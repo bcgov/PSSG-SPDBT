@@ -406,8 +406,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<any>> {
-		const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
-
 		return this.licenceService.apiLicenceLookupLicenceNumberGet$Response({ licenceNumber, accessCode }).pipe(
 			switchMap((resp: StrictHttpResponse<LicenceResponse>) => {
 				if (resp.status != 200) {
@@ -416,6 +414,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 				// Licence status does not matter for the merge
 
+				const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
 					oldApplicantId: resp.body.licenceHolderId!,
 					newApplicantId,
@@ -737,9 +736,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-						body,
-					});
+					return this.securityWorkerLicensingService
+						.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+							body,
+						})
+						.pipe(
+							tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+								this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+							})
+						);
 				})
 			);
 		} else {
@@ -747,9 +752,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-				body,
-			});
+			return this.securityWorkerLicensingService
+				.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+					body,
+				})
+				.pipe(
+					tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+						this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+					})
+				);
 		}
 	}
 
@@ -1068,6 +1079,65 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
+	/**
+	 * Load model with profile data. Used by Anonymous SWL Expired Licence lookup when an access code is supplied
+	 * @param associatedLicence
+	 * @returns
+	 */
+	populateNewLicenceApplAccessCodeAnonymous(associatedLicence: LicenceResponse): Observable<any> {
+		return this.applicantProfileService.apiApplicantGet().pipe(
+			switchMap((profileData: ApplicantProfileResponse) => {
+				const personalInformationData = this.getPersonalInformationData({
+					profileData,
+					hasBcscNameChanged: false,
+					associatedLicence,
+				});
+
+				const characteristicsData = this.getCharacteristicsData(profileData);
+				const contactInformationData = this.getContactInformationData(profileData);
+				const residentialAddressData = this.getResidentialAddressData(profileData);
+				const mailingAddressData = this.getMailingAddressData(profileData);
+
+				this.workerModelFormGroup.patchValue(
+					{
+						applicantId: profileData && 'applicantId' in profileData ? profileData.applicantId : null,
+						isPreviouslyTreatedForMHC: !!profileData?.isTreatedForMHC,
+						profileConfirmationData: { isProfileUpToDate: true },
+						personalInformationData,
+						residentialAddressData,
+						mailingAddressData,
+						contactInformationData,
+						characteristicsData,
+						aliasesData: {
+							previousNameFlag: this.utilService.booleanToBooleanType(
+								profileData?.aliases && profileData?.aliases.length > 0
+							),
+							aliases: [],
+						},
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				const aliasesArray = this.workerModelFormGroup.get('aliasesData.aliases') as FormArray;
+				profileData?.aliases?.forEach((alias: Alias) => {
+					aliasesArray.push(
+						new FormGroup({
+							id: new FormControl(alias.id),
+							givenName: new FormControl(alias.givenName),
+							middleName1: new FormControl(alias.middleName1),
+							middleName2: new FormControl(alias.middleName2),
+							surname: new FormControl(alias.surname, [FormControlValidators.required]),
+						})
+					);
+				});
+
+				return of(this.workerModelFormGroup.value);
+			})
+		);
+	}
+
 	private getApplEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
@@ -1259,9 +1329,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-							body,
-						});
+						return this.securityWorkerLicensingService
+							.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+								body,
+							})
+							.pipe(
+								tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+									this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+								})
+							);
 					})
 				)
 				.pipe(take(1));
@@ -1274,9 +1350,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						// application and are still being used
 						body.previousDocumentIds = [...existingDocumentIds];
 
-						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-							body,
-						});
+						return this.securityWorkerLicensingService
+							.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+								body,
+							})
+							.pipe(
+								tap((resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+									this.workerModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId });
+								})
+							);
 					})
 				)
 				.pipe(take(1));
@@ -1316,24 +1398,11 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		}
 
 		const profileData = applicantProfile ?? workerLicenceAppl;
-		const personalInformationData = {
-			givenName: profileData?.givenName,
-			middleName1: profileData?.middleName1,
-			middleName2: profileData?.middleName2,
-			surname: profileData?.surname,
-			dateOfBirth: profileData?.dateOfBirth,
-			genderCode: profileData?.genderCode,
-			hasGenderChanged: false,
+		const personalInformationData = this.getPersonalInformationData({
+			profileData,
 			hasBcscNameChanged,
-			origGivenName: profileData?.givenName,
-			origMiddleName1: profileData?.middleName1,
-			origMiddleName2: profileData?.middleName2,
-			origSurname: profileData?.surname,
-			origDateOfBirth: profileData?.dateOfBirth,
-			origGenderCode: profileData?.genderCode,
-			cardHolderName: associatedLicence?.nameOnCard ?? null,
-			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
-		};
+			associatedLicence,
+		});
 
 		const originalLicenceData = {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
@@ -1354,48 +1423,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
 		};
 
-		let height = profileData?.height ? profileData?.height + '' : null;
-		let heightInches = '';
-		if (profileData?.heightUnitCode == HeightUnitCode.Inches && profileData?.height && profileData?.height > 0) {
-			height = Math.trunc(profileData?.height / 12) + '';
-			heightInches = (profileData?.height % 12) + '';
-		}
-
-		const characteristicsData = {
-			hairColourCode: profileData?.hairColourCode,
-			eyeColourCode: profileData?.eyeColourCode,
-			height,
-			heightUnitCode: profileData?.heightUnitCode ?? HeightUnitCode.Inches,
-			heightInches,
-			weight: profileData?.weight ? profileData?.weight + '' : null,
-			weightUnitCode: profileData?.weightUnitCode ?? WeightUnitCode.Pounds,
-		};
-
-		const contactInformationData = {
-			emailAddress: profileData?.emailAddress,
-			phoneNumber: profileData?.phoneNumber,
-		};
-
-		const residentialAddressData = {
-			addressSelected: true,
-			addressLine1: profileData?.residentialAddress?.addressLine1,
-			addressLine2: profileData?.residentialAddress?.addressLine2,
-			city: profileData?.residentialAddress?.city,
-			country: profileData?.residentialAddress?.country,
-			postalCode: profileData?.residentialAddress?.postalCode,
-			province: profileData?.residentialAddress?.province,
-		};
-
-		const mailingAddressData = {
-			addressSelected: !!profileData?.mailingAddress,
-			isAddressTheSame: false,
-			addressLine1: profileData?.mailingAddress?.addressLine1,
-			addressLine2: profileData?.mailingAddress?.addressLine2,
-			city: profileData?.mailingAddress?.city,
-			country: profileData?.mailingAddress?.country,
-			postalCode: profileData?.mailingAddress?.postalCode,
-			province: profileData?.mailingAddress?.province,
-		};
+		const characteristicsData = this.getCharacteristicsData(profileData);
+		const contactInformationData = this.getContactInformationData(profileData);
+		const residentialAddressData = this.getResidentialAddressData(profileData);
+		const mailingAddressData = this.getMailingAddressData(profileData);
 
 		this.workerModelFormGroup.patchValue(
 			{
@@ -1410,13 +1441,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				residentialAddressData,
 				mailingAddressData,
 				contactInformationData,
+				characteristicsData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						profileData?.aliases && profileData?.aliases.length > 0
 					),
 					aliases: [],
 				},
-				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -2385,5 +2416,93 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			!!associatedLicence?.linkedSoleProprietorLicenceId &&
 			associatedLicence.linkedSoleProprietorExpiryDate === associatedLicence.expiryDate
 		);
+	}
+
+	private getPersonalInformationData({
+		profileData,
+		hasBcscNameChanged,
+		associatedLicence,
+	}: {
+		profileData: ApplicantProfileResponse | WorkerLicenceAppResponse | null | undefined;
+		hasBcscNameChanged: boolean;
+		associatedLicence?: MainLicenceResponse | LicenceResponse;
+	}): any {
+		return {
+			givenName: profileData?.givenName,
+			middleName1: profileData?.middleName1,
+			middleName2: profileData?.middleName2,
+			surname: profileData?.surname,
+			dateOfBirth: profileData?.dateOfBirth,
+			genderCode: profileData?.genderCode,
+			hasGenderChanged: false,
+			hasBcscNameChanged,
+			origGivenName: profileData?.givenName,
+			origMiddleName1: profileData?.middleName1,
+			origMiddleName2: profileData?.middleName2,
+			origSurname: profileData?.surname,
+			origDateOfBirth: profileData?.dateOfBirth,
+			origGenderCode: profileData?.genderCode,
+			cardHolderName: associatedLicence?.nameOnCard ?? null,
+			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
+		};
+	}
+
+	private getCharacteristicsData(
+		profileData: ApplicantProfileResponse | WorkerLicenceAppResponse | null | undefined
+	): any {
+		let height = profileData?.height ? profileData?.height + '' : null;
+		let heightInches = '';
+		if (profileData?.heightUnitCode == HeightUnitCode.Inches && profileData?.height && profileData?.height > 0) {
+			height = Math.trunc(profileData?.height / 12) + '';
+			heightInches = (profileData?.height % 12) + '';
+		}
+
+		return {
+			hairColourCode: profileData?.hairColourCode,
+			eyeColourCode: profileData?.eyeColourCode,
+			height,
+			heightUnitCode: profileData?.heightUnitCode ?? HeightUnitCode.Inches,
+			heightInches,
+			weight: profileData?.weight ? profileData?.weight + '' : null,
+			weightUnitCode: profileData?.weightUnitCode ?? WeightUnitCode.Pounds,
+		};
+	}
+
+	private getContactInformationData(
+		profileData: ApplicantProfileResponse | WorkerLicenceAppResponse | null | undefined
+	): any {
+		return {
+			emailAddress: profileData?.emailAddress,
+			phoneNumber: profileData?.phoneNumber,
+		};
+	}
+
+	private getResidentialAddressData(
+		profileData: ApplicantProfileResponse | WorkerLicenceAppResponse | null | undefined
+	): any {
+		return {
+			addressSelected: true,
+			addressLine1: profileData?.residentialAddress?.addressLine1,
+			addressLine2: profileData?.residentialAddress?.addressLine2,
+			city: profileData?.residentialAddress?.city,
+			country: profileData?.residentialAddress?.country,
+			postalCode: profileData?.residentialAddress?.postalCode,
+			province: profileData?.residentialAddress?.province,
+		};
+	}
+
+	private getMailingAddressData(
+		profileData: ApplicantProfileResponse | WorkerLicenceAppResponse | null | undefined
+	): any {
+		return {
+			addressSelected: !!profileData?.mailingAddress,
+			isAddressTheSame: false,
+			addressLine1: profileData?.mailingAddress?.addressLine1,
+			addressLine2: profileData?.mailingAddress?.addressLine2,
+			city: profileData?.mailingAddress?.city,
+			country: profileData?.mailingAddress?.country,
+			postalCode: profileData?.mailingAddress?.postalCode,
+			province: profileData?.mailingAddress?.province,
+		};
 	}
 }

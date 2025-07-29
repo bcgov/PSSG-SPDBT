@@ -111,7 +111,6 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 	title = '';
 	subtitle = '';
 
-	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
 
 	dateMask = SPD_CONSTANTS.date.dateMask;

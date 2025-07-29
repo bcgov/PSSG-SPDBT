@@ -27,9 +27,6 @@ export interface LicenceResponseExt extends LicenceResponse {
 
 export class LicenceLookupResult {
 	'isFound': boolean;
-	'isFoundValid': boolean;
-	'isExpired': boolean;
-	'isInRenewalPeriod': boolean;
 	'searchResult': LicenceResponse | null;
 }
 
@@ -246,6 +243,34 @@ export class CommonApplicationService {
 	): [Array<string>, Array<string>] {
 		const [warningMessages, errorMessages] = this.getMainWarningsAndError(applicationsList, activeLicencesList);
 		return [warningMessages, errorMessages];
+	}
+
+	getLicenceNumberLookupAnonymous(licenceNumber: string, recaptchaCode: string): Observable<LicenceLookupResult> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					const lookupResp = this.getLicenceSearchFlags(resp);
+					return of(lookupResp);
+				})
+			);
+	}
+
+	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
+		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
+			switchMap((resp: LicenceResponse) => {
+				const lookupResp = this.getLicenceSearchFlags(resp);
+				return of(lookupResp);
+			})
+		);
+	}
+
+	private getLicenceSearchFlags(licence: LicenceResponse): LicenceLookupResult {
+		const lookupResp: LicenceLookupResult = {
+			isFound: !!licence,
+			searchResult: licence,
+		};
+		return lookupResp;
 	}
 
 	/**

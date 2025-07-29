@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'yesNo',
-    standalone: false
+	name: 'yesNo',
+	standalone: false,
 })
 export class YesNoPipe implements PipeTransform {
 	public transform(value: any, explicit = false): string {

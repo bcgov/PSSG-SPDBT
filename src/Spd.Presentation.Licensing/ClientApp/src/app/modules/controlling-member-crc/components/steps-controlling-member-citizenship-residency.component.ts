@@ -10,54 +10,54 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 	selector: 'app-steps-controlling-member-citizenship-residency',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-		  @if (isNew) {
-		    <mat-step>
-		      <app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
-		        (cancelAndExit)="onCancelAndExit()"
-		        (previousStepperStep)="onStepPrevious()"
-		        (nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
-		        (nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
-		
-		  <mat-step>
-		    <app-step-controlling-member-fingerprints></app-step-controlling-member-fingerprints>
-		
-		    <app-wizard-footer
-		      [isFormValid]="isFormValid"
-		      [showSaveAndExit]="showSaveAndExit"
-		      (saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
-		      (cancelAndExit)="onCancelAndExit()"
-		      (previousStepperStep)="onFingerprintsPreviousStep()"
-		      (nextStepperStep)="onFingerprintsNextStep(STEP_FINGERPRINTS)"
-		      (nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
-		    ></app-wizard-footer>
-		  </mat-step>
-		
-		  @if (isNew) {
-		    <mat-step>
-		      <app-step-controlling-member-bc-driver-licence></app-step-controlling-member-bc-driver-licence>
-		      <app-wizard-footer
-		        [isFormValid]="isFormValid"
-		        [showSaveAndExit]="showSaveAndExit"
-		        (saveAndExit)="onSaveAndExit(STEP_DRIVERS_LICENCE)"
-		        (cancelAndExit)="onCancelAndExit()"
-		        (previousStepperStep)="onGoToPreviousStep()"
-		        (nextStepperStep)="onStepNext(STEP_DRIVERS_LICENCE)"
-		        (nextReviewStepperStep)="onNextReview(STEP_DRIVERS_LICENCE)"
-		      ></app-wizard-footer>
-		    </mat-step>
-		  }
+			@if (isNew) {
+				<mat-step>
+					<app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
+						(cancelAndExit)="onCancelAndExit()"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+						(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+					></app-wizard-footer>
+				</mat-step>
+			}
+
+			<mat-step>
+				<app-step-controlling-member-fingerprints></app-step-controlling-member-fingerprints>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
+					(cancelAndExit)="onCancelAndExit()"
+					(previousStepperStep)="onFingerprintsPreviousStep()"
+					(nextStepperStep)="onFingerprintsNextStep(STEP_FINGERPRINTS)"
+					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
+				></app-wizard-footer>
+			</mat-step>
+
+			@if (isNew) {
+				<mat-step>
+					<app-step-controlling-member-bc-driver-licence></app-step-controlling-member-bc-driver-licence>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_DRIVERS_LICENCE)"
+						(cancelAndExit)="onCancelAndExit()"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onStepNext(STEP_DRIVERS_LICENCE)"
+						(nextReviewStepperStep)="onNextReview(STEP_DRIVERS_LICENCE)"
+					></app-wizard-footer>
+				</mat-step>
+			}
 		</mat-stepper>
-		`,
-    styles: [],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+	`,
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+	standalone: false,
 })
 export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 0;

@@ -4,10 +4,10 @@ import { Component, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-    selector: 'app-base-wizard',
-    template: ``,
-    styles: [],
-    standalone: false
+	selector: 'app-base-wizard',
+	template: ``,
+	styles: [],
+	standalone: false,
 })
 export class BaseWizardComponent {
 	@ViewChild('stepper') stepper!: MatStepper;

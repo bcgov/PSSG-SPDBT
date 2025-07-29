@@ -68,6 +68,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
+		dogGdsdCertificateNumberData: this.dogGdsdCertificateNumberFormGroup,
 		dogGdsdCertificateData: this.dogGdsdCertificateFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 		governmentPhotoIdData: this.governmentPhotoIdFormGroup,
@@ -121,7 +122,14 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 	isStepRetiredDogPersonalInfoComplete(): boolean {
 		let dogGdsdCertificateDataValid = true;
 		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New) {
-			dogGdsdCertificateDataValid = this.dogGdsdCertificateFormGroup.valid;
+			// displayed licence number and verified licence number must match
+			const licenceNumber1 = this.dogGdsdCertificateNumberFormGroup.get('currentGDSDCertificateNumber')?.value;
+			const licenceNumber2 = this.dogGdsdCertificateNumberFormGroup.get('verifiedLicenceNumber')?.value;
+
+			dogGdsdCertificateDataValid =
+				this.dogGdsdCertificateNumberFormGroup.valid &&
+				this.dogGdsdCertificateFormGroup.valid &&
+				licenceNumber1 === licenceNumber2;
 		}
 
 		return (
@@ -761,8 +769,12 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 			}
 		});
 
-		const dogGdsdCertificateData = {
+		const dogGdsdCertificateNumberData = {
 			currentGDSDCertificateNumber: rdAppl.currentGDSDCertificateNumber,
+			verifiedLicenceNumber: rdAppl.currentGDSDCertificateNumber,
+		};
+
+		const dogGdsdCertificateData = {
 			attachments: dogGdsdCertificateAttachments,
 		};
 
@@ -801,6 +813,7 @@ export class RetiredDogApplicationService extends RetiredDogApplicationHelper {
 				applicationTypeData,
 
 				personalInformationData,
+				dogGdsdCertificateNumberData,
 				dogGdsdCertificateData,
 				photographOfYourselfData,
 				governmentPhotoIdData,

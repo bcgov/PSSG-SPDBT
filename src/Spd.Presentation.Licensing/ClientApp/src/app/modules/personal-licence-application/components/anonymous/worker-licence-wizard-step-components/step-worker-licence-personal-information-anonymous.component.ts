@@ -8,20 +8,20 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	selector: 'app-step-worker-licence-personal-information-anonymous',
 	template: `
 		<app-step-section [heading]="title" [subheading]="subtitle">
-		  @if (applicationTypeCode === applicationTypeCodes.New) {
-		    <app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
-		  }
-		
-		  @if (isRenewalOrUpdate) {
-		    <app-form-personal-information-renew-update-anonymous
-		      [form]="form"
-		      [applicationTypeCode]="applicationTypeCode"
-		      (fileUploaded)="onFileUploaded()"
-		      (fileRemoved)="onFileRemoved()"
-		    ></app-form-personal-information-renew-update-anonymous>
-		  }
+			@if (applicationTypeCode === applicationTypeCodes.New) {
+				<app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
+			}
+
+			@if (isRenewalOrUpdate) {
+				<app-form-personal-information-renew-update-anonymous
+					[form]="form"
+					[applicationTypeCode]="applicationTypeCode"
+					(fileUploaded)="onFileUploaded()"
+					(fileRemoved)="onFileRemoved()"
+				></app-form-personal-information-renew-update-anonymous>
+			}
 		</app-step-section>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

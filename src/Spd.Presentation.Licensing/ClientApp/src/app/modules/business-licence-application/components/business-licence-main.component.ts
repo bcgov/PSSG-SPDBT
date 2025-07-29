@@ -20,119 +20,140 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 	selector: 'app-business-licence-main',
 	template: `
 		@if (results$ | async) {
-		  <section class="step-section">
-		    <div class="row">
-		      <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-		        <div class="row">
-		          <div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
-		            <h2 class="fs-3">Business Licences</h2>
-		          </div>
-		          <div class="col-xl-6 col-lg-4 col-md-12">
-		            <div class="d-flex justify-content-end">
-		              @if (!isSoleProprietorAppSimultaneousFlow) {
-		                <button
-		                  mat-flat-button
-		                  color="primary"
-		                  class="large w-auto me-2 mb-3"
-		                  aria-label="Manage the business profile"
-		                  (click)="onBusinessProfile()"
-		                  >
-		                  <mat-icon class="d-none d-md-block">storefront</mat-icon>
-		                  {{ businessProfileLabel }}
-		                </button>
-		              }
-		              <button
-		                mat-flat-button
-		                color="primary"
-		                class="large w-auto ms-2 mb-3"
-		                aria-label="Manage the portal administrators"
-		                (click)="onPortalAdministrators()"
-		                >
-		                <mat-icon class="d-none d-md-block">people</mat-icon>
-		                Portal Administrators
-		              </button>
-		            </div>
-		          </div>
-		        </div>
-		        <mat-divider class="mat-divider-main mb-3"></mat-divider>
-		        @if (showManageBusinessStakeholders) {
-		          <div class="row">
-		            <div class="col-12 text-end">
-		              <a
-		                class="large"
-		                tabindex="0"
-		                (click)="onManageBusinessStakeholders()"
-		                (keydown)="onKeydownManageBusinessStakeholders($event)"
-		                >
-		                Controlling Members, Business Managers & Employees
-		              </a>
-		            </div>
-		          </div>
-		        }
-		        @if (isAlertsExist()) {
-		          <div class="mt-4">
-		            @for (msg of errorMessages; track msg; let i = $index) {
-		              <app-alert type="danger" icon="dangerous">
-		                <div [innerHTML]="msg"></div>
-		              </app-alert>
-		            }
-		            @if (isControllingMemberWarning) {
-		              <app-alert type="warning" icon="warning">
-		                <div>Your business licence application is pending controlling member criminal record checks.</div>
-		                <div class="mt-2">
-		                  View <strong>'Controlling Members, Business Managers & Employees'</strong> to see the status of each
-		                  of member.
-		                </div>
-		              </app-alert>
-		            }
-		            @for (msg of warningMessages; track msg; let i = $index) {
-		              <app-alert type="warning" icon="warning">
-		                <div [innerHTML]="msg"></div>
-		              </app-alert>
-		            }
-		          </div>
-		        }
-		        <app-business-licence-main-applications-list
-		          [applicationsDataSource]="applicationsDataSource"
-		          [isControllingMemberWarning]="isControllingMemberWarning"
-		          [isSoleProprietor]="isSoleProprietor"
-		          (resumeApplication)="onResume($event)"
-		          (payApplication)="onPayNow($event)"
-		          (cancelApplication)="onDelete($event)"
-		          (manageBusinessStakeholders)="onManageBusinessStakeholders()"
-		        ></app-business-licence-main-applications-list>
-		        <app-business-licence-main-licence-list
-		          [activeLicences]="activeLicencesList"
-		          [applicationIsInProgress]="applicationIsInProgress"
-		          [isSoleProprietor]="isSoleProprietor"
-		          (replaceLicence)="onReplace($event)"
-		          (updateLicence)="onUpdate($event)"
-		          (renewLicence)="onRenewal($event)"
-		        ></app-business-licence-main-licence-list>
-		        @if (!activeLicenceExist) {
-		          <div class="summary-card-section mt-4 mb-3 px-4 py-3">
-		            <div class="row">
-		              <div class="col-xl-7 col-lg-6">
-		                <div class="text-data">You don't have an active business licence.</div>
-		                <div class="d-block fw-bold mt-3 mb-2">
-		                  Apply for a new business licence if you have never held one before or if your previous licence has
-		                  expired.
-		                </div>
-		              </div>
-		              <div class="col-xl-5 col-lg-6 text-end">
-		                <button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBusinessLicence()">
-		                  <mat-icon>add</mat-icon>Apply for a New Business Licence
-		                </button>
-		              </div>
-		            </div>
-		          </div>
-		        }
-		        <app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
-		      </div>
-		    </div>
-		  </section>
+			<section class="step-section">
+				<div class="row">
+					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="row">
+							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+								<h2 class="fs-3">Business Licences</h2>
+							</div>
+							<div class="col-xl-6 col-lg-4 col-md-12">
+								<div class="d-flex justify-content-end">
+									@if (!isSoleProprietorAppSimultaneousFlow) {
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto me-2 mb-3"
+											aria-label="Manage the business profile"
+											(click)="onBusinessProfile()"
+										>
+											<mat-icon class="d-none d-md-block">storefront</mat-icon>
+											{{ businessProfileLabel }}
+										</button>
+									}
+									<button
+										mat-flat-button
+										color="primary"
+										class="large w-auto ms-2 mb-3"
+										aria-label="Manage the portal administrators"
+										(click)="onPortalAdministrators()"
+									>
+										<mat-icon class="d-none d-md-block">people</mat-icon>
+										Portal Administrators
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+						@if (showManageBusinessStakeholders) {
+							<div class="row">
+								<div class="col-12 text-end">
+									<a
+										class="large"
+										tabindex="0"
+										(click)="onManageBusinessStakeholders()"
+										(keydown)="onKeydownManageBusinessStakeholders($event)"
+									>
+										Controlling Members, Business Managers & Employees
+									</a>
+								</div>
+							</div>
+						}
+
+						@if (isAlertsExist()) {
+							<div class="mt-4">
+								@for (msg of errorMessages; track msg; let i = $index) {
+									<app-alert type="danger" icon="dangerous">
+										<div [innerHTML]="msg"></div>
+									</app-alert>
+								}
+								@if (isControllingMemberWarning) {
+									<app-alert type="warning" icon="warning">
+										<div>Your business licence application is pending controlling member criminal record checks.</div>
+										<div class="mt-2">
+											View <strong>'Controlling Members, Business Managers & Employees'</strong> to see the status of
+											each of member.
+										</div>
+									</app-alert>
+								}
+								@for (msg of warningMessages; track msg; let i = $index) {
+									<app-alert type="warning" icon="warning">
+										<div [innerHTML]="msg"></div>
+									</app-alert>
+								}
+							</div>
+						}
+
+						<app-business-licence-main-applications-list
+							[applicationsDataSource]="applicationsDataSource"
+							[isControllingMemberWarning]="isControllingMemberWarning"
+							[isSoleProprietor]="isSoleProprietor"
+							(resumeApplication)="onResume($event)"
+							(payApplication)="onPayNow($event)"
+							(cancelApplication)="onDelete($event)"
+							(manageBusinessStakeholders)="onManageBusinessStakeholders()"
+						></app-business-licence-main-applications-list>
+
+						<app-business-licence-main-licence-list
+							[activeLicences]="activeLicencesList"
+							[applicationIsInProgress]="applicationIsInProgress"
+							[isSoleProprietor]="isSoleProprietor"
+							(replaceLicence)="onReplace($event)"
+							(updateLicence)="onUpdate($event)"
+							(renewLicence)="onRenewal($event)"
+						></app-business-licence-main-licence-list>
+
+						@if (!activeLicenceExist) {
+							<div class="summary-card-section mt-4 mb-3 px-4 py-3">
+								<div class="row">
+									<div class="col-xl-7 col-lg-6">
+										<div class="text-data">You don't have an active business licence.</div>
+										<div class="d-block fw-bold mt-3 mb-2">
+											Apply for a new business licence if you have never held one before or if your previous licence has
+											expired.
+										</div>
+									</div>
+									<div class="col-xl-5 col-lg-6 text-end">
+										<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBusinessLicence()">
+											<mat-icon>add</mat-icon>Apply for a New Business Licence
+										</button>
+									</div>
+								</div>
+							</div>
+						}
+
+						<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
+
+						<!-- <div class="mt-4">
+							<app-alert type="info" icon="info">
+								Do you have a security business licence that isn’t displayed here?
+								<a
+									class="fw-normal"
+									tabindex="0"
+									aria-label="Link a current or expired licence to your account"
+									(click)="onConnectToLicence()"
+									(keydown)="onKeydownConnectToLicence($event)"
+									>Link a current or expired licence</a
+								>
+								to your account.
+							</app-alert>
+						</div> -->
+					</div>
+				</div>
+			</section>
 		}
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })
@@ -376,6 +397,18 @@ export class BusinessLicenceMainComponent implements OnInit {
 		this.router.navigateByUrl(
 			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.PORTAL_ADMINISTRATORS)
 		);
+	}
+
+	onConnectToLicence(): void {
+		this.router.navigateByUrl(
+			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.LICENCE_LINK)
+		);
+	}
+
+	onKeydownConnectToLicence(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onConnectToLicence();
 	}
 
 	private loadData(): void {

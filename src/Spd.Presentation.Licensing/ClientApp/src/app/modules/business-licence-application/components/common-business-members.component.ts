@@ -8,30 +8,30 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-common-business-members',
 	template: `
 		<app-common-controlling-or-business-members
-		  [form]="form"
-		  [isControllingMember]="false"
-		  memberLabel="Business Manager"
-		  [defaultExpanded]="true"
-		  [isWizard]="false"
-		  [isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
-		  [isApplExists]="isApplExists"
-		  [isLicenceExists]="isLicenceExists"
-		  [isReadonly]="isReadonly"
+			[form]="form"
+			[isControllingMember]="false"
+			memberLabel="Business Manager"
+			[defaultExpanded]="true"
+			[isWizard]="false"
+			[isApplDraftOrWaitingForPayment]="isApplDraftOrWaitingForPayment"
+			[isApplExists]="isApplExists"
+			[isLicenceExists]="isLicenceExists"
+			[isReadonly]="isReadonly"
 		></app-common-controlling-or-business-members>
-		
+
 		@if (!minCountValid) {
-		  <div class="mt-3">
-		    <mat-error class="mat-option-error">At least one Controlling Member or Business Manager is required</mat-error>
-		  </div>
+			<div class="mt-3">
+				<mat-error class="mat-option-error">At least one Controlling Member or Business Manager is required</mat-error>
+			</div>
 		}
 		@if (!maxCountValid) {
-		  <div class="mt-3">
-		    <mat-error class="mat-option-error">
-		      At most {{ maxCount }} Controlling Members and Business Managers can be entered
-		    </mat-error>
-		  </div>
+			<div class="mt-3">
+				<mat-error class="mat-option-error"
+					>At most {{ maxCount }} Controlling Members and Business Managers can be entered</mat-error
+				>
+			</div>
 		}
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

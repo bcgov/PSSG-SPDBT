@@ -63,6 +63,8 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		termsAndConditionsData: this.termsAndConditionsFormGroup,
 
 		trainingSchoolInfoData: this.trainingSchoolInfoFormGroup,
+		trainingSchoolCeoData: this.trainingSchoolCeoFormGroup,
+		trainingSchoolVerificationData: this.trainingSchoolVerificationFormGroup,
 		dogTrainerData: this.dogTrainerFormGroup,
 		trainerMailingAddressData: this.trainerMailingAddressFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
@@ -110,11 +112,11 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 	 * @returns boolean
 	 */
 	isStepDogTrainerTrainingSchoolComplete(): boolean {
-		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
-			return true;
-		}
-
-		return this.trainingSchoolInfoFormGroup.valid;
+		return (
+			this.trainingSchoolInfoFormGroup.valid &&
+			this.trainingSchoolCeoFormGroup.valid &&
+			this.trainingSchoolVerificationFormGroup.valid
+		);
 	}
 
 	/**
@@ -197,6 +199,9 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 		const trainingSchoolInfoData = {
 			accreditedSchoolId: latestApplication.accreditedSchoolId,
 			accreditedSchoolName: latestApplication.accreditedSchoolName,
+		};
+
+		const trainingSchoolCeoData = {
 			schoolDirectorGivenName: latestApplication.schoolDirectorGivenName,
 			schoolDirectorMiddleName: latestApplication.schoolDirectorMiddleName,
 			schoolDirectorSurname: latestApplication.schoolDirectorSurname,
@@ -209,6 +214,7 @@ export class DogTrainerApplicationService extends DogTrainerApplicationHelper {
 				licenceAppId: null,
 				applicationTypeData,
 				trainingSchoolInfoData,
+				trainingSchoolCeoData,
 			},
 			{
 				emitEvent: false,

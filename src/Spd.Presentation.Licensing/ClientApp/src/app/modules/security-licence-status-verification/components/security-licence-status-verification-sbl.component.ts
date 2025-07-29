@@ -92,7 +92,7 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 									captchaFormGroup.get('token')?.invalid &&
 									captchaFormGroup.get('token')?.hasError('required')
 								) {
-									<mat-error class="mat-option-error">This is required </mat-error>
+									<mat-error class="mat-option-error">This is required</mat-error>
 								}
 							</div>
 

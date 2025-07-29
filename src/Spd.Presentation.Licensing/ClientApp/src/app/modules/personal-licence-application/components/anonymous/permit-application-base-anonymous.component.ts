@@ -5,8 +5,8 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
-    selector: 'app-permit-application-base-anonymous',
-    template: `
+	selector: 'app-permit-application-base-anonymous',
+	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<!-- hide padding/margin on smaller screens -->
 			<div class="row">
@@ -16,8 +16,8 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class PermitApplicationBaseAnonymousComponent implements OnInit {
 	constructor(

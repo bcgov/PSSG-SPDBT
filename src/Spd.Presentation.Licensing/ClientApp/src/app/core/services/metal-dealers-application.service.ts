@@ -134,7 +134,14 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 		this.resetModelFlags();
 		this.resetCommon();
 		this.consentAndDeclarationFormGroup.reset();
+		this.updateAgreementFormGroup.reset();
 		this.metalDealersModelFormGroup.reset();
+
+		// clear the array data - this does not seem to get reset during a formgroup reset
+		const branchesArray = this.metalDealersModelFormGroup.get('branchesData.branches') as FormArray;
+		while (branchesArray.length) {
+			branchesArray.removeAt(0);
+		}
 
 		console.debug('RESET', this.initialized, this.metalDealersModelFormGroup.value);
 	}

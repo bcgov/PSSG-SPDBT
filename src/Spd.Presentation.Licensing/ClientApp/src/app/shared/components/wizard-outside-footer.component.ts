@@ -6,25 +6,25 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	selector: 'app-wizard-outside-footer',
 	template: `
 		<div class="row wizard-button-row">
-		  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-		    <button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
-		  </div>
-		
-		  <div class="offset-xxl-2 col-xxl-4 col-xl-6 col-lg-6 col-md-12">
-		    @if (isNextStepperStepObserved) {
-		      <button
-		        mat-flat-button
-		        color="primary"
-		        class="large mb-2"
-		        aria-label="Go to the next step"
-		        (click)="onNext()"
-		        >
-		        {{ nextButtonLabel }}
-		      </button>
-		    }
-		  </div>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+				<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
+			</div>
+
+			<div class="offset-xxl-2 col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+				@if (isNextStepperStepObserved) {
+					<button
+						mat-flat-button
+						color="primary"
+						class="large mb-2"
+						aria-label="Go to the next step"
+						(click)="onNext()"
+					>
+						{{ nextButtonLabel }}
+					</button>
+				}
+			</div>
 		</div>
-		`,
+	`,
 	styles: [],
 	standalone: false,
 })

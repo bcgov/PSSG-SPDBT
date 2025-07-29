@@ -71,7 +71,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										captchaFormGroup.get('token')?.invalid &&
 										captchaFormGroup.get('token')?.hasError('required')
 									) {
-										<mat-error>This is required</mat-error>
+										<mat-error>Click this button to verify that you are not a robot</mat-error>
 									}
 								</div>
 							</div>

@@ -9,8 +9,8 @@ import { switchMap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-license-application-routes';
 
 @Component({
-    selector: 'app-business-licence-payment-fail',
-    template: `
+	selector: 'app-business-licence-payment-fail',
+	template: `
 		<section class="step-section">
 			<app-payment-fail
 				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
@@ -19,8 +19,8 @@ import { BusinessLicenceApplicationRoutes } from '../business-license-applicatio
 			></app-payment-fail>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class BusinessLicencePaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;

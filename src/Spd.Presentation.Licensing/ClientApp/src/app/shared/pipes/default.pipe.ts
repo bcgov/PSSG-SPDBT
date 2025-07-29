@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'default',
-    standalone: false
+	name: 'default',
+	standalone: false,
 })
 export class DefaultPipe implements PipeTransform {
 	public transform(value: any, defaultValue = '---'): any {

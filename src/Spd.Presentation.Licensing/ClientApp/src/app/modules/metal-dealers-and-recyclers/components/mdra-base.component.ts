@@ -16,7 +16,7 @@ import { MetalDealersAndRecyclersRoutes } from '../metal-dealers-and-recyclers-r
 			</div>
 		</div>
 	`,
-	styles: ``,
+	styles: [],
 	standalone: false,
 })
 export class MdraBaseComponent implements OnInit {

@@ -28,9 +28,9 @@ export interface FilterQueryList {
 const FILTER_QUERY_DELIMITER = ',';
 
 @Component({
-    selector: 'app-base-filter',
-    template: ``,
-    standalone: false
+	selector: 'app-base-filter',
+	template: ``,
+	standalone: false,
 })
 export class BaseFilterComponent {
 	@Output() filterChange = new EventEmitter<string>();

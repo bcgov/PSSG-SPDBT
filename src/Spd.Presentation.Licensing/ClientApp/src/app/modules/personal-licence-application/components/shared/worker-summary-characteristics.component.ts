@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
-    selector: 'app-worker-summary-characteristics',
-    template: `
+	selector: 'app-worker-summary-characteristics',
+	template: `
 		<div class="text-minor-heading-small">Characteristics</div>
 		<div class="row mt-0">
 			<div class="col-lg-3 col-md-12">
@@ -35,8 +35,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			</div>
 		</div>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class WorkerSummaryCharacteristicsComponent {
 	constructor(private workerApplicationService: WorkerApplicationService) {}

@@ -14,69 +14,65 @@ import {
 	selector: 'app-business-category-private-investigator',
 	template: `
 		<form [formGroup]="form" novalidate>
-		  <div class="row mt-3">
-		    <div class="col-lg-8 col-md-12 col-sm-12">
-		      <div class="text-minor-heading lh-base">
-		        To qualify for a private investigator business licence, you must have a manager with a valid security worker
-		        licence.
-		      </div>
-		    </div>
-		    <div class="col-lg-4 col-md-12 col-sm-12 text-end">
-		      <button
-		        mat-flat-button
-		        color="primary"
-		        class="large w-auto"
-		        aria-label="Search for manager"
-		        (click)="onLookupManager()"
-		        >
-		        Search for Manager
-		      </button>
-		    </div>
-		
-		    <div class="mt-4">
-		      @if (managerLicenceId.value) {
-		        <app-alert type="success" icon="check_circle">
-		          <div class="row">
-		            <div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-		              <div class="text-primary-color">Name</div>
-		              <div class="text-minor-heading">{{ managerLicenceHolderName.value }}</div>
-		            </div>
-		            <div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
-		              <div class="text-primary-color">Security Worker Licence Number</div>
-		              <div class="text-minor-heading">{{ managerLicenceNumber.value }}</div>
-		            </div>
-		            <div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
-		              <div class="text-primary-color">Expiry Date</div>
-		              <div class="text-minor-heading">
-		                {{ managerLicenceExpiryDate.value | formatDate: formalDateFormat }}
-		              </div>
-		            </div>
-		            <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-		              <div class="text-primary-color">Licence Status</div>
-		              <div class="text-minor-heading fw-bold">{{ managerLicenceStatusCode.value }}</div>
-		            </div>
-		          </div>
-		        </app-alert>
-		      } @else {
-		        <app-alert type="warning" icon="">Search for your manager's security worker licence.</app-alert>
-		      }
-		
-		      @if (
-		        (form.get('managerLicenceId')?.dirty || form.get('managerLicenceId')?.touched) &&
-		        form.get('managerLicenceId')?.invalid &&
-		        form.get('managerLicenceId')?.hasError('required')
-		        ) {
-		        <mat-error
-		          class="mat-option-error mb-4"
-		          >
-		          A valid security worker licence must be selected
-		        </mat-error>
-		      }
-		    </div>
-		  </div>
+			<div class="row mt-3">
+				<div class="col-lg-8 col-md-12 col-sm-12">
+					<div class="text-minor-heading lh-base">
+						To qualify for a private investigator business licence, you must have a manager with a valid security worker
+						licence.
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-12 col-sm-12 text-end">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto"
+						aria-label="Search for manager"
+						(click)="onLookupManager()"
+					>
+						Search for Manager
+					</button>
+				</div>
+
+				<div class="mt-4">
+					@if (managerLicenceId.value) {
+						<app-alert type="success" icon="check_circle">
+							<div class="row">
+								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Name</div>
+									<div class="text-minor-heading">{{ managerLicenceHolderName.value }}</div>
+								</div>
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Security Worker Licence Number</div>
+									<div class="text-minor-heading">{{ managerLicenceNumber.value }}</div>
+								</div>
+								<div class="col-lg-3 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Expiry Date</div>
+									<div class="text-minor-heading">
+										{{ managerLicenceExpiryDate.value | formatDate: formalDateFormat }}
+									</div>
+								</div>
+								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Licence Status</div>
+									<div class="text-minor-heading fw-bold">{{ managerLicenceStatusCode.value }}</div>
+								</div>
+							</div>
+						</app-alert>
+					} @else {
+						<app-alert type="warning" icon="">Search for your manager's security worker licence.</app-alert>
+					}
+
+					@if (
+						(form.get('managerLicenceId')?.dirty || form.get('managerLicenceId')?.touched) &&
+						form.get('managerLicenceId')?.invalid &&
+						form.get('managerLicenceId')?.hasError('required')
+					) {
+						<mat-error class="mat-option-error mb-4">A valid security worker licence must be selected</mat-error>
+					}
+				</div>
+			</div>
 		</form>
-		`,
-	styles: ``,
+	`,
+	styles: [],
 	standalone: false,
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {

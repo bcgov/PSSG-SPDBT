@@ -274,6 +274,28 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
+	/**
+	 * Link two organizations
+	 * @returns
+	 */
+	linkLicence(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<any>> {
+		return this.licenceService.apiLicenceLookupLicenceNumberGet$Response({ licenceNumber, accessCode }).pipe(
+			switchMap((resp: StrictHttpResponse<LicenceResponse>) => {
+				if (resp.status != 200) {
+					return of(resp);
+				}
+
+				// Licence status does not matter for the merge
+
+				const newBizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+				return this.bizProfileService.apiBizMergeOldBizIdNewBizIdGet$Response({
+					oldBizId: resp.body.licenceHolderId!,
+					newBizId,
+				});
+			})
+		);
+	}
+
 	payBusinessLicenceNew(): void {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
@@ -994,7 +1016,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.consentAndDeclarationFormGroup.reset();
 		this.businessModelFormGroup.reset();
 
-		// clear the alias data - this does not seem to get reset during a formgroup reset
+		// clear the array data - this does not seem to get reset during a formgroup reset
 		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
 		while (bcBranchesArray.length) {
 			bcBranchesArray.removeAt(0);

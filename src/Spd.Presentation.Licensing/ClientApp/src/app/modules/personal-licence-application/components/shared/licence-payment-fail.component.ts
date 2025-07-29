@@ -8,8 +8,8 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { switchMap } from 'rxjs';
 
 @Component({
-    selector: 'app-licence-payment-fail',
-    template: `
+	selector: 'app-licence-payment-fail',
+	template: `
 		<section class="step-section">
 			<app-payment-fail
 				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
@@ -18,8 +18,8 @@ import { switchMap } from 'rxjs';
 			></app-payment-fail>
 		</section>
 	`,
-    styles: [],
-    standalone: false
+	styles: [],
+	standalone: false,
 })
 export class LicencePaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
