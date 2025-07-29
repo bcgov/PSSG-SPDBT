@@ -135,7 +135,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 						<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
 
-						<div class="mt-4">
+						<!-- <div class="mt-4">
 							<app-alert type="info" icon="info">
 								Do you have a security business licence that isn’t displayed here?
 								<a
@@ -148,7 +148,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								>
 								to your account.
 							</app-alert>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</section>
