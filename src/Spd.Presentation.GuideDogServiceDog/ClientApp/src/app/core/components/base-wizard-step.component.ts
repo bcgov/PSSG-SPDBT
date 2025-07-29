@@ -26,6 +26,8 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
+
+		this.utilService.afterViewInit();
 	}
 
 	onStepPrevious(): void {
