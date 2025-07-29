@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService, LicenceLookupResult } from '@app/core/services/common-application.service';
 import { Subject } from 'rxjs';
 import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-number.component';
@@ -17,14 +18,23 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 			}
 
 			<app-alert type="info" icon="info">
-				Enter the {{ typeLabel }} Number, Access Code, perform the reCaptcha and then click the search button.
+				<div class="lh-info mb-2">
+					You need both <strong>your licence number</strong> as it appears on your current licence, plus the
+					<strong>access code number</strong>
+					provided following your initial security worker application or in your renewal letter from the Registrar,
+					Security Services. Enter the two numbers below then click 'Next' to continue.
+				</div>
+				<div class="lh-info">
+					If you do not know your access code, you may call Security Program's Licensing Unit during regular office
+					hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
+				</div>
 			</app-alert>
 
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-6 col-lg-12">
 						<mat-form-field>
-							<mat-label>{{ typeLabel }} Number</mat-label>
+							<mat-label>Licence Number</mat-label>
 							<input
 								matInput
 								type="search"
@@ -103,7 +113,7 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 											<div class="text-data">{{ searchLicenceResponse?.expiryDate }}</div>
 										</div>
 										<div class="col-xl-6 col-lg-12">
-											<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
+											<div class="d-block text-muted mt-2">Licence Status</div>
 											<div class="text-data fw-bold">{{ searchLicenceResponse?.licenceStatusCode }}</div>
 										</div>
 									</div>
@@ -130,7 +140,7 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 								<div class="mt-3">
 									<app-alert type="danger" icon="">
 										<div class="fs-5 mb-2">
-											This {{ typeLabel }} is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
+											This licence is not valid {{ lookupServiceTypeCode | options: 'ServiceTypes' }}.
 										</div>
 										<div class="row">
 											<div class="col-md-5 col-sm-12">
@@ -144,7 +154,7 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 												<div class="text-data">{{ searchLicenceResponse?.expiryDate }}</div>
 											</div>
 											<div class="col-md-4 col-sm-12">
-												<div class="d-block text-muted mt-2">{{ typeLabel }} Status</div>
+												<div class="d-block text-muted mt-2">Licence Status</div>
 												<div class="text-data fw-bold">{{ searchLicenceResponse?.licenceStatusCode }}</div>
 											</div>
 										</div>
@@ -194,11 +204,18 @@ import { LookupByLicenceNumberDialogData } from './modal-lookup-by-licence-numbe
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+	styles: [
+		`
+			.lh-info {
+				line-height: 1.6 !important;
+			}
+		`,
+	],
 	animations: [showHideTriggerSlideAnimation],
 	standalone: false,
 })
 export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
+	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	form = this.commonApplicationService.swlLookupLicenceAnonymousFormGroup;
 
 	resetRecaptcha: Subject<void> = new Subject<void>();
@@ -208,7 +225,6 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 	notValidSwlMessage: string | null = null;
 
 	selectButtonLabel = 'Select';
-	typeLabel = 'Licence';
 
 	searchLicenceResponse: LicenceResponse | null = null;
 
@@ -237,7 +253,6 @@ export class ModalLookupByLicenceNumberAccessCodeComponent implements OnInit {
 		this.isExpiredLicenceSearch = this.dialogData.isExpiredLicenceSearch ?? false;
 		this.lookupServiceTypeCode = this.dialogData.lookupServiceTypeCode;
 		this.selectButtonLabel = this.dialogData.selectButtonLabel ?? 'Select';
-		this.typeLabel = this.dialogData.typeLabel ?? 'Licence';
 	}
 
 	onSearchAnonymousKeyDown(): void {
