@@ -104,6 +104,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-label>Training Start Date</mat-label>
 												<input
 													matInput
+													type="text"
 													formControlName="trainingStartDate"
 													[mask]="dateMask"
 													[showMaskTyped]="true"
@@ -129,6 +130,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-label>Training End Date</mat-label>
 												<input
 													matInput
+													type="text"
 													formControlName="trainingEndDate"
 													[mask]="dateMask"
 													[showMaskTyped]="true"

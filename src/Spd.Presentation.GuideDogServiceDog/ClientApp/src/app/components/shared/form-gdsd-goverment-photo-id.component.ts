@@ -42,6 +42,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-label>Document Expiry Date</mat-label>
 										<input
 											matInput
+											type="text"
 											formControlName="expiryDate"
 											[mask]="dateMask"
 											[showMaskTyped]="true"

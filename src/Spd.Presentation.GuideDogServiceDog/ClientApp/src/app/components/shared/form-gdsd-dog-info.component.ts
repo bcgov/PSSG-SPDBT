@@ -27,6 +27,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-label>Date of Birth</mat-label>
 								<input
 									matInput
+									type="text"
 									formControlName="dogDateOfBirth"
 									[mask]="dateMask"
 									[showMaskTyped]="true"
