@@ -75,8 +75,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[mask]="phoneMask"
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
+										placeholder="(123) 456-7890"
+										aria-label="Enter the 10 digit phone number."
 									/>
-									<mat-hint>A 10 digit phone number</mat-hint>
 									@if (form.get('schoolContactPhoneNumber')?.hasError('required')) {
 										<mat-error>This is required</mat-error>
 									}
