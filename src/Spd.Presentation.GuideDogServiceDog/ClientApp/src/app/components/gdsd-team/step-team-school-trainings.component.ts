@@ -107,10 +107,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													type="text"
 													formControlName="trainingStartDate"
 													[mask]="dateMask"
-													[showMaskTyped]="true"
+													[showMaskTyped]="false"
 													[errorStateMatcher]="matcher"
 													(blur)="onValidateStartDate(i)"
-													aria-label="Date in format YYYY-MM-DD"
+													placeholder="YYYY-MM-DD"
+													aria-label="Enter the date in the format: year dash month dash day."
 												/>
 												<!-- We always want the date format hint to display -->
 												<mat-hint>Date format YYYY-MM-DD</mat-hint>
@@ -133,10 +134,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													type="text"
 													formControlName="trainingEndDate"
 													[mask]="dateMask"
-													[showMaskTyped]="true"
+													[showMaskTyped]="false"
 													[errorStateMatcher]="matcher"
 													(blur)="onValidateEndDate(i)"
-													aria-label="Date in format YYYY-MM-DD"
+													placeholder="YYYY-MM-DD"
+													aria-label="Enter the date in the format: year dash month dash day."
 												/>
 												<!-- We always want the date format hint to display -->
 												<mat-hint>Date format YYYY-MM-DD</mat-hint>

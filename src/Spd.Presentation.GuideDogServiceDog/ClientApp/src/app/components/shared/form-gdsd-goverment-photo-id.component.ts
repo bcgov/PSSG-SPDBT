@@ -45,20 +45,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											type="text"
 											formControlName="expiryDate"
 											[mask]="dateMask"
-											[showMaskTyped]="true"
+											[showMaskTyped]="false"
 											[errorStateMatcher]="matcher"
 											(blur)="onValidateDate()"
-											aria-label="Date in format YYYY-MM-DD"
+											placeholder="YYYY-MM-DD"
+											aria-label="Enter the date in the format: year dash month dash day."
 										/>
-										<!-- We always want the date format hint to display -->
-										@if (!showHintError) {
-											<mat-hint>Date format YYYY-MM-DD</mat-hint>
-										}
-										@if (showHintError) {
-											<mat-error>
-												<span class="hint-inline">Date format YYYY-MM-DD</span>
-											</mat-error>
-										}
 										@if (expiryDate.hasError('required')) {
 											<mat-error>This is required</mat-error>
 										}
@@ -137,9 +129,6 @@ export class FormGdsdGovermentPhotoIdComponent {
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-	get showHintError(): boolean {
-		return (this.expiryDate?.dirty || this.expiryDate?.touched) && this.expiryDate?.invalid;
 	}
 	get expiryDate(): FormControl {
 		return this.form.get('expiryDate') as FormControl;
