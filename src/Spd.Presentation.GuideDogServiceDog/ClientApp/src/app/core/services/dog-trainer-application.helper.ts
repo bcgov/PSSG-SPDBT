@@ -12,11 +12,18 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	trainingSchoolInfoFormGroup: FormGroup = this.formBuilder.group({
 		accreditedSchoolId: new FormControl('', [FormControlValidators.required]),
 		accreditedSchoolName: new FormControl(''),
+	});
+
+	trainingSchoolCeoFormGroup: FormGroup = this.formBuilder.group({
 		schoolDirectorGivenName: new FormControl(''),
 		schoolDirectorMiddleName: new FormControl(''),
 		schoolDirectorSurname: new FormControl('', [FormControlValidators.required]),
 		schoolContactPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		schoolContactEmailAddress: new FormControl('', [FormControlValidators.email]),
+	});
+
+	trainingSchoolVerificationFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]), // LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification
 	});
 
 	dogTrainerFormGroup: FormGroup = this.formBuilder.group({
@@ -53,6 +60,8 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
+		const trainingSchoolCeoData = dogTrainerModelFormGroup.trainingSchoolCeoData;
+		const trainingSchoolVerificationData = dogTrainerModelFormGroup.trainingSchoolVerificationData;
 		const trainerMailingAddressData = dogTrainerModelFormGroup.trainerMailingAddressData;
 		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
 		const photographOfYourselfData = dogTrainerModelFormGroup.photographOfYourselfData;
@@ -77,6 +86,13 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 				SPD_CONSTANTS.phone.backendMask
 			);
 		}
+
+		trainingSchoolVerificationData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification,
+			});
+		});
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -113,6 +129,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			licenceTermCode: dogTrainerModelFormGroup.licenceTermCode,
 
 			...trainingSchoolInfoData,
+			...trainingSchoolCeoData,
 			...dogTrainerData,
 			trainerMailingAddress: trainerMailingAddressData,
 
@@ -130,6 +147,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const photographOfYourselfData = dogTrainerModelFormGroup.photographOfYourselfData;
+		const trainingSchoolVerificationData = dogTrainerModelFormGroup.trainingSchoolVerificationData;
 		const governmentPhotoIdData = dogTrainerModelFormGroup.governmentPhotoIdData;
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
@@ -145,6 +163,17 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 				docs.push(doc);
 			});
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		}
+
+		if (trainingSchoolVerificationData.attachments) {
+			const docs: Array<Blob> = [];
+			trainingSchoolVerificationData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification,
+				documents: docs,
+			});
 		}
 
 		if (governmentPhotoIdData.attachments) {
@@ -177,17 +206,17 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	getSummaryschoolDirectorName(dogTrainerModelData: any): string {
 		return (
 			this.utilService.getFullNameWithOneMiddle(
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorGivenName,
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorMiddleName,
-				dogTrainerModelData.trainingSchoolInfoData.schoolDirectorSurname
+				dogTrainerModelData.trainingSchoolCeoData.schoolDirectorGivenName,
+				dogTrainerModelData.trainingSchoolCeoData.schoolDirectorMiddleName,
+				dogTrainerModelData.trainingSchoolCeoData.schoolDirectorSurname
 			) ?? ''
 		);
 	}
 	getSummaryschoolContactEmailAddress(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolContactEmailAddress ?? '';
+		return dogTrainerModelData.trainingSchoolCeoData.schoolContactEmailAddress ?? '';
 	}
 	getSummaryschoolContactPhoneNumber(dogTrainerModelData: any): string {
-		return dogTrainerModelData.trainingSchoolInfoData.schoolContactPhoneNumber ?? '';
+		return dogTrainerModelData.trainingSchoolCeoData.schoolContactPhoneNumber ?? '';
 	}
 
 	getSummarytrainerName(dogTrainerModelData: any): string {
@@ -207,6 +236,9 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 	}
 	getSummarytrainerphoneNumber(dogTrainerModelData: any): string {
 		return dogTrainerModelData.dogTrainerData.trainerPhoneNumber ?? '';
+	}
+	getSummaryaccreditedSchoolConfirmationAttachments(dogTrainerModelData: any): File[] {
+		return dogTrainerModelData.trainingSchoolVerificationData.attachments ?? [];
 	}
 
 	getSummaryapplicationTypeCode(dogTrainerModelData: any): ApplicationTypeCode | null {
