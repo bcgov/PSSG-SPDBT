@@ -56,9 +56,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								@if (dateOfBirth.hasError('futureDate')) {
 									<mat-error>This date cannot be in the future</mat-error>
 								}
-								<span id="dateFormatHelp" class="visually-hidden">
-									Enter the date in the format: year dash month dash day. For example, 2025 dash 07 dash 29.
-								</span>
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
