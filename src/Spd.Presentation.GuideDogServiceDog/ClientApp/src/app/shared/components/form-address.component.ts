@@ -39,9 +39,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<input
 							matInput
 							formControlName="postalCode"
-							oninput="this.value = this.value.toUpperCase()"
 							[errorStateMatcher]="matcher"
 							maxlength="20"
+							appInputUpperCaseTransform
 						/>
 						@if (form.get('postalCode')?.hasError('required')) {
 							<mat-error>This is required</mat-error>

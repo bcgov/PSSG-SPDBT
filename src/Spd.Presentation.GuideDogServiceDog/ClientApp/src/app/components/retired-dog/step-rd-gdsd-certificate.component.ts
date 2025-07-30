@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 										formControlName="currentGDSDCertificateNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="40"
+										appInputUpperCaseTransform
 									/>
 									@if (form.get('currentGDSDCertificateNumber')?.hasError('required')) {
 										<mat-error>This is required</mat-error>
