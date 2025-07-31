@@ -239,9 +239,9 @@ export class StepRdGdsdCertficateComponent implements OnInit, LicenceChildSteppe
 
 	get isInvalidSearchState(): boolean {
 		// displayed licence number and verified licence number must match
-		const licenceNumber1 = this.form.get('currentGDSDCertificateNumber')?.value;
-		const licenceNumber2 = this.form.get('verifiedLicenceNumber')?.value;
-		const isInvalidState = licenceNumber1 != licenceNumber2;
+		const licenceNumber1 = this.form.get('currentGDSDCertificateNumber')?.value ?? '';
+		const licenceNumber2 = this.form.get('verifiedLicenceNumber')?.value ?? '';
+		const isInvalidState = licenceNumber1.toUpperCase() != licenceNumber2.toUpperCase();
 		return isInvalidState;
 	}
 
