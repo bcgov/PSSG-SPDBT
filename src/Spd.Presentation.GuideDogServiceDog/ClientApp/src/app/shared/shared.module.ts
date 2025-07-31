@@ -23,6 +23,8 @@ import { StepSectionComponent } from './components/step-section.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { WizardFooterComponent } from './components/wizard-footer.component';
 import { FileDragNDropDirective } from './directives/file-drag-n-drop.directive';
+import { InputUpperCaseTransformDirective } from './directives/input-upper-case-transform.directive';
+import { PhoneNumberTransformDirective } from './directives/phone-number-transform.directive';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -51,6 +53,8 @@ const SHARED_COMPONENTS = [
 	FormLicenceListExpiredComponent,
 	ContainerComponent,
 	FileDragNDropDirective,
+	InputUpperCaseTransformDirective,
+	PhoneNumberTransformDirective,
 	FormAddressComponent,
 	FormAddressSummaryComponent,
 	FormPhotographOfYourselfComponent,
