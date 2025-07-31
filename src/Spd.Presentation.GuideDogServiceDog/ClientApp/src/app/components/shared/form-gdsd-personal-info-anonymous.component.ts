@@ -35,7 +35,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label id="dob-label">Date of Birth</mat-label>
+								<mat-label id="dob-label">Birth Date</mat-label>
 								<input
 									matInput
 									type="text"
