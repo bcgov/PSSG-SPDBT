@@ -105,6 +105,9 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
         team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         if (appData.IsDogTrainedByAccreditedSchool.HasValue && appData.IsDogTrainedByAccreditedSchool.Value)
         {
+            // SPDBT-4448 - set innoculations to true for New and Accredited GDSD Team Appl
+            app.spd_dogsinoculationsuptodate = (int)YesNoOptionSet.Yes;
+
             if (appData.AccreditedSchoolQuestions != null)
             {
                 //accredited school
