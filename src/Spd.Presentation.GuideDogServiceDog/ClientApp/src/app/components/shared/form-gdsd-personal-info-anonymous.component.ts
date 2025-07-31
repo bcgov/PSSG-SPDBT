@@ -35,7 +35,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 						<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Date of Birth</mat-label>
+								<mat-label id="dob-label">Date of Birth</mat-label>
 								<input
 									matInput
 									type="text"
@@ -45,8 +45,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[errorStateMatcher]="matcher"
 									(blur)="onValidateDate()"
 									placeholder="YYYY-MM-DD"
-									aria-label="Enter the date in the format: year dash month dash day."
+									aria-labelledby="dob-label dob-instructions"
+									aria-describedby="dob-instructions"
 								/>
+								<span id="dob-instructions" class="visually-hidden">Enter the date as year dash month dash day.</span>
+
 								@if (dateOfBirth.hasError('required')) {
 									<mat-error>This is required</mat-error>
 								}
