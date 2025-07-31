@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
@@ -26,7 +26,7 @@ import { UtilService } from '@app/core/services/util.service';
 	styles: [],
 	standalone: false,
 })
-export class StepDtApplicationTypeComponent implements OnInit {
+export class StepDtApplicationTypeComponent implements OnInit, AfterViewInit {
 	form: FormGroup = this.dogTrainerApplicationService.applicationTypeFormGroup;
 	serviceTypeCode = ServiceTypeCode.DogTrainerCertification;
 
@@ -39,6 +39,10 @@ export class StepDtApplicationTypeComponent implements OnInit {
 
 	ngOnInit() {
 		this.commonApplicationService.setGdsdApplicationTitle(this.serviceTypeCode);
+	}
+
+	ngAfterViewInit(): void {
+		this.utilService.afterViewInit();
 	}
 
 	onStepNext(): void {

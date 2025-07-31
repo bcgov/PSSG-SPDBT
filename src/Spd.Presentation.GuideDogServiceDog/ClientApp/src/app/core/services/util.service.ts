@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
-import { Inject, Injectable, DOCUMENT } from '@angular/core';
+import { DOCUMENT, Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SortDirection } from '@angular/material/sort';
@@ -60,6 +60,16 @@ export class UtilService {
 
 	//------------------------------------
 	// Generic
+
+	afterViewInit() {
+		setTimeout(() => {
+			const heading = document.querySelector('h1');
+			if (heading) {
+				(heading as HTMLElement).focus();
+			}
+		}, 250);
+	}
+
 	getFullName(givenName: string | null | undefined, surname: string | null | undefined): string | null {
 		const userNameArray: string[] = [];
 		if (givenName) {

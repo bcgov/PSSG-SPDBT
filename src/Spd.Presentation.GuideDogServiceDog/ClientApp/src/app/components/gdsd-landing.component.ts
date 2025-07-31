@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServiceTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app.routes';
@@ -8,6 +8,7 @@ import { CommonApplicationService } from '@app/core/services/common-application.
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { take, tap } from 'rxjs';
 
 @Component({
@@ -180,12 +181,13 @@ import { take, tap } from 'rxjs';
 	],
 	standalone: false,
 })
-export class GdsdLandingComponent implements OnInit {
+export class GdsdLandingComponent implements OnInit, AfterViewInit {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypes = ServiceTypeCode;
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private authProcessService: AuthProcessService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService,
 		private dogTrainerApplicationService: DogTrainerApplicationService,
@@ -195,6 +197,10 @@ export class GdsdLandingComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.commonApplicationService.setGdsdApplicationTitle();
+	}
+
+	ngAfterViewInit(): void {
+		this.utilService.afterViewInit();
 	}
 
 	onRegisterGuideDog(): void {
