@@ -23,7 +23,7 @@
     "@angular/forms": "^20.0.6",
     "@angular/material": "^20.0.4",
     "@angular/material-moment-adapter": "^20.0.4",
-    "@angular/platform-browser": "^20.0.6",
+    "@angular/platform-browser": "^20.1.4",
     "@angular/platform-browser-dynamic": "^20.0.6",
     "@angular/router": "^20.0.6",
     "@bcgov/bc-sans": "^2.1.0",
