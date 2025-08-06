@@ -34,11 +34,11 @@ const routes: Routes = [
 				path: MetalDealersAndRecyclersRoutes.MDRA_UPDATE,
 				component: MdraWizardUpdateComponent,
 			},
-			{
-				path: MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED,
-				component: MetalDealersRegistrationReceivedComponent,
-			},
 		],
+	},
+	{
+		path: MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED,
+		component: MetalDealersRegistrationReceivedComponent,
 	},
 	{
 		path: '',

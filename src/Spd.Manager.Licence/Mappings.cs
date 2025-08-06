@@ -703,6 +703,11 @@ internal class Mappings : Profile
     {
         List<BranchInfo> branchInfos = new();
 
+        if (branchAddrs == null) 
+        {
+            return branchInfos;
+        }
+
         foreach (BranchAddr branchAddr in branchAddrs)
         {
             BranchInfo branchInfo = new() { BranchAddress = new() };
