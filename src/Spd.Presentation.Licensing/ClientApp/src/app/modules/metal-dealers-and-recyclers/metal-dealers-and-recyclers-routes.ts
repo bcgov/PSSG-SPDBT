@@ -20,4 +20,8 @@ export class MetalDealersAndRecyclersRoutes {
 			? `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}/${MetalDealersAndRecyclersRoutes.MDRA_APPLICATION}/${route}`
 			: `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}`;
 	}
+
+	public static registrationReceivedPath(): string {
+		return `/${MetalDealersAndRecyclersRoutes.MODULE_PATH}/${MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED}`;
+	}
 }

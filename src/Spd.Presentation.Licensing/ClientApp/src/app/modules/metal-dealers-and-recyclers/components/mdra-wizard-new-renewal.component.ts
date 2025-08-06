@@ -200,9 +200,7 @@ export class MdraWizardNewRenewalComponent extends BaseWizardComponent implement
 	}
 
 	private handleSaveSuccess(): void {
-		this.router.navigateByUrl(
-			MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
-		);
+		this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.registrationReceivedPath());
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
