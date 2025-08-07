@@ -108,7 +108,7 @@ export class StepDtTrainingSchoolCeoComponent implements OnInit, LicenceChildSte
 		this.title = this.isRenewal
 			? 'Confirm Chief Executive Officer/Executive Director of the accredited training school'
 			: 'Chief Executive Officer/Executive Director of the accredited training school';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewal ? SPD_CONSTANTS.label.updateLabel : '';
 	}
 
 	isFormValid(): boolean {

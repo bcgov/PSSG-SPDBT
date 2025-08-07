@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -31,7 +32,7 @@ export class StepRdPersonalInfoComponent implements OnInit, LicenceChildStepperS
 
 	ngOnInit(): void {
 		this.title = this.isRenewal ? 'Confirm your personal information' : 'Your personal information';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewal ? SPD_CONSTANTS.label.updateLabel : '';
 	}
 
 	isFormValid(): boolean {
