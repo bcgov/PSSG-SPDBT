@@ -60,6 +60,7 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 		const serviceTypeData = dogTrainerModelFormGroup.serviceTypeData;
 		const applicationTypeData = dogTrainerModelFormGroup.applicationTypeData;
 		const dogTrainerData = dogTrainerModelFormGroup.dogTrainerData;
+		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
 		const trainingSchoolCeoData = dogTrainerModelFormGroup.trainingSchoolCeoData;
 		const trainingSchoolVerificationData = dogTrainerModelFormGroup.trainingSchoolVerificationData;
 		const trainerMailingAddressData = dogTrainerModelFormGroup.trainerMailingAddressData;
@@ -79,10 +80,9 @@ export abstract class DogTrainerApplicationHelper extends GdsdCommonApplicationH
 			);
 		}
 
-		const trainingSchoolInfoData = dogTrainerModelFormGroup.trainingSchoolInfoData;
-		if (trainingSchoolInfoData.schoolContactPhoneNumber) {
-			trainingSchoolInfoData.schoolContactPhoneNumber = this.maskPipe.transform(
-				trainingSchoolInfoData.schoolContactPhoneNumber,
+		if (trainingSchoolCeoData.schoolContactPhoneNumber) {
+			trainingSchoolCeoData.schoolContactPhoneNumber = this.maskPipe.transform(
+				trainingSchoolCeoData.schoolContactPhoneNumber,
 				SPD_CONSTANTS.phone.backendMask
 			);
 		}

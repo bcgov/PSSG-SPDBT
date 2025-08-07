@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -18,6 +18,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<app-form-gdsd-accredited-school
 							[accreditedSchoolIdControl]="accreditedSchoolId"
 							[accreditedSchoolNameControl]="accreditedSchoolName"
+							[serviceTypeCode]="serviceTypeGdsdTeamCertification"
 						></app-form-gdsd-accredited-school>
 
 						<div class="row">
@@ -51,6 +52,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	standalone: false,
 })
 export class StepTeamAccreditedGraduationComponent implements LicenceChildStepperStepComponent {
+	serviceTypeGdsdTeamCertification = ServiceTypeCode.GdsdTeamCertification;
 	form: FormGroup = this.gdsdTeamApplicationService.graduationInfoFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;

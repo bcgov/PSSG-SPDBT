@@ -121,7 +121,7 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 
 	ngOnInit(): void {
 		this.title = this.isRenewal ? 'Confirm dog trainer information' : 'Dog trainer information';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewal ? SPD_CONSTANTS.label.updateLabel : '';
 	}
 
 	isFormValid(): boolean {
