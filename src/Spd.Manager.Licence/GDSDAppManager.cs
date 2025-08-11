@@ -114,6 +114,7 @@ internal class GDSDAppManager :
 
         var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
+        createApp.OriginalApplicationId = originalLic.LicenceAppId; //set original application id for renew: spdbt-4449
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         //copying all old files to new application in PreviousFileIds 
@@ -141,6 +142,7 @@ internal class GDSDAppManager :
 
         var existingFiles = await GetExistingFileInfo(cmd.ChangeRequest.PreviousDocumentIds, ct);
         CreateGDSDAppCmd createApp = _mapper.Map<CreateGDSDAppCmd>(cmd.ChangeRequest);
+        createApp.OriginalApplicationId = originalLic.LicenceAppId; //set original application id for replace: spdbt-4449
         var response = await _gdsdRepository.CreateGDSDAppAsync(createApp, ct);
         await UploadNewDocsAsync(cmd.ChangeRequest.DocumentRelatedInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, ct);
         //copying all old files to new application in PreviousFileIds 
