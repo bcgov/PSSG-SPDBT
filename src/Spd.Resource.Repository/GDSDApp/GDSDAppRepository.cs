@@ -27,6 +27,21 @@ internal class GDSDAppRepository : DogAppBaseRepository, IGDSDAppRepository
         else if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement)
         {
             app = _mapper.Map<spd_application>(cmd);
+
+            //spdbt-4449: [GDSD] On renewal/replacement of GDSD Team Certification, set flags
+            if (cmd.OriginalApplicationId != null)
+            {
+                spd_application? originalApp = await _context.spd_applications
+                    .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
+                    .FirstOrDefaultAsync(ct);
+                if (originalApp == null)
+                    throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the original application for renewal or replacement");
+                app.spd_dogsinoculationsuptodate = originalApp.spd_dogsinoculationsuptodate; //copy the innoculations status from original app
+                app.spd_dogspayedorneutered = originalApp.spd_dogspayedorneutered; //copy the spayed/neutered status from original app
+                app.spd_dogstrainingaccredited = originalApp.spd_dogstrainingaccredited; //copy the training accredited status from original app
+            }
+            //spdbt-4449
+
             _context.AddTospd_applications(app);
             contact = UpdateContact(cmd, (Guid)cmd.ApplicantId);
             if (contact != null)

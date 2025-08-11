@@ -95,7 +95,7 @@ namespace Spd.Presentation.GuideDogServiceDog.Controllers
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.        
         /// </summary>
-        /// <param name="changeRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="changeRequest">GDSDTeamLicenceAppChangeRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/gdsd-team-app/change")]
