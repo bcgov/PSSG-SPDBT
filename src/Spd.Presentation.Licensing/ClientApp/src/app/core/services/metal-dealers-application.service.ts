@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
+	BizProfileResponse,
 	BranchInfo,
 	GoogleRecaptcha,
 	IActionResult,
@@ -194,9 +195,17 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	 */
 	private loadExistingMdra(associatedLicence: LicenceResponse): Observable<MdraRegistrationResponse> {
 		this.reset();
-		return this.mdraService.apiMdraRegistrationGet().pipe(
-			tap((mdraLicenceAppl: MdraRegistrationResponse) => {
-				return this.applyApplIntoModel({ associatedLicence, mdraLicenceAppl });
+
+		const loadMdraApis = [this.mdraService.apiMdraRegistrationGet(), this.mdraService.apiMdraOrgGet()];
+
+		return forkJoin(loadMdraApis).pipe(
+			switchMap((resps: any[]) => {
+				const mdraLicenceAppl: MdraRegistrationResponse = resps[0];
+
+				// SPDBT-4470 - use addresses from the profile, not the
+				const bizProfile: BizProfileResponse = resps[1];
+
+				return this.applyApplIntoModel({ associatedLicence, mdraLicenceAppl, bizProfile });
 			})
 		);
 	}
@@ -204,10 +213,12 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 	private applyApplIntoModel({
 		associatedLicence,
 		mdraLicenceAppl,
+		bizProfile,
 	}: {
 		associatedLicence: LicenceResponse;
 		mdraLicenceAppl: MdraRegistrationResponse;
-	}): Observable<any> {
+		bizProfile: BizProfileResponse;
+	}): Observable<MdraRegistrationResponse> {
 		// converted data might be missing original registration
 		if (!mdraLicenceAppl) {
 			this.metalDealersModelFormGroup.patchValue(
@@ -231,24 +242,31 @@ export class MetalDealersApplicationService extends MetalDealersApplicationHelpe
 			bizManagerPhoneNumber: mdraLicenceAppl.bizManagerPhoneNumber,
 			bizManagerEmailAddress: mdraLicenceAppl.bizManagerEmailAddress,
 		};
-		const businessAddressData = {
-			addressSelected: !!mdraLicenceAppl.bizAddress,
-			addressLine1: mdraLicenceAppl.bizAddress?.addressLine1,
-			addressLine2: mdraLicenceAppl.bizAddress?.addressLine2,
-			city: mdraLicenceAppl.bizAddress?.city,
-			postalCode: mdraLicenceAppl.bizAddress?.postalCode,
-			province: mdraLicenceAppl.bizAddress?.province,
-			country: mdraLicenceAppl.bizAddress?.country,
-		};
-		const businessMailingAddressData = {
-			addressSelected: !!mdraLicenceAppl.bizMailingAddress,
-			addressLine1: mdraLicenceAppl.bizMailingAddress?.addressLine1,
-			addressLine2: mdraLicenceAppl.bizMailingAddress?.addressLine2,
-			city: mdraLicenceAppl.bizMailingAddress?.city,
-			postalCode: mdraLicenceAppl.bizMailingAddress?.postalCode,
-			province: mdraLicenceAppl.bizMailingAddress?.province,
-			country: mdraLicenceAppl.bizMailingAddress?.country,
-		};
+
+		let businessAddressData = {};
+		let businessMailingAddressData = {};
+
+		if (bizProfile) {
+			businessAddressData = {
+				addressSelected: !!bizProfile.bizAddress,
+				addressLine1: bizProfile.bizAddress?.addressLine1,
+				addressLine2: bizProfile.bizAddress?.addressLine2,
+				city: bizProfile.bizAddress?.city,
+				postalCode: bizProfile.bizAddress?.postalCode,
+				province: bizProfile.bizAddress?.province,
+				country: bizProfile.bizAddress?.country,
+			};
+
+			businessMailingAddressData = {
+				addressSelected: !!bizProfile.bizMailingAddress,
+				addressLine1: bizProfile.bizMailingAddress?.addressLine1,
+				addressLine2: bizProfile.bizMailingAddress?.addressLine2,
+				city: bizProfile.bizMailingAddress?.city,
+				postalCode: bizProfile.bizMailingAddress?.postalCode,
+				province: bizProfile.bizMailingAddress?.province,
+				country: bizProfile.bizMailingAddress?.country,
+			};
+		}
 
 		this.metalDealersModelFormGroup.patchValue(
 			{
