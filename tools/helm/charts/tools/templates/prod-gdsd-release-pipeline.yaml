@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: prod-gdsd-release-pipeline
+  labels:
+    DataClass: Low
+spec:
+  tasks:
+    ## Promote staging to prod ##
+    - name: prod-gdsd-portal
+      params:
+        - name: imageName
+          value: gdsd-portal
+        - name: fromTag
+          value: staging
+        - name: toTag
+          value: prod
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
