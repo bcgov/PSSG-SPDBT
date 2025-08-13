@@ -39,13 +39,13 @@ public abstract record RetiredDogLicenceAppBase : LicenceAppBase
     public string? ApplicantOrLegalGuardianName { get; set; }
     public IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos { get; set; } = Enumerable.Empty<DocumentRelatedInfo>();
     public DogInfo? DogInfo { get; set; }
+    public bool? ConfirmDogLiveWithYouAfterRetire { get; set; }
 }
 
 public abstract record RetiredDogLicenceAppNew : RetiredDogLicenceAppBase
 {
     public string? CurrentGDSDCertificateNumber { get; set; }
     public DateOnly? DogRetiredDate { get; set; }
-    public bool? ConfirmDogLiveWithYouAfterRetire { get; set; }
 }
 
 public record RetiredDogLicenceAppUpsertRequest : RetiredDogLicenceAppNew
