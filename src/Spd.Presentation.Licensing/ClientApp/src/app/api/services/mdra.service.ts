@@ -11,10 +11,13 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { apiMdraOrgGet } from '../fn/mdra/api-mdra-org-get';
+import { ApiMdraOrgGet$Params } from '../fn/mdra/api-mdra-org-get';
 import { apiMdraRegistrationGet } from '../fn/mdra/api-mdra-registration-get';
 import { ApiMdraRegistrationGet$Params } from '../fn/mdra/api-mdra-registration-get';
 import { apiMdraRegistrationsPost } from '../fn/mdra/api-mdra-registrations-post';
 import { ApiMdraRegistrationsPost$Params } from '../fn/mdra/api-mdra-registrations-post';
+import { BizProfileResponse } from '../models/biz-profile-response';
 import { MdraRegistrationCommandResponse } from '../models/mdra-registration-command-response';
 import { MdraRegistrationResponse } from '../models/mdra-registration-response';
 
@@ -83,6 +86,39 @@ export class MdraService extends BaseService {
   apiMdraRegistrationsPost(params: ApiMdraRegistrationsPost$Params, context?: HttpContext): Observable<MdraRegistrationCommandResponse> {
     return this.apiMdraRegistrationsPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<MdraRegistrationCommandResponse>): MdraRegistrationCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiMdraOrgGet()` */
+  static readonly ApiMdraOrgGetPath = '/api/mdra-org';
+
+  /**
+   * Get mdra org profile anonymously, the applicantId is retrieved from cookies.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiMdraOrgGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiMdraOrgGet$Response(params?: ApiMdraOrgGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizProfileResponse>> {
+    return apiMdraOrgGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get mdra org profile anonymously, the applicantId is retrieved from cookies.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiMdraOrgGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiMdraOrgGet(params?: ApiMdraOrgGet$Params, context?: HttpContext): Observable<BizProfileResponse> {
+    return this.apiMdraOrgGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizProfileResponse>): BizProfileResponse => r.body)
     );
   }
 

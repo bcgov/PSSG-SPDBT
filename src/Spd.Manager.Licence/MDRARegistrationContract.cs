@@ -23,13 +23,13 @@ public abstract record MDRARegistration
 {
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.WebForm;
-    public string BizOwnerSurname { get; set; }
+    public string? BizOwnerSurname { get; set; }
     public string? BizOwnerGivenNames { get; set; }
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
     public Address? BizMailingAddress { get; set; }
     public Address? BizAddress { get; set; }
-    public string BizManagerFullName { get; set; }
+    public string? BizManagerFullName { get; set; }
     public string? BizManagerEmailAddress { get; set; }
     public string? BizManagerPhoneNumber { get; set; }
     public string? BizPhoneNumber { get; set; }

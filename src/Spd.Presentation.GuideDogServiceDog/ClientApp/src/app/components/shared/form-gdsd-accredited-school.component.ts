@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService, DogSchoolResponseExt } from '@app/core/services/config.service';
 import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
@@ -60,6 +60,7 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 	@Input() accreditedSchoolIdControl!: FormControl;
 	@Input() accreditedSchoolNameControl!: FormControl;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	accreditedDogSchools = this.configService.accreditedDogSchools;
 	filteredOptions!: Observable<DogSchoolResponseExt[]>;
@@ -67,7 +68,9 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 	constructor(private configService: ConfigService) {}
 
 	ngOnInit(): void {
-		if (this.isRenewal) {
+		// SPDBT-4423 - In Dog Trainer renewal flow, the accredited school can be updated.
+
+		if (this.isRenewal && !this.isDogTrainer) {
 			this.accreditedSchoolIdControl.disable({ emitEvent: false });
 		} else {
 			this.accreditedSchoolIdControl.enable({ emitEvent: false });
@@ -126,5 +129,8 @@ export class FormGdsdAccreditedSchoolComponent implements OnInit {
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
+	}
+	get isDogTrainer(): boolean {
+		return this.serviceTypeCode === ServiceTypeCode.DogTrainerCertification;
 	}
 }

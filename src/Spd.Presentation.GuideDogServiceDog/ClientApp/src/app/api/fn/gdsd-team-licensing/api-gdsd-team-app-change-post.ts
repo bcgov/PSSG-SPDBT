@@ -14,7 +14,7 @@ import { GdsdTeamLicenceAppChangeRequest } from '../../models/gdsd-team-licence-
 export interface ApiGdsdTeamAppChangePost$Params {
   
     /**
-     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     * GDSDTeamLicenceAppChangeRequest data
      */
     body?: GdsdTeamLicenceAppChangeRequest
 }

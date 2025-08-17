@@ -16,6 +16,7 @@ export interface RetiredDogLicenceAppChangeRequest {
   applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
+  confirmDogLiveWithYouAfterRetire?: boolean | null;
   dateOfBirth?: string | null;
   documentKeyCodes?: Array<string> | null;
   documentRelatedInfos?: Array<DocumentRelatedInfo> | null;

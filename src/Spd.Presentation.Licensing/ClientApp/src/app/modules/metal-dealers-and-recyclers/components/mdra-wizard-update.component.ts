@@ -135,9 +135,7 @@ export class MdraWizardUpdateComponent extends BaseWizardComponent implements On
 	onSubmit(): void {
 		this.metalDealersApplicationService.submitLicenceAnonymous(false).subscribe({
 			next: (_resp: StrictHttpResponse<MdraRegistrationCommandResponse>) => {
-				this.router.navigateByUrl(
-					MetalDealersAndRecyclersRoutes.path(MetalDealersAndRecyclersRoutes.MDRA_REGISTRATION_RECEIVED)
-				);
+				this.router.navigateByUrl(MetalDealersAndRecyclersRoutes.registrationReceivedPath());
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

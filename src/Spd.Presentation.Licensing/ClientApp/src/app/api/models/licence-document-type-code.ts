@@ -67,5 +67,6 @@ export enum LicenceDocumentTypeCode {
   DogTrainingCurriculumCertificateSupportingDocument = 'DogTrainingCurriculumCertificateSupportingDocument',
   GdsdPracticeHoursLog = 'GDSDPracticeHoursLog',
   GdsdCertificate = 'GDSDCertificate',
-  BusinessLicenceDocuments = 'BusinessLicenceDocuments'
+  BusinessLicenceDocuments = 'BusinessLicenceDocuments',
+  DogTrainerAccreditedSchoolVerification = 'DogTrainerAccreditedSchoolVerification'
 }

@@ -229,7 +229,11 @@ export class FormAddressAutocompleteComponent implements OnInit {
 				.apiMetadataAddressIdGet({ id: field.id! })
 				.pipe()
 				.subscribe((results: AddressRetrieveResponse[]) => {
-					const addressRetrieved = results.find((result) => result.language == 'ENG') ?? null;
+					let addressRetrieved = results.find((result) => result.language == 'ENG') ?? null;
+
+					if (!addressRetrieved) {
+						addressRetrieved = results.find((result) => result.language == 'FRE') ?? null;
+					}
 
 					if (addressRetrieved) {
 						const address = new Address(

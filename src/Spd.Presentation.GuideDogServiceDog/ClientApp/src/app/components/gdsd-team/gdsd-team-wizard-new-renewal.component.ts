@@ -169,6 +169,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		this.isLoggedIn = this.authenticationService.isLoggedIn();
 		this.showSaveAndExit = this.gdsdTeamApplicationService.isSaveAndExit();
 
+		this.utilService.afterViewInit();
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -233,6 +235,8 @@ export class GdsdTeamWizardNewRenewalComponent extends BaseWizardComponent imple
 		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
+
+		this.utilService.afterViewInit();
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {

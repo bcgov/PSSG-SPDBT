@@ -59,8 +59,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[mask]="phoneMask"
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
+										placeholder="(123) 456-7890"
+										aria-label="Enter the 10 digit phone number."
 									/>
-									<mat-hint>A 10 digit phone number</mat-hint>
 									@if (form.get('schoolContactPhoneNumber')?.hasError('required')) {
 										<mat-error>This is required</mat-error>
 									}
@@ -107,7 +108,7 @@ export class StepDtTrainingSchoolCeoComponent implements OnInit, LicenceChildSte
 		this.title = this.isRenewal
 			? 'Confirm Chief Executive Officer/Executive Director of the accredited training school'
 			: 'Chief Executive Officer/Executive Director of the accredited training school';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewal ? SPD_CONSTANTS.label.updateLabel : '';
 	}
 
 	isFormValid(): boolean {

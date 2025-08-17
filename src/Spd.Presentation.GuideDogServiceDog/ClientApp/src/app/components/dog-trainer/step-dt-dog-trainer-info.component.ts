@@ -40,22 +40,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Date of Birth</mat-label>
 									<input
 										matInput
+										type="text"
 										formControlName="trainerDateOfBirth"
 										[mask]="dateMask"
-										[showMaskTyped]="true"
+										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
 										(blur)="onValidateDate()"
-										aria-label="Date in format YYYY-MM-DD"
+										placeholder="YYYY-MM-DD"
+										aria-label="Enter the date in the format: year dash month dash day."
 									/>
-									<!-- We always want the date format hint to display -->
-									@if (!showHintError) {
-										<mat-hint>Date format YYYY-MM-DD</mat-hint>
-									}
-									@if (showHintError) {
-										<mat-error>
-											<span class="hint-inline">Date format YYYY-MM-DD</span>
-										</mat-error>
-									}
 									@if (trainerDateOfBirth.hasError('required')) {
 										<mat-error>This is required</mat-error>
 									}
@@ -76,8 +69,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										[mask]="phoneMask"
 										[showMaskTyped]="false"
 										[errorStateMatcher]="matcher"
+										placeholder="(123) 456-7890"
+										aria-label="Enter the 10 digit phone number."
 									/>
-									<mat-hint>A 10 digit phone number</mat-hint>
 									@if (form.get('trainerPhoneNumber')?.hasError('required')) {
 										<mat-error>This is required</mat-error>
 									}
@@ -127,7 +121,7 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 
 	ngOnInit(): void {
 		this.title = this.isRenewal ? 'Confirm dog trainer information' : 'Dog trainer information';
-		this.subtitle = this.isRenewal ? 'Update any information that has changed since your last application' : '';
+		this.subtitle = this.isRenewal ? SPD_CONSTANTS.label.updateLabel : '';
 	}
 
 	isFormValid(): boolean {
@@ -144,9 +138,6 @@ export class StepDtDogTrainerInfoComponent implements OnInit, LicenceChildSteppe
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
-	}
-	get showHintError(): boolean {
-		return (this.trainerDateOfBirth?.dirty || this.trainerDateOfBirth?.touched) && this.trainerDateOfBirth?.invalid;
 	}
 	get trainerDateOfBirth(): FormControl {
 		return this.form.get('trainerDateOfBirth') as FormControl;

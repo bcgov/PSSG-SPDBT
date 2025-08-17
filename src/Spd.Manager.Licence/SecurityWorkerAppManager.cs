@@ -421,10 +421,15 @@ internal class SecurityWorkerAppManager :
         PoliceOfficerRoleCode? originalRoleCode = contactResp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(contactResp.PoliceOfficerRoleCode.ToString());
 
-        if (newRequest.IsPoliceOrPeaceOfficer != contactResp.IsPoliceOrPeaceOfficer ||
+
+        // SPDBT-4179 - do not trigger a PeaceOfficerStatusChanged task when the original value is null and new value is false
+        bool doNotTriggerTask = contactResp.IsPoliceOrPeaceOfficer == null && newRequest.IsPoliceOrPeaceOfficer == false;
+
+        if (!doNotTriggerTask && 
+            (newRequest.IsPoliceOrPeaceOfficer != contactResp.IsPoliceOrPeaceOfficer ||
             newRequest.PoliceOfficerRoleCode != originalRoleCode ||
             newRequest.OtherOfficerRole != contactResp.OtherOfficerRole ||
-            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
         {
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
             changes.PeaceOfficerStatusChanged = true;

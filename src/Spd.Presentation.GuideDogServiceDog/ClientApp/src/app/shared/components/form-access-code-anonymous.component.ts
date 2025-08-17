@@ -29,9 +29,9 @@ import { Subject, take, tap } from 'rxjs';
 									matInput
 									type="search"
 									formControlName="licenceNumber"
-									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
 									maxlength="10"
+									appInputUpperCaseTransform
 								/>
 								@if (form.get('licenceNumber')?.hasError('required')) {
 									<mat-error>This is required</mat-error>
@@ -45,9 +45,9 @@ import { Subject, take, tap } from 'rxjs';
 									matInput
 									type="search"
 									formControlName="accessCode"
-									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
 									maxlength="10"
+									appInputUpperCaseTransform
 								/>
 								@if (form.get('accessCode')?.hasError('required')) {
 									<mat-error>This is required</mat-error>

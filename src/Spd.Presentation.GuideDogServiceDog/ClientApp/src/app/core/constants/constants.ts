@@ -24,6 +24,7 @@ export const SPD_CONSTANTS = {
 		backendMask: '000-000-0000',
 	},
 	label: {
+		updateLabel: 'Update any information that has changed since your last application',
 		guideDogLabel: 'Guide Dog – Trained to guide a person who is blind or has low vision',
 		serviceDogLabel: 'Service Dog – Trained to do specific tasks to help a person with a disability',
 	},

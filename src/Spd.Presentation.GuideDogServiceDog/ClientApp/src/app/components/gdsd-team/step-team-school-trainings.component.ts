@@ -77,8 +77,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 													[mask]="phoneMask"
 													[showMaskTyped]="false"
 													[errorStateMatcher]="matcher"
+													placeholder="(123) 456-7890"
+													aria-label="Enter the 10 digit phone number."
 												/>
-												<mat-hint>A 10 digit phone number</mat-hint>
 												@if (group.get('contactPhoneNumber')?.hasError('required')) {
 													<mat-error>This is required</mat-error>
 												}
@@ -104,12 +105,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-label>Training Start Date</mat-label>
 												<input
 													matInput
+													type="text"
 													formControlName="trainingStartDate"
 													[mask]="dateMask"
-													[showMaskTyped]="true"
+													[showMaskTyped]="false"
 													[errorStateMatcher]="matcher"
 													(blur)="onValidateStartDate(i)"
-													aria-label="Date in format YYYY-MM-DD"
+													placeholder="YYYY-MM-DD"
+													aria-label="Enter the date in the format: year dash month dash day."
 												/>
 												<!-- We always want the date format hint to display -->
 												<mat-hint>Date format YYYY-MM-DD</mat-hint>
@@ -129,12 +132,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 												<mat-label>Training End Date</mat-label>
 												<input
 													matInput
+													type="text"
 													formControlName="trainingEndDate"
 													[mask]="dateMask"
-													[showMaskTyped]="true"
+													[showMaskTyped]="false"
 													[errorStateMatcher]="matcher"
 													(blur)="onValidateEndDate(i)"
-													aria-label="Date in format YYYY-MM-DD"
+													placeholder="YYYY-MM-DD"
+													aria-label="Enter the date in the format: year dash month dash day."
 												/>
 												<!-- We always want the date format hint to display -->
 												<mat-hint>Date format YYYY-MM-DD</mat-hint>

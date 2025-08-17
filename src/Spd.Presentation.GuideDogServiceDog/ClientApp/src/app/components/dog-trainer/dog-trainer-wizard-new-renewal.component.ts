@@ -125,6 +125,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 			return;
 		}
 
+		this.utilService.afterViewInit();
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -163,6 +165,8 @@ export class DogTrainerWizardNewRenewalComponent extends BaseWizardComponent imp
 		component?.onGoToFirstStep();
 
 		super.onStepSelectionChange(event);
+
+		this.utilService.afterViewInit();
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {

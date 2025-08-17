@@ -59,7 +59,6 @@ export class ConfigService {
 					};
 					return formattedSchool;
 				});
-				console.debug('[ConfigService] getAccreditedDogSchools', schools);
 
 				schools.sort((a: DogSchoolResponse, b: DogSchoolResponse) =>
 					this.utilService.compareByStringUpper(a.schoolName, b.schoolName)

@@ -92,6 +92,17 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Get mdra org profile anonymously, the applicantId is retrieved from cookies
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/mdra-org")]
+        [HttpGet]
+        public async Task<BizProfileResponse?> GetMdraOrgInfoAnonymous() //for spdbt-4470
+        {
+            string orgIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetBizProfileQuery(Guid.Parse(orgIdStr)));
+        }
         #endregion anonymous
     }
 }

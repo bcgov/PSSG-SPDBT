@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -18,7 +19,13 @@ import { StepDtPhotographOfYourselfRenewComponent } from './step-dt-photograph-o
 	selector: 'app-dog-trainer-wizard-replacement',
 	template: `
 		<div class="row">
-			<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
+			<mat-stepper
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
 				<mat-step [completed]="true">
 					<ng-template matStepLabel>Certificate Confirmation</ng-template>
 					<app-step-dt-licence-confirmation></app-step-dt-licence-confirmation>
@@ -119,6 +126,10 @@ export class DogTrainerWizardReplacementComponent extends BaseWizardComponent im
 
 	ngOnDestroy() {
 		if (this.dogTrainerChangedSubscription) this.dogTrainerChangedSubscription.unsubscribe();
+	}
+
+	override onStepSelectionChange(_event: StepperSelectionEvent) {
+		this.utilService.afterViewInit();
 	}
 
 	onFormValidNextStep(formNumber: number): void {
