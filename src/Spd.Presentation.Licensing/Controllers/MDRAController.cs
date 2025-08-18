@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
+using Spd.Presentation.Licensing.Filters;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
+    [FeaturesEnabled("EnableMdraFeatures", true)]
     public class MDRAController : SpdLicenceControllerBase
     {
         private readonly IMediator _mediator;

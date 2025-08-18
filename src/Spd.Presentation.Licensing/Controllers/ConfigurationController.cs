@@ -66,7 +66,8 @@ namespace Spd.Presentation.Licensing.Controllers
             var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
             var version = _configuration.GetValue<string>("VERSION");
 
-            return await Task.FromResult(new ConfigurationResponse(
+            return await Task.FromResult(
+                new ConfigurationResponse(
                 oidcResp,
                 recaptchaResp,
                 bcscConfig,
@@ -74,7 +75,11 @@ namespace Spd.Presentation.Licensing.Controllers
                 (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees,
                 replacementProcessingTime,
                 version,
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined"));
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined",
+                _configuration.GetValue<bool?>("EnableMdraFeatures") ?? false,
+                _configuration.GetValue<bool?>("EnableSecurityBusinessMergeFeatures") ?? false,
+                _configuration.GetValue<bool?>("EnableAnonymousPermitFeatures") ?? false)
+            );
         }
     }
 
@@ -86,7 +91,10 @@ namespace Spd.Presentation.Licensing.Controllers
         List<LicenceFeeResponse> LicenceFees,
         string? ReplacementProcessingTime,
         string? Version,
-        string? Environment
+        string? Environment,
+        bool EnableMdraFeatures = false,
+        bool EnableSecurityBusinessMergeFeatures = false,
+        bool EnableAnonymousPermitFeatures = false
     );
 
     public record OidcConfiguration

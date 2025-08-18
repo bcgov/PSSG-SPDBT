@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
+using Spd.Presentation.Licensing.Filters;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -161,6 +162,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/permit-application")]
         [HttpGet]
+        [FeaturesEnabled("EnableAnonymousPermitFeatures", true)]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
             if (!_configuration.GetValue<bool>("EnableAnonymousPermitFeatures"))
@@ -188,6 +190,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
+        [FeaturesEnabled("EnableAnonymousPermitFeatures", true)]
         [Route("api/permit-applications/anonymous/submit-change")]
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)

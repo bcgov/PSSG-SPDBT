@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Presentation.Licensing.Filters;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -66,6 +67,7 @@ public class BizProfileController : SpdControllerBase
     /// Merge the old business to the new business, old business/org will be marked as inactive. All the entities reference to old business will be changed to refer to new business.
     /// </summary>
     /// <returns></returns>
+    [FeaturesEnabled("EnableSecurityBusinessMergeFeatures", true)]
     [Route("api/biz/merge/{oldBizId}/{newBizId}")]
     [HttpGet]
     [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
