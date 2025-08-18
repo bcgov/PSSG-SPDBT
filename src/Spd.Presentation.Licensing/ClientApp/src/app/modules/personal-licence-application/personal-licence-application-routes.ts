@@ -84,12 +84,10 @@ export class PersonalLicenceApplicationRoutes {
 			: `/${PersonalLicenceApplicationRoutes.MODULE_PATH}`;
 	}
 
-	public static pathPermitAnonymous(_route: string | null = null): string {
-		return this.path();
-		// SPDBT-3425 - Remove anonymous permit flows
-		// return route
-		// 	? `/${PersonalLicenceApplicationRoutes.MODULE_PATH}/${PersonalLicenceApplicationRoutes.PERMIT_APPLICATION_ANONYMOUS}/${route}`
-		// 	: `/${PersonalLicenceApplicationRoutes.MODULE_PATH}`;
+	public static pathPermitAnonymous(route: string | null = null): string {
+		return route
+			? `/${PersonalLicenceApplicationRoutes.MODULE_PATH}/${PersonalLicenceApplicationRoutes.PERMIT_APPLICATION_ANONYMOUS}/${route}`
+			: `/${PersonalLicenceApplicationRoutes.MODULE_PATH}`;
 	}
 
 	public static pathPermitAuthenticated(route: string | null = null): string {

@@ -581,7 +581,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	 */
 	getValidSwlCategoryList(categoryList: string[]): SelectOptions<string>[] {
 		return this.getValidCategoryList(
-			this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration,
+			this.configService.config?.invalidWorkerLicenceCategoryMatrixConfiguration,
 			categoryList
 		);
 	}

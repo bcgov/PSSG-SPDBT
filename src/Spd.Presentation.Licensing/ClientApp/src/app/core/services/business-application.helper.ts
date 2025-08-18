@@ -443,7 +443,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	 */
 	getValidBlCategoryList(categoryList: string[], superset: WorkerCategoryTypeCode[]): SelectOptions<string>[] {
 		return this.getValidCategoryList(
-			this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration,
+			this.configService.config?.invalidWorkerLicenceCategoryMatrixConfiguration,
 			categoryList,
 			true,
 			superset

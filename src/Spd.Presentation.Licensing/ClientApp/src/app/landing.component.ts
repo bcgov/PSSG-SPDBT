@@ -8,6 +8,7 @@ import { ServiceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
 import { AuthProcessService } from './core/services/auth-process.service';
 import { CommonApplicationService } from './core/services/common-application.service';
+import { ConfigService } from './core/services/config.service';
 import { PermitApplicationService } from './core/services/permit-application.service';
 import { WorkerApplicationService } from './core/services/worker-application.service';
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
@@ -146,8 +147,20 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
-										If you cannot set up a BC Services Card account, please
-										<a [href]="aboutSpdUrl" target="_blank">contact us</a>
+										@if (isEnableAnonymousPermitFeatures) {
+											<a
+												tabindex="0"
+												class="large login-link"
+												aria-label="Continue without BC Services Card to manage your body armour permit"
+												(click)="onContinue(serviceTypeCodes.BodyArmourPermit)"
+												(keydown)="onKeydownContinue($event, serviceTypeCodes.BodyArmourPermit)"
+											>
+												Continue without BC Services Card
+											</a>
+										} @else {
+											If you cannot set up a BC Services Card account, please
+											<a [href]="aboutSpdUrl" target="_blank">contact us</a>
+										}
 									</div>
 								</div>
 							</div>
@@ -174,8 +187,20 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
-										If you cannot set up a BC Services Card account, please
-										<a [href]="aboutSpdUrl" target="_blank">contact us</a>
+										@if (isEnableAnonymousPermitFeatures) {
+											<a
+												tabindex="0"
+												class="large login-link"
+												aria-label="Continue without BC Services Card to manage your armoured vehicle permit"
+												(click)="onContinue(serviceTypeCodes.ArmouredVehiclePermit)"
+												(keydown)="onKeydownContinue($event, serviceTypeCodes.ArmouredVehiclePermit)"
+											>
+												Continue without BC Services Card
+											</a>
+										} @else {
+											If you cannot set up a BC Services Card account, please
+											<a [href]="aboutSpdUrl" target="_blank">contact us</a>
+										}
 									</div>
 								</div>
 							</div>
@@ -210,9 +235,12 @@ export class LandingComponent implements OnInit {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypeCodes = ServiceTypeCode;
 
+	isEnableAnonymousPermitFeatures = false;
+
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
+		private configService: ConfigService,
 		private authProcessService: AuthProcessService,
 		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService,
@@ -221,6 +249,8 @@ export class LandingComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.commonApplicationService.setApplicationTitle();
+
+		this.isEnableAnonymousPermitFeatures = this.configService.isEnableAnonymousPermitFeatures();
 	}
 
 	async onRegisterWithBceid(): Promise<void> {
