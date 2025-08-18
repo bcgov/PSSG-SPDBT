@@ -8,13 +8,18 @@
 				<PackageReference Include="AspNetCore.HealthChecks.Aws.S3" />
 				<PackageReference Include="AspNetCore.HealthChecks.Redis" />
 				<PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+		<PackageReference Include="AWSSDK.S3" VersionOverride="4.0.6.6" />
 				<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
 				<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 				<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 				<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 				<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
 				<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
 				<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 				<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
