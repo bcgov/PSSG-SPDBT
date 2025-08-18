@@ -185,6 +185,14 @@ The application can be accessed using the links below:
 "OneOrgGuidHasOneBizLicencePortal": true,
 ```
 
+- For licensing, we support following features on/off.
+
+```
+"EnableMdraFeatures" : true,
+"EnableAnonymousPermitFeatures" : false,
+"EnableSecurityBusinessMergeFeatures" : true,
+```
+
 ## Additional Documentation
 
 Please refer to [SPD Business Transformation Project](https://wiki.justice.gov.bc.ca/wiki/spaces/SPDBT/overview) for requirements, project milestones and technical design.
