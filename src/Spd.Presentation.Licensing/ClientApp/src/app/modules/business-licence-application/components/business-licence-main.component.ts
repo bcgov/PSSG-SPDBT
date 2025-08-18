@@ -11,6 +11,7 @@ import {
 	MainApplicationResponse,
 	MainLicenceResponse,
 } from '@app/core/services/common-application.service';
+import { ConfigService } from '@app/core/services/config.service';
 import { UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -135,20 +136,22 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 						<app-form-licence-list-expired [expiredLicences]="expiredLicencesList"></app-form-licence-list-expired>
 
-						<!-- <div class="mt-4">
-							<app-alert type="info" icon="info">
-								Do you have a security business licence that isn’t displayed here?
-								<a
-									class="fw-normal"
-									tabindex="0"
-									aria-label="Link a current or expired licence to your account"
-									(click)="onConnectToLicence()"
-									(keydown)="onKeydownConnectToLicence($event)"
-									>Link a current or expired licence</a
-								>
-								to your account.
-							</app-alert>
-						</div> -->
+						@if (isSecurityBusinessMergeEnabled) {
+							<div class="mt-4">
+								<app-alert type="info" icon="info">
+									Do you have a security business licence that isn’t displayed here?
+									<a
+										class="fw-normal"
+										tabindex="0"
+										aria-label="Link a current or expired licence to your account"
+										(click)="onConnectToLicence()"
+										(keydown)="onKeydownConnectToLicence($event)"
+										>Link a current or expired licence</a
+									>
+									to your account.
+								</app-alert>
+							</div>
+						}
 					</div>
 				</div>
 			</section>
@@ -173,6 +176,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 
 	isSoleProprietor = false;
 	isSoleProprietorAppSimultaneousFlow = false;
+	isSecurityBusinessMergeEnabled = false;
 
 	serviceTypeCodes = ServiceTypeCode;
 
@@ -187,6 +191,7 @@ export class BusinessLicenceMainComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private utilService: UtilService,
+		private configService: ConfigService,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -195,6 +200,8 @@ export class BusinessLicenceMainComponent implements OnInit {
 		this.businessApplicationService.reset(); // prevent back button into wizard
 
 		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
+
+		this.isSecurityBusinessMergeEnabled = this.configService.isEnableSecurityBusinessMergeFeatures();
 
 		this.loadData();
 	}
