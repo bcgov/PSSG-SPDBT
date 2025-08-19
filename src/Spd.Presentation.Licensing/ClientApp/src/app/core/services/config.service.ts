@@ -9,7 +9,7 @@ import { ConfigurationService } from 'src/app/api/services';
 	providedIn: 'root',
 })
 export class ConfigService {
-	public configs: ConfigurationResponse | null = null;
+	public config: ConfigurationResponse | null = null;
 
 	constructor(
 		private oauthService: OAuthService,
@@ -17,12 +17,12 @@ export class ConfigService {
 	) {}
 
 	public getConfigs(): Observable<ConfigurationResponse> {
-		if (this.configs) {
-			return of(this.configs);
+		if (this.config) {
+			return of(this.config);
 		}
 		return this.configurationService.apiConfigurationGet().pipe(
 			tap((resp: ConfigurationResponse) => {
-				this.configs = { ...resp };
+				this.config = { ...resp };
 				return resp;
 			})
 		);
@@ -43,34 +43,46 @@ export class ConfigService {
 	}
 
 	public getBcscIssuer(): string | null {
-		const resp = this.configs?.bcscConfiguration ?? {};
+		const resp = this.config?.bcscConfiguration ?? {};
 		return resp.issuer ?? null;
 	}
 
 	public getLicenceFees(): Array<LicenceFeeResponse> {
-		return this.configs?.licenceFees ?? [];
+		return this.config?.licenceFees ?? [];
+	}
+
+	public isEnableMdraFeatures(): boolean {
+		return this.config?.enableMdraFeatures ?? false;
+	}
+
+	public isEnableSecurityBusinessMergeFeatures(): boolean {
+		return this.config?.enableSecurityBusinessMergeFeatures ?? false;
+	}
+
+	public isEnableAnonymousPermitFeatures(): boolean {
+		return this.config?.enableAnonymousPermitFeatures ?? false;
 	}
 
 	public isProduction(): boolean {
-		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
+		return this.config?.environment === 'Production' || this.config?.environment === 'Training';
 	}
 
 	public isDevelopment(): boolean {
-		return this.configs?.environment === 'Development';
+		return this.config?.environment === 'Development';
 	}
 
 	getBcscIdentityProvider(): string {
-		const bcscConfiguration = this.configs?.bcscConfiguration!;
+		const bcscConfiguration = this.config?.bcscConfiguration!;
 		return bcscConfiguration.identityProvider!;
 	}
 
 	getBceidIdentityProvider(): string {
-		const bceidConfiguration = this.configs?.oidcConfiguration!;
+		const bceidConfiguration = this.config?.oidcConfiguration!;
 		return bceidConfiguration.identityProvider!;
 	}
 
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.oidcConfiguration!;
+		const resp = this.config?.oidcConfiguration!;
 		const bceIdConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
@@ -86,7 +98,7 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.bcscConfiguration!;
+		const resp = this.config?.bcscConfiguration!;
 		const bcscConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,

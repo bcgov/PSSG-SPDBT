@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
+import { AppRoutes } from '@app/app-routes';
+import { ConfigService } from '@app/core/services/config.service';
 import { MdraBaseComponent } from './components/mdra-base.component';
 import { MdraWizardNewRenewalComponent } from './components/mdra-wizard-new-renewal.component';
 import { MdraWizardUpdateComponent } from './components/mdra-wizard-update.component';
@@ -55,4 +57,13 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class MetalDealersAndRecyclersRoutingModule {}
+export class MetalDealersAndRecyclersRoutingModule {
+	constructor(
+		private router: Router,
+		private configService: ConfigService
+	) {
+		if (!this.configService.isEnableMdraFeatures()) {
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+		}
+	}
+}
