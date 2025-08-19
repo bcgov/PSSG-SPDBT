@@ -7,16 +7,19 @@ public class DogTrainerRequestValidator : AbstractValidator<DogTrainerRequest>
 {
     public DogTrainerRequestValidator()
     {
-        RuleFor(r => r.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty);
+        RuleFor(r => r.AccreditedSchoolId).NotEmpty().NotEqual(Guid.Empty)
+            .When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.DogTrainerCertification); //must be team, dog trainer or retired dog
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        RuleFor(x => x.AccreditedSchoolName).NotEmpty().MaximumLength(250);
+        RuleFor(x => x.AccreditedSchoolName).NotEmpty().MaximumLength(250)
+            .When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.SchoolContactEmailAddress).MaximumLength(75)
             .EmailAddress()
-            .When(r => r.SchoolContactEmailAddress != null);
+            .When(r => r.SchoolContactEmailAddress != null)
+            .When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.SchoolContactPhoneNumber).MaximumLength(30);
         RuleFor(r => r.SchoolDirectorGivenName).MaximumLength(40);
-        RuleFor(r => r.SchoolDirectorSurname).MaximumLength(40).NotEmpty();
+        RuleFor(r => r.SchoolDirectorSurname).MaximumLength(40).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.SchoolDirectorMiddleName).MaximumLength(40);
         RuleFor(r => r.TrainerGivenName).MaximumLength(40);
         RuleFor(r => r.TrainerSurname).MaximumLength(40).NotEmpty();
