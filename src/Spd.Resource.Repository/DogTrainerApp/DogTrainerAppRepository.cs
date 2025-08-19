@@ -83,13 +83,16 @@ internal class DogTrainerAppRepository : DogAppBaseRepository, IDogTrainerAppRep
         var app = _mapper.Map<spd_application>(appData);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
-        spd_dogtrainingschool trainEvent = _mapper.Map<spd_dogtrainingschool>(appData);
-        _context.AddTospd_dogtrainingschools(trainEvent);
-        _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), trainEvent);
-        _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
-        var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolId).FirstOrDefault();
-        _context.SetLink(trainEvent, nameof(trainEvent.spd_OrganizationId), school);
-        SharedRepositoryFuncs.LinkTrainingEventTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, trainEvent);
+        if (appData.AccreditedSchoolId != Guid.Empty) //for allow the invalid data, we found in staging, when do replacement, some existing trainer licence does not have accredit school, which is not correct. but we have to deal with it.
+        {
+            spd_dogtrainingschool trainEvent = _mapper.Map<spd_dogtrainingschool>(appData);
+            _context.AddTospd_dogtrainingschools(trainEvent);
+            _context.AddLink(app, nameof(app.spd_application_spd_dogtrainingschool_ApplicationId), trainEvent);
+            _context.SetLink(trainEvent, nameof(trainEvent.spd_ApplicantId), applicant);
+            var school = _context.accounts.Where(a => a.accountid == appData.AccreditedSchoolId).FirstOrDefault();
+            _context.SetLink(trainEvent, nameof(trainEvent.spd_OrganizationId), school);
+            SharedRepositoryFuncs.LinkTrainingEventTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, trainEvent);
+        }
 
         SharedRepositoryFuncs.LinkServiceType(_context, appData.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
