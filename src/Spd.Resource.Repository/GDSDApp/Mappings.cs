@@ -155,6 +155,7 @@ internal class Mappings : Profile
         CreateMap<CreateGDSDAppCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_dogsassistanceindailyliving, opt => opt.MapFrom(s => GetAssistanceInDailyLiving(s)))
          .IncludeBase<GDSDApp, spd_application>();
 
         _ = CreateMap<spd_application, GDSDAppResp>()
@@ -165,6 +166,12 @@ internal class Mappings : Profile
           .ForMember(d => d.AccreditedSchoolQuestions, opt => opt.MapFrom((src, dest, destMember, context) => GetAccreditedSchoolQuestions(src, context)))
           .ForMember(d => d.NonAccreditedSchoolQuestions, opt => opt.MapFrom((src, dest, destMember, context) => GetNonAccreditedSchoolQuestions(src, context)))
           ;
+    }
+
+    private static string? GetAssistanceInDailyLiving(CreateGDSDAppCmd cmd)
+    {
+        return cmd.ApplicationTypeCode == ApplicationTypeEnum.New || cmd.ApplicationTypeCode == ApplicationTypeEnum.Replacement ? null :
+             cmd.IsAssistanceStillRequired ? "Assistance is still required" : "Assistance is no longer required";
     }
 
     private static int? GetDogTypeOptionSet(bool? isGuidDog)
