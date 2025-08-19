@@ -33,30 +33,30 @@ button.mdc-button:focus,
 button.mat-mdc-mini-fab:focus,
 a.mdc-button:focus,
 a:focus {
-	outline: 2px solid var(--color-grey);
+	outline: 2px solid rgba(0, 123, 255, 0.5);
 	outline-offset: 4px;
 }
 
 mat-radio-button:focus-within {
-	outline: 2px solid var(--color-grey);
+	outline: 2px solid rgba(0, 123, 255, 0.5);
 	outline-offset: 4px;
 	border-radius: 4px;
 }
 
 mat-checkbox:focus-within {
-	outline: 2px solid var(--color-grey);
+	outline: 2px solid rgba(0, 123, 255, 0.5);
 	outline-offset: 2px;
 	border-radius: 4px;
 }
 
 mat-expansion-panel:focus-within {
-	outline: 2px solid var(--color-grey);
+	outline: 2px solid rgba(0, 123, 255, 0.5);
 	outline-offset: 4px;
 	border-radius: 4px;
 }
 
 :focus-visible {
-	outline: 2px solid var(--color-grey);
+	outline: 2px solid rgba(0, 123, 255, 0.5);
 	outline-offset: 4px;
 	border-radius: 4px;
 }
