@@ -155,6 +155,7 @@ internal class Mappings : Profile
         CreateMap<CreateGDSDAppCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_dogsrequiredfordisabilityorimpairment, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsAssistanceStillRequired)))
          .IncludeBase<GDSDApp, spd_application>();
 
         _ = CreateMap<spd_application, GDSDAppResp>()
@@ -166,6 +167,8 @@ internal class Mappings : Profile
           .ForMember(d => d.NonAccreditedSchoolQuestions, opt => opt.MapFrom((src, dest, destMember, context) => GetNonAccreditedSchoolQuestions(src, context)))
           ;
     }
+
+
 
     private static int? GetDogTypeOptionSet(bool? isGuidDog)
     {
