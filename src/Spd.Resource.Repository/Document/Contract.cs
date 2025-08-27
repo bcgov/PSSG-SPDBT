@@ -43,6 +43,8 @@ namespace Spd.Resource.Repository.Document
         public Guid? ContactId { get; set; }
         public Guid? LicenceId { get; set; }
         public string? Folder { get; set; }
+        public bool? PhotoSkipFacialDetection { get; set; }
+        public bool? PhotoSkipAdvancedBackgroundRemovel { get; set; }
     }
 
     public abstract record DocumentCmd;

@@ -65,7 +65,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
 
         if (lic.PhotoDocumentUrlId == null)
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
-        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, ct);
+        await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
         preview.SPD_CARD = mapper.Map<SPD_CARD>(app);
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
         //conditions
@@ -79,7 +79,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         preview.LicenceType = "GDSD";
         if (lic.PhotoDocumentUrlId == null)
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
-        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, ct);
+        await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
 
         if (lic.ServiceTypeCode == ServiceTypeEnum.GDSDTeamCertification)
         {
@@ -115,13 +115,15 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         return names;
     }
 
-    private async Task<string> EncodedPhoto(Guid documentUrlId, CancellationToken cancellationToken)
+    private async Task ProcessPhoto(Guid documentUrlId, LicencePreviewJson previewJson, CancellationToken cancellationToken)
     {
         DocumentResp photoDoc = await documentRepository.GetAsync(
             documentUrlId,
             cancellationToken);
         if (photoDoc == null)
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "cannot find photograph for the applicant");
+        previewJson.SkipAdvancedBackgroundRemoval = photoDoc.PhotoSkipAdvancedBackgroundRemovel;
+        previewJson.SkipFacialDetection = photoDoc.PhotoSkipFacialDetection;
 
         FileQueryResult fileResult = (FileQueryResult)await fileStorageService.HandleQuery(
             new FileQuery { Key = photoDoc.DocumentUrlId.ToString(), Folder = photoDoc.Folder },
@@ -154,7 +156,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             SKData encoded = finalPhoto.Encode(); //default is png
             // get a stream over the encoded data
             Stream memoryStream = encoded.AsStream();
-            return memoryStream.ConvertToBase64();
+            previewJson.Photo = memoryStream.ConvertToBase64();
         }
     }
 
@@ -232,6 +234,12 @@ public record LicencePreviewJson()
 
     [JsonPropertyName("conditions")]
     public IEnumerable<string> Conditions { get; set; } = Enumerable.Empty<string>(); //only apply to personal licence, no conditions for biz licence
+
+    [JsonPropertyName("SKIP_FACIAL_DETECTION")]
+    public bool? SkipFacialDetection { get; set; }
+
+    [JsonPropertyName("SKIP_ADVANCED_BACKGROUND_REMOVAL")]
+    public bool? SkipAdvancedBackgroundRemoval { get; set; }
 
     [JsonPropertyName("SPD_CARD")]
     public SPD_CARD? SPD_CARD { get; set; } //only apply to personal licence, no spd_card for biz licence
