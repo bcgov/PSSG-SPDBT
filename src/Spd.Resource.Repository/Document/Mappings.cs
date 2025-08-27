@@ -23,6 +23,8 @@ namespace Spd.Resource.Repository.Document
             .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.bcgov_filename))
             .ForMember(d => d.Folder, opt => opt.MapFrom(s => s.bcgov_url))
             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_licenceid_value))
+            .ForMember(d => d.PhotoSkipAdvancedBackgroundRemovel, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_skipbackgroundremoval)))
+            .ForMember(d => d.PhotoSkipFacialDetection, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_skipfacialdetection)))
             .ForMember(d => d.FileExtension, opt => opt.MapFrom(s => FileHelper.GetFileExtensionWithoutDot(s.bcgov_fileextension)))
             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)))
             .ForMember(d => d.DocumentIdNumber, opt => opt.MapFrom(s => s.spd_documentid));
