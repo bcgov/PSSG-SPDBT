@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="8.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" VersionOverride="2.3.0" />
     <ProjectReference Include="..\Spd.Manager.Shared\Spd.Manager.Shared.csproj" />
     <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
