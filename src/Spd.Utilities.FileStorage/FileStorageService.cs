@@ -51,6 +51,7 @@ namespace Spd.Utilities.FileStorage
                 InputStream = new MemoryStream(file.Content),
                 BucketName = _config.Bucket,
                 TagSet = GetTagSet(cmd.FileTag?.Tags ?? []),
+                ChecksumSHA256 = "SIGNED-PAYLOAD",
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", HttpUtility.UrlEncode(file.FileName));
@@ -79,6 +80,7 @@ namespace Spd.Utilities.FileStorage
                 InputStream = file.FileContentStream,
                 BucketName = _config.Bucket,
                 TagSet = GetTagSet(cmd.FileTag?.Tags ?? []),
+                ChecksumSHA256 = "SIGNED-PAYLOAD"
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", HttpUtility.HtmlEncode(file.FileName));

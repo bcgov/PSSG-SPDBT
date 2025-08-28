@@ -24,8 +24,6 @@ public class Configurer : IConfigureComponents
             {
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
-                SignatureVersion = "2",
-                SignatureMethod = SigningAlgorithm.HmacSHA1,
                 UseHttp = false,
             };
             return new AmazonS3Client(new BasicAWSCredentials(settings.AccessKey, settings.Secret), config);
@@ -38,9 +36,8 @@ public class Configurer : IConfigureComponents
             {
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
-                SignatureVersion = "2",
-                SignatureMethod = SigningAlgorithm.HmacSHA1,
                 UseHttp = false,
+
             };
             return new AmazonS3Client(new BasicAWSCredentials(settings.AccessKey, settings.Secret), config);
         });
