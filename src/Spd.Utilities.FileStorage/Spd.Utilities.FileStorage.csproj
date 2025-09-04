@@ -15,6 +15,7 @@
 
 		<ItemGroup>
   		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+  		<PackageReference Include="Serilog.AspNetCore" />
 		  <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		</ItemGroup>
 

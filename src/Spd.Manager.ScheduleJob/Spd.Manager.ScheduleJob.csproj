@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="8.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" VersionOverride="2.3.0" />
+  <PackageReference Include="Serilog.AspNetCore" VersionOverride="9.0.0" />
     <ProjectReference Include="..\Spd.Resource.Repository.JobSchedule\Spd.Resource.Repository.JobSchedule.csproj" />
   </ItemGroup>
 
