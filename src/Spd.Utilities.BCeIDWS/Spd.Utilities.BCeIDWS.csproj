@@ -19,6 +19,7 @@
 
 		<ItemGroup>
   		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="8.0.19" />
+  		<PackageReference Include="Serilog.Enrichers.ClientInfo" VersionOverride="2.4.0" />
 		  <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		</ItemGroup>
 
