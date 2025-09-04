@@ -30,6 +30,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="8.0.19" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" VersionOverride="2.3.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" VersionOverride="1.12.0" />
 	    <InternalsVisibleTo Include="Spd.Resource.Repository.IntegrationTest" />
     </ItemGroup>
 </Project>
