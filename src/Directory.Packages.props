@@ -42,7 +42,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.OData.Client" Version="8.2.3" />
     <PackageVersion Include="Microsoft.OData.Core" Version="8.2.3" />
     <PackageVersion Include="Microsoft.OData.Edm" Version="8.2.3" />
