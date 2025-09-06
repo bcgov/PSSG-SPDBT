@@ -29,25 +29,34 @@ public static class ServiceExtensionsHealthChecks
             healthCheckBuilder.AddRedis(redisConnection);
         }
 
+        //after awssdk upgrade to 4.0.6.8, AspNetCore.HealthChecks.Aws.S3 does not upgrade accordingly, 
+        //The AddS3 health check extension internally uses the older ListObjectsRequest API to check connectivity.
+        //In newer versions of the AWS SDK, ListObjectsRequest.MaxKeys has been deprecated or removed, replaced by ListObjectsV2Request
+        //When your runtime uses a newer AWSSDK.S3 version, that setter no longer exists, triggering the MissingMethodException.
+        //We have to Override with a custom health check
+        // Replacement for AddS3 (uses ListObjectsV2)
         var s3url = configuration.GetValue<string?>("storage:MainBucketSettings:url");
-        if (s3url != null)
+        var bucket = configuration.GetValue<string?>("storage:MainBucketSettings:bucket");
+        var accessKey = configuration.GetValue<string?>("storage:MainBucketSettings:accessKey");
+        var secretKey = configuration.GetValue<string?>("storage:MainBucketSettings:secret");
+
+        if (!string.IsNullOrEmpty(s3url) && !string.IsNullOrEmpty(bucket))
         {
-            healthCheckBuilder.AddS3(options =>
+            services.AddSingleton<IHealthCheck>(sp =>
             {
-                options.S3Config = new AmazonS3Config
-                {
-                    ServiceURL = s3url,
-                    ForcePathStyle = true,
-                    UseHttp = false,
-                };
-
-                options.BucketName = configuration.GetValue("storage:MainBucketSettings:bucket", string.Empty)!;
-                options.Credentials = new BasicAWSCredentials(
-                    configuration.GetValue("storage:MainBucketSettings:accessKey", string.Empty),
-                    configuration.GetValue("storage:MainBucketSettings:secret", string.Empty));
+                var s3Client = new AmazonS3Client(
+                    new BasicAWSCredentials(accessKey, secretKey),
+                    new AmazonS3Config
+                    {
+                        ServiceURL = s3url,
+                        ForcePathStyle = true,
+                        UseHttp = false
+                    });
+                return new S3V2HealthCheck(s3Client, bucket);
             });
-        }
 
+            healthCheckBuilder.AddCheck<S3V2HealthCheck>("aws_s3_v2");
+        }
         return services;
     }
 
