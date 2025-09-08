@@ -42,7 +42,7 @@ public static class ServiceExtensionsHealthChecks
 
         if (!string.IsNullOrEmpty(s3url) && !string.IsNullOrEmpty(bucket))
         {
-            services.AddSingleton<IHealthCheck>(sp =>
+            services.AddSingleton<S3V2HealthCheck>(sp =>
             {
                 var s3Client = new AmazonS3Client(
                     new BasicAWSCredentials(accessKey, secretKey),
@@ -54,8 +54,6 @@ public static class ServiceExtensionsHealthChecks
                     });
                 return new S3V2HealthCheck(s3Client, bucket);
             });
-
-            healthCheckBuilder.AddCheck<S3V2HealthCheck>("aws_s3_v2");
         }
         return services;
     }
