@@ -16,6 +16,16 @@ import { take, tap } from 'rxjs';
 	template: `
 		<app-container>
 			<app-step-section>
+				<!-- SPDBT-4559 Temporary Notification Banner on GDSD Portal -->
+				<div class="row mb-3">
+					<div class="col-xxl-10 col-xl-12 col-lg-12 mx-auto">
+						<app-alert type="warning" icon="warning"
+							>Security Services is impacted by a BCGEU strike, which may result in delays in the processing of your
+							application. We regret any inconvenience this may cause you.</app-alert
+						>
+					</div>
+				</div>
+
 				<app-step-title heading="Log in to manage your guide dog and service dog certification"></app-step-title>
 
 				<div class="row">

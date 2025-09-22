@@ -18,6 +18,16 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section>
+				<!-- SPDBT-4559 Temporary Notification Banner on Security Portal -->
+				<div class="row mb-3">
+					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
+						<app-alert type="warning" icon="warning"
+							>Security Services is impacted by a BCGEU strike, which may result in delays in the processing of your
+							application. We regret any inconvenience this may cause you.</app-alert
+						>
+					</div>
+				</div>
+
 				<app-step-title heading="Log in to manage your security licence or permit"></app-step-title>
 
 				<div class="row">
