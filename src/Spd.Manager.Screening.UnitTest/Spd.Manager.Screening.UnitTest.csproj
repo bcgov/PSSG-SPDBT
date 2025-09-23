@@ -25,6 +25,7 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" VersionOverride="8.0.19" />
     <Using Include="Xunit" />
   </ItemGroup>
 

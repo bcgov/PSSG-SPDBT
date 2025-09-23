@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Manager.Common.Admin;
 using Spd.Manager.Licence;
+using Spd.Resource.Repository.Config;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -65,6 +66,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
             var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
             var version = _configuration.GetValue<string>("VERSION");
+            var bannerMessage = await _mediator.Send(new GetBannerMsgQuery(IConfigRepository.BANNER_MSG_LICENSING_CONFIG_KEY));
 
             return await Task.FromResult(
                 new ConfigurationResponse(
@@ -76,6 +78,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 replacementProcessingTime,
                 version,
                 Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined",
+                bannerMessage ?? string.Empty,
                 _configuration.GetValue<bool?>("EnableMdraFeatures") ?? false,
                 _configuration.GetValue<bool?>("EnableSecurityBusinessMergeFeatures") ?? false,
                 _configuration.GetValue<bool?>("EnableAnonymousPermitFeatures") ?? false)
@@ -92,6 +95,7 @@ namespace Spd.Presentation.Licensing.Controllers
         string? ReplacementProcessingTime,
         string? Version,
         string? Environment,
+        string? BannerMessage,
         bool EnableMdraFeatures = false,
         bool EnableSecurityBusinessMergeFeatures = false,
         bool EnableAnonymousPermitFeatures = false

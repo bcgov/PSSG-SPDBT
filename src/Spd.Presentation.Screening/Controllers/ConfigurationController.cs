@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Manager.Common.Admin;
+using Spd.Resource.Repository.Config;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -73,7 +74,7 @@ namespace Spd.Presentation.Screening.Controllers
             };
 
             RecaptchaConfiguration recaptchaResp = new(_captchaOption.Value.ClientKey);
-            var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
+            var bannerMessage = await _mediator.Send(new GetBannerMsgQuery(IConfigRepository.BANNER_MSG_SCREENING_CONFIG_KEY));
             var payBcSearchInvoiceUrl = _configuration.GetValue<string>("PayBcSearchInvoiceUrl", string.Empty);
             var version = _configuration.GetValue<string>("VERSION");
 

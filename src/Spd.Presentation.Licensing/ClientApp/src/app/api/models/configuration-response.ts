@@ -7,6 +7,7 @@ import { OidcConfiguration } from '../models/oidc-configuration';
 import { RecaptchaConfiguration } from '../models/recaptcha-configuration';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 export interface ConfigurationResponse {
+  bannerMessage?: string | null;
   bcscConfiguration?: OidcConfiguration;
   enableAnonymousPermitFeatures?: boolean;
   enableMdraFeatures?: boolean;
