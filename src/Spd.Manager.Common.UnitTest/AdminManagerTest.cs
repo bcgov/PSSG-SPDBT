@@ -41,7 +41,7 @@ public class AdminManagerTest
             .With(i => i.Value, "test")
             .Create();
         var bannerItems = new List<ConfigItem>() { bannerItem };
-        mockConfigRepo.Setup(m => m.Query(It.Is<ConfigQuery>(q => q.Key == IConfigRepository.BANNER_MSG_CONFIG_KEY), CancellationToken.None))
+        mockConfigRepo.Setup(m => m.Query(It.Is<ConfigQuery>(q => q.Key == IConfigRepository.BANNER_MSG_SCREENING_CONFIG_KEY), CancellationToken.None))
             .ReturnsAsync(new ConfigResult(bannerItems));
 
         var licensingItem = fixture.Build<ConfigItem>()
@@ -81,7 +81,7 @@ public class AdminManagerTest
     [Fact]
     public async void Handle_GetBannerMsgQuery_Return_StringResponse()
     {
-        GetBannerMsgQuery request = new GetBannerMsgQuery();
+        GetBannerMsgQuery request = new GetBannerMsgQuery(IConfigRepository.BANNER_MSG_SCREENING_CONFIG_KEY);
 
         var result = await sut.Handle(request, CancellationToken.None);
 

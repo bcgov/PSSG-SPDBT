@@ -5,6 +5,7 @@ import { AppRoutes } from '@app/app.routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { ConfigService } from '@app/core/services/config.service';
 import { DogTrainerApplicationService } from '@app/core/services/dog-trainer-application.service';
 import { GdsdTeamApplicationService } from '@app/core/services/gdsd-team-application.service';
 import { RetiredDogApplicationService } from '@app/core/services/retired-dog-application.service';
@@ -17,14 +18,15 @@ import { take, tap } from 'rxjs';
 		<app-container>
 			<app-step-section>
 				<!-- SPDBT-4559 Temporary Notification Banner on GDSD Portal -->
-				<div class="row mb-3">
-					<div class="col-xxl-10 col-xl-12 col-lg-12 mx-auto">
-						<app-alert type="warning" icon="warning"
-							>Security Services is impacted by a BCGEU strike, which may result in delays in the processing of your
-							application. We regret any inconvenience this may cause you.</app-alert
-						>
+				@if (bannerMessage) {
+					<div class="row my-sm-0 my-md-2">
+						<div class="col-xxl-8 col-xl-10 col-lg-12 mx-auto">
+							<app-alert type="warning" icon="warning">
+								{{ bannerMessage }}
+							</app-alert>
+						</div>
 					</div>
-				</div>
+				}
 
 				<app-step-title heading="Log in to manage your guide dog and service dog certification"></app-step-title>
 
@@ -194,10 +196,12 @@ import { take, tap } from 'rxjs';
 export class GdsdLandingComponent implements OnInit, AfterViewInit {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypes = ServiceTypeCode;
+	bannerMessage: string | null = '';
 
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
+		private configService: ConfigService,
 		private authProcessService: AuthProcessService,
 		private gdsdTeamApplicationService: GdsdTeamApplicationService,
 		private dogTrainerApplicationService: DogTrainerApplicationService,
@@ -207,6 +211,7 @@ export class GdsdLandingComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.commonApplicationService.setGdsdApplicationTitle();
+		this.bannerMessage = this.configService.configs?.bannerMessage ?? '';
 	}
 
 	ngAfterViewInit(): void {
