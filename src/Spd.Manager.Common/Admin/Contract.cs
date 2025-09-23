@@ -17,7 +17,7 @@ namespace Spd.Manager.Common.Admin
         public Task<IEnumerable<DogSchoolResponse>> Handle(GetAccreditedDogTrainingSchoolListQuery query, CancellationToken ct);
     }
 
-    public record GetBannerMsgQuery : IRequest<string>;
+    public record GetBannerMsgQuery(string BannerConfigKey) : IRequest<string>;
 
     public record GetReplacementProcessingTimeQuery : IRequest<string>;
 

@@ -40,9 +40,8 @@ internal class AdminManager(
 
     public async Task<string?> Handle(GetBannerMsgQuery query, CancellationToken cancellationToken)
     {
-        var result = await _cache.GetAsync(
-            IConfigRepository.BANNER_MSG_CONFIG_KEY,
-            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken)).ConfigItems.ToList(),
+        var result = await _cache.GetAsync( query.BannerConfigKey,
+            async ct => (await _configRepo.Query(new ConfigQuery(query.BannerConfigKey), cancellationToken)).ConfigItems.ToList(),
             TimeSpan.FromMinutes(15),
             cancellationToken);
 
