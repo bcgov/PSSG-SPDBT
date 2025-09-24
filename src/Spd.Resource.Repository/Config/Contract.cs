@@ -2,7 +2,9 @@
 {
     public interface IConfigRepository
     {
-        public static readonly string BANNER_MSG_CONFIG_KEY = "ScreeningPortalProcessingTimeBanner";
+        public static readonly string BANNER_MSG_SCREENING_CONFIG_KEY = "ScreeningPortalProcessingTimeBanner";
+        public static readonly string BANNER_MSG_LICENSING_CONFIG_KEY = "LicensingBanner";
+        public static readonly string BANNER_MSG_GDSD_CONFIG_KEY = "GdsdBanner";
         public static readonly string PAYBC_GROUP = "PAYBC";
         public static readonly string PAYBC_REVENUEACCOUNT_KEY = "RevenueAccount";
         public static readonly string PAYBC_PBCREFNUMBER_KEY = "PbcRefNumber";
