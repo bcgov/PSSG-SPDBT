@@ -47,7 +47,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
              .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
              .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
-             .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition))
+             .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition.Where(s => s.statecode == DynamicsConstants.StateCode_Active)))
              .ForMember(d => d.GDSDTeamId, opt => opt.MapFrom(s => s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault() == null ? null : s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault().spd_dogteamid))
              .ForMember(d => d.IsDogAssessor, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_outd)))
              ;
