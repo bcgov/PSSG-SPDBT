@@ -46,6 +46,11 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             return await GeneratePreviewJsonForGDSDLicence(lic, cancellationToken);
         }
 
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SpecialProvincialConstable)
+        {
+            return await GeneratePreviewJsonForSPCLicence(lic, cancellationToken);
+        }
+
         throw new ApiException(HttpStatusCode.BadRequest, "the requested licence does not support preview.");
     }
 
@@ -99,6 +104,39 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             preview.SPD_CARD.CardType = "GUIDE-DOG-RETIRED";
         }
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
+        return preview;
+    }
+
+    private async Task<LicencePreviewJson> GeneratePreviewJsonForSPCLicence(LicenceResp lic, CancellationToken ct)
+    {
+        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
+        preview.LicenceType = "Special Provincial Constable";
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
+        await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
+        preview.LicenceCategories = null;
+        preview.ApplicantName = "Alfred Shawn Berry";
+        preview.DoingBusinessAsName = null;
+        preview.Branch = "INSURANCE CORPORATION OF BRITISH COLUMBIA";
+        preview.Division = "DRIVER LICENSING INTEGRITY AND OVERSIGHT UNIT";
+        preview.Badge = "1234567890";
+
+        preview.IssuedDate = "2025-08-23";
+        preview.ExpiryDate = "2026-08-23";
+        preview.MailingAddress1 = "1234 ANY STREET";
+        preview.MailingAddress2 = null;
+        preview.City = "VICTORIA";
+        preview.ProvinceState = "BC";
+        preview.PostalCode = "V8W 2V1";
+        preview.Country = "CANADA";
+        preview.SkipAdvancedBackgroundRemoval = false;
+        preview.SkipFacialDetection = false;
+        preview.SPD_CARD = new SPD_CARD()
+        {
+            Approver = "John Doe",
+            ApproverTitle = "Chief Constable",
+            TemporaryLicence = false
+        };
         return preview;
     }
 
@@ -185,6 +223,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
 }
 
 public record PersonalLicencePreviewTransformRequest(Guid LicenceId) : DocumentTransformRequest;
+
 public record LicencePreviewJson()
 {
     [JsonPropertyName("licenceNumber")]
@@ -228,6 +267,15 @@ public record LicencePreviewJson()
 
     [JsonPropertyName("country")]
     public string? Country { get; set; }
+
+    [JsonPropertyName("branch")]
+    public string? Branch { get; set; } //for SPC licence only
+
+    [JsonPropertyName("division")]
+    public string? Division { get; set; } //for SPC licence only
+
+    [JsonPropertyName("badge")]
+    public string? Badge { get; set; } //for SPC licence only
 
     [JsonPropertyName("branchOffices")]
     public IEnumerable<BranchAddress> BranchOffices { get; set; } = Enumerable.Empty<BranchAddress>(); //only apply to biz licence
@@ -279,6 +327,12 @@ public record SPD_CARD
 
     [JsonPropertyName("microchipNumber")]
     public string MicrochipNumber { get; set; }
+
+    [JsonPropertyName("approver")]
+    public string Approver { get; set; } //for spc licence only
+
+    [JsonPropertyName("approverTitle")]
+    public string ApproverTitle { get; set; } //for spc licence only
 }
 
 public record BranchAddress

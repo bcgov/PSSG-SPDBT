@@ -211,7 +211,8 @@ namespace Spd.Utilities.Dynamics
             {"SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC", Guid.Parse("9c7cf246-c942-ee11-b845-00505683fbf4")},
             {"GDSDTeamCertification",Guid.Parse("36f14f8a-a3da-ef11-b856-00505683fbf4") },
             {"DogTrainerCertification",Guid.Parse("785f0797-a3da-ef11-b856-00505683fbf4") },
-            {"RetiredServiceDogCertification", Guid.Parse("77d1a69e-a3da-ef11-b856-00505683fbf4") }
+            {"RetiredServiceDogCertification", Guid.Parse("77d1a69e-a3da-ef11-b856-00505683fbf4") },
+            {"SpecialProvincialConstable", Guid.Parse("f4a79298-e467-f011-b85a-00505683fbf4") }
         }.ToImmutableDictionary();
 
         public static spd_servicetype? LookupServiceType(this DynamicsContext context, string? key)
