@@ -23,7 +23,7 @@ namespace Spd.Resource.Repository.Incident
             .ForMember(d => d.Name, opt => opt.MapFrom(s => s.spd_conditionname));
         }
 
-        private string GetApproverName(string firstName, string lastName)
+        private static string GetApproverName(string firstName, string lastName)
         {
             string fn = firstName == null ? string.Empty : firstName.Trim();
             string ln = lastName == null ? string.Empty : lastName.Trim();
