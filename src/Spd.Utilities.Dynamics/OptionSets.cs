@@ -444,4 +444,10 @@ namespace Spd.Utilities.Dynamics
         InProgress = 1,
         Success = 2,
     }
+
+    public enum ApproverTitleTypeOptionSet
+    {
+        DeputySolicitorGeneral = 100000000,
+        AssistantDeputyMinister = 100000001,
+    }
 }

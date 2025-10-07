@@ -49,6 +49,7 @@ internal class LicenceRepository : ILicenceRepository
                 .Expand(i => i.spd_SoleProprietorId)
                 .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
                 .Expand(i => i.spd_licence_spd_dogteam_LicenceId)
+                .Expand(i => i.spd_BadgeId)
                 .Where(l => l.spd_licenceid == licenceId)
                 .FirstOrDefaultAsync(ct);
         }

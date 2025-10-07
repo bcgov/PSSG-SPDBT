@@ -70,7 +70,8 @@ public enum ServiceTypeEnum
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC,
     GDSDTeamCertification,
     DogTrainerCertification,
-    RetiredServiceDogCertification
+    RetiredServiceDogCertification,
+    SpecialProvincialConstable
 }
 
 public enum GenderEnum

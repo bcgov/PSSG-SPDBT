@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using SkiaSharp;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DogTeam;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
@@ -16,13 +19,17 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepository personLicAppRepository,
+internal class PersonalLicencePreviewTransformStrategy(
+    IPersonLicApplicationRepository personLicAppRepository,
     ILicenceRepository licRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
     IMainFileStorageService fileStorageService,
     IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
     IDogTeamRepository dogTeamRepository,
+    IIncidentRepository incidentRepository,
+    IBizRepository bizRepository,
+    IContactRepository contactRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<PersonalLicencePreviewTransformRequest, LicencePreviewJson>(Jobs.PersonalLicense)
 {
@@ -46,6 +53,11 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             return await GeneratePreviewJsonForGDSDLicence(lic, cancellationToken);
         }
 
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SpecialProvincialConstable)
+        {
+            return await GeneratePreviewJsonForSPCLicence(lic, cancellationToken);
+        }
+
         throw new ApiException(HttpStatusCode.BadRequest, "the requested licence does not support preview.");
     }
 
@@ -54,7 +66,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
 
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
-                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), ct);
+                new ServiceTypeQry(null, System.Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), ct);
         preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
 
         if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
@@ -99,6 +111,49 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             preview.SPD_CARD.CardType = "GUIDE-DOG-RETIRED";
         }
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
+        return preview;
+    }
+
+    private async Task<LicencePreviewJson> GeneratePreviewJsonForSPCLicence(LicenceResp lic, CancellationToken ct)
+    {
+        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
+        preview.LicenceType = "Special Provincial Constable";
+
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
+        await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
+
+        IncidentListResp incidents = await incidentRepository.QueryAsync(new IncidentQry { IncidentId = lic.CaseId}, ct);
+        if (!incidents.Items.Any())
+            throw new ApiException(HttpStatusCode.InternalServerError, "The case cannot be found for this licence");
+
+        IncidentResp incident = incidents.Items.First();
+        Guid? orgId = incident.OrgId;
+        if (orgId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The org cannot be found for this licence");
+
+        BizResult? biz = await bizRepository.GetBizAsync((Guid)orgId, ct);
+        if (biz == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The biz cannot be found for this licence");
+
+        string? orgName = biz.BizName;
+        var orgParts = SplitAtFirstCommaOrHyphen(orgName);
+        preview.Branch = orgParts.firstPart;
+        preview.Division = orgParts.secondPart;
+
+        preview.LicenceCategories = null;
+        preview.DoingBusinessAsName = null;
+        preview.Badge =  lic.BadgeName;
+
+        var contact = await contactRepository.GetAsync((Guid)lic.LicenceHolderId, ct);
+        mapper.Map(contact, preview);
+
+        preview.SPD_CARD = new SPD_CARD()
+        {
+            Approver = incident.ApproverName,
+            ApproverTitle = incident.ApproverTitle,
+            TemporaryLicence = false
+        };
         return preview;
     }
 
@@ -182,9 +237,25 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             return surface.Snapshot();
         }
     }
+
+    private static (string firstPart, string secondPart) SplitAtFirstCommaOrHyphen(string? input)
+    {
+        if (input == null) { return (String.Empty, String.Empty); }
+
+        int index = input.IndexOfAny([',', '-']);
+        if (index >= 0) {
+            string firstPart = input.Substring(0, index);
+            string secondPart = input.Substring(index + 1);
+            return (firstPart, secondPart);
+        } else {
+            // No delimiter found
+            return (input, string.Empty);
+        }
+    }
 }
 
 public record PersonalLicencePreviewTransformRequest(Guid LicenceId) : DocumentTransformRequest;
+
 public record LicencePreviewJson()
 {
     [JsonPropertyName("licenceNumber")]
@@ -228,6 +299,15 @@ public record LicencePreviewJson()
 
     [JsonPropertyName("country")]
     public string? Country { get; set; }
+
+    [JsonPropertyName("branch")]
+    public string? Branch { get; set; } //for SPC licence only
+
+    [JsonPropertyName("division")]
+    public string? Division { get; set; } //for SPC licence only
+
+    [JsonPropertyName("badge")]
+    public string? Badge { get; set; } //for SPC licence only
 
     [JsonPropertyName("branchOffices")]
     public IEnumerable<BranchAddress> BranchOffices { get; set; } = Enumerable.Empty<BranchAddress>(); //only apply to biz licence
@@ -279,6 +359,12 @@ public record SPD_CARD
 
     [JsonPropertyName("microchipNumber")]
     public string MicrochipNumber { get; set; }
+
+    [JsonPropertyName("approver")]
+    public string Approver { get; set; } //for spc licence only
+
+    [JsonPropertyName("approverTitle")]
+    public string ApproverTitle { get; set; } //for spc licence only
 }
 
 public record BranchAddress

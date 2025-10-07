@@ -15,8 +15,11 @@ namespace Spd.Resource.Repository.Incident
     {
         public Guid IncidentId { get; set; }
         public Guid ApplicationId { get; set; }
+        public Guid? OrgId { get; set; }
         public string Title { get; set; } = null!;
         public IEnumerable<Condition> Conditions { get; set; } = Enumerable.Empty<Condition>();
+        public string? ApproverName { get; set; }
+        public string? ApproverTitle { get; set; }
     }
 
     public abstract record IncidentCmd;
