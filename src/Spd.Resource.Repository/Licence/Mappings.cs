@@ -13,6 +13,7 @@ namespace Spd.Resource.Repository.Licence
 
             _ = CreateMap<spd_licence, LicenceResp>()
              .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
+             .ForMember(d => d.CaseId, opt => opt.MapFrom(s => s.spd_CaseId == null ? null : s.spd_CaseId.incidentid))
              .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_CaseId == null ? null : s.spd_CaseId._spd_applicationid_value))
              .ForMember(d => d.LicenceHolderId, opt => opt.MapFrom(s => GetLicenceHolderId(s)))
              .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
@@ -50,6 +51,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_spd_licence_spd_licencecondition.Where(s => s.statecode == DynamicsConstants.StateCode_Active)))
              .ForMember(d => d.GDSDTeamId, opt => opt.MapFrom(s => s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault() == null ? null : s.spd_licence_spd_dogteam_LicenceId.FirstOrDefault().spd_dogteamid))
              .ForMember(d => d.IsDogAssessor, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_outd)))
+             .ForMember(d => d.BadgeName, opt => opt.MapFrom(s => s.spd_BadgeId.spd_name))
              ;
 
             _ = CreateMap<spd_licence, LicenceBasicResp>()

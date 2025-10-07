@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using SkiaSharp;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DogTeam;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
@@ -16,13 +19,17 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepository personLicAppRepository,
+internal class PersonalLicencePreviewTransformStrategy(
+    IPersonLicApplicationRepository personLicAppRepository,
     ILicenceRepository licRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
     IMainFileStorageService fileStorageService,
     IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
     IDogTeamRepository dogTeamRepository,
+    IIncidentRepository incidentRepository,
+    IBizRepository bizRepository,
+    IContactRepository contactRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<PersonalLicencePreviewTransformRequest, LicencePreviewJson>(Jobs.PersonalLicense)
 {
@@ -59,7 +66,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
 
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
-                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), ct);
+                new ServiceTypeQry(null, System.Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), ct);
         preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
 
         if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
@@ -111,30 +118,40 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
     {
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
         preview.LicenceType = "Special Provincial Constable";
+
         if (lic.PhotoDocumentUrlId == null)
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
         await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
-        preview.LicenceCategories = null;
-        preview.ApplicantName = "Alfred Shawn Berry";
-        preview.DoingBusinessAsName = null;
-        preview.Branch = "INSURANCE CORPORATION OF BRITISH COLUMBIA";
-        preview.Division = "DRIVER LICENSING INTEGRITY AND OVERSIGHT UNIT";
-        preview.Badge = "1234567890";
 
-        preview.IssuedDate = "2025-08-23";
-        preview.ExpiryDate = "2026-08-23";
-        preview.MailingAddress1 = "1234 ANY STREET";
-        preview.MailingAddress2 = null;
-        preview.City = "VICTORIA";
-        preview.ProvinceState = "BC";
-        preview.PostalCode = "V8W 2V1";
-        preview.Country = "CANADA";
-        preview.SkipAdvancedBackgroundRemoval = false;
-        preview.SkipFacialDetection = false;
+        IncidentListResp incidents = await incidentRepository.QueryAsync(new IncidentQry { IncidentId = lic.CaseId}, ct);
+        if (!incidents.Items.Any())
+            throw new ApiException(HttpStatusCode.InternalServerError, "The case cannot be found for this licence");
+
+        IncidentResp incident = incidents.Items.First();
+        Guid? orgId = incident.OrgId;
+        if (orgId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The org cannot be found for this licence");
+
+        BizResult? biz = await bizRepository.GetBizAsync((Guid)orgId, ct);
+        if (biz == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The biz cannot be found for this licence");
+
+        string? orgName = biz.BizName;
+        var orgParts = SplitAtFirstCommaOrHyphen(orgName);
+        preview.Branch = orgParts.firstPart;
+        preview.Division = orgParts.secondPart;
+
+        preview.LicenceCategories = null;
+        preview.DoingBusinessAsName = null;
+        preview.Badge =  lic.BadgeName;
+
+        var contact = await contactRepository.GetAsync((Guid)lic.LicenceHolderId, ct);
+        mapper.Map(contact, preview);
+
         preview.SPD_CARD = new SPD_CARD()
         {
-            Approver = "John Doe",
-            ApproverTitle = "Chief Constable",
+            Approver = incident.ApproverName,
+            ApproverTitle = incident.ApproverTitle,
             TemporaryLicence = false
         };
         return preview;
@@ -218,6 +235,21 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             surface.Canvas.DrawImage(image, new SKRectI(0, 0, width, height), paint);
             surface.Canvas.Flush();
             return surface.Snapshot();
+        }
+    }
+
+    private static (string firstPart, string secondPart) SplitAtFirstCommaOrHyphen(string? input)
+    {
+        if (input == null) { return (String.Empty, String.Empty); }
+
+        int index = input.IndexOfAny([',', '-']);
+        if (index >= 0) {
+            string firstPart = input.Substring(0, index);
+            string secondPart = input.Substring(index + 1);
+            return (firstPart, secondPart);
+        } else {
+            // No delimiter found
+            return (input, string.Empty);
         }
     }
 }

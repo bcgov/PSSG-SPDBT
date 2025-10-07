@@ -18,6 +18,7 @@ internal class IncidentRepository : IIncidentRepository
     public async Task<IncidentListResp> QueryAsync(IncidentQry qry, CancellationToken ct)
     {
         IQueryable<incident> incidents = _context.incidents
+            .Expand(i => i.spd_DSGApprover)
             .Expand(i => i.spd_incident_spd_licencecondition);
 
         if (!qry.IncludeInactive)

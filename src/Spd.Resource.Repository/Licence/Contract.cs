@@ -41,6 +41,7 @@ namespace Spd.Resource.Repository.Licence
     public record LicenceResp() : PermitLicence
     {
         public Guid? LicenceId { get; set; }
+        public Guid? CaseId { get; set; }
         public Guid? LicenceAppId { get; set; }
         public bool? IsTemporary { get; set; }
         public Guid? PhotoDocumentUrlId { get; set; }
@@ -68,6 +69,9 @@ namespace Spd.Resource.Repository.Licence
         //gdsd
         public Guid? GDSDTeamId { get; set; }
         public bool? IsDogAssessor { get; set; }
+
+        //SPC
+        public string BadgeName { get; set; }
     }
 
     public record Licence
