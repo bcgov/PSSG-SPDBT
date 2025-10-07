@@ -40,7 +40,7 @@ namespace Spd.Resource.Repository.Incident
         private static string ConvertToCamelCaseWithSpaces(string input)
         {
             if (input == null) return "";
-            var words = Regex.Matches(input, @"[A-Z][a-z]*");
+            var words = Regex.Matches(input, @"[A-Z][a-z]*", RegexOptions.None, TimeSpan.FromSeconds(1));
             return string.Join(" ", words);
         }
     }
