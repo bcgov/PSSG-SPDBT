@@ -102,7 +102,7 @@ namespace Spd.Resource.Repository.Licence
                 return [];
             }
 
-            return licence.spd_spd_licence_spd_caselicencecategory_licenceid
+            return licence.spd_spd_licence_spd_caselicencecategory_licenceid.ToList()
                 .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes && c.statecode == DynamicsConstants.StateCode_Active)
                 .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
         }
