@@ -39,7 +39,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.PrintingPreviewJobId, opt => opt.MapFrom(s => s.spd_bcmpjobid))
              .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))//
              .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
-             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())))
+             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s)))
              .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => GetBizType(s)))
              .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_issuedate)))
              .ForMember(d => d.SoleProprietorOrgId, opt => opt.MapFrom(s => s._spd_soleproprietorid_value))
@@ -95,9 +95,14 @@ namespace Spd.Resource.Repository.Licence
             return Enum.Parse<LicenceStatusEnum>(Enum.GetName(typeof(LicenceStatusOptionSet), optionset));
         }
 
-        internal static IEnumerable<WorkerCategoryTypeEnum> GetCategoryCodes(List<spd_caselicencecategory> categories)
+        internal static IEnumerable<WorkerCategoryTypeEnum> GetCategoryCodes(spd_licence licence)
         {
-            return categories
+            // SPC has different categories than the worker licence so ignore them
+            if (SharedMappingFuncs.GetServiceType(licence._spd_licencetype_value) == ServiceTypeEnum.SpecialProvincialConstable) {
+                return [];
+            }
+
+            return licence.spd_spd_licence_spd_caselicencecategory_licenceid.ToList()
                 .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes && c.statecode == DynamicsConstants.StateCode_Active)
                 .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
         }
