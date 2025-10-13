@@ -319,7 +319,7 @@ internal class DocumentRepository : IDocumentRepository
                 new GetTempFileQuery(tempFile.TempFileKey), ct);
             if (fileContent == null) return;
 
-            _logger.LogInformation("File {FileName} uploaded, size {FileSize} bytes", tempFile.FileName, fileContent.Length);
+            _logger.LogInformation("Read File {FileName} from cache, size {FileSize} bytes", tempFile.FileName, fileContent.Length);
             Utilities.FileStorage.File file = new()
             {
                 Content = fileContent,
