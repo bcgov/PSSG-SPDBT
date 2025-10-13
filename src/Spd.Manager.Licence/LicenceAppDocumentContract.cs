@@ -6,10 +6,15 @@ public interface ILicenceAppDocumentManager
 {
     public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreCommand command, CancellationToken ct);
+    public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreFromStreamCommand command, CancellationToken ct);
+    public Task<IEnumerable<LicAppFileInfo>> Handle(CreateTempDocumentInTransientStoreCommand command, CancellationToken ct);
+
 }
 
 #region file upload
 public record CreateDocumentInTransientStoreCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
+public record CreateTempDocumentInTransientStoreCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicAppFileInfo>>;
+public record CreateDocumentInTransientStoreFromStreamCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
 public record CreateDocumentInCacheCommand(LicenceAppDocumentUploadRequest Request) : IRequest<IEnumerable<LicAppFileInfo>>;
 
 public record LicenceAppDocumentUploadRequest(

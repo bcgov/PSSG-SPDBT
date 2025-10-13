@@ -32,7 +32,7 @@ internal class TempFileStorageService : ITempFileStorageService
     private async Task<string> SaveTempFile(SaveTempFileCommand cmd, CancellationToken ct)
     {
         var fileKey = $"file-{Guid.NewGuid()}";
-        await _cache.SetAsync(fileKey, cmd.Content, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(0, 10, 0) }, ct); //10 mins
+        await _cache.SetAsync(fileKey, cmd.Content, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(0, 30, 0) }, ct); //30 mins
         return fileKey;
     }
 

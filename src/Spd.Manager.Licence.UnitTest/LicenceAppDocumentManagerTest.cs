@@ -15,6 +15,7 @@ public class LicenceAppDocumentManagerTest
     private Mock<IPersonLicApplicationRepository> mockPersonLicAppRepo = new();
     private Mock<IMapper> mockMapper = new();
     private Mock<ITempFileStorageService> mockTempFileStorageService = new();
+    private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<IBizLicApplicationRepository> mockBizLicApplicationRepository = new();
 
@@ -31,7 +32,8 @@ public class LicenceAppDocumentManagerTest
             mockBizLicApplicationRepository.Object,
             mockMapper.Object,
             mockTempFileStorageService.Object,
-            mockDocRepo.Object);
+            mockDocRepo.Object,
+            mockTransientFileStorageService.Object);
     }
 
     [Fact]

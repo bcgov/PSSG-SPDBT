@@ -123,6 +123,7 @@ public record SpdTempFile
     public string FileName { get; set; } = null!;
     public long FileSize { get; set; } = 0;
     public string? TempFilePath { get; set; } = null!;//it is the file location in the hard disk
+    public MemoryStream? FileStream { get; set; } = null!;
 }
 public record ApplicationResult
 {

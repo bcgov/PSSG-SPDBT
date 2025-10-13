@@ -351,10 +351,11 @@ internal class DocumentRepository : IDocumentRepository
         {
             Utilities.FileStorage.FileContent fileStream = new()
             {
-                FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
+                FileContentStream = tempFile.TempFilePath == null ? tempFile.FileStream : System.IO.File.OpenRead(tempFile.TempFilePath),
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };
+
             FileTag fileTag = tag == null ?
                 new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
                 new FileTag()
