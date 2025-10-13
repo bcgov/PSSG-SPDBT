@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -17,6 +18,7 @@ public class LicenceAppDocumentManagerTest
     private Mock<ITempFileStorageService> mockTempFileStorageService = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<IBizLicApplicationRepository> mockBizLicApplicationRepository = new();
+    private Mock<ILogger<LicenceAppDocumentManager>> mockLogger = new();
 
     private LicenceAppDocumentManager sut;
 
@@ -31,7 +33,8 @@ public class LicenceAppDocumentManagerTest
             mockBizLicApplicationRepository.Object,
             mockMapper.Object,
             mockTempFileStorageService.Object,
-            mockDocRepo.Object);
+            mockDocRepo.Object,
+            mockLogger.Object);
     }
 
     [Fact]
