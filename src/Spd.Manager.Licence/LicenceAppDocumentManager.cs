@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
@@ -19,19 +20,22 @@ internal partial class LicenceAppDocumentManager :
     private readonly ITempFileStorageService _tempFile;
     private readonly IDocumentRepository _documentRepository;
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
+    private readonly ILogger<LicenceAppDocumentManager> _logger;
 
     public LicenceAppDocumentManager(
         IPersonLicApplicationRepository personLicAppRepository,
         IBizLicApplicationRepository bizLicApplicationRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
-        IDocumentRepository documentUrlRepository)
+        IDocumentRepository documentUrlRepository,
+        ILogger<LicenceAppDocumentManager> logger)
     {
         _personlicAppRepository = personLicAppRepository;
         _bizLicApplicationRepository = bizLicApplicationRepository;
         _tempFile = tempFile;
         _mapper = mapper;
         _documentRepository = documentUrlRepository;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreCommand command, CancellationToken cancellationToken)
@@ -58,7 +62,7 @@ internal partial class LicenceAppDocumentManager :
         {
             using var ms = new MemoryStream();
             await file.CopyToAsync(ms, cancellationToken);
-
+            _logger.LogInformation("File {FileName} uploaded, size {FileSize} bytes", file.FileName, file.Length);
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), cancellationToken);
             SpdTempFile spdTempFile = new()
             {
@@ -95,6 +99,7 @@ internal partial class LicenceAppDocumentManager :
             using var ms = new MemoryStream();
             await file.CopyToAsync(ms, cancellationToken);
 
+            _logger.LogInformation("File {FileName} uploaded, size {FileSize} bytes", file.FileName, file.Length);
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), cancellationToken);
             LicAppFileInfo f = new()
             {

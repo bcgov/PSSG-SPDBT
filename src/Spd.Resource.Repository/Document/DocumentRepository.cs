@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
@@ -14,18 +15,21 @@ internal class DocumentRepository : IDocumentRepository
     private readonly IMainFileStorageService _fileStorageService;
     private readonly ITransientFileStorageService _transientFileStorageService;
     private readonly ITempFileStorageService _tempFileService;
+    private readonly ILogger<IDocumentRepository> _logger;
 
     public DocumentRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         IMainFileStorageService fileStorageService,
         ITempFileStorageService tempFileService,
-        ITransientFileStorageService transientFileStorageService)
+        ITransientFileStorageService transientFileStorageService,
+        ILogger<IDocumentRepository> logger)
     {
         _context = ctx.Create();
         _mapper = mapper;
         _fileStorageService = fileStorageService;
         _tempFileService = tempFileService;
         _transientFileStorageService = transientFileStorageService;
+        _logger = logger;
     }
 
     public async Task<DocumentResp> GetAsync(Guid docUrlId, CancellationToken ct)
@@ -315,6 +319,7 @@ internal class DocumentRepository : IDocumentRepository
                 new GetTempFileQuery(tempFile.TempFileKey), ct);
             if (fileContent == null) return;
 
+            _logger.LogInformation("Read File {FileName} from cache, size {FileSize} bytes", tempFile.FileName, fileContent.Length);
             Utilities.FileStorage.File file = new()
             {
                 Content = fileContent,

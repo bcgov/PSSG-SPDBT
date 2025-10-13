@@ -288,7 +288,8 @@ namespace Spd.Utilities.Dynamics
         Inactive = 2,
         Expired = 100000000,
         Suspended = 100000001,
-        Preview = 100000002
+        Preview = 100000002,
+        Cancelled = 100000003
     }
 
     public enum HairColorOptionSet
@@ -442,5 +443,11 @@ namespace Spd.Utilities.Dynamics
         Failed = 931490000,
         InProgress = 1,
         Success = 2,
+    }
+
+    public enum ApproverTitleTypeOptionSet
+    {
+        DeputySolicitorGeneral = 100000000,
+        AssistantDeputyMinister = 100000001,
     }
 }
