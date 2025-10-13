@@ -51,9 +51,10 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
         if (_currentUser.GetIdentityProvider() == null) //bcsc identity provider is null
         {
             var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+            //for spdbt-4553 : we make the files directly uploaded to transient store
+            return await _mediator.Send(new CreateDocumentInTransientStoreFromStreamCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
         }
-        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, null, licenceAppId), ct);
+        return await _mediator.Send(new CreateDocumentInTransientStoreFromStreamCommand(fileUploadRequest, null, licenceAppId), ct);
     }
 
     ///<summary> 
@@ -112,7 +113,9 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
         VerifyFiles(fileUploadRequest.Documents);
         await FileVirusScanAsync(fileUploadRequest.Documents, ct);
 
-        CreateDocumentInCacheCommand command = new(fileUploadRequest);
+        //spdbt-4553 : we make the files directly uploaded to transient store
+        //CreateDocumentInCacheCommand command = new(fileUploadRequest);
+        CreateTempDocumentInTransientStoreCommand command = new(fileUploadRequest, null, Guid.Empty);
         var newFileInfos = await _mediator.Send(command, ct);
         Guid fileKeyCode = Guid.NewGuid();
         await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
