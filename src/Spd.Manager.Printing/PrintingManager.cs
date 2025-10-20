@@ -212,7 +212,8 @@ internal class PrintingManager
                     EventTypeEnum.BCMPBodyArmourPermitPrinting,
                     EventTypeEnum.BCMPRetiredServiceDogPrinting,
                     EventTypeEnum.BCMPDogTrainerPrinting,
-                    EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting
+                    EventTypeEnum.BCMPGuideDogServiceDogTeamPrinting,
+                    EventTypeEnum.BCMPSpecialProvincialConstablePrinting
                 },
                 CutOffDateTime = DateTimeOffset.UtcNow,
             }, ct);
@@ -237,6 +238,10 @@ internal class PrintingManager
 
             if (eventResp.EventTypeEnum == EventTypeEnum.BCMPRetiredServiceDogPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPRetiredServiceDogPrinting");
+
+            if (eventResp.EventTypeEnum == EventTypeEnum.BCMPSpecialProvincialConstablePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPSpecialProvincialConstablePrinting");
+
             var licence = await _licenceRepository.GetBasicAsync((Guid)eventResp.RegardingObjectId, ct);
             var cardPrint = new CardPrintEvent
             {

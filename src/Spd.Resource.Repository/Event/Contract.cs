@@ -47,7 +47,8 @@ namespace Spd.Resource.Repository.Event
         BCMPMetalDealersPermitPrinting,
         BCMPGuideDogServiceDogTeamPrinting,
         BCMPDogTrainerPrinting,
-        BCMPRetiredServiceDogPrinting
+        BCMPRetiredServiceDogPrinting,
+        BCMPSpecialProvincialConstablePrinting
     }
 
     public enum EventStatusReasonEnum
