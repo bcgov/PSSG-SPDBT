@@ -405,6 +405,7 @@ namespace Spd.Utilities.Dynamics
         BCMPGuideDogServiceDogTeamPrinting = 100000016,
         BCMPDogTrainerPrinting = 100000018,
         BCMPRetiredServiceDogPrinting = 100000017,
+        BCMPSpecialProvincialConstablePrinting = 100000006
     }
 
     public enum EventStatusReasonOptionSet
