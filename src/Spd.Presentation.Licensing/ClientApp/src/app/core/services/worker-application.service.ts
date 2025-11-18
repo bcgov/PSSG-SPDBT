@@ -973,7 +973,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	getLicenceWithAccessCodeDataAnonymous(
 		associatedLicence: LicenceResponse,
 		applicationTypeCode: ApplicationTypeCode
-	): Observable<any> {
+	) {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = _resp.personalInformationData;
@@ -1174,13 +1174,14 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private getLicenceOfTypeUsingAccessCodeAnonymous(
 		applicationTypeCode: ApplicationTypeCode,
 		associatedLicence: LicenceResponse
-	): Observable<any> {
-		return forkJoin([
+	) {
+		const apis: [Observable<WorkerLicenceAppResponse>, Observable<Blob>] = [
 			this.loadExistingLicenceApplAnonymous(associatedLicence),
 			this.licenceService.apiLicencesLicencePhotoGet(),
-		]).pipe(
-			catchError((error) => of(error)),
-			switchMap((resps: any[]) => {
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps) => {
 				const latestApplication = resps[0];
 				const photoOfYourself = resps[1];
 
@@ -1189,6 +1190,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				}
 
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					// Filter out any existing ProofOfFingerprint document for anonymous renewal applications: The user must
+					// provide new proof of fingerprinting as part of the renewal process (SPDBT-4619).
+					latestApplication.documentInfos =
+						latestApplication.documentInfos?.filter(
+							(doc: Document) => doc.licenceDocumentTypeCode !== LicenceDocumentTypeCode.ProofOfFingerprint
+						) ?? null;
+
 					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 				}
 
@@ -1200,13 +1208,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
-		const apis: Observable<any>[] = [
+		const apis: [Observable<WorkerLicenceAppResponse>, Observable<ApplicantProfileResponse>] = [
 			this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet(),
 			this.applicantProfileService.apiApplicantGet(),
 		];
 
 		return forkJoin(apis).pipe(
-			switchMap((resps: any[]) => {
+			switchMap((resps) => {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
@@ -1216,7 +1224,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					applicationTypeCode: workerLicenceAppl.applicationTypeCode,
 					associatedLicence,
 				}).pipe(
-					switchMap((_resp: any) => {
+					switchMap((_resp) => {
 						// remove reference to expired licence - data is only used in the Resume authenticated flow.
 						workerLicenceAppl.expiredLicenceId = null;
 						workerLicenceAppl.expiredLicenceNumber = null;
