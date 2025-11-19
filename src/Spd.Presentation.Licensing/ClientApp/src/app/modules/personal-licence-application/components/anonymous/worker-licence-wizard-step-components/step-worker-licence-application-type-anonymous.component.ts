@@ -37,8 +37,9 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 									<app-alert type="info" icon="">
 										<div>Renew your current licence within 90 days of the expiry date.</div>
 										<div class="mt-2">
-											Fingerprints are required for all Security Worker applicants on their renewal application when
-											they <strong>do not</strong> use their BC Services Card account.
+											Security Worker applicants renewing without using their BC Services Card account
+											<strong>must have their fingerprints taken again</strong> and submit
+											<strong>new</strong> fingerprints as part of their renewal application.
 										</div>
 									</app-alert>
 								</div>
