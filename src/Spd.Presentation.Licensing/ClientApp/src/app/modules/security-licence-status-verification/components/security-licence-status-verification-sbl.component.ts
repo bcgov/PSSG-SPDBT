@@ -96,9 +96,26 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 								}
 							</div>
 
-							@if (showSearchDataError) {
+							@if (searchErrorType === 'INVALID_SEARCH') {
+								<app-alert type="danger" icon="dangerous"
+									>Enter either a business licence number OR a business name.</app-alert
+								>
+							}
+
+							@if (searchErrorType === 'INVALID_LICENCE') {
+								<app-alert type="danger" icon="dangerous">Business license number is not valid.</app-alert>
+							}
+
+							@if (searchErrorType === 'INVALID_NAME') {
 								<app-alert type="danger" icon="dangerous">
-									Enter either a business licence number, OR the business name is required.
+									{{ searchString }} does not hold a valid licence. If you believe they are working in security in B.C.,
+									please consider submitting a
+									<a
+										aria-label="Navigate to SPD complaint site"
+										href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/enforcement#complaints"
+										target="_blank"
+										>complaint</a
+									>.
 								</app-alert>
 							}
 
@@ -110,62 +127,56 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 						</div>
 					</form>
 
-					@if (showSearchResults) {
-						@if (searchResults.length > 0) {
-							<div class="mb-3">
-								<mat-divider class="no-print my-3"></mat-divider>
-								<div class="text-minor-heading no-print my-3">Search results</div>
-								@for (licence of searchResults; track licence; let i = $index) {
-									<div class="summary-card-section summary-card-section__green mb-3 px-4 py-3">
-										<div class="row">
-											<div class="col-xl-2 col-lg-2">
-												<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-												<div class="fs-5" style="color: var(--color-primary);">
-													{{ licence.licenceNumber }}
-												</div>
-											</div>
-											<div class="col-xl-8 col-lg-8">
-												<div class="row">
-													<div class="col-xl-6 col-lg-6">
-														<div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
-														<div class="text-data fw-bold">{{ licence.bizLegalName }}</div>
-													</div>
-													<div class="col-xl-6 col-lg-6">
-														<div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
-														<div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
-													</div>
-													<div class="col-xl-12 col-lg-6">
-														<div class="d-block text-muted mt-2">Licence Type(s)</div>
-														<div class="text-data fw-bold">
-															<ul class="m-0">
-																@for (category of licence.categoryCodes?.sort(); track category; let i = $index) {
-																	<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
-																}
-															</ul>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-xl-2 col-lg-2 text-end">
-												<mat-chip-option
-													[selectable]="false"
-													class="appl-chip-option"
-													[ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
-												>
-													<span class="appl-chip-option-item mx-2 fs-5">{{
-														getLicenceStatus(licence.licenceStatusCode)
-													}}</span>
-												</mat-chip-option>
+					@if (searchResults.length > 0) {
+						<div class="mb-3">
+							<mat-divider class="no-print my-3"></mat-divider>
+							<div class="text-minor-heading no-print my-3">Search results</div>
+							@for (licence of searchResults; track licence; let i = $index) {
+								<div class="summary-card-section summary-card-section__green mb-3 px-4 py-3">
+									<div class="row">
+										<div class="col-xl-2 col-lg-2">
+											<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+											<div class="fs-5" style="color: var(--color-primary);">
+												{{ licence.licenceNumber }}
 											</div>
 										</div>
+										<div class="col-xl-8 col-lg-8">
+											<div class="row">
+												<div class="col-xl-6 col-lg-6">
+													<div class="d-block text-muted mt-2 mt-lg-0">Legal Business Name</div>
+													<div class="text-data fw-bold">{{ licence.bizLegalName }}</div>
+												</div>
+												<div class="col-xl-6 col-lg-6">
+													<div class="d-block text-muted mt-2 mt-lg-0">Trade Name</div>
+													<div class="text-data fw-bold">{{ licence.licenceHolderName }}</div>
+												</div>
+												<div class="col-xl-12 col-lg-6">
+													<div class="d-block text-muted mt-2">Licence Type(s)</div>
+													<div class="text-data fw-bold">
+														<ul class="m-0">
+															@for (category of licence.categoryCodes?.sort(); track category; let i = $index) {
+																<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
+															}
+														</ul>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-2 col-lg-2 text-end">
+											<mat-chip-option
+												[selectable]="false"
+												class="appl-chip-option"
+												[ngClass]="getLicenceStatusClass(licence.licenceStatusCode)"
+											>
+												<span class="appl-chip-option-item mx-2 fs-5">{{
+													getLicenceStatus(licence.licenceStatusCode)
+												}}</span>
+											</mat-chip-option>
+										</div>
 									</div>
-								}
-							</div>
-						} @else {
-							<div class="mt-3">
-								<app-alert type="danger" icon="dangerous"> No results match your search. </app-alert>
-							</div>
-						}
+								</div>
+							}
+						</div>
 					}
 				</div>
 			</div>
@@ -181,10 +192,9 @@ import { SecurityLicenceStatusVerificationRoutes } from '../security-licence-sta
 	standalone: false,
 })
 export class SecurityLicenceStatusVerificationSblComponent {
-	showSearchDataError = false;
-
-	showSearchResults = false;
 	searchResults: Array<any> = [];
+	searchString: string | null = null;
+	searchErrorType: 'INVALID_SEARCH' | 'INVALID_LICENCE' | 'INVALID_NAME' | null = null;
 	resetRecaptchaControl: Subject<void> = new Subject<void>();
 
 	form = this.formBuilder.group({
@@ -221,11 +231,14 @@ export class SecurityLicenceStatusVerificationSblComponent {
 		const businessName = formValue.businessName?.trim();
 
 		if ((businessLicenceNumber && businessName) || (!businessLicenceNumber && !businessName)) {
-			this.showSearchDataError = true;
+			// Both or neither business licence number and business name are provided, which is invalid
+			this.searchErrorType = 'INVALID_SEARCH';
 			return;
 		}
 
-		if (!this.form.valid) return;
+		if (!this.form.valid) {
+			return;
+		}
 
 		this.performSearch(businessLicenceNumber, businessName);
 	}
@@ -240,9 +253,8 @@ export class SecurityLicenceStatusVerificationSblComponent {
 
 	private reset(): void {
 		this.searchResults = [];
-
-		this.showSearchDataError = false;
-		this.showSearchResults = false;
+		this.searchString = null;
+		this.searchErrorType = null;
 	}
 
 	private resetRecaptcha(): void {
@@ -267,7 +279,18 @@ export class SecurityLicenceStatusVerificationSblComponent {
 
 				this.searchResults = sortedResps;
 
-				this.showSearchResults = true;
+				if (!this.searchResults?.length) {
+					if (licenceNumber) {
+						// Failed to find any results using licence number
+						this.searchString = licenceNumber;
+						this.searchErrorType = 'INVALID_LICENCE';
+					} else if (businessName) {
+						// Failed to find any results using business name
+						this.searchString = businessName;
+						this.searchErrorType = 'INVALID_NAME';
+					}
+				}
+
 				this.resetRecaptcha();
 			});
 	}
