@@ -20,7 +20,7 @@ spec:
           serviceAccountName: pipeline
           containers:
             - name: job
-              image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+              image: registry.access.redhat.com/ubi9/ubi:latest
               env:
                 - name: HTTP_PROXY
                   value: http://swpxkam.gov.bc.ca:8080
