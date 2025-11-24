@@ -2,7 +2,7 @@ apiVersion: v2
 name: clamav
 description: Chart for deploying a Clam AV on kubernetes
 type: application
-version: 1.0.1
+version: 1.0.2
 appVersion: 1.4.0
 keywords:
   - clamav

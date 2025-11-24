@@ -105,6 +105,11 @@ hpa:
 # NetworkPolicy configuration
 ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
 networkPolicy:
-  create: false
+  create: true
   egress: []
-  ingress: []
+  ingress:
+    - from:
+      - podSelector: {}  # Allow from all pods in the same namespace
+      ports:
+      - protocol: TCP
+        port: 3310
