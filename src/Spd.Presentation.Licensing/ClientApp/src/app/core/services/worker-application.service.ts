@@ -241,7 +241,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
 			},
 			error: (error: any) => {
-				console.log('An error occurred during file upload', error);
+				console.error('An error occurred during file upload', error);
 
 				fileUploadComponent.removeFailedFile(document);
 			},
@@ -970,10 +970,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceWithAccessCodeDataAnonymous(
-		associatedLicence: LicenceResponse,
-		applicationTypeCode: ApplicationTypeCode
-	) {
+	getLicenceWithAccessCodeDataAnonymous(associatedLicence: LicenceResponse, applicationTypeCode: ApplicationTypeCode) {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = _resp.personalInformationData;
@@ -1176,13 +1173,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		associatedLicence: LicenceResponse
 	) {
 		const apis: [Observable<WorkerLicenceAppResponse>, Observable<Blob>] = [
-			this.loadExistingLicenceApplAnonymous(associatedLicence),
+			this.loadExistingLicenceApplAnonymous(associatedLicence, applicationTypeCode),
 			this.licenceService.apiLicencesLicencePhotoGet(),
 		];
 
 		return forkJoin(apis).pipe(
 			switchMap((resps) => {
-				const latestApplication = resps[0];
+				let latestApplication = resps[0];
 				const photoOfYourself = resps[1];
 
 				if (applicationTypeCode === ApplicationTypeCode.Replacement) {
@@ -1190,12 +1187,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				}
 
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					// Filter out any existing ProofOfFingerprint document for anonymous renewal applications: The user must
-					// provide new proof of fingerprinting as part of the renewal process (SPDBT-4619).
-					latestApplication.documentInfos =
-						latestApplication.documentInfos?.filter(
-							(doc: Document) => doc.licenceDocumentTypeCode !== LicenceDocumentTypeCode.ProofOfFingerprint
-						) ?? null;
+					latestApplication = this.filterOutProofOfFingerprintDocumentForAnonymousRenewal(
+						latestApplication,
+						applicationTypeCode
+					);
 
 					return this.applyRenewalSpecificDataToModel(latestApplication, true, associatedLicence, photoOfYourself);
 				}
@@ -1205,7 +1200,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private loadExistingLicenceApplAnonymous(associatedLicence: LicenceResponse): Observable<any> {
+	private loadExistingLicenceApplAnonymous(
+		associatedLicence: LicenceResponse,
+		applicationTypeCode?: ApplicationTypeCode
+	): Observable<any> {
 		this.reset();
 
 		const apis: [Observable<WorkerLicenceAppResponse>, Observable<ApplicantProfileResponse>] = [
@@ -1215,8 +1213,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		return forkJoin(apis).pipe(
 			switchMap((resps) => {
-				const workerLicenceAppl = resps[0];
+				let workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
+
+				workerLicenceAppl = this.filterOutProofOfFingerprintDocumentForAnonymousRenewal(
+					workerLicenceAppl,
+					applicationTypeCode
+				);
 
 				return this.applyProfileIntoModel({
 					workerLicenceAppl,
@@ -1238,6 +1241,33 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				);
 			})
 		);
+	}
+
+	/**
+	 * Filter out any existing `ProofOfFingerprint` documents for anonymous renewal applications: The user must provide
+	 * new proof of fingerprinting as part of the renewal process when anonymous (SPDBT-4619).
+	 *
+	 * @private
+	 * @param {WorkerLicenceAppResponse} application
+	 * @param {ApplicationTypeCode} applicationTypeCode
+	 * @return {*}  {WorkerLicenceAppResponse} The updated application.
+	 */
+	private filterOutProofOfFingerprintDocumentForAnonymousRenewal(
+		application: WorkerLicenceAppResponse,
+		applicationTypeCode?: ApplicationTypeCode
+	): WorkerLicenceAppResponse {
+		if (applicationTypeCode !== ApplicationTypeCode.Renewal) {
+			// If application type is not `Renewal`, return unchanged
+			return application;
+		}
+
+    // Filter out any existing `ProofOfFingerprint` document
+		application.documentInfos =
+			application.documentInfos?.filter(
+				(doc: Document) => doc.licenceDocumentTypeCode !== LicenceDocumentTypeCode.ProofOfFingerprint
+			) ?? null;
+
+		return application;
 	}
 
 	/**
