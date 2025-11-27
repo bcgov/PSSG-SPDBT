@@ -1,7 +1,7 @@
 imageRepository: artifacts.developer.gov.bc.ca/docker-remote/redis
 imageTag: 7
 
-replicaCount: 1
+replicaCount: 2
 redisPort: 6379
 sentinelPort: 26379
 persistentVolumeSize: 1Gi
