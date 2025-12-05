@@ -16,13 +16,14 @@ import {
 } from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
-import { BooleanTypeCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, SecurityGuardRequirementCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
+	securityGuardRequirementCodes = SecurityGuardRequirementCode;
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
@@ -183,7 +184,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => {
+					return form.get('isInclude')?.value && form.get('requirementCode')?.value != this.securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate}),
 			],
 		}
 	);

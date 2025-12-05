@@ -126,6 +126,7 @@ type SecurityGuardRequirementCodeSubset = Extract<
 	| LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate
 	| LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent
 	| LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining
+	| LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingNoCertificate
 >;
 export const SecurityGuardRequirementCode: Record<SecurityGuardRequirementCodeSubset, string> = {
 	[LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate]:
@@ -134,6 +135,8 @@ export const SecurityGuardRequirementCode: Record<SecurityGuardRequirementCodeSu
 		LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent,
 	[LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining]:
 		LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining,
+	[LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingNoCertificate]:
+		LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingNoCertificate,
 };
 
 type RestraintDocumentTypeCodeSubset = Extract<
