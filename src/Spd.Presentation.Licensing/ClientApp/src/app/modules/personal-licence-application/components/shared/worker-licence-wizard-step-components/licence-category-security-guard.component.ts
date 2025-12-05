@@ -141,29 +141,6 @@ export class LicenceCategorySecurityGuardComponent implements LicenceChildSteppe
 		return this.form.valid;
 	}
 
-	// onChangeDocumentType(_event: MatRadioChange): void {
-	// 	this.workerApplicationService.hasValueChanged = true;
-	// 	console.log('Requirement code changed to:', this.requirementCode.value);
-	// 	const noCert = this.securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate;
-	// 	var x = this.securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate
-
-	// 	// Clear attachments when changing type
-	// 	this.attachments.setValue([]);
-
-	// 	if (this.requirementCode.value === noCert) {
-	// 		// Remove required validator
-	// 		this.form.get('isInclude')?.setValue(false);
-			
-	// 		console.log('cleared;');
-	// 	} else {
-	// 		// Add required validator
-	// 		this.attachments.setValidators([Validators.required]);
-	// 	}
-
-	// 	this.attachments.updateValueAndValidity();
-	// 	console.log('Is attachments required?', this.attachments.hasValidator(Validators.required));
-	// }
-
 	public get requirementCode(): FormControl {
 		return this.form.get('requirementCode') as FormControl;
 	}
