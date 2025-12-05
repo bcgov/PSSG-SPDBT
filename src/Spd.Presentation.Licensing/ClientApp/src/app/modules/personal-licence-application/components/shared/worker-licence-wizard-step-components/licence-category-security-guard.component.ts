@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup} from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityGuardRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -59,7 +59,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 				</div>
 			</div>
 
-			@if (requirementCode.value && requirementCode.value != securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate) {
+			@if (requirementCode.value && requirementCode.value !== securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate) {
 				<div @showHideTriggerSlideAnimation>
 					@if (
 						requirementCode.value === securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining
