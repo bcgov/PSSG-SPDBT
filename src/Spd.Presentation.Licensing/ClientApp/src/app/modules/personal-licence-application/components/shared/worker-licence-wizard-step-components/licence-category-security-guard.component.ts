@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup} from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SecurityGuardRequirementCode } from '@app/core/code-types/model-desc.models';
@@ -27,7 +27,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<mat-radio-button
 							[value]="securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingCertificate"
 						>
-							Basic Security Training Certificate issued by the Justice Institute of British Columbia (JIBC)
+							Basic Security Training Certificate issued by the Justice Institute of British Columbia (JIBC) prior to
+							December 15, 2025 (attach your certificate)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button [value]="securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining">
@@ -40,6 +41,12 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						>
 							Certificate equivalent to the Basic Security Training course offered by JIBC
 						</mat-radio-button>
+						<mat-radio-button
+							[value]="securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate"
+						>
+							Completion of the Basic Security Training course through the JIBC after December 15, 2025 (certificate no
+							longer required).
+						</mat-radio-button>
 					</mat-radio-group>
 					@if (
 						(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
@@ -48,10 +55,11 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					) {
 						<mat-error class="mat-option-error">This is required</mat-error>
 					}
+		
 				</div>
 			</div>
 
-			@if (requirementCode.value) {
+			@if (requirementCode.value && requirementCode.value !== securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingNoCertificate) {
 				<div @showHideTriggerSlideAnimation>
 					@if (
 						requirementCode.value === securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining
@@ -79,7 +87,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							<mat-error class="mat-option-error">This is required</mat-error>
 						}
 					</div>
+					
 				</div>
+				 
 			}
 		</form>
 	`,
@@ -121,7 +131,7 @@ export class LicenceCategorySecurityGuardComponent implements LicenceChildSteppe
 		this.workerApplicationService.hasValueChanged = true;
 	}
 
-	onChangeDocumentType(_event: MatRadioChange): void {
+		onChangeDocumentType(_event: MatRadioChange): void {
 		this.workerApplicationService.hasValueChanged = true;
 		this.attachments.setValue([]);
 	}

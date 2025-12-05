@@ -847,6 +847,7 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.CategorySecurityConsultant_Resume, DocumentTypeEnum.SecurityConsultant},
         {LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCertificate, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CategorySecurityGuard_PoliceExperienceOrTraining, DocumentTypeEnum.SecurityGuard},
+        {LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingNoCertificate, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CategorySecurityGuard_DogCertificate, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CategorySecurityGuard_ASTCertificate, DocumentTypeEnum.SecurityGuard},
@@ -888,7 +889,7 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
         {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments },
         {LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification, DocumentTypeEnum.DogTrainerAccreditedSchoolVerification }
-    }.ToImmutableDictionary();
+    }.ToImmutableDictionary(); 
 
     private string GetHolderName(string firstName, string middleName, string lastName)
     {
