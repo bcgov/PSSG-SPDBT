@@ -1,0 +1,224 @@
+# ======================================================================================
+#  Last Updated: 2025-12-08
+#
+#  Description:
+#  Promotes images by re-tagging them within the OpenShift ImageStream.
+#  This in-cluster promotion guarantees image digest is preserved.
+#  Includes production safeguards with backup and validation.
+#  Promotes all PSSG-SPDBT services from staging to production environment.
+#
+# ======================================================================================
+
+name: Promote - Staging to Prod
+
+# --- TRIGGERS -----------------------------------------------------------------------
+on:
+  # This workflow is triggered manually, requiring explicit user action.
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: "The source tag to promote (e.g., staging, or a specific shortsha tag)"
+        required: false
+        default: "staging"
+
+# --- ENVIRONMENT VARIABLES ----------------------------------------------------------
+env:
+  IMAGE_REGISTRY: ${{ vars.OCP4_REGISTRY }}
+  NAMESPACE: ${{ secrets.OCP4_NAMESPACE }}
+  SOURCE_TAG: ${{ github.event.inputs.source_tag }}
+  TARGET_TAG: "prod"
+  BACKUP_TAG: "prod-backup"
+
+# --- JOBS ---------------------------------------------------------------------------
+jobs:
+  promote-images:
+    name: Promote All Services to Production
+    runs-on: ubuntu-latest
+    # Use GitHub Environments for production protection
+    environment:
+      name: production
+      url: https://screening-portal-fe7e29-prod.apps.emerald.devops.gov.bc.ca
+
+    strategy:
+      matrix:
+        service:
+          - name: screening-portal
+            namespace: fe7e29-prod
+          - name: licensing-portal
+            namespace: fe7e29-prod
+          - name: gdsd-portal
+            namespace: fe7e29-prod
+          - name: dynamics-helper
+            namespace: fe7e29-prod
+
+    steps:
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+
+      - name: Get source digest for ${{ matrix.service.name }}
+        id: get_source_digest
+        run: |
+          SOURCE_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          echo "source_digest=$SOURCE_DIGEST" >> $GITHUB_OUTPUT
+          echo "Source image digest for ${{ matrix.service.name }}: $SOURCE_DIGEST"
+
+      - name: Get target digest for ${{ matrix.service.name }} (for backup)
+        id: get_target_digest
+        run: |
+          TARGET_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
+          echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
+          if [[ -n "$TARGET_DIGEST" ]]; then
+            echo "Current production image digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
+          else
+            echo "No existing production image found for ${{ matrix.service.name }} (first deployment)"
+          fi
+
+      - name: Backup Current Production Image for ${{ matrix.service.name }} (by digest)
+        if: steps.get_target_digest.outputs.target_digest != ''
+        run: |
+          echo "🔄 Creating backup of current production image for ${{ matrix.service.name }}..."
+          echo "Backing up current '${{ env.TARGET_TAG }}' image to '${{ env.BACKUP_TAG }}' by digest..."
+          oc tag ${{ matrix.service.name }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ matrix.service.name }}:${{ env.BACKUP_TAG }} --reference
+          echo "✅ Backup successful. Production image saved as '${{ env.BACKUP_TAG }}' for ${{ matrix.service.name }}"
+
+      - name: Promote source to target for ${{ matrix.service.name }} (by digest)
+        run: |
+          echo "🚀 Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ matrix.service.name }}'..."
+          oc tag ${{ matrix.service.name }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ matrix.service.name }}:${{ env.TARGET_TAG }} --reference
+          echo "✅ Promotion successful for ${{ matrix.service.name }}"
+
+      - name: Validate Promotion by Comparing Image Digests for ${{ matrix.service.name }}
+        run: |
+          echo "🔍 Validating promotion for image '${{ matrix.service.name }}'..."
+          sleep 5
+
+          SOURCE_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          TARGET_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+
+          echo "Source Digest: $SOURCE_SHA"
+          echo "Target Digest: $TARGET_SHA"
+
+          if [[ -z "$SOURCE_SHA" ]]; then
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ matrix.service.name }}'."
+            exit 1
+          fi
+
+          if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
+            echo "✅ Validation successful! Digests match perfectly for ${{ matrix.service.name }}."
+          else
+            echo "::error::Image digests do not match after promotion for image '${{ matrix.service.name }}'."
+            exit 1
+          fi
+
+      - name: Wait for Deployment Rollout in Production for ${{ matrix.service.name }}
+        run: |
+          echo "⏳ Waiting for deployment to rollout in ${{ matrix.service.namespace }} namespace..."
+          echo "This may take several minutes as production deployments are scaled..."
+          oc rollout status deployment/${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=15m || true
+
+  run-smoke-tests:
+    name: Run Production Smoke Tests
+    needs: promote-images
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          - name: screening-portal
+            namespace: fe7e29-prod
+            endpoint: /api/health
+          - name: licensing-portal
+            namespace: fe7e29-prod
+            endpoint: /api/health
+          - name: gdsd-portal
+            namespace: fe7e29-prod
+            endpoint: /api/health
+          - name: dynamics-helper
+            namespace: fe7e29-prod
+            endpoint: /api/health
+
+    steps:
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+
+      - name: Run Production Smoke Tests for ${{ matrix.service.name }}
+        run: |
+          echo "🧪 Running smoke tests on production environment for ${{ matrix.service.name }}..."
+          ROUTE=$(oc get route ${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+
+          if [[ -z "$ROUTE" ]]; then
+            echo "::error::No route found for ${{ matrix.service.name }}, cannot run smoke test"
+            exit 1
+          fi
+
+          echo "Testing endpoint: https://$ROUTE${{ matrix.service.endpoint }}"
+
+          # Test the health endpoint
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$ROUTE${{ matrix.service.endpoint }} || echo "000")
+
+          if [[ "$RESPONSE" == "200" ]]; then
+            echo "✅ Production smoke test passed! ${{ matrix.service.name }} is responding correctly."
+          else
+            echo "::error::Production smoke test failed! Expected 200, got $RESPONSE for ${{ matrix.service.name }}"
+            echo "::error::Consider rolling back using the backup tag: ${{ env.BACKUP_TAG }}"
+            exit 1
+          fi
+
+  deployment-summary:
+    name: Deployment Summary
+    needs: [promote-images, run-smoke-tests]
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+
+      - name: Display Deployment Summary
+        run: |
+          echo "======================================================================"
+          echo "🎉 PRODUCTION DEPLOYMENT SUCCESSFUL"
+          echo "======================================================================"
+          echo ""
+          echo "Services Deployed:"
+          echo "  • screening-portal"
+          echo "  • licensing-portal"
+          echo "  • gdsd-portal"
+          echo "  • dynamics-helper"
+          echo ""
+          echo "Source Tag: ${{ env.SOURCE_TAG }}"
+          echo "Target Tag: ${{ env.TARGET_TAG }}"
+          echo "Backup Tag: ${{ env.BACKUP_TAG }}"
+          echo ""
+          echo "Deployment Details:"
+          echo "  • Namespace: fe7e29-prod"
+          echo "  • Cluster: Emerald"
+          echo "  • Status: All services healthy"
+          echo ""
+          echo "To rollback a specific service if needed, run:"
+          echo "  oc tag <service-name>:${{ env.BACKUP_TAG }} <service-name>:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
+          echo ""
+          echo "Example:"
+          echo "  oc tag screening-portal:${{ env.BACKUP_TAG }} screening-portal:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
+          echo "======================================================================"

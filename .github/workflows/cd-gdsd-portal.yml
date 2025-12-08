@@ -1,0 +1,90 @@
+# ======================================================================================
+#  Last Updated: 2025-12-08
+#
+#  Description:
+#  This is the main CD workflow for the GDSD Portal.
+#  It orchestrates the build and deployment process for the GDSD Portal service.
+#
+#  Triggers:
+#  1. Automatic (`push`): Triggers automatically when code is merged to 'develop' branch.
+#  2. Manual (`workflow_dispatch`): Allows for manual deployments.
+#     Optionally accepts a 7-character commit SHA.
+#
+# ======================================================================================
+
+name: CD GDSD Portal
+
+# --- TRIGGERS -----------------------------------------------------------------------
+on:
+  # Triggers this workflow when code is merged to develop branch
+  push:
+    branches: [develop]
+    paths:
+      - "src/**"
+      - "!src/Spd.Presentation.Dynamics/**"
+      - "!src/Spd.Presentation.Screening/**"
+      - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Manager.ScheduleJob/**"
+      - "!src/Spd.Manager.Screening/**"
+      - "!src/Spd.Manager.Licence/**"
+      - "!src/Spd.Resource.Repository.JobSchedule/**"
+      - "src/gdsd-portal.dockerfile"
+      - ".github/workflows/cd-gdsd-portal.yml"
+      - ".github/workflows/build-template-openshift.yml"
+
+  # manual trigger
+  workflow_dispatch:
+    inputs:
+      short_merge_commit_sha:
+        description: "Optional: Short merge commit SHA"
+        required: false
+
+# --- JOBS ---------------------------------------------------------------------------
+jobs:
+  prepare-build-params:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    outputs:
+      short_sha: ${{ steps.determine-sha-from-push.outputs.short_sha || steps.validate-manual-sha.outputs.short_sha }}
+    steps:
+      - name: Extract Commit SHA from Push Event
+        id: determine-sha-from-push
+        if: github.event_name == 'push'
+        run: |
+          COMMIT_SHA="${{ github.sha }}"
+          echo "Merge commit SHA: $COMMIT_SHA"
+          echo "short_sha=$(echo $COMMIT_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Validate Manual Trigger SHA or Use 'manual'
+        id: validate-manual-sha
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          SHORT_SHA="${{ github.event.inputs.short_merge_commit_sha }}"
+          if [[ -z "$SHORT_SHA" ]]; then
+            SHORT_SHA="manual"
+          elif [[ ! "$SHORT_SHA" =~ ^[a-fA-F0-9]{7}$ ]]; then
+            echo "::error::SHA must be exactly 7 hexadecimal characters. Received: '$SHORT_SHA'"
+            exit 1
+          fi
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+
+  build-and-deploy:
+    needs: prepare-build-params
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+      id-token: write
+      security-events: write
+    uses: ./.github/workflows/build-template-openshift.yml
+    with:
+      EVENT_NAME: ${{ github.event_name }}
+      IMAGE_CONTEXT: src
+      IMAGE_FILE: src/gdsd-portal.dockerfile
+      IMAGE_NAME: gdsd-portal
+      REGISTRY: ${{ vars.OCP4_REGISTRY }}
+      BRANCH: ${{ github.ref_name }}
+      COMMIT_SHA: ${{ needs.prepare-build-params.outputs.short_sha }}
+    secrets:
+      REGISTRY_USER: ${{ secrets.OCP4_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.OCP4_PASSWORD }}

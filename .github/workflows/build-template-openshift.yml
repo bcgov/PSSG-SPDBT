@@ -1,0 +1,109 @@
+# ======================================================================================
+#  Last Updated: 2025-12-08
+#
+#  Description:
+#  Reusable workflow for building, publishing, and scanning Docker images to OpenShift.
+#  It is designed to be called by other workflows.
+# ======================================================================================
+
+name: build-template-openshift
+
+# --- INPUTS AND SECRETS -------------------------------------------------------------
+on:
+  workflow_call:
+    inputs:
+      # The event that triggered the caller workflow (e.g., 'push', 'workflow_dispatch').
+      # This is critical for the conditional environment logic.
+      EVENT_NAME:
+        required: true
+        type: string
+      # Build context path for the Docker image.
+      IMAGE_CONTEXT:
+        required: true
+        type: string
+      # Path to the Dockerfile.
+      IMAGE_FILE:
+        required: true
+        type: string
+      # Name of the image to be published.
+      IMAGE_NAME:
+        required: true
+        type: string
+      # URL of the container registry.
+      REGISTRY:
+        required: true
+        type: string
+      # The branch name, used for tagging.
+      BRANCH:
+        required: false
+        type: string
+      # The 7-character commit SHA, used for tagging.
+      COMMIT_SHA:
+        required: false
+        type: string
+
+    secrets:
+      REGISTRY_USER:
+        required: true
+      REGISTRY_PASSWORD:
+        required: true
+
+# --- JOBS ---------------------------------------------------------------------------
+jobs:
+  # ------------------------------------------------------------------------------------
+  #  Job: build-and-publish
+  #  Purpose: A single job that handles the entire lifecycle: build and publish.
+  # ------------------------------------------------------------------------------------
+  build-and-publish:
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          # Checks out the specific commit from the branch for a consistent and reliable build.
+          ref: ${{ inputs.BRANCH }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ inputs.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Extract Docker Image Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}
+          # Creates two tags for the image: one with the specific commit SHA
+          # and another with the branch name for easier reference.
+          tags: |
+            type=raw,value=${{ inputs.COMMIT_SHA }}
+            type=raw,value=${{ inputs.BRANCH }}
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.IMAGE_CONTEXT }}
+          # Pass the image name and version (commit SHA) as build arguments.
+          build-args: |
+            VERSION=${{ inputs.COMMIT_SHA }}
+          file: ${{ inputs.IMAGE_FILE }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          # Docker build caching disabled to ensure guaranteed clean builds
+          # Uncomment the following lines if you want to enable caching for faster builds:
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
+          no-cache: true

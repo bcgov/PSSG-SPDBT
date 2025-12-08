@@ -1,0 +1,170 @@
+# ======================================================================================
+#  Last Updated: 2025-12-08
+#
+#  Description:
+#  Promotes images by re-tagging them within the OpenShift ImageStream.
+#  This in-cluster promotion guarantees image digest is preserved.
+#  Promotes all PSSG-SPDBT services from test to staging environment.
+#
+# ======================================================================================
+
+name: Promote - Test to Staging
+
+# --- TRIGGERS -----------------------------------------------------------------------
+on:
+  # This workflow is triggered manually, requiring explicit user action.
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: "The source tag to promote (e.g., test, or a specific shortsha tag)"
+        required: false
+        default: "test"
+
+# --- ENVIRONMENT VARIABLES ----------------------------------------------------------
+env:
+  IMAGE_REGISTRY: ${{ vars.OCP4_REGISTRY }}
+  NAMESPACE: ${{ secrets.OCP4_NAMESPACE }}
+  SOURCE_TAG: ${{ github.event.inputs.source_tag }}
+  TARGET_TAG: "staging"
+  BACKUP_TAG: "staging-backup"
+
+# --- JOBS ---------------------------------------------------------------------------
+jobs:
+  promote-images:
+    name: Promote All Services to Staging
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          - name: screening-portal
+            namespace: fe7e29-staging
+          - name: licensing-portal
+            namespace: fe7e29-staging
+          - name: gdsd-portal
+            namespace: fe7e29-staging
+          - name: dynamics-helper
+            namespace: fe7e29-staging
+
+    steps:
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+
+      - name: Get source digest for ${{ matrix.service.name }}
+        id: get_source_digest
+        run: |
+          SOURCE_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          echo "source_digest=$SOURCE_DIGEST" >> $GITHUB_OUTPUT
+          echo "Source digest for ${{ matrix.service.name }}: $SOURCE_DIGEST"
+
+      - name: Get target digest for ${{ matrix.service.name }} (for backup)
+        id: get_target_digest
+        run: |
+          TARGET_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
+          echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
+          if [[ -n "$TARGET_DIGEST" ]]; then
+            echo "Current staging digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
+          else
+            echo "No existing staging image found for ${{ matrix.service.name }}"
+          fi
+
+      - name: Backup Current Target Image for ${{ matrix.service.name }} (by digest)
+        if: steps.get_target_digest.outputs.target_digest != ''
+        run: |
+          echo "🔄 Backing up current '${{ env.TARGET_TAG }}' image to '${{ env.BACKUP_TAG }}' by digest..."
+          oc tag ${{ matrix.service.name }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ matrix.service.name }}:${{ env.BACKUP_TAG }} --reference
+          echo "✅ Backup successful for ${{ matrix.service.name }}"
+
+      - name: Promote source to target for ${{ matrix.service.name }} (by digest)
+        run: |
+          echo "🚀 Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ matrix.service.name }}'..."
+          oc tag ${{ matrix.service.name }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ matrix.service.name }}:${{ env.TARGET_TAG }} --reference
+          echo "✅ Promotion successful for ${{ matrix.service.name }}"
+
+      - name: Validate Promotion by Comparing Image Digests for ${{ matrix.service.name }}
+        run: |
+          echo "🔍 Validating promotion for image '${{ matrix.service.name }}'..."
+          sleep 5
+
+          SOURCE_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          TARGET_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+
+          echo "Source Digest: $SOURCE_SHA"
+          echo "Target Digest: $TARGET_SHA"
+
+          if [[ -z "$SOURCE_SHA" ]]; then
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ matrix.service.name }}'."
+            exit 1
+          fi
+
+          if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
+            echo "✅ Validation successful! Digests match perfectly for ${{ matrix.service.name }}."
+          else
+            echo "::error::Image digests do not match after promotion for image '${{ matrix.service.name }}'."
+            exit 1
+          fi
+
+      - name: Wait for Deployment Rollout in Staging for ${{ matrix.service.name }}
+        run: |
+          echo "⏳ Waiting for deployment to rollout in ${{ matrix.service.namespace }} namespace..."
+          oc rollout status deployment/${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=10m || true
+
+  run-smoke-tests:
+    name: Run Smoke Tests
+    needs: promote-images
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          - name: screening-portal
+            namespace: fe7e29-staging
+            endpoint: /api/health
+          - name: licensing-portal
+            namespace: fe7e29-staging
+            endpoint: /api/health
+          - name: gdsd-portal
+            namespace: fe7e29-staging
+            endpoint: /api/health
+          - name: dynamics-helper
+            namespace: fe7e29-staging
+            endpoint: /api/health
+
+    steps:
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
+          tar -xzf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+
+      - name: Run Smoke Tests for ${{ matrix.service.name }}
+        run: |
+          echo "🧪 Running smoke tests on staging environment for ${{ matrix.service.name }}..."
+          ROUTE=$(oc get route ${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+
+          if [[ -z "$ROUTE" ]]; then
+            echo "::warning::No route found for ${{ matrix.service.name }}, skipping smoke test"
+            exit 0
+          fi
+
+          echo "Testing endpoint: https://$ROUTE${{ matrix.service.endpoint }}"
+
+          # Test the health endpoint
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$ROUTE${{ matrix.service.endpoint }} || echo "000")
+
+          if [[ "$RESPONSE" == "200" ]]; then
+            echo "✅ Smoke test passed! ${{ matrix.service.name }} is responding correctly."
+          else
+            echo "::warning::Smoke test returned $RESPONSE for ${{ matrix.service.name }}"
+          fi
