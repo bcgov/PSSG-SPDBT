@@ -5,11 +5,11 @@
 #  Promotes images by re-tagging them within the OpenShift ImageStream.
 #  This in-cluster promotion guarantees image digest is preserved.
 #  Includes production safeguards with backup and validation.
-#  Promotes all PSSG-SPDBT services from staging to production environment.
+#  Promotes all PSSG-SPDBT services from training to production environment.
 #
 # ======================================================================================
 
-name: Promote - Staging to Prod
+name: Promote - Training to Prod
 
 # --- TRIGGERS -----------------------------------------------------------------------
 on:
@@ -17,9 +17,9 @@ on:
   workflow_dispatch:
     inputs:
       source_tag:
-        description: "The source tag to promote (e.g., staging, or a specific shortsha tag)"
+        description: "The source tag to promote (e.g., training, or a specific shortsha tag)"
         required: false
-        default: "staging"
+        default: "training"
 
 # --- ENVIRONMENT VARIABLES ----------------------------------------------------------
 env:
@@ -133,16 +133,16 @@ jobs:
         service:
           - name: screening-portal
             namespace: fe7e29-prod
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: licensing-portal
             namespace: fe7e29-prod
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: gdsd-portal
             namespace: fe7e29-prod
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: dynamics-helper
             namespace: fe7e29-prod
-            endpoint: /api/health
+            endpoint: /health/liveness
 
     steps:
       - name: Install OpenShift CLI

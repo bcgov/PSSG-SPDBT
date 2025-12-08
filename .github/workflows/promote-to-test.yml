@@ -126,16 +126,16 @@ jobs:
         service:
           - name: screening-portal
             namespace: fe7e29-test
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: licensing-portal
             namespace: fe7e29-test
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: gdsd-portal
             namespace: fe7e29-test
-            endpoint: /api/health
+            endpoint: /health/liveness
           - name: dynamics-helper
             namespace: fe7e29-test
-            endpoint: /api/health
+            endpoint: /health/liveness
 
     steps:
       - name: Install OpenShift CLI

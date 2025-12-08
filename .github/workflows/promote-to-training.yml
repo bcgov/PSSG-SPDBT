@@ -4,11 +4,11 @@
 #  Description:
 #  Promotes images by re-tagging them within the OpenShift ImageStream.
 #  This in-cluster promotion guarantees image digest is preserved.
-#  Promotes all PSSG-SPDBT services from test to staging environment.
+#  Promotes all PSSG-SPDBT services from test to training environment.
 #
 # ======================================================================================
 
-name: Promote - Test to Staging
+name: Promote - Test to Training
 
 # --- TRIGGERS -----------------------------------------------------------------------
 on:
@@ -25,26 +25,26 @@ env:
   IMAGE_REGISTRY: ${{ vars.OCP4_REGISTRY }}
   NAMESPACE: ${{ secrets.OCP4_NAMESPACE }}
   SOURCE_TAG: ${{ github.event.inputs.source_tag }}
-  TARGET_TAG: "staging"
-  BACKUP_TAG: "staging-backup"
+  TARGET_TAG: "training"
+  BACKUP_TAG: "training-backup"
 
 # --- JOBS ---------------------------------------------------------------------------
 jobs:
   promote-images:
-    name: Promote All Services to Staging
+    name: Promote All Services to Training
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         service:
           - name: screening-portal
-            namespace: fe7e29-staging
+            namespace: fe7e29-test
           - name: licensing-portal
-            namespace: fe7e29-staging
+            namespace: fe7e29-test
           - name: gdsd-portal
-            namespace: fe7e29-staging
+            namespace: fe7e29-test
           - name: dynamics-helper
-            namespace: fe7e29-staging
+            namespace: fe7e29-test
 
     steps:
       - name: Install OpenShift CLI
@@ -70,9 +70,9 @@ jobs:
           TARGET_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
           echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
           if [[ -n "$TARGET_DIGEST" ]]; then
-            echo "Current staging digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
+            echo "Current training digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
           else
-            echo "No existing staging image found for ${{ matrix.service.name }}"
+            echo "No existing training image found for ${{ matrix.service.name }}"
           fi
 
       - name: Backup Current Target Image for ${{ matrix.service.name }} (by digest)
@@ -111,10 +111,10 @@ jobs:
             exit 1
           fi
 
-      - name: Wait for Deployment Rollout in Staging for ${{ matrix.service.name }}
+      - name: Wait for Deployment Rollout in Training for ${{ matrix.service.name }}
         run: |
           echo "⏳ Waiting for deployment to rollout in ${{ matrix.service.namespace }} namespace..."
-          oc rollout status deployment/${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=10m || true
+          oc rollout status deployment/training-${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=10m || true
 
   run-smoke-tests:
     name: Run Smoke Tests
@@ -125,17 +125,17 @@ jobs:
       matrix:
         service:
           - name: screening-portal
-            namespace: fe7e29-staging
-            endpoint: /api/health
+            namespace: fe7e29-test
+            endpoint: /health/liveness
           - name: licensing-portal
-            namespace: fe7e29-staging
-            endpoint: /api/health
+            namespace: fe7e29-test
+            endpoint: /health/liveness
           - name: gdsd-portal
-            namespace: fe7e29-staging
-            endpoint: /api/health
+            namespace: fe7e29-test
+            endpoint: /health/liveness
           - name: dynamics-helper
-            namespace: fe7e29-staging
-            endpoint: /api/health
+            namespace: fe7e29-test
+            endpoint: /health/liveness
 
     steps:
       - name: Install OpenShift CLI
@@ -150,11 +150,11 @@ jobs:
 
       - name: Run Smoke Tests for ${{ matrix.service.name }}
         run: |
-          echo "🧪 Running smoke tests on staging environment for ${{ matrix.service.name }}..."
-          ROUTE=$(oc get route ${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+          echo "🧪 Running smoke tests on training environment for ${{ matrix.service.name }}..."
+          ROUTE=$(oc get route training-${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
 
           if [[ -z "$ROUTE" ]]; then
-            echo "::warning::No route found for ${{ matrix.service.name }}, skipping smoke test"
+            echo "::warning::No route found for training-${{ matrix.service.name }}, skipping smoke test"
             exit 0
           fi
 
