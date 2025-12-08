@@ -80,10 +80,10 @@ jobs:
       EVENT_NAME: ${{ github.event_name }}
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/licensing-portal.dockerfile
-      IMAGE_NAME: licensing-portal
-      REGISTRY: ${{ vars.OCP4_REGISTRY }}
+      IMAGE_NAME: bcgov/pssg-spdbt/licensing-portal
+      REGISTRY: ghcr.io
       BRANCH: ${{ github.ref_name }}
       COMMIT_SHA: ${{ needs.prepare-build-params.outputs.short_sha }}
     secrets:
-      REGISTRY_USER: ${{ secrets.OCP4_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.OCP4_PASSWORD }}
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

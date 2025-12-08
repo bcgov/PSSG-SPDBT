@@ -77,10 +77,10 @@ jobs:
       EVENT_NAME: ${{ github.event_name }}
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/dynamics.dockerfile
-      IMAGE_NAME: dynamics-helper
-      REGISTRY: ${{ vars.OCP4_REGISTRY }}
+      IMAGE_NAME: bcgov/pssg-spdbt/dynamics-helper
+      REGISTRY: ghcr.io
       BRANCH: ${{ github.ref_name }}
       COMMIT_SHA: ${{ needs.prepare-build-params.outputs.short_sha }}
     secrets:
-      REGISTRY_USER: ${{ secrets.OCP4_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.OCP4_PASSWORD }}
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

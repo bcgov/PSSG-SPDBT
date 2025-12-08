@@ -97,11 +97,11 @@ jobs:
       EVENT_NAME: ${{ github.event_name }}
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/screening-portal.dockerfile
-      IMAGE_NAME: screening-portal
-      REGISTRY: ${{ vars.OCP4_REGISTRY }}
+      IMAGE_NAME: bcgov/pssg-spdbt/screening-portal
+      REGISTRY: ghcr.io
       BRANCH: ${{ github.ref_name }}
       # Use the output from prepare-build-params job
       COMMIT_SHA: ${{ needs.prepare-build-params.outputs.short_sha }}
     secrets:
-      REGISTRY_USER: ${{ secrets.OCP4_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.OCP4_PASSWORD }}
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
