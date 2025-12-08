@@ -96,7 +96,8 @@ jobs:
           context: ${{ inputs.IMAGE_CONTEXT }}
           # Pass the image name and version (commit SHA) as build arguments.
           build-args: |
-            VERSION=${{ inputs.COMMIT_SHA }}
+            BUILD_IMAGE_NAME=${{ inputs.IMAGE_NAME }}
+            BUILD_VERSION=${{ steps.meta.outputs.version }}
           file: ${{ inputs.IMAGE_FILE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}

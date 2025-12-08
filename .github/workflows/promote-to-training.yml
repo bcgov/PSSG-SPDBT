@@ -31,20 +31,19 @@ env:
 # --- JOBS ---------------------------------------------------------------------------
 jobs:
   promote-images:
-    name: Promote All Services to Training
+    name: Promote ${{ matrix.image_name }} to Training
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        service:
-          - name: screening-portal
-            namespace: fe7e29-test
-          - name: licensing-portal
-            namespace: fe7e29-test
-          - name: gdsd-portal
-            namespace: fe7e29-test
-          - name: dynamics-helper
-            namespace: fe7e29-test
+        image_name: [
+          "screening-portal",
+          "licensing-portal",
+          "gdsd-portal",
+          "dynamics-helper"
+        ]
+
+    env:
+      IMAGE_NAME: ${{ matrix.image_name }}
 
     steps:
       - name: Install OpenShift CLI
@@ -57,114 +56,93 @@ jobs:
         run: |
           oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
 
-      - name: Get source digest for ${{ matrix.service.name }}
+      - name: Get source digest
         id: get_source_digest
         run: |
-          SOURCE_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          SOURCE_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
           echo "source_digest=$SOURCE_DIGEST" >> $GITHUB_OUTPUT
-          echo "Source digest for ${{ matrix.service.name }}: $SOURCE_DIGEST"
 
-      - name: Get target digest for ${{ matrix.service.name }} (for backup)
+      - name: Get target digest (for backup)
         id: get_target_digest
         run: |
-          TARGET_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
+          TARGET_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
           echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
-          if [[ -n "$TARGET_DIGEST" ]]; then
-            echo "Current training digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
-          else
-            echo "No existing training image found for ${{ matrix.service.name }}"
-          fi
 
-      - name: Backup Current Target Image for ${{ matrix.service.name }} (by digest)
+      - name: Backup Current Target Image (by digest)
         if: steps.get_target_digest.outputs.target_digest != ''
         run: |
-          echo "🔄 Backing up current '${{ env.TARGET_TAG }}' image to '${{ env.BACKUP_TAG }}' by digest..."
-          oc tag ${{ matrix.service.name }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ matrix.service.name }}:${{ env.BACKUP_TAG }} --reference
-          echo "✅ Backup successful for ${{ matrix.service.name }}"
+          echo "Backing up current '${{ env.TARGET_TAG }}' image to '${{ env.BACKUP_TAG }}' by digest..."
+          oc tag ${{ env.IMAGE_NAME }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ env.IMAGE_NAME }}:${{ env.BACKUP_TAG }} --reference
+          echo "Backup successful."
 
-      - name: Promote source to target for ${{ matrix.service.name }} (by digest)
+      - name: Promote source to target (by digest)
         run: |
-          echo "🚀 Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ matrix.service.name }}'..."
-          oc tag ${{ matrix.service.name }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ matrix.service.name }}:${{ env.TARGET_TAG }} --reference
-          echo "✅ Promotion successful for ${{ matrix.service.name }}"
+          echo "Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ env.IMAGE_NAME }}'..."
+          oc tag ${{ env.IMAGE_NAME }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} --reference
+          echo "Promotion successful."
 
-      - name: Validate Promotion by Comparing Image Digests for ${{ matrix.service.name }}
+      - name: Validate Promotion by Comparing Image Digests
         run: |
-          echo "🔍 Validating promotion for image '${{ matrix.service.name }}'..."
+          echo "Validating promotion for image '${{ env.IMAGE_NAME }}'..."
           sleep 5
 
-          SOURCE_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
-          TARGET_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          SOURCE_SHA=$(oc get imagestreamtag ${{ env.IMAGE_NAME }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          TARGET_SHA=$(oc get imagestreamtag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
 
           echo "Source Digest: $SOURCE_SHA"
           echo "Target Digest: $TARGET_SHA"
 
           if [[ -z "$SOURCE_SHA" ]]; then
-            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ matrix.service.name }}'."
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ env.IMAGE_NAME }}'."
             exit 1
           fi
 
           if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
-            echo "✅ Validation successful! Digests match perfectly for ${{ matrix.service.name }}."
+            echo "Validation successful! Digests match perfectly."
           else
-            echo "::error::Image digests do not match after promotion for image '${{ matrix.service.name }}'."
+            echo "::error::Image digests do not match after promotion for image '${{ env.IMAGE_NAME }}'."
             exit 1
           fi
 
-      - name: Wait for Deployment Rollout in Training for ${{ matrix.service.name }}
+      - name: Verify Deployment Updated to New Image
         run: |
-          echo "⏳ Waiting for deployment to rollout in ${{ matrix.service.namespace }} namespace..."
-          oc rollout status deployment/training-${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=10m || true
+          echo "Waiting for deployment image to update..."
+          PROMOTED_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
 
-  run-smoke-tests:
-    name: Run Smoke Tests
-    needs: promote-images
-    runs-on: ubuntu-latest
+          for i in {1..60}; do
+            CURRENT_IMAGE=$(oc get deployment training-${{ env.IMAGE_NAME }} -n fe7e29-test -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "")
 
-    strategy:
-      matrix:
-        service:
-          - name: screening-portal
-            namespace: fe7e29-test
-            endpoint: /health/liveness
-          - name: licensing-portal
-            namespace: fe7e29-test
-            endpoint: /health/liveness
-          - name: gdsd-portal
-            namespace: fe7e29-test
-            endpoint: /health/liveness
-          - name: dynamics-helper
-            namespace: fe7e29-test
-            endpoint: /health/liveness
+            if [[ -n "$CURRENT_IMAGE" && "$CURRENT_IMAGE" == *"$PROMOTED_DIGEST"* ]]; then
+              echo "✅ Deployment training-${{ env.IMAGE_NAME }} image updated to new digest"
+              break
+            fi
 
-    steps:
-      - name: Install OpenShift CLI
+            if [[ $i -eq 60 ]]; then
+              echo "::error::Deployment did not update after 60 seconds"
+              exit 1
+            fi
+
+            sleep 1
+          done
+
+      - name: Wait for Deployment Rollout
         run: |
-          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
-          tar -xzf openshift-client-linux.tar.gz
-          sudo mv oc /usr/local/bin/
+          echo "Waiting for training deployment rollout..."
+          oc rollout status deployment/training-${{ env.IMAGE_NAME }} -n fe7e29-test --timeout=10m || true
 
-      - name: Login to OpenShift
+      - name: Run Smoke Tests
         run: |
-          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+          echo "Running smoke tests on training environment for ${{ env.IMAGE_NAME }}..."
 
-      - name: Run Smoke Tests for ${{ matrix.service.name }}
-        run: |
-          echo "🧪 Running smoke tests on training environment for ${{ matrix.service.name }}..."
-          ROUTE=$(oc get route training-${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
-
-          if [[ -z "$ROUTE" ]]; then
-            echo "::warning::No route found for training-${{ matrix.service.name }}, skipping smoke test"
-            exit 0
-          fi
-
-          echo "Testing endpoint: https://$ROUTE${{ matrix.service.endpoint }}"
-
-          # Test the health endpoint
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$ROUTE${{ matrix.service.endpoint }} || echo "000")
-
-          if [[ "$RESPONSE" == "200" ]]; then
-            echo "✅ Smoke test passed! ${{ matrix.service.name }} is responding correctly."
+          TRAINING_ROUTE=$(oc get route training-${{ env.IMAGE_NAME }} -n fe7e29-test -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+          if [[ -n "$TRAINING_ROUTE" ]]; then
+            echo "Testing training deployment: https://$TRAINING_ROUTE/health/liveness"
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$TRAINING_ROUTE/health/liveness || echo "000")
+            if [[ "$RESPONSE" == "200" ]]; then
+              echo "✅ Training deployment smoke test passed!"
+            else
+              echo "::warning::Training deployment returned $RESPONSE"
+            fi
           else
-            echo "::warning::Smoke test returned $RESPONSE for ${{ matrix.service.name }}"
+            echo "::warning::No route found for training-${{ env.IMAGE_NAME }}, skipping smoke test"
           fi

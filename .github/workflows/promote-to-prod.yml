@@ -32,24 +32,24 @@ env:
 # --- JOBS ---------------------------------------------------------------------------
 jobs:
   promote-images:
-    name: Promote All Services to Production
+    name: Promote ${{ matrix.image_name }} to Production
     runs-on: ubuntu-latest
     # Use GitHub Environments for production protection
     environment:
       name: production
-      url: https://screening-portal-fe7e29-prod.apps.emerald.devops.gov.bc.ca
+      url: https://spd.gov.bc.ca
 
     strategy:
       matrix:
-        service:
-          - name: screening-portal
-            namespace: fe7e29-prod
-          - name: licensing-portal
-            namespace: fe7e29-prod
-          - name: gdsd-portal
-            namespace: fe7e29-prod
-          - name: dynamics-helper
-            namespace: fe7e29-prod
+        image_name: [
+          "screening-portal",
+          "licensing-portal",
+          "gdsd-portal",
+          "dynamics-helper"
+        ]
+
+    env:
+      IMAGE_NAME: ${{ matrix.image_name }}
 
     steps:
       - name: Install OpenShift CLI
@@ -62,151 +62,141 @@ jobs:
         run: |
           oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
 
-      - name: Get source digest for ${{ matrix.service.name }}
+      - name: Get source digest
         id: get_source_digest
         run: |
-          SOURCE_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          SOURCE_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
           echo "source_digest=$SOURCE_DIGEST" >> $GITHUB_OUTPUT
-          echo "Source image digest for ${{ matrix.service.name }}: $SOURCE_DIGEST"
+          echo "Source image digest for ${{ env.IMAGE_NAME }}: $SOURCE_DIGEST"
 
-      - name: Get target digest for ${{ matrix.service.name }} (for backup)
+      - name: Get target digest (for backup)
         id: get_target_digest
         run: |
-          TARGET_DIGEST=$(oc get istag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
+          TARGET_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}' 2>/dev/null || echo "")
           echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
           if [[ -n "$TARGET_DIGEST" ]]; then
-            echo "Current production image digest for ${{ matrix.service.name }}: $TARGET_DIGEST"
+            echo "Current production image digest for ${{ env.IMAGE_NAME }}: $TARGET_DIGEST"
           else
-            echo "No existing production image found for ${{ matrix.service.name }} (first deployment)"
+            echo "No existing production image found for ${{ env.IMAGE_NAME }} (first deployment)"
           fi
 
-      - name: Backup Current Production Image for ${{ matrix.service.name }} (by digest)
+      - name: Backup Current Production Image (by digest)
         if: steps.get_target_digest.outputs.target_digest != ''
         run: |
-          echo "🔄 Creating backup of current production image for ${{ matrix.service.name }}..."
+          echo "🔄 Creating backup of current production image for ${{ env.IMAGE_NAME }}..."
           echo "Backing up current '${{ env.TARGET_TAG }}' image to '${{ env.BACKUP_TAG }}' by digest..."
-          oc tag ${{ matrix.service.name }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ matrix.service.name }}:${{ env.BACKUP_TAG }} --reference
-          echo "✅ Backup successful. Production image saved as '${{ env.BACKUP_TAG }}' for ${{ matrix.service.name }}"
+          oc tag ${{ env.IMAGE_NAME }}@${{ steps.get_target_digest.outputs.target_digest }} ${{ env.IMAGE_NAME }}:${{ env.BACKUP_TAG }} --reference
+          echo "✅ Backup successful. Production image saved as '${{ env.BACKUP_TAG }}' for ${{ env.IMAGE_NAME }}"
 
-      - name: Promote source to target for ${{ matrix.service.name }} (by digest)
+      - name: Promote source to target (by digest)
         run: |
-          echo "🚀 Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ matrix.service.name }}'..."
-          oc tag ${{ matrix.service.name }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ matrix.service.name }}:${{ env.TARGET_TAG }} --reference
-          echo "✅ Promotion successful for ${{ matrix.service.name }}"
+          echo "🚀 Promoting '${{ env.SOURCE_TAG }}' to '${{ env.TARGET_TAG }}' by digest for image '${{ env.IMAGE_NAME }}'..."
+          oc tag ${{ env.IMAGE_NAME }}@${{ steps.get_source_digest.outputs.source_digest }} ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} --reference
+          echo "✅ Promotion successful for ${{ env.IMAGE_NAME }}"
 
-      - name: Validate Promotion by Comparing Image Digests for ${{ matrix.service.name }}
+      - name: Validate Promotion by Comparing Image Digests
         run: |
-          echo "🔍 Validating promotion for image '${{ matrix.service.name }}'..."
+          echo "🔍 Validating promotion for image '${{ env.IMAGE_NAME }}'..."
           sleep 5
 
-          SOURCE_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
-          TARGET_SHA=$(oc get imagestreamtag ${{ matrix.service.name }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          SOURCE_SHA=$(oc get imagestreamtag ${{ env.IMAGE_NAME }}:${{ env.SOURCE_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+          TARGET_SHA=$(oc get imagestreamtag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
 
           echo "Source Digest: $SOURCE_SHA"
           echo "Target Digest: $TARGET_SHA"
 
           if [[ -z "$SOURCE_SHA" ]]; then
-            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ matrix.service.name }}'."
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ env.IMAGE_NAME }}'."
             exit 1
           fi
 
           if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
-            echo "✅ Validation successful! Digests match perfectly for ${{ matrix.service.name }}."
+            echo "✅ Validation successful! Digests match perfectly for ${{ env.IMAGE_NAME }}."
           else
-            echo "::error::Image digests do not match after promotion for image '${{ matrix.service.name }}'."
+            echo "::error::Image digests do not match after promotion for image '${{ env.IMAGE_NAME }}'."
             exit 1
           fi
 
-      - name: Wait for Deployment Rollout in Production for ${{ matrix.service.name }}
+      - name: Verify Deployment Updated to New Image
         run: |
-          echo "⏳ Waiting for deployment to rollout in ${{ matrix.service.namespace }} namespace..."
+          echo "Waiting for deployment image to update..."
+          PROMOTED_DIGEST=$(oc get istag ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} -n ${{ env.NAMESPACE }} -o jsonpath='{.image.metadata.name}')
+
+          for i in {1..60}; do
+            # Check both prod and staging deployments
+            for deployment in "prod-${{ env.IMAGE_NAME }}" "staging-${{ env.IMAGE_NAME }}"; do
+              CURRENT_IMAGE=$(oc get deployment $deployment -n fe7e29-prod -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "")
+
+              if [[ -n "$CURRENT_IMAGE" && "$CURRENT_IMAGE" == *"$PROMOTED_DIGEST"* ]]; then
+                echo "✅ Deployment $deployment image updated to new digest"
+              fi
+            done
+
+            # Check if all deployments are updated
+            PROD_IMAGE=$(oc get deployment prod-${{ env.IMAGE_NAME }} -n fe7e29-prod -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "")
+            STAGING_IMAGE=$(oc get deployment staging-${{ env.IMAGE_NAME }} -n fe7e29-prod -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "")
+
+            if [[ "$PROD_IMAGE" == *"$PROMOTED_DIGEST"* && "$STAGING_IMAGE" == *"$PROMOTED_DIGEST"* ]]; then
+              echo "✅ All production deployments updated successfully"
+              break
+            fi
+
+            if [[ $i -eq 60 ]]; then
+              echo "::error::Deployments did not update after 60 seconds"
+              exit 1
+            fi
+
+            sleep 1
+          done
+
+      - name: Wait for Deployment Rollout in Production
+        run: |
+          echo "⏳ Waiting for deployment to rollout in fe7e29-prod namespace..."
           echo "This may take several minutes as production deployments are scaled..."
-          oc rollout status deployment/${{ matrix.service.name }} -n ${{ matrix.service.namespace }} --timeout=15m || true
+          oc rollout status deployment/prod-${{ env.IMAGE_NAME }} -n fe7e29-prod --timeout=15m || true
+          oc rollout status deployment/staging-${{ env.IMAGE_NAME }} -n fe7e29-prod --timeout=15m || true
 
-  run-smoke-tests:
-    name: Run Production Smoke Tests
-    needs: promote-images
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        service:
-          - name: screening-portal
-            namespace: fe7e29-prod
-            endpoint: /health/liveness
-          - name: licensing-portal
-            namespace: fe7e29-prod
-            endpoint: /health/liveness
-          - name: gdsd-portal
-            namespace: fe7e29-prod
-            endpoint: /health/liveness
-          - name: dynamics-helper
-            namespace: fe7e29-prod
-            endpoint: /health/liveness
-
-    steps:
-      - name: Install OpenShift CLI
+      - name: Run Production Smoke Tests
         run: |
-          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
-          tar -xzf openshift-client-linux.tar.gz
-          sudo mv oc /usr/local/bin/
+          echo "🧪 Running smoke tests on production environment for ${{ env.IMAGE_NAME }}..."
 
-      - name: Login to OpenShift
-        run: |
-          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
-
-      - name: Run Production Smoke Tests for ${{ matrix.service.name }}
-        run: |
-          echo "🧪 Running smoke tests on production environment for ${{ matrix.service.name }}..."
-          ROUTE=$(oc get route ${{ matrix.service.name }} -n ${{ matrix.service.namespace }} -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
-
-          if [[ -z "$ROUTE" ]]; then
-            echo "::error::No route found for ${{ matrix.service.name }}, cannot run smoke test"
-            exit 1
-          fi
-
-          echo "Testing endpoint: https://$ROUTE${{ matrix.service.endpoint }}"
-
-          # Test the health endpoint
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$ROUTE${{ matrix.service.endpoint }} || echo "000")
-
-          if [[ "$RESPONSE" == "200" ]]; then
-            echo "✅ Production smoke test passed! ${{ matrix.service.name }} is responding correctly."
+          # Test the 'prod' deployment
+          PROD_ROUTE=$(oc get route prod-${{ env.IMAGE_NAME }} -n fe7e29-prod -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+          if [[ -n "$PROD_ROUTE" ]]; then
+            echo "Testing prod deployment: https://$PROD_ROUTE/health/liveness"
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$PROD_ROUTE/health/liveness || echo "000")
+            if [[ "$RESPONSE" == "200" ]]; then
+              echo "✅ Production smoke test passed!"
+            else
+              echo "::error::Production smoke test failed! Expected 200, got $RESPONSE"
+              echo "::error::Consider rolling back using: oc tag ${{ env.IMAGE_NAME }}:${{ env.BACKUP_TAG }} ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
+              exit 1
+            fi
           else
-            echo "::error::Production smoke test failed! Expected 200, got $RESPONSE for ${{ matrix.service.name }}"
-            echo "::error::Consider rolling back using the backup tag: ${{ env.BACKUP_TAG }}"
+            echo "::error::No route found for prod-${{ env.IMAGE_NAME }}"
             exit 1
           fi
 
-  deployment-summary:
-    name: Deployment Summary
-    needs: [promote-images, run-smoke-tests]
-    runs-on: ubuntu-latest
-    if: success()
+          # Test the 'staging' deployment
+          STAGING_ROUTE=$(oc get route staging-${{ env.IMAGE_NAME }} -n fe7e29-prod -o jsonpath='{.spec.host}' 2>/dev/null || echo "")
+          if [[ -n "$STAGING_ROUTE" ]]; then
+            echo "Testing staging deployment: https://$STAGING_ROUTE/health/liveness"
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://$STAGING_ROUTE/health/liveness || echo "000")
+            if [[ "$RESPONSE" == "200" ]]; then
+              echo "✅ Staging smoke test passed!"
+            else
+              echo "::warning::Staging deployment returned $RESPONSE"
+            fi
+          fi
 
-    steps:
-      - name: Install OpenShift CLI
-        run: |
-          curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
-          tar -xzf openshift-client-linux.tar.gz
-          sudo mv oc /usr/local/bin/
-
-      - name: Login to OpenShift
-        run: |
-          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
-
-      - name: Display Deployment Summary
+      - name: Deployment Summary
+        if: success()
         run: |
           echo "======================================================================"
           echo "🎉 PRODUCTION DEPLOYMENT SUCCESSFUL"
           echo "======================================================================"
           echo ""
-          echo "Services Deployed:"
-          echo "  • screening-portal"
-          echo "  • licensing-portal"
-          echo "  • gdsd-portal"
-          echo "  • dynamics-helper"
-          echo ""
+          echo "Service: ${{ env.IMAGE_NAME }}"
           echo "Source Tag: ${{ env.SOURCE_TAG }}"
           echo "Target Tag: ${{ env.TARGET_TAG }}"
           echo "Backup Tag: ${{ env.BACKUP_TAG }}"
@@ -214,11 +204,8 @@ jobs:
           echo "Deployment Details:"
           echo "  • Namespace: fe7e29-prod"
           echo "  • Cluster: Emerald"
-          echo "  • Status: All services healthy"
+          echo "  • Status: Healthy"
           echo ""
-          echo "To rollback a specific service if needed, run:"
-          echo "  oc tag <service-name>:${{ env.BACKUP_TAG }} <service-name>:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
-          echo ""
-          echo "Example:"
-          echo "  oc tag screening-portal:${{ env.BACKUP_TAG }} screening-portal:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
+          echo "To rollback if needed, run:"
+          echo "  oc tag ${{ env.IMAGE_NAME }}:${{ env.BACKUP_TAG }} ${{ env.IMAGE_NAME }}:${{ env.TARGET_TAG }} --reference -n ${{ env.NAMESPACE }}"
           echo "======================================================================"
