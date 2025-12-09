@@ -40,7 +40,7 @@ spec:
         - name: destinationTag
           value: developing
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -62,7 +62,7 @@ spec:
         - name: destinationTag
           value: developing
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -84,7 +84,7 @@ spec:
         - name: destinationTag
           value: developing
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -106,7 +106,7 @@ spec:
         - name: destinationTag
           value: developing
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:

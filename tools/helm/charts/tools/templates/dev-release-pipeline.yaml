@@ -9,7 +9,7 @@ spec:
   params:
     - name: imageTag
       description: ""
-      default: "main"
+      default: "develop"
     - name: promoteScreening
       description: ""
       default: "true"
@@ -43,7 +43,7 @@ spec:
         - name: destinationTag
           value: dev
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -65,7 +65,7 @@ spec:
         - name: destinationTag
           value: dev
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -87,7 +87,7 @@ spec:
         - name: destinationTag
           value: dev
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -109,7 +109,7 @@ spec:
         - name: destinationTag
           value: dev
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
@@ -131,7 +131,7 @@ spec:
         - name: destinationTag
           value: dev
         - name: scheduled
-          value: true
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
