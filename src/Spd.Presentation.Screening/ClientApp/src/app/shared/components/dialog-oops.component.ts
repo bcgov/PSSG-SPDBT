@@ -8,8 +8,8 @@ export interface DialogOopsOptions {
 }
 
 @Component({
-    selector: 'app-spd-dialog-oops',
-    template: `
+	selector: 'app-spd-dialog-oops',
+	template: `
 		<mat-dialog-content>
 		  @if (!is400Error) {
 		    <div class="d-flex justify-content-center">
@@ -21,7 +21,12 @@ export interface DialogOopsOptions {
 		        />
 		      </div>
 		      <h2 class="mt-2">Oops! Something went wrong</h2>
-		      <p>Looks like something went wrong on our end. Please try again or contact SPD at 1-855-587-0185 (option 2).</p>
+		      <p>Looks like something went wrong on our end. Please try again or contact:</p>
+			  <ul>
+  				<li><b>CRRP - </b><a href="criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or 1-855-587-0182 (Option 2) </li>
+ 				<li><b>SSLU - </b><a href="securitylicensing@gov.bc.ca">securitylicensing@gov.bc.ca</a> or 1-855-587-0182 (Option 1) </li>
+			  </ul> 
+				
 		    }
 		
 		    @if (errorMessage) {
@@ -44,8 +49,8 @@ export interface DialogOopsOptions {
 		    </div>
 		  </mat-dialog-actions>
 		`,
-    styles: [
-        `
+	styles: [
+		`
 			h2 {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
@@ -64,14 +69,14 @@ export interface DialogOopsOptions {
 				color: var(--color-grey-dark);
 			}
 		`,
-    ],
-    standalone: false
+	],
+	standalone: false
 })
 export class DialogOopsComponent implements OnInit {
 	errorMessage: string | null | undefined = null;
 	is400Error!: boolean;
 
-	constructor(private configService: ConfigService, @Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
+	constructor(private configService: ConfigService, @Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) { }
 
 	ngOnInit(): void {
 		this.is400Error = this.data.is400Error ?? false;
