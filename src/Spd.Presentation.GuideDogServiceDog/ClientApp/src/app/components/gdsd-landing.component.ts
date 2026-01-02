@@ -164,6 +164,9 @@ import { take, tap } from 'rxjs';
 									>
 										Continue without a BC Services Card
 									</a>
+									<div style="margin-top: 12px;">
+										<p>Only select this option if you are an accredited school applying on behalf of a dog trainer.</p>
+									</div>	
 								</div>
 
 								<div class="col-xl-3 col-lg-4 col-md-12 col-12">&nbsp;</div>

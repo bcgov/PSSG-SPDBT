@@ -10,9 +10,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 					<p>
 						Please note: The registrar will <b>not</b> issue or renew a dog trainer certificate unless the individual
 						identified in the application trains dogs on behalf of an accredited training school for the purpose of the
-						dogs becoming guide dogs or service dogs. Dog trainer applications are submitted by accredited training
-						schools.
+						dogs becoming guide dogs or service dogs. <br>
+						<b>Dog trainer applications are submitted by accredited training schools.</b>
 					</p>
+
 					<div class="fw-semibold fs-6 mb-2">For all applicants:</div>
 					<ul>
 						<li>
