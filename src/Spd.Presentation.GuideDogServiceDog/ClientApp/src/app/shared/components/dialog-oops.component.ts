@@ -20,8 +20,12 @@ export interface DialogOopsOptions {
 		        alt="Something went wrong"
 		        />
 		      </div>
-		      <h2 class="mt-2">Oops! Something went wrong</h2>
-		      <p>Looks like something went wrong on our end. Please try again or contact SPD at 1-855-587-0185 (option 2).</p>
+		       <h2 class="mt-2">Oops! Something went wrong</h2>
+		      <p>Looks like something went wrong on our end. Please try again or contact:</p>
+			  <ul>
+  				<li><b>CRRP - </b><a href="criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or 1-855-587-0182 (Option 2) </li>
+ 				<li><b>SSLU - </b><a href="securitylicensing@gov.bc.ca">securitylicensing@gov.bc.ca</a> or 1-855-587-0182 (Option 1) </li>
+			  </ul> 
 		    }
 		
 		    @if (errorMessage) {
