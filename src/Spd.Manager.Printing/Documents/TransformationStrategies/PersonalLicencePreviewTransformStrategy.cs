@@ -93,6 +93,9 @@ internal class PersonalLicencePreviewTransformStrategy(
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
         await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
 
+        var contact = await contactRepository.GetAsync((Guid)lic.LicenceHolderId, ct);
+        mapper.Map(contact, preview);
+
         if (lic.ServiceTypeCode == ServiceTypeEnum.GDSDTeamCertification)
         {
             DogTeamResp team = await dogTeamRepository.GetAsync(lic.GDSDTeamId.Value, ct);
