@@ -123,6 +123,7 @@ namespace Spd.Resource.Repository.Licence
         Inactive,
         Expired,
         Suspended,
-        Preview
+        Preview, 
+        Cancelled
     }
 }

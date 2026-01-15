@@ -78,7 +78,7 @@ internal class LicenceRepository : ILicenceRepository
             lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
         if (qry.IncludeInactive)
-            lics = lics.Where(d => d.statuscode != (int)LicenceStatusOptionSet.Inactive && d.statuscode != (int)LicenceStatusOptionSet.Suspended && d.statuscode != (int)LicenceStatusOptionSet.Cancelled);
+            lics = lics.Where(d => d.statuscode != (int)LicenceStatusOptionSet.Inactive);
 
         if (qry.LicenceId != null)
         {

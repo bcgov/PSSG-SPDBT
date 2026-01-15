@@ -83,7 +83,8 @@ internal class LicenceManager :
             return null;
         }
         LicenceResp? response = qryResponse.Items
-            .Where(i => i.LicenceStatusCode == LicenceStatusEnum.Active || i.LicenceStatusCode == LicenceStatusEnum.Expired)
+            .Where(i => i.LicenceStatusCode == LicenceStatusEnum.Active || i.LicenceStatusCode == LicenceStatusEnum.Expired
+             || i.LicenceStatusCode == LicenceStatusEnum.Suspended || i.LicenceStatusCode == LicenceStatusEnum.Cancelled)
             .OrderByDescending(i => i.CreatedOn)
             .FirstOrDefault();
         if (response == null) { return null; }
