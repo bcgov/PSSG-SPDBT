@@ -180,7 +180,8 @@ namespace Spd.Manager.Shared
         Inactive,
         Expired,
         Suspended,
-        Preview
+        Preview,
+        Cancelled
     }
 
     public enum PortalUserServiceCategoryCode
