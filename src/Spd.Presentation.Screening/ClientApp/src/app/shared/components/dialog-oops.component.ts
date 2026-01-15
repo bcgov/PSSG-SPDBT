@@ -23,8 +23,8 @@ export interface DialogOopsOptions {
 		      <h2 class="mt-2">Oops! Something went wrong</h2>
 		      <p>Looks like something went wrong on our end. Please try again or contact:</p>
 			  <ul>
-  				<li><b>CRRP - </b><a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or 1-855-587-0182 (Option 2) </li>
- 				<li><b>SSLU - </b><a href="mailto:securitylicensing@gov.bc.ca">securitylicensing@gov.bc.ca</a> or 1-855-587-0182 (Option 1) </li>
+  				<li><b>CRRP - </b><a href="mailto:criminalrecords&#64;gov.bc.ca">criminalrecords@gov.bc.ca</a> or 1-855-587-0182 (Option 2) </li>
+ 				<li><b>SSLU - </b><a href="mailto:securitylicensing&#64;gov.bc.ca">securitylicensing@gov.bc.ca</a> or 1-855-587-0182 (Option 1) </li>
 			  </ul> 
 				
 		    }
