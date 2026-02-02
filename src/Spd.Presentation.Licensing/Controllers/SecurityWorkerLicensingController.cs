@@ -213,7 +213,7 @@ namespace Spd.Presentation.Licensing.Controllers
             WorkerLicenceCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                WorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos, jsonRequest.DocumentRelatedInfos);
                 response = await _mediator.Send(command, ct);
             }
 

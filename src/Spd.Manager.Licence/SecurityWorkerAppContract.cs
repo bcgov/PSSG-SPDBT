@@ -21,7 +21,7 @@ public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUp
 
 public record WorkerLicenceAppNewCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos, IEnumerable<DocumentRelatedInfo> DocumentRelatedInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record WorkerLicenceAppReplaceCommand(

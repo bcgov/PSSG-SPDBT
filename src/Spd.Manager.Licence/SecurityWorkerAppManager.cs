@@ -510,6 +510,7 @@ internal class SecurityWorkerAppManager :
     {
         WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
+        
         if (request.IsPoliceOrPeaceOfficer == true &&
             !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
@@ -548,11 +549,30 @@ internal class SecurityWorkerAppManager :
         {
             if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
             {
-                if (!fileInfos.Any(f => Mappings.GetDocumentType2Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+                // Standard match: any uploaded file that maps to the DocumentTypeEnum for this category
+                bool hasMatchingDocument = fileInfos.Any(f =>
+                    Mappings.GetDocumentType2Enum(f.LicenceDocumentTypeCode) ==
+                    Enum.Parse<DocumentTypeEnum>(code.ToString()));
+
+                // Special case: SecurityGuard can be satisfied by the "no certificate" document code
+                if (!hasMatchingDocument && code == WorkerCategoryTypeCode.SecurityGuard)
+                {
+                    hasMatchingDocument = cmd.DocumentRelatedInfos.Any(f =>
+                        f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingNoCertificate);
+                }
+
+                if (!hasMatchingDocument)
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"Missing file for {code}");
                 }
             }
+            //if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+            //{
+            //    if (!fileInfos.Any(f => Mappings.GetDocumentType2Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+            //    {
+            //        throw new ApiException(HttpStatusCode.BadRequest, $"Missing file for {code}");
+            //    }
+            //}
         }
     }
 
