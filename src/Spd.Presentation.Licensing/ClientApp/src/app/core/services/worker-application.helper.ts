@@ -21,6 +21,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CommonApplicationHelper } from './common-application.helper';
+import { D } from 'node_modules/@angular/cdk/bidi-module.d-IN1Vp56w';
 
 export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	securityGuardRequirementCodes = SecurityGuardRequirementCode;
@@ -1077,6 +1078,15 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		restraintsAuthorizationData: any
 	): Array<Document> {
 		const documents: Array<Document> = [];
+
+		if(categorySecurityGuardData.requirementCode === LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingNoCertificate) {
+			// Add document record for BasicSecurityTrainingNoCertificate (no actual file required)
+			documents.push({
+				documentIdNumber: '',
+				expiryDate: new Date().toISOString().split('T')[0],
+				licenceDocumentTypeCode: categorySecurityGuardData.requirementCode,
+			});
+		}
 
 		categorySecurityGuardData.attachments?.forEach((doc: any) => {
 			documents.push({
