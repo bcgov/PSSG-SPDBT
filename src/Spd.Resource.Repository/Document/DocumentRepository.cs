@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using System.Collections.Immutable;
@@ -201,7 +202,7 @@ internal class DocumentRepository : IDocumentRepository
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_account), account);
         }
 
-        await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
+        await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket, cmd.OrgRegistrationId);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = cmd.ApplicationId;
         return _mapper.Map<DocumentResp>(documenturl);
@@ -308,82 +309,72 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false)
+    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false, Guid? OrgRegistrationId = null)
     {
-        if (applicationId == null && contactId == null) return;
-        if (docUrlId == null) return;
 
+        if ((applicationId == null && contactId == null && OrgRegistrationId == null) || docUrlId == null) return;
+
+        // choose folder 
+        string folder = applicationId != null
+            ? $"spd_application/{applicationId}"
+            : contactId != null
+                ? $"contact/{contactId}"
+                : $"spd_orgregistration/{OrgRegistrationId}";
+
+        // single FileTag 
+        FileTag fileTag = tag == null
+            ? new FileTag { Tags = new List<Tag> { new("file-classification", "Unclassified") } }
+            : new FileTag { Tags = new List<Tag> { new("file-classification", "Unclassified"), new("file-tag", tag.bcgov_name) } };
+
+        // pick storage service once
+        IFileStorageService storageService = toTransientBucket
+            ? (IFileStorageService)_transientFileStorageService
+            : (IFileStorageService)_fileStorageService;
+
+        await UploadFileContentAsync(storageService, docUrlId.Value, folder, fileTag, tempFile, ct);
+
+    }
+
+    private async Task UploadFileContentAsync(IFileStorageService storageService, Guid docUrlId, string folder, FileTag fileTag, SpdTempFile tempFile, CancellationToken ct)
+    {
         if (tempFile.TempFileKey != null)
         {
-            byte[]? fileContent = await _tempFileService.HandleQuery(
-                new GetTempFileQuery(tempFile.TempFileKey), ct);
+            byte[]? fileContent = await _tempFileService.HandleQuery(new GetTempFileQuery(tempFile.TempFileKey), ct);
             if (fileContent == null) return;
 
             _logger.LogInformation("Read File {FileName} from cache, size {FileSize} bytes", tempFile.FileName, fileContent.Length);
-            Utilities.FileStorage.File file = new()
+
+            var file = new Utilities.FileStorage.File
             {
                 Content = fileContent,
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };
-            FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
-                new FileTag()
-                {
-                    Tags = new List<Tag>
-                    {
-                    new("file-classification", "Unclassified"),
-                    new("file-tag", tag.bcgov_name)
-                    }
-                };
 
-            string folder = applicationId == null ? $"contact/{contactId}" : $"spd_application/{applicationId}";
-            UploadFileCommand uploadFileCmd = new(
-                        Key: ((Guid)docUrlId).ToString(),
-                        Folder: folder,
-                        File: file,
-                        FileTag: fileTag);
-            if (toTransientBucket)
-            {
-                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
-            else
-            {
-                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
+            var uploadFileCmd = new UploadFileCommand(
+                Key: docUrlId.ToString(),
+                Folder: folder,
+                File: file,
+                FileTag: fileTag);
+
+            await storageService.HandleCommand(uploadFileCmd, ct);
         }
         else
         {
-            Utilities.FileStorage.FileContent fileStream = new()
+            var fileStream = new Utilities.FileStorage.FileContent
             {
                 FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };
-            FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
-                new FileTag()
-                {
-                    Tags = new List<Tag>
-                    {
-                    new("file-classification", "Unclassified"),
-                    new("file-tag", tag.bcgov_name)
-                    }
-                };
 
-            UploadFileStreamCommand uploadFileCmd = new(
-                Key: ((Guid)docUrlId).ToString(),
-                Folder: $"spd_application/{applicationId}",
+            var uploadStreamCmd = new UploadFileStreamCommand(
+                Key: docUrlId.ToString(),
+                Folder: folder,
                 FileStream: fileStream,
                 FileTag: fileTag);
-            if (toTransientBucket)
-            {
-                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
-            else
-            {
-                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
+
+            await storageService.HandleCommand(uploadStreamCmd, ct);
         }
     }
 
