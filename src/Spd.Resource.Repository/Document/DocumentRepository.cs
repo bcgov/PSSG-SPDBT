@@ -311,84 +311,70 @@ internal class DocumentRepository : IDocumentRepository
 
     private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false, Guid? OrgRegistrationId = null)
     {
-        if (applicationId == null && contactId == null && OrgRegistrationId == null) return;
-        if (docUrlId == null) return;
 
+        if ((applicationId == null && contactId == null && OrgRegistrationId == null) || docUrlId == null) return;
+
+        // choose folder 
+        string folder = applicationId != null
+            ? $"spd_application/{applicationId}"
+            : contactId != null
+                ? $"contact/{contactId}"
+                : $"spd_orgregistration/{OrgRegistrationId}";
+
+        // single FileTag 
+        FileTag fileTag = tag == null
+            ? new FileTag { Tags = new List<Tag> { new("file-classification", "Unclassified") } }
+            : new FileTag { Tags = new List<Tag> { new("file-classification", "Unclassified"), new("file-tag", tag.bcgov_name) } };
+
+        // pick storage service once
+        IFileStorageService storageService = toTransientBucket
+            ? (IFileStorageService)_transientFileStorageService
+            : (IFileStorageService)_fileStorageService;
+
+        await UploadFileContentAsync(storageService, docUrlId.Value, folder, fileTag, tempFile, ct);
+
+    }
+
+    private async Task UploadFileContentAsync(IFileStorageService storageService, Guid docUrlId, string folder, FileTag fileTag, SpdTempFile tempFile, CancellationToken ct)
+    {
         if (tempFile.TempFileKey != null)
         {
-            byte[]? fileContent = await _tempFileService.HandleQuery(
-                new GetTempFileQuery(tempFile.TempFileKey), ct);
+            byte[]? fileContent = await _tempFileService.HandleQuery(new GetTempFileQuery(tempFile.TempFileKey), ct);
             if (fileContent == null) return;
 
             _logger.LogInformation("Read File {FileName} from cache, size {FileSize} bytes", tempFile.FileName, fileContent.Length);
-            Utilities.FileStorage.File file = new()
+
+            var file = new Utilities.FileStorage.File
             {
                 Content = fileContent,
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };
-            FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
-                new FileTag()
-                {
-                    Tags = new List<Tag>
-                    {
-                    new("file-classification", "Unclassified"),
-                    new("file-tag", tag.bcgov_name)
-                    }
-                };
 
-            string folder;
-            if (applicationId != null) folder = $"spd_application/{applicationId}";
-            else if (contactId != null) folder = $"contact/{contactId}";
-            else folder = $"spd_orgregistration/{OrgRegistrationId}";
+            var uploadFileCmd = new UploadFileCommand(
+                Key: docUrlId.ToString(),
+                Folder: folder,
+                File: file,
+                FileTag: fileTag);
 
-            UploadFileCommand uploadFileCmd = new(
-                        Key: ((Guid)docUrlId).ToString(),
-                        Folder: folder,
-                        File: file,
-                        FileTag: fileTag);
-            if (toTransientBucket)
-            {
-                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
-            else
-            {
-                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
+            await storageService.HandleCommand(uploadFileCmd, ct);
         }
         else
         {
-            Utilities.FileStorage.FileContent fileStream = new()
+            var fileStream = new Utilities.FileStorage.FileContent
             {
                 FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };
-            FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
-                new FileTag()
-                {
-                    Tags = new List<Tag>
-                    {
-                    new("file-classification", "Unclassified"),
-                    new("file-tag", tag.bcgov_name)
-                    }
-                };
 
-            UploadFileStreamCommand uploadFileCmd = new(
-                Key: ((Guid)docUrlId).ToString(),
-                Folder: $"spd_application/{applicationId}",
+            var uploadStreamCmd = new UploadFileStreamCommand(
+                Key: docUrlId.ToString(),
+                Folder: folder,
                 FileStream: fileStream,
                 FileTag: fileTag);
-            if (toTransientBucket)
-            {
-                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
-            else
-            {
-                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
-            }
+
+            await storageService.HandleCommand(uploadStreamCmd, ct);
         }
     }
 
