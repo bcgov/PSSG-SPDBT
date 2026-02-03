@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using System.Collections.Immutable;
@@ -201,7 +202,7 @@ internal class DocumentRepository : IDocumentRepository
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_account), account);
         }
 
-        await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
+        await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket, cmd.OrgRegistrationId);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = cmd.ApplicationId;
         return _mapper.Map<DocumentResp>(documenturl);
@@ -308,9 +309,9 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false)
+    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false, Guid? OrgRegistrationId = null)
     {
-        if (applicationId == null && contactId == null) return;
+        if (applicationId == null && contactId == null && OrgRegistrationId == null) return;
         if (docUrlId == null) return;
 
         if (tempFile.TempFileKey != null)
@@ -337,7 +338,11 @@ internal class DocumentRepository : IDocumentRepository
                     }
                 };
 
-            string folder = applicationId == null ? $"contact/{contactId}" : $"spd_application/{applicationId}";
+            string folder;
+            if (applicationId != null) folder = $"spd_application/{applicationId}";
+            else if (contactId != null) folder = $"contact/{contactId}";
+            else folder = $"spd_orgregistration/{OrgRegistrationId}";
+
             UploadFileCommand uploadFileCmd = new(
                         Key: ((Guid)docUrlId).ToString(),
                         Folder: folder,
