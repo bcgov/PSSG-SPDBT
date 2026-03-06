@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
 						<div class="organization-problem">
 							If none of these descriptions apply to your organization, please refer to
 							<a
-								href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/employer-organizations"
+								href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/organizations/criminal-records-review-act"
 								target="_blank"
 							>
 								our resources
