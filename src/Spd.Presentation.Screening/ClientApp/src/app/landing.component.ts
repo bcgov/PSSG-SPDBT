@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CrrpRoutes } from './modules/crrp-portal/crrp-routes';
-import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routes';
 import { PssoRoutes } from './modules/psso-portal/psso-routes';
 
 @Component({
