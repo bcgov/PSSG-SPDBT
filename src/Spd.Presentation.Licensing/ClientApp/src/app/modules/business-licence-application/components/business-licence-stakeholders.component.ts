@@ -38,7 +38,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 								</li>
 								<li class="mb-2">
 									Your business needs at least one person in B.C. with a valid security licence for each licence category. 
-									If none of your controlling members have the required licence, and <b>one</b> employee who does.
+									If none of your controlling members have the required licence, add <b>one</b> employee who does.
 								<li>
 									If the licence holders, controlling members, or managers associated with your business change during
 									the business licence term, update the information here.
