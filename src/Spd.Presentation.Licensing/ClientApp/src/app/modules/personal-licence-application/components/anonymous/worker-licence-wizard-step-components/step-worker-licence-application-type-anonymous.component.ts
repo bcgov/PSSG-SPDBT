@@ -21,8 +21,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Apply for a new licence if you've never held this type of licence, or if your existing licence has
-										expired.
+										If your licence has expired or you have never held a licence.
 									</app-alert>
 								</div>
 							</div>
@@ -35,7 +34,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										<div>Renew your current licence within 90 days of the expiry date.</div>
+										<div>Renew your current license up to 90 days before the expire date.</div>
 										<div class="mt-2">
 											Security Worker applicants renewing without using their BC Services Card account
 											<strong>must have their fingerprints taken again</strong> and submit
@@ -52,7 +51,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 									</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
-									<app-alert type="info" icon=""> If you’ve lost your licence, request a replacement card. </app-alert>
+									<app-alert type="info" icon=""> Request a replacement card. </app-alert>
 								</div>
 							</div>
 							<mat-divider class="mb-3"></mat-divider>
@@ -62,8 +61,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Update your contact details, legal name, report new criminal charges or convictions, and more. Note
-										that some updates may be subject to a processing fee.
+										Update your contact information, legal name, licensing category, add restraints (AST), report new criminal charges or convictions, and submit other changes. Please note that some updates may require a processing fee. 
 									</app-alert>
 								</div>
 							</div>
@@ -95,7 +93,7 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnIni
 		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: CommonApplicationService
-	) {}
+	) { }
 
 	ngOnInit() {
 		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityWorkerLicence);
