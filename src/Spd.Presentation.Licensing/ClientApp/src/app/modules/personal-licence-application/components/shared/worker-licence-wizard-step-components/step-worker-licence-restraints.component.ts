@@ -12,7 +12,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-step-worker-licence-restraints',
 	template: `
 		<app-step-section
-			heading="Are you requesting authorization to use restraints (such has handcuffs)?"
+			heading="Are you requesting authorization to use restraints (such as handcuffs)?"
 			[subheading]="subtitle"
 		>
 			<form [formGroup]="form" novalidate>

@@ -221,7 +221,7 @@ export const LicenceTermTypes: SelectOptions[] = [
 
 export const RestraintDocumentTypes: SelectOptions[] = [
 	{
-		desc: 'Advanced security training (AST) certificate',
+		desc: 'Advanced Security Training Certificate issued by the Justice Institute of British Columbia (JIBC) prior to December 15, 2025 (attach your certificate)',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
 	},
 	{
