@@ -21,7 +21,6 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CommonApplicationHelper } from './common-application.helper';
-import { D } from 'node_modules/@angular/cdk/bidi-module.d-IN1Vp56w';
 
 export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	securityGuardRequirementCodes = SecurityGuardRequirementCode;
