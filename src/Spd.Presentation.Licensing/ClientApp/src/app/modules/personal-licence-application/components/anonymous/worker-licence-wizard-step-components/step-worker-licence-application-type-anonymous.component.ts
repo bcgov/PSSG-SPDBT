@@ -61,7 +61,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
-										Update your contact information, legal name, licensing category, add restraints (AST), report new criminal charges or convictions, and submit other changes. Please note that some updates may require a processing fee. 
+										Update your contact information, legal name, licensing category, add restraints (AST), report new criminal charges or convictions, and submit other changes. Please note that some updates may require a processing fee.
 									</app-alert>
 								</div>
 							</div>
