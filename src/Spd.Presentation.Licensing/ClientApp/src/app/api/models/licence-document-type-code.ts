@@ -31,6 +31,7 @@ export enum LicenceDocumentTypeCode {
   CategorySecurityGuardBasicSecurityTrainingCourseEquivalent = 'CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent',
   CategorySecurityGuardDogCertificate = 'CategorySecurityGuard_DogCertificate',
   CategorySecurityGuardAstCertificate = 'CategorySecurityGuard_ASTCertificate',
+  CategorySecurityGuardAstNoCertificate = 'CategorySecurityGuard_ASTNoCertificate',
   CategorySecurityGuardUseForceEmployerLetter = 'CategorySecurityGuard_UseForceEmployerLetter',
   CategorySecurityGuardUseForceEmployerLetterAstEquivalent = 'CategorySecurityGuard_UseForceEmployerLetterASTEquivalent',
   CertificateOfIndianStatusAdditional = 'CertificateOfIndianStatusAdditional',

@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode, RestraintDocumentTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -58,23 +58,25 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							) {
 								<mat-error class="mat-option-error">This is required</mat-error>
 							}
-							<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
-							<div class="my-2">
-								<app-file-upload
-									(fileUploaded)="onFileUploaded($event)"
-									(fileRemoved)="onFileRemoved()"
-									[control]="attachments"
-									[maxNumberOfFiles]="10"
-									[files]="attachments.value"
-								></app-file-upload>
-								@if (
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								) {
-									<mat-error class="mat-option-error">This is required</mat-error>
-								}
-							</div>
+							@if (isProofOfQualificationUploadRequired) {
+								<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
+								<div class="my-2">
+									<app-file-upload
+										(fileUploaded)="onFileUploaded($event)"
+										(fileRemoved)="onFileRemoved()"
+										[control]="attachments"
+										[maxNumberOfFiles]="10"
+										[files]="attachments.value"
+									></app-file-upload>
+									@if (
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
+								</div>
+							}
 						</div>
 					</div>
 				}
@@ -89,6 +91,7 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	subtitle = '';
 
 	booleanTypeCodes = BooleanTypeCode;
+	restraintDocumentTypeCodes = RestraintDocumentTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
 	form: FormGroup = this.workerApplicationService.restraintsAuthorizationFormGroup;
@@ -145,6 +148,13 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isProofOfQualificationUploadRequired(): boolean {
+		return (
+			this.carryAndUseRestraints.value === this.booleanTypeCodes.Yes &&
+			this.carryAndUseRestraintsDocument.value !==
+				this.restraintDocumentTypeCodes.CategorySecurityGuard_ASTNoCertificate
+		);
 	}
 	get isRenewalOrUpdate(): boolean {
 		return (

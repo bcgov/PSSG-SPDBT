@@ -39,6 +39,7 @@ public enum LicenceDocumentTypeCode
     CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
     CategorySecurityGuard_DogCertificate,
     CategorySecurityGuard_ASTCertificate,
+    CategorySecurityGuard_ASTNoCertificate,
     CategorySecurityGuard_UseForceEmployerLetter,
     CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
     CertificateOfIndianStatusAdditional,
