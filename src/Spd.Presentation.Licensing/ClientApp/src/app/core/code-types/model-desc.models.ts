@@ -143,6 +143,7 @@ type RestraintDocumentTypeCodeSubset = Extract<
 	LicenceDocumentTypeCode,
 	| LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate
 	| LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter
+	| LicenceDocumentTypeCode.CategorySecurityGuardAstNoCertificate
 	| LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent
 >;
 export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, string> = {
@@ -150,6 +151,8 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 		LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate,
 	[LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter]:
 		LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter,
+	[LicenceDocumentTypeCode.CategorySecurityGuardAstNoCertificate]:
+		LicenceDocumentTypeCode.CategorySecurityGuardAstNoCertificate,
 	[LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent]:
 		LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent,
 };
@@ -232,6 +235,10 @@ export const RestraintDocumentTypes: SelectOptions[] = [
 		desc: 'Equivalent training as approved by the registrar',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
 	},
+	{
+		desc: 'Completion of the Advanced Security Training course through the JIBC after December 15, 2025 (certificate no longer required)',	
+		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTNoCertificate,
+	}
 ];
 
 export const BooleanTypes: SelectOptions[] = [

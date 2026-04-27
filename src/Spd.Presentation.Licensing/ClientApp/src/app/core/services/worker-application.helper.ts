@@ -16,7 +16,12 @@ import {
 } from '@app/api/models';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
-import { BooleanTypeCode, SecurityGuardRequirementCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import {
+	BooleanTypeCode,
+	RestraintDocumentTypeCode,
+	SecurityGuardRequirementCode,
+	SelectOptions,
+} from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -24,6 +29,7 @@ import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	securityGuardRequirementCodes = SecurityGuardRequirementCode;
+	restraintDocumentTypeCodes = RestraintDocumentTypeCode;
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
@@ -208,7 +214,13 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes
+					(form) => {
+						return (
+							form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes &&
+							form.get('carryAndUseRestraintsDocument')?.value !=
+								this.restraintDocumentTypeCodes.CategorySecurityGuard_ASTNoCertificate
+						);
+					}
 				),
 			],
 		}
