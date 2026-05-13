@@ -17,17 +17,7 @@ import { take, tap } from 'rxjs';
 	template: `
 		<app-container>
 			<app-step-section>
-				<!-- SPDBT-4559 Temporary Notification Banner on GDSD Portal -->
-				@if (bannerMessage) {
-					<div class="row my-sm-0 my-md-2">
-						<div class="col-xxl-8 col-xl-10 col-lg-12 mx-auto">
-							<app-alert type="warning" icon="warning">
-								{{ bannerMessage }}
-							</app-alert>
-						</div>
-					</div>
-				}
-
+				
 				<app-step-title heading="Log in to manage your guide dog and service dog certification"></app-step-title>
 
 				<div class="row">
