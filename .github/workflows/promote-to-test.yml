@@ -1,0 +1,152 @@
+# ======================================================================================
+#  Last Updated: 2026-05-15
+#
+#  Description:
+#  Promotes GHCR images from the ':dev' tag to the ':test' tag by re-tagging them
+#  within GHCR. Uses `docker buildx imagetools create` so the promotion is
+#  server-side and digest-preserving — the ':test' tag points at the exact same
+#  image manifest as ':dev'.
+#
+#  Before each promotion the current ':test' tag is preserved as ':test-backup'
+#  (also digest-preserving) so the previous image can be restored by re-tagging the
+#  backup back to ':test'.
+#
+#  OpenShift consumes the resulting GHCR ':test' tag directly and is configured
+#  separately by the platform team.
+#
+# ======================================================================================
+
+name: Promote all - Dev to Test
+
+# --- TRIGGERS -----------------------------------------------------------------------
+on:
+  # This workflow is triggered manually, requiring explicit user action.
+  workflow_dispatch:
+    inputs:
+      promoteScreening:
+        description: "Promote screening-portal"
+        type: boolean
+        default: true
+      promoteLicensing:
+        description: "Promote licensing-portal"
+        type: boolean
+        default: true
+      promoteDynamicsHelper:
+        description: "Promote dynamics-helper"
+        type: boolean
+        default: true
+      promoteGDSD:
+        description: "Promote gdsd-portal"
+        type: boolean
+        default: true
+
+# --- ENVIRONMENT VARIABLES (Preserving original structure) -------------------------
+env:
+  REGISTRY: ghcr.io
+  SOURCE_TAG: "dev"
+  TARGET_TAG: "test"
+  BACKUP_TAG: "test-backup"
+
+# --- JOBS ---------------------------------------------------------------------------
+jobs:
+  promote-images:
+    name: Promote ${{ matrix.image_name }} to Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: Screening
+            image_name: bcgov/pssg-spdbt/screening-portal
+          - key: Licensing
+            image_name: bcgov/pssg-spdbt/licensing-portal
+          - key: DynamicsHelper
+            image_name: bcgov/pssg-spdbt/dynamics-helper
+          - key: GDSD
+            image_name: bcgov/pssg-spdbt/gdsd-portal
+
+    env:
+      IMAGE: ${{ matrix.image_name }}
+
+    steps:
+      - name: Evaluate per-component toggle
+        id: gate
+        run: |
+          case "${{ matrix.key }}" in
+            Screening)      ENABLED="${{ github.event.inputs.promoteScreening }}" ;;
+            Licensing)      ENABLED="${{ github.event.inputs.promoteLicensing }}" ;;
+            DynamicsHelper) ENABLED="${{ github.event.inputs.promoteDynamicsHelper }}" ;;
+            GDSD)           ENABLED="${{ github.event.inputs.promoteGDSD }}" ;;
+          esac
+          echo "enabled=$ENABLED" >> $GITHUB_OUTPUT
+          echo "Promotion enabled for ${{ matrix.key }}: $ENABLED"
+
+      - name: Set up Docker Buildx
+        if: steps.gate.outputs.enabled == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        if: steps.gate.outputs.enabled == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Capture current target digest (for backup)
+        if: steps.gate.outputs.enabled == 'true'
+        id: get_target_digest
+        run: |
+          TARGET_DIGEST=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+          echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
+          echo "Current '${{ env.TARGET_TAG }}' digest: ${TARGET_DIGEST:-<none>}"
+
+      - name: Backup current target image (by digest)
+        if: steps.gate.outputs.enabled == 'true' && steps.get_target_digest.outputs.target_digest != ''
+        run: |
+          echo "Backing up '${{ env.TARGET_TAG }}' to '${{ env.BACKUP_TAG }}' by digest..."
+          docker buildx imagetools create \
+            --tag "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.BACKUP_TAG }}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}@${{ steps.get_target_digest.outputs.target_digest }}"
+          echo "Backup successful."
+
+      - name: Promote source to target
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          echo "Promoting '${{ env.IMAGE }}:${{ env.SOURCE_TAG }}' to '${{ env.IMAGE }}:${{ env.TARGET_TAG }}'..."
+          docker buildx imagetools create \
+            --tag "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.SOURCE_TAG }}"
+          echo "Promotion successful."
+
+      - name: Validate Promotion by Comparing Image Digests
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          echo "Validating promotion for image '${{ env.IMAGE }}'..."
+
+          SOURCE_SHA=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.SOURCE_TAG }}" \
+            --format '{{.Manifest.Digest}}')
+          TARGET_SHA=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            --format '{{.Manifest.Digest}}')
+
+          echo "Source Digest: $SOURCE_SHA"
+          echo "Target Digest: $TARGET_SHA"
+
+          if [[ -z "$SOURCE_SHA" ]]; then
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ env.IMAGE }}'."
+            exit 1
+          fi
+
+          if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
+            echo "Validation successful! Digests match perfectly."
+          else
+            echo "::error::Image digests do not match after promotion for image '${{ env.IMAGE }}'."
+            exit 1
+          fi

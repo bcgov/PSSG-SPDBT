@@ -2,31 +2,27 @@
 #  Last Updated: 2026-05-15
 #
 #  Description:
-#  Promotes GHCR images by re-tagging them within GHCR. Replaces the legacy Tekton
-#  'dev-release-pipeline'. Uses `docker buildx imagetools create` so the promotion is
-#  server-side and digest-preserving — the destination tag points at the exact same
-#  image manifest as the source.
+#  Promotes GHCR images from the ':test' tag to the ':prod' tag by re-tagging them
+#  within GHCR. Uses `docker buildx imagetools create` so the promotion is
+#  server-side and digest-preserving — the ':prod' tag points at the exact same
+#  image manifest as ':test'.
 #
-#  Before each promotion the current ':dev' tag is preserved as ':dev-backup' (also
-#  digest-preserving) so the previous image can be restored by re-tagging the backup
-#  back to ':dev'.
+#  Before each promotion the current ':prod' tag is preserved as ':prod-backup'
+#  (also digest-preserving) so the previous image can be restored by re-tagging the
+#  backup back to ':prod'.
 #
-#  OpenShift consumes the resulting GHCR tags (':dev', ':test', ':prod') directly and
-#  is configured separately by the platform team.
+#  OpenShift consumes the resulting GHCR ':prod' tag directly and is configured
+#  separately by the platform team.
 #
 # ======================================================================================
 
-name: Promote all - Source to Dev
+name: Promote all - Test to Prod
 
 # --- TRIGGERS -----------------------------------------------------------------------
 on:
   # This workflow is triggered manually, requiring explicit user action.
   workflow_dispatch:
     inputs:
-      imageTag:
-        description: "Source tag to promote (e.g., develop, or a 7-char commit SHA)"
-        required: true
-        default: "develop"
       promoteScreening:
         description: "Promote screening-portal"
         type: boolean
@@ -39,10 +35,6 @@ on:
         description: "Promote dynamics-helper"
         type: boolean
         default: true
-      promoteJobScheduler:
-        description: "Promote jag-jobscheduler"
-        type: boolean
-        default: true
       promoteGDSD:
         description: "Promote gdsd-portal"
         type: boolean
@@ -51,14 +43,14 @@ on:
 # --- ENVIRONMENT VARIABLES (Preserving original structure) -------------------------
 env:
   REGISTRY: ghcr.io
-  SOURCE_TAG: ${{ github.event.inputs.imageTag }}
-  TARGET_TAG: "dev"
-  BACKUP_TAG: "dev-backup"
+  SOURCE_TAG: "test"
+  TARGET_TAG: "prod"
+  BACKUP_TAG: "prod-backup"
 
 # --- JOBS ---------------------------------------------------------------------------
 jobs:
   promote-images:
-    name: Promote ${{ matrix.image_name }} to Dev
+    name: Promote ${{ matrix.image_name }} to Prod
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -73,11 +65,6 @@ jobs:
             image_name: bcgov/pssg-spdbt/licensing-portal
           - key: DynamicsHelper
             image_name: bcgov/pssg-spdbt/dynamics-helper
-          # NOTE: jag-jobscheduler lives under bcgov/, not bcgov/pssg-spdbt/.
-          # If the default GITHUB_TOKEN lacks write access to the cross-repo
-          # package, grant this repo write access in the package settings.
-          - key: JobScheduler
-            image_name: bcgov/jag-jobscheduler
           - key: GDSD
             image_name: bcgov/pssg-spdbt/gdsd-portal
 
@@ -92,7 +79,6 @@ jobs:
             Screening)      ENABLED="${{ github.event.inputs.promoteScreening }}" ;;
             Licensing)      ENABLED="${{ github.event.inputs.promoteLicensing }}" ;;
             DynamicsHelper) ENABLED="${{ github.event.inputs.promoteDynamicsHelper }}" ;;
-            JobScheduler)   ENABLED="${{ github.event.inputs.promoteJobScheduler }}" ;;
             GDSD)           ENABLED="${{ github.event.inputs.promoteGDSD }}" ;;
           esac
           echo "enabled=$ENABLED" >> $GITHUB_OUTPUT
