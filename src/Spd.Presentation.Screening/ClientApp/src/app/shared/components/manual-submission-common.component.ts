@@ -572,21 +572,19 @@ export interface ManualSubmissionBody {
 										<mat-error class="mat-option-error">This is required</mat-error>
 									}
 								</div>
-								@if (portal === portalTypeCodes.Psso) {
-									<div class="col-md-12 col-sm-12">
-										<mat-checkbox formControlName="hasSignedConsentForm">
-											The applicant has completed and signed the required consent form, which will be retained by your
-											organization in accordance with applicable records retention requirements
-										</mat-checkbox>
-										@if (
-											(form.get('hasSignedConsentForm')?.dirty || form.get('hasSignedConsentForm')?.touched) &&
-											form.get('hasSignedConsentForm')?.invalid &&
-											form.get('hasSignedConsentForm')?.hasError('required')
-										) {
-											<mat-error class="mat-option-error">This is required</mat-error>
-										}
-									</div>
-								}
+								<div class="col-md-12 col-sm-12">
+									<mat-checkbox formControlName="hasSignedConsentForm">
+										The applicant has completed and signed the required consent form, which will be retained by your
+										organization in accordance with applicable records retention requirements
+									</mat-checkbox>
+									@if (
+										(form.get('hasSignedConsentForm')?.dirty || form.get('hasSignedConsentForm')?.touched) &&
+										form.get('hasSignedConsentForm')?.invalid &&
+										form.get('hasSignedConsentForm')?.hasError('required')
+									) {
+										<mat-error class="mat-option-error">This is required</mat-error>
+									}
+								</div>
 							</div>
 
 							@if (portal === portalTypeCodes.Crrp) {
