@@ -58,12 +58,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<span>Ft</span>
 									}
 								</mat-label>
-								<input matInput formControlName="height" [errorStateMatcher]="matcher" mask="099" />
-								@if (form.get('height')?.hasError('required')) {
-									<mat-error>This is required</mat-error>
-								}
-								@if (form.get('height')?.hasError('mask')) {
-									<mat-error>This must be a 1 to 3 digit whole number</mat-error>
+							<input matInput formControlName="height" [errorStateMatcher]="matcher" [mask]="heightUnitCode.value === heightUnitCodes.Inches ? '9' : '099'" />
+							@if (form.get('height')?.hasError('required')) {
+								<mat-error>This is required</mat-error>
+							}
+							@if (form.get('height')?.hasError('mask')) {
+								<mat-error>{{ heightUnitCode.value === heightUnitCodes.Inches ? 'This must be a 1 digit whole number' : 'This must be a 1 to 3 digit whole number' }}</mat-error>
 								}
 							</mat-form-field>
 						</div>
