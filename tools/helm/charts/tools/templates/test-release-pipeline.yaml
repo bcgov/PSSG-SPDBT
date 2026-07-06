@@ -4,75 +4,111 @@ metadata:
   name: test-release-pipeline
   labels:
     DataClass: Low
+
 spec:
+  params:
+    - name: imageTag
+      description: "GHCR source tag imported into the test ImageStream"
+      default: "test"
+    - name: promoteScreening
+      description: ""
+      default: "true"
+    - name: promoteLicensing
+      description: ""
+      default: "true"
+    - name: promoteDynamicsHelper
+      description: ""
+      default: "true"
+    - name: promoteGDSD
+      description: ""
+      default: "true"
+
   tasks:
-    ## Promote dev to test ##
+    ## Import ghcr :test into the test ImageStream ##
     - name: test-screening-portal
+      when:
+        - input: "$(params.promoteScreening)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/screening-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: screening-portal
-        - name: fromTag
-          value: dev
-        - name: toTag
+        - name: destinationTag
           value: test
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: test-licensing-portal
+      when:
+        - input: "$(params.promoteLicensing)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/licensing-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: licensing-portal
-        - name: fromTag
-          value: dev
-        - name: toTag
+        - name: destinationTag
           value: test
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: test-dynamics-helper
+      when:
+        - input: "$(params.promoteDynamicsHelper)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/dynamics-helper
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: dynamics-helper
-        - name: fromTag
-          value: dev
-        - name: toTag
+        - name: destinationTag
           value: test
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
-
-    - name: test-job-scheduler
-      params:
-        - name: imageName
-          value: jag-jobscheduler
-        - name: fromTag
-          value: dev
-        - name: toTag
-          value: test
-        - name: referencePolicy
-          value: local
-      taskRef:
-        kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: test-gdsd-portal
+      when:
+        - input: "$(params.promoteGDSD)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/gdsd-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: gdsd-portal
-        - name: fromTag
-          value: dev
-        - name: toTag
+        - name: destinationTag
           value: test
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task

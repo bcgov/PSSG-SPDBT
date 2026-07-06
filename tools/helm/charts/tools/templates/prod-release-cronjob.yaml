@@ -1,9 +1,11 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: test-release-cronjob
+  name: prod-release-cronjob
 spec:
-  suspend: false
+  # Suspended by design — prod is promoted manually on release day
+  # (unsuspend, or run: tkn pipeline start prod-release-pipeline).
+  suspend: true
   schedule: "*/5 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
@@ -38,7 +40,7 @@ spec:
               command:
                 - "/bin/sh"
                 - "-c"
-                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start test-release-pipeline"
+                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start prod-release-pipeline"
               volumeMounts:
                 - name: temp
                   mountPath: /tmp
@@ -47,4 +49,4 @@ spec:
           volumes:
             - name: temp
               emptyDir:
-                sizeLimit: 500Mi              
+                sizeLimit: 500Mi

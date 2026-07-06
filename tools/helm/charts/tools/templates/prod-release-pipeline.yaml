@@ -4,75 +4,111 @@ metadata:
   name: prod-release-pipeline
   labels:
     DataClass: Low
+
 spec:
+  params:
+    - name: imageTag
+      description: "GHCR source tag imported into the prod ImageStream"
+      default: "prod"
+    - name: promoteScreening
+      description: ""
+      default: "true"
+    - name: promoteLicensing
+      description: ""
+      default: "true"
+    - name: promoteDynamicsHelper
+      description: ""
+      default: "true"
+    - name: promoteGDSD
+      description: ""
+      default: "true"
+
   tasks:
-    ## Promote staging to prod ##
+    ## Import ghcr :prod into the prod ImageStream ##
     - name: prod-screening-portal
+      when:
+        - input: "$(params.promoteScreening)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/screening-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: screening-portal
-        - name: fromTag
-          value: staging
-        - name: toTag
+        - name: destinationTag
           value: prod
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: prod-licensing-portal
+      when:
+        - input: "$(params.promoteLicensing)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/licensing-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: licensing-portal
-        - name: fromTag
-          value: staging
-        - name: toTag
+        - name: destinationTag
           value: prod
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: prod-dynamics-helper
+      when:
+        - input: "$(params.promoteDynamicsHelper)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/dynamics-helper
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: dynamics-helper
-        - name: fromTag
-          value: staging
-        - name: toTag
+        - name: destinationTag
           value: prod
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
-
-    - name: prod-job-scheduler
-      params:
-        - name: imageName
-          value: jag-jobscheduler
-        - name: fromTag
-          value: staging
-        - name: toTag
-          value: prod
-        - name: referencePolicy
-          value: local
-      taskRef:
-        kind: Task
-        name: promote-image-task
+        name: tag-image-task
 
     - name: prod-gdsd-portal
+      when:
+        - input: "$(params.promoteGDSD)"
+          operator: in
+          values: ["true"]
       params:
-        - name: imageName
+        - name: sourceImage
+          value: ghcr.io/bcgov/pssg-spdbt/gdsd-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
           value: gdsd-portal
-        - name: fromTag
-          value: staging
-        - name: toTag
+        - name: destinationTag
           value: prod
+        - name: scheduled
+          value: false
         - name: referencePolicy
           value: local
       taskRef:
         kind: Task
-        name: promote-image-task
+        name: tag-image-task
