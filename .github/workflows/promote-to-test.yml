@@ -1,13 +1,19 @@
 # ======================================================================================
+#  Last Updated: 2026-05-15
+#
 #  Description:
-#  Promotes images from the 'dev' tag to 'test' by re-tagging within the OpenShift
-#  ImageStream in fe7e29-tools. Promotion is in-cluster and digest-preserving
-#  (`oc tag ...@<digest>`), so ArgoCD (fe7e29-sparc-test) rolls the exact same image.
+#  Promotes GHCR images from the ':dev' tag to the ':test' tag by re-tagging them
+#  within GHCR. Uses `docker buildx imagetools create` so the promotion is
+#  server-side and digest-preserving — the ':test' tag points at the exact same
+#  image manifest as ':dev'.
 #
-#  Before each promotion the current 'test' tag is preserved as 'test-backup' (by
-#  digest) so the previous image can be restored by re-tagging the backup.
+#  Before each promotion the current ':test' tag is preserved as ':test-backup'
+#  (also digest-preserving) so the previous image can be restored by re-tagging the
+#  backup back to ':test'.
 #
-#  Auth: logs into Emerald with the fe7e29-tools 'pipeline' service account token.
+#  OpenShift consumes the resulting GHCR ':test' tag directly and is configured
+#  separately by the platform team.
+#
 # ======================================================================================
 
 name: Promote all - Dev to Test
@@ -17,10 +23,6 @@ on:
   # This workflow is triggered manually, requiring explicit user action.
   workflow_dispatch:
     inputs:
-      source_tag:
-        description: "Source ImageStream tag to promote from"
-        type: string
-        default: "dev"
       promoteScreening:
         description: "Promote screening-portal"
         type: boolean
@@ -38,10 +40,10 @@ on:
         type: boolean
         default: true
 
-# --- ENVIRONMENT VARIABLES ----------------------------------------------------------
+# --- ENVIRONMENT VARIABLES (Preserving original structure) -------------------------
 env:
-  NAMESPACE: ${{ secrets.OCP4_NAMESPACE }}
-  SOURCE_TAG: ${{ github.event.inputs.source_tag }}
+  REGISTRY: ghcr.io
+  SOURCE_TAG: "develop"
   TARGET_TAG: "test"
   BACKUP_TAG: "test-backup"
 
@@ -50,21 +52,24 @@ jobs:
   promote-images:
     name: Promote ${{ matrix.image_name }} to Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
         include:
           - key: Screening
-            image_name: screening-portal
+            image_name: bcgov/pssg-spdbt/screening-portal
           - key: Licensing
-            image_name: licensing-portal
+            image_name: bcgov/pssg-spdbt/licensing-portal
           - key: DynamicsHelper
-            image_name: dynamics-helper
+            image_name: bcgov/pssg-spdbt/dynamics-helper
           - key: GDSD
-            image_name: gdsd-portal
+            image_name: bcgov/pssg-spdbt/gdsd-portal
 
     env:
-      IMAGE_NAME: ${{ matrix.image_name }}
+      IMAGE: ${{ matrix.image_name }}
 
     steps:
       - name: Evaluate per-component toggle
@@ -79,58 +84,69 @@ jobs:
           echo "enabled=$ENABLED" >> $GITHUB_OUTPUT
           echo "Promotion enabled for ${{ matrix.key }}: $ENABLED"
 
-      - name: Install OpenShift CLI
+      - name: Set up Docker Buildx
         if: steps.gate.outputs.enabled == 'true'
-        run: |
-          curl -sLO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz"
-          tar -xzf openshift-client-linux.tar.gz
-          sudo mv oc /usr/local/bin/
+        uses: docker/setup-buildx-action@v3
 
-      - name: Login to OpenShift (Emerald)
+      - name: Login to GHCR
         if: steps.gate.outputs.enabled == 'true'
-        run: |
-          oc login --token="${{ secrets.OCP4_PASSWORD }}" --server="${{ secrets.OPENSHIFT_SERVER }}"
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get source digest
-        id: src
+      - name: Capture current target digest (for backup)
         if: steps.gate.outputs.enabled == 'true'
+        id: get_target_digest
         run: |
-          SOURCE_DIGEST=$(oc get istag "${IMAGE_NAME}:${SOURCE_TAG}" -n "${NAMESPACE}" -o jsonpath='{.image.metadata.name}')
-          if [ -z "$SOURCE_DIGEST" ]; then
-            echo "::error::Source tag ${IMAGE_NAME}:${SOURCE_TAG} not found in ${NAMESPACE}."
-            exit 1
-          fi
-          echo "digest=$SOURCE_DIGEST" >> $GITHUB_OUTPUT
-          echo "Source ${IMAGE_NAME}:${SOURCE_TAG} = ${SOURCE_DIGEST}"
+          TARGET_DIGEST=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+          echo "target_digest=$TARGET_DIGEST" >> $GITHUB_OUTPUT
+          echo "Current '${{ env.TARGET_TAG }}' digest: ${TARGET_DIGEST:-<none>}"
 
       - name: Backup current target image (by digest)
+        if: steps.gate.outputs.enabled == 'true' && steps.get_target_digest.outputs.target_digest != ''
+        run: |
+          echo "Backing up '${{ env.TARGET_TAG }}' to '${{ env.BACKUP_TAG }}' by digest..."
+          docker buildx imagetools create \
+            --tag "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.BACKUP_TAG }}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}@${{ steps.get_target_digest.outputs.target_digest }}"
+          echo "Backup successful."
+
+      - name: Promote source to target
         if: steps.gate.outputs.enabled == 'true'
         run: |
-          TARGET_DIGEST=$(oc get istag "${IMAGE_NAME}:${TARGET_TAG}" -n "${NAMESPACE}" -o jsonpath='{.image.metadata.name}' 2>/dev/null || true)
-          if [ -n "$TARGET_DIGEST" ]; then
-            echo "Backing up ${TARGET_TAG} -> ${BACKUP_TAG} (${TARGET_DIGEST})"
-            oc tag "${IMAGE_NAME}@${TARGET_DIGEST}" "${IMAGE_NAME}:${BACKUP_TAG}" -n "${NAMESPACE}" --reference-policy=local
-          else
-            echo "No existing ${TARGET_TAG} tag to back up."
+          echo "Promoting '${{ env.IMAGE }}:${{ env.SOURCE_TAG }}' to '${{ env.IMAGE }}:${{ env.TARGET_TAG }}'..."
+          docker buildx imagetools create \
+            --tag "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.SOURCE_TAG }}"
+          echo "Promotion successful."
+
+      - name: Validate Promotion by Comparing Image Digests
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          echo "Validating promotion for image '${{ env.IMAGE }}'..."
+
+          SOURCE_SHA=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.SOURCE_TAG }}" \
+            --format '{{.Manifest.Digest}}')
+          TARGET_SHA=$(docker buildx imagetools inspect \
+            "${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TARGET_TAG }}" \
+            --format '{{.Manifest.Digest}}')
+
+          echo "Source Digest: $SOURCE_SHA"
+          echo "Target Digest: $TARGET_SHA"
+
+          if [[ -z "$SOURCE_SHA" ]]; then
+            echo "::error::Could not find source digest for tag '${{ env.SOURCE_TAG }}' for image '${{ env.IMAGE }}'."
+            exit 1
           fi
 
-      - name: Promote source to target (by digest)
-        if: steps.gate.outputs.enabled == 'true'
-        run: |
-          echo "Promoting ${IMAGE_NAME}:${SOURCE_TAG} -> ${IMAGE_NAME}:${TARGET_TAG}"
-          oc tag "${IMAGE_NAME}@${{ steps.src.outputs.digest }}" "${IMAGE_NAME}:${TARGET_TAG}" -n "${NAMESPACE}" --reference-policy=local
-          echo "Promotion successful. ArgoCD (fe7e29-sparc-test) will roll the new image."
-
-      - name: Validate promotion (digests match)
-        if: steps.gate.outputs.enabled == 'true'
-        run: |
-          SOURCE_SHA=$(oc get istag "${IMAGE_NAME}:${SOURCE_TAG}" -n "${NAMESPACE}" -o jsonpath='{.image.metadata.name}')
-          TARGET_SHA=$(oc get istag "${IMAGE_NAME}:${TARGET_TAG}" -n "${NAMESPACE}" -o jsonpath='{.image.metadata.name}')
-          echo "Source: ${SOURCE_SHA}"
-          echo "Target: ${TARGET_SHA}"
-          if [ "${SOURCE_SHA}" == "${TARGET_SHA}" ] && [ -n "${SOURCE_SHA}" ]; then
-            echo "Validation successful — ${TARGET_TAG} now points at the ${SOURCE_TAG} image."
+          if [[ "$SOURCE_SHA" == "$TARGET_SHA" ]]; then
+            echo "Validation successful! Digests match perfectly."
           else
-            echo "::error::Digests do not match after promotion for ${IMAGE_NAME}."
+            echo "::error::Image digests do not match after promotion for image '${{ env.IMAGE }}'."
             exit 1
           fi
