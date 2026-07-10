@@ -38,7 +38,7 @@ spec:
               command:
                 - "/bin/sh"
                 - "-c"
-                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start test-release-pipeline --use-param-defaults"
+                - "cd /tmp && curl -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz | tar -xz tkn && ./tkn pipeline start test-release-pipeline --use-param-defaults"
               volumeMounts:
                 - name: temp
                   mountPath: /tmp
