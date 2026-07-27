@@ -25,6 +25,8 @@ public class Configurer : IConfigureComponents
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
                 UseHttp = false,
+                RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED,
+                ResponseChecksumValidation = ResponseChecksumValidation.WHEN_REQUIRED,
             };
             return new AmazonS3Client(new BasicAWSCredentials(settings.AccessKey, settings.Secret), config);
         });
@@ -37,7 +39,8 @@ public class Configurer : IConfigureComponents
                 ServiceURL = settings.Url.ToString(),
                 ForcePathStyle = true,
                 UseHttp = false,
-
+                RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED,
+                ResponseChecksumValidation = ResponseChecksumValidation.WHEN_REQUIRED,
             };
             return new AmazonS3Client(new BasicAWSCredentials(settings.AccessKey, settings.Secret), config);
         });

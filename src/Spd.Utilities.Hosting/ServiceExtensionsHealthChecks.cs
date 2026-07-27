@@ -51,6 +51,9 @@ public static class ServiceExtensionsHealthChecks
                         ServiceURL = s3url,
                         ForcePathStyle = true,
                         UseHttp = false
+                        ,
+                        RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED,
+                        ResponseChecksumValidation = ResponseChecksumValidation.WHEN_REQUIRED
                     });
                 return new S3V2HealthCheck(s3Client, bucket);
             });
