@@ -1098,11 +1098,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					if (this.serviceTypeIsPssoPeCrc) {
-						this.saveAndCheckDuplicates(body);
-					} else {
-						this.promptVulnerableSector(body);
-					}
+					this.saveAndCheckDuplicates(body);
 				}
 			});
 	}
