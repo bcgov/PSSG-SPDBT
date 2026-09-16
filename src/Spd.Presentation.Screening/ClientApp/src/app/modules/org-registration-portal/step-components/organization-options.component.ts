@@ -74,13 +74,17 @@ export class OrganizationOptionsModel {
 		                  </div>
 		                }
 		              </div>
-		
+						
 		              <div class="none-apply">
 		                <a tabindex="0" (click)="onNoneApply()" (keydown)="onKeyDownNoneApply($event)"
 		                  >None of these descriptions apply to my organization</a
 		                  >
 		                </div>
-		
+		              <div class="eligibility-notice mt-4">
+		                CRRP may ask your organization to provide further documentation to assist us in determining your
+		                eligibility for our program
+		              </div>
+							
 		                @if (isDirtyAndInvalid) {
 		                  <mat-error class="mat-option-error" style="text-align: center;"
 		                    >An option must be selected</mat-error
@@ -97,6 +101,10 @@ export class OrganizationOptionsModel {
 			.none-apply {
 				text-align: center;
 				color: var(--color-primary-light);
+			}
+
+			.eligibility-notice {
+				text-align: left;
 			}
 
 			.card-icon-container {
