@@ -4,6 +4,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class VulnerableSectorQuestionModel {
 	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;
+	employeeInteractionDetails: string | null = null;
 }
 
 @Component({
@@ -126,6 +127,28 @@ export class VulnerableSectorQuestionModel {
 		                </div>
 		              </div>
 		            </div>
+				    @if (requiresInteractionDetails) {
+				      <div class="col-12">
+				        <div class="row mt-3">
+				          <div class="col-md-6 col-sm-12 mx-auto">
+				            <div class="interaction-details-label mb-2">{{ interactionDetailsPrompt }}</div>
+				            <mat-form-field class="interaction-details-field">
+				              <textarea
+				                matInput
+				                [(ngModel)]="employeeInteractionDetails"
+				                maxlength="156"
+				                required
+				                style="min-height: 80px"
+				              ></textarea>
+				              <mat-hint align="end">{{ employeeInteractionDetails.length }}/156</mat-hint>
+				              @if (isDirtyAndInvalid && !employeeInteractionDetails.trim()) {
+				                <mat-error>This is required</mat-error>
+				              }
+				            </mat-form-field>
+				          </div>
+				        </div>
+				      </div>
+				    }
 		            @if (isDirtyAndInvalid) {
 		              <mat-error class="mat-option-error" style="text-align: center;"
 		                >An option must be selected</mat-error
@@ -147,12 +170,22 @@ export class VulnerableSectorQuestionModel {
 					width: 50px !important;
 				}
 			}
+
+			.interaction-details-label {
+				color: var(--color-primary-light);
+				font-weight: 400;
+			}
+
+			.interaction-details-field {
+				width: 100%;
+			}
 		`,
     ],
     standalone: false
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
 	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;
+	employeeInteractionDetails = '';
 	isDirtyAndInvalid = false;
 	displayHelp1 = false;
 	displayHelp2 = false;
@@ -163,6 +196,9 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 
 	onDataChange(_val: EmployeeInteractionTypeCode) {
 		this.employeeInteractionFlag = _val;
+		if (!this.requiresInteractionDetails) {
+			this.employeeInteractionDetails = '';
+		}
 		const isValid = this.isFormValid();
 		this.isDirtyAndInvalid = !isValid;
 	}
@@ -174,17 +210,21 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 	}
 
 	getDataToSave(): VulnerableSectorQuestionModel {
-		return { employeeInteractionFlag: this.employeeInteractionFlag };
+		return {
+			employeeInteractionFlag: this.employeeInteractionFlag,
+			employeeInteractionDetails: this.requiresInteractionDetails ? this.employeeInteractionDetails.trim() : null,
+		};
 	}
 
 	isFormValid(): boolean {
-		const isValid = !!this.employeeInteractionFlag;
+		const isValid = !!this.employeeInteractionFlag && (!this.requiresInteractionDetails || !!this.employeeInteractionDetails.trim());
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}
 
 	clearCurrentData(): void {
 		this.employeeInteractionFlag = null;
+		this.employeeInteractionDetails = '';
 	}
 
 	onViewHelp1(event: any): void {
@@ -215,5 +255,26 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 
 	get label(): string {
 		return this.isVolunteer ? 'volunteers' : 'employees';
+	}
+
+	get requiresInteractionDetails(): boolean {
+		return [
+			EmployeeInteractionTypeCode.Children,
+			EmployeeInteractionTypeCode.Adults,
+			EmployeeInteractionTypeCode.ChildrenAndAdults,
+		].includes(this.employeeInteractionFlag!);
+	}
+
+	get interactionDetailsPrompt(): string {
+		switch (this.employeeInteractionFlag) {
+			case EmployeeInteractionTypeCode.Children:
+				return `Please explain in what capacity your ${this.label} work with children`;
+			case EmployeeInteractionTypeCode.Adults:
+				return `Please explain in what capacity your ${this.label} work with vulnerable adults`;
+			case EmployeeInteractionTypeCode.ChildrenAndAdults:
+				return `Please explain in what capacity your ${this.label} work with children and vulnerable adults`;
+			default:
+				return '';
+		}
 	}
 }
