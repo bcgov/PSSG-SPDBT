@@ -13,7 +13,7 @@ export class VulnerableSectorQuestionModel {
 		  <div class="step">
 		    <app-step-title
 		      [title]="title"
-		      subtitle="To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
+		      subtitle="“Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
 		    ></app-step-title>
 		    <div class="step-container row">
 		      <div class="col-md-3 col-sm-6 mb-3">
