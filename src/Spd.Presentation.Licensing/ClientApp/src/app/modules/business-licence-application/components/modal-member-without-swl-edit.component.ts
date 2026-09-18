@@ -145,10 +145,16 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.form.enable();
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
 		this.isControllingMember = this.dialogData.isControllingMember;
 		this.isEdit = !!this.dialogData.bizContactId;
+		if (this.isEdit) {
+			['givenName', 'middleName1', 'middleName2', 'surname', 'noEmailAddress'].forEach((controlName) => {
+				this.form.get(controlName)?.disable();
+			});
+		}
 		this.title = this.isEdit
 			? `Edit ${this.dialogData.memberLabel} without Security Worker Licence`
 			: `Add ${this.dialogData.memberLabel} without Security Worker Licence`;
@@ -158,7 +164,7 @@ export class ModalMemberWithoutSwlEditComponent implements OnInit {
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
-		const formValue = this.form.value;
+		const formValue = this.form.getRawValue();
 		if (this.noEmailAddress.value) {
 			formValue.emailAddress = null;
 		}
