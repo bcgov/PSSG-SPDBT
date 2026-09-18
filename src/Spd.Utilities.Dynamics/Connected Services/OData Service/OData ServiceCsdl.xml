@@ -2608,6 +2608,9 @@
         <NavigationProperty Name="regardingobjectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_approverid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="attachment" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -5144,6 +5147,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_approverid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="bulkdeleteoperation" BaseType="mscrm.crmbaseentity">
@@ -7701,6 +7707,7 @@
         <Property Name="spd_fingerprintsexpiry" Type="Edm.DateTimeOffset" />
         <Property Name="merged" Type="Edm.Boolean" />
         <Property Name="address2_postofficebox" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_bloodtype" Type="Edm.Int32" />
         <Property Name="emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="address1_country" Type="Edm.String" Unicode="false" />
         <Property Name="msdyn_orgchangestatus" Type="Edm.Int32" />
@@ -13420,6 +13427,7 @@
         <NavigationProperty Name="spd_SecondaryOrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_incident_SecondaryOrganizationId">
           <ReferentialConstraint Property="_spd_secondaryorganizationid_value" ReferencedProperty="accountid" />
         </NavigationProperty>
+        <NavigationProperty Name="bpf_incident_spd_auxiliaryprograms" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="bpf_incidentid" />
       </EntityType>
       <EntityType Name="interactionforemail" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -16059,6 +16067,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_approverid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="mailmergetemplate" BaseType="mscrm.crmbaseentity">
@@ -21587,6 +21598,7 @@
         <NavigationProperty Name="organization_spd_appointmentsanddesignations" Type="Collection(mscrm.spd_appointmentsanddesignations)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_alertstatus" Type="Collection(mscrm.spd_alertstatus)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_approver" Type="Collection(mscrm.spd_approver)" Partner="organizationid" />
+        <NavigationProperty Name="organization_spd_auxiliaryprograms" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="organizationid" />
       </EntityType>
       <EntityType Name="ownermapping" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -23508,6 +23520,9 @@
         <NavigationProperty Name="objectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_approverid" />
         </NavigationProperty>
+        <NavigationProperty Name="objectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="businessprocessflowinstanceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="privilege" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -24387,6 +24402,9 @@
         <NavigationProperty Name="regardingobjectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_approverid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="processstageparameter" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -24512,6 +24530,7 @@
         <NavigationProperty Name="lk_spd_licensingreconsiderationreactivation_activestageid" Type="Collection(mscrm.spd_licensingreconsiderationreactivation)" Partner="activestageid" />
         <NavigationProperty Name="lk_spd_guidedogsservicedogs_activestageid" Type="Collection(mscrm.spd_guidedogsservicedogs)" Partner="activestageid" />
         <NavigationProperty Name="lk_spd_appointmentsanddesignations_activestageid" Type="Collection(mscrm.spd_appointmentsanddesignations)" Partner="activestageid" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_activestageid" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="activestageid" />
       </EntityType>
       <EntityType Name="processtrigger" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -29172,169 +29191,178 @@
         <Key>
           <PropertyRef Name="spd_applicationid" />
         </Key>
-        <Property Name="spd_businessmanageremail" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_portalstatus" Type="Edm.Int32" />
-        <Property Name="spd_dogname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_paymenttype" Type="Edm.Int32" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_portalmodifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_criminalchargesconvictionsorlawsuits" Type="Edm.Int32" />
-        <Property Name="spd_employerphonenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dogsassistanceindailyliving" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_currentexpiredlicenceid_value" Type="Edm.Guid" />
-        <Property Name="_spd_invoiceid_value" Type="Edm.Guid" />
-        <Property Name="spd_nologoorbranding" Type="Edm.Int32" />
-        <Property Name="spd_isdogtrainedbyaccreditedschool" Type="Edm.Int32" />
-        <Property Name="spd_residentialcountry" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_businesslicenseid_value" Type="Edm.Guid" />
-        <Property Name="spd_residentialprovince" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_payer" Type="Edm.Int32" />
-        <Property Name="_spd_controllingmemberid_value" Type="Edm.Guid" />
-        <Property Name="spd_canadiancitizen" Type="Edm.Int32" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_numberofattempts" Type="Edm.Int32" />
-        <Property Name="spd_criminalhistory" Type="Edm.Int32" />
-        <Property Name="spd_businesstype" Type="Edm.Int32" />
-        <Property Name="spd_updatesummary" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fee" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_retiredfromapoliceforce" Type="Edm.Int32" />
-        <Property Name="spd_policebackgroundother" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_link2" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
-        <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_bankruptcydate" Type="Edm.Date" />
-        <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_haspreviousnames" Type="Edm.Int32" />
-        <Property Name="spd_dogcolourandmarkings" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_uploadeddocuments" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_permitpurposeother" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_licenceterm" Type="Edm.Int32" />
-        <Property Name="spd_link3" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employerprovince" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_adrole" Type="Edm.Int32" />
-        <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dogsgender" Type="Edm.Int32" />
-        <Property Name="spd_licencefee_base" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_peaceofficer" Type="Edm.Int32" />
-        <Property Name="spd_consent" Type="Edm.Boolean" />
-        <Property Name="spd_residentialcity" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_nameofapplicantorlegalguardian" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employeraddress2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_outd" Type="Edm.Int32" />
-        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_fingerprintsonrecord" Type="Edm.Int32" />
-        <Property Name="spd_applicanteyecolour" Type="Edm.Int32" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="spd_rationale" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_criminalchargesconvictionsdetails" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
-        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="spd_dogspayedorneutered" Type="Edm.Int32" />
-        <Property Name="spd_delegateid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_mentalhealthcondition" Type="Edm.Int32" />
-        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="spd_bcid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dateofbirth" Type="Edm.Date" />
-        <Property Name="_spd_applicantswlnumberid_value" Type="Edm.Guid" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="spd_casesubstatus" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_businessmanagerphone" Type="Edm.String" Unicode="false" />
-        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="_spd_soleproprietororganizationid_value" Type="Edm.Guid" />
-        <Property Name="spd_height" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employerpostalcode" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_policebackgroundrole" Type="Edm.Int32" />
-        <Property Name="_spd_dogid_value" Type="Edm.Guid" />
-        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_residentialaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fee_base" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="spd_licenceapplicationtype" Type="Edm.Int32" />
-        <Property Name="spd_employeremail" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_permitpurpose" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_screeningrequesttype" Type="Edm.Int32" />
-        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
-        <Property Name="spd_requestdogsreasons" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_courtjudgementhistory" Type="Edm.Int32" />
-        <Property Name="spd_bankruptcyhistorydetails" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employercontactname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dogsdateofbirth" Type="Edm.Date" />
-        <Property Name="spd_businessmanagersurname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="spd_link1" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_badgeid_value" Type="Edm.Guid" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_dogstrainingaccredited" Type="Edm.Int32" />
-        <Property Name="spd_bankruptcyhistory" Type="Edm.Int32" />
-        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_sex" Type="Edm.Int32" />
-        <Property Name="spd_resideincanada" Type="Edm.Int32" />
-        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licenceno" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogsinoculationsuptodate" Type="Edm.Int32" />
+        <Property Name="spd_licencefee" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_canadiancitizen" Type="Edm.Int32" />
         <Property Name="spd_hasdriverslicence" Type="Edm.Int32" />
-        <Property Name="spd_applicationid" Type="Edm.Guid" />
+        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogstrainingaccredited" Type="Edm.Int32" />
+        <Property Name="spd_residentialaddress2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_policebackgroundother" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogsdateofbirth" Type="Edm.Date" />
+        <Property Name="spd_criminalhistory" Type="Edm.Int32" />
+        <Property Name="spd_dogcolourandmarkings" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_businessmanagersurname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employeremail" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_updatesummary" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_consent" Type="Edm.Boolean" />
+        <Property Name="spd_requestdogs" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_rcmpdistrict" Type="Edm.Int32" />
+        <Property Name="spd_rationale" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_resideincanada" Type="Edm.Int32" />
+        <Property Name="_spd_invoiceid_value" Type="Edm.Guid" />
+        <Property Name="spd_permitpurposeother" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_dogsrequiredfordisabilityorimpairment" Type="Edm.Int32" />
+        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
+        <Property Name="spd_collatorcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialpostalcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_uploadid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employercity" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
+        <Property Name="_spd_businesslicenseid_value" Type="Edm.Guid" />
+        <Property Name="spd_policebackgroundrole" Type="Edm.Int32" />
+        <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_employername" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_permitpurpose" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_criminalchargesconvictionsorlawsuits" Type="Edm.Int32" />
+        <Property Name="spd_link2" Type="Edm.String" Unicode="false" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
+        <Property Name="spd_employeraddress2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_courtjudgementhistory" Type="Edm.Int32" />
+        <Property Name="spd_organizationaccesscode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_numberofattempts" Type="Edm.Int32" />
+        <Property Name="spd_businessmanageremail" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_paymenttype" Type="Edm.Int32" />
+        <Property Name="spd_detachment" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogsgender" Type="Edm.Int32" />
+        <Property Name="spd_applicanthaircolour" Type="Edm.Int32" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_dogbreed" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_spd_badgeid_value" Type="Edm.Guid" />
+        <Property Name="spd_dogname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_weight" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_gdsdcertificatenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="spd_residentialcountry" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_workswith" Type="Edm.Int32" />
+        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_usephotofrombcsc" Type="Edm.Int32" />
+        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
+        <Property Name="_spd_parentorganizationid_value" Type="Edm.Guid" />
+        <Property Name="spd_microchipnumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_outd" Type="Edm.Int32" />
+        <Property Name="spd_applicanteyecolour" Type="Edm.Int32" />
+        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_hasexpiredlicence" Type="Edm.Int32" />
+        <Property Name="spd_nameofapplicantorlegalguardian" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employercontactname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_link3" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialprovince" Type="Edm.String" Unicode="false" />
         <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_sex" Type="Edm.Int32" />
+        <Property Name="spd_mentalhealthcondition" Type="Edm.Int32" />
+        <Property Name="_spd_controllingmemberid_value" Type="Edm.Guid" />
+        <Property Name="spd_bloodtype" Type="Edm.Int32" />
+        <Property Name="spd_payer" Type="Edm.Int32" />
+        <Property Name="spd_residentialaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_printname" Type="Edm.String" Unicode="false" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="spd_businessmanagermiddlename1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogtype" Type="Edm.Int32" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_businesstype" Type="Edm.Int32" />
+        <Property Name="spd_bankruptcydate" Type="Edm.Date" />
+        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_delegateid" Type="Edm.String" Unicode="false" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="spd_retiredfromapoliceforce" Type="Edm.Int32" />
+        <Property Name="spd_licencefee_base" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_doctorisprovidinggdsdmedicalform" Type="Edm.Int32" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_dogsretirementdate" Type="Edm.Date" />
+        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fingerprintsonrecord" Type="Edm.Int32" />
+        <Property Name="spd_requestrestraints" Type="Edm.Int32" />
+        <Property Name="spd_detachmentauxiliarycoordinator" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_nologoorbranding" Type="Edm.Int32" />
+        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_dogid_value" Type="Edm.Guid" />
+        <Property Name="spd_uploadeddocuments" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_requestdogsreasons" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_portalstatus" Type="Edm.Int32" />
+        <Property Name="spd_casesubstatus" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="spd_peaceofficer" Type="Edm.Int32" />
+        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_origin" Type="Edm.Int32" />
+        <Property Name="spd_residentialcity" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_applicationid" Type="Edm.Guid" />
+        <Property Name="spd_link1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_height" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_soleproprietororganizationid_value" Type="Edm.Guid" />
+        <Property Name="spd_employerprovince" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_bankruptcyhistorydetails" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogsassistanceindailyliving" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employercountry" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_adrole" Type="Edm.Int32" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_isdogtrainedbyaccreditedschool" Type="Edm.Int32" />
+        <Property Name="spd_employeraddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licencenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_bankruptcyhistory" Type="Edm.Int32" />
+        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_controllingmemberhistory" Type="Edm.Int32" />
         <Property Name="spd_willdoglivewithhandlerinretirement" Type="Edm.Int32" />
-        <Property Name="spd_declaration" Type="Edm.Boolean" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="spd_licensingfigaroid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licenceholderaccesscode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licenceterm" Type="Edm.Int32" />
+        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_haspreviousnames" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
+        <Property Name="spd_businessmanagermiddlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_screeningrequesttype" Type="Edm.Int32" />
+        <Property Name="spd_fee" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_criminalchargesconvictionsdetails" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_portalmodifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_spd_applicantswlnumberid_value" Type="Edm.Guid" />
+        <Property Name="spd_businessmanagerphone" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employerphonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_legalnamechange" Type="Edm.Int32" />
         <Property Name="spd_photoidtype" Type="Edm.Int32" />
-        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_requestrestraints" Type="Edm.Int32" />
-        <Property Name="spd_gdsdcertificatenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dogsinoculationsuptodate" Type="Edm.Int32" />
-        <Property Name="spd_doctorisprovidinggdsdmedicalform" Type="Edm.Int32" />
-        <Property Name="spd_licencefee" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_uploadid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fee_base" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_hasexpiredlicence" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_employercity" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="spd_workswith" Type="Edm.Int32" />
-        <Property Name="spd_residentialaddress2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
-        <Property Name="spd_dogtype" Type="Edm.Int32" />
-        <Property Name="spd_requestdogs" Type="Edm.Int32" />
-        <Property Name="spd_businessmanagermiddlename1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_weight" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_origin" Type="Edm.Int32" />
-        <Property Name="spd_dogsrequiredfordisabilityorimpairment" Type="Edm.Int32" />
-        <Property Name="spd_dogbreed" Type="Edm.String" Unicode="false" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_residentialpostalcode" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_controllingmemberhistory" Type="Edm.Int32" />
-        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="spd_businessmanagerfirstname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employercountry" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_employeraddress1" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="_spd_parentorganizationid_value" Type="Edm.Guid" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_printname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_microchipnumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_applicanthaircolour" Type="Edm.Int32" />
-        <Property Name="spd_usephotofrombcsc" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="spd_businessmanagermiddlename2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_dogsretirementdate" Type="Edm.Date" />
-        <Property Name="spd_employername" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_employerpostalcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licensingfigaroid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_dogspayedorneutered" Type="Edm.Int32" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_dateofbirth" Type="Edm.Date" />
+        <Property Name="_spd_currentexpiredlicenceid_value" Type="Edm.Guid" />
+        <Property Name="spd_bcid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_declaration" Type="Edm.Boolean" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_application_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -29542,6 +29570,69 @@
         <NavigationProperty Name="spd_approver_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_approver" />
         <NavigationProperty Name="spd_approver_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_approver" />
         <NavigationProperty Name="spd_approver_incident_DSGApprover" Type="Collection(mscrm.incident)" Partner="spd_DSGApprover" />
+      </EntityType>
+      <EntityType Name="spd_auxiliaryprograms" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="businessprocessflowinstanceid" />
+        </Key>
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_bpf_spd_licenceid_value" Type="Edm.Guid" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="bpf_name" Type="Edm.String" Unicode="false" />
+        <Property Name="_organizationid_value" Type="Edm.Guid" />
+        <Property Name="_bpf_incidentid_value" Type="Edm.Guid" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="businessprocessflowinstanceid" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="bpf_duration" Type="Edm.Int32" />
+        <Property Name="_processid_value" Type="Edm.Guid" />
+        <Property Name="_activestageid_value" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="completedon" Type="Edm.DateTimeOffset" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="traversedpath" Type="Edm.String" Unicode="false" />
+        <Property Name="activestagestartedon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_auxiliaryprograms_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_auxiliaryprograms_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_auxiliaryprograms_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_auxiliaryprograms_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="organizationid" Type="mscrm.organization" Nullable="false" Partner="organization_spd_auxiliaryprograms">
+          <ReferentialConstraint Property="_organizationid_value" ReferencedProperty="organizationid" />
+        </NavigationProperty>
+        <NavigationProperty Name="activestageid" Type="mscrm.processstage" Nullable="false" Partner="lk_spd_auxiliaryprograms_activestageid">
+          <ReferentialConstraint Property="_activestageid_value" ReferencedProperty="processstageid" />
+        </NavigationProperty>
+        <NavigationProperty Name="processid" Type="mscrm.workflow" Nullable="false" Partner="lk_spd_auxiliaryprograms_processid">
+          <ReferentialConstraint Property="_processid_value" ReferencedProperty="workflowid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_auxiliaryprograms_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_WorkflowLogs" Type="Collection(mscrm.workflowlog)" Partner="asyncoperationid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="spd_auxiliaryprograms_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_auxiliaryprograms" />
+        <NavigationProperty Name="bpf_incidentid" Type="mscrm.incident" Nullable="false" Partner="bpf_incident_spd_auxiliaryprograms">
+          <ReferentialConstraint Property="_bpf_incidentid_value" ReferencedProperty="incidentid" />
+        </NavigationProperty>
+        <NavigationProperty Name="bpf_spd_licenceid" Type="mscrm.spd_licence" Nullable="false" Partner="bpf_spd_licence_spd_auxiliaryprograms">
+          <ReferentialConstraint Property="_bpf_spd_licenceid_value" ReferencedProperty="spd_licenceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_badgeassignment" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -31766,6 +31857,7 @@
         <Property Name="_spd_licenceholder_value" Type="Edm.Guid" />
         <Property Name="spd_requestdogs" Type="Edm.Int32" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
         <Property Name="traversedpath" Type="Edm.String" Unicode="false" />
         <Property Name="spd_permitpurposeother" Type="Edm.String" Unicode="false" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
@@ -31776,7 +31868,7 @@
         <Property Name="spd_employername" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_licencetype_value" Type="Edm.Guid" />
         <Property Name="spd_applicationtype" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_expirynotificationsenton" Type="Edm.DateTimeOffset" />
         <Property Name="spd_requestrestraints" Type="Edm.Int32" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
@@ -31892,6 +31984,7 @@
           <ReferentialConstraint Property="_spd_badgeid_value" ReferencedProperty="spd_badgeid" />
         </NavigationProperty>
         <NavigationProperty Name="spd_spd_licence_spd_badgeassignment" Type="Collection(mscrm.spd_badgeassignment)" Partner="spd_LicenceId" />
+        <NavigationProperty Name="bpf_spd_licence_spd_auxiliaryprograms" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="bpf_spd_licenceid" />
       </EntityType>
       <EntityType Name="spd_licensingreconsiderationreactivation" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -32022,6 +32115,7 @@
         <Property Name="spd_organizationlegalname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_receivemoneycompensation" Type="Edm.Int32" />
         <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_street1" Type="Edm.String" Unicode="false" />
         <Property Name="spd_payerpreference" Type="Edm.Int32" />
@@ -32054,7 +32148,7 @@
         <Property Name="spd_estimatedapplicationssubmittedperyear" Type="Edm.Int32" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_workswithdetails" Type="Edm.String" Unicode="false" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
         <Property Name="spd_orgregistrationid" Type="Edm.Guid" />
@@ -34731,6 +34825,9 @@
         <NavigationProperty Name="regardingobjectid_spd_approver" Type="mscrm.spd_approver" Nullable="false" Partner="spd_approver_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_approverid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="systemform" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -36680,6 +36777,10 @@
         <NavigationProperty Name="lk_spd_approver_createdonbehalfby" Type="Collection(mscrm.spd_approver)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_spd_approver_modifiedby" Type="Collection(mscrm.spd_approver)" Partner="modifiedby" />
         <NavigationProperty Name="lk_spd_approver_modifiedonbehalfby" Type="Collection(mscrm.spd_approver)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_createdby" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="createdby" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_createdonbehalfby" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_modifiedby" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_modifiedonbehalfby" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="modifiedonbehalfby" />
       </EntityType>
       <EntityType Name="systemusersyncmappingprofiles" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -38551,6 +38652,9 @@
         <NavigationProperty Name="asyncoperationid_spd_appointmentsanddesignations" Type="mscrm.spd_appointmentsanddesignations" Nullable="false" Partner="spd_appointmentsanddesignations_WorkflowLogs">
           <ReferentialConstraint Property="_asyncoperationid_value" ReferencedProperty="businessprocessflowinstanceid" />
         </NavigationProperty>
+        <NavigationProperty Name="asyncoperationid_spd_auxiliaryprograms" Type="mscrm.spd_auxiliaryprograms" Nullable="false" Partner="spd_auxiliaryprograms_WorkflowLogs">
+          <ReferentialConstraint Property="_asyncoperationid_value" ReferencedProperty="businessprocessflowinstanceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="workflow" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -38682,6 +38786,7 @@
         <NavigationProperty Name="lk_spd_licensingreconsiderationreactivation_processid" Type="Collection(mscrm.spd_licensingreconsiderationreactivation)" Partner="processid" />
         <NavigationProperty Name="lk_spd_guidedogsservicedogs_processid" Type="Collection(mscrm.spd_guidedogsservicedogs)" Partner="processid" />
         <NavigationProperty Name="lk_spd_appointmentsanddesignations_processid" Type="Collection(mscrm.spd_appointmentsanddesignations)" Partner="processid" />
+        <NavigationProperty Name="lk_spd_auxiliaryprograms_processid" Type="Collection(mscrm.spd_auxiliaryprograms)" Partner="processid" />
       </EntityType>
       <ComplexType Name="_CloneRoutingRuleSetResponse">
         <Property Name="RoutingRuleSetCopyRecordId" Type="Edm.String" Unicode="false" />
@@ -41208,6 +41313,22 @@
         <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
         <ReturnType Type="mscrm.spd_FingerprintRequestedResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_GenerateAccessCodeResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_GenerateAccessCode" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.account" Nullable="false" />
+        <ReturnType Type="mscrm.spd_GenerateAccessCodeResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_GenerateContactAccessCodeResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_GenerateContactAccessCode" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
+        <ReturnType Type="mscrm.spd_GenerateContactAccessCodeResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_GenerateCPICReportResponse">
         <Property Name="Body" Type="Edm.String" Unicode="false" />
         <Property Name="FileName" Type="Edm.String" Unicode="false" />
@@ -41273,6 +41394,14 @@
       <Action Name="spd_GetAliasTitle" IsBound="true">
         <Parameter Name="entity" Type="mscrm.spd_alias" Nullable="false" />
         <ReturnType Type="mscrm.spd_GetAliasTitleResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_GetAuxCaseBPFResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <NavigationProperty Name="BPF" Type="mscrm.spd_auxiliaryprograms" Nullable="false" />
+      </ComplexType>
+      <Action Name="spd_GetAuxCaseBPF" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
+        <ReturnType Type="mscrm.spd_GetAuxCaseBPFResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_GetBusinessContactTitleResponse">
         <Property Name="NewName" Type="Edm.String" Unicode="false" />
@@ -47060,6 +47189,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -47850,6 +47980,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -50370,6 +50501,7 @@
           <NavigationPropertyBinding Path="bcgov_incident_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="bcgov_incident_bcgov_templatesession" Target="bcgov_templatesessions" />
           <NavigationPropertyBinding Path="bpf_incident_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
+          <NavigationPropertyBinding Path="bpf_incident_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="bpf_incident_spd_guidedogsservicedogs" Target="spd_guidedogsservicedogses" />
           <NavigationPropertyBinding Path="bpf_incident_spd_inspection" Target="spd_inspections" />
           <NavigationPropertyBinding Path="bpf_incident_spd_investigation" Target="spd_investigations" />
@@ -51222,6 +51354,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -52785,6 +52918,7 @@
           <NavigationPropertyBinding Path="organization_spd_alertstatus" Target="spd_alertstatuses" />
           <NavigationPropertyBinding Path="organization_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="organization_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="organization_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="organization_spd_delegate" Target="spd_delegates" />
           <NavigationPropertyBinding Path="organization_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="organization_spd_guidedogsservicedogs" Target="spd_guidedogsservicedogses" />
@@ -53311,6 +53445,7 @@
           <NavigationPropertyBinding Path="objectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="objectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="objectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="objectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="objectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="objectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="objectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -53603,6 +53738,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -53693,6 +53829,7 @@
         </EntitySet>
         <EntitySet Name="processstages" EntityType="Microsoft.Dynamics.CRM.processstage">
           <NavigationPropertyBinding Path="lk_spd_appointmentsanddesignations_activestageid" Target="spd_appointmentsanddesignationses" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_activestageid" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="lk_spd_guidedogsservicedogs_activestageid" Target="spd_guidedogsservicedogses" />
           <NavigationPropertyBinding Path="lk_spd_inspection_activestageid" Target="spd_inspections" />
           <NavigationPropertyBinding Path="lk_spd_investigation_activestageid" Target="spd_investigations" />
@@ -55169,6 +55306,24 @@
           <NavigationPropertyBinding Path="spd_approver_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_approver_SyncErrors" Target="syncerrors" />
         </EntitySet>
+        <EntitySet Name="spd_auxiliaryprogramses" EntityType="Microsoft.Dynamics.CRM.spd_auxiliaryprograms">
+          <NavigationPropertyBinding Path="activestageid" Target="processstages" />
+          <NavigationPropertyBinding Path="bpf_incidentid" Target="incidents" />
+          <NavigationPropertyBinding Path="bpf_spd_licenceid" Target="spd_licences" />
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="organizationid" Target="organizations" />
+          <NavigationPropertyBinding Path="processid" Target="workflows" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="spd_auxiliaryprograms_WorkflowLogs" Target="workflowlogs" />
+        </EntitySet>
         <EntitySet Name="spd_badgeassignments" EntityType="Microsoft.Dynamics.CRM.spd_badgeassignment">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -55863,6 +56018,7 @@
         </EntitySet>
         <EntitySet Name="spd_licences" EntityType="Microsoft.Dynamics.CRM.spd_licence">
           <NavigationPropertyBinding Path="bpf_spd_licence_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
+          <NavigationPropertyBinding Path="bpf_spd_licence_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="bpf_spd_licence_spd_guidedogsservicedogs" Target="spd_guidedogsservicedogses" />
           <NavigationPropertyBinding Path="bpf_spd_licence_spd_licensingreconsiderationreactivation" Target="spd_licensingreconsiderationreactivations" />
           <NavigationPropertyBinding Path="bpf_spd_licence_spd_securityservice" Target="spd_securityservices" />
@@ -56713,6 +56869,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_approver" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badge" Target="spd_badges" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_badgeassignment" Target="spd_badgeassignments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
@@ -57905,6 +58062,10 @@
           <NavigationPropertyBinding Path="lk_spd_approver_createdonbehalfby" Target="spd_approvers" />
           <NavigationPropertyBinding Path="lk_spd_approver_modifiedby" Target="spd_approvers" />
           <NavigationPropertyBinding Path="lk_spd_approver_modifiedonbehalfby" Target="spd_approvers" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_createdby" Target="spd_auxiliaryprogramses" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_createdonbehalfby" Target="spd_auxiliaryprogramses" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_modifiedby" Target="spd_auxiliaryprogramses" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_modifiedonbehalfby" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="lk_spd_badge_createdby" Target="spd_badges" />
           <NavigationPropertyBinding Path="lk_spd_badge_createdonbehalfby" Target="spd_badges" />
           <NavigationPropertyBinding Path="lk_spd_badge_modifiedby" Target="spd_badges" />
@@ -59191,6 +59352,7 @@
           <NavigationPropertyBinding Path="asyncoperationid_asyncoperation" Target="asyncoperations" />
           <NavigationPropertyBinding Path="asyncoperationid_processsession" Target="processsessions" />
           <NavigationPropertyBinding Path="asyncoperationid_spd_appointmentsanddesignations" Target="spd_appointmentsanddesignationses" />
+          <NavigationPropertyBinding Path="asyncoperationid_spd_auxiliaryprograms" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="asyncoperationid_spd_guidedogsservicedogs" Target="spd_guidedogsservicedogses" />
           <NavigationPropertyBinding Path="asyncoperationid_spd_inspection" Target="spd_inspections" />
           <NavigationPropertyBinding Path="asyncoperationid_spd_investigation" Target="spd_investigations" />
@@ -59224,6 +59386,7 @@
           <NavigationPropertyBinding Path="lk_asyncoperation_workflowactivationid" Target="asyncoperations" />
           <NavigationPropertyBinding Path="lk_processsession_processid" Target="processsessions" />
           <NavigationPropertyBinding Path="lk_spd_appointmentsanddesignations_processid" Target="spd_appointmentsanddesignationses" />
+          <NavigationPropertyBinding Path="lk_spd_auxiliaryprograms_processid" Target="spd_auxiliaryprogramses" />
           <NavigationPropertyBinding Path="lk_spd_guidedogsservicedogs_processid" Target="spd_guidedogsservicedogses" />
           <NavigationPropertyBinding Path="lk_spd_inspection_processid" Target="spd_inspections" />
           <NavigationPropertyBinding Path="lk_spd_investigation_processid" Target="spd_investigations" />
