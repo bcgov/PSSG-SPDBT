@@ -108,7 +108,7 @@ internal class GDSDAppManager :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
 
         //check Renew your existing certification even though it has been expired for 6 month
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (currentDate > originalLic.ExpiryDate.AddMonths(Constants.GDSDRenewValidAfterExpirationInMonths))
             throw new ArgumentException($"the certification can only be renewed within {Constants.GDSDRenewValidAfterExpirationInMonths} months after expiry date.");
 

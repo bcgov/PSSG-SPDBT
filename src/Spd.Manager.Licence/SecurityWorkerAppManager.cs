@@ -229,7 +229,7 @@ internal class SecurityWorkerAppManager :
         LicenceResp? originalLic = await _licenceRepository.GetAsync(request.OriginalLicenceId.Value, cancellationToken);
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
         {
             if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays)
@@ -323,7 +323,7 @@ internal class SecurityWorkerAppManager :
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 

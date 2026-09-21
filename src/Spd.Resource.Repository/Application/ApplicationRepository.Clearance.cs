@@ -149,7 +149,7 @@ internal partial class ApplicationRepository : IApplicationRepository
     private string GetClearanceFilterString(ClearanceAccessFilterBy clearanceFilterBy)
     {
         ClearanceAccessStatusOptionSet status = Enum.Parse<ClearanceAccessStatusOptionSet>(clearanceFilterBy.ClearanceAccessStatus.ToString());
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         string dateStr = currentDate.AddDays(90).ToString("yyyy-MM-dd");
         string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
         string statusFilter = $"statuscode eq {(int)status}";

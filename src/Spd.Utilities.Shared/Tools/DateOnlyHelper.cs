@@ -1,27 +1,27 @@
-﻿using TimeZoneConverter;
-
-namespace Spd.Utilities.Shared.Tools;
+﻿namespace Spd.Utilities.Shared.Tools;
 
 public static class DateOnlyHelper
 {
-    public static DateTimeOffset ToDateTimeOffset(this DateOnly dateOnly, TimeZoneInfo zone)
+    /// <summary>
+    /// Gets the current date in the Pacific Time (PCT) zone.
+    /// </summary>
+    /// <returns>The current date in the Pacific Time (PCT) zone.</returns>
+    public static DateOnly GetCurrentPCTDate()
     {
-        var dateTime = dateOnly.ToDateTime(new TimeOnly(0));
-        return new DateTimeOffset(dateTime, zone.GetUtcOffset(dateTime));
+        var tzId = GetPlatformSpecificTimeZoneId("America/Vancouver");
+
+        var zone = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+
+        var localDateTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
+
+        return DateOnly.FromDateTime(localDateTime.Date);
     }
 
-    public static DateOnly ToDateOnly(this DateTimeOffset dto, TimeZoneInfo zone)
-    {
-        var inTargetZone = TimeZoneInfo.ConvertTime(dto, zone);
-        return DateOnly.FromDateTime(inTargetZone.Date);
-    }
-
-    public static DateOnly GetCurrentPSTDate()
-    {
-        string tzId = GetPlatformSpecificTimeZoneId("Pacific Standard Time");
-        return DateTimeOffset.UtcNow.ToDateOnly(TimeZoneInfo.FindSystemTimeZoneById(tzId));
-    }
-
+    /// <summary>
+    /// Gets the platform-specific time zone ID based on the provided Windows time zone ID.
+    /// </summary>
+    /// <param name="windowsTimeZoneId">The Windows time zone ID to convert.</param>
+    /// <returns>The platform-specific time zone ID.</returns>
     private static string GetPlatformSpecificTimeZoneId(string windowsTimeZoneId)
     {
         if (OperatingSystem.IsWindows())
@@ -35,4 +35,3 @@ public static class DateOnlyHelper
         }
     }
 }
-

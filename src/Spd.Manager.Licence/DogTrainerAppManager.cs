@@ -75,7 +75,7 @@ internal class DogTrainerAppManager :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
 
         //check Renew your existing certification even though it has been expired for 6 month
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (currentDate > originalLic.ExpiryDate.AddMonths(Constants.GDSDRenewValidAfterExpirationInMonths))
             throw new ArgumentException($"the certification can only be renewed within {Constants.GDSDRenewValidAfterExpirationInMonths} months after expiry date.");
 
@@ -136,7 +136,7 @@ internal class DogTrainerAppManager :
         {
             if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicant’s face is required.");
+                throw new ApiException(HttpStatusCode.BadRequest, "A photo that shows the applicantï¿½s face is required.");
             }
         }
 
