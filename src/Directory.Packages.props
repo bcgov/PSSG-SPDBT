@@ -2,6 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <WarningsNotAsErrors>
+        $(WarningsNotAsErrors);NU1903
+    </WarningsNotAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Alba" Version="8.2.1" />
