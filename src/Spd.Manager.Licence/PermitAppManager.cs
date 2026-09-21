@@ -175,7 +175,7 @@ internal class PermitAppManager :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (currentDate < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays)
             || currentDate > originalLic.ExpiryDate)
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
@@ -229,7 +229,7 @@ internal class PermitAppManager :
         LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         if (currentDate.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate)
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 

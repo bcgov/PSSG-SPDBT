@@ -277,7 +277,7 @@ public class BizLicenceAppManagerTest
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
-        DateOnly currentDate = DateOnlyHelper.GetCurrentPSTDate();
+        DateOnly currentDate = DateOnlyHelper.GetCurrentPCTDate();
         DateOnly dateTime = currentDate.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
         DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
