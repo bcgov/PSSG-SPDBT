@@ -26,6 +26,7 @@ namespace Spd.Manager.Screening
         public string? ContactPhoneNumber { get; set; }
         public string? ContactSurname { get; set; }
         public EmployeeInteractionTypeCode EmployeeInteractionFlag { get; set; }
+        public string? EmployeeInteractionDetails { get; set; }
         public string? GenericEmail { get; set; }
         public string? GenericPhoneNumber { get; set; }
         public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
@@ -117,6 +118,13 @@ namespace Spd.Manager.Screening
 
             RuleFor(r => r.EmployeeInteractionFlag)
                 .IsInEnum();
+
+            RuleFor(r => r.EmployeeInteractionDetails)
+                .NotEmpty()
+                .MaximumLength(156)
+                .When(r => r.EmployeeInteractionFlag is EmployeeInteractionTypeCode.Children
+                    or EmployeeInteractionTypeCode.Adults
+                    or EmployeeInteractionTypeCode.ChildrenAndAdults);
 
             RuleFor(r => r.OperatingBudgetFlag)
                 .IsInEnum();

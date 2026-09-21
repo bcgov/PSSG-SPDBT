@@ -34,6 +34,7 @@ namespace Spd.Resource.Repository.Registration
         public string? ContactPhoneNumber { get; set; }
         public string? ContactSurname { get; set; }
         public EmployeeInteractionTypeCode EmployeeInteractionFlag { get; set; }
+        public string? EmployeeInteractionDetails { get; set; }
         public string? GenericEmail { get; set; }
         public string? GenericPhoneNumber { get; set; }
         public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
