@@ -1,4 +1,6 @@
-﻿namespace Spd.Utilities.Shared.Tools;
+﻿using TimeZoneConverter;
+
+namespace Spd.Utilities.Shared.Tools;
 
 public static class DateOnlyHelper
 {
@@ -10,7 +12,7 @@ public static class DateOnlyHelper
     /// <returns>The current date in the Pacific Time (PCT) zone.</returns>
     public static DateOnly GetCurrentPCTDate()
     {
-        var zone = TimeZoneInfo.FindSystemTimeZoneById(PacificTimeZoneId);
+        var zone = TZConvert.GetTimeZoneInfo(PacificTimeZoneId);
 
         var localDateTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
 
