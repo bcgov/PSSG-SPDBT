@@ -37,8 +37,7 @@
 							"node_modules/ngx-spinner/animations/square-jelly-box.css",
 							"src/scss/app.scss"
 						],
-						"scripts": ["node_modules/jquery/dist/jquery.min.js", "node_modules/bootstrap/dist/js/bootstrap.min.js"],
-						"allowedCommonJsDependencies": ["moment"]
+						"scripts": ["node_modules/jquery/dist/jquery.min.js", "node_modules/bootstrap/dist/js/bootstrap.min.js"]
 					},
 					"configurations": {
 						"production": {

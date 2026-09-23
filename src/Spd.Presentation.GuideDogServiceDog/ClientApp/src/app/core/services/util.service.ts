@@ -9,8 +9,17 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import {
+	compareAsc,
+	differenceInCalendarMonths,
+	differenceInYears,
+	format,
+	isAfter,
+	isBefore,
+	isEqual,
+	startOfDay,
+} from 'date-fns';
 import { jwtDecode } from 'jwt-decode';
-import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
 import { MainLicenceResponse } from './common-application.service';
@@ -121,37 +130,39 @@ export class UtilService {
 		return userNameArray.join(' ');
 	}
 
-	getToday(): moment.Moment {
-		return moment().startOf('day');
+	getToday(): Date {
+		return startOfDay(new Date());
 	}
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
+		return isAfter(startOfDay(new Date(aDate)), startOfDay(new Date()));
 	}
 
 	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		return moment(aDate).startOf('day').isSameOrAfter(moment().startOf('day'), 'day');
+		const date = startOfDay(new Date(aDate));
+		const today = startOfDay(new Date());
+		return isAfter(date, today) || isEqual(date, today);
 	}
 
 	getIsDate5YearsOrOlder(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 
-		const dateDay = moment(aDate).startOf('day');
+		const dateDay = startOfDay(new Date(aDate));
 
-		const today = moment().startOf('day');
-		const yearsDiff = today.diff(dateDay, 'years');
+		const today = startOfDay(new Date());
+		const yearsDiff = differenceInYears(today, dateDay);
 		return yearsDiff >= 5;
 	}
 
 	getIsDateMonthsOrOlder(aDate: string | null | undefined, periodMonths: number): boolean {
 		if (!aDate) return false;
 
-		const dateDay = moment(aDate).startOf('day');
+		const dateDay = startOfDay(new Date(aDate));
 
-		const today = moment().startOf('day');
-		const monthsDiff = today.diff(dateDay, 'months', true);
+		const today = startOfDay(new Date());
+		const monthsDiff = differenceInCalendarMonths(today, dateDay);
 		return monthsDiff > periodMonths;
 	}
 
@@ -207,7 +218,9 @@ export class UtilService {
 			return true;
 		}
 
-		return moment(date1).startOf('day').isSameOrBefore(moment(date2).startOf('day'));
+		const startDate = startOfDay(date1);
+		const endDate = startOfDay(date2);
+		return isBefore(startDate, endDate) || isEqual(startDate, endDate);
 	}
 
 	private getInputDate(input: string): Date | null {
@@ -348,21 +361,15 @@ export class UtilService {
 			return 1;
 		}
 
-		const aDate = moment(a).startOf('day');
-		const bDate = moment(b).startOf('day');
-
-		if (direction === 'asc') {
-			return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
-		} else {
-			return aDate.isAfter(bDate) ? -1 : aDate.isBefore(bDate) ? 1 : 0;
-		}
+		const result = compareAsc(startOfDay(new Date(a)), startOfDay(new Date(b)));
+		return (direction === 'asc' ? result : result * -1) as SortWeight;
 	}
 
 	//------------------------------------
 	// Misc
 
 	getDateString(date: Date): string {
-		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
+		return date ? format(date, SPD_CONSTANTS.date.dateFormat) : '';
 	}
 
 	/**

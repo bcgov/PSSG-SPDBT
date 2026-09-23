@@ -15,7 +15,7 @@ import { AppRoutes } from '@app/app.routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import moment from 'moment';
+import { addDays, differenceInCalendarDays, isAfter, isBefore, isEqual, startOfDay, subDays } from 'date-fns';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -397,15 +397,16 @@ export class CommonApplicationService {
 			item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
 			item.applicationTypeCode === ApplicationTypeCode.New
 		) {
-			const today = moment().startOf('day');
-			const applicationExpiryDate = moment(item.updatedOn).startOf('day').add(applicationNotSubmittedValidDays, 'days');
+			const today = startOfDay(new Date());
+			const applicationExpiryDate = addDays(
+				startOfDay(item.updatedOn ? new Date(item.updatedOn) : new Date()),
+				applicationNotSubmittedValidDays
+			);
 
-			item.applicationExpiryDate = applicationExpiryDate.toString();
-			if (today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))) {
+			item.applicationExpiryDate = applicationExpiryDate.toISOString();
+			if (!isBefore(today, subDays(applicationExpiryDate, applicationNotSubmittedErrorDays))) {
 				item.isExpiryError = true;
-			} else if (
-				today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-			) {
+			} else if (!isBefore(today, subDays(applicationExpiryDate, applicationNotSubmittedWarningDays))) {
 				item.isExpiryWarning = true;
 			}
 		}
@@ -425,34 +426,27 @@ export class CommonApplicationService {
 		licence.isReplacementPeriod = false;
 		licence.isExpiredLicenceRenewable = this.utilService.isExpiredLicenceRenewable(licence);
 
-		const today = moment().startOf('day');
+		const today = startOfDay(new Date());
 
 		const nameOnCard = basicLicence.nameOnCard?.toUpperCase().trim();
 		const licenceHolderName = licence.licenceHolderName?.toUpperCase().trim();
 
-		licence.licenceExpiryNumberOfDays = moment(licence.expiryDate).startOf('day').diff(today, 'days');
+		const expiryDate = startOfDay(new Date(licence.expiryDate!));
+		licence.licenceExpiryNumberOfDays = differenceInCalendarDays(expiryDate, today);
 		licence.hasLoginNameChanged = nameOnCard != licenceHolderName;
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (basicLicence.licenceTermCode === LicenceTermCode.NinetyDays) {
-				if (
-					today.isSameOrAfter(
-						moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-					)
-				) {
+				if (!isBefore(today, subDays(expiryDate, licenceRenewPeriodDaysNinetyDayTerm))) {
 					licence.isRenewalPeriod = true;
 				}
 			} else {
-				if (today.isSameOrAfter(moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days'))) {
+				if (!isBefore(today, subDays(expiryDate, licenceRenewPeriodDays))) {
 					licence.isRenewalPeriod = true;
 				}
 			}
 
-			if (
-				today.isBefore(
-					moment(licence.expiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
-				)
-			) {
+			if (isBefore(today, subDays(expiryDate, licenceReplacementPeriodPreventionDays))) {
 				licence.isReplacementPeriod = true;
 			}
 		}

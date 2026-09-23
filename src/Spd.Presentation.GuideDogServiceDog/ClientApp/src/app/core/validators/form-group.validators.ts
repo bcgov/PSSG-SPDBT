@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import moment from 'moment';
+import { isAfter, startOfDay } from 'date-fns';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -67,11 +67,11 @@ export class FormGroupValidators {
 			const value2 = control2?.value;
 			if (!value1 || !value2) return null;
 
-			const value1Date = moment(value1).startOf('day');
-			const value2Date = moment(value2).startOf('day');
+			const value1Date = startOfDay(new Date(value1));
+			const value2Date = startOfDay(new Date(value2));
 			if (!value1Date || !value2Date) return null;
 
-			if (value1Date.isAfter(value2Date)) return { daterange: true };
+			if (isAfter(value1Date, value2Date)) return { daterange: true };
 
 			return null;
 		};
