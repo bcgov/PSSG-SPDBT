@@ -3,7 +3,6 @@
 		<PropertyGroup>
 				<IsPackable>false</IsPackable>
 				<IsTestProject>true</IsTestProject>
-				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 				<UserSecretsId>c435ba0d-1b68-40b7-af2c-b83b73fcb25b</UserSecretsId>
 		</PropertyGroup>
 

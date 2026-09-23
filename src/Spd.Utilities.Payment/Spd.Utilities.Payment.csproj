@@ -18,7 +18,6 @@
 				<PackageReference Include="Polly" />
 				<PackageReference Include="System.ComponentModel.Annotations" />
 				<PackageReference Include="System.Configuration.ConfigurationManager" />
-				<PackageReference Include="System.Text.Json" />
 		</ItemGroup>
 
 		<ItemGroup>

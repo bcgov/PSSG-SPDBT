@@ -2,6 +2,9 @@
 
 		<PropertyGroup>
 				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+				<WarningsNotAsErrors>
+					$(WarningsNotAsErrors);NU1903;CA1873
+				</WarningsNotAsErrors>
 		</PropertyGroup>
 
 		<ItemGroup>

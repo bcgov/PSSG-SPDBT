@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Spd.Presentation.Dynamics.Swagger.ApiFilters;
 
 namespace Spd.Presentation.Dynamics.Swagger
@@ -21,20 +21,20 @@ namespace Spd.Presentation.Dynamics.Swagger
                     Name = "JWT Authentication",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Description = "**_ONLY_** input your JWT Bearer token",
-
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                    Description = "**ONLY** input your JWT Bearer token",
                 };
 
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityDefinition(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    jwtSecurityScheme);
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    { jwtSecurityScheme, Array.Empty<string>() }
+                    [
+                        new OpenApiSecuritySchemeReference(
+                            JwtBearerDefaults.AuthenticationScheme,
+                            document)
+                    ] = []
                 });
 
                 c.OperationFilter<ProducesResponseTypeFilter>();

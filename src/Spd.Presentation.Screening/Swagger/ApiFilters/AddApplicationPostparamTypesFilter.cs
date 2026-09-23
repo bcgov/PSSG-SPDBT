@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Nodes;
 
 namespace Spd.Presentation.Screening.Swagger.ApiFilters
 {
@@ -26,13 +26,13 @@ namespace Spd.Presentation.Screening.Swagger.ApiFilters
                 {
                     Schema = new OpenApiSchema
                     {
-                        Type = "object",
+                        Type = JsonSchemaType.Object,
                         Properties = {
                             {
                                 "ConsentFormFile",
                                 new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                     Format = "binary",
                                     Description = "PDF, Microsoft Word .docx/.doc files only"
                                 }
@@ -42,13 +42,13 @@ namespace Spd.Presentation.Screening.Swagger.ApiFilters
                                 new OpenApiSchema()
                                 {
                                     Description = "See ApplicationCreateRequest schema",
-                                    Type = "object",
+                                    Type = JsonSchemaType.Object,
                                     Properties = {
                                         {
                                             "orgId",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String,
                                                 Format="uuid"
                                             }
                                         },
@@ -56,217 +56,192 @@ namespace Spd.Presentation.Screening.Swagger.ApiFilters
                                             "givenName",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "middleName1",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "middleName2",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "surname",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "emailAddress",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "jobTitle",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "genderCode",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "dateOfBirth",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                 Format="date-time",
-                                                Nullable= true,
                                             }
                                         },
                                         {
                                             "contractedCompanyName",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "phoneNumber",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "driversLicense",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "birthPlace",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "addressLine1",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "addressLine2",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "city",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "postalCode",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "province",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "country",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "oneLegalName",
                                             new OpenApiSchema
                                             {
-                                                Type = "boolean",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.Boolean | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "agreeToCompleteAndAccurate",
                                             new OpenApiSchema
                                             {
-                                                Type = "boolean",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.Boolean | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "haveVerifiedIdentity",
                                             new OpenApiSchema
                                             {
-                                                Type = "boolean",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.Boolean | JsonSchemaType.Null,
                                             }
                                         },
                                         {
                                             "requireDuplicateCheck",
                                             new OpenApiSchema
                                             {
-                                                Type = "boolean",
+                                                Type = JsonSchemaType.Boolean,
                                             }
                                         },
                                         {
                                             "aliases",
                                             new OpenApiSchema
                                             {
-                                                Type = "array",
+                                                Type = JsonSchemaType.Array,
                                                 Items = new OpenApiSchema
                                                 {
-                                                    Type = "AliasCreateRequest",
+                                                    Type = JsonSchemaType.Object,
                                                     Properties = {
                                                         {
                                                             "givenName",
                                                             new OpenApiSchema
                                                             {
-                                                                Type = "string",
-                                                                Nullable= true,
+                                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                             }
                                                         },
                                                         {
                                                             "middleName1",
                                                             new OpenApiSchema
                                                             {
-                                                                Type = "string",
-                                                                Nullable= true,
+                                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                             }
                                                         },
                                                         {
                                                             "middleName2",
                                                             new OpenApiSchema
                                                             {
-                                                                Type = "string",
-                                                                Nullable= true,
+                                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                             }
                                                         },
                                                         {
                                                             "surname",
                                                             new OpenApiSchema
                                                             {
-                                                                Type = "string",
-                                                                Nullable= true,
+                                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                             }
                                                         }
                                                     }
@@ -277,70 +252,71 @@ namespace Spd.Presentation.Screening.Swagger.ApiFilters
                                             "originTypeCode",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String,
                                             }
                                         },
                                         {
                                             "payeeType",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String,
                                             }
                                         },
                                         {
                                             "screeningType",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String,
                                             }
                                         },
                                         {
                                             "serviceType",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = JsonSchemaType.String,
                                             }
                                         },
                                         {
                                             "employeeId",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
-                                                Nullable= true,
+                                                Type = JsonSchemaType.String | JsonSchemaType.Null,
                                             }
                                         }
                                     },
-                                    Example = new OpenApiString(
-                                        @"{
-	                                        ""OriginTypeCode"": ""Portal"",
-	                                        ""PhoneNumber"": ""1234567890"",
-	                                        ""DriversLicense"": ""dl02398403"",
-	                                        ""DateOfBirth"": ""2001-01-10"",
-	                                        ""BirthPlace"": ""hh"",
-	                                        ""ScreeningTypeCode"": ""Staff"",
-	                                        ""AddressLine1"": ""address 1"",
-	                                        ""AddressLine2"": null,
-	                                        ""City"": ""city"",
-	                                        ""PostalCode"": ""postalcode"",
-	                                        ""Province"": ""bc"",
-	                                        ""Country"": ""canada"",
-	                                        ""OneLegalName"": true,
-	                                        ""AgreeToCompleteAndAccurate"": true,
-	                                        ""HaveVerifiedIdentity"": true,
-	                                        ""Aliases"": [],
-	                                        ""RequireDuplicateCheck"": false,
-	                                        ""ConsentFormFile"": null,
-	                                        ""OrgId"": ""00000000-0000-0000-0000-000000000000"",
-	                                        ""GivenName"": ""given name"",
-	                                        ""MiddleName1"": null,
-	                                        ""MiddleName2"": null,
-	                                        ""Surname"": ""value"",
-	                                        ""EmailAddress"": ""test@test.com"",
-	                                        ""JobTitle"": ""teacher"",
-	                                        ""GenderCode"": ""M"",
-	                                        ""ContractedCompanyName"": ""standard company"",
-	                                        ""PayeeType"": ""Organization""
-                                        }")
+                                    Example = JsonNode.Parse(
+                                        """
+                                        {
+                                            "OriginTypeCode": "Portal",
+                                            "PhoneNumber": "1234567890",
+                                            "DriversLicense": "dl02398403",
+                                            "DateOfBirth": "2001-01-10",
+                                            "BirthPlace": "hh",
+                                            "ScreeningTypeCode": "Staff",
+                                            "AddressLine1": "address 1",
+                                            "AddressLine2": null,
+                                            "City": "city",
+                                            "PostalCode": "postalcode",
+                                            "Province": "bc",
+                                            "Country": "canada",
+                                            "OneLegalName": true,
+                                            "AgreeToCompleteAndAccurate": true,
+                                            "HaveVerifiedIdentity": true,
+                                            "Aliases": [],
+                                            "RequireDuplicateCheck": false,
+                                            "ConsentFormFile": null,
+                                            "OrgId": "00000000-0000-0000-0000-000000000000",
+                                            "GivenName": "given name",
+                                            "MiddleName1": null,
+                                            "MiddleName2": null,
+                                            "Surname": "value",
+                                            "EmailAddress": "test@test.com",
+                                            "JobTitle": "teacher",
+                                            "GenderCode": "M",
+                                            "ContractedCompanyName": "standard company",
+                                            "PayeeType": "Organization"
+                                        }
+                                        """),
                                 }
                             }
                         }

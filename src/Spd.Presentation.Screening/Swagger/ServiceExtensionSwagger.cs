@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Spd.Presentation.Screening.Swagger.ApiFilters;
 
 namespace Spd.Presentation.Screening.Swagger
@@ -22,19 +22,18 @@ namespace Spd.Presentation.Screening.Swagger
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Description = "**_ONLY_** input your JWT Bearer token",
-
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
                 };
 
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    { jwtSecurityScheme, Array.Empty<string>() }
+                    [
+                        new OpenApiSecuritySchemeReference(
+                            JwtBearerDefaults.AuthenticationScheme,
+                            document
+                        )
+                    ] = [],
                 });
 
                 //c.OperationFilter<AddRequiredHeaderParameter>();
