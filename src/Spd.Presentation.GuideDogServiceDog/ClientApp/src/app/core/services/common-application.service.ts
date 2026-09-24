@@ -15,7 +15,7 @@ import { AppRoutes } from '@app/app.routes';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { addDays, differenceInCalendarDays, isAfter, isBefore, isEqual, startOfDay, subDays } from 'date-fns';
+import { addDays, differenceInCalendarDays, isBefore, parseISO, startOfDay, subDays } from 'date-fns';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -399,7 +399,7 @@ export class CommonApplicationService {
 		) {
 			const today = startOfDay(new Date());
 			const applicationExpiryDate = addDays(
-				startOfDay(item.updatedOn ? new Date(item.updatedOn) : new Date()),
+				startOfDay(item.updatedOn ? parseISO(item.updatedOn) : new Date()),
 				applicationNotSubmittedValidDays
 			);
 
@@ -431,7 +431,7 @@ export class CommonApplicationService {
 		const nameOnCard = basicLicence.nameOnCard?.toUpperCase().trim();
 		const licenceHolderName = licence.licenceHolderName?.toUpperCase().trim();
 
-		const expiryDate = startOfDay(new Date(licence.expiryDate!));
+		const expiryDate = startOfDay(parseISO(licence.expiryDate!));
 		licence.licenceExpiryNumberOfDays = differenceInCalendarDays(expiryDate, today);
 		licence.hasLoginNameChanged = nameOnCard != licenceHolderName;
 

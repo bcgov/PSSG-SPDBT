@@ -42,7 +42,7 @@ import { MetalDealersAndRecyclersRoutes } from '@app/modules/metal-dealers-and-r
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import moment from 'moment';
+import { addDays, differenceInCalendarDays, isBefore, parseISO, startOfDay, subDays } from 'date-fns';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { AuthProcessService } from './auth-process.service';
@@ -843,7 +843,7 @@ export class CommonApplicationService {
 			return false;
 		}
 
-		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
+		const daysBetween = differenceInCalendarDays(startOfDay(parseISO(expiryDate)), startOfDay(new Date()));
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
@@ -1083,15 +1083,16 @@ export class CommonApplicationService {
 			item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
 			item.applicationTypeCode === ApplicationTypeCode.New
 		) {
-			const today = moment().startOf('day');
-			const applicationExpiryDate = moment(item.updatedOn).startOf('day').add(applicationNotSubmittedValidDays, 'days');
+			const today = startOfDay(new Date());
+			const applicationExpiryDate = addDays(
+				startOfDay(item.updatedOn ? parseISO(item.updatedOn) : new Date()),
+				applicationNotSubmittedValidDays
+			);
 
-			item.applicationExpiryDate = applicationExpiryDate.toString();
-			if (today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))) {
+			item.applicationExpiryDate = applicationExpiryDate.toISOString();
+			if (!isBefore(today, subDays(applicationExpiryDate, applicationNotSubmittedErrorDays))) {
 				item.isExpiryError = true;
-			} else if (
-				today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-			) {
+			} else if (!isBefore(today, subDays(applicationExpiryDate, applicationNotSubmittedWarningDays))) {
 				item.isExpiryWarning = true;
 			}
 		}
@@ -1140,12 +1141,13 @@ export class CommonApplicationService {
 		licence.isReplacementPeriod = false;
 		licence.isSimultaneousFlow = false;
 
-		const today = moment().startOf('day');
+		const today = startOfDay(new Date());
 
 		const nameOnCard = basicLicence.nameOnCard?.toUpperCase().trim();
 		const licenceHolderName = licence.licenceHolderName?.toUpperCase().trim();
 
-		licence.licenceExpiryNumberOfDays = moment(licence.expiryDate).startOf('day').diff(today, 'days');
+		const expiryDate = startOfDay(parseISO(licence.expiryDate!));
+		licence.licenceExpiryNumberOfDays = differenceInCalendarDays(expiryDate, today);
 		licence.hasLoginNameChanged = nameOnCard != licenceHolderName;
 		licence.licenceCategoryCodes = basicLicence.categoryCodes?.sort() ?? [];
 
@@ -1186,30 +1188,22 @@ export class CommonApplicationService {
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (
 				this.utilService.isLicenceActive(licence.licenceStatusCode) &&
-				today.isBefore(moment(licence.expiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days'))
+				isBefore(today, subDays(expiryDate, licenceUpdatePeriodPreventionDays))
 			) {
 				licence.isUpdatePeriod = true;
 			}
 
 			if (basicLicence.licenceTermCode === LicenceTermCode.NinetyDays) {
-				if (
-					today.isSameOrAfter(
-						moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-					)
-				) {
+				if (!isBefore(today, subDays(expiryDate, licenceRenewPeriodDaysNinetyDayTerm))) {
 					licence.isRenewalPeriod = true;
 				}
 			} else {
-				if (today.isSameOrAfter(moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days'))) {
+				if (!isBefore(today, subDays(expiryDate, licenceRenewPeriodDays))) {
 					licence.isRenewalPeriod = true;
 				}
 			}
 
-			if (
-				today.isBefore(
-					moment(licence.expiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
-				)
-			) {
+			if (isBefore(today, subDays(expiryDate, licenceReplacementPeriodPreventionDays))) {
 				licence.isReplacementPeriod = true;
 			}
 		}

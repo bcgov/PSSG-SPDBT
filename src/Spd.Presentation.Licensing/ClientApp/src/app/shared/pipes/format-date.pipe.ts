@@ -1,13 +1,20 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import moment, { Moment } from 'moment';
+import { format, parseISO } from 'date-fns';
 
 @Pipe({
 	name: 'formatDate',
 	standalone: false,
 })
 export class FormatDatePipe implements PipeTransform {
-	public transform(date: string | Moment | undefined | null, format: string = SPD_CONSTANTS.date.dateFormat): string {
-		return date ? moment(date).format(format) : '';
+	public transform(date: string | Date | undefined | null, dateFormat: string = SPD_CONSTANTS.date.dateFormat): string {
+		if (!date) return '';
+
+		if (date instanceof Date) {
+			return format(date, dateFormat);
+		} else {
+			return format(parseISO(date), dateFormat);
+		}
 	}
 }
+

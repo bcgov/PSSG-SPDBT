@@ -17,6 +17,7 @@ import {
 	isAfter,
 	isBefore,
 	isEqual,
+	parseISO,
 	startOfDay,
 } from 'date-fns';
 import { jwtDecode } from 'jwt-decode';
@@ -136,12 +137,12 @@ export class UtilService {
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		return isAfter(startOfDay(new Date(aDate)), startOfDay(new Date()));
+		return isAfter(startOfDay(parseISO(aDate)), startOfDay(new Date()));
 	}
 
 	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		const date = startOfDay(new Date(aDate));
+		const date = startOfDay(parseISO(aDate));
 		const today = startOfDay(new Date());
 		return isAfter(date, today) || isEqual(date, today);
 	}
@@ -149,7 +150,7 @@ export class UtilService {
 	getIsDate5YearsOrOlder(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 
-		const dateDay = startOfDay(new Date(aDate));
+		const dateDay = startOfDay(parseISO(aDate));
 
 		const today = startOfDay(new Date());
 		const yearsDiff = differenceInYears(today, dateDay);
@@ -159,7 +160,7 @@ export class UtilService {
 	getIsDateMonthsOrOlder(aDate: string | null | undefined, periodMonths: number): boolean {
 		if (!aDate) return false;
 
-		const dateDay = startOfDay(new Date(aDate));
+		const dateDay = startOfDay(parseISO(aDate));
 
 		const today = startOfDay(new Date());
 		const monthsDiff = differenceInCalendarMonths(today, dateDay);
@@ -361,7 +362,7 @@ export class UtilService {
 			return 1;
 		}
 
-		const result = compareAsc(startOfDay(new Date(a)), startOfDay(new Date(b)));
+		const result = compareAsc(startOfDay(parseISO(a)), startOfDay(parseISO(b)));
 		return (direction === 'asc' ? result : result * -1) as SortWeight;
 	}
 

@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { isAfter, startOfDay } from 'date-fns';
+import { isAfter, parseISO, startOfDay } from 'date-fns';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -67,8 +67,8 @@ export class FormGroupValidators {
 			const value2 = control2?.value;
 			if (!value1 || !value2) return null;
 
-			const value1Date = startOfDay(new Date(value1));
-			const value2Date = startOfDay(new Date(value2));
+			const value1Date = startOfDay(typeof value1 === 'string' ? parseISO(value1) : new Date(value1));
+			const value2Date = startOfDay(typeof value2 === 'string' ? parseISO(value2) : new Date(value2));
 			if (!value1Date || !value2Date) return null;
 
 			if (isAfter(value1Date, value2Date)) return { daterange: true };

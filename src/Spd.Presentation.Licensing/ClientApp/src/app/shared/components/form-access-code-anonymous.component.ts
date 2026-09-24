@@ -15,7 +15,7 @@ import { LicenceResponseExt } from '@app/core/services/worker-application.servic
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import moment from 'moment';
+import { differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
 import { Subject, take, tap } from 'rxjs';
 
 @Component({
@@ -199,9 +199,9 @@ export class FormAccessCodeAnonymousComponent implements OnInit {
 		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
 
-		const today = moment().startOf('day');
-		const expiryDate = moment(resp.expiryDate).startOf('day');
-		const daysBetween = expiryDate.diff(today, 'days');
+		const today = startOfDay(new Date());
+		const expiryDate = startOfDay(resp.expiryDate ? parseISO(resp.expiryDate) : new Date());
+		const daysBetween = differenceInCalendarDays(expiryDate, today);
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.

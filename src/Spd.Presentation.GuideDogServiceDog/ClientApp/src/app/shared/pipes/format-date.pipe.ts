@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { format,parse } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
 
 @Pipe({
     name: 'formatDate',
@@ -8,12 +8,12 @@ import { format,parse } from 'date-fns';
 })
 export class FormatDatePipe implements PipeTransform {
 	public transform(date: string | Date | undefined | null, dateFormat: string = SPD_CONSTANTS.date.dateFormat): string {
+		if (!date) return '';
 
-		if (typeof date == "string" && (/^\d{8}$/.test(date))){
-			// date-fns does not accept yyyyMMdd like moment did
-			date = parse(date, 'yyyyMMdd', new Date());
+		if (date instanceof Date) {
+			return format(date, dateFormat);
+		} else {
+			return format(parseISO(date), dateFormat);
 		}
-
-		return date ? format(new Date(date), dateFormat) : '';
 	}
 }

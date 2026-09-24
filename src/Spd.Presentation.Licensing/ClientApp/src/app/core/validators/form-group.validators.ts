@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BizTypeCode, LicenceStatusCode, PoliceOfficerRoleCode } from '@app/api/models';
-import moment from 'moment';
+import { isAfter, parseISO, startOfDay } from 'date-fns';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from './form-control.validators';
@@ -70,11 +70,11 @@ export class FormGroupValidators {
 			const value2 = control2?.value;
 			if (!value1 || !value2) return null;
 
-			const value1Date = moment(value1).startOf('day');
-			const value2Date = moment(value2).startOf('day');
+			const value1Date = startOfDay(typeof value1 === 'string' ? parseISO(value1) : new Date(value1));
+			const value2Date = startOfDay(typeof value2 === 'string' ? parseISO(value2) : new Date(value2));
 			if (!value1Date || !value2Date) return null;
 
-			if (value1Date.isAfter(value2Date)) return { daterange: true };
+			if (isAfter(value1Date, value2Date)) return { daterange: true };
 
 			return null;
 		};
