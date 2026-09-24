@@ -2,8 +2,8 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { format, subYears } from 'date-fns';
 import { jwtDecode } from 'jwt-decode';
-import moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
@@ -76,12 +76,12 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
-	getBirthDateMax(): moment.Moment {
-		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
+	getBirthDateMax(): Date {
+		return subYears(new Date(), SPD_CONSTANTS.date.birthDateMinAgeYears);
 	}
 
-	getDateMin(): moment.Moment {
-		return moment('1800-01-01');
+	getDateMin(): Date {
+		return new Date(1800, 0, 1);
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
@@ -210,7 +210,7 @@ export class UtilService {
 	}
 
 	getDateString(date: Date): string {
-		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
+		return date ? format(date, SPD_CONSTANTS.date.dateFormat) : '';
 	}
 
 	getShowScreeningType(

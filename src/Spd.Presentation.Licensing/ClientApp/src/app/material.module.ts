@@ -29,6 +29,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { enUS } from 'date-fns/locale';
 
 const AngularMaterialModules = [
 	MatToolbarModule,
@@ -67,7 +68,7 @@ export const APP_DATE_FORMATS = {
 	display: {
 		dateInput: SPD_CONSTANTS.date.dateFormat,
 		monthYearLabel: SPD_CONSTANTS.date.monthYearFormat,
-		dateA11yLabel: 'DDD',
+		dateA11yLabel: 'ddd',
 		monthYearA11yLabel: SPD_CONSTANTS.date.monthYearFormat,
 	},
 };
@@ -86,6 +87,10 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 		{
 			provide: MAT_DATE_FORMATS,
 			useValue: APP_DATE_FORMATS,
+		},
+		{
+			provide: MAT_DATE_LOCALE,
+			useValue: enUS,
 		},
 		{
 			provide: DateAdapter,

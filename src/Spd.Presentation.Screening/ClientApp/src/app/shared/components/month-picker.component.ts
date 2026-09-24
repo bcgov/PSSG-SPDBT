@@ -1,16 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import moment, { Moment } from 'moment';
 
 export const MONTH_PICKER_FORMATS = {
 	parse: {
-		dateInput: 'LL',
+		dateInput: 'MMMM yyyy',
 	},
 	display: {
-		dateInput: 'MMMM YYYY', // this is the format showing on the input element
-		monthYearLabel: 'MMMM YYYY', // this is showing on the calendar
+		dateInput: 'MMMM yyyy', // this is the format showing on the input element
+		monthYearLabel: 'MMMM yyyy', // this is showing on the calendar
 	},
 };
 
@@ -41,8 +40,8 @@ export const MONTH_PICKER_FORMATS = {
     providers: [
         {
             provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+			useClass: DateFnsAdapter,
+			deps: [MAT_DATE_LOCALE],
         },
         { provide: MAT_DATE_FORMATS, useValue: MONTH_PICKER_FORMATS },
     ],
@@ -51,14 +50,14 @@ export const MONTH_PICKER_FORMATS = {
 export class MonthPickerComponent {
 	@Input() label = '';
 	@Input() hint = '';
-	@Input() minDate: Moment | null = null;
-	@Input() maxDate: Moment | null = null;
+	@Input() minDate: Date | null = null;
+	@Input() maxDate: Date | null = null;
 	@Input() form!: FormGroup;
 
-	@Output() monthAndYearChange = new EventEmitter<Moment | null>();
+	@Output() monthAndYearChange = new EventEmitter<Date | null>();
 
 	onMonthChanged(value: any, widget: any): void {
-		const selectedDate = moment(value);
+		const selectedDate = value as Date;
 		this.form.patchValue({ monthAndYear: selectedDate });
 
 		this.monthAndYearChange.emit(selectedDate);

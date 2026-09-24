@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import moment from 'moment';
+import { format, subYears } from 'date-fns';
 import { Observable, tap } from 'rxjs';
 import {
 	ApplicationPaymentListResponse,
@@ -400,13 +400,13 @@ export class PaymentsComponent implements OnInit {
 
 		const fromDateKey = PaymentFilterMap['fromDate'];
 		if (!this.currentFilters.includes(fromDateKey)) {
-			const fromDate = moment().subtract(1, 'year').format(SPD_CONSTANTS.date.dateFormat);
+			const fromDate = format(subYears(new Date(), 1), SPD_CONSTANTS.date.dateFormat);
 			defaultSearch += `${fromDateKey}==${fromDate},`;
 		}
 
 		const toDateKey = PaymentFilterMap['toDate'];
 		if (!this.currentFilters.includes(toDateKey)) {
-			const toDate = moment().format(SPD_CONSTANTS.date.dateFormat);
+			const toDate = format(new Date(), SPD_CONSTANTS.date.dateFormat);
 			defaultSearch += `${toDateKey}==${toDate},`;
 		}
 

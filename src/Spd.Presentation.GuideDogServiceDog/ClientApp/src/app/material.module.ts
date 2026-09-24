@@ -65,7 +65,7 @@ export const APP_DATE_FORMATS = {
 	display: {
 		dateInput: SPD_CONSTANTS.date.dateFormat,
 		monthYearLabel: SPD_CONSTANTS.date.monthYearFormat,
-		dateA11yLabel: 'DDD',
+		dateA11yLabel: 'ddd',
 		monthYearA11yLabel: SPD_CONSTANTS.date.monthYearFormat,
 	},
 };
