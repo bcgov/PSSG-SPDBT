@@ -558,13 +558,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					if (pssoPeCrcAndVsExist) {
-						this.promptVulnerableSector(body);
-					} else if (pssoPeCrcExist) {
-						this.saveAndCheckDuplicates(body);
-					} else if (pssoPeCrcVsExist) {
-						this.promptVulnerableSector(body);
-					}
+					this.saveAndCheckDuplicates(body);
 				}
 			});
 	}
