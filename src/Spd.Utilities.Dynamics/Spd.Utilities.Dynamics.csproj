@@ -2,10 +2,10 @@
 
 		<PropertyGroup>
 				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-				<NoWarn>CA1008;CA1707;CS8981</NoWarn>
 				<WarningsNotAsErrors>
-					$(WarningsNotAsErrors);NU1903
+					$(WarningsNotAsErrors);NU1903;CA1873
 				</WarningsNotAsErrors>
+				<NoWarn>CA1008;CA1707;CS8981</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -29,11 +29,10 @@
 				<PackageReference Include="Microsoft.Spatial" />
 				<PackageReference Include="Polly" />
 				<PackageReference Include="System.ComponentModel.Annotations" />
-				<PackageReference Include="System.Text.Json" />
 		</ItemGroup>
 
 		<ItemGroup>
-  		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="8.0.19" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 				<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 				<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
 		</ItemGroup>

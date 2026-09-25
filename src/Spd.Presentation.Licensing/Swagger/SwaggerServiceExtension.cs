@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Spd.Presentation.Licensing.Swagger.ApiFilters;
 
 namespace Spd.Presentation.Licensing.Swagger
@@ -11,7 +11,10 @@ namespace Spd.Presentation.Licensing.Swagger
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = $"{assemblyName}.API", Version = "v1" });
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo { Title = $"{assemblyName}.API", Version = "v1" }
+                );
 
                 // Include 'SecurityScheme' to use JWT Authentication
                 var jwtSecurityScheme = new OpenApiSecurityScheme
@@ -22,20 +25,20 @@ namespace Spd.Presentation.Licensing.Swagger
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Description = "**_ONLY_** input your JWT Bearer token",
-
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
                 };
 
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    { jwtSecurityScheme, Array.Empty<string>() }
+                    [
+                        new OpenApiSecuritySchemeReference(
+                            JwtBearerDefaults.AuthenticationScheme,
+                            document
+                        )
+                    ] = [],
                 });
+
                 c.OperationFilter<ProducesResponseTypeFilter>();
                 c.OperationFilter<LicenceAppDocumentPostparamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.

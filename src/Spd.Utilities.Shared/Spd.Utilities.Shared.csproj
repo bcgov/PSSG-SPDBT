@@ -2,6 +2,9 @@
 
 		<PropertyGroup>
 				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+				<WarningsNotAsErrors>
+					$(WarningsNotAsErrors);NU1903;CA1873
+				</WarningsNotAsErrors>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -11,6 +14,11 @@
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 				<PackageReference Include="Microsoft.Extensions.Options" />
 				<PackageReference Include="TimeZoneConverter" />
+		</ItemGroup>
+
+		<!-- Fix transitive version vulnerability errors -->
+		<ItemGroup>
+				<PackageReference Include="Newtonsoft.Json" />
 		</ItemGroup>
 
 </Project>

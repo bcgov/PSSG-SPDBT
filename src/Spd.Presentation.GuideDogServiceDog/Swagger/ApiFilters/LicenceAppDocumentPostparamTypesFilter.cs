@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Spd.Presentation.GuideDogServiceDog.Swagger.ApiFilters
@@ -25,16 +25,16 @@ namespace Spd.Presentation.GuideDogServiceDog.Swagger.ApiFilters
                 {
                     Schema = new OpenApiSchema
                     {
-                        Type = "object",
+                        Type = JsonSchemaType.Object,
                         Properties = {
                             {
                                 "documents",
                                 new OpenApiSchema
                                 {
-                                    Type="array",
+                                    Type = JsonSchemaType.Array,
                                     Items = new OpenApiSchema
                                     {
-                                        Type = "string",
+                                        Type = JsonSchemaType.String,
                                         Format = "binary",
                                         Description = "PDF, Microsoft Word .docx/.doc files only"
                                     }
@@ -42,15 +42,7 @@ namespace Spd.Presentation.GuideDogServiceDog.Swagger.ApiFilters
                             },
                             {
                                 "licenceDocumentTypeCode",
-                                new OpenApiSchema()
-                                {
-                                    Reference = new OpenApiReference
-                                    {
-                                        Type= ReferenceType.Schema,
-                                        Id = "LicenceDocumentTypeCode"
-                                    },
-                                    Nullable= false
-                                }
+                                new OpenApiSchemaReference("LicenceDocumentTypeCode")
                             }
                         }
                     },

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 		<PropertyGroup>
-				<TargetFramework>net8.0</TargetFramework>
+				<TargetFramework>net10.0</TargetFramework>
 				<Nullable>enable</Nullable>
 				<ImplicitUsings>enable</ImplicitUsings>
 				<InvariantGlobalization>true</InvariantGlobalization>
@@ -15,6 +15,9 @@
 				<DebugType>Full</DebugType>
 				<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 				<PublishReadyToRunEmitSymbols>true</PublishReadyToRunEmitSymbols>
+				<WarningsNotAsErrors>
+					$(WarningsNotAsErrors);NU1903;CA1873
+				</WarningsNotAsErrors>
 		</PropertyGroup>
 
 		<PropertyGroup>

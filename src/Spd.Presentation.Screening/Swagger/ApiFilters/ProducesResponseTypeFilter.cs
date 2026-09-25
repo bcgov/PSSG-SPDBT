@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Spd.Presentation.Screening.Swagger.ApiFilters
@@ -68,7 +68,7 @@ namespace Spd.Presentation.Screening.Swagger.ApiFilters
                 }
             };
 
-        private static OpenApiSchema GetOpenApiSchema(OperationFilterContext context, Type returnType) =>
+        private static IOpenApiSchema GetOpenApiSchema(OperationFilterContext context, Type returnType) =>
             context.SchemaGenerator.GenerateSchema(returnType, context.SchemaRepository);
     }
 }
