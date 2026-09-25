@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-builder
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-builder
 
 # install diagnostics tools
 RUN mkdir /tools && \
@@ -33,7 +33,7 @@ RUN npm run lint
 # RUN npm run test -- --no-watch --no-progress
 RUN npm run build -- --configuration production
 
-FROM registry.access.redhat.com/ubi8/dotnet-80-runtime:8.0 AS final
+FROM registry.access.redhat.com/ubi9/dotnet-100-runtime:9.8 AS final
 ARG VERSION
 ENV VERSION=$VERSION
 
