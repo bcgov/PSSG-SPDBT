@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import moment from 'moment';
+import { endOfMonth, isAfter, isBefore, parseISO, startOfYear } from 'date-fns';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -106,8 +106,8 @@ export class ReportsComponent implements OnInit {
 	private allReports: Array<OrgReportResponse> = [];
 
 	constants = SPD_CONSTANTS;
-	minDate = moment('2023-01-01');
-	maxDate = moment().endOf('month');
+	minDate = parseISO('2023-01-01');
+	maxDate = endOfMonth(new Date());
 
 	formMonthAndYearFrom: FormGroup = this.formBuilder.group({
 		monthAndYear: new FormControl(''),
@@ -137,23 +137,23 @@ export class ReportsComponent implements OnInit {
 			return;
 		}
 
-		const reportMonthYearFrom: moment.Moment | null = moment().startOf('year');
+		const reportMonthYearFrom: Date | null = startOfYear(new Date());
 		this.formMonthAndYearFrom.patchValue({ monthAndYear: reportMonthYearFrom });
 
-		const reportMonthYearTo: moment.Moment | null = null;
+		const reportMonthYearTo: Date | null = null;
 		this.formMonthAndYearTo.patchValue({ monthAndYear: reportMonthYearTo });
 
 		this.loadList();
 	}
 
-	onMonthAndYearChangeFrom(val: moment.Moment | null) {
+	onMonthAndYearChangeFrom(val: Date | null) {
 		this.formMonthAndYearFrom.patchValue({ monthAndYear: val });
 
 		this.filterList();
 	}
 
-	onMonthAndYearChangeTo(val: moment.Moment | null) {
-		this.formMonthAndYearTo.patchValue({ monthAndYear: val ? val.endOf('month') : null });
+	onMonthAndYearChangeTo(val: Date | null) {
+		this.formMonthAndYearTo.patchValue({ monthAndYear: val ? endOfMonth(val) : null });
 
 		this.filterList();
 	}
@@ -199,12 +199,13 @@ export class ReportsComponent implements OnInit {
 		if (!reportMonthYearFrom && !reportMonthYearTo) {
 			reports = this.allReports;
 		} else if (reportMonthYearFrom && !reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isBefore(reportMonthYearFrom));
+			reports = this.allReports.filter((rpt) => !isBefore(parseISO(rpt.reportDate!), reportMonthYearFrom));
 		} else if (!reportMonthYearFrom && reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(reportMonthYearTo));
+			reports = this.allReports.filter((rpt) => !isAfter(parseISO(rpt.reportDate!), reportMonthYearTo));
 		} else {
 			reports = this.allReports.filter((rpt) =>
-				moment(rpt.reportDate!).isBetween(reportMonthYearFrom!, reportMonthYearTo!),
+				isAfter(parseISO(rpt.reportDate!), reportMonthYearFrom!) &&
+				isBefore(parseISO(rpt.reportDate!), reportMonthYearTo!),
 			);
 		}
 

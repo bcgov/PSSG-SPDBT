@@ -1,12 +1,12 @@
 export const SPD_CONSTANTS = {
 	date: {
 		birthDateMinAgeYears: 12,
-		dateFormat: 'YYYY-MM-DD',
-		formalDateFormat: 'MMM DD, YYYY',
-		formalDateTimeFormat: 'MMM DD, YYYY HH:mm',
+		dateFormat: 'yyyy-MM-dd',
+		formalDateFormat: 'MMM dd, yyyy',
+		formalDateTimeFormat: 'MMM dd, yyyy HH:mm',
 		monthYearFormat: 'MMM yyyy',
-		dateTimeFormat: 'YYYY-MM-DD HH:mm',
-		backendDateFormat: 'YYYY-MM-DD',
+		dateTimeFormat: 'yyyy-MM-dd HH:mm',
+		backendDateFormat: 'yyyy-MM-dd',
 		dateMask: '0000-00-00',
 	},
 	periods: {

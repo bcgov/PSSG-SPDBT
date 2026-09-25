@@ -1,6 +1,6 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -65,7 +65,7 @@ export const APP_DATE_FORMATS = {
 	display: {
 		dateInput: SPD_CONSTANTS.date.dateFormat,
 		monthYearLabel: SPD_CONSTANTS.date.monthYearFormat,
-		dateA11yLabel: 'DDD',
+		dateA11yLabel: 'ddd',
 		monthYearA11yLabel: SPD_CONSTANTS.date.monthYearFormat,
 	},
 };
@@ -87,7 +87,7 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 		},
 		{
 			provide: DateAdapter,
-			useClass: MomentDateAdapter,
+			useClass: DateFnsAdapter,
 			deps: [MAT_DATE_LOCALE],
 		},
 		{

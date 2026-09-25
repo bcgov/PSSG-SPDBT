@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import moment from 'moment';
+import { subYears } from 'date-fns';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
@@ -99,8 +99,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	standalone: false,
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
-	minDate = moment().subtract(1, 'year');
-	maxDate = moment();
+	minDate = subYears(new Date(), 1);
+	maxDate = new Date();
 
 	@Input() formGroup!: FormGroup;
 
