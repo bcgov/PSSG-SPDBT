@@ -38,7 +38,9 @@ internal class BizLicencePrintingTransformStrategy(
         if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
             bizLicJson.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
 
-        BizResult? biz = await bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken, includeMainOffice: true);
+        Guid licenceHolderId = lic.LicenceHolderId
+            ?? throw new ApiException(HttpStatusCode.InternalServerError, "No licence holder ID available.");
+        BizResult? biz = await bizRepository.GetBizAsync(licenceHolderId, cancellationToken, includeMainOffice: true);
         mapper.Map(biz, bizLicJson);
 
         //conditions
