@@ -65,12 +65,12 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.Photo, opt => opt.Ignore())
                 .ForMember(d => d.Conditions, opt => opt.Ignore())
                 .ForMember(d => d.LicenceCategories, opt => opt.Ignore())
-                .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine1))
-                .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine2))
-                .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.City))
-                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Province))
-                .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Country))
-                .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.PostalCode));
+                .ForMember(d => d.MailingAddress1, opt => opt.Ignore())
+                .ForMember(d => d.MailingAddress2, opt => opt.Ignore())
+                .ForMember(d => d.City, opt => opt.Ignore())
+                .ForMember(d => d.ProvinceState, opt => opt.Ignore())
+                .ForMember(d => d.Country, opt => opt.Ignore())
+                .ForMember(d => d.PostalCode, opt => opt.Ignore());
 
             CreateMap<LicenceApplicationResp, SPD_CARD>()
                  .ForMember(d => d.Eyes, opt => opt.MapFrom(s => s.EyeColourCode))

@@ -72,8 +72,17 @@ internal class PersonalLicencePreviewTransformStrategy(
         if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
             preview.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, ct);
 
-        LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, ct);
+        Guid licenceAppId =
+            lic.LicenceAppId ?? throw new ApiException(HttpStatusCode.InternalServerError, "No licence application ID available.");
+        var app = await personLicAppRepository.GetLicenceApplicationAsync(licenceAppId, ct);
         mapper.Map(app, preview);
+
+        Guid contactId =
+            app.ContactId
+            ?? lic.LicenceHolderId
+            ?? throw new ApiException(HttpStatusCode.InternalServerError, "No contact or Licence Holder ID available.");
+        ContactResp contact = await contactRepository.GetAsync(contactId, ct);
+        mapper.Map(contact, preview);
 
         if (lic.PhotoDocumentUrlId == null)
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
@@ -93,7 +102,10 @@ internal class PersonalLicencePreviewTransformStrategy(
             throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
         await ProcessPhoto((Guid)lic.PhotoDocumentUrlId, preview, ct);
 
-        var contact = await contactRepository.GetAsync((Guid)lic.LicenceHolderId, ct);
+        Guid licenceHolderId =
+            lic.LicenceHolderId
+            ?? throw new ApiException(HttpStatusCode.InternalServerError, "No licence holder ID available.");
+        var contact = await contactRepository.GetAsync(licenceHolderId, ct);
         mapper.Map(contact, preview);
 
         if (lic.ServiceTypeCode == ServiceTypeEnum.GDSDTeamCertification)
@@ -148,7 +160,10 @@ internal class PersonalLicencePreviewTransformStrategy(
         preview.DoingBusinessAsName = null;
         preview.Badge =  lic.BadgeName;
 
-        var contact = await contactRepository.GetAsync((Guid)lic.LicenceHolderId, ct);
+        Guid licenceHolderId =
+            lic.LicenceHolderId
+            ?? throw new ApiException(HttpStatusCode.InternalServerError, "No licence holder ID available.");
+        var contact = await contactRepository.GetAsync(licenceHolderId, ct);
         mapper.Map(contact, preview);
 
         preview.SPD_CARD = new SPD_CARD()
