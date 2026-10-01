@@ -201,7 +201,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/security-worker-licence")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicence(
+        public async Task<IEnumerable<LicenceBasicAnonResponse>> SearchSecureWorkerLicence(
             [FromBody] GoogleRecaptcha recaptcha,
             [FromQuery] string? licenceNumber,
             [FromQuery] string? firstName,
@@ -236,7 +236,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/business-licence")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchBizLicence([FromBody] GoogleRecaptcha recaptcha, [FromQuery] string? licenceNumber, [FromQuery] string? businessName, CancellationToken ct)
+        public async Task<IEnumerable<LicenceBasicAnonResponse>> SearchBizLicence([FromBody] GoogleRecaptcha recaptcha, [FromQuery] string? licenceNumber, [FromQuery] string? businessName, CancellationToken ct)
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             return await _mediator.Send(new LicenceListSearch(licenceNumber, null, null, businessName, ServiceTypeCode.SecurityBusinessLicence));

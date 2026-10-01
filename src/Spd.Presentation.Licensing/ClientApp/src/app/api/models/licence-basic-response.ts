@@ -6,18 +6,21 @@ import { LicenceStatusCode } from '../models/licence-status-code';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
-export interface LicenceBasicResponse {
+export interface LicenceBasicResponse extends LicenceBasicAnonResponse {
+  licenceAppId?: string | null;
+  licenceId?: string | null;
+  licenceHolderId?: string | null;
+  licenceHolderDateOfBirth?: string | null;
+  licenceTermCode?: LicenceTermCode;
+  expiryDate?: string;
+}
+
+export interface LicenceBasicAnonResponse { 
+  licenceNumber?: string | null;
   bizLegalName?: string | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
-  expiryDate?: string;
-  licenceAppId?: string | null;
-  licenceHolderDateOfBirth?: string | null;
-  licenceHolderId?: string | null;
   licenceHolderName?: string | null;
-  licenceId?: string | null;
-  licenceNumber?: string | null;
   licenceStatusCode?: LicenceStatusCode;
-  licenceTermCode?: LicenceTermCode;
   nameOnCard?: string | null;
   serviceTypeCode?: ServiceTypeCode;
   showSecurityGuardAST?: boolean | null;

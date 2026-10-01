@@ -20,7 +20,7 @@ internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
-        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicAnonResponse>>,
         IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
@@ -161,7 +161,7 @@ internal class LicenceManager :
         return new FileResponse();
     }
 
-    public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceBasicAnonResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
     {
         LicenceListResp response = new LicenceListResp();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
@@ -206,7 +206,7 @@ internal class LicenceManager :
             .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
             .ToList();
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
+        return _mapper.Map<IEnumerable<LicenceBasicAnonResponse>>(result);
 
     }
 
