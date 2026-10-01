@@ -21,7 +21,7 @@ internal class LicenceManager :
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
         IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicAnonResponse>>,
-        IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicAnonResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -210,9 +210,9 @@ internal class LicenceManager :
 
     }
 
-    public async Task<IEnumerable<LicenceBasicResponse?>> Handle(LicenceBulkSearch search, CancellationToken ct)
+    public async Task<IEnumerable<LicenceBasicAnonResponse?>> Handle(LicenceBulkSearch search, CancellationToken ct)
     {
-        List<LicenceBasicResponse?> response = new List<LicenceBasicResponse?>();
+        List<LicenceBasicAnonResponse?> response = new List<LicenceBasicAnonResponse?>();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
             //spdbt-4396
@@ -238,15 +238,15 @@ internal class LicenceManager :
                         .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
                         .ToList();
                     if (result != null && result.Any())
-                        response.AddRange(_mapper.Map<IEnumerable<LicenceBasicResponse>>(result));
+                        response.AddRange(_mapper.Map<IEnumerable<LicenceBasicAnonResponse>>(result));
                     else
                     {
-                        response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                        response.Add(new LicenceBasicAnonResponse { LicenceNumber = str });
                     }
                 }
                 else
                 {
-                    response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                    response.Add(new LicenceBasicAnonResponse { LicenceNumber = str });
                 }
             }
         }

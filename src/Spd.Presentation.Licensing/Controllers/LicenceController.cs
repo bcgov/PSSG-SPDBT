@@ -219,7 +219,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/security-worker-licence-in-bulk")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IEnumerable<LicenceBasicResponse>> SearchSecureWorkerLicenceInBulk([FromBody] LicenceNumbersRequest request, CancellationToken ct)
+        public async Task<IEnumerable<LicenceBasicAnonResponse>> SearchSecureWorkerLicenceInBulk([FromBody] LicenceNumbersRequest request, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(request.LicenceNumbers) || string.IsNullOrWhiteSpace(request.Recaptcha?.RecaptchaCode))
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing data.");
