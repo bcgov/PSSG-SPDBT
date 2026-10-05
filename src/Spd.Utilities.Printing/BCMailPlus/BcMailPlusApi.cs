@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Mime;
 using System.Text;
@@ -9,15 +10,28 @@ internal sealed class BcMailPlusApi : IBcMailPlusApi
 {
     private static readonly HttpClient httpClient = new HttpClient();
     private readonly string baseUri;
+    private readonly ILogger<BcMailPlusApi> logger;
+    private readonly bool logPayload;
 
-    public BcMailPlusApi(IOptions<BCMailPlusSettings> options)
+    public BcMailPlusApi(IOptions<BCMailPlusSettings> options, ILogger<BcMailPlusApi> logger)
     {
         var settings = options.Value;
         this.baseUri = $"{settings.ServerUrl}/auth={settings.User};{settings.Secret}/JSON";
+        this.logPayload = settings.LogPayload;
+        this.logger = logger;
     }
 
     public async Task<JobStatus> CreateJob(string jobClass, JsonDocument payload, CancellationToken ct)
     {
+        if (this.logPayload == true && this.logger.IsEnabled(LogLevel.Information))
+        {
+            this.logger.LogInformation(
+                "BcMailPlusApi - CreateJob: JobClass={JobClass}; Payload={PayloadJson}.",
+                jobClass,
+                payload.RootElement.GetRawText()
+            );
+        }
+
         using var content = new StringContent(payload.RootElement.ToString(), Encoding.UTF8, MediaTypeNames.Application.Json);
         var uri = new Uri($"{this.baseUri}/create:{jobClass}");
         var response = await httpClient.PostAsync(uri, content, ct);
