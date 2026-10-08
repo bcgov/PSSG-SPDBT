@@ -1157,10 +1157,12 @@ export class CommonApplicationService {
 			) >= 0;
 
 		if (matchingLicence) {
-			// expiry dates of both licences must match to be simultaneous
-			licence.isSimultaneousFlow =
-				!!matchingLicence.linkedSoleProprietorLicenceId &&
-				matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
+			// prompt to renew together if the linked business licence expires within the renewal window
+			if (matchingLicence.linkedSoleProprietorLicenceId && matchingLicence.linkedSoleProprietorExpiryDate) {
+				const linkedExpiryDate = startOfDay(parseISO(matchingLicence.linkedSoleProprietorExpiryDate));
+				const linkedDaysBetween = differenceInCalendarDays(linkedExpiryDate, today);
+				licence.isSimultaneousFlow = linkedDaysBetween <= licenceRenewPeriodDays;
+			}
 
 			if (licence.hasSecurityGuardCategory) {
 				licence.dogAuthorization = matchingLicence.useDogs ?? false;
