@@ -29,9 +29,11 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
 import {
 	BehaviorSubject,
 	Observable,
@@ -2450,10 +2452,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			return this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode!);
 		}
 
-		return (
-			!!associatedLicence?.linkedSoleProprietorLicenceId &&
-			associatedLicence.linkedSoleProprietorExpiryDate === associatedLicence.expiryDate
-		);
+		if (!associatedLicence?.linkedSoleProprietorLicenceId || !associatedLicence.linkedSoleProprietorExpiryDate) {
+			return false;
+		}
+
+		// prompt to renew together if the linked business licence expiry is within the renewal window
+		const today = startOfDay(new Date());
+		const linkedExpiryDate = startOfDay(parseISO(associatedLicence.linkedSoleProprietorExpiryDate));
+		const daysBetween = differenceInCalendarDays(linkedExpiryDate, today);
+
+		return daysBetween <= SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 	}
 
 	private getPersonalInformationData({

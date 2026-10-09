@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
+import { inject, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { map } from 'rxjs';
 import { AppRoutes } from './app-routes';
+import { ConfigService } from './core/services/config.service';
 import { LandingComponent } from './landing.component';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
@@ -39,6 +41,12 @@ const routes: Routes = [
 	},
 	{
 		path: AppRoutes.METAL_DEALERS_AND_RECYCLERS,
+		canMatch: [
+			() =>
+				inject(ConfigService)
+					.getConfigs()
+					.pipe(map((config) => config.enableMdraFeatures ?? false)),
+		],
 		loadChildren: () =>
 			import('./modules/metal-dealers-and-recyclers/metal-dealers-and-recyclers.module').then(
 				(m) => m.MetalDealersAndRecyclersModule

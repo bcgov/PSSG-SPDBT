@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ConfigurationResponse, IdentityProviderTypeCode, LicenceFeeResponse } from '@app/api/models';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { ConfigurationService } from 'src/app/api/services';
 })
 export class ConfigService {
 	public config: ConfigurationResponse | null = null;
-
+	private config$?: Observable<ConfigurationResponse>;
 	constructor(
 		private oauthService: OAuthService,
 		private configurationService: ConfigurationService
@@ -18,14 +18,25 @@ export class ConfigService {
 
 	public getConfigs(): Observable<ConfigurationResponse> {
 		if (this.config) {
+			// Already fetched the config
 			return of(this.config);
 		}
-		return this.configurationService.apiConfigurationGet().pipe(
+
+		// Fetch the config from the API
+		this.config$ = this.configurationService.apiConfigurationGet().pipe(
 			tap((resp: ConfigurationResponse) => {
 				this.config = { ...resp };
-				return resp;
-			})
+			}),
+			catchError((err) => {
+			// If fetching the config fails, reset the observable so that future attempts can retry.
+			this.config$ = undefined;
+				return throwError(() => err);
+			}),
+			// Share the latest emitted value with all subscribers, rather than making multiple API calls.
+			shareReplay(1)
 		);
+
+		return this.config$;
 	}
 
 	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
