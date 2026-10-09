@@ -20,8 +20,8 @@ internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
-        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicResponse>>,
-        IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceListSearch, IEnumerable<LicenceBasicAnonResponse>>,
+        IRequestHandler<LicenceBulkSearch, IEnumerable<LicenceBasicAnonResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -161,7 +161,7 @@ internal class LicenceManager :
         return new FileResponse();
     }
 
-    public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceBasicAnonResponse>> Handle(LicenceListSearch search, CancellationToken cancellationToken)
     {
         LicenceListResp response = new LicenceListResp();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
@@ -206,13 +206,13 @@ internal class LicenceManager :
             .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
             .ToList();
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(result);
+        return _mapper.Map<IEnumerable<LicenceBasicAnonResponse>>(result);
 
     }
 
-    public async Task<IEnumerable<LicenceBasicResponse?>> Handle(LicenceBulkSearch search, CancellationToken ct)
+    public async Task<IEnumerable<LicenceBasicAnonResponse?>> Handle(LicenceBulkSearch search, CancellationToken ct)
     {
-        List<LicenceBasicResponse?> response = new List<LicenceBasicResponse?>();
+        List<LicenceBasicAnonResponse?> response = new List<LicenceBasicAnonResponse?>();
         if (search.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
             //spdbt-4396
@@ -238,15 +238,15 @@ internal class LicenceManager :
                         .Select(g => g.OrderByDescending(i => i.CreatedOn).FirstOrDefault())
                         .ToList();
                     if (result != null && result.Any())
-                        response.AddRange(_mapper.Map<IEnumerable<LicenceBasicResponse>>(result));
+                        response.AddRange(_mapper.Map<IEnumerable<LicenceBasicAnonResponse>>(result));
                     else
                     {
-                        response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                        response.Add(new LicenceBasicAnonResponse { LicenceNumber = str });
                     }
                 }
                 else
                 {
-                    response.Add(new LicenceBasicResponse { LicenceNumber = str });
+                    response.Add(new LicenceBasicAnonResponse { LicenceNumber = str });
                 }
             }
         }

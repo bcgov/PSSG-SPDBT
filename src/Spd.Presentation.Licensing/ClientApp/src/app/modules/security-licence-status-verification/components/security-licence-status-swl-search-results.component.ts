@@ -15,7 +15,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						<div class="text-minor-heading no-print my-3">Search results</div>
 						@for (licence of searchResults; track licence; let i = $index) {
 							<div class="summary-card-section summary-card-section__green mb-3 px-4 py-3">
-								@if (licence.licenceId) {
+								@if (licence.licenceNumber) {
 									<div class="row">
 										<div class="col-xl-2 col-lg-2">
 											<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>

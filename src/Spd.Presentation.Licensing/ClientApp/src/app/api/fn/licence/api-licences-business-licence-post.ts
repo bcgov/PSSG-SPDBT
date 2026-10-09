@@ -9,7 +9,7 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { GoogleRecaptcha } from '../../models/google-recaptcha';
-import { LicenceBasicResponse } from '../../models/licence-basic-response';
+import { LicenceBasicAnonResponse } from '../../models/licence-basic-anon-response';
 
 export interface ApiLicencesBusinessLicencePost$Params {
   licenceNumber?: string;
@@ -17,7 +17,7 @@ export interface ApiLicencesBusinessLicencePost$Params {
       body?: GoogleRecaptcha
 }
 
-export function apiLicencesBusinessLicencePost(http: HttpClient, rootUrl: string, params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+export function apiLicencesBusinessLicencePost(http: HttpClient, rootUrl: string, params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicAnonResponse>>> {
   const rb = new RequestBuilder(rootUrl, apiLicencesBusinessLicencePost.PATH, 'post');
   if (params) {
     rb.query('licenceNumber', params.licenceNumber, {});
@@ -30,7 +30,7 @@ export function apiLicencesBusinessLicencePost(http: HttpClient, rootUrl: string
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
+      return r as StrictHttpResponse<Array<LicenceBasicAnonResponse>>;
     })
   );
 }
