@@ -20,42 +20,43 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                 descriptor.ControllerName.Equals("LicenceAppDocument") &&
                 (descriptor.ActionName == "UploadLicenceAppFiles" || descriptor.ActionName == "UploadFilesToCache" || descriptor.ActionName == "UploadLicenceAppFilesAnonymous"))
             {
-                operation.RequestBody = new OpenApiRequestBody { Required = true };
-                operation.RequestBody.Content.Add("multipart/form-data", new OpenApiMediaType
+                operation.RequestBody = new OpenApiRequestBody
                 {
-                    Schema = new OpenApiSchema
+                    Required = true,
+                    Content = new Dictionary<string, OpenApiMediaType>
                     {
-                        Type = JsonSchemaType.Object,
-                        Properties = {
+                        ["multipart/form-data"] = new OpenApiMediaType
+                        {
+                            Schema = new OpenApiSchema
                             {
-                                "documents",
-                                new OpenApiSchema
+                                Type = JsonSchemaType.Object,
+                                Properties = new Dictionary<string, IOpenApiSchema>
                                 {
-                                    Type = JsonSchemaType.Array,
-                                    Items = new OpenApiSchema
+                                    ["documents"] = new OpenApiSchema
                                     {
-                                        Type = JsonSchemaType.String,
-                                        Format = "binary",
-                                        Description = "PDF, Microsoft Word .docx/.doc files only"
-                                    }
+                                        Type = JsonSchemaType.Array,
+                                        Items = new OpenApiSchema
+                                        {
+                                            Type = JsonSchemaType.String,
+                                            Format = "binary",
+                                            Description = "PDF, Microsoft Word .docx/.doc files only"
+                                        }
+                                    },
+
+                                    ["licenceDocumentTypeCode"] =
+                                new OpenApiSchemaReference("LicenceDocumentTypeCode")
                                 }
                             },
+                            Encoding = new Dictionary<string, OpenApiEncoding>
                             {
-                                "licenceDocumentTypeCode",
-                                new OpenApiSchemaReference("LicenceDocumentTypeCode")
-                            }
-                        }
-                    },
-                    Encoding = {
-                        {
-                            "doc",
-                            new OpenApiEncoding
-                            {
-                                ContentType =  "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                ["document"] = new OpenApiEncoding
+                                {
+                                    ContentType = "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                }
                             }
                         }
                     }
-                });
+                };
             }
         }
     }
