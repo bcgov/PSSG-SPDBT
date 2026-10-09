@@ -9,7 +9,7 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { GoogleRecaptcha } from '../../models/google-recaptcha';
-import { LicenceBasicAnonResponse } from '../../models/licence-basic-response';
+import { LicenceBasicAnonResponse } from '../../models/licence-basic-anon-response';
 
 export interface ApiLicencesSecurityWorkerLicencePost$Params {
   licenceNumber?: string;
