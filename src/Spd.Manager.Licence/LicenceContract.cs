@@ -18,7 +18,6 @@ public record LicenceBasicResponse : LicenceBasicAnonResponse
     public Guid? LicenceId { get; set; }
     public Guid? LicenceAppId { get; set; }
     public DateOnly ExpiryDate { get; set; }
-    public DateOnly? LicenceHolderDateOfBirth { get; set; }
     public Guid? LicenceHolderId { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
 

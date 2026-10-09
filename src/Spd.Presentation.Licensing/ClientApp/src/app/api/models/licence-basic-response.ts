@@ -10,7 +10,6 @@ export interface LicenceBasicResponse extends LicenceBasicAnonResponse {
   licenceAppId?: string | null;
   licenceId?: string | null;
   licenceHolderId?: string | null;
-  licenceHolderDateOfBirth?: string | null;
   licenceTermCode?: LicenceTermCode;
   expiryDate?: string;
 }
