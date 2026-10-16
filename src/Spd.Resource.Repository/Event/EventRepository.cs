@@ -1,6 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;

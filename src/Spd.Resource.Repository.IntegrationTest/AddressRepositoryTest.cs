@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using Castle.Components.DictionaryAdapter.Xml;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;

@@ -1,4 +1,4 @@
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
 using Spd.Utilities.Dynamics;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Document;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
