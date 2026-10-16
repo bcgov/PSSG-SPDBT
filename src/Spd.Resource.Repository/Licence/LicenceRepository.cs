@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -115,6 +115,7 @@ internal class LicenceRepository : ILicenceRepository
             lics = lics.Where(a => a.spd_LicenceHolder_account.name.StartsWith(qry.BizName) || a.spd_LicenceHolder_account.spd_organizationlegalname.StartsWith(qry.BizName));
         }
         var result = lics.ToList();
+        var x = result.Select(s => s.spd_LicenceHolder_contact?.spd_accesscode);
         if (qry.AccessCode != null)
         {
             Guid? mdraServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.MDRA.ToString());

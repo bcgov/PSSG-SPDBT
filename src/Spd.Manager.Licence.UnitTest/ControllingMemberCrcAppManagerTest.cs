@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Resource.Repository;

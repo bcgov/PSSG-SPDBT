@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Payment;

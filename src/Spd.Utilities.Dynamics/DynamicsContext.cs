@@ -1,10 +1,11 @@
 ﻿using Microsoft.OData.Client;
 using System.Diagnostics;
 using System.Net;
+using CRMSystem = Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM.System;
 
 namespace Spd.Utilities.Dynamics;
 
-public class DynamicsContext : Microsoft.Dynamics.CRM.System, IDisposable
+public class DynamicsContext : CRMSystem, IDisposable
 {
     public static readonly string ActivitySourceName = typeof(DynamicsContext).FullName!;
     private static ActivitySource source = new(ActivitySourceName);

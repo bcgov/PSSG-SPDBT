@@ -41702,8 +41702,8 @@
         <Property Name="Result" Type="Edm.String" Unicode="false" />
       </ComplexType>
       <Action Name="spd_MergeContacts">
-        <Parameter Name="OldContact" Type="mscrm.contact" Nullable="false" />
-        <Parameter Name="NewContact" Type="mscrm.contact" Nullable="false" />
+        <Parameter Name="OldContact" Type="Edm.String" Nullable="false" Unicode="false" />
+        <Parameter Name="NewContact" Type="Edm.String" Nullable="false" Unicode="false" />
         <ReturnType Type="mscrm.spd_MergeContactsResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_MergeOrgsResponse">

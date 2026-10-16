@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 
 namespace Spd.Resource.Repository.Address;
 internal class Mappings : Profile

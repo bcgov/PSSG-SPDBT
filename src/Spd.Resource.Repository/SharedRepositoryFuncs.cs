@@ -1,4 +1,4 @@
-﻿using Microsoft.Dynamics.CRM;
+﻿using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 

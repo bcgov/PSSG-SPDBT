@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Utilities.Dynamics;
 

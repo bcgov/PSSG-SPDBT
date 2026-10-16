@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -115,7 +115,9 @@ internal class ContactRepository : IContactRepository
             throw new ArgumentException("cannot find contact for merging");
         }
 
-        var result = await _context.spd_MergeContacts(oldContact, newContact).GetValueAsync(ct);
+        var oldContactRef = $"contacts({cmd.OldContactId})";
+        var newContactRef = $"contacts({cmd.NewContactId})";
+        var result = await _context.spd_MergeContacts(oldContactRef, newContactRef).GetValueAsync(ct);
         await _context.SaveChangesAsync(ct);
         if (result.IsSuccess == null || !(result.IsSuccess.Value))
         {

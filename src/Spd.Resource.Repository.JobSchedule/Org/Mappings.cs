@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.JobSchedule.GeneralizeScheduleJob;
 
 namespace Spd.Resource.Repository.JobSchedule.Org
