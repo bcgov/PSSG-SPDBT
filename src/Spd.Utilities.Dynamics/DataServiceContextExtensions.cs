@@ -1,4 +1,4 @@
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 
 namespace Spd.Utilities.Dynamics;
@@ -54,6 +54,6 @@ public static class DataServiceContextExtensions
     public static async Task<IEnumerable<T>> GetAllPagesAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
         where T : crmbaseentity => await ((DataServiceQuery<T>)query).GetAllPagesAsync(ct);
 
-    public static async Task<DataServiceCollection<T>> ExecuteForEditAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
-        where T : crmbaseentity => new DataServiceCollection<T>(await ((DataServiceQuery<T>)query).ExecuteAsync(ct));
+    public static async Task<IEnumerable<T>> ExecuteForEditAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
+        where T : crmbaseentity => await ((DataServiceQuery<T>)query).ExecuteAsync(ct);
 }

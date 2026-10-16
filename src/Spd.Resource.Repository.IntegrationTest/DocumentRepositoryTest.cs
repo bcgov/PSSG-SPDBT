@@ -1,7 +1,7 @@
 ﻿using Amazon.Runtime;
 using AutoFixture;
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Spd.Resource.Repository.Alias;

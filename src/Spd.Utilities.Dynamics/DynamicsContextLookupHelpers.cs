@@ -1,4 +1,4 @@
-using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using System.Collections.Immutable;
 
