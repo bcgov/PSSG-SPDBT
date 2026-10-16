@@ -8,14 +8,14 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { LicenceBasicResponse } from '../../models/licence-basic-response';
+import { LicenceBasicAnonResponse } from '../../models/licence-basic-anon-response';
 import { LicenceNumbersRequest } from '../../models/licence-numbers-request';
 
 export interface ApiLicencesSecurityWorkerLicenceInBulkPost$Params {
       body?: LicenceNumbersRequest
 }
 
-export function apiLicencesSecurityWorkerLicenceInBulkPost(http: HttpClient, rootUrl: string, params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+export function apiLicencesSecurityWorkerLicenceInBulkPost(http: HttpClient, rootUrl: string, params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicAnonResponse>>> {
   const rb = new RequestBuilder(rootUrl, apiLicencesSecurityWorkerLicenceInBulkPost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
@@ -26,7 +26,7 @@ export function apiLicencesSecurityWorkerLicenceInBulkPost(http: HttpClient, roo
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
+      return r as StrictHttpResponse<Array<LicenceBasicAnonResponse>>;
     })
   );
 }

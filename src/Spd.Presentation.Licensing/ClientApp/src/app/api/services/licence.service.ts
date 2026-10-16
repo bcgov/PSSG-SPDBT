@@ -31,6 +31,7 @@ import { apiLicencesSecurityWorkerLicenceInBulkPost } from '../fn/licence/api-li
 import { ApiLicencesSecurityWorkerLicenceInBulkPost$Params } from '../fn/licence/api-licences-security-worker-licence-in-bulk-post';
 import { apiLicencesSecurityWorkerLicencePost } from '../fn/licence/api-licences-security-worker-licence-post';
 import { ApiLicencesSecurityWorkerLicencePost$Params } from '../fn/licence/api-licences-security-worker-licence-post';
+import { LicenceBasicAnonResponse } from '../models/licence-basic-anon-response';
 import { LicenceBasicResponse } from '../models/licence-basic-response';
 import { LicenceResponse } from '../models/licence-response';
 
@@ -296,7 +297,7 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesSecurityWorkerLicencePost$Response(params?: ApiLicencesSecurityWorkerLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+  apiLicencesSecurityWorkerLicencePost$Response(params?: ApiLicencesSecurityWorkerLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicAnonResponse>>> {
     return apiLicencesSecurityWorkerLicencePost(this.http, this.rootUrl, params, context);
   }
 
@@ -306,9 +307,9 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesSecurityWorkerLicencePost(params?: ApiLicencesSecurityWorkerLicencePost$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+  apiLicencesSecurityWorkerLicencePost(params?: ApiLicencesSecurityWorkerLicencePost$Params, context?: HttpContext): Observable<Array<LicenceBasicAnonResponse>> {
     return this.apiLicencesSecurityWorkerLicencePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
+      map((r: StrictHttpResponse<Array<LicenceBasicAnonResponse>>): Array<LicenceBasicAnonResponse> => r.body)
     );
   }
 
@@ -326,7 +327,7 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesSecurityWorkerLicenceInBulkPost$Response(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+  apiLicencesSecurityWorkerLicenceInBulkPost$Response(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicAnonResponse>>> {
     return apiLicencesSecurityWorkerLicenceInBulkPost(this.http, this.rootUrl, params, context);
   }
 
@@ -341,9 +342,9 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesSecurityWorkerLicenceInBulkPost(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+  apiLicencesSecurityWorkerLicenceInBulkPost(params?: ApiLicencesSecurityWorkerLicenceInBulkPost$Params, context?: HttpContext): Observable<Array<LicenceBasicAnonResponse>> {
     return this.apiLicencesSecurityWorkerLicenceInBulkPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
+      map((r: StrictHttpResponse<Array<LicenceBasicAnonResponse>>): Array<LicenceBasicAnonResponse> => r.body)
     );
   }
 
@@ -361,7 +362,7 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesBusinessLicencePost$Response(params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+  apiLicencesBusinessLicencePost$Response(params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicAnonResponse>>> {
     return apiLicencesBusinessLicencePost(this.http, this.rootUrl, params, context);
   }
 
@@ -376,9 +377,9 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicencesBusinessLicencePost(params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+  apiLicencesBusinessLicencePost(params?: ApiLicencesBusinessLicencePost$Params, context?: HttpContext): Observable<Array<LicenceBasicAnonResponse>> {
     return this.apiLicencesBusinessLicencePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
+      map((r: StrictHttpResponse<Array<LicenceBasicAnonResponse>>): Array<LicenceBasicAnonResponse> => r.body)
     );
   }
 

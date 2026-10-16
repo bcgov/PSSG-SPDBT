@@ -86,7 +86,6 @@ namespace Spd.Resource.Repository.Licence
         public string? LicenceHolderLastName { get; set; }
         public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
-        public DateOnly? LicenceHolderDateOfBirth { get; set; }
         public string? NameOnCard { get; set; }
 
         //issued categories 

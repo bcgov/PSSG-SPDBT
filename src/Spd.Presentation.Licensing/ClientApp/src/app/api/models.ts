@@ -55,6 +55,7 @@ export type { InvitationRequest } from './models/invitation-request';
 export type { InvitationResponse } from './models/invitation-response';
 export type { LicenceAppDocumentResponse } from './models/licence-app-document-response';
 export type { LicenceAppListResponse } from './models/licence-app-list-response';
+export type { LicenceBasicAnonResponse } from './models/licence-basic-anon-response';
 export type { LicenceBasicResponse } from './models/licence-basic-response';
 export { LicenceDocumentTypeCode } from './models/licence-document-type-code';
 export type { LicenceFeeListResponse } from './models/licence-fee-list-response';
