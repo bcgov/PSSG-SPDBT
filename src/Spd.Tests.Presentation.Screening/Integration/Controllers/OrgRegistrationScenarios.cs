@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Alba;
 using Microsoft.Dynamics.CRM.Microsoft.Dynamics.CRM;
-using Spd
+using Spd.Manager.Screening;
 using Spd.Manager.Shared;
 using Xunit.Abstractions;
 
