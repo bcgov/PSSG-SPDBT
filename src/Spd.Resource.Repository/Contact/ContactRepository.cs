@@ -115,9 +115,8 @@ internal class ContactRepository : IContactRepository
             throw new ArgumentException("cannot find contact for merging");
         }
 
-        var oldContactRef = $"contacts({cmd.OldContactId})";
-        var newContactRef = $"contacts({cmd.NewContactId})";
-        var result = await _context.spd_MergeContacts(oldContactRef, newContactRef).GetValueAsync(ct);
+
+        var result = await _context.spd_MergeContacts(cmd.OldContactId.ToString(), cmd.NewContactId.ToString()).GetValueAsync(ct);
         await _context.SaveChangesAsync(ct);
         if (result.IsSuccess == null || !(result.IsSuccess.Value))
         {
