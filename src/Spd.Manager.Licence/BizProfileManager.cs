@@ -239,7 +239,8 @@ public class BizProfileManager :
             Id = (Guid)cmd.BizId,
             BizLegalName = bizInfoFromBceid?.LegalName,
             BizName = string.IsNullOrWhiteSpace(bizInfoFromBceid?.TradeName) ? null : bizInfoFromBceid.TradeName,
-            Email = cmd.BceidIdentityInfo.Email,
+            // SPDBT-4754: Temporarily disable automatic updating of organization "emailaddress1" from BCeID information
+            // Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
             MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid?.MailingAddress),
             UpdateSoleProprietor = false
