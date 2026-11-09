@@ -203,9 +203,10 @@ export class ReportsComponent implements OnInit {
 		} else if (!reportMonthYearFrom && reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => !isAfter(parseISO(rpt.reportDate!), reportMonthYearTo));
 		} else {
-			reports = this.allReports.filter((rpt) =>
-				isAfter(parseISO(rpt.reportDate!), reportMonthYearFrom!) &&
-				isBefore(parseISO(rpt.reportDate!), reportMonthYearTo!),
+			reports = this.allReports.filter(
+				(rpt) =>
+					!isBefore(parseISO(rpt.reportDate!), reportMonthYearFrom!) &&
+					!isAfter(parseISO(rpt.reportDate!), reportMonthYearTo!),
 			);
 		}
 
