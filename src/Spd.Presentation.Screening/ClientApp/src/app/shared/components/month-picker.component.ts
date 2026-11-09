@@ -10,6 +10,10 @@ export const MONTH_PICKER_FORMATS = {
 	display: {
 		dateInput: 'MMMM yyyy', // this is the format showing on the input element
 		monthYearLabel: 'MMMM yyyy', // this is showing on the calendar
+		// required by the calendar views (aria labels); DateFnsAdapter throws on an undefined format
+		dateA11yLabel: 'PP',
+		monthYearA11yLabel: 'MMMM yyyy',
+		yearA11yLabel: 'yyyy',
 	},
 };
 
