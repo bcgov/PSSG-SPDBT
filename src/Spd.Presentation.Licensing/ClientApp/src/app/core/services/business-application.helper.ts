@@ -166,6 +166,11 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
+	businessContactFormGroup: FormGroup = this.formBuilder.group({
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
+	});
+
 	businessManagerFormGroup: FormGroup = this.formBuilder.group({
 		givenName: new FormControl(''),
 		middleName1: new FormControl(''),

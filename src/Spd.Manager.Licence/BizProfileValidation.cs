@@ -1,6 +1,7 @@
 using FluentValidation;
 
 namespace Spd.Manager.Licence;
+
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
 {
     public BizProfileUpdateRequestValidator()
@@ -44,5 +45,12 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.BizManagerContactInfo.EmailAddress)
             .EmailAddress()
             .When(r => r.BizManagerContactInfo != null && r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
+        RuleFor(r => r.BizEmailAddress)
+            .EmailAddress()
+            .MaximumLength(75)
+            .When(r => !string.IsNullOrEmpty(r.BizEmailAddress));
+        RuleFor(r => r.BizPhoneNumber)
+            .MaximumLength(30)
+            .When(r => !string.IsNullOrEmpty(r.BizPhoneNumber));
     }
 }

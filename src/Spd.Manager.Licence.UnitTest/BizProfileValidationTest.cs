@@ -2,6 +2,7 @@
 using FluentValidation.TestHelper;
 
 namespace Spd.Manager.Licence.UnitTest;
+
 public class BizProfileValidationTest
 {
     private readonly BizProfileUpdateRequestValidator validator;
@@ -36,6 +37,8 @@ public class BizProfileValidationTest
             .With(r => r.SoleProprietorSwlPhoneNumber, "613338888")
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .With(r => r.SoleProprietorSwlEmailAddress, "test@test.com")
+            .With(r => r.BizEmailAddress, "biz@test.com")
+            .With(r => r.BizPhoneNumber, "6043338888")
             .Create();
 
         var result = validator.TestValidate(model);
@@ -68,10 +71,47 @@ public class BizProfileValidationTest
             .With(r => r.Branches, new List<BranchInfo>() { branch })
             .With(r => r.BizAddress, address)
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+            .With(r => r.BizEmailAddress, "biz@test.com")
+            .With(r => r.BizPhoneNumber, "6043338888")
             .Create();
 
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void BizEmailAddress_WhenInvalid_ShouldHaveValidationError()
+    {
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizEmailAddress, "not-an-email")
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizEmailAddress);
+    }
+
+    [Fact]
+    public void BizPhoneNumber_WhenTooLong_ShouldHaveValidationError()
+    {
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizPhoneNumber, new string('1', 31))
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizPhoneNumber);
+    }
+
+    [Fact]
+    public void BizEmailAndPhone_WhenEmpty_ShouldNotHaveValidationError()
+    {
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .Without(r => r.BizEmailAddress)
+            .Without(r => r.BizPhoneNumber)
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveValidationErrorFor(r => r.BizEmailAddress);
+        result.ShouldNotHaveValidationErrorFor(r => r.BizPhoneNumber);
     }
 
     [Fact]

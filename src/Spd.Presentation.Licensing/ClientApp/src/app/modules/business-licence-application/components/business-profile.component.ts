@@ -38,6 +38,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"
 						[businessManagerFormGroup]="businessManagerFormGroup"
+						[businessContactFormGroup]="businessContactFormGroup"
 						[businessAddressFormGroup]="businessAddressFormGroup"
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
 						[businessMailingAddressFormGroup]="businessMailingAddressFormGroup"
@@ -84,6 +85,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 export class BusinessProfileComponent implements OnInit {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessManagerFormGroup = this.businessApplicationService.businessManagerFormGroup;
+	businessContactFormGroup = this.businessApplicationService.businessContactFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
 	businessMailingAddressFormGroup = this.businessApplicationService.businessMailingAddressFormGroup;

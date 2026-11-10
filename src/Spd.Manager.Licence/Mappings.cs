@@ -27,6 +27,7 @@ using System.Collections.Immutable;
 using System.Text.Json;
 
 namespace Spd.Manager.Licence;
+
 internal class Mappings : Profile
 {
     public Mappings()
@@ -339,6 +340,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
+            .ForMember(d => d.BizEmailAddress, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.BizPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s =>
                (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
                ? s.PhoneNumber : null))
@@ -385,8 +388,8 @@ internal class Mappings : Profile
            .ForMember(d => d.BusinessAddress, opt => opt.MapFrom(s => s.BizAddress))
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
-           .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : null))
-           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))
+           .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : s.BizEmailAddress))
+           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : s.BizPhoneNumber))
            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
@@ -706,7 +709,7 @@ internal class Mappings : Profile
     {
         List<BranchInfo> branchInfos = new();
 
-        if (branchAddrs == null) 
+        if (branchAddrs == null)
         {
             return branchInfos;
         }
@@ -894,7 +897,7 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.GDSDCertificate, DocumentTypeEnum.GDSDCertificate },
         {LicenceDocumentTypeCode.BusinessLicenceDocuments, DocumentTypeEnum.BusinessLicenceDocuments },
         {LicenceDocumentTypeCode.DogTrainerAccreditedSchoolVerification, DocumentTypeEnum.DogTrainerAccreditedSchoolVerification }
-    }.ToImmutableDictionary(); 
+    }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)
     {

@@ -45,7 +45,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 					}
 
 					<div class="mb-3">
-						<div class="text-primary-color fw-semibold">
+						<div class="text-primary-color fw-semibold d-flex align-items-center gap-1" style="min-height: 28px">
 							Trade or 'Doing Business As' Name
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
@@ -70,9 +70,11 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</ng-template>
 
 				<div class="col-lg-6 col-md-12">
+					<div class="text-primary-color fw-semibold d-flex align-items-center" style="min-height: 28px">
+						Business Type
+					</div>
 					<mat-form-field>
-						<mat-label>Business Type</mat-label>
-						<mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher">
+						<mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher" aria-label="Business Type">
 							@for (item of businessTypes; track item; let i = $index) {
 								<mat-option [value]="item.code">{{ item.desc }}</mat-option>
 							}

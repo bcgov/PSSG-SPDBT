@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CommonBusinessContactComponent } from '../business-licence-application/components/common-business-contact.component';
 import { CommonBusinessLicenceSummaryComponent } from '../business-licence-application/components/common-business-licence-summary.component';
 import { CommonBusinessManagerComponent } from '../business-licence-application/components/common-business-manager.component';
 import { CommonBusinessProfileComponent } from '../business-licence-application/components/common-business-profile.component';
@@ -83,6 +84,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepsBusinessLicenceUpdatesComponent,
 		BusinessBcBranchesComponent,
 		CommonBusinessManagerComponent,
+		CommonBusinessContactComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
 		CommonBusinessInformationComponent,
