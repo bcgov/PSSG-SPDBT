@@ -36,6 +36,24 @@ import { BranchResponse, BusinessBcBranchesComponent } from './business-bc-branc
 						<mat-accordion>
 							<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 								<mat-expansion-panel-header>
+									<mat-panel-title>Business Contact Information</mat-panel-title>
+								</mat-expansion-panel-header>
+								<div class="mt-3">
+									<app-common-business-contact
+										[form]="businessContactFormGroup"
+										[isReadonly]="isReadonly"
+									></app-common-business-contact>
+								</div>
+							</mat-expansion-panel>
+						</mat-accordion>
+					</section>
+				</div>
+
+				<div class="col-12">
+					<section>
+						<mat-accordion>
+							<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+								<mat-expansion-panel-header>
 									<mat-panel-title>Business Manager</mat-panel-title>
 								</mat-expansion-panel-header>
 								<div class="mt-3">
@@ -160,6 +178,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 
 	@Input() businessInformationFormGroup!: FormGroup;
 	@Input() businessManagerFormGroup!: FormGroup;
+	@Input() businessContactFormGroup!: FormGroup;
 	@Input() businessAddressFormGroup!: FormGroup;
 	@Input() bcBusinessAddressFormGroup!: FormGroup;
 	@Input() businessMailingAddressFormGroup!: FormGroup;
@@ -177,6 +196,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
+		const isValid6 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessContactFormGroup);
 		const areBranchesValid = this.isBcBranchesFormValid();
 
 		console.debug(
@@ -186,10 +206,11 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 			isValid3,
 			isValid4,
 			isValid5,
+			isValid6,
 			areBranchesValid
 		);
 
-		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && areBranchesValid;
+		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && isValid6 && areBranchesValid;
 
 		return { isValid, areBranchesValid };
 	}

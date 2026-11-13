@@ -56,6 +56,8 @@ public record BizProfileResponse : BizInfo
 {
     public Guid BizId { get; set; } //which is accountid in account
     public ContactInfo? BizManagerContactInfo { get; set; }
+    public string? BizEmailAddress { get; set; } //account.emailaddress1
+    public string? BizPhoneNumber { get; set; } //account.telephone1
 }
 
 public record BizUserLoginResponse
@@ -80,6 +82,8 @@ public record BizProfileUpdateRequest
     public string? SoleProprietorSwlPhoneNumber { get; set; }
     public string? SoleProprietorSwlEmailAddress { get; set; }
     public ContactInfo? BizManagerContactInfo { get; set; }
+    public string? BizEmailAddress { get; set; } //account.emailaddress1, not applicable for sole proprietor
+    public string? BizPhoneNumber { get; set; } //account.telephone1, not applicable for sole proprietor
 }
 
 public enum BizTypeCode

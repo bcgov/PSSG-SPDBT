@@ -110,6 +110,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
+		businessContactData: this.businessContactFormGroup,
 		applicantData: this.applicantFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
 		businessMailingAddressData: this.businessMailingAddressFormGroup,
@@ -1083,6 +1084,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const bizManagerContactInfo = isSoleProprietor ? {} : modelFormValue.businessManagerData;
 
+		// business email/phone (organization emailaddress1/telephone1). For a sole proprietor, the
+		// soleProprietorSwl email/phone are used instead.
+		const bizEmailAddress = isSoleProprietor ? null : modelFormValue.businessContactData.emailAddress;
+		const bizPhoneNumber = isSoleProprietor ? null : modelFormValue.businessContactData.phoneNumber;
+
 		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
 			? modelFormValue.businessMailingAddressData
 			: modelFormValue.businessAddressData;
@@ -1117,6 +1123,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizAddress,
 			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : modelFormValue.bcBusinessAddressData,
 			bizManagerContactInfo,
+			bizEmailAddress,
+			bizPhoneNumber,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
 			branches,
@@ -2036,6 +2044,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			phoneNumber: businessProfile.bizManagerContactInfo?.phoneNumber,
 		};
 
+		const businessContactData = {
+			emailAddress: businessProfile.bizEmailAddress,
+			phoneNumber: businessProfile.bizPhoneNumber,
+		};
+
 		const bizAddress = businessProfile.bizAddress;
 		const businessAddressData = {
 			addressSelected: !!bizAddress?.addressLine1,
@@ -2096,6 +2109,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				applicationTypeData,
 				businessInformationData,
 				businessManagerData,
+				businessContactData,
 				expiredLicenceData,
 				applicantData,
 
