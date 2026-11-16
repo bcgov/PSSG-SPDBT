@@ -18,6 +18,7 @@
 
 		<!-- Fix transitive version vulnerability errors -->
 		<ItemGroup>
+				<PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
 				<PackageReference Include="Newtonsoft.Json" />
 		</ItemGroup>
 
