@@ -14,7 +14,12 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 @Component({
 	selector: 'app-steps-worker-licence-selection',
 	template: `
-		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+		<mat-stepper
+			class="child-stepper"
+			animationDuration="0"
+			(selectionChange)="onStepSelectionChange($event)"
+			#childstepper
+		>
 			@if (showTermsOfUse) {
 				<mat-step>
 					<app-step-worker-licence-terms-of-use
