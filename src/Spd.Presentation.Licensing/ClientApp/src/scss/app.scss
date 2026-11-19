@@ -288,6 +288,17 @@ body {
 		white-space: nowrap;
 		border: 0;
 	}
+
+	// Safari (WebKit) does not re-layout/repaint a sub-step whose height goes from 0 to auto inside the
+	// overflow:hidden container, leaving it blank. Take inactive sub-steps out of layout instead.
+	.mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-current) {
+		display: none;
+	}
+
+	// without a transition, Material never clears its 'animating' state, which would keep the active step clipped
+	&.mat-stepper-animating .mat-horizontal-stepper-content-current {
+		overflow: visible;
+	}
 }
 
 .alert {
