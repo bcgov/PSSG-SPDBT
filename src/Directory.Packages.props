@@ -52,6 +52,8 @@
     <PackageVersion Include="Microsoft.OData.Edm" Version="8.2.3" />
     <PackageVersion Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
     <PackageVersion Include="Microsoft.Spatial" Version="8.2.3" />
+    <PackageVersion Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.26" />
+    <PackageVersion Include="Microsoft.PowerPlatform.Dataverse.Client.Dynamics" Version="1.2.26" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="nClam" Version="9.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
@@ -80,6 +82,7 @@
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <PackageVersion Include="System.ServiceModel.Duplex" Version="6.0.0" />
     <PackageVersion Include="System.ServiceModel.Federation" Version="10.0.652802" />
     <PackageVersion Include="System.ServiceModel.NetTcp" Version="10.0.652802" />

@@ -1,11 +1,27 @@
 ﻿namespace Spd.Utilities.Dynamics
 {
+    public enum DynamicsAuthenticationType
+    {
+        OnPremise,
+        Cloud,
+    }
+
     public class DynamicsSettings
     {
         public Uri EndpointUrl { get; set; } = null!;
         public Uri EntityBaseUri { get; set; } = null!;
+        public DynamicsAuthenticationType AuthenticationType { get; set; } = DynamicsAuthenticationType.OnPremise;
         public OAuthSettings AuthenticationSettings { get; set; } = new OAuthSettings();
+        public EntraIdSettings EntraId { get; set; } = new EntraIdSettings();
         public TimeSpan HttpClientTimeout { get; set; } = TimeSpan.FromSeconds(120);
+    }
+
+    public class EntraIdSettings
+    {
+        public string TenantId { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
+        public string ResourceName { get; set; } = string.Empty;
     }
 
     public class OAuthSettings
@@ -22,3 +38,4 @@
         public int OAuth2TokenCachedInMins { get; set; } = 30;
     }
 }
+

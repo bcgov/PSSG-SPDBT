@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AudibleCompletionNotification>true</AudibleCompletionNotification>
+  <CodeCustomizationService>DLaB.ModelBuilderExtensions.CustomizeCodeDomService,DLaB.ModelBuilderExtensions</CodeCustomizationService>
+  <CodeGenerationService>DLaB.ModelBuilderExtensions.CodeGenerationService,DLaB.ModelBuilderExtensions</CodeGenerationService>
+  <CodeWriterFilterService>DLaB.ModelBuilderExtensions.CodeWriterFilterService,DLaB.ModelBuilderExtensions</CodeWriterFilterService>
+  <CodeWriterMessageFilterService>DLaB.ModelBuilderExtensions.CodeWriterMessageFilterService,DLaB.ModelBuilderExtensions</CodeWriterMessageFilterService>
+  <EmitEntityETC>false</EmitEntityETC>
+  <EmitVirtualAttributes>true</EmitVirtualAttributes>
+  <EntityTypesFolder>Entities</EntityTypesFolder>
+  <ExtensionConfig>
+    <ActionPrefixesWhitelist>spd_</ActionPrefixesWhitelist>
+    <ActionsWhitelist />
+    <ActionsToSkip />
+    <AddDebuggerNonUserCode>true</AddDebuggerNonUserCode>
+    <AddNewFilesToProject>true</AddNewFilesToProject>
+    <AddOptionSetMetadataAttribute>true</AddOptionSetMetadataAttribute>
+    <AdjustCasingForEnumOptions>true</AdjustCasingForEnumOptions>
+    <AttributeBlacklist />
+    <BuilderSettingsJsonRelativePath>builderSettings.json</BuilderSettingsJsonRelativePath>
+    <CamelCaseClassNames>true</CamelCaseClassNames>
+    <CamelCaseCustomWords>bcgov|
+spd</CamelCaseCustomWords>
+    <CamelCaseMemberNames>true</CamelCaseMemberNames>
+    <CamelCaseNamesDictionaryRelativePath>DLaB.EarlyBoundGeneratorV2\DLaB.Dictionary.txt</CamelCaseNamesDictionaryRelativePath>
+    <CleanupCrmSvcUtilLocalOptionSets>false</CleanupCrmSvcUtilLocalOptionSets>
+    <CreateOneFilePerAction>true</CreateOneFilePerAction>
+    <CreateOneFilePerEntity>true</CreateOneFilePerEntity>
+    <CreateOneFilePerOptionSet>true</CreateOneFilePerOptionSet>
+    <DeleteFilesFromOutputFolders>true</DeleteFilesFromOutputFolders>
+    <EntitiesToSkip />
+    <EntitiesWhitelist>account|
+bcgov_config|
+bcgov_documenturl|
+bcgov_schedulejobsession|
+bcgov_tag|
+bcgov_template|
+contact|
+incident|
+spd_address|
+spd_alias|
+spd_application|
+spd_businesscontact|
+spd_caselicencecategory|
+spd_clearance|
+spd_clearanceaccess|
+spd_delegate|
+spd_dog|
+spd_dogteam|
+spd_dogtrainingschool|
+spd_eventqueue|
+spd_genericupload|
+spd_identity|
+spd_invoice|
+spd_licence|
+spd_licencecategory|
+spd_licencecondition|
+spd_licencefee|
+spd_organizationtype|
+spd_orgregistration|
+spd_payment|
+spd_pdfreport|
+spd_portalinvitation|
+spd_portaluser|
+spd_position|
+spd_role|
+spd_servicetype|
+task|
+team</EntitiesWhitelist>
+    <EntityAttributeSpecifiedNames />
+    <EntityClassNameOverrides />
+    <EntityPrefixesToSkip />
+    <EntityPrefixesWhitelist />
+    <GenerateActionAttributeNameConsts>true</GenerateActionAttributeNameConsts>
+    <GenerateAllOptionSetLabelMetadata>false</GenerateAllOptionSetLabelMetadata>
+    <GenerateAttributeNameConsts>true</GenerateAttributeNameConsts>
+    <GenerateAnonymousTypeConstructor>true</GenerateAnonymousTypeConstructor>
+    <GenerateConstructorsSansLogicalName>true</GenerateConstructorsSansLogicalName>
+    <GenerateEntityRelationships>true</GenerateEntityRelationships>
+    <GenerateEnumProperties>true</GenerateEnumProperties>
+    <GenerateGlobalOptionSets>false</GenerateGlobalOptionSets>
+    <GenerateINotifyPattern>false</GenerateINotifyPattern>
+    <GenerateOptionSetMetadataAttribute>true</GenerateOptionSetMetadataAttribute>
+    <GenerateTypesAsInternal>false</GenerateTypesAsInternal>
+    <GroupLocalOptionSetsByEntity>false</GroupLocalOptionSetsByEntity>
+    <GroupMessageRequestWithResponse>true</GroupMessageRequestWithResponse>
+    <InvalidCSharpNamePrefix>_</InvalidCSharpNamePrefix>
+    <MakeAllFieldsEditable>false</MakeAllFieldsEditable>
+    <MakeReadonlyFieldsEditable>false</MakeReadonlyFieldsEditable>
+    <MakeResponseActionsEditable>true</MakeResponseActionsEditable>
+    <LocalOptionSetFormat>{0}_{1}</LocalOptionSetFormat>
+    <MakeReferenceTypesNullable>false</MakeReferenceTypesNullable>
+    <ModelBuilderLogLevel>2</ModelBuilderLogLevel>
+    <ObsoleteDeprecated>true</ObsoleteDeprecated>
+    <ObsoleteTokens>*(Deprecated)*</ObsoleteTokens>
+    <OptionSetLanguageCodeOverride
+      xsi:nil="true" />
+    <OptionSetNames>spd_aliasetype:Spd_AliasType|
+spd_rcmpdistrict:Spd_RCMPDistrict|
+spd_sex:Spd_Sex|
+spd_uuploadeddocuments:Spd_UploadedDocuments</OptionSetNames>
+    <OptionNameOverrides>0th:0th|
+1st:1st|
+2nd:2nd|
+3rd:3rd|
+4th:4th|
+5th:5th|
+6th:6th|
+7th:7th|
+8th:8th|
+9th:9th|
+conversationindex:ConversationIndex|
+cornet:CORNET|
+cpic:CPIC|
+customcorrelation:CustomCorrelation|
+fedex:FedEx|
+groupme:GroupMe|
+idir:IDIR|
+justin:JUSTIN|
+linkedin:LinkedIn|
+lmd:LMD|
+mdra:MDRA|
+nontransient:NonTransient|
+notset:NotSet|
+prime:PRIME|
+rcc:RCC|
+reminderexpired:ReminderExpired|
+reminderinvalid:ReminderInvalid|
+reminderset:ReminderSet|
+smartmatching:SmartMatching|
+trackingtoken:TrackingToken|
+xheader:XHeader</OptionNameOverrides>
+    <ProjectNameForEarlyBoundFiles />
+    <PropertyEnumMappings />
+    <ReadSerializedMetadata>false</ReadSerializedMetadata>
+    <RemoveRuntimeVersionComment>true</RemoveRuntimeVersionComment>
+    <ReplaceOptionSetPropertiesWithEnum>true</ReplaceOptionSetPropertiesWithEnum>
+    <SerializeMetadata>false</SerializeMetadata>
+    <SuppressAutogeneratedFileHeaderComment>false</SuppressAutogeneratedFileHeaderComment>
+    <TokenCapitalizationOverrides>AccessTeam|
+ActiveState|
+AllowToUseRestraints|
+ApplicantSWLNumber|
+AssignedTo|
+BCMP|
+BusinessAs|
+CardUci|
+CasPartyNumber|
+CPIC|
+CRC|
+DefaultOnCase|
+DogIsSpayedOrNeutered|
+EmailAnd|
+EmailSend|
+EmailSender|
+ExchangeRate|
+FeatureSet|
+FedEx|
+ForAn|
+GDSD|
+Geronimo|
+GetAux|
+GetCPIC|
+IsMsTeams|
+IsPaiEnabled|
+IsSopIntegration|
+JvClientNumber|
+MsDynCe_|
+MsDynMkt_|
+MsDyUsd|
+O365Admin|
+OcSkillIdentMlModel|
+OnHold|
+OrderId|
+OrgPortalInvLink|
+OwnerOnAssign|
+ParticipatesIn|
+PartiesOnEmail|
+PauseStates|
+PredictiveAddress|
+PSSO|
+RCMP|
+ScheduleJobSession|
+SentOn|
+SettingsAndSummary|
+Skip|
+SlaId|
+SlaKpi|
+Spd_Sex|
+SyncOptIn|
+TeamUser|
+Timeout|
+TradeShow|
+UserPuid|
+VoiceMail|
+VS</TokenCapitalizationOverrides>
+    <TransliterationRelativePath>DLaB.EarlyBoundGeneratorV2\alphabets</TransliterationRelativePath>
+    <UseCrmSvcUtilStateEnumNamingConvention>false</UseCrmSvcUtilStateEnumNamingConvention>
+    <UseDisplayNameForBpfName>true</UseDisplayNameForBpfName>
+    <UseEnumForStateCodes>false</UseEnumForStateCodes>
+    <UseLogicalNames>false</UseLogicalNames>
+    <WaitForAttachedDebugger>false</WaitForAttachedDebugger>
+  </ExtensionConfig>
+  <GenerateMessages>true</GenerateMessages>
+  <IncludeCommandLine>false</IncludeCommandLine>
+  <MessageTypesFolder>Messages</MessageTypesFolder>
+  <MetadataProviderService>DLaB.ModelBuilderExtensions.MetadataProviderService,DLaB.ModelBuilderExtensions</MetadataProviderService>
+  <MetadataQueryProviderService>DLaB.ModelBuilderExtensions.MetadataQueryProviderService,DLaB.ModelBuilderExtensions</MetadataQueryProviderService>
+  <NamingService>DLaB.ModelBuilderExtensions.NamingService,DLaB.ModelBuilderExtensions</NamingService>
+  <OptionSetsTypesFolder>OptionSets</OptionSetsTypesFolder>
+  <Namespace>Spd.Utilities.Dataverse.EarlyBound</Namespace>
+  <ServiceContextName>DataverseContext</ServiceContextName>
+  <SuppressGeneratedCodeAttribute>true</SuppressGeneratedCodeAttribute>
+  <SettingsVersion>2.2026.7.28</SettingsVersion>
+  <UpdateBuilderSettingsJson>true</UpdateBuilderSettingsJson>
+  <Version>2.2026.7.28</Version>
+</Config>
