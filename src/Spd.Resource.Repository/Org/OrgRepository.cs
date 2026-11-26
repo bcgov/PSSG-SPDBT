@@ -43,8 +43,7 @@ namespace Spd.Resource.Repository.Org
 
         private async Task<OrgManageResult?> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken ct)
         {
-            DataServiceCollection<account> orgs = new(_dynaContext.accounts.Where(p => p.accountid == updateOrgCmd.Org.Id));
-            account? org = orgs.Any() ? orgs[0] : null;
+            account? org = await _dynaContext.GetOrgById(updateOrgCmd.Org.Id, ct);
             if (org == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the updating org with orgId = {updateOrgCmd.Org.Id}");
@@ -72,6 +71,7 @@ namespace Spd.Resource.Repository.Org
             }
 
             _mapper.Map(updateOrgCmd.Org, org);
+            _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(ct);
 
             return new OrgManageResult(_mapper.Map<OrgResult>(org));
